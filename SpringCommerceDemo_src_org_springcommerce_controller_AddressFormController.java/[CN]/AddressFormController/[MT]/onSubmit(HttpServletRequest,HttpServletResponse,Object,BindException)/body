@@ -1,0 +1,21 @@
+{
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  User user=userService.readUserByUsername(auth.getName());
+  logger.debug("**** in onSubmit");
+  CreateAddress createAddress=(CreateAddress)command;
+  logger.debug("Address line1: " + createAddress.getAddressLine1());
+  Address address=new Address();
+  address.setAddressName(createAddress.getAddressName());
+  address.setAddressLine1(createAddress.getAddressLine1());
+  address.setAddressLine2(createAddress.getAddressLine2());
+  address.setStateCode(createAddress.getState());
+  address.setZipCode(createAddress.getZipCode());
+  address.setCity(createAddress.getCity());
+  address.setUser(user);
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  if (!errors.hasErrors()) {
+    addressService.saveAddress(address);
+  }
+  mav.addObject("saved",true);
+  return mav;
+}
