@@ -1,13 +1,7 @@
 {
-  CreateAddress createAddress=new CreateAddress();
+  Address createAddress=new Address();
   if (request.getParameter("addressId") != null) {
-    Address address=addressService.readAddressById(Long.valueOf(request.getParameter("addressId")));
-    createAddress.setAddressName(address.getAddressName());
-    createAddress.setAddressLine1(address.getAddressLine1());
-    createAddress.setAddressLine2(address.getAddressLine2());
-    createAddress.setCity(address.getCity());
-    createAddress.setState(address.getStateCode());
-    createAddress.setZipCode(address.getZipCode());
+    createAddress=addressService.readAddressById(Long.valueOf(request.getParameter("addressId")));
   }
   return createAddress;
 }
