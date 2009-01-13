@@ -1,15 +1,21 @@
 {
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  Address address;
   CreateAddress createAddress=(CreateAddress)command;
   User user=userService.readUserByUsername(auth.getName());
-  List<Address> addressList=addressService.readAddressByUserId(user.getId());
-  for (Iterator<Address> itr=addressList.iterator(); itr.hasNext(); ) {
-    Address address=(Address)itr.next();
-    if (createAddress.getAddressName().equalsIgnoreCase(address.getAddressName())) {
-      errors.rejectValue("addressName","addressName.duplicate",new Object[]{new String(address.getAddressName())},null);
-    }
+  if (request.getParameter("addressId") != null) {
+    address=addressService.readAddressById(Long.valueOf(request.getParameter("addressId")));
   }
-  Address address=new Address();
+ else {
+    List<Address> addressList=addressService.readAddressByUserId(user.getId());
+    for (Iterator<Address> itr=addressList.iterator(); itr.hasNext(); ) {
+      address=(Address)itr.next();
+      if (createAddress.getAddressName().equalsIgnoreCase(address.getAddressName())) {
+        errors.rejectValue("addressName","addressName.duplicate",new Object[]{new String(address.getAddressName())},null);
+      }
+    }
+    address=new Address();
+  }
   address.setAddressName(createAddress.getAddressName());
   address.setAddressLine1(createAddress.getAddressLine1());
   address.setAddressLine2(createAddress.getAddressLine2());
