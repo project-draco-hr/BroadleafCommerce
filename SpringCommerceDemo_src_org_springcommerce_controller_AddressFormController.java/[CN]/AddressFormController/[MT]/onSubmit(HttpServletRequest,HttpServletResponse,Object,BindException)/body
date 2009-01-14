@@ -22,9 +22,10 @@
   }
  else {
     address.setStandardized(true);
+    standardizedResponse.getAddress().setAddressName(address.getAddressName());
     address=standardizedResponse.getAddress();
+    address.setUser(user);
   }
-  address.setUser(user);
   ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
   if (errors.hasErrors()) {
     logger.debug("Error returning back to the form");
