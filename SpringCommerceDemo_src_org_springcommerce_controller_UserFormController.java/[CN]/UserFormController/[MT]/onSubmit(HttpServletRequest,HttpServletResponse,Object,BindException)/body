@@ -1,14 +1,22 @@
 {
-  User user=(User)command;
-  if (userService.readUserByUsername(user.getUsername()) != null) {
+  CreateUser createUser=(CreateUser)command;
+  if (userService.readUserByUsername(createUser.getUsername()) != null) {
     errors.rejectValue("username","username.used",null,null);
   }
-  userService.readUserByUsername(user.getUsername());
+  userService.readUserByUsername(createUser.getUsername());
   ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
   if (errors.hasErrors()) {
     logger.debug("Error returning back to the form");
     return showForm(request,response,errors);
   }
+  User user=new User();
+  user.setUsername(createUser.getUsername());
+  user.setFirstName(createUser.getFirstName());
+  user.setLastName(createUser.getLastName());
+  user.setPassword(createUser.getPassword());
+  user.setEmailAddress(createUser.getEmailAddress());
+  user.setChallengeQuestion(createUser.getChallengeQuestion());
+  user.setChallengeAnswer(createUser.getChallengeAnswer());
   userService.registerUser(user);
   mav.addObject("saved",true);
   return mav;
