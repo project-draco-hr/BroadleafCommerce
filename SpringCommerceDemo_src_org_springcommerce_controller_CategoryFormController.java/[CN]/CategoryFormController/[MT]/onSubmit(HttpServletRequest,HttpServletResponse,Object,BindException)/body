@@ -1,0 +1,19 @@
+{
+  CreateCategory createCategory=(CreateCategory)command;
+  Category category=new Category();
+  category.setName(createCategory.getName());
+  if (createCategory.getParentId() != null) {
+    Category parentCategory=catalogService.readCategoryById(new Long(createCategory.getParentId()));
+    if (parentCategory != null) {
+      category.setParentCategory(parentCategory);
+    }
+  }
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  catalogService.saveCategory(category);
+  mav.addObject("saved",true);
+  return mav;
+}
