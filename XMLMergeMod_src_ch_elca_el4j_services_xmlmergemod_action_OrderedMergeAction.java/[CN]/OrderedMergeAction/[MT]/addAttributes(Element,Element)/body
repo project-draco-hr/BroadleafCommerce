@@ -1,0 +1,21 @@
+{
+  LinkedHashMap allAttributes=new LinkedHashMap();
+  NamedNodeMap outAttributes=out.getAttributes();
+  NamedNodeMap inAttributes=in.getAttributes();
+  for (int i=0; i < outAttributes.getLength(); i++) {
+    Node attr=outAttributes.item(i);
+    allAttributes.put(attr.getNodeName(),attr);
+    s_logger.debug("adding attr from out:" + attr);
+  }
+  for (int i=0; i < inAttributes.getLength(); i++) {
+    Node attr=inAttributes.item(i);
+    allAttributes.put(attr.getNodeName(),attr);
+    s_logger.debug("adding attr from in:" + attr);
+  }
+  Iterator keys=allAttributes.keySet().iterator();
+  while (keys.hasNext()) {
+    String key=(String)keys.next();
+    Node attr=(Node)allAttributes.get(key);
+    out.setAttribute(key,attr.getNodeValue());
+  }
+}

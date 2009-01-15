@@ -1,0 +1,38 @@
+{
+  String response;
+  try {
+    DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(false);
+    DocumentBuilder parser=dbf.newDocumentBuilder();
+    Document[] docs=new Document[sources.length];
+    for (int i=0; i < sources.length; i++) {
+      try {
+        docs[i]=parser.parse(sources[i]);
+      }
+ catch (      IOException ioe) {
+        throw new ParseException(ioe);
+      }
+    }
+    Document result=doMerge(docs);
+    response=Utility.formatItem(result);
+  }
+ catch (  TransformerConfigurationException e) {
+    throw new ParseException(e);
+  }
+catch (  IllegalArgumentException e) {
+    throw new ParseException(e);
+  }
+catch (  ParserConfigurationException e) {
+    throw new ParseException(e);
+  }
+catch (  SAXException e) {
+    throw new ParseException(e);
+  }
+catch (  TransformerFactoryConfigurationError e) {
+    throw new ParseException(e);
+  }
+catch (  TransformerException e) {
+    throw new ParseException(e);
+  }
+  return new ByteArrayInputStream(response.getBytes());
+}

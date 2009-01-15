@@ -1,0 +1,22 @@
+{
+  if (patchElement == null && originalElement != null) {
+    outputParentElement.appendChild((Element)originalElement.cloneNode(true));
+  }
+ else {
+    List outputContent=Utility.buildListFromNodeList(outputParentElement.getChildNodes());
+    Iterator it=outputContent.iterator();
+    int lastIndex=outputContent.size();
+    while (it.hasNext()) {
+      Content content=(Content)it.next();
+      if (content instanceof Element) {
+        Element element=(Element)content;
+        if (element.getNodeName().equals(patchElement.getNodeName())) {
+          lastIndex=outputContent.lastIndexOf(element);
+        }
+      }
+    }
+    List toAdd=new ArrayList();
+    toAdd.add(patchElement);
+    outputContent.addAll(Math.min(lastIndex + 1,outputContent.size()),toAdd);
+  }
+}

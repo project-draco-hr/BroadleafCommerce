@@ -1,0 +1,11 @@
+{
+  Action action=(Action)m_actionFactory.getOperation(originalElement,patchElement);
+  Mapper mapper=(Mapper)m_mapperFactory.getOperation(originalElement,patchElement);
+  if (action instanceof MergeAction) {
+    MergeAction mergeAction=(MergeAction)action;
+    mergeAction.setActionFactory(m_actionFactory);
+    mergeAction.setMapperFactory(m_mapperFactory);
+    mergeAction.setMatcherFactory(m_matcherFactory);
+  }
+  action.perform(originalElement,mapper.map(patchElement),workingParent);
+}

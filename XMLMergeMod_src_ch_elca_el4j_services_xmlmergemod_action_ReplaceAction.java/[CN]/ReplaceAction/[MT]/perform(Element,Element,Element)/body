@@ -1,0 +1,20 @@
+{
+  try {
+    System.out.println(Utility.formatItem(patchElement));
+  }
+ catch (  TransformerConfigurationException e) {
+    e.printStackTrace();
+  }
+catch (  TransformerException e) {
+    e.printStackTrace();
+  }
+  Document outputParentDoc=outputParentElement.getOwnerDocument();
+  if (patchElement != null) {
+    Node temp=outputParentDoc.importNode(patchElement,true);
+    outputParentElement.appendChild(temp);
+  }
+ else {
+    Node temp=outputParentDoc.importNode(originalElement,true);
+    outputParentElement.appendChild(temp);
+  }
+}

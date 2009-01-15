@@ -1,0 +1,71 @@
+{
+  addAttributes(parentOut,parentIn2);
+  List preList1=Utility.buildListFromNodeList(parentIn1.getChildNodes());
+  List preList2=Utility.buildListFromNodeList(parentIn1.getChildNodes());
+  Node[] list1=(Node[])preList1.toArray(new Node[preList1.size()]);
+  Node[] list2=(Node[])preList2.toArray(new Node[preList2.size()]);
+  int offsetTreated1=0;
+  int offsetTreated2=0;
+  Document parentDoc=parentOut.getOwnerDocument();
+  for (int i=0; i < list1.length; i++) {
+    s_logger.debug("List 1: " + list1[i]);
+    if (list1[i] instanceof Comment || list1[i] instanceof Text) {
+      Node temp=parentDoc.importNode(list1[i],true);
+      parentOut.appendChild(temp);
+      offsetTreated1++;
+    }
+ else     if (!(list1[i] instanceof Element)) {
+      throw new DocumentException(list1[i].getOwnerDocument(),"Contents of type " + list1[i].getClass().getName() + " not supported");
+    }
+ else {
+      Element e1=(Element)list1[i];
+      int posInList2=-1;
+      for (int j=offsetTreated2; j < list2.length; j++) {
+        s_logger.debug("List 2: " + list2[j]);
+        if (list2[j] instanceof Element) {
+          if (((Matcher)m_matcherFactory.getOperation(e1,(Element)list2[j])).matches(e1,(Element)list2[j])) {
+            s_logger.debug("Match found: " + e1 + " and "+ list2[j]);
+            posInList2=j;
+            break;
+          }
+        }
+ else         if (list2[j] instanceof Comment || list2[j] instanceof Text) {
+        }
+ else {
+          throw new DocumentException(list2[j].getOwnerDocument(),"Contents of type " + list2[j].getClass().getName() + " not supported");
+        }
+      }
+      while (posInList2 != -1 && offsetTreated2 < posInList2) {
+        Node contentToAdd;
+        if (list2[offsetTreated2] instanceof Element) {
+          applyAction(parentOut,null,(Element)list2[offsetTreated2]);
+        }
+ else {
+          contentToAdd=parentDoc.importNode(list2[offsetTreated2],true);
+          parentOut.appendChild(contentToAdd);
+        }
+        offsetTreated2++;
+      }
+      if (posInList2 != -1) {
+        applyAction(parentOut,(Element)list1[offsetTreated1],(Element)list2[offsetTreated2]);
+        offsetTreated1++;
+        offsetTreated2++;
+      }
+ else {
+        applyAction(parentOut,(Element)list1[offsetTreated1],null);
+        offsetTreated1++;
+      }
+    }
+  }
+  while (offsetTreated2 < list2.length) {
+    Node contentToAdd;
+    if (list2[offsetTreated2] instanceof Element) {
+      applyAction(parentOut,null,(Element)list2[offsetTreated2]);
+    }
+ else {
+      contentToAdd=parentDoc.importNode(list2[offsetTreated2],true);
+      parentOut.appendChild(contentToAdd);
+    }
+    offsetTreated2++;
+  }
+}

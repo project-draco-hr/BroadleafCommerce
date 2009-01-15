@@ -1,0 +1,24 @@
+{
+  Document temporary=docs[0];
+  for (int i=1; i < docs.length; i++) {
+    if (!m_rootMatcher.matches((Element)temporary.getFirstChild(),(Element)docs[i].getFirstChild())) {
+      throw new IllegalArgumentException("Root elements do not match.");
+    }
+    DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(false);
+    DocumentBuilder parser;
+    try {
+      parser=dbf.newDocumentBuilder();
+    }
+ catch (    ParserConfigurationException e) {
+      throw new ParseException(e);
+    }
+    Document output=parser.newDocument();
+    output.appendChild(output.createElement("root"));
+    m_rootMergeAction.perform((Element)temporary.getFirstChild(),(Element)docs[i].getFirstChild(),(Element)output.getFirstChild());
+    Element root=(Element)output.getFirstChild().getChildNodes().item(0);
+    temporary.removeChild(temporary.getFirstChild());
+    temporary.appendChild(temporary.importNode(root,true));
+  }
+  return temporary;
+}

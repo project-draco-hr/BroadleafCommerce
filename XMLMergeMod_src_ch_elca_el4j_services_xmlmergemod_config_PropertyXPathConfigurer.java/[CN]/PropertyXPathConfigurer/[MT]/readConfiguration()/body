@@ -1,0 +1,38 @@
+{
+  String token;
+  token=m_props.getProperty(DEFAULT_ACTION_KEY);
+  if (token != null) {
+    setDefaultAction(token);
+  }
+  token=m_props.getProperty(DEFAULT_MAPPER_KEY);
+  if (token != null) {
+    setDefaultMapper(token);
+  }
+  token=m_props.getProperty(DEFAULT_MATCHER_KEY);
+  if (token != null) {
+    setDefaultMatcher(token);
+  }
+  Enumeration keys=m_props.keys();
+  while (keys.hasMoreElements()) {
+    String key=(String)keys.nextElement();
+    if (key.startsWith(PATH_PREFIX)) {
+      m_paths.add(key.substring(PATH_PREFIX.length()));
+    }
+  }
+  Iterator it=m_paths.iterator();
+  while (it.hasNext()) {
+    String path=(String)it.next();
+    token=m_props.getProperty(ACTION_PREFIX + path);
+    if (token != null) {
+      addAction(m_props.getProperty(PATH_PREFIX + path),token);
+    }
+    token=m_props.getProperty(MAPPER_PREFIX + path);
+    if (token != null) {
+      addMapper(m_props.getProperty(PATH_PREFIX + path),token);
+    }
+    token=m_props.getProperty(MATCHER_PREFIX + path);
+    if (token != null) {
+      addMatcher(m_props.getProperty(PATH_PREFIX + path),token);
+    }
+  }
+}
