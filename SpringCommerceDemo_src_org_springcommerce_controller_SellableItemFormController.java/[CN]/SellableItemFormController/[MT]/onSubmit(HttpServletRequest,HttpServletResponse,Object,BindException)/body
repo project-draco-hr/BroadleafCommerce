@@ -1,0 +1,18 @@
+{
+  CreateSellableItem createSellableItem=(CreateSellableItem)command;
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  ItemAttribute itemAttribute=new ItemAttribute();
+  itemAttribute.setName("price");
+  itemAttribute.setValue(createSellableItem.getPrice());
+  itemAttribute.setSellableItem(createSellableItem.getSellableItem());
+  HashSet<ItemAttribute> ias=new HashSet<ItemAttribute>();
+  ias.add(itemAttribute);
+  createSellableItem.getSellableItem().setItemAttributes(ias);
+  catalogService.saveSellableItem(createSellableItem.getSellableItem());
+  mav.addObject("saved",true);
+  return mav;
+}

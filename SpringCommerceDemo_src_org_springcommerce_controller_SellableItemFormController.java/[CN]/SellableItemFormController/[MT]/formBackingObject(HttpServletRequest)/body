@@ -1,0 +1,11 @@
+{
+  CatalogItem createCatalogItem=new CatalogItem();
+  SellableItem sellableItem=new SellableItem();
+  CreateSellableItem createSellableItem=new CreateSellableItem();
+  if (request.getParameter("catalogItemId") != null) {
+    createCatalogItem=catalogService.readCatalogItemById(Long.valueOf(request.getParameter("catalogItemId")));
+    sellableItem.setCatalogItem(createCatalogItem);
+    createSellableItem.setSellableItem(sellableItem);
+  }
+  return createSellableItem;
+}
