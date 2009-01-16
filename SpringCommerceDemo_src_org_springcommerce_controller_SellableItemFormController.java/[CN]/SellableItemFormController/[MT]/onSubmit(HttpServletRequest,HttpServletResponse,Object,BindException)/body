@@ -5,13 +5,24 @@
     logger.debug("Error returning back to the form");
     return showForm(request,response,errors);
   }
-  ItemAttribute itemAttribute=new ItemAttribute();
-  itemAttribute.setName("price");
-  itemAttribute.setValue(createSellableItem.getPrice());
-  itemAttribute.setSellableItem(createSellableItem.getSellableItem());
   HashSet<ItemAttribute> ias=new HashSet<ItemAttribute>();
-  ias.add(itemAttribute);
-  createSellableItem.getSellableItem().setItemAttributes(ias);
+  if (createSellableItem.getSellableItem().getId() == null) {
+    ItemAttribute itemAttribute=new ItemAttribute();
+    itemAttribute.setName("price");
+    itemAttribute.setValue(createSellableItem.getPrice());
+    itemAttribute.setSellableItem(createSellableItem.getSellableItem());
+    ias.add(itemAttribute);
+    createSellableItem.getSellableItem().setItemAttributes(ias);
+  }
+ else {
+    Set<ItemAttribute> attributes=createSellableItem.getSellableItem().getItemAttributes();
+    for (Iterator<ItemAttribute> it=attributes.iterator(); it.hasNext(); ) {
+      ItemAttribute thisAttribute=(ItemAttribute)it.next();
+      if (thisAttribute.getName().equals("price")) {
+        thisAttribute.setValue(createSellableItem.getPrice());
+      }
+    }
+  }
   catalogService.saveSellableItem(createSellableItem.getSellableItem());
   mav.addObject("saved",true);
   return mav;
