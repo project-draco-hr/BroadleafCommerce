@@ -1,5 +1,7 @@
 {
   if (originalElement != null && patchElement == null) {
-    outputParentElement.appendChild((Element)originalElement.cloneNode(true));
+    Document parentDoc=outputParentElement.getOwnerDocument();
+    Node temp=parentDoc.importNode(originalElement.cloneNode(true),true);
+    outputParentElement.appendChild(temp);
   }
 }

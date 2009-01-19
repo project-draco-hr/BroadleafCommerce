@@ -1,8 +1,11 @@
 {
+  Document parentDoc=outputParentElement.getOwnerDocument();
   if (originalElement != null && patchElement != null) {
-    outputParentElement.appendChild((Element)patchElement.cloneNode(true));
+    Node temp=parentDoc.importNode(patchElement.cloneNode(true),true);
+    outputParentElement.appendChild(temp);
   }
  else   if (originalElement != null) {
-    outputParentElement.appendChild((Element)originalElement.cloneNode(true));
+    Node temp=parentDoc.importNode(originalElement.cloneNode(true),true);
+    outputParentElement.appendChild(temp);
   }
 }

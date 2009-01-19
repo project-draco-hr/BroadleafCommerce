@@ -1,17 +1,19 @@
 {
   s_logger.debug("Merging: " + originalElement + "(List 1) and "+ patchElement+ "(List 2)");
   Mapper mapper=(Mapper)m_mapperFactory.getOperation(originalElement,patchElement);
+  Document parentDoc=outputParentElement.getOwnerDocument();
   if (originalElement == null) {
-    outputParentElement.appendChild(mapper.map(patchElement));
+    Element temp=(Element)parentDoc.importNode(mapper.map(patchElement),true);
+    outputParentElement.appendChild(temp);
   }
  else   if (patchElement == null) {
-    outputParentElement.appendChild((Element)originalElement.cloneNode(true));
+    Element temp=(Element)parentDoc.importNode(originalElement.cloneNode(true),true);
+    outputParentElement.appendChild(temp);
   }
  else {
     Element workingElement=(Element)originalElement.cloneNode(false);
     addAttributes(workingElement,originalElement);
     s_logger.debug("Adding " + workingElement);
-    Document parentDoc=outputParentElement.getOwnerDocument();
     workingElement=(Element)parentDoc.importNode(workingElement,false);
     outputParentElement.appendChild(workingElement);
     doIt(workingElement,originalElement,patchElement);

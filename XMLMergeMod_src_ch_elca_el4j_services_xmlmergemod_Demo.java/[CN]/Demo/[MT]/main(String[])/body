@@ -1,6 +1,6 @@
 {
   try {
-    Configurer configurer=new PropertyXPathConfigurer("matcher.default=TAG\n" + "action.default=MERGE\n" + "xpath.2=//bean[@id='persistenceUnitManager']\n"+ "action.2=REPLACE");
+    Configurer configurer=new PropertyXPathConfigurer("matcher.default=TAG\n" + "action.default=MERGE\n" + "xpath.2=//bean[@id='persistenceUnitManager']/property[@name='persistenceXmlLocations']/list\n"+ "action.2=REPLACE\n"+ "matcher.2=SKIP");
     InputStream in=null;
     try {
       in=new ConfigurableXmlMerge(configurer).merge(new InputStream[]{new BufferedInputStream(new FileInputStream(new File("/Java_Projects/dev/credera/DemoExtensibilityDataLayer/src-framework-perspective/applicationContext-framework.xml"))),new BufferedInputStream(new FileInputStream(new File("/Java_Projects/dev/credera/DemoExtensibilityDataLayer/src-framework-perspective/applicationContext-framework2.xml")))});
