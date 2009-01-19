@@ -1,29 +1,11 @@
 {
-  CreateSellableItem createSellableItem=(CreateSellableItem)command;
+  SellableItem sellableItem=(SellableItem)command;
   ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
   if (errors.hasErrors()) {
     logger.debug("Error returning back to the form");
     return showForm(request,response,errors);
   }
-  HashSet<ItemAttribute> ias=new HashSet<ItemAttribute>();
-  if (createSellableItem.getSellableItem().getId() == null) {
-    ItemAttribute itemAttribute=new ItemAttribute();
-    itemAttribute.setName("price");
-    itemAttribute.setValue(createSellableItem.getPrice());
-    itemAttribute.setSellableItem(createSellableItem.getSellableItem());
-    ias.add(itemAttribute);
-    createSellableItem.getSellableItem().setItemAttributes(ias);
-  }
- else {
-    Set<ItemAttribute> attributes=createSellableItem.getSellableItem().getItemAttributes();
-    for (Iterator<ItemAttribute> it=attributes.iterator(); it.hasNext(); ) {
-      ItemAttribute thisAttribute=(ItemAttribute)it.next();
-      if (thisAttribute.getName().equals("price")) {
-        thisAttribute.setValue(createSellableItem.getPrice());
-      }
-    }
-  }
-  catalogService.saveSellableItem(createSellableItem.getSellableItem());
+  catalogService.saveSellableItem(sellableItem);
   mav.addObject("saved",true);
   return mav;
 }

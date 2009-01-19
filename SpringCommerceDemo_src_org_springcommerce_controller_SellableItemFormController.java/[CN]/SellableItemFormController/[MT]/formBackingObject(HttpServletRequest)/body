@@ -1,20 +1,13 @@
 {
   CatalogItem createCatalogItem=new CatalogItem();
   SellableItem sellableItem=new SellableItem();
-  CreateSellableItem createSellableItem=new CreateSellableItem();
   if (request.getParameter("catalogItemId") != null) {
     createCatalogItem=catalogService.readCatalogItemById(Long.valueOf(request.getParameter("catalogItemId")));
     sellableItem.setCatalogItem(createCatalogItem);
-    createSellableItem.setSellableItem(sellableItem);
   }
   if (request.getParameter("sellableItemId") != null) {
     sellableItem=catalogService.readSellableItemById(new Long(request.getParameter("sellableItemId")));
-    createSellableItem.setSellableItem(sellableItem);
     Set<ItemAttribute> attributes=sellableItem.getItemAttributes();
-    for (Iterator<ItemAttribute> it=attributes.iterator(); it.hasNext(); ) {
-      ItemAttribute thisAttribute=(ItemAttribute)it.next();
-      if (thisAttribute.getName().equals("price"))       createSellableItem.setPrice(thisAttribute.getValue());
-    }
   }
-  return createSellableItem;
+  return sellableItem;
 }
