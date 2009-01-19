@@ -1,11 +1,11 @@
 {
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
   User user=userService.readUserByUsername(auth.getName());
-  SalesOrder basketOrder=orderService.getCurrentBasketForUserId(user.getId());
+  Order basketOrder=orderService.getCurrentBasketForUserId(user.getId());
   if (request.getParameter("sellableItemId") != null) {
     orderService.addItemToOrder(basketOrder.getId(),new Long(request.getParameter("sellableItemId")),1);
   }
-  List<SalesOrderItem> orderItems=orderService.getItemsForOrder(basketOrder.getId());
+  List<OrderItem> orderItems=orderService.getItemsForOrder(basketOrder.getId());
   Map<Object,Object> model=new HashMap<Object,Object>();
   model.put("listBasket",orderItems);
   return new ModelAndView("listBasket",model);
