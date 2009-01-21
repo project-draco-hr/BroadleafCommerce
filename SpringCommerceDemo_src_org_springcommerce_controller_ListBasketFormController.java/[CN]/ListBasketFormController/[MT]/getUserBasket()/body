@@ -1,0 +1,5 @@
+{
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  User user=userService.readUserByUsername(auth.getName());
+  return orderService.getCurrentBasketForUserId(user.getId());
+}
