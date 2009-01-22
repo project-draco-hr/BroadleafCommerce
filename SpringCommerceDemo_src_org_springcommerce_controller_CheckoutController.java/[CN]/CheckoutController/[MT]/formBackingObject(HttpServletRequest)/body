@@ -1,0 +1,15 @@
+{
+  Checkout checkout=new Checkout();
+  OrderShipping orderShipping=new OrderShipping();
+  orderShipping.setAddress(new Address());
+  OrderPayment orderPayment=new OrderPayment();
+  orderPayment.setAddress(new Address());
+  ContactInfo contactInfo=new ContactInfo();
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  User user=userService.readUserByUsername(auth.getName());
+  checkout.setOrder(orderService.getCurrentBasketForUserId(user.getId()));
+  checkout.setContactInfo(contactInfo);
+  checkout.setOrderShipping(orderShipping);
+  checkout.setOrderPayment(orderPayment);
+  return checkout;
+}
