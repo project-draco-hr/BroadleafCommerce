@@ -1,0 +1,23 @@
+{
+  User user=(User)command;
+  ModelAndView mav=new ModelAndView();
+  User userFromDb=userService.readUserByEmail(user.getEmailAddress());
+  if (userFromDb != null) {
+    if (!userFromDb.getChallengeQuestion().isEmpty() && !userFromDb.getChallengeAnswer().isEmpty()) {
+      mav=new ModelAndView("redirect:/challengeQuestion.htm",errors.getModel());
+    }
+ else {
+      mav=new ModelAndView(getSuccessView(),errors.getModel());
+    }
+    mav.addObject("email",userFromDb.getEmailAddress());
+  }
+ else {
+    errors.rejectValue("emailAddress","emailAddress.notInUse",null,null);
+  }
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  mav.addObject("saved",true);
+  return mav;
+}
