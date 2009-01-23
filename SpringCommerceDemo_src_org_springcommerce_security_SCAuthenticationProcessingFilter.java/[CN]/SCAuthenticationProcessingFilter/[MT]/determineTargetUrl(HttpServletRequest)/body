@@ -1,8 +1,9 @@
 {
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-  User user=userService.readUserByUsername(auth.getName());
-  if (user.isPasswordChangeRequired()) {
-    return "/passwordChange.htm";
+  for (  GrantedAuthority ga : auth.getAuthorities()) {
+    if ("ROLE_PASSWORD_CHANGE_REQUIRED".equals(ga.getAuthority())) {
+      return "/passwordChange.htm";
+    }
   }
   return super.determineTargetUrl(request);
 }

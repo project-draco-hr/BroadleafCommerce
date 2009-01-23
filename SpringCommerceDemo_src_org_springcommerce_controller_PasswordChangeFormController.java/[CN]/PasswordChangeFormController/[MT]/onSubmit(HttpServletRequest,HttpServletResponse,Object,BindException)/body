@@ -1,7 +1,8 @@
 {
   logger.info("**** in onSubmit");
-  PasswordChange pwChange=(PasswordChange)command;
+  PasswordChange passwordChange=(PasswordChange)command;
+  logger.info("Changing password from " + passwordChange.getCurrentPassword() + " to "+ passwordChange.getNewPassword());
+  userService.changePassword(passwordChange);
   ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
-  mav.addObject("saved",true);
   return mav;
 }
