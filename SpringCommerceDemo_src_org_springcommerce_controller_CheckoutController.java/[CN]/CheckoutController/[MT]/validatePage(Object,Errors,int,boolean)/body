@@ -10,9 +10,28 @@ checkout.getContactInfo().setUser(user);
 orderService.addContactInfoToOrder(checkout.getOrder(),checkout.getContactInfo());
 break;
 case 1:
+validator.validateShippingAddressInformation(command,errors);
+Address address=checkout.getOrderShipping().getAddress();
+if (!errors.hasErrors()) {
+AddressStandarizationResponse standardizedResponse=addressStandardizationService.standardizeAddress(address);
+if (standardizedResponse.isErrorDetected()) {
+address.setStandardized(false);
+errors.rejectValue("orderShipping.address.addressLine1","addressVerification.failed",null,null);
+}
+}
 orderService.addShippingToOrder(checkout.getOrder(),checkout.getOrderShipping());
 break;
 case 2:
+validator.validateBillingAddressInformation(command,errors);
+Address billingAddress=checkout.getOrderPayment().getAddress();
+if (!errors.hasErrors()) {
+AddressStandarizationResponse standardizedResponse=addressStandardizationService.standardizeAddress(billingAddress);
+if (standardizedResponse.isErrorDetected()) {
+logger.debug("Address verification Failed. Please check the address and try again");
+billingAddress.setStandardized(false);
+errors.rejectValue("orderPayment.address.addressLine1","addressVerification.failed",null,null);
+}
+}
 orderService.addPaymentToOrder(checkout.getOrder(),checkout.getOrderPayment());
 break;
 case 3:
