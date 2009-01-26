@@ -7,6 +7,8 @@
   ContactInfo contactInfo=new ContactInfo();
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
   User user=userService.readUserByUsername(auth.getName());
+  List<ContactInfo> contactInfos=contactInfoService.readContactInfoByUserId(user.getId());
+  checkout.setUserContactInfo(contactInfos);
   checkout.setOrder(orderService.getCurrentBasketForUserId(user.getId()));
   checkout.setContactInfo(contactInfo);
   checkout.setOrderShipping(orderShipping);
