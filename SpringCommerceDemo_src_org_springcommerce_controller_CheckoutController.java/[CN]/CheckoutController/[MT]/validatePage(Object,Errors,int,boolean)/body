@@ -3,8 +3,14 @@
   CheckoutValidator validator=(CheckoutValidator)getValidator();
 switch (page) {
 case 0:
+    String contactIndex=checkout.getSelectedContactInfoId();
+  if (contactIndex != null && !contactIndex.equals("")) {
+    checkout.setContactInfo(checkout.getUserContactInfo().get(Integer.parseInt(contactIndex)));
+  }
+ else {
     validator.validatePageContactInformation(command,errors);
-  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  }
+Authentication auth=SecurityContextHolder.getContext().getAuthentication();
 User user=userService.readUserByUsername(auth.getName());
 checkout.getContactInfo().setUser(user);
 orderService.addContactInfoToOrder(checkout.getOrder(),checkout.getContactInfo());
