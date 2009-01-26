@@ -13,11 +13,11 @@
   user.setUsername(createUser.getUsername());
   user.setFirstName(createUser.getFirstName());
   user.setLastName(createUser.getLastName());
-  user.setPassword(createUser.getPassword());
+  user.setUnencodedPassword(createUser.getPassword());
   user.setEmailAddress(createUser.getEmailAddress());
   user.setChallengeQuestion(createUser.getChallengeQuestion());
   user.setChallengeAnswer(createUser.getChallengeAnswer());
-  userService.registerUser(user);
+  userService.saveUser(user);
   emailService.sendEmail(user,TEMPLATE,EMAIL_FROM,EMAIL_SUBJECT);
   mav.addObject("saved",true);
   return mav;

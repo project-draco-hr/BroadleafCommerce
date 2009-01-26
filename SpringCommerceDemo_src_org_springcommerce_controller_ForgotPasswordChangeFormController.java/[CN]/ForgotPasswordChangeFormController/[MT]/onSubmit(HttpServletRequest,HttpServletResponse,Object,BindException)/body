@@ -1,8 +1,8 @@
 {
   PasswordChange pwChange=(PasswordChange)command;
   User user=userService.readUserByEmail(request.getParameter("email"));
-  user.setPassword(pwChange.getNewPassword());
-  userService.registerUser(user);
+  user.setUnencodedPassword(pwChange.getNewPassword());
+  userService.saveUser(user);
   ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
   emailService.sendEmail(user,TEMPLATE,EMAIL_FROM,EMAIL_SUBJECT);
   mav.addObject("saved",true);
