@@ -1,5 +1,6 @@
 {
   Checkout checkout=new Checkout();
+  Order order;
   OrderShipping orderShipping=new OrderShipping();
   orderShipping.setAddress(new Address());
   OrderPayment orderPayment=new OrderPayment();
@@ -8,8 +9,10 @@
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
   User user=userService.readUserByUsername(auth.getName());
   List<ContactInfo> contactInfos=contactInfoService.readContactInfoByUserId(user.getId());
+  order=orderService.getCurrentBasketForUser(user);
   checkout.setUserContactInfo(contactInfos);
   checkout.setOrder(orderService.getCurrentBasketForUserId(user.getId()));
+  checkout.setOrderItems(orderService.getItemsForOrder(order.getId()));
   checkout.setContactInfo(contactInfo);
   checkout.setOrderShipping(orderShipping);
   checkout.setOrderPayment(orderPayment);
