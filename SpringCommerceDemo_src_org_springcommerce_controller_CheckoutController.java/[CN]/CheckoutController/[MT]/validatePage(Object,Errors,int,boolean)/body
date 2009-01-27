@@ -16,6 +16,18 @@ checkout.getContactInfo().setUser(user);
 orderService.addContactInfoToOrder(checkout.getOrder(),checkout.getContactInfo());
 break;
 case 1:
+String shippingAddressId=checkout.getSelectedShippingAddressId();
+if (!StringUtils.isEmpty(shippingAddressId)) {
+Iterator<Address> itr=checkout.getAddressList().iterator();
+while (itr.hasNext()) {
+Address address=(Address)itr.next();
+if (address.getId().equals(Long.parseLong(shippingAddressId))) {
+checkout.getOrderShipping().setAddress(address);
+break;
+}
+}
+}
+ else {
 validator.validateShippingAddressInformation(command,errors);
 Address address=checkout.getOrderShipping().getAddress();
 if (!errors.hasErrors()) {
@@ -25,9 +37,22 @@ address.setStandardized(false);
 errors.rejectValue("orderShipping.address.addressLine1","addressVerification.failed",null,null);
 }
 }
+}
 orderService.addShippingToOrder(checkout.getOrder(),checkout.getOrderShipping());
 break;
 case 2:
+String billingAddressId=checkout.getSelectedBillingAddressId();
+if (!StringUtils.isEmpty(billingAddressId)) {
+Iterator<Address> itr=checkout.getAddressList().iterator();
+while (itr.hasNext()) {
+Address address=(Address)itr.next();
+if (address.getId().equals(Long.parseLong(billingAddressId))) {
+checkout.getOrderPayment().setAddress(address);
+break;
+}
+}
+}
+ else {
 validator.validateBillingAddressInformation(command,errors);
 Address billingAddress=checkout.getOrderPayment().getAddress();
 if (!errors.hasErrors()) {
@@ -36,6 +61,7 @@ if (standardizedResponse.isErrorDetected()) {
 logger.debug("Address verification Failed. Please check the address and try again");
 billingAddress.setStandardized(false);
 errors.rejectValue("orderPayment.address.addressLine1","addressVerification.failed",null,null);
+}
 }
 }
 orderService.addPaymentToOrder(checkout.getOrder(),checkout.getOrderPayment());
