@@ -17,6 +17,9 @@
   user.setEmailAddress(createUser.getEmailAddress());
   user.setChallengeQuestion(createUser.getChallengeQuestion());
   user.setChallengeAnswer(createUser.getChallengeAnswer());
+  Set<UserRole> roles=new HashSet<UserRole>();
+  roles.add(new UserRole(user,"ROLE_USER"));
+  user.setUserRoles(roles);
   userService.saveUser(user);
   emailService.sendEmail(user,TEMPLATE,EMAIL_FROM,EMAIL_SUBJECT);
   mav.addObject("saved",true);
