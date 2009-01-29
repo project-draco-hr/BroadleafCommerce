@@ -3,5 +3,10 @@
   if (request.getParameter("catalogItemId") != null) {
     createCatalogItem=catalogService.readCatalogItemById(Long.valueOf(request.getParameter("catalogItemId")));
   }
+  Map<String,ItemAttribute> attribs=createCatalogItem.getItemAttributes();
+  if (attribs == null) {
+    attribs=new HashMap<String,ItemAttribute>();
+  }
+  attribs.put("foo",new ItemAttribute());
   return createCatalogItem;
 }
