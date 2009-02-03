@@ -1,0 +1,11 @@
+{
+  SellableItem sellableItem=(SellableItem)command;
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  catalogService.saveSellableItem(sellableItem);
+  mav.addObject("saved",true);
+  return mav;
+}
