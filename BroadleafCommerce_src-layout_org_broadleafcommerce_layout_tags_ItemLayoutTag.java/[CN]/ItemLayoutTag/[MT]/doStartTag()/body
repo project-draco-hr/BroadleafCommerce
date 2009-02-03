@@ -1,0 +1,25 @@
+{
+  try {
+switch (itemType) {
+case SELLABLE_ITEM:
+      pageContext.setAttribute(itemName,sellableItem,PageContext.REQUEST_SCOPE);
+    break;
+case CATALOG_ITEM:
+  pageContext.setAttribute(itemName,catalogItem,PageContext.REQUEST_SCOPE);
+break;
+case CATEGORY:
+pageContext.setAttribute(itemName,category,PageContext.REQUEST_SCOPE);
+break;
+}
+pageContext.include("itemLayout/" + layout + ".jsp");
+}
+ catch (IOException e) {
+log.error(e);
+return Tag.SKIP_PAGE;
+}
+catch (ServletException e) {
+log.error(e);
+return Tag.SKIP_PAGE;
+}
+return super.doStartTag();
+}

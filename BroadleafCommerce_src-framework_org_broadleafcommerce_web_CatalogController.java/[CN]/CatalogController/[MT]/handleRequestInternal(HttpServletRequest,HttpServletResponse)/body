@@ -1,0 +1,29 @@
+{
+  BroadleafCommerceRequestState requestState=(BroadleafCommerceRequestState)BroadleafCommerceRequestState.getRequestState(request);
+  String productId=request.getParameter("productId");
+  if (requestState.getCategory() != null) {
+    if (productId != null) {
+      try {
+        CatalogItem item=catalogService.readCatalogItemById(new Long(productId));
+        if (item != null) {
+          List<SellableItem> sellableItems=catalogService.readSellableItemsForCatalogItemId(item.getId());
+          Product product=new Product(item,sellableItems);
+          Map<Object,Object> model=new HashMap<Object,Object>();
+          model.put("product",product);
+          return new ModelAndView(getDefaultProductView(),model);
+        }
+      }
+ catch (      NumberFormatException e) {
+        logger.error("Unable to parse productId: " + e.getMessage());
+      }
+    }
+ else {
+      List<Category> subCategories=catalogService.readAllSubCategories(requestState.getCategory());
+      Map<Object,Object> model=new HashMap<Object,Object>();
+      model.put("subCategories",subCategories);
+      model.put("category",requestState.getCategory());
+      return new ModelAndView(getDefaultView(),model);
+    }
+  }
+  return null;
+}

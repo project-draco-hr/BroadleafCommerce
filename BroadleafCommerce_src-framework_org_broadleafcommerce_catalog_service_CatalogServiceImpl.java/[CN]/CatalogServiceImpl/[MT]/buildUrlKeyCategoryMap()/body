@@ -1,0 +1,9 @@
+{
+  Map<String,Category> catMap=new HashMap<String,Category>();
+  List<Category> categories=categoryDao.readAllCategories();
+  for (Iterator<Category> itr=categories.iterator(); itr.hasNext(); ) {
+    Category cat=itr.next();
+    catMap.put(cat.getUrlKey(),cat);
+  }
+  return catMap;
+}

@@ -1,0 +1,12 @@
+{
+  String[] tokens=StringUtils.split(path,"/");
+  Stack<String> catTokens=new Stack<String>();
+  for (int i=0; i < tokens.length; i++) {
+    catTokens.push(tokens[i]);
+  }
+  Category category=catalogService.readCategoryByUrlKey(catTokens.peek());
+  if (isValidCategory(catTokens,category,catalogPrefix)) {
+    return category;
+  }
+  return null;
+}

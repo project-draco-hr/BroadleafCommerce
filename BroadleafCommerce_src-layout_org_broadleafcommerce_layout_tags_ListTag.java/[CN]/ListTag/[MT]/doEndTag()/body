@@ -1,0 +1,17 @@
+{
+  JspWriter out=pageContext.getOut();
+  try {
+    if (footerJsp != null) {
+      pageContext.include(footerJsp);
+    }
+    out.write("</div><!-- end of list tag -->");
+    out.flush();
+  }
+ catch (  IOException e) {
+    log.error(e);
+  }
+catch (  ServletException e) {
+    log.error(e);
+  }
+  return Tag.EVAL_PAGE;
+}

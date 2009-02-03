@@ -1,0 +1,25 @@
+{
+  JspWriter out=pageContext.getOut();
+  try {
+    out.write("</div>");
+    if (progress % this.numAcross == 0) {
+      out.write("<div style='clear:both'></div>");
+    }
+    if (iter.hasNext()) {
+      pageContext.setAttribute(objectName,iter.next());
+      progress++;
+      out.write("<div class='listItem'>");
+      return IterationTag.EVAL_BODY_AGAIN;
+    }
+ else {
+      if (progress % this.numAcross != 0) {
+        out.write("<div style='clear:both'></div>");
+      }
+      return Tag.SKIP_BODY;
+    }
+  }
+ catch (  IOException e) {
+    log.error(e);
+    return Tag.SKIP_PAGE;
+  }
+}

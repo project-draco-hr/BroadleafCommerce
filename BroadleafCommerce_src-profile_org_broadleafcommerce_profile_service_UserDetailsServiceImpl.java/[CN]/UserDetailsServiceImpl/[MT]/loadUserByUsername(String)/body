@@ -1,0 +1,24 @@
+{
+  org.broadleafcommerce.profile.domain.User user=userService.readUserByUsername(username);
+  if (user == null) {
+    throw new UsernameNotFoundException("The user was not found");
+  }
+  List<UserRole> roles=userService.readUserRolesByUserId(user.getId());
+  List<GrantedAuthority> authorities=new ArrayList<GrantedAuthority>();
+  if (roles != null) {
+    for (    UserRole role : roles) {
+      authorities.add(new GrantedAuthorityImpl(role.getRoleName()));
+    }
+  }
+  if (user.isPasswordChangeRequired()) {
+    authorities.add(new GrantedAuthorityImpl("ROLE_PASSWORD_CHANGE_REQUIRED"));
+  }
+  User returnUser=null;
+  if (!forcePasswordChange) {
+    returnUser=new User(username,user.getPassword(),true,true,true,true,authorities.toArray(new GrantedAuthority[0]));
+  }
+ else {
+    returnUser=new User(username,user.getPassword(),true,true,!user.isPasswordChangeRequired(),true,authorities.toArray(new GrantedAuthority[0]));
+  }
+  return returnUser;
+}

@@ -1,0 +1,25 @@
+{
+  String path=pathHelper.getRequestUri(request).substring(pathHelper.getContextPath(request).length());
+  BroadleafCommerceRequestState requestState=(BroadleafCommerceRequestState)BroadleafCommerceRequestState.getRequestState(request);
+  requestState.setCatalogPrefix(catalogPrefix);
+  Category category=retrieveCategory(path);
+  String productId=request.getParameter("productId");
+  if (category != null) {
+    requestState.setCategory(category);
+    if (productId != null) {
+      if (!isValidProduct(productId,category)) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return false;
+      }
+    }
+    if (StringUtils.isNotBlank(category.getUrl())) {
+      response.sendRedirect(category.getUrl());
+      return false;
+    }
+  }
+ else   if (path.startsWith("/" + catalogPrefix)) {
+    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    return false;
+  }
+  return true;
+}

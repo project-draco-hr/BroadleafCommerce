@@ -1,0 +1,15 @@
+{
+  BasketOrder bo;
+  Query query=em.createNamedQuery("READ_ORDER_BASKET_FOR_USER_ID");
+  query.setParameter("userId",user.getId());
+  try {
+    bo=(BasketOrder)query.getSingleResult();
+    return (BasketOrder)query.getSingleResult();
+  }
+ catch (  NoResultException nre) {
+    bo=new BasketOrder();
+    bo.setUser(user);
+    em.persist(bo);
+    return bo;
+  }
+}

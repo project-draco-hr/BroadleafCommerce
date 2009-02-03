@@ -1,0 +1,15 @@
+{
+  DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
+  dbf.setNamespaceAware(true);
+  DocumentBuilder parser=dbf.newDocumentBuilder();
+  parser.setErrorHandler(handler);
+  Document dom=parser.parse(new ByteArrayInputStream(sourceArray));
+  NodeList nodes=dom.getElementsByTagName("/persistence/persistence-unit/mapping-file");
+  if (nodes != null && nodes.getLength() > 0) {
+    int length=nodes.getLength();
+    for (int j=0; j < length; j++) {
+      Node node=nodes.item(j);
+      mappingFiles.add(node.getNodeValue());
+    }
+  }
+}

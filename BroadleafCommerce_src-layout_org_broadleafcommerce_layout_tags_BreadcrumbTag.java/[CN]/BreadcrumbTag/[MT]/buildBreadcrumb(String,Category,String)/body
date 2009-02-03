@@ -1,0 +1,16 @@
+{
+  if (category == null) {
+    return crumb;
+  }
+ else {
+    String style=(getStyleClass() != null) ? getStyleClass() : "";
+    String sep=(getSeparator() != null) ? getSeparator() : ">";
+    if (crumb == null) {
+      crumb="<a class='" + style + "' href='"+ prefix+ "/"+ buildLink(null,category)+ "'>"+ category.getName()+ "</a>";
+    }
+ else {
+      crumb="<a class='" + style + "' href='"+ prefix+ "/"+ buildLink(null,category)+ "'>"+ category.getName()+ "</a> "+ sep+ " "+ crumb;
+    }
+  }
+  return buildBreadcrumb(crumb,category.getParentCategory(),prefix);
+}

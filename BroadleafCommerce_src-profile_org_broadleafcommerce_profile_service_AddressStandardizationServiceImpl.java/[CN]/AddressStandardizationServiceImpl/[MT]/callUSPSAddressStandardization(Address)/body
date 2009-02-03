@@ -1,0 +1,19 @@
+{
+  URL contentURL=new URL(new StringBuffer(HTTP_PROTOCOL).append(uspsServerName).append(uspsServiceAPI).toString());
+  HttpURLConnection connection=(HttpURLConnection)contentURL.openConnection();
+  connection.setDoInput(true);
+  connection.setDoOutput(true);
+  connection.setRequestMethod(POST_METHOD);
+  OutputStreamWriter osw=new OutputStreamWriter(connection.getOutputStream());
+  osw.write(API_PARAM);
+  osw.write(XML_PARAM);
+  osw.write(getAddressXMLString(address));
+  osw.flush();
+  try {
+    osw.close();
+  }
+ catch (  IOException e) {
+    logger.error("Problem closing the OuputStream to the USPS Service",e);
+  }
+  return new BufferedInputStream(connection.getInputStream());
+}

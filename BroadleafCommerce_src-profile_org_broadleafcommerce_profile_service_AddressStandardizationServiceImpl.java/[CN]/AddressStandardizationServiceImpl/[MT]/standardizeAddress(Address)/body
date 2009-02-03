@@ -1,0 +1,34 @@
+{
+  AddressStandarizationResponse addressStandarizationResponse=new AddressStandarizationResponse();
+  InputStream response=null;
+  try {
+    response=callUSPSAddressStandardization(address);
+    ArrayList<AddressStandarizationResponse> AddressResponseList=parseUSPSResponse(response);
+    if ((AddressResponseList != null) && !AddressResponseList.isEmpty()) {
+      addressStandarizationResponse=(AddressStandarizationResponse)AddressResponseList.get(0);
+    }
+    return addressStandarizationResponse;
+  }
+ catch (  IOException e) {
+    logger.error("IOException",e);
+    return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
+  }
+catch (  SAXException e) {
+    logger.error("SAXException",e);
+    return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
+  }
+catch (  ParserConfigurationException e) {
+    logger.error("ParserConfigurationException",e);
+    return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
+  }
+ finally {
+    if (response != null) {
+      try {
+        response.close();
+      }
+ catch (      IOException e) {
+        logger.error("IOException while closing the InputStream",e);
+      }
+    }
+  }
+}

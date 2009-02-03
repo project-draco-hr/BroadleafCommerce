@@ -1,0 +1,55 @@
+{
+  Resource configResource=null;
+  InputStream merged=null;
+  try {
+    List<String> mappingFiles=new ArrayList<String>();
+    InputStream[] inMemoryStreams=new InputStream[sources.length];
+    for (int j=0; j < sources.length; j++) {
+      byte[] sourceArray=buildArrayFromStream(sources[j]);
+      compileMappingFiles(mappingFiles,sourceArray);
+      inMemoryStreams[j]=new ByteArrayInputStream(sourceArray);
+    }
+    Configurer configurer=new PropertyXPathConfigurer(config);
+    merged=merge(inMemoryStreams,configurer);
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    boolean eof=false;
+    while (!eof) {
+      int temp=merged.read();
+      if (temp == -1) {
+        eof=true;
+      }
+ else {
+        baos.write(temp);
+      }
+    }
+    configResource=new ByteArrayResource(baos.toByteArray());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Merged config: \n" + serialize(configResource));
+    }
+  }
+ catch (  ConfigurationException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  AbstractXmlMergeException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  IOException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  SAXException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  ParserConfigurationException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+ finally {
+    if (merged != null) {
+      try {
+        merged.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+  return configResource;
+}

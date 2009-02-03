@@ -1,0 +1,22 @@
+{
+  JspWriter out=pageContext.getOut();
+  HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
+  BroadleafCommerceRequestState requestState=(BroadleafCommerceRequestState)BroadleafCommerceRequestState.getRequestState(request);
+  try {
+    if (getCategory() == null) {
+      return Tag.SKIP_BODY;
+    }
+    String style=(getStyleClass() != null) ? getStyleClass() : "";
+    if (isLink()) {
+      out.write("<a class='" + style + "' href='"+ request.getContextPath()+ "/"+ requestState.getCatalogPrefix()+ "/"+ buildLink(null,category)+ "'>"+ category.getName()+ "</a>");
+    }
+ else {
+      out.write(request.getContextPath() + "/" + requestState.getCatalogPrefix()+ "/"+ buildLink(null,category));
+    }
+  }
+ catch (  IOException e) {
+    log.error(e);
+    return Tag.SKIP_PAGE;
+  }
+  return super.doStartTag();
+}

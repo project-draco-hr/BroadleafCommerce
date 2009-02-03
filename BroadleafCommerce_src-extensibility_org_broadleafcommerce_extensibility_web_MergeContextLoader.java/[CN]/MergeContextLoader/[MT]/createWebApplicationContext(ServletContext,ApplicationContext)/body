@@ -1,0 +1,10 @@
+{
+  MergeXmlWebApplicationContext wac=new MergeXmlWebApplicationContext();
+  wac.setParent(parent);
+  wac.setServletContext(servletContext);
+  wac.setConfigLocation(servletContext.getInitParameter(CONFIG_LOCATION_PARAM));
+  wac.setPatchLocation(servletContext.getInitParameter(PATCH_LOCATION_PARAM));
+  customizeContext(servletContext,wac);
+  wac.refresh();
+  return wac;
+}

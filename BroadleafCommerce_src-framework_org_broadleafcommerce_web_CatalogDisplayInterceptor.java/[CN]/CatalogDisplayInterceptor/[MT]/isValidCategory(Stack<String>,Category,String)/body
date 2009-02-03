@@ -1,0 +1,19 @@
+{
+  if (tokens.isEmpty()) {
+    return true;
+  }
+  String token=tokens.pop();
+  boolean check;
+  if (category != null && token.equals(category.getUrlKey())) {
+    check=isValidCategory(tokens,category.getParentCategory(),ignoreToken);
+  }
+ else {
+    if (category == null && token.equals(ignoreToken)) {
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+  return check;
+}

@@ -1,0 +1,22 @@
+{
+  try {
+    Long id=new Long(productId);
+    CatalogItem item=catalogService.readCatalogItemById(id);
+    if (item == null) {
+      return false;
+    }
+    List<CatalogItem> catalogItems=category.getCatalogItems();
+    if (catalogItems != null) {
+      for (Iterator<CatalogItem> itr=catalogItems.iterator(); itr.hasNext(); ) {
+        if (id.equals(itr.next().getId())) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+ catch (  NumberFormatException e) {
+    logger.error("Unable to parse productId: " + e.getMessage());
+  }
+  return true;
+}
