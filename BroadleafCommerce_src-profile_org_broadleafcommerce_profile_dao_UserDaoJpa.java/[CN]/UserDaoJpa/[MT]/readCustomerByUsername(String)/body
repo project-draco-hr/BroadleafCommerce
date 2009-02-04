@@ -1,0 +1,10 @@
+{
+  Query query=em.createNamedQuery("READ_CUSTOMER_BY_USERNAME");
+  query.setParameter("username",username);
+  try {
+    return (Customer)query.getSingleResult();
+  }
+ catch (  NoResultException ne) {
+    return null;
+  }
+}
