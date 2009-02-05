@@ -1,0 +1,27 @@
+{
+  RegisterCustomer registerCustomer=(RegisterCustomer)command;
+  User userFromDb=userService.readUserByUsername(registerCustomer.getUsername());
+  if (userFromDb != null) {
+    errors.rejectValue("username","username.used",null,null);
+  }
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  User user=new User();
+  user.setUsername(registerCustomer.getUsername());
+  user.setFirstName(registerCustomer.getFirstName());
+  user.setLastName(registerCustomer.getLastName());
+  user.setUnencodedPassword(registerCustomer.getPassword());
+  user.setEmailAddress(registerCustomer.getEmailAddress());
+  user.setChallengeQuestion(registerCustomer.getChallengeQuestion());
+  user.setChallengeAnswer(registerCustomer.getChallengeAnswer());
+  Set<UserRole> roles=new HashSet<UserRole>();
+  roles.add(new UserRole(user,"ROLE_USER"));
+  user.setUserRoles(roles);
+  userService.saveUser(user);
+  emailService.sendEmail(user,TEMPLATE,EMAIL_FROM,EMAIL_SUBJECT);
+  mav.addObject("saved",true);
+  return mav;
+}
