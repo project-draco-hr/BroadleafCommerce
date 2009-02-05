@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_SELLABLE_ITEMS_BY_CATEGORY_ID");
+  Query query=em.createQuery("SELECT sellableItem FROM org.broadleafcommerce.catalog.domain.SellableItem sellableItem WHERE sellableItem.catalogItem.id = :catalogItemId");
   query.setParameter("catalogItemId",catalogItemId);
-  return (List<SellableItem>)query.getResultList();
+  return query.getResultList();
 }

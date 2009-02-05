@@ -1,6 +1,6 @@
 {
   BasketOrder bo;
-  Query query=em.createNamedQuery("READ_ORDER_BASKET_FOR_USER_ID");
+  Query query=em.createQuery("SELECT basketOrder FROM org.broadleafcommerce.order.domain.BasketOrder basketOrder WHERE basketOrder.user.id = :userId");
   query.setParameter("userId",user.getId());
   try {
     bo=(BasketOrder)query.getSingleResult();

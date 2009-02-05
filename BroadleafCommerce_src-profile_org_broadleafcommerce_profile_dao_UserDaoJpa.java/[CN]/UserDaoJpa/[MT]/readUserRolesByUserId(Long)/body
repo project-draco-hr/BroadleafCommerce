@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_ROLES_BY_USER_ID");
+  Query query=em.createQuery("SELECT role FROM org.broadleafcommerce.profile.domain.UserRole role WHERE role.user.id = :userId");
   query.setParameter("userId",userId);
   return query.getResultList();
 }

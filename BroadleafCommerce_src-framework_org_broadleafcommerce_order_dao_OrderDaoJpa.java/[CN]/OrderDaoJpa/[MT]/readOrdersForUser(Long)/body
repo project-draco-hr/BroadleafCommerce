@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_ORDERS_BY_USER_ID");
+  Query query=em.createQuery("SELECT order FROM org.broadleafcommerce.order.domain.Order order WHERE order.user.id = :userId");
   query.setParameter("userId",userId);
   return query.getResultList();
 }

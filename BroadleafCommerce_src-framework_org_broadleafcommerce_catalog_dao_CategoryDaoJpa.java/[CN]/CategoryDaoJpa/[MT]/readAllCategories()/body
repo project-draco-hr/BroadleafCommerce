@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_ALL_CATEGORIES");
+  Query query=em.createQuery("SELECT category FROM org.broadleafcommerce.catalog.domain.Category category");
   query.setHint("org.hibernate.cacheable",true);
-  return (List<Category>)query.getResultList();
+  return query.getResultList();
 }

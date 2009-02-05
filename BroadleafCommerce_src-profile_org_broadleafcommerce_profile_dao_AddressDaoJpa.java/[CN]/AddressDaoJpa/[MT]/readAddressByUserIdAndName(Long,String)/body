@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_ADDRESS_BY_USER_ID_AND_NAME");
+  Query query=em.createQuery("SELECT address FROM org.broadleafcommerce.profile.domain.Address address WHERE address.user.id = :userId AND address.addressName = :addressName");
   query.setParameter("userId",userId);
   query.setParameter("addressName",addressName);
   return (Address)query.getSingleResult();

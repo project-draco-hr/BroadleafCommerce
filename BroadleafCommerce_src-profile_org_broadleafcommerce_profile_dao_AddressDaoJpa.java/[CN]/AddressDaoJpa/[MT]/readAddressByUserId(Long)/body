@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("READ_ADDRESS_BY_USER_ID");
+  Query query=em.createQuery("SELECT address FROM org.broadleafcommerce.profile.domain.Address address WHERE address.user.id = :userId ORDER BY address.id");
   query.setParameter("userId",userId);
   return query.getResultList();
 }
