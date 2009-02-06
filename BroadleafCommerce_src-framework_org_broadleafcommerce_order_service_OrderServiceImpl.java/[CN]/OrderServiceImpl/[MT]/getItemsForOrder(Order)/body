@@ -1,3 +1,7 @@
 {
-  return orderItemDao.readOrderItemsForOrder(order);
+  List<OrderItem> result=orderItemDao.readOrderItemsForOrder(order);
+  for (  OrderItem oi : result) {
+    oi.getSellableItem().getItemAttributes();
+  }
+  return result;
 }
