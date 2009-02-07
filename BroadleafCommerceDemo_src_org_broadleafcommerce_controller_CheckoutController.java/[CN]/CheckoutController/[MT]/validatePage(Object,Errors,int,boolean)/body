@@ -11,8 +11,8 @@ case 0:
     validator.validatePageContactInformation(command,errors);
   }
 Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-User user=userService.readUserByUsername(auth.getName());
-checkout.getContactInfo().setUser(user);
+Customer customer=customerService.readCustomerByUsername(auth.getName());
+checkout.getContactInfo().setCustomer(customer);
 orderService.addContactInfoToOrder(checkout.getOrder(),checkout.getContactInfo());
 break;
 case 1:
@@ -20,7 +20,7 @@ String shippingAddressId=checkout.getSelectedShippingAddressId();
 if (!StringUtils.isEmpty(shippingAddressId)) {
 Iterator<Address> itr=checkout.getAddressList().iterator();
 while (itr.hasNext()) {
-Address address=(Address)itr.next();
+Address address=itr.next();
 if (address.getId().equals(Long.parseLong(shippingAddressId))) {
 checkout.getOrderShipping().setAddress(address);
 break;
@@ -45,7 +45,7 @@ String billingAddressId=checkout.getSelectedBillingAddressId();
 if (!StringUtils.isEmpty(billingAddressId)) {
 Iterator<Address> itr=checkout.getAddressList().iterator();
 while (itr.hasNext()) {
-Address address=(Address)itr.next();
+Address address=itr.next();
 if (address.getId().equals(Long.parseLong(billingAddressId))) {
 checkout.getOrderPayment().setAddress(address);
 break;

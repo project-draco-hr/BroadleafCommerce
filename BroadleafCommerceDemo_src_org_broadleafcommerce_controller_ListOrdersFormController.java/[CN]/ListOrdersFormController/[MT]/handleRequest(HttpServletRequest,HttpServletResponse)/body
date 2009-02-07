@@ -1,7 +1,7 @@
 {
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-  User user=userService.readUserByUsername(auth.getName());
-  List<Order> orderList=orderService.getOrdersForUser(user.getId());
+  Customer customer=customerService.readCustomerByUsername(auth.getName());
+  List<Order> orderList=orderService.getOrdersForCustomer(customer.getId());
   Map<Object,Object> model=new HashMap<Object,Object>();
   model.put("orderList",orderList);
   return new ModelAndView("listOrders",model);

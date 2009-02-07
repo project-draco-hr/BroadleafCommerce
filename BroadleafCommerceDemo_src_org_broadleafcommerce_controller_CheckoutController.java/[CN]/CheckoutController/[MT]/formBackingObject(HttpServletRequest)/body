@@ -7,13 +7,13 @@
   orderPayment.setAddress(new Address());
   ContactInfo contactInfo=new ContactInfo();
   Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-  User user=userService.readUserByUsername(auth.getName());
-  List<ContactInfo> contactInfos=contactInfoService.readContactInfoByUserId(user.getId());
-  List<Address> addressList=addressService.readAddressByUserId(user.getId());
-  order=orderService.getCurrentBasketForUser(user);
+  Customer customer=customerService.readCustomerByUsername(auth.getName());
+  List<ContactInfo> contactInfos=contactInfoService.readContactInfoByUserId(customer.getId());
+  List<Address> addressList=addressService.readAddressByUserId(customer.getId());
+  order=orderService.getCurrentBasketForCustomer(customer);
   checkout.setUserContactInfo(contactInfos);
   checkout.setAddressList(addressList);
-  checkout.setOrder(orderService.getCurrentBasketForUserId(user.getId()));
+  checkout.setOrder(orderService.getCurrentBasketForUserId(customer.getId()));
   checkout.setOrderItems(orderService.getItemsForOrder(order.getId()));
   checkout.setContactInfo(contactInfo);
   checkout.setOrderShipping(orderShipping);

@@ -1,24 +1,14 @@
 {
-  org.broadleafcommerce.profile.domain.User user=userService.readUserByUsername(username);
-  if (user == null) {
-    throw new UsernameNotFoundException("The user was not found");
-  }
-  List<UserRole> roles=userService.readUserRolesByUserId(user.getId());
-  List<GrantedAuthority> authorities=new ArrayList<GrantedAuthority>();
-  if (roles != null) {
-    for (    UserRole role : roles) {
-      authorities.add(new GrantedAuthorityImpl(role.getRoleName()));
-    }
-  }
-  if (user.isPasswordChangeRequired()) {
-    authorities.add(new GrantedAuthorityImpl("ROLE_PASSWORD_CHANGE_REQUIRED"));
+  org.broadleafcommerce.profile.domain.Customer customer=customerService.readCustomerByUsername(username);
+  if (customer == null) {
+    throw new UsernameNotFoundException("The customer was not found");
   }
   User returnUser=null;
   if (!forcePasswordChange) {
-    returnUser=new User(username,user.getPassword(),true,true,true,true,authorities.toArray(new GrantedAuthority[0]));
+    returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER")});
   }
  else {
-    returnUser=new User(username,user.getPassword(),true,true,!user.isPasswordChangeRequired(),true,authorities.toArray(new GrantedAuthority[0]));
+    returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER")});
   }
   return returnUser;
 }

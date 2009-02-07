@@ -1,5 +1,5 @@
 {
-  Query query=em.createQuery("SELECT contactInfo FROM org.broadleafcommerce.profile.domain.ContactInfo contactInfo WHERE contactInfo.user.id = :userId");
-  query.setParameter("userId",userId);
+  Query query=em.createNamedQuery("READ_CONTACT_INFO_BY_CUSTOMER_ID");
+  query.setParameter("customerId",customerId);
   return query.getResultList();
 }

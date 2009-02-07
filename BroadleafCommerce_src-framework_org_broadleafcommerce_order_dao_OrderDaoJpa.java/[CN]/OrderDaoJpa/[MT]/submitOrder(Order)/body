@@ -1,7 +1,7 @@
 {
   SubmittedOrder so=new SubmittedOrder();
   so.setId(basketOrder.getId());
-  Query query=em.createQuery("UPDATE org.broadleafcommerce.order.domain.Order orderx SET TYPE = 'SUBMITTED' WHERE orderx.id = :id");
+  Query query=em.createNamedQuery("UPDATE_BASKET_ORER_TO_SUBMITED");
   query.setParameter("id",basketOrder.getId());
   query.executeUpdate();
   return em.find(SubmittedOrder.class,so.getId());
