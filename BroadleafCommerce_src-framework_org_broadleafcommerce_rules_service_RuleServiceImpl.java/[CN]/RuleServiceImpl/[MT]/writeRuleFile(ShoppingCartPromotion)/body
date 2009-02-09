@@ -16,17 +16,19 @@
     }
     String newLine="\n";
     String tab="\t";
+    output.write("package org.broadleafcommerce.rules;" + newLine);
+    output.write("import org.broadleafcommerce.rules.domain.CouponCode;" + newLine);
     output.write("rule \"" + shoppingCartPromotion.getName() + "\""+ newLine);
     output.write("when" + newLine + tab);
     if (!shoppingCartPromotion.getCouponCode().isEmpty()) {
-      output.write("CouponCode(couponCode == \"" + shoppingCartPromotion.getCouponCode() + "\")"+ newLine);
+      output.write("CouponCode(code == \"" + shoppingCartPromotion.getCouponCode() + "\")"+ newLine);
     }
     output.write("then" + newLine + tab);
     output.write("System.out.println(\"SUCCESS\");" + newLine);
     output.write("end");
     output.close();
-    Package pkg=ruleDeployer.addRuleToPackage(drlFile);
-    ruleDeployer.mergePackageWithRuleBase(pkg);
+    Package pkg=addRuleToNewPackage(drlFile);
+    mergePackageWithRuleBase(pkg);
   }
  catch (  Exception e) {
     e.printStackTrace();
