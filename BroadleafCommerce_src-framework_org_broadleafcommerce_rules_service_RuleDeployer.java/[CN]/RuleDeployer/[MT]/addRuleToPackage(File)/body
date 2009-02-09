@@ -1,0 +1,22 @@
+{
+  PackageBuilder pkgBuilder=new PackageBuilder();
+  Reader drlFileReader=null;
+  ;
+  try {
+    drlFileReader=new FileReader(drlFile);
+  }
+ catch (  FileNotFoundException e) {
+    e.printStackTrace();
+  }
+  try {
+    pkgBuilder.addPackageFromDrl(drlFileReader);
+  }
+ catch (  DroolsParserException e) {
+    e.printStackTrace();
+  }
+catch (  IOException e) {
+    e.printStackTrace();
+  }
+  Package pkg=pkgBuilder.getPackage();
+  return pkg;
+}
