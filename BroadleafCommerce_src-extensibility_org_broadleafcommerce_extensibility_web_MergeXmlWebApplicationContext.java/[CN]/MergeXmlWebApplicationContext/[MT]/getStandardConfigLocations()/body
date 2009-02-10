@@ -1,0 +1,32 @@
+{
+  String[] response;
+  BufferedReader reader=null;
+  try {
+    reader=new BufferedReader(new InputStreamReader(MergeXmlWebApplicationContext.class.getResourceAsStream("BroadleafStandardConfigLocations.txt")));
+    ArrayList<String> items=new ArrayList<String>();
+    boolean eof=false;
+    while (!eof) {
+      String temp=reader.readLine();
+      if (temp == null) {
+        eof=true;
+      }
+ else {
+        if (!temp.startsWith("#")) {
+          items.add(temp);
+        }
+      }
+    }
+    response=new String[]{};
+    response=items.toArray(response);
+  }
+  finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+  return response;
+}

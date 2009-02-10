@@ -1,19 +1,27 @@
 {
   String[] configLocations=getConfigLocations();
+  String[] broadleafConfigLocations=getStandardConfigLocations();
+  int totalLength=broadleafConfigLocations.length;
   if (configLocations != null) {
-    InputStream[] sources=new InputStream[configLocations.length];
-    for (int i=0; i < configLocations.length; i++) {
-      Resource resource=getResourceByPath(configLocations[i]);
-      sources[i]=resource.getInputStream();
-    }
-    String patchLocation=getPatchLocation();
-    String[] patchLocations=StringUtils.tokenizeToStringArray(patchLocation,CONFIG_LOCATION_DELIMITERS);
-    InputStream[] patches=new InputStream[patchLocations.length];
-    for (int i=0; i < patchLocations.length; i++) {
-      Resource resource=getResourceByPath(patchLocations[i]);
-      patches[i]=resource.getInputStream();
-    }
-    Resource[] resources=new MergeApplicationContextXmlConfigResource().getConfigResources(sources,patches);
-    reader.loadBeanDefinitions(resources);
+    totalLength+=configLocations.length;
   }
+  String[] totalLocations=new String[totalLength];
+  System.arraycopy(broadleafConfigLocations,0,totalLocations,0,broadleafConfigLocations.length);
+  if (configLocations != null) {
+    System.arraycopy(configLocations,0,totalLocations,broadleafConfigLocations.length,configLocations.length);
+  }
+  InputStream[] sources=new InputStream[totalLocations.length];
+  for (int i=0; i < configLocations.length; i++) {
+    Resource resource=getResourceByPath(configLocations[i]);
+    sources[i]=resource.getInputStream();
+  }
+  String patchLocation=getPatchLocation();
+  String[] patchLocations=StringUtils.tokenizeToStringArray(patchLocation,CONFIG_LOCATION_DELIMITERS);
+  InputStream[] patches=new InputStream[patchLocations.length];
+  for (int i=0; i < patchLocations.length; i++) {
+    Resource resource=getResourceByPath(patchLocations[i]);
+    patches[i]=resource.getInputStream();
+  }
+  Resource[] resources=new MergeApplicationContextXmlConfigResource().getConfigResources(sources,patches);
+  reader.loadBeanDefinitions(resources);
 }
