@@ -1,13 +1,13 @@
 {
   try {
     Long id=new Long(productId);
-    CatalogItem item=catalogService.readCatalogItemById(id);
+    Product item=catalogService.readProductById(id);
     if (item == null) {
       return false;
     }
-    List<CatalogItem> catalogItems=category.getCatalogItems();
-    if (catalogItems != null) {
-      for (Iterator<CatalogItem> itr=catalogItems.iterator(); itr.hasNext(); ) {
+    List<Product> products=category.getProducts();
+    if (products != null) {
+      for (Iterator<Product> itr=products.iterator(); itr.hasNext(); ) {
         if (id.equals(itr.next().getId())) {
           return true;
         }

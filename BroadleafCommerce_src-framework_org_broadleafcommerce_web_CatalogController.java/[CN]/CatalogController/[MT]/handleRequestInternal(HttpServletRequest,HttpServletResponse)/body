@@ -4,12 +4,12 @@
   if (requestState.getCategory() != null) {
     if (productId != null) {
       try {
-        CatalogItem item=catalogService.readCatalogItemById(new Long(productId));
+        Product item=catalogService.readProductById(new Long(productId));
         if (item != null) {
-          List<SellableItem> sellableItems=catalogService.readSellableItemsForCatalogItemId(item.getId());
-          Product product=new Product(item,sellableItems);
+          List<Sku> skus=catalogService.readSkusForProductId(item.getId());
+          ProductSkus productSkus=new ProductSkus(item,skus);
           Map<Object,Object> model=new HashMap<Object,Object>();
-          model.put("product",product);
+          model.put("productSkus",productSkus);
           return new ModelAndView(getDefaultProductView(),model);
         }
       }
