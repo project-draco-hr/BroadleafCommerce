@@ -1,0 +1,17 @@
+{
+  Product createProduct=new Product();
+  Sku sku=new Sku();
+  if (request.getParameter("productId") != null) {
+    createProduct=catalogService.readProductById(Long.valueOf(request.getParameter("productId")));
+    sku.setProduct(createProduct);
+  }
+  if (request.getParameter("skuId") != null) {
+    sku=catalogService.readSkuById(new Long(request.getParameter("skuId")));
+    Map<String,ItemAttribute> attribs=sku.getItemAttributes();
+    if (attribs == null) {
+      attribs=new HashMap<String,ItemAttribute>();
+    }
+    attribs.put("",new ItemAttribute());
+  }
+  return sku;
+}
