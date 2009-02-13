@@ -1,19 +1,11 @@
 {
   try {
     Long id=new Long(productId);
-    Product item=catalogService.readProductById(id);
+    Product item=catalogService.findProductById(id);
     if (item == null) {
       return false;
     }
-    List<Product> products=category.getProducts();
-    if (products != null) {
-      for (Iterator<Product> itr=products.iterator(); itr.hasNext(); ) {
-        if (id.equals(itr.next().getId())) {
-          return true;
-        }
-      }
-      return false;
-    }
+    return false;
   }
  catch (  NumberFormatException e) {
     logger.error("Unable to parse productId: " + e.getMessage());
