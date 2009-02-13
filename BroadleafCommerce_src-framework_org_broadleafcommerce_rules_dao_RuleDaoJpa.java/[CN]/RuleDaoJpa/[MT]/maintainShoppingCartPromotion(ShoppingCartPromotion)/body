@@ -1,12 +1,8 @@
 {
   if (shoppingCartPromotion.getId() == null) {
-    Date now=new Date();
-    shoppingCartPromotion.setCreated(now);
-    shoppingCartPromotion.setModified(now);
     em.persist(shoppingCartPromotion);
   }
  else {
-    shoppingCartPromotion.setModified(new Date());
     shoppingCartPromotion=em.merge(shoppingCartPromotion);
   }
   return shoppingCartPromotion;
