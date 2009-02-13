@@ -1,0 +1,11 @@
+{
+  ShoppingCartPromotion shoppingCartPromotion=(ShoppingCartPromotion)command;
+  ruleService.writeRuleFile(shoppingCartPromotion,request.getParameter("logicalOperator"));
+  if (errors.hasErrors()) {
+    logger.debug("Error returning back to the form");
+    return showForm(request,response,errors);
+  }
+  ModelAndView mav=new ModelAndView(getSuccessView(),errors.getModel());
+  mav.addObject("saved",true);
+  return mav;
+}
