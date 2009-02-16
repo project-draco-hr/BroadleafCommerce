@@ -1,6 +1,6 @@
 {
-  Product createProduct=new Product();
-  Sku sku=new Sku();
+  Product createProduct=new BroadleafProduct();
+  Sku sku=new BroadleafSku();
   if (request.getParameter("productId") != null) {
     createProduct=catalogService.findProductById(Long.valueOf(request.getParameter("productId")));
     sku.setProduct(createProduct);
@@ -11,7 +11,7 @@
     if (attribs == null) {
       attribs=new HashMap<String,ItemAttribute>();
     }
-    attribs.put("",new ItemAttribute());
+    attribs.put("",new BroadleafItemAttribute());
   }
   return sku;
 }
