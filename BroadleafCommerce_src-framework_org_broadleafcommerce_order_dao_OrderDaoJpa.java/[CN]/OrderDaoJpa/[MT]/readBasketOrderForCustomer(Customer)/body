@@ -1,13 +1,13 @@
 {
-  BasketOrder bo;
+  BroadleafBasketOrder bo;
   Query query=em.createNamedQuery("READ_ORDER_BASKET_FOR_CUSTOMER_ID");
   query.setParameter("customerId",customer.getId());
   try {
-    bo=(BasketOrder)query.getSingleResult();
-    return (BasketOrder)query.getSingleResult();
+    bo=(BroadleafBasketOrder)query.getSingleResult();
+    return (BroadleafBasketOrder)query.getSingleResult();
   }
  catch (  NoResultException nre) {
-    bo=new BasketOrder();
+    bo=new BroadleafBasketOrder();
     bo.setCustomer(customer);
     em.persist(bo);
     return bo;

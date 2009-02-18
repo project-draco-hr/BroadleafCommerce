@@ -1,0 +1,8 @@
+{
+  BroadleafSubmittedOrder so=new BroadleafSubmittedOrder();
+  so.setId(basketOrder.getId());
+  Query query=em.createNamedQuery("UPDATE_BASKET_ORER_TO_SUBMITED");
+  query.setParameter("id",basketOrder.getId());
+  query.executeUpdate();
+  return em.find(BroadleafSubmittedOrder.class,so.getId());
+}

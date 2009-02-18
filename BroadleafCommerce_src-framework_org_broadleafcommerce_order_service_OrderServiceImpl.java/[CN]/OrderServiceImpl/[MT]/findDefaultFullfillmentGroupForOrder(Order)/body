@@ -1,0 +1,14 @@
+{
+  DefaultFullfillmentGroup dfg=fullfillmentGroupDao.readDefaultFullfillmentGroupForOrder(order);
+  if (dfg.getFullfillmentGroupItems().size() == 0) {
+    List<OrderItem> orderItems=orderItemDao.readOrderItemsForOrder(order);
+    List<FullfillmentGroupItem> fgItems=new ArrayList<FullfillmentGroupItem>();
+    for (    OrderItem orderItem : orderItems) {
+      fullfillmentGroupItemDao.create();
+      fgItems.add(this.createFulfillmentGroupItemFromOrderItem(orderItem,dfg.getId()));
+    }
+    dfg.setFullfillmentGroupItems(fgItems);
+    fullfillmentGroupDao.maintainDefaultFullfillmentGroup(dfg);
+  }
+  return dfg;
+}
