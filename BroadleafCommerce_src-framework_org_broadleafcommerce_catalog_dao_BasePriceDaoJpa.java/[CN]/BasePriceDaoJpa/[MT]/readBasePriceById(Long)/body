@@ -1,3 +1,8 @@
 {
-  return em.find(BasePrice.class,basePriceId);
+  return (BasePrice)this.jpaTemplate.execute(new JpaCallback(){
+    @SuppressWarnings("unchecked") public Object doInJpa(    EntityManager em) throws PersistenceException {
+      return em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.catalog.domain.BasePrice"),basePriceId);
+    }
+  }
+);
 }

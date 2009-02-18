@@ -1,7 +1,7 @@
 {
   return (Category)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      return em.find(Category.class,categoryId);
+    @SuppressWarnings("unchecked") public Object doInJpa(    EntityManager em) throws PersistenceException {
+      return em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.catalog.domain.Category"),categoryId);
     }
   }
 );

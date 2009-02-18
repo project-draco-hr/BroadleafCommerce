@@ -1,9 +1,15 @@
 {
-  if (basePrice.getId() == null) {
-    em.persist(basePrice);
-  }
+  return (BasePrice)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      BasePrice retBasePrice=basePrice;
+      if (retBasePrice.getId() == null) {
+        em.persist(retBasePrice);
+      }
  else {
-    basePrice=em.merge(basePrice);
+        retBasePrice=em.merge(retBasePrice);
+      }
+      return retBasePrice;
+    }
   }
-  return basePrice;
+);
 }

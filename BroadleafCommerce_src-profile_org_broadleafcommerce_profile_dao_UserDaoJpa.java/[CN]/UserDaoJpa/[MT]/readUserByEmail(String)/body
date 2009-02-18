@@ -1,10 +1,15 @@
 {
-  Query query=em.createNamedQuery("READ_USER_BY_EMAIL");
-  query.setParameter("email",emailAddress);
-  try {
-    return (User)query.getSingleResult();
+  return (User)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Query query=em.createNamedQuery("READ_USER_BY_EMAIL");
+      query.setParameter("email",emailAddress);
+      try {
+        return query.getSingleResult();
+      }
+ catch (      NoResultException ne) {
+        return null;
+      }
+    }
   }
- catch (  NoResultException ne) {
-    return null;
-  }
+);
 }

@@ -1,5 +1,10 @@
 {
-  Query query=em.createNamedQuery("READ_CONTACT_INFO_BY_CUSTOMER_ID");
-  query.setParameter("customerId",customerId);
-  return query.getResultList();
+  return (List<ContactInfo>)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Query query=em.createNamedQuery("READ_CONTACT_INFO_BY_CUSTOMER_ID");
+      query.setParameter("customerId",customerId);
+      return query.getResultList();
+    }
+  }
+);
 }

@@ -1,5 +1,10 @@
 {
-  Query query=em.createNamedQuery("READ_ADDRESS_BY_ID");
-  query.setParameter("addressId",addressId);
-  return (Address)query.getSingleResult();
+  return (Address)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Query query=em.createNamedQuery("READ_ADDRESS_BY_ID");
+      query.setParameter("addressId",addressId);
+      return query.getSingleResult();
+    }
+  }
+);
 }

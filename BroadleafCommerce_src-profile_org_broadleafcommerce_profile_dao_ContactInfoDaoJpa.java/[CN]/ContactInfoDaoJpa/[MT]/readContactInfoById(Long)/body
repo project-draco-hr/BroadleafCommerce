@@ -1,3 +1,8 @@
 {
-  return em.find(ContactInfo.class,contactId);
+  return (ContactInfo)this.jpaTemplate.execute(new JpaCallback(){
+    @SuppressWarnings("unchecked") public Object doInJpa(    EntityManager em) throws PersistenceException {
+      return em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.profile.domain.ContactInfo"),contactId);
+    }
+  }
+);
 }
