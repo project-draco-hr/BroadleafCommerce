@@ -1,5 +1,5 @@
 {
-  BroadleafBasketOrder bo;
+  BasketOrder bo;
   Query query=em.createNamedQuery("READ_ORDER_BASKET_FOR_CUSTOMER_ID");
   query.setParameter("customerId",customer.getId());
   try {
@@ -7,7 +7,7 @@
     return (BroadleafBasketOrder)query.getSingleResult();
   }
  catch (  NoResultException nre) {
-    bo=new BroadleafBasketOrder();
+    bo=(BasketOrder)entityConfiguration.createEntityInstance("org.broadleafcommerce.order.domain.BasketOrder");
     bo.setCustomer(customer);
     em.persist(bo);
     return bo;
