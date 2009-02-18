@@ -1,9 +1,15 @@
 {
-  if (customer.getId() == null) {
-    em.persist(customer);
-  }
+  return (Customer)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Customer retCustomer=customer;
+      if (customer.getId() == null) {
+        em.persist(retCustomer);
+      }
  else {
-    customer=em.merge(customer);
+        retCustomer=em.merge(retCustomer);
+      }
+      return retCustomer;
+    }
   }
-  return customer;
+);
 }

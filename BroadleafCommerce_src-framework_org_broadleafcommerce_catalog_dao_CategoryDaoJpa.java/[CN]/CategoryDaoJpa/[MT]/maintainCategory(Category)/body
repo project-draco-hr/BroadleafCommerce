@@ -1,9 +1,15 @@
 {
-  if (category.getId() == null) {
-    em.persist(category);
-  }
+  return (Category)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Category retCategory=category;
+      if (category.getId() == null) {
+        em.persist(retCategory);
+      }
  else {
-    category=em.merge(category);
+        retCategory=em.merge(retCategory);
+      }
+      return retCategory;
+    }
   }
-  return category;
+);
 }

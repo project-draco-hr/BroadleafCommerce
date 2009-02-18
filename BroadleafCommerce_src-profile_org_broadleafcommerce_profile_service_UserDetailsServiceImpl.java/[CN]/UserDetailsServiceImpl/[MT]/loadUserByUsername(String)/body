@@ -4,8 +4,14 @@
     throw new UsernameNotFoundException("The customer was not found");
   }
   User returnUser=null;
-  if (!forcePasswordChange) {
-    returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER")});
+  boolean pwChangeRequired=customer.isPasswordChangeRequired();
+  if (pwChangeRequired) {
+    if (forcePasswordChange) {
+      returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER")});
+    }
+ else {
+      returnUser=new User(username,customer.getPassword(),true,true,true,true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER"),new GrantedAuthorityImpl("ROLE_PASSWORD_CHANGE_REQUIRED")});
+    }
   }
  else {
     returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,new GrantedAuthority[]{new GrantedAuthorityImpl("ROLE_USER")});

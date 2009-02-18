@@ -1,4 +1,9 @@
 {
-  Query query=em.createNamedQuery("READ_ALL_SKUS");
-  return query.getResultList();
+  return (List<Sku>)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Query query=em.createNamedQuery("READ_ALL_SKUS");
+      return query.getResultList();
+    }
+  }
+);
 }

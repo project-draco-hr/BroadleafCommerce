@@ -1,9 +1,15 @@
 {
-  if (product.getId() == null) {
-    em.persist(product);
-  }
+  return (Product)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Product retProduct=product;
+      if (retProduct.getId() == null) {
+        em.persist(retProduct);
+      }
  else {
-    product=em.merge(product);
+        retProduct=em.merge(retProduct);
+      }
+      return retProduct;
+    }
   }
-  return product;
+);
 }

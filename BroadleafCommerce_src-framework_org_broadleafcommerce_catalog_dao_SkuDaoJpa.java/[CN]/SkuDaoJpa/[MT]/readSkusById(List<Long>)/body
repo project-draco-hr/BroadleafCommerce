@@ -1,5 +1,10 @@
 {
-  Query query=em.createNamedQuery("READ_SKUS_BY_ID");
-  query.setParameter("skuIds",ids);
-  return query.getResultList();
+  return (List<Sku>)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      Query query=em.createNamedQuery("READ_SKUS_BY_ID");
+      query.setParameter("skuIds",ids);
+      return query.getResultList();
+    }
+  }
+);
 }

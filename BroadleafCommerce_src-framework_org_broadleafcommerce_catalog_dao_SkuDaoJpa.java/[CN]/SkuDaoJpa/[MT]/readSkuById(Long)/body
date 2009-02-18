@@ -1,3 +1,8 @@
 {
-  return (Sku)em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.catalog.domain.Sku"),skuId);
+  return (Sku)this.jpaTemplate.execute(new JpaCallback(){
+    public Object doInJpa(    EntityManager em) throws PersistenceException {
+      return em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.catalog.domain.Sku"),skuId);
+    }
+  }
+);
 }
