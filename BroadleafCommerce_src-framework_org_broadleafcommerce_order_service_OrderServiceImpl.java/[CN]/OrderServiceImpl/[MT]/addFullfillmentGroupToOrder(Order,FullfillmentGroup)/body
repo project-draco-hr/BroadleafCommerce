@@ -1,10 +1,13 @@
 {
   List<FullfillmentGroup> currentFullfillmentGroups=fullfillmentGroupDao.readFullfillmentGroupsForOrder(order);
-  DefaultFullfillmentGroup dfg=fullfillmentGroupDao.readDefaultFullfillmentGroupForOrder(order);
-  if (dfg == null) {
+  DefaultFullfillmentGroup dfg;
+  try {
+    dfg=fullfillmentGroupDao.readDefaultFullfillmentGroupForOrder(order);
+  }
+ catch (  NoResultException nre) {
     return fullfillmentGroupDao.maintainDefaultFullfillmentGroup(createDefaultFulfillmentGroupFromFulfillmentGroup(fullfillmentGroup,order.getId()));
   }
- else   if (dfg.getId().equals(fullfillmentGroup.getId())) {
+  if (dfg.getId().equals(fullfillmentGroup.getId())) {
     return fullfillmentGroupDao.maintainDefaultFullfillmentGroup(createDefaultFulfillmentGroupFromFulfillmentGroup(fullfillmentGroup,order.getId()));
   }
  else   if (currentFullfillmentGroups.size() == 1) {
