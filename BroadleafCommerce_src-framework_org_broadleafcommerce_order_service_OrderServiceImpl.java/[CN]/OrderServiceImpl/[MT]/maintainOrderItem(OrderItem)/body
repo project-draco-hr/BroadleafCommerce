@@ -1,5 +1,5 @@
 {
-  orderItem.setAmount(orderItem.getQuantity() * orderItem.getSku().getPrice());
+  orderItem.setFinalPrice(orderItem.getSku().getSalePrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
   OrderItem returnedOrderItem=orderItemDao.maintainOrderItem(orderItem);
   maintainOrder(orderItem.getOrder());
   return returnedOrderItem;

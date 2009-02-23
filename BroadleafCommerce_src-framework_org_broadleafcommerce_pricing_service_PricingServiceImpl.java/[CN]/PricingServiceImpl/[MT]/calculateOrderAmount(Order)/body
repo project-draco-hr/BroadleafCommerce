@@ -1,13 +1,13 @@
 {
-  double total=0;
+  BigDecimal total=BigDecimal.ZERO;
   List<OrderItem> orderItemList=orderItemDao.readOrderItemsForOrder(order);
   for (  OrderItem item : orderItemList) {
-    total+=item.getAmount();
+    total=total.add(item.getFinalPrice());
   }
   List<FullfillmentGroup> fullfillmentGroupList=fullfillmentGroupDao.readFullfillmentGroupsForOrder(order);
   for (  FullfillmentGroup fullfillmentGroup : fullfillmentGroupList) {
-    total+=fullfillmentGroup.getCost();
+    total=total.add(fullfillmentGroup.getCost());
   }
-  order.setTotalAmount(total);
+  order.setTotal(total);
   return order;
 }
