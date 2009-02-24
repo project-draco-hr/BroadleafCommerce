@@ -1,13 +1,13 @@
 {
-  DefaultFulfillmentGroup dfg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
-  if (dfg.getFulfillmentGroupItems().size() == 0) {
+  FulfillmentGroupImpl fg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
+  if (fg.getFulfillmentGroupItems().size() == 0) {
     List<OrderItem> orderItems=orderItemDao.readOrderItemsForOrder(order);
     List<FulfillmentGroupItem> fgItems=new ArrayList<FulfillmentGroupItem>();
     for (    OrderItem orderItem : orderItems) {
       fulfillmentGroupItemDao.create();
-      fgItems.add(this.createFulfillmentGroupItemFromOrderItem(orderItem,dfg.getId()));
+      fgItems.add(this.createFulfillmentGroupItemFromOrderItem(orderItem,fg.getId()));
     }
-    dfg.setFulfillmentGroupItems(fgItems);
+    fg.setFulfillmentGroupItems(fgItems);
   }
-  return dfg;
+  return fg;
 }
