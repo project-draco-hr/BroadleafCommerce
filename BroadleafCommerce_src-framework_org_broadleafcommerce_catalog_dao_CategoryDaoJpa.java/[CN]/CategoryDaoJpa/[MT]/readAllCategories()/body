@@ -1,10 +1,5 @@
 {
-  return (List<Category>)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Query query=em.createNamedQuery("READ_ALL_CATEGORIES");
-      query.setHint("org.hibernate.cacheable",true);
-      return query.getResultList();
-    }
-  }
-);
+  Query query=em.createNamedQuery("READ_ALL_CATEGORIES");
+  query.setHint("org.hibernate.cacheable",true);
+  return query.getResultList();
 }

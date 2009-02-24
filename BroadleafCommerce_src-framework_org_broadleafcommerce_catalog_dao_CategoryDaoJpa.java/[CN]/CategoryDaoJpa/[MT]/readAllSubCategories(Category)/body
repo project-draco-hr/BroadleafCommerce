@@ -1,10 +1,5 @@
 {
-  return (List<Category>)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Query query=em.createNamedQuery("READ_ALL_SUBCATEGORIES");
-      query.setParameter("parentCategory",category);
-      return query.getResultList();
-    }
-  }
-);
+  Query query=em.createNamedQuery("READ_ALL_SUBCATEGORIES");
+  query.setParameter("parentCategory",category);
+  return query.getResultList();
 }

@@ -1,15 +1,9 @@
 {
-  return (Sku)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Sku retSku=sku;
-      if (retSku.getId() == null) {
-        em.persist(retSku);
-      }
- else {
-        retSku=em.merge(retSku);
-      }
-      return retSku;
-    }
+  if (sku.getId() == null) {
+    em.persist(sku);
   }
-);
+ else {
+    sku=em.merge(sku);
+  }
+  return sku;
 }

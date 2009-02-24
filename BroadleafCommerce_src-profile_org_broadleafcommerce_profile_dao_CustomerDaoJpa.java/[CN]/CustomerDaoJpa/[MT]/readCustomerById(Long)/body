@@ -1,8 +1,3 @@
 {
-  return (Customer)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      return em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.profile.domain.Customer"),id);
-    }
-  }
-);
+  return (Customer)em.find(entityConfiguration.lookupEntityClass("org.broadleafcommerce.profile.domain.Customer"),id);
 }

@@ -1,15 +1,10 @@
 {
-  return (User)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      User retUser=user;
-      if (retUser.getId() == null) {
-        em.persist(retUser);
-      }
- else {
-        retUser=em.merge(retUser);
-      }
-      return retUser;
-    }
+  User retUser=user;
+  if (retUser.getId() == null) {
+    em.persist(retUser);
   }
-);
+ else {
+    retUser=em.merge(retUser);
+  }
+  return retUser;
 }

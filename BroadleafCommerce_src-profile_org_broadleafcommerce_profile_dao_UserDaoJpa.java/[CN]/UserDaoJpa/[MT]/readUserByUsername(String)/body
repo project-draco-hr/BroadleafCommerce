@@ -1,15 +1,10 @@
 {
-  return (User)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Query query=em.createNamedQuery("READ_USER_BY_USER_NAME");
-      query.setParameter("username",username);
-      try {
-        return query.getSingleResult();
-      }
- catch (      NoResultException ne) {
-        return null;
-      }
-    }
+  Query query=em.createNamedQuery("READ_USER_BY_USER_NAME");
+  query.setParameter("username",username);
+  try {
+    return (User)query.getSingleResult();
   }
-);
+ catch (  NoResultException ne) {
+    return null;
+  }
 }

@@ -1,15 +1,9 @@
 {
-  return (ContactInfo)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      ContactInfo retContactInfo=contactInfo;
-      if (retContactInfo.getId() == null) {
-        em.persist(retContactInfo);
-      }
- else {
-        retContactInfo=em.merge(retContactInfo);
-      }
-      return retContactInfo;
-    }
+  if (contactInfo.getId() == null) {
+    em.persist(contactInfo);
   }
-);
+ else {
+    contactInfo=em.merge(contactInfo);
+  }
+  return contactInfo;
 }

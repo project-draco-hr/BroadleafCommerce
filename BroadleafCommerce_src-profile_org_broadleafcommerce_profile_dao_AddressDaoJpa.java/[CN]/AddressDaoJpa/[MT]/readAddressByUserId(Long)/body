@@ -1,10 +1,5 @@
 {
-  return (List<Address>)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Query query=em.createNamedQuery("READ_ADDRESS_BY_CUSTOMER_ID");
-      query.setParameter("customerId",customerId);
-      return query.getResultList();
-    }
-  }
-);
+  Query query=em.createNamedQuery("READ_ADDRESS_BY_CUSTOMER_ID");
+  query.setParameter("customerId",customerId);
+  return query.getResultList();
 }

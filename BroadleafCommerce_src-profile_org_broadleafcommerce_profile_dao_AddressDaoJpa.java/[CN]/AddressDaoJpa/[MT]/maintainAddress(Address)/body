@@ -1,15 +1,9 @@
 {
-  return (Address)this.jpaTemplate.execute(new JpaCallback(){
-    public Object doInJpa(    EntityManager em) throws PersistenceException {
-      Address retAddress=address;
-      if (retAddress.getId() == null) {
-        em.persist(retAddress);
-      }
- else {
-        retAddress=em.merge(retAddress);
-      }
-      return retAddress;
-    }
+  if (address.getId() == null) {
+    em.persist(address);
   }
-);
+ else {
+    address=em.merge(address);
+  }
+  return address;
 }
