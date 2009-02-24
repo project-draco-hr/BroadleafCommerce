@@ -4,9 +4,9 @@
   for (  OrderItem item : orderItemList) {
     total=total.add(item.getFinalPrice());
   }
-  List<FullfillmentGroup> fullfillmentGroupList=fullfillmentGroupDao.readFullfillmentGroupsForOrder(order);
-  for (  FullfillmentGroup fullfillmentGroup : fullfillmentGroupList) {
-    total=total.add(fullfillmentGroup.getCost());
+  List<FulfillmentGroup> fulfillmentGroupList=fulfillmentGroupDao.readFulfillmentGroupsForOrder(order);
+  for (  FulfillmentGroup fulfillmentGroup : fulfillmentGroupList) {
+    total=total.add(fulfillmentGroup.getCost());
   }
   order.setTotal(total);
   return order;
