@@ -1,0 +1,12 @@
+{
+  if (activeSkus == null) {
+    activeSkus=new ArrayList<Sku>();
+    List<Sku> skus=getSkus();
+    for (    Sku sku : skus) {
+      if (sku.getActiveStartDate().before(new Date()) && (sku.getActiveEndDate() == null || new Date().before(sku.getActiveEndDate()))) {
+        activeSkus.add(sku);
+      }
+    }
+  }
+  return activeSkus;
+}
