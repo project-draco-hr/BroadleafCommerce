@@ -1,0 +1,20 @@
+{
+  Map<String,Category> urlKeyCategoryMap=catalogService.getCategoryUrlKeyMap();
+  String path=pathHelper.getRequestUri(request).substring(pathHelper.getContextPath(request).length());
+  String[] tokens=StringUtils.split(path,"/");
+  boolean categoryError=false;
+  if (tokens.length >= 2) {
+    Category tmpCategory=null;
+    for (int i=1; i < tokens.length; i++) {
+      tmpCategory=urlKeyCategoryMap.get(tokens[i]);
+      if (tmpCategory != null && tmpCategory.isActive()) {
+        categoryList.add(tmpCategory);
+      }
+ else {
+        categoryError=true;
+        break;
+      }
+    }
+  }
+  return categoryError;
+}

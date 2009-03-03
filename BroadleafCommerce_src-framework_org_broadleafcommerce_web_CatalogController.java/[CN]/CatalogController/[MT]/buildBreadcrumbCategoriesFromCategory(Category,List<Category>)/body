@@ -1,0 +1,18 @@
+{
+  categoryList.clear();
+  int count=0;
+  Category tmpCategory=category;
+  boolean categoryError=false;
+  while (tmpCategory != null && count < MAX_LEVELS) {
+    if (tmpCategory.isActive()) {
+      categoryList.add(tmpCategory);
+      tmpCategory=tmpCategory.getDefaultParentCategory();
+    }
+ else {
+      categoryError=true;
+    }
+    count++;
+  }
+  Collections.reverse(categoryList);
+  return categoryError;
+}

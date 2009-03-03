@@ -1,29 +1,49 @@
 {
-  CommerceRequestStateImpl requestState=(CommerceRequestStateImpl)CommerceRequestStateImpl.getRequestState(request);
+  HashMap<String,Object> model=new HashMap<String,Object>();
+  List<Category> breadcrumbCategories=new ArrayList<Category>();
+  boolean categoryError=buildBreadcrumbCategories(request,breadcrumbCategories);
+  boolean productError=false;
+  boolean productFound=false;
+  String view=defaultCategoryView;
   String productId=request.getParameter("productId");
-  if (requestState.getCategory() != null) {
-    if (productId != null) {
-      try {
-        Product item=catalogService.findProductById(new Long(productId));
-        if (item != null) {
-          List<Sku> skus=item.getSkus();
-          ProductSkus productSkus=new ProductSkus(item,skus);
-          Map<Object,Object> model=new HashMap<Object,Object>();
-          model.put("productSkus",productSkus);
-          return new ModelAndView(getDefaultProductView(),model);
-        }
-      }
- catch (      NumberFormatException e) {
-        logger.error("Unable to parse productId: " + e.getMessage());
+  if (productId != null) {
+    Product product=catalogService.findProductById(new Long(productId));
+    if (product != null) {
+      model.put("currentProduct",product);
+      view=defaultProductView;
+      productFound=true;
+      if (categoryError) {
+        categoryError=buildBreadcrumbCategoriesFromProduct(product,breadcrumbCategories);
       }
     }
  else {
-      List<Category> subCategories=catalogService.findAllSubCategories(requestState.getCategory());
-      Map<Object,Object> model=new HashMap<Object,Object>();
-      model.put("subCategories",subCategories);
-      model.put("category",requestState.getCategory());
-      return new ModelAndView(getDefaultView(),model);
+      productError=true;
     }
   }
-  return null;
+  model.put("categoryError",categoryError);
+  model.put("productError",productError);
+  Category currentCategory=null;
+  if (breadcrumbCategories.size() > 0) {
+    currentCategory=breadcrumbCategories.get(breadcrumbCategories.size() - 1);
+  }
+ else {
+    currentCategory=catalogService.findCategoryById(defaultCategoryId);
+  }
+  model.put("currentCategory",currentCategory);
+  model.put("breadcrumbCategories",breadcrumbCategories);
+  if (productFound) {
+    view=defaultProductView;
+  }
+ else {
+    if (currentCategory.getUrl() != null) {
+      view=currentCategory.getUrl();
+    }
+ else     if (currentCategory.getDisplayTemplate() != null) {
+      view=categoryTemplatePrefix + currentCategory.getDisplayTemplate();
+    }
+ else {
+      view=defaultCategoryView;
+    }
+  }
+  return new ModelAndView(view,model);
 }
