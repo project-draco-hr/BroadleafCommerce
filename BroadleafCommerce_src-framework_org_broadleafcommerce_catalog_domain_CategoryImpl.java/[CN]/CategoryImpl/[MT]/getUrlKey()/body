@@ -1,6 +1,6 @@
 {
-  if (GenericValidator.isBlankOrNull(urlKey)) {
-    return String.valueOf(getId());
+  if (GenericValidator.isBlankOrNull(urlKey) && getName() != null) {
+    return UrlUtil.generateUrlKey(getName());
   }
   return urlKey;
 }
