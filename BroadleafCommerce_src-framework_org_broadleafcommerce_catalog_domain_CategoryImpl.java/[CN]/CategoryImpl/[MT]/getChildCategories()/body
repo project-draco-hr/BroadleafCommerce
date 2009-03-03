@@ -1,3 +1,12 @@
 {
+  if (childCategories == null) {
+    childCategories=new ArrayList<Category>();
+    List<Category> categories=getAllChildCategories();
+    for (    Category category : categories) {
+      if (category.getActiveStartDate().before(new Date()) && (category.getActiveEndDate() == null || new Date().before(category.getActiveEndDate()))) {
+        childCategories.add(category);
+      }
+    }
+  }
   return childCategories;
 }
