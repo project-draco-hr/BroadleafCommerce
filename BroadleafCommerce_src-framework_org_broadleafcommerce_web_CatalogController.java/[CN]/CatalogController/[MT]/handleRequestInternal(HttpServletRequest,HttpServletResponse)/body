@@ -1,36 +1,45 @@
 {
   HashMap<String,Object> model=new HashMap<String,Object>();
-  List<Category> breadcrumbCategories=new ArrayList<Category>();
-  boolean categoryError=buildBreadcrumbCategories(request,breadcrumbCategories);
+  boolean categoryError=false;
+  Category rootCategory=catalogService.findCategoryById(rootCategoryId);
+  if (rootCategory == null) {
+    throw new IllegalStateException("Catalog Controller configured incorrectly - root category not found." + rootCategoryId);
+  }
+  String path=pathHelper.getRequestUri(request).substring(pathHelper.getContextPath(request).length());
+  List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(path);
+  if (categoryList != null) {
+    model.put("currentCategory",categoryList.get(categoryList.size() - 1));
+    model.put("breadcrumbCategories",categoryList);
+  }
+ else {
+    categoryError=true;
+    model.put("currentCategory",rootCategory);
+    categoryList=new ArrayList<Category>();
+    categoryList.add(rootCategory);
+    model.put("breadcrumbCategories",categoryList);
+  }
   boolean productError=false;
   boolean productFound=false;
-  String view=defaultCategoryView;
   String productId=request.getParameter("productId");
   if (productId != null) {
     Product product=catalogService.findProductById(new Long(productId));
     if (product != null) {
       model.put("currentProduct",product);
-      view=defaultProductView;
       productFound=true;
       if (categoryError) {
-        categoryError=buildBreadcrumbCategoriesFromProduct(product,breadcrumbCategories);
+        categoryError=buildBreadcrumbCategoriesFromProduct(product,categoryList);
       }
     }
  else {
       productError=true;
     }
   }
+  Category currentCategory=categoryList.get(categoryList.size() - 1);
   model.put("categoryError",categoryError);
   model.put("productError",productError);
-  Category currentCategory=null;
-  if (breadcrumbCategories.size() > 0) {
-    currentCategory=breadcrumbCategories.get(breadcrumbCategories.size() - 1);
-  }
- else {
-    currentCategory=catalogService.findCategoryById(defaultCategoryId);
-  }
   model.put("currentCategory",currentCategory);
-  model.put("breadcrumbCategories",breadcrumbCategories);
+  model.put("breadcrumbCategories",categoryList);
+  String view=defaultCategoryView;
   if (productFound) {
     view=defaultProductView;
   }
