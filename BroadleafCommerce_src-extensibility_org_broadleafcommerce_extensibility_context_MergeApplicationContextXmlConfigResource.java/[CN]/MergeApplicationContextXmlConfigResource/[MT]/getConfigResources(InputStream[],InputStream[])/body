@@ -10,13 +10,15 @@
     if (LOG.isDebugEnabled()) {
       LOG.debug("Merged Stage1 Sources: \n" + serialize(new ByteArrayInputStream(mergedArray)));
     }
-    InputStream[] patches2=new InputStream[patches.length + 1];
-    patches2[0]=new ByteArrayInputStream(mergedArray);
-    System.arraycopy(patches,0,patches2,1,patches.length);
-    Properties stage2=new Properties();
-    stage2.load(MergeApplicationContextXmlConfigResource.class.getResourceAsStream("MergeApplicationContextXmlConfigResource.2.properties"));
-    configurer=new PropertyXPathConfigurer(stage2);
-    merged=merge(patches2,configurer);
+    if (patches != null) {
+      InputStream[] patches2=new InputStream[patches.length + 1];
+      patches2[0]=new ByteArrayInputStream(mergedArray);
+      System.arraycopy(patches,0,patches2,1,patches.length);
+      Properties stage2=new Properties();
+      stage2.load(MergeApplicationContextXmlConfigResource.class.getResourceAsStream("MergeApplicationContextXmlConfigResource.2.properties"));
+      configurer=new PropertyXPathConfigurer(stage2);
+      merged=merge(patches2,configurer);
+    }
     ByteArrayOutputStream baos=new ByteArrayOutputStream();
     boolean eof=false;
     while (!eof) {
