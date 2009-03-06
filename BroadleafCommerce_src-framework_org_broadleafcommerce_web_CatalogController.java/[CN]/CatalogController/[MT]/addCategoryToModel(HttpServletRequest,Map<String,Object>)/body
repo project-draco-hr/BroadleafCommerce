@@ -1,0 +1,20 @@
+{
+  Category rootCategory=null;
+  if (getRootCategoryId() != null) {
+    rootCategory=catalogService.findCategoryById(getRootCategoryId());
+  }
+  if (rootCategory == null) {
+    throw new IllegalStateException("Catalog Controller configured incorrectly - root category not found: " + rootCategoryId);
+  }
+  String url=pathHelper.getRequestUri(request).substring(pathHelper.getContextPath(request).length());
+  String categoryId=request.getParameter("categoryId");
+  if (categoryId != null) {
+    Category category=catalogService.findCategoryById(new Long(categoryId));
+    if (category != null) {
+      url=category.getUrl();
+    }
+  }
+  List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(url);
+  addCategoryListToModel(categoryList,rootCategory,url,model);
+  model.put("rootCategory",rootCategory);
+}

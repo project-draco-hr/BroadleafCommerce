@@ -1,0 +1,16 @@
+{
+  boolean productFound=false;
+  String productId=request.getParameter("productId");
+  if (productId != null) {
+    Product product=catalogService.findProductById(new Long(productId));
+    if (product != null) {
+      productFound=validateProductAndAddToModel(product,model);
+    }
+  }
+ else {
+    Category currentCategory=(Category)model.get("currentCategory");
+    List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
+    model.put("currentProducts",productList);
+  }
+  return productFound;
+}

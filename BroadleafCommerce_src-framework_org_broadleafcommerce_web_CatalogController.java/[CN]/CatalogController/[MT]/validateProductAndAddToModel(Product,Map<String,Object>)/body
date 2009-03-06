@@ -1,0 +1,38 @@
+{
+  Category currentCategory=(Category)model.get("currentCategory");
+  Category rootCategory=(Category)model.get("rootCategory");
+  int productPosition=0;
+  List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
+  if (productList != null) {
+    model.put("currentProducts",productList);
+  }
+  productPosition=findProductPositionInList(product,productList);
+  if (productPosition == 0) {
+    currentCategory=product.getDefaultCategory();
+    productList=catalogService.findActiveProductsByCategory(currentCategory);
+    if (productList != null) {
+      model.put("currentProducts",productList);
+    }
+    String url=currentCategory.getGeneratedUrl();
+    List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(url);
+    if (categoryList != null && !addCategoryListToModel(categoryList,rootCategory,url,model)) {
+      productPosition=findProductPositionInList(product,productList);
+    }
+  }
+  if (productPosition != 0) {
+    model.put("productError",false);
+    model.put("currentProduct",product);
+    model.put("productPosition",productPosition);
+    if (productPosition != 1) {
+      model.put("previousProduct",productList.get(productPosition - 2));
+    }
+    if (productPosition < productList.size()) {
+      model.put("nextProduct",productList.get(productPosition));
+    }
+    model.put("totalProducts",productList.size());
+  }
+ else {
+    model.put("productError",true);
+  }
+  return (productPosition != 0);
+}
