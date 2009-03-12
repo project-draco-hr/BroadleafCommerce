@@ -1,6 +1,6 @@
 {
   Order order=((OfferContext)context).getSeedData();
-  BigDecimal subTotal=new BigDecimal("0");
+  Money subTotal=new Money(BigDecimal.ZERO);
   List<OrderItem> orderItems=orderService.findItemsForOrder(order);
   for (  OrderItem orderItem : orderItems) {
     subTotal.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
