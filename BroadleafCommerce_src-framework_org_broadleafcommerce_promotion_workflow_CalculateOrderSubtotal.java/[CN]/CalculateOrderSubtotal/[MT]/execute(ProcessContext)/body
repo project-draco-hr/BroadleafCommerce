@@ -1,5 +1,11 @@
 {
   Order order=((OfferContext)context).getSeedData();
+  BigDecimal subTotal=new BigDecimal("0");
+  List<OrderItem> orderItems=orderService.findItemsForOrder(order);
+  for (  OrderItem orderItem : orderItems) {
+    subTotal.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+  }
+  order.setSubTotal(subTotal);
   context.setSeedData(order);
   return context;
 }

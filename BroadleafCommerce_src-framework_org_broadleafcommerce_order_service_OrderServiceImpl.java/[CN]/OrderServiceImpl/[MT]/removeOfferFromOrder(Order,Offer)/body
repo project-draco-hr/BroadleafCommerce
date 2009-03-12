@@ -1,3 +1,8 @@
 {
-  return null;
+  List<OrderItem> orderItems=findItemsForOrder(order);
+  for (  OrderItem orderItem : orderItems) {
+    orderItem.getAppliedOffers().remove(offer);
+    orderItem.getCandidateOffers().remove(offer);
+  }
+  return order;
 }
