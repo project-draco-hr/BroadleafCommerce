@@ -1,0 +1,12 @@
+{
+  if (offer.getDiscountType() == OfferDiscountType.AMOUNT_OFF) {
+    return price.subtract(offer.getValue());
+  }
+  if (offer.getDiscountType() == OfferDiscountType.FIX_PRICE) {
+    return offer.getValue();
+  }
+  if (offer.getDiscountType() == OfferDiscountType.PERCENT_OFF) {
+    return price.multiply(offer.getValue().divide(new BigDecimal("100")));
+  }
+  return price;
+}
