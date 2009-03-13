@@ -24,7 +24,7 @@
     if (!shoppingCartPromotion.getCouponCode().isEmpty()) {
       output.write("CouponCode(code == \"" + shoppingCartPromotion.getCouponCode() + "\")"+ newLine+ tab);
     }
-    if (shoppingCartPromotion.getOrderTotal() > 0) {
+    if (shoppingCartPromotion.getOrderTotal().greaterThan(new Money(0))) {
       output.write("BroadleafOrder(orderTotal " + logicalOperator + " "+ shoppingCartPromotion.getOrderTotal()+ ")"+ newLine);
     }
     output.write("then" + newLine + tab);
