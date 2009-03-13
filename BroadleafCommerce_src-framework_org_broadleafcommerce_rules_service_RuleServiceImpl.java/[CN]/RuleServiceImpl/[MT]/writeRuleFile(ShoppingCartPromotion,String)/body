@@ -18,13 +18,13 @@
     String tab="\t";
     output.write("package org.broadleafcommerce.rules;" + newLine);
     output.write("import org.broadleafcommerce.rules.domain.CouponCode;" + newLine);
-    output.write("import org.broadleafcommerce.order.domain.Order;" + newLine);
+    output.write("import org.broadleafcommerce.order.domain.BroadleafOrder;" + newLine);
     output.write("rule \"" + shoppingCartPromotion.getName() + "\""+ newLine);
     output.write("when" + newLine + tab);
     if (!shoppingCartPromotion.getCouponCode().isEmpty()) {
       output.write("CouponCode(code == \"" + shoppingCartPromotion.getCouponCode() + "\")"+ newLine+ tab);
     }
-    if (shoppingCartPromotion.getOrderTotal().compareTo(BigDecimal.ZERO) > 0) {
+    if (shoppingCartPromotion.getOrderTotal() > 0) {
       output.write("BroadleafOrder(orderTotal " + logicalOperator + " "+ shoppingCartPromotion.getOrderTotal()+ ")"+ newLine);
     }
     output.write("then" + newLine + tab);
