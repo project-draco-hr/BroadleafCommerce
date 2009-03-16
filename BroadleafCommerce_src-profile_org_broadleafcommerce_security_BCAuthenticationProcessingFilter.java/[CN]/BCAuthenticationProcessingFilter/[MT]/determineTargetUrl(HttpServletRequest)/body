@@ -5,5 +5,10 @@
       return passwordChangeUri;
     }
   }
+  String refererUrl=(String)request.getSession().getAttribute(BC_LOGIN_SUCCESS_URL_KEY);
+  if (refererUrl != null) {
+    removeLoginSuccessUrl(request);
+    return refererUrl;
+  }
   return super.determineTargetUrl(request);
 }
