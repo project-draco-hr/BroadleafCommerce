@@ -2,8 +2,12 @@
   Money total=new Money(BigDecimal.ZERO);
   List<OrderItem> orderItemList=orderItemDao.readOrderItemsForOrder(order);
   for (  OrderItem item : orderItemList) {
+    if (item.getPrice() == null) {
+      item.setPrice(item.getSalePrice());
+    }
     total=total.add(item.getPrice());
   }
+  order.setSubTotal(total);
   List<FulfillmentGroup> fulfillmentGroupList=fulfillmentGroupDao.readFulfillmentGroupsForOrder(order);
   for (  FulfillmentGroup fulfillmentGroup : fulfillmentGroupList) {
     total=total.add(fulfillmentGroup.getRetailPrice());
