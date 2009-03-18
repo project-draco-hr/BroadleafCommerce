@@ -1,16 +1,35 @@
 {
+  List<Offer> qualifiedOrderOffers=new ArrayList<Offer>();
+  List<ItemOffer> qualifiedItemOffers=new ArrayList<ItemOffer>();
   order.removeAllOffers();
-  if (offers != null) {
-    order.setCandaditeOffers(offers);
-    distributeItemOffers(order,offers);
-    boolean e1wins=true;
-    boolean e2wins=false;
-    boolean e3wins=false;
-    if (e1wins) {
+  order.setCandaditeOffers(new ArrayList<Offer>());
+  order=pricingService.calculateOrderTotal(order);
+  List<Offer> offersWithValidDates=removeOutOfDateOffers(offers);
+  if (offersWithValidDates != null) {
+    for (    Offer offer : offersWithValidDates) {
+      if (offer.getType().equals(OfferType.ORDER)) {
+        offer=calculateAtomOfferDiscount(offer,order.getSubTotal());
+        qualifiedOrderOffers.add(offer);
+      }
+      if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+        for (        OrderItem orderItem : order.getOrderItems()) {
+          if (couldOfferApplyToOrderItem(offer,order,orderItem))           qualifiedItemOffers.add(new CandidateOffer(offer,orderItem.getRetailPrice(),orderItem.getSalePrice()));
+        }
+      }
+      if (offer.getType().equals(OfferType.FULLFILLMENT_GROUP)) {
+      }
     }
-    if (e2wins) {
+    Collections.sort(qualifiedOrderOffers,new BeanComparator("priority",new BeanComparator("discountedPrice")));
+    Collections.sort(qualifiedItemOffers,new BeanComparator("priority",new BeanComparator("discountedPrice")));
+    order.setCandaditeOffers(qualifiedOrderOffers);
+    for (    OrderItem orderItem : order.getOrderItems()) {
+      orderItem.setCandidateItemOffers(qualifiedItemOffers);
     }
-    if (e3wins) {
+    for (    OrderItem orderItem : order.getOrderItems()) {
+      for (      Offer offer : offersWithValidDates) {
+        if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+        }
+      }
     }
   }
 }
