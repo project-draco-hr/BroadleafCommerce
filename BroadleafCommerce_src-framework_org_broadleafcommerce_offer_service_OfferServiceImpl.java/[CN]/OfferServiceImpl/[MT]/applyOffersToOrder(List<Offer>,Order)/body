@@ -26,8 +26,18 @@
       orderItem.setCandidateItemOffers(qualifiedItemOffers);
     }
     for (    OrderItem orderItem : order.getOrderItems()) {
-      for (      Offer offer : offersWithValidDates) {
-        if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+      for (      ItemOffer itemOffer : qualifiedItemOffers) {
+        if (orderItem.getSalePrice().greaterThan(itemOffer.getDiscountedPrice())) {
+          if (itemOffer.getOffers().size() > 0) {
+            for (            Offer offer : itemOffer.getOffers()) {
+              if (offer.isStackable()) {
+                applyItemOffer(orderItem,itemOffer);
+              }
+            }
+          }
+ else {
+            applyItemOffer(orderItem,itemOffer);
+          }
         }
       }
     }
