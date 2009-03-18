@@ -15,7 +15,9 @@
     buffer=new StringBuffer();
   }
  else   if (qName.equals(STATE_TAG)) {
-    address.setStateProvRegion(buffer.toString().trim());
+    StateProvince stateProvince=new StateProvinceImpl();
+    stateProvince.setShortName(buffer.toString().trim());
+    address.setStateProvRegion(stateProvince);
     buffer=new StringBuffer();
   }
  else   if (qName.equals(ZIP5_TAG)) {
