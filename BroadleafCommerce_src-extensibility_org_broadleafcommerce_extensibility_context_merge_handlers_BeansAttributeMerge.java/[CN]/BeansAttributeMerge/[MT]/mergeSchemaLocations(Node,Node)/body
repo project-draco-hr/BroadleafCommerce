@@ -1,0 +1,21 @@
+{
+  String[] items1=location1.getNodeValue().split("[\\s\\n\\r]+");
+  String[] items2=location2.getNodeValue().split("[\\s\\n\\r]+");
+  ArrayList<String> finalItems=new ArrayList<String>();
+  for (int j=0; j < items1.length; j++) {
+    finalItems.add(items1[j]);
+  }
+  for (int j=0; j < items2.length; j++) {
+    finalItems.add(items2[j]);
+  }
+  StringBuffer sb=new StringBuffer();
+  Iterator<String> itr=finalItems.iterator();
+  while (itr.hasNext()) {
+    sb.append(itr.next());
+    if (itr.hasNext()) {
+      sb.append(" ");
+    }
+  }
+  location1.setNodeValue(sb.toString());
+  return location1;
+}

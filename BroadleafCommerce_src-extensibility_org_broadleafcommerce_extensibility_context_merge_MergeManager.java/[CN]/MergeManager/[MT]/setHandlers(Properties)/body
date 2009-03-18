@@ -1,0 +1,52 @@
+{
+  ArrayList<MergeHandler> handlers=new ArrayList<MergeHandler>();
+  String[] keys={};
+  keys=props.keySet().toArray(keys);
+  for (int j=0; j < keys.length; j++) {
+    if (keys[j].startsWith("handler.")) {
+      MergeHandler temp=(MergeHandler)Class.forName(props.getProperty(keys[j])).newInstance();
+      String name=keys[j].substring(8,keys[j].length());
+      temp.setName(name);
+      String priority=props.getProperty("priority." + name);
+      if (priority != null) {
+        temp.setPriority(Integer.parseInt(priority));
+      }
+      String xpath=props.getProperty("xpath." + name);
+      if (priority != null) {
+        temp.setXPath(xpath);
+      }
+      handlers.add(temp);
+    }
+  }
+  MergeHandler[] explodedView={};
+  explodedView=handlers.toArray(explodedView);
+  Comparator<Object> nameCompare=new Comparator<Object>(){
+    @Override public int compare(    Object arg0,    Object arg1){
+      return ((MergeHandler)arg0).getName().compareTo(((MergeHandler)arg1).getName());
+    }
+  }
+;
+  Arrays.sort(explodedView,nameCompare);
+  ArrayList<MergeHandler> finalHandlers=new ArrayList<MergeHandler>();
+  for (int j=0; j < explodedView.length; j++) {
+    MergeHandler temp=explodedView[j];
+    if (temp.getName().indexOf(".") >= 0) {
+      String parentName=temp.getName().substring(0,temp.getName().lastIndexOf("."));
+      int pos=Arrays.binarySearch(explodedView,parentName,nameCompare);
+      if (pos >= 0) {
+        MergeHandler[] parentHandlers=explodedView[pos].getChildren();
+        MergeHandler[] newHandlers=new MergeHandler[parentHandlers.length + 1];
+        System.arraycopy(parentHandlers,0,newHandlers,0,parentHandlers.length);
+        newHandlers[newHandlers.length - 1]=temp;
+        Arrays.sort(newHandlers);
+        explodedView[pos].setChildren(newHandlers);
+      }
+    }
+ else {
+      finalHandlers.add(temp);
+    }
+  }
+  this.handlers=new MergeHandler[0];
+  this.handlers=finalHandlers.toArray(this.handlers);
+  Arrays.sort(this.handlers);
+}

@@ -1,0 +1,34 @@
+{
+  NamedNodeMap attributes1=node1.getAttributes();
+  NamedNodeMap attributes2=node2.getAttributes();
+  Document doc=(Document)MergeManager.getCurrentDocument();
+  Element beans=doc.createElement("beans");
+  Node schemaLocation=null;
+  ArrayList<Node> allAttributes=new ArrayList<Node>();
+  int length=attributes1.getLength();
+  for (int j=0; j < length; j++) {
+    Node temp=attributes1.item(j);
+    if (temp.getNodeName().contains("schemaLocation")) {
+      schemaLocation=temp.cloneNode(true);
+    }
+ else {
+      allAttributes.add(temp.cloneNode(true));
+    }
+  }
+  length=attributes2.getLength();
+  for (int j=0; j < length; j++) {
+    Node temp=attributes2.item(j);
+    if (temp.getNodeName().contains("schemaLocation") && schemaLocation != null) {
+      schemaLocation=mergeSchemaLocations(schemaLocation,temp);
+    }
+ else {
+      allAttributes.add(temp.cloneNode(true));
+    }
+  }
+  allAttributes.add(schemaLocation);
+  Iterator<Node> itr=allAttributes.iterator();
+  while (itr.hasNext()) {
+    beans.setAttributeNode((Attr)doc.importNode(itr.next(),true));
+  }
+  doc.appendChild(beans);
+}
