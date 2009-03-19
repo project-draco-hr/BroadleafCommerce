@@ -2,7 +2,14 @@
   Resource configResource=null;
   InputStream merged=null;
   try {
-    merged=merge(sources);
+    List<String> mappingFiles=new ArrayList<String>();
+    InputStream[] inMemoryStreams=new InputStream[sources.length];
+    for (int j=0; j < sources.length; j++) {
+      byte[] sourceArray=buildArrayFromStream(sources[j]);
+      compileMappingFiles(mappingFiles,sourceArray);
+      inMemoryStreams[j]=new ByteArrayInputStream(sourceArray);
+    }
+    merged=merge(inMemoryStreams);
     ByteArrayOutputStream baos=new ByteArrayOutputStream();
     boolean eof=false;
     while (!eof) {
@@ -26,6 +33,12 @@ catch (  MergeManagerSetupException e) {
     throw new FatalBeanException("Unable to merge source and patch locations",e);
   }
 catch (  IOException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  SAXException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  ParserConfigurationException e) {
     throw new FatalBeanException("Unable to merge source and patch locations",e);
   }
  finally {

@@ -2,7 +2,7 @@
   Properties defaultProperties=new Properties();
   defaultProperties.load(MergeManager.class.getResourceAsStream("default.properties"));
   Properties props;
-  String overrideFileClassPath=System.getProperty("org.broadleafcommerce.extensibility.context.merge.handlers.merge.properties");
+  String overrideFileClassPath=System.getProperty(MERGE_DEFINITION_SYSTEM_PROPERTY);
   if (overrideFileClassPath != null) {
     props=new Properties(defaultProperties);
     props.load(MergeManager.class.getClassLoader().getResourceAsStream(overrideFileClassPath));
