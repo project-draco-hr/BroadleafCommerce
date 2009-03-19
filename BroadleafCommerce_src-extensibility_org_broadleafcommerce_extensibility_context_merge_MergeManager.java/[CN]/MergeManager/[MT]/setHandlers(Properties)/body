@@ -31,8 +31,13 @@
   for (int j=0; j < explodedView.length; j++) {
     MergeHandler temp=explodedView[j];
     if (temp.getName().indexOf(".") >= 0) {
-      String parentName=temp.getName().substring(0,temp.getName().lastIndexOf("."));
-      int pos=Arrays.binarySearch(explodedView,parentName,nameCompare);
+      final String parentName=temp.getName().substring(0,temp.getName().lastIndexOf("."));
+      int pos=Arrays.binarySearch(explodedView,new MergeHandlerAdapter(){
+        @Override public String getName(){
+          return parentName;
+        }
+      }
+,nameCompare);
       if (pos >= 0) {
         MergeHandler[] parentHandlers=explodedView[pos].getChildren();
         MergeHandler[] newHandlers=new MergeHandler[parentHandlers.length + 1];
