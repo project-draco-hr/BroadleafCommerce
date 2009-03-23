@@ -49,5 +49,22 @@
         }
       }
     }
+    Money newOrderTotal=pricingService.calculateOrderTotal(order).getSubTotal();
+    for (    Offer offer : qualifiedOrderOffers) {
+      if (order.getCandidateOffers().contains(offer)) {
+        if (newOrderTotal.greaterThan(order.getSubTotal())) {
+          if (!order.isMarkedForOffer() || (order.isMarkedForOffer() && offer.isApplyDiscountToMarkedItems())) {
+            if (order.isMarkedForOffer()) {
+              if (offer.isStackable()) {
+                applyOrderOffer(order,offer);
+              }
+            }
+ else {
+              applyOrderOffer(order,offer);
+            }
+          }
+        }
+      }
+    }
   }
 }
