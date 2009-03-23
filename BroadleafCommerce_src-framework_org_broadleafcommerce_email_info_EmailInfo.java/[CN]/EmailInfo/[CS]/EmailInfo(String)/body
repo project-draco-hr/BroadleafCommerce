@@ -1,0 +1,11 @@
+{
+  Properties defaults=new Properties();
+  defaults.load(EmailInfo.class.getResourceAsStream("/com/containerstore/web/email/props/defaultEmail.properties"));
+  Properties props=new Properties(defaults);
+  props.load(EmailInfo.class.getResourceAsStream(propertiesPath));
+  setEmailType(props.getProperty("emailType"));
+  setEmailTemplate(props.getProperty("emailTemplate"));
+  setSubject(props.getProperty("subject"));
+  setFromAddress(props.getProperty("fromAddress"));
+  setBccAddress(props.getProperty("bccAddress"));
+}

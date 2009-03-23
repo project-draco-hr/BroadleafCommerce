@@ -1,0 +1,9 @@
+{
+  props.put("serverInfo",serverInfo);
+  AbstractEmailTargetUser emailUser=(AbstractEmailTargetUser)props.get("user");
+  EmailInfo info=(EmailInfo)props.get("info");
+  Long emailId=emailTrackingManager.createTrackedEmail(emailUser.getEmailAddress(),info.getEmailType(),null);
+  props.put("emailTrackingId",emailId);
+  emailServiceProducer.send(props);
+  return true;
+}

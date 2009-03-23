@@ -1,0 +1,27 @@
+{
+  try {
+    final HashMap props=(HashMap)((ObjectMessage)message).getObject();
+    MimeMessagePreparator preparator=new MimeMessagePreparator(){
+      public void prepare(      MimeMessage mimeMessage) throws Exception {
+        AbstractEmailTargetUser emailUser=(AbstractEmailTargetUser)props.get("user");
+        EmailInfo info=(EmailInfo)props.get("info");
+        MimeMessageHelper message=new MimeMessageHelper(mimeMessage);
+        message.setTo(emailUser.getEmailAddress());
+        message.setFrom(info.getFromAddress());
+        message.setSubject(info.getSubject());
+        message.setBcc(info.getBccAddress());
+        props.put("number",new NumberTool());
+        String text=VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,info.getEmailTemplate(),props);
+        message.setText(text,true);
+      }
+    }
+;
+    this.mailSender.send(preparator);
+  }
+ catch (  MailException e) {
+    throw new EmailException(e);
+  }
+catch (  JMSException e) {
+    throw new EmailException(e);
+  }
+}
