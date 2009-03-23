@@ -1,0 +1,20 @@
+{
+  if (nextId == null || batchSize == null || batchSize.equals(0L)) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("I don't have the next id, going to the database");
+    }
+    IdGeneration idGeneration=idGenerationDao.findNextId(idType);
+    nextId=idGeneration.getBatchStart();
+    batchSize=idGeneration.getBatchSize();
+    idGeneration.setBatchStart(nextId + batchSize);
+    idGenerationDao.updateNextId(idGeneration);
+  }
+ else {
+    if (logger.isDebugEnabled()) {
+      logger.debug("I already have the next id");
+    }
+  }
+  Long retId=nextId++;
+  batchSize--;
+  return retId;
+}

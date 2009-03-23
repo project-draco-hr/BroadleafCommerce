@@ -1,0 +1,6 @@
+{
+  Query query=em.createNamedQuery("BC_FIND_NEXT_ID");
+  query.setParameter("idType",idType);
+  query.setHint("org.hibernate.cacheable",false);
+  return (IdGeneration)query.getSingleResult();
+}
