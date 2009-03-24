@@ -2,7 +2,9 @@
   Properties defaults=new Properties();
   defaults.load(EmailInfo.class.getResourceAsStream("/org/broadleafcommerce/email/props/defaultEmail.properties"));
   Properties props=new Properties(defaults);
-  props.load(EmailInfo.class.getResourceAsStream(propertiesPath));
+  if (propertiesPath != null) {
+    props.load(EmailInfo.class.getResourceAsStream(propertiesPath));
+  }
   setEmailType(props.getProperty("emailType"));
   setEmailTemplate(props.getProperty("emailTemplate"));
   setSubject(props.getProperty("subject"));
