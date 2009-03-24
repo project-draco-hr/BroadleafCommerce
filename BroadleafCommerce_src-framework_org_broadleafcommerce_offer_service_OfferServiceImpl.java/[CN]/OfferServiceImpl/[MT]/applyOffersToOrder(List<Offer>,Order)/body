@@ -2,7 +2,7 @@
   List<Offer> qualifiedOrderOffers=new ArrayList<Offer>();
   List<ItemOffer> qualifiedItemOffers=new ArrayList<ItemOffer>();
   order.removeAllOffers();
-  order.setCandaditeOffers(new ArrayList<Offer>());
+  order.setCandidateOffers(new ArrayList<Offer>());
   order=pricingService.calculateOrderTotal(order);
   List<Offer> offersWithValidDates=removeOutOfDateOffers(offers);
   if (offersWithValidDates != null) {
@@ -25,7 +25,7 @@
     Collections.sort(qualifiedItemOffers,new BeanComparator("discountedPrice"));
     Collections.reverse(qualifiedItemOffers);
     Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
-    order.setCandaditeOffers(qualifiedOrderOffers);
+    order.setCandidateOffers(qualifiedOrderOffers);
     for (    OrderItem orderItem : order.getOrderItems()) {
       orderItem.setCandidateItemOffers(qualifiedItemOffers);
     }
@@ -34,15 +34,15 @@
         if (orderItem.getCandidateItemOffers().contains(itemOffer)) {
           if (itemOffer.getDiscountedPrice().greaterThan(orderItem.getSalePrice())) {
             if (requiresMultipleSkus(itemOffer)) {
-              if (!orderItem.isMarkedForOffer() || (orderItem.isMarkedForOffer() && itemOffer.getOffer().isApplyDiscountToMarkedItems())) {
-                if (orderItem.isMarkedForOffer()) {
-                  if (itemOffer.getOffer().isStackable()) {
-                    applyItemOffer(orderItem,itemOffer);
-                  }
-                }
- else {
+            }
+            if (!orderItem.isMarkedForOffer() || (orderItem.isMarkedForOffer() && itemOffer.getOffer().isApplyDiscountToMarkedItems())) {
+              if (orderItem.isMarkedForOffer()) {
+                if (itemOffer.getOffer().isStackable()) {
                   applyItemOffer(orderItem,itemOffer);
                 }
+              }
+ else {
+                applyItemOffer(orderItem,itemOffer);
               }
             }
           }
