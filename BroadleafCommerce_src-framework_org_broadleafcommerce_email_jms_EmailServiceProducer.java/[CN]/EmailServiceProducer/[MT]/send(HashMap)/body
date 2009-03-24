@@ -2,6 +2,8 @@
   emailServiceTemplate.send(emailServiceDestination,new MessageCreator(){
     public Message createMessage(    Session session) throws JMSException {
       ObjectMessage message=session.createObjectMessage(props);
+      EmailInfo info=(EmailInfo)props.get("info");
+      message.setJMSPriority(Integer.parseInt(info.getSendAsyncPriority()));
       return message;
     }
   }

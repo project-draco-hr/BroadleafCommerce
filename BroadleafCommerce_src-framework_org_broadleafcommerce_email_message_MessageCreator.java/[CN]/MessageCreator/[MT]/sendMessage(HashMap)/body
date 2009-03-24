@@ -1,0 +1,24 @@
+{
+  MimeMessagePreparator preparator=new MimeMessagePreparator(){
+    public void prepare(    MimeMessage mimeMessage) throws Exception {
+      EmailTarget emailUser=(EmailTarget)props.get("user");
+      EmailInfo info=(EmailInfo)props.get("info");
+      MimeMessageHelper message=new MimeMessageHelper(mimeMessage);
+      message.setTo(emailUser.getEmailAddress());
+      message.setFrom(info.getFromAddress());
+      message.setSubject(info.getSubject());
+      if (emailUser.getBCCAddresses() != null && emailUser.getBCCAddresses().length > 0) {
+        message.setBcc(emailUser.getBCCAddresses());
+      }
+      if (emailUser.getCCAddresses() != null && emailUser.getCCAddresses().length > 0) {
+        message.setCc(emailUser.getCCAddresses());
+      }
+      HashMap copy=(HashMap)props.clone();
+      copy.put("number",new NumberTool());
+      String text=VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,info.getEmailTemplate(),copy);
+      message.setText(text,true);
+    }
+  }
+;
+  this.mailSender.send(preparator);
+}
