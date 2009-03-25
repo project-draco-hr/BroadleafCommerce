@@ -1,17 +1,21 @@
 {
   Properties defaults=new Properties();
   defaults.load(EmailInfo.class.getResourceAsStream("/org/broadleafcommerce/email/props/defaultEmail.properties"));
-  Properties props=new Properties(defaults);
-  if (propertiesPath != null) {
-    props.load(EmailInfo.class.getResourceAsStream(propertiesPath));
+  Properties props=null;
+  if (propertiesPath != null && propertiesPath.length > 0) {
+    for (int j=0; j < propertiesPath.length; j++) {
+      props=new Properties(defaults);
+      props.load(EmailInfo.class.getResourceAsStream(propertiesPath[j]));
+      defaults=props;
+    }
+  }
+ else {
+    props=new Properties(defaults);
   }
   setEmailType(props.getProperty("emailType"));
   setEmailTemplate(props.getProperty("emailTemplate"));
   setSubject(props.getProperty("subject"));
   setFromAddress(props.getProperty("fromAddress"));
-  setSiteHttpServerName(props.getProperty("siteHttpServerName"));
-  setSiteHttpServerPort(props.getProperty("siteHttpServerPort"));
-  setSiteSecureHttpServerPort(props.getProperty("siteSecureHttpServerPort"));
   setSendEmailReliableAsync(props.getProperty("sendEmailReliableAsync"));
   setSendAsyncPriority(props.getProperty("sendAsyncPriority"));
 }

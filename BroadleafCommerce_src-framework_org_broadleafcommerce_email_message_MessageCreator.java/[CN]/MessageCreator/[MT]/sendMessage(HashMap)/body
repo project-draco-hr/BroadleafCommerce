@@ -3,6 +3,7 @@
     public void prepare(    MimeMessage mimeMessage) throws Exception {
       EmailTarget emailUser=(EmailTarget)props.get("user");
       EmailInfo info=(EmailInfo)props.get("info");
+      ServerInfo serverInfo=(ServerInfo)props.get("serverInfo");
       MimeMessageHelper message=new MimeMessageHelper(mimeMessage);
       message.setTo(emailUser.getEmailAddress());
       message.setFrom(info.getFromAddress());
@@ -15,6 +16,7 @@
       }
       HashMap copy=(HashMap)props.clone();
       copy.put("number",new NumberTool());
+      copy.put("serverInfo",serverInfo);
       String text=VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,info.getEmailTemplate(),copy);
       message.setText(text,true);
     }
