@@ -1,6 +1,6 @@
 {
   List<Offer> qualifiedOrderOffers=new ArrayList<Offer>();
-  List<ItemOffer> qualifiedItemOffers=new ArrayList<ItemOffer>();
+  List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
   order.removeAllOffers();
   order.setCandidateOffers(new ArrayList<Offer>());
   order=pricingService.calculateOrderTotal(order);
@@ -13,7 +13,7 @@
       }
       if (offer.getType().equals(OfferType.ORDER_ITEM)) {
         for (        OrderItem orderItem : order.getOrderItems()) {
-          if (couldOfferApplyToOrderItem(offer,order,orderItem))           qualifiedItemOffers.add(new CandidateOffer(offer,orderItem.getRetailPrice(),orderItem.getSalePrice()));
+          if (couldOfferApplyToOrderItem(offer,order,orderItem))           qualifiedItemOffers.add(new CandidateItemOfferImpl(orderItem,offer));
         }
       }
       if (offer.getType().equals(OfferType.FULLFILLMENT_GROUP)) {
@@ -30,7 +30,7 @@
       orderItem.setCandidateItemOffers(qualifiedItemOffers);
     }
     for (    OrderItem orderItem : order.getOrderItems()) {
-      for (      ItemOffer itemOffer : qualifiedItemOffers) {
+      for (      CandidateItemOffer itemOffer : qualifiedItemOffers) {
         if (orderItem.getCandidateItemOffers().contains(itemOffer)) {
           if (itemOffer.getDiscountedPrice().greaterThan(orderItem.getSalePrice())) {
             if (requiresMultipleSkus(itemOffer)) {
