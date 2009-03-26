@@ -5,5 +5,8 @@
   if (customer.getUnencodedPassword() != null) {
     customer.setPassword(passwordEncoder.encodePassword(customer.getUnencodedPassword(),null));
   }
+  if (customer.getUnencodedChallengeAnswer() != null && !customer.getUnencodedChallengeAnswer().equals(customer.getChallengeAnswer())) {
+    customer.setChallengeAnswer(passwordEncoder.encodePassword(customer.getUnencodedChallengeAnswer(),null));
+  }
   return customerDao.maintainCustomer(customer);
 }
