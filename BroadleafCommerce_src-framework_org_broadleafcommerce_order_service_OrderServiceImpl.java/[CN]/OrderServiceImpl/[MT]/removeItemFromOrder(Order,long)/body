@@ -1,0 +1,9 @@
+{
+  OrderItem orderItem=orderItemDao.readOrderItemById(orderItemId);
+  if (orderItem == null) {
+    return null;
+  }
+  orderItemDao.deleteOrderItem(orderItem);
+  pricingService.calculateOrderTotal(order);
+  return order;
+}
