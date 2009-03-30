@@ -1,0 +1,25 @@
+{
+  HashMap<String,Object> model=new HashMap<String,Object>();
+  addCategoryToModel(request,model);
+  boolean productFound=addProductsToModel(request,model);
+  String view=defaultCategoryView;
+  if (productFound) {
+    view=defaultProductView;
+  }
+ else {
+    Category currentCategory=(Category)model.get("currentCategory");
+    if (currentCategory == null) {
+      view=defaultCategoryView;
+    }
+ else     if (currentCategory.getUrl() != null) {
+      return new ModelAndView("redirect:" + currentCategory.getUrl().replace("index.jhtml",""));
+    }
+ else     if (currentCategory.getDisplayTemplate() != null) {
+      view=categoryTemplatePrefix + currentCategory.getDisplayTemplate();
+    }
+ else {
+      view=defaultCategoryView;
+    }
+  }
+  return new ModelAndView(view,model);
+}
