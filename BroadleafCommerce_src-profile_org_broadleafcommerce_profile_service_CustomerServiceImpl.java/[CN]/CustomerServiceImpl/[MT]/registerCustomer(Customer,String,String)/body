@@ -1,0 +1,10 @@
+{
+  RegistrationResponse response=new RegistrationResponse(customer,customer.getClass().getSimpleName());
+  if (!response.hasErrors()) {
+    customer.setRegistered(true);
+    Customer retCustomer=saveCustomer(customer);
+    notifyListeners(retCustomer);
+    response.setCustomer(retCustomer);
+  }
+  return response;
+}
