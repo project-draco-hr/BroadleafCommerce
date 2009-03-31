@@ -1,0 +1,11 @@
+{
+  List<SkuAvailability> skuAvailabilityList=availabilityService.checkSKUAvailability(skuIdList,false);
+  assert(skuAvailabilityList.size() == 5);
+  int skuCount=0;
+  for (  SkuAvailability skuAvailability : skuAvailabilityList) {
+    if (skuAvailability.getAvailabilityStatus() != null && skuAvailability.getAvailabilityStatus().isAvailable()) {
+      skuCount++;
+    }
+  }
+  assert(skuCount == 1);
+}
