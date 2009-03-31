@@ -9,6 +9,7 @@
   productPosition=findProductPositionInList(product,productList);
   if (productPosition == 0) {
     currentCategory=product.getDefaultCategory();
+    model.put("currentCategory",currentCategory);
     productList=catalogService.findActiveProductsByCategory(currentCategory);
     if (productList != null) {
       model.put("currentProducts",productList);
