@@ -1,0 +1,7 @@
+{
+  Query query=em.createNamedQuery("BC_READ_ADDRESS_BY_ID_AND_CUSTOMER_ID");
+  query.setParameter("customerId",customerId);
+  query.setParameter("addressId",addressId);
+  List<Address> addresses=query.getResultList();
+  return addresses.isEmpty() ? null : addresses.get(0);
+}
