@@ -5,10 +5,9 @@
       return passwordChangeUri;
     }
   }
-  String sessionUrl=(String)request.getSession().getAttribute(BC_LOGIN_SUCCESS_URL_KEY);
-  if (sessionUrl != null) {
-    removeLoginSuccessUrl(request);
-    return sessionUrl;
+  String successUrlParam=request.getParameter("successUrl");
+  if (StringUtils.isNotEmpty(successUrlParam)) {
+    return successUrlParam;
   }
   return super.determineTargetUrl(request);
 }
