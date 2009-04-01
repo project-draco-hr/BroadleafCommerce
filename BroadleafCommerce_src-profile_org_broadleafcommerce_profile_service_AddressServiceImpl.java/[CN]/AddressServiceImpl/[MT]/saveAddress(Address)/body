@@ -1,17 +1,3 @@
 {
-  List<Address> activeAddresses=readActiveAddressesByCustomerId(address.getCustomer().getId());
-  if (activeAddresses.size() == 0) {
-    address.setDefault(true);
-  }
- else {
-    if (address.isDefault()) {
-      for (      Address activeAddress : activeAddresses) {
-        if (activeAddress.getId() != address.getId() && activeAddress.isDefault()) {
-          activeAddress.setDefault(false);
-          addressDao.maintainAddress(activeAddress);
-        }
-      }
-    }
-  }
   return addressDao.maintainAddress(address);
 }
