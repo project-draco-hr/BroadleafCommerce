@@ -1,11 +1,16 @@
 {
-  List<SkuAvailability> skuAvailabilityList=availabilityService.checkSKUAvailability(skuIdList,false);
+  List<SkuAvailability> skuAvailabilityList=availabilityService.lookupSKUAvailability(skuIdList,false);
   assert(skuAvailabilityList.size() == 5);
-  int skuCount=0;
+  int backorderCount=0;
+  int availableCount=0;
   for (  SkuAvailability skuAvailability : skuAvailabilityList) {
-    if (skuAvailability.getAvailabilityStatus() != null && skuAvailability.getAvailabilityStatus().isAvailable()) {
-      skuCount++;
+    if (skuAvailability.getAvailabilityStatus() != null && skuAvailability.getAvailabilityStatus().equals("backordered")) {
+      backorderCount++;
+    }
+    if (skuAvailability.getAvailabilityStatus() != null && skuAvailability.getAvailabilityStatus().equals("available")) {
+      availableCount++;
     }
   }
-  assert(skuCount == 1);
+  assert(backorderCount == 1);
+  assert(availableCount == 1);
 }
