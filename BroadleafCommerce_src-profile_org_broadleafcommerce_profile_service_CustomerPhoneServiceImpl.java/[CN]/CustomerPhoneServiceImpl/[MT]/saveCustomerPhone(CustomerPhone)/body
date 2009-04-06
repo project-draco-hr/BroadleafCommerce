@@ -1,0 +1,17 @@
+{
+  List<CustomerPhone> activeCustomerPhones=readActiveCustomerPhonesByCustomerId(customerPhone.getCustomerId());
+  if (activeCustomerPhones.size() == 0) {
+    customerPhone.getPhone().setDefault(true);
+  }
+ else {
+    if (customerPhone.getPhone().isDefault()) {
+      for (      CustomerPhone activeCustomerPhone : activeCustomerPhones) {
+        if (activeCustomerPhone.getId() != customerPhone.getId() && activeCustomerPhone.getPhone().isDefault()) {
+          activeCustomerPhone.getPhone().setDefault(false);
+          customerPhoneDao.maintainCustomerPhone(activeCustomerPhone);
+        }
+      }
+    }
+  }
+  return customerPhoneDao.maintainCustomerPhone(customerPhone);
+}
