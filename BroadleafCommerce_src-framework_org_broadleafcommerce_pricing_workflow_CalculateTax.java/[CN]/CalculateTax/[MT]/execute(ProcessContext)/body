@@ -1,5 +1,7 @@
 {
   Order order=((OfferContext)context).getSeedData();
+  TaxModule module=taxService.getTaxModuleByName(taxModuleName);
+  order=module.calculateTaxForOrder(order);
   context.setSeedData(order);
   return context;
 }

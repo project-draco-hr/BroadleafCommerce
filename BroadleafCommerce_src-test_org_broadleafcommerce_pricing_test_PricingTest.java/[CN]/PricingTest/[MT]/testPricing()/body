@@ -1,0 +1,9 @@
+{
+  Order order=new OrderImpl();
+  Money total=new Money(5D);
+  order.setSubTotal(total);
+  order.setTotal(total);
+  pricingWorkflow.doActivities(order);
+  assert(order.getTotal().greaterThan(order.getSubTotal()));
+  assert(order.getTotal().equals(order.getSubTotal().multiply(1.05D)));
+}
