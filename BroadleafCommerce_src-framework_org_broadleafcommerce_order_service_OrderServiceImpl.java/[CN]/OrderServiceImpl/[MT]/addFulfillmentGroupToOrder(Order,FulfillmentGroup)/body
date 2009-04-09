@@ -1,41 +1,31 @@
 {
-  List<FulfillmentGroup> currentFulfillmentGroups=fulfillmentGroupDao.readFulfillmentGroupsForOrder(order);
   FulfillmentGroupImpl dfg;
   try {
     dfg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
   }
  catch (  NoResultException nre) {
-    return fulfillmentGroupDao.maintainDefaultFulfillmentGroup(createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order.getId()));
+    return createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order);
   }
   if (dfg.getId().equals(fulfillmentGroup.getId())) {
-    return fulfillmentGroupDao.maintainDefaultFulfillmentGroup(createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order.getId()));
-  }
- else   if (currentFulfillmentGroups.size() == 1) {
-    List<OrderItem> orderItems=orderItemDao.readOrderItemsForOrder(order);
-    List<FulfillmentGroupItem> fgItems=new ArrayList<FulfillmentGroupItem>();
-    for (    OrderItem orderItem : orderItems) {
-      fgItems.add(createFulfillmentGroupItemFromOrderItem(orderItem,dfg.getId()));
-    }
-    for (    FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
-      fgItems.remove(fulfillmentGroupItem);
-    }
-    dfg.setFulfillmentGroupItems(fgItems);
-    fulfillmentGroupDao.maintainDefaultFulfillmentGroup(dfg);
-    fulfillmentGroup.setOrderId(order.getId());
-    return fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+    return createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order);
   }
  else {
     fulfillmentGroup.setOrderId(order.getId());
-    for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
-      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
-        for (        FulfillmentGroupItem tempFgi : fg.getFulfillmentGroupItems()) {
-          if (tempFgi.getOrderItem().getId().equals(fgItem.getId())) {
-            fg.getFulfillmentGroupItems().remove(fg);
-            fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+    if (fulfillmentGroup.getFulfillmentGroupItems() != null) {
+      for (      FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+        for (        FulfillmentGroup fg : order.getFulfillmentGroups()) {
+          for (          FulfillmentGroupItem tempFgi : fg.getFulfillmentGroupItems()) {
+            if (tempFgi.getOrderItem().getId().equals(fgItem.getId())) {
+              fg.getFulfillmentGroupItems().remove(fg);
+            }
           }
+          fulfillmentGroupDao.maintainFulfillmentGroup(fg);
         }
       }
     }
-    return fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+    FulfillmentGroup returnedFg=fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+    order.addFulfillmentGroup(returnedFg);
+    maintainOrder(order);
+    return returnedFg;
   }
 }

@@ -1,5 +1,15 @@
 {
   orderItemDao.deleteOrderItem(item);
+  order.getFulfillmentGroups();
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
+      if (fgItem.getOrderItem().equals(item)) {
+        fulfillmentGroupItemDao.deleteFulfillmentGroupItem(fgItem);
+      }
+    }
+  }
   pricingService.calculateOrderTotal(order);
-  return order;
+  order.getOrderItems().remove(item);
+  orderDao.maintianOrder(order);
+  return orderDao.readOrderById(order.getId());
 }

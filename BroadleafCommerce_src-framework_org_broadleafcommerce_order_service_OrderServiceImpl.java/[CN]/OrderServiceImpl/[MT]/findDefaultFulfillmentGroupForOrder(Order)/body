@@ -1,7 +1,7 @@
 {
   FulfillmentGroupImpl fg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
   if (fg.getFulfillmentGroupItems().size() == 0) {
-    List<OrderItem> orderItems=orderItemDao.readOrderItemsForOrder(order);
+    List<OrderItem> orderItems=order.getOrderItems();
     List<FulfillmentGroupItem> fgItems=new ArrayList<FulfillmentGroupItem>();
     for (    OrderItem orderItem : orderItems) {
       fulfillmentGroupItemDao.create();

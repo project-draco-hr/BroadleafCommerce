@@ -1,0 +1,8 @@
+{
+  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer(),true);
+  for (  OrderItem orderItem : namedOrder.getOrderItems()) {
+    removeItemFromOrder(namedOrder,orderItem.getId());
+    addSkuToOrder(cartOrder,orderItem.getSku(),orderItem.getQuantity());
+  }
+  return cartOrder;
+}

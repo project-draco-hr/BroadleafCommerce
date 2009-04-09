@@ -1,9 +1,10 @@
 {
   FulfillmentGroupItem fgi=null;
+  Order order=orderDao.readOrderById(item.getOrderId());
   if (fulfillmentGroup.getId() == null) {
-    fulfillmentGroup=addFulfillmentGroupToOrder(item.getOrder(),fulfillmentGroup);
+    fulfillmentGroup=addFulfillmentGroupToOrder(order,fulfillmentGroup);
   }
-  for (  FulfillmentGroup fg : item.getOrder().getFulfillmentGroups()) {
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
     for (    FulfillmentGroupItem tempFgi : fg.getFulfillmentGroupItems()) {
       if (tempFgi.getOrderItem().getId().equals(item.getId())) {
         fgi=tempFgi;
@@ -12,7 +13,9 @@
       }
     }
   }
-  if (fgi == null)   fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup.getId());
+  if (fgi == null) {
+    fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup.getId());
+  }
   fulfillmentGroupItemDao.maintainFulfillmentGroupItem(fgi);
   return fulfillmentGroupDao.readFulfillmentGroupById(fulfillmentGroup.getId());
 }

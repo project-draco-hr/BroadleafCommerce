@@ -1,0 +1,11 @@
+{
+  if (orderStatus == null) {
+    return readOrdersForCustomer(customer.getId());
+  }
+ else {
+    Query query=em.createNamedQuery("BC_READ_ORDERS_BY_CUSTOMER_ID_AND_STATUS");
+    query.setParameter("customerId",customer.getId());
+    query.setParameter("orderStatus",orderStatus);
+    return query.getResultList();
+  }
+}
