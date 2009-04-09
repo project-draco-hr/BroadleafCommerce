@@ -1,9 +1,15 @@
 {
   Order order=new OrderImpl();
+  FulfillmentGroup group=new FulfillmentGroupImpl();
+  List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
+  groups.add(group);
+  order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
+  group.setPrice(total);
   order.setSubTotal(total);
   order.setTotal(total);
   pricingWorkflow.doActivities(order);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
-  assert(order.getTotal().equals(order.getSubTotal().multiply(1.05D)));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
+  assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax())));
 }

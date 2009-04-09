@@ -1,4 +1,12 @@
 {
-  order.setTotal(order.getSubTotal().multiply(factor + 1D));
+  order.setTotalTax(new Money(0));
+  List<FulfillmentGroup> groups=order.getFulfillmentGroups();
+  Iterator<FulfillmentGroup> itr=groups.iterator();
+  while (itr.hasNext()) {
+    FulfillmentGroup group=itr.next();
+    group.setTotalTax(group.getPrice().multiply(factor));
+    order.setTotalTax(order.getTotalTax().add(group.getTotalTax()));
+  }
+  order.setTotal(order.getTotal().add(order.getTotalTax()));
   return order;
 }
