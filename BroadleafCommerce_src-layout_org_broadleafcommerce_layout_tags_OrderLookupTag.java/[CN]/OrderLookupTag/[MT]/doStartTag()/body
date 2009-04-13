@@ -28,8 +28,10 @@
   }
   if (totalQuantityVar != null) {
     int orderItemsCount=0;
-    for (    OrderItem orderItem : order.getOrderItems()) {
-      orderItemsCount+=orderItem.getQuantity();
+    if (order.getOrderItems() != null) {
+      for (      OrderItem orderItem : order.getOrderItems()) {
+        orderItemsCount+=orderItem.getQuantity();
+      }
     }
     pageContext.setAttribute(totalQuantityVar,orderItemsCount);
   }
