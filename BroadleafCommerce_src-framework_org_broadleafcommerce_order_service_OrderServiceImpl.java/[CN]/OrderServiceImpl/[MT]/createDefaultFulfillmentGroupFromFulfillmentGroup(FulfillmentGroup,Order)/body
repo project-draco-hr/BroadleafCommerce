@@ -1,5 +1,5 @@
 {
-  FulfillmentGroupImpl newFg=fulfillmentGroupDao.createDefault();
+  FulfillmentGroup newFg=fulfillmentGroupDao.createDefault();
   newFg.setAddress(fulfillmentGroup.getAddress());
   newFg.setRetailPrice(fulfillmentGroup.getRetailPrice());
   newFg.setFulfillmentGroupItems(fulfillmentGroup.getFulfillmentGroupItems());
@@ -9,6 +9,9 @@
   newFg.setType(FulfillmentGroupType.DEFAULT);
   newFg=fulfillmentGroupDao.maintainDefaultFulfillmentGroup(newFg);
   order.addFulfillmentGroup(newFg);
-  maintainOrder(order);
+  order=maintainOrder(order);
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    newFg=addItemToFulfillmentGroup(orderItem,newFg,orderItem.getQuantity());
+  }
   return newFg;
 }
