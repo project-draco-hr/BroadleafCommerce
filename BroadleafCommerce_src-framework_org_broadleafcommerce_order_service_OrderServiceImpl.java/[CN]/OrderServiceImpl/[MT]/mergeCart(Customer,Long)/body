@@ -1,4 +1,5 @@
 {
+  MergeCartResponse mergeCartResponse=new MergeCartResponse();
   Order customerCart=findCartForCustomer(customer,false);
   Order anonymousCart=findOrderById(anonymousCartId);
   if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
@@ -6,10 +7,17 @@
       customerCart=findCartForCustomer(customer,true);
     }
     for (    OrderItem orderItem : anonymousCart.getOrderItems()) {
-      addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
+      if (orderItem.getSku().isActive()) {
+        addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
+        mergeCartResponse.getAddedItems().add(orderItem);
+      }
+ else {
+        mergeCartResponse.getRemovedItems().add(orderItem);
+      }
       removeItemFromOrder(anonymousCart,orderItem.getId());
       orderDao.deleteOrderForCustomer(anonymousCart);
     }
   }
-  return customerCart;
+  mergeCartResponse.setOrder(customerCart);
+  return mergeCartResponse;
 }
