@@ -1,0 +1,6 @@
+{
+  Customer loggedInCustomer=customerService.readCustomerByUsername((String)authResult.getPrincipal());
+  Customer anonymousCustomer=CustomerState.getCustomer(request);
+  Long anonymousCartId=orderService.findCartForCustomer(anonymousCustomer) == null ? null : orderService.findCartForCustomer(anonymousCustomer).getId();
+  orderService.mergeCart(loggedInCustomer,anonymousCartId);
+}

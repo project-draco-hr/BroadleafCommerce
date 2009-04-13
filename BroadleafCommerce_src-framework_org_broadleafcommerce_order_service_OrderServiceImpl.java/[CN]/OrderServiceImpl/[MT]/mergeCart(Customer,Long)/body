@@ -1,0 +1,15 @@
+{
+  Order customerCart=findCartForCustomer(customer,false);
+  Order anonymousCart=findOrderById(anonymousCartId);
+  if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
+    if (customerCart == null) {
+      customerCart=findCartForCustomer(customer,true);
+    }
+    for (    OrderItem orderItem : anonymousCart.getOrderItems()) {
+      addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
+      removeItemFromOrder(anonymousCart,orderItem.getId());
+      orderDao.deleteOrderForCustomer(anonymousCart);
+    }
+  }
+  return customerCart;
+}
