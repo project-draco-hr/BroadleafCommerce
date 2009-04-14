@@ -3,7 +3,7 @@
   List<OrderItem> orderItems=order.getOrderItems();
   if (orderItems != null && rollupOrderItems) {
     for (    OrderItem orderItem2 : orderItems) {
-      if (orderItem2.getSku().getId().equals(item.getId())) {
+      if (orderItem2.getSku().getId().equals(sku.getId())) {
         orderItem=orderItem2;
         break;
       }
@@ -14,7 +14,7 @@
   }
   orderItem.setProduct(product);
   orderItem.setCategory(category);
-  orderItem.setSku(item);
+  orderItem.setSku(sku);
   orderItem.setQuantity(orderItem.getQuantity() + quantity);
   orderItem.setOrderId(order.getId());
   return orderItem;
