@@ -4,9 +4,7 @@
   ReconstructCartResponse reconstructCartResponse=reconstructCart(customer);
   mergeCartResponse.setRemovedItems(reconstructCartResponse.getRemovedItems());
   customerCart=reconstructCartResponse.getOrder();
-  if (customerCart != null && customerCart.getId().equals(anonymousCartId)) {
-  }
- else   if (anonymousCartId != null) {
+  if ((customerCart == null || !customerCart.getId().equals(anonymousCartId)) && anonymousCartId != null) {
     Order anonymousCart=findOrderById(anonymousCartId);
     if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
       if (customerCart == null) {
