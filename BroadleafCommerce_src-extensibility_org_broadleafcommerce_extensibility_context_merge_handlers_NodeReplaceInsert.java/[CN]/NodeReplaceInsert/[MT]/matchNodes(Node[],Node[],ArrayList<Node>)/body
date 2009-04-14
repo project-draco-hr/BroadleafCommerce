@@ -26,6 +26,8 @@
   Arrays.sort(exhaustedNodes,hashCompare);
   List<Node> usedNodes=new ArrayList<Node>();
   Iterator<Node> itr=list.iterator();
+  Node parentNode=primaryNodes[0].getParentNode();
+  Document ownerDocument=parentNode.getOwnerDocument();
   while (itr.hasNext()) {
     Node node=itr.next();
     if (Element.class.isAssignableFrom(node.getClass()) && Arrays.binarySearch(exhaustedNodes,node,hashCompare) < 0) {
@@ -41,7 +43,7 @@
         usedNodes.add(node);
         continue;
       }
-      primaryNodes[0].getParentNode().appendChild(primaryNodes[0].getOwnerDocument().importNode(node.cloneNode(true),true));
+      parentNode.appendChild(ownerDocument.importNode(node.cloneNode(true),true));
       usedNodes.add(node);
     }
   }
