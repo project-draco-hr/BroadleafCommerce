@@ -4,9 +4,9 @@
   Long anonymousCartId=orderService.findCartForCustomer(anonymousCustomer) == null ? null : orderService.findCartForCustomer(anonymousCustomer).getId();
   MergeCartResponse mergeCartResponse=orderService.mergeCart(loggedInCustomer,anonymousCartId);
   if (!mergeCartResponse.getAddedItems().isEmpty()) {
-    request.getSession().setAttribute(BC_MERGE_CART_ITEMS_ADDED_SESSION_KEY,mergeCartResponse.getAddedItems());
+    request.getSession().setAttribute(mergeCartItemsAddedKey,mergeCartResponse.getAddedItems());
   }
   if (!mergeCartResponse.getRemovedItems().isEmpty()) {
-    request.getSession().setAttribute(BC_MERGE_CART_ITEMS_REMOVED_SESSION_KEY,mergeCartResponse.getRemovedItems());
+    request.getSession().setAttribute(mergeCartItemsRemovedKey,mergeCartResponse.getRemovedItems());
   }
 }
