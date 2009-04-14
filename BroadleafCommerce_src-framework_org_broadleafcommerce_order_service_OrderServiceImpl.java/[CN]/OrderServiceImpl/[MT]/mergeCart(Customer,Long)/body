@@ -7,7 +7,7 @@
       customerCart=findCartForCustomer(customer,true);
     }
     for (    OrderItem orderItem : anonymousCart.getOrderItems()) {
-      if (orderItem.getSku().isActive()) {
+      if (orderItem.getSku().isActive(orderItem.getProduct(),orderItem.getCategory())) {
         addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
         mergeCartResponse.getAddedItems().add(orderItem);
       }
