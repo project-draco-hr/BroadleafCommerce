@@ -1,21 +1,26 @@
 {
   MergeCartResponse mergeCartResponse=new MergeCartResponse();
   Order customerCart=findCartForCustomer(customer,false);
-  Order anonymousCart=findOrderById(anonymousCartId);
-  if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
-    if (customerCart == null) {
-      customerCart=findCartForCustomer(customer,true);
-    }
-    for (    OrderItem orderItem : anonymousCart.getOrderItems()) {
-      if (orderItem.getSku().isActive(orderItem.getProduct(),orderItem.getCategory())) {
-        addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
-        mergeCartResponse.getAddedItems().add(orderItem);
+  ReconstructCartResponse reconstructCartResponse=reconstructCart(customer);
+  mergeCartResponse.setRemovedItems(reconstructCartResponse.getRemovedItems());
+  customerCart=reconstructCartResponse.getOrder();
+  if (anonymousCartId != null) {
+    Order anonymousCart=findOrderById(anonymousCartId);
+    if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
+      if (customerCart == null) {
+        customerCart=findCartForCustomer(customer,true);
       }
+      for (      OrderItem orderItem : anonymousCart.getOrderItems()) {
+        if (orderItem.getSku().isActive(orderItem.getProduct(),orderItem.getCategory())) {
+          addSkuToOrder(customerCart,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),orderItem.getQuantity());
+          mergeCartResponse.getAddedItems().add(orderItem);
+        }
  else {
-        mergeCartResponse.getRemovedItems().add(orderItem);
+          mergeCartResponse.getRemovedItems().add(orderItem);
+        }
+        removeItemFromOrder(anonymousCart,orderItem.getId());
+        orderDao.deleteOrderForCustomer(anonymousCart);
       }
-      removeItemFromOrder(anonymousCart,orderItem.getId());
-      orderDao.deleteOrderForCustomer(anonymousCart);
     }
   }
   mergeCartResponse.setOrder(customerCart);
