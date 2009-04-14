@@ -2,5 +2,11 @@
   Customer loggedInCustomer=customerService.readCustomerByUsername((String)authResult.getPrincipal());
   Customer anonymousCustomer=CustomerState.getCustomer(request);
   Long anonymousCartId=orderService.findCartForCustomer(anonymousCustomer) == null ? null : orderService.findCartForCustomer(anonymousCustomer).getId();
-  orderService.mergeCart(loggedInCustomer,anonymousCartId);
+  MergeCartResponse mergeCartResponse=orderService.mergeCart(loggedInCustomer,anonymousCartId);
+  if (!mergeCartResponse.getAddedItems().isEmpty()) {
+    request.getSession().setAttribute(BC_MERGE_CART_ITEMS_ADDED_SESSION_KEY,mergeCartResponse.getAddedItems());
+  }
+  if (!mergeCartResponse.getRemovedItems().isEmpty()) {
+    request.getSession().setAttribute(BC_MERGE_CART_ITEMS_REMOVED_SESSION_KEY,mergeCartResponse.getRemovedItems());
+  }
 }
