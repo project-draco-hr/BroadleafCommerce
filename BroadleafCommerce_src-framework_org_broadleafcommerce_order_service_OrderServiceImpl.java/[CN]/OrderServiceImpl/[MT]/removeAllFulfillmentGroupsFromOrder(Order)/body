@@ -1,7 +1,9 @@
 {
-  for (Iterator<FulfillmentGroup> iterator=order.getFulfillmentGroups().iterator(); iterator.hasNext(); ) {
-    iterator.next();
-    iterator.remove();
+  if (order.getFulfillmentGroups() != null) {
+    for (Iterator<FulfillmentGroup> iterator=order.getFulfillmentGroups().iterator(); iterator.hasNext(); ) {
+      FulfillmentGroup fulfillmentGroup=iterator.next();
+      iterator.remove();
+      fulfillmentGroupDao.removeFulfillmentGroupForOrder(order,fulfillmentGroup);
+    }
   }
-  maintainOrder(order);
 }

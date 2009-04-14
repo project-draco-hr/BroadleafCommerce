@@ -5,11 +5,13 @@
     fulfillmentGroup=addFulfillmentGroupToOrder(order,fulfillmentGroup);
   }
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    for (    FulfillmentGroupItem tempFgi : fg.getFulfillmentGroupItems()) {
-      if (tempFgi.getOrderItem().getId().equals(item.getId())) {
-        fgi=tempFgi;
-        fg.getFulfillmentGroupItems().remove(fg);
-        fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+    if (fg.getFulfillmentGroupItems() != null) {
+      for (      FulfillmentGroupItem tempFgi : fg.getFulfillmentGroupItems()) {
+        if (tempFgi.getOrderItem().getId().equals(item.getId())) {
+          fgi=tempFgi;
+          fg.getFulfillmentGroupItems().remove(fg);
+          fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+        }
       }
     }
   }
