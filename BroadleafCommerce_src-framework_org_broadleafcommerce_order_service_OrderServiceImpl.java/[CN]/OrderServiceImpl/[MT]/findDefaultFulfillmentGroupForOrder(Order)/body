@@ -1,9 +1,12 @@
 {
-  FulfillmentGroup fg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
-  if (fg == null) {
+  FulfillmentGroup fg=null;
+  try {
+    fg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
+  }
+ catch (  NoResultException nre) {
     fg=createDefaultFulfillmentGroup(order);
   }
-  if (fg.getFulfillmentGroupItems().size() == 0) {
+  if (fg.getFulfillmentGroupItems() == null || fg.getFulfillmentGroupItems().size() == 0) {
     List<OrderItem> orderItems=order.getOrderItems();
     for (    OrderItem orderItem : orderItems) {
       FulfillmentGroupItem fgi=this.createFulfillmentGroupItemFromOrderItem(orderItem,fg.getId());
