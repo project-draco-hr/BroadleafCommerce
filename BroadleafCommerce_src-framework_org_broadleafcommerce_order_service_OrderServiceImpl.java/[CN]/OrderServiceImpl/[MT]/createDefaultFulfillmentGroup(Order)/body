@@ -1,0 +1,9 @@
+{
+  FulfillmentGroup newFg=fulfillmentGroupDao.createDefault();
+  newFg.setOrderId(order.getId());
+  newFg.setType(FulfillmentGroupType.DEFAULT);
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    newFg=addItemToFulfillmentGroup(orderItem,newFg,orderItem.getQuantity());
+  }
+  return newFg;
+}

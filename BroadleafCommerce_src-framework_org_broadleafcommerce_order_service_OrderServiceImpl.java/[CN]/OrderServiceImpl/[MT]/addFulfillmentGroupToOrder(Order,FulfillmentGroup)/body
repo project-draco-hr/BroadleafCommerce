@@ -4,10 +4,10 @@
     dfg=fulfillmentGroupDao.readDefaultFulfillmentGroupForOrder(order);
   }
  catch (  NoResultException nre) {
-    return createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order);
+    return findDefaultFulfillmentGroupForOrder(order);
   }
   if (dfg.getId().equals(fulfillmentGroup.getId())) {
-    return createDefaultFulfillmentGroupFromFulfillmentGroup(fulfillmentGroup,order);
+    return fulfillmentGroupDao.maintainDefaultFulfillmentGroup(fulfillmentGroup);
   }
  else {
     fulfillmentGroup.setOrderId(order.getId());
