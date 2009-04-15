@@ -1,0 +1,11 @@
+{
+  OrderItem orderItem=orderItemDao.readOrderItemById(orderItemId);
+  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer(),true);
+  if (moveNamedOrderItems) {
+    Order updatedNamedOrder=removeItemFromOrder(namedOrder,orderItem);
+    if (updatedNamedOrder.getOrderItems().size() == 0 && deleteEmptyNamedOrders) {
+      orderDao.deleteOrderForCustomer(updatedNamedOrder);
+    }
+  }
+  return addSkuToOrder(cartOrder,orderItem.getSku(),orderItem.getProduct(),orderItem.getCategory(),quantity);
+}
