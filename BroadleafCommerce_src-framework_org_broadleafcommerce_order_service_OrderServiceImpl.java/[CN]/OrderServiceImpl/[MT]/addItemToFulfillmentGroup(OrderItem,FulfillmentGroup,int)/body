@@ -5,16 +5,19 @@
     fulfillmentGroup=addFulfillmentGroupToOrder(order,fulfillmentGroup);
   }
   order=orderDao.readOrderById(item.getOrderId());
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+  for (Iterator<FulfillmentGroup> fgIterator=order.getFulfillmentGroups().iterator(); fgIterator.hasNext(); ) {
+    FulfillmentGroup fg=fgIterator.next();
     if (fg.getFulfillmentGroupItems() != null) {
-      for (Iterator<FulfillmentGroupItem> iterator=fg.getFulfillmentGroupItems().iterator(); iterator.hasNext(); ) {
-        FulfillmentGroupItem tempFgi=iterator.next();
+      List<FulfillmentGroupItem> itemsToRemove=new ArrayList<FulfillmentGroupItem>();
+      for (Iterator<FulfillmentGroupItem> fgiIterator=fg.getFulfillmentGroupItems().iterator(); fgiIterator.hasNext(); ) {
+        FulfillmentGroupItem tempFgi=fgiIterator.next();
         if (tempFgi.getOrderItem().getId().equals(item.getId())) {
           fgi=tempFgi;
-          iterator.remove();
-          fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+          itemsToRemove.add(fgi);
         }
       }
+      fg.getFulfillmentGroupItems().remove(itemsToRemove);
+      fulfillmentGroupDao.maintainFulfillmentGroup(fg);
     }
   }
   if (fgi == null) {

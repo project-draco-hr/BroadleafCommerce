@@ -5,12 +5,13 @@
   }
  catch (  NoResultException nre) {
     fg=createDefaultFulfillmentGroup(order);
+    fg=fulfillmentGroupDao.maintainDefaultFulfillmentGroup(fg);
   }
   if (fg.getFulfillmentGroupItems() == null || fg.getFulfillmentGroupItems().size() == 0) {
     List<OrderItem> orderItems=order.getOrderItems();
     for (    OrderItem orderItem : orderItems) {
       FulfillmentGroupItem fgi=this.createFulfillmentGroupItemFromOrderItem(orderItem,fg.getId());
-      fulfillmentGroupItemDao.maintainFulfillmentGroupItem(fgi);
+      fgi=fulfillmentGroupItemDao.maintainFulfillmentGroupItem(fgi);
       fg.addFulfillmentGroupItem(fgi);
     }
     fulfillmentGroupDao.maintainDefaultFulfillmentGroup(fg);
