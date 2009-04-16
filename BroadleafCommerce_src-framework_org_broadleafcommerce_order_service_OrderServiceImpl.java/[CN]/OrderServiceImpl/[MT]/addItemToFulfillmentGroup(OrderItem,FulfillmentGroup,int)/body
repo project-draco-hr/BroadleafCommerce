@@ -16,14 +16,16 @@
           itemsToRemove.add(fgi);
         }
       }
-      fg.getFulfillmentGroupItems().remove(itemsToRemove);
-      fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+      if (!itemsToRemove.isEmpty()) {
+        fg.getFulfillmentGroupItems().remove(itemsToRemove);
+        fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+      }
     }
   }
   if (fgi == null) {
     fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup.getId());
   }
-  if (fulfillmentGroup.getType() != null && fulfillmentGroup.getType() != FulfillmentGroupType.DEFAULT) {
+  if (fulfillmentGroup.getType() == null) {
     fulfillmentGroup.addFulfillmentGroupItem(fgi);
   }
   fulfillmentGroup=fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
