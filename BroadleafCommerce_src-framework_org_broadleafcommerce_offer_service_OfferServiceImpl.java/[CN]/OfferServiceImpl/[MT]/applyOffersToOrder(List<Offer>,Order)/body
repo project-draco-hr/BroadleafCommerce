@@ -11,20 +11,16 @@
         offer=calculateAtomOfferDiscount(offer,order.getSubTotal());
         qualifiedOrderOffers.add(offer);
       }
-      if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+ else       if (offer.getType().equals(OfferType.ORDER_ITEM)) {
         for (        OrderItem orderItem : order.getOrderItems()) {
           if (couldOfferApplyToOrderItem(offer,order,orderItem))           qualifiedItemOffers.add(new CandidateItemOfferImpl(orderItem,offer));
         }
       }
-      if (offer.getType().equals(OfferType.FULLFILLMENT_GROUP)) {
+ else       if (offer.getType().equals(OfferType.FULLFILLMENT_GROUP)) {
       }
     }
-    Collections.sort(qualifiedOrderOffers,new BeanComparator("discountedPrice"));
-    Collections.reverse(qualifiedOrderOffers);
+    Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
     Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
-    Collections.sort(qualifiedItemOffers,new BeanComparator("discountedPrice"));
-    Collections.reverse(qualifiedItemOffers);
-    Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
     order.setCandidateOffers(qualifiedOrderOffers);
     for (    OrderItem orderItem : order.getOrderItems()) {
       orderItem.setCandidateItemOffers(qualifiedItemOffers);
