@@ -23,6 +23,11 @@
   if (fgi == null) {
     fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup.getId());
   }
-  fulfillmentGroup.addFulfillmentGroupItem(fgi);
-  return fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+  if (fulfillmentGroup.getType() != null && fulfillmentGroup.getType() != FulfillmentGroupType.DEFAULT) {
+    fulfillmentGroup.addFulfillmentGroupItem(fgi);
+  }
+  fulfillmentGroup=fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+  fgi.setFulfillmentGroupId(fulfillmentGroup.getId());
+  fgi=fulfillmentGroupItemDao.maintainFulfillmentGroupItem(fgi);
+  return fulfillmentGroup;
 }
