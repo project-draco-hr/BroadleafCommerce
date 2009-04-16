@@ -1,3 +1,6 @@
 {
-  return null;
+  Query query=em.createNamedQuery("READ_BANK_ACCOUNT_BY_REFERENCE_NUMBER");
+  query.setParameter("referenceNumber",referenceNumber);
+  List<BankAccountPaymentInfo> infos=query.getResultList();
+  return (infos == null || infos.size() == 0) ? null : infos.get(0);
 }

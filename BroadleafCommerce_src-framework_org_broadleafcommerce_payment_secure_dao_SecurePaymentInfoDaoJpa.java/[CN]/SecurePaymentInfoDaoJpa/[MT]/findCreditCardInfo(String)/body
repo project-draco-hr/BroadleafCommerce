@@ -1,3 +1,6 @@
 {
-  return null;
+  Query query=em.createNamedQuery("READ_CREDIT_CARD_BY_REFERENCE_NUMBER");
+  query.setParameter("referenceNumber",referenceNumber);
+  List<CreditCardPaymentInfo> infos=query.getResultList();
+  return (infos == null || infos.size() == 0) ? null : infos.get(0);
 }

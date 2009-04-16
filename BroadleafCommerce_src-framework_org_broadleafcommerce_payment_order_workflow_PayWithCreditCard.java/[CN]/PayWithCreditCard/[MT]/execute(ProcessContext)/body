@@ -1,3 +1,21 @@
 {
-  return null;
+  CreditCardModule module=creditCardService.getCreditCardModuleByName(creditCardModuleName);
+  CombinedPaymentContextSeed seed=((PaymentContext)context).getSeedData();
+  Map<PaymentInfo,Referenced> infos=seed.getInfos();
+  Iterator<PaymentInfo> itr=infos.keySet().iterator();
+  while (itr.hasNext()) {
+    PaymentInfo info=itr.next();
+    if (info.getType().equals(PaymentInfoType.CREDIT_CARD)) {
+      if (seed.getActionType() == ActionType.AUTHORIZE) {
+        module.authorize(info,(CreditCardPaymentInfo)infos.get(info));
+      }
+ else       if (seed.getActionType() == ActionType.DEBIT) {
+        module.debit(info,(CreditCardPaymentInfo)infos.get(info));
+      }
+ else {
+        module.authorizeAndDebit(info,(CreditCardPaymentInfo)infos.get(info));
+      }
+    }
+  }
+  return context;
 }
