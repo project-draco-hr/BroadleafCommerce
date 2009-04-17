@@ -1,11 +1,14 @@
 {
-  if (logger.isDebugEnabled())   logger.debug(getBeanName() + " processor is running..");
+  if (logger.isDebugEnabled()) {
+    logger.debug(getBeanName() + " processor is running..");
+  }
   List<Activity> activities=getActivities();
-  ProcessContext context=createContext();
-  if (seedData != null)   context.setSeedData(seedData);
+  ProcessContext context=createContext(seedData);
   for (Iterator<Activity> it=activities.iterator(); it.hasNext(); ) {
-    Activity activity=(Activity)it.next();
-    if (logger.isDebugEnabled())     logger.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
+    Activity activity=it.next();
+    if (logger.isDebugEnabled()) {
+      logger.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
+    }
     try {
       context=activity.execute(context);
     }
@@ -21,7 +24,10 @@
         errorHandler.handleError(context,th);
       }
     }
-    if (processShouldStop(context,activity))     break;
+    if (processShouldStop(context,activity)) {
+      break;
+    }
   }
   logger.debug(getBeanName() + " processor is done.");
+  return context;
 }

@@ -1,0 +1,9 @@
+{
+  try {
+    CheckoutSeed seed=new CheckoutSeed(order,payments);
+    checkoutWorkflow.doActivities(seed);
+  }
+ catch (  WorkflowException e) {
+    throw new CheckoutException("Unable to checkout order -- id: " + order.getId(),e);
+  }
+}
