@@ -3,6 +3,7 @@
   if (orderItem == null) {
     return null;
   }
+  removeOrderItemFromFullfillmentGroup(order,orderItem);
   orderItemDao.deleteOrderItem(orderItem);
   pricingService.calculateOrderTotal(order);
   return orderDao.readOrderById(order.getId());

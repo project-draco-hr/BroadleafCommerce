@@ -1,13 +1,6 @@
 {
   orderItemDao.deleteOrderItem(item);
-  order.getFulfillmentGroups();
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    for (    FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
-      if (fgItem.getOrderItem().equals(item)) {
-        fulfillmentGroupItemDao.deleteFulfillmentGroupItem(fgItem);
-      }
-    }
-  }
+  removeOrderItemFromFullfillmentGroup(order,item);
   pricingService.calculateOrderTotal(order);
   order.getOrderItems().remove(item);
   orderDao.maintianOrder(order);
