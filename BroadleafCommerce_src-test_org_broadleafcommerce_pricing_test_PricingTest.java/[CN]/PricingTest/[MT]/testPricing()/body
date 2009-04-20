@@ -1,0 +1,16 @@
+{
+  Order order=new OrderImpl();
+  FulfillmentGroup group=new FulfillmentGroupImpl();
+  List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
+  groups.add(group);
+  order.setFulfillmentGroups(groups);
+  Money total=new Money(5D);
+  group.setPrice(total);
+  order.setSubTotal(total);
+  order.setTotal(total);
+  CheckoutSeed seed=new CheckoutSeed(order,null);
+  pricingWorkflow.doActivities(seed);
+  assert(order.getTotal().greaterThan(order.getSubTotal()));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
+  assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax())));
+}
