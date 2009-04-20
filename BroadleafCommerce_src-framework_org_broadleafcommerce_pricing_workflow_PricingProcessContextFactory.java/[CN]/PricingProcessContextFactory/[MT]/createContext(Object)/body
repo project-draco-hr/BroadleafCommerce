@@ -1,8 +1,8 @@
 {
-  if (!(seedData instanceof CheckoutSeed)) {
-    throw new WorkflowException("Seed data instance is incorrect. " + "Required class is " + CheckoutSeed.class.getName() + " "+ "but found class: "+ seedData.getClass().getName());
+  if (!(seedData instanceof Order)) {
+    throw new WorkflowException("Seed data instance is incorrect. " + "Required class is " + Order.class.getName() + " "+ "but found class: "+ seedData.getClass().getName());
   }
   OfferContext context=new OfferContext();
-  context.setSeedData(((CheckoutSeed)seedData).getOrder());
+  context.setSeedData(seedData);
   return context;
 }

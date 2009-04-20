@@ -1,0 +1,7 @@
+{
+  CheckoutSeed seed=((CheckoutContext)context).getSeedData();
+  Order order=pricingService.executePricing(seed.getOrder());
+  CheckoutSeed newSeed=new CheckoutSeed(order,seed.getInfos());
+  context.setSeedData(newSeed);
+  return context;
+}

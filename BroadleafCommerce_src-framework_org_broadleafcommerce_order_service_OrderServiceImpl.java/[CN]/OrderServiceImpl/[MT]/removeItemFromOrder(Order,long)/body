@@ -5,6 +5,6 @@
   }
   removeOrderItemFromFullfillmentGroup(order,orderItem);
   orderItemDao.deleteOrderItem(orderItem);
-  pricingService.calculateOrderTotal(order);
+  order=pricingService.executePricing(order);
   return orderDao.readOrderById(order.getId());
 }

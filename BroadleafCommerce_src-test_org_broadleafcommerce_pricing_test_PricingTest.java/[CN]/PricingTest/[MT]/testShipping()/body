@@ -24,8 +24,7 @@
   items.add(item);
   order.setOrderItems(items);
   order.setTotalShipping(new Money(0D));
-  CheckoutSeed seed=new CheckoutSeed(order,null);
-  pricingWorkflow.doActivities(seed);
+  order=pricingService.executePricing(order);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
   assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
   assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax())));

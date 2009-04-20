@@ -1,0 +1,9 @@
+{
+  try {
+    OfferContext context=(OfferContext)pricingWorkflow.doActivities(order);
+    return context.getSeedData();
+  }
+ catch (  WorkflowException e) {
+    throw new PricingException("Unable to execute pricing for order -- id: " + order.getId(),e);
+  }
+}
