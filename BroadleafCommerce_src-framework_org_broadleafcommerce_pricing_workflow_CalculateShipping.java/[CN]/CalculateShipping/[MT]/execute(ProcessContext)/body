@@ -1,12 +1,17 @@
 {
   Order order=((OfferContext)context).getSeedData();
   System.out.println("*** in CalculateShipping.execute()");
+  System.out.println("*** order: " + order);
+  ShippingModule shippingModule=shippingService.getShippingModuleByName(shippingModuleName);
   List<FulfillmentGroup> fulfillmentGroups=order.getFulfillmentGroups();
   Iterator<FulfillmentGroup> itr=fulfillmentGroups.iterator();
   while (itr.hasNext()) {
     FulfillmentGroup fulfillmentGroup=itr.next();
+    System.out.println("**** FG b4 change: " + fulfillmentGroup.getMethod());
     fulfillmentGroup=shippingModule.calculateShippingForFulfillmentGroup(fulfillmentGroup);
+    System.out.println("**** FG after change: " + fulfillmentGroup.getMethod());
     order.setFulfillmentGroups(fulfillmentGroups);
+    System.out.println("**** order after change: " + order);
   }
   context.setSeedData(order);
   return context;
