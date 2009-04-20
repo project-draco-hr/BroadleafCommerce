@@ -1,3 +1,11 @@
 {
-  return null;
+  List<FulfillmentGroup> newGroups=new ArrayList<FulfillmentGroup>();
+  List<FulfillmentGroup> groups=order.getFulfillmentGroups();
+  Iterator<FulfillmentGroup> itr=groups.iterator();
+  while (itr.hasNext()) {
+    FulfillmentGroup group=itr.next();
+    newGroups.add(shippingModule.calculateShippingForFulfillmentGroup(group));
+  }
+  order.setFulfillmentGroups(newGroups);
+  return order;
 }

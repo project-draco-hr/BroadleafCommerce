@@ -1,5 +1,4 @@
 {
-  GiftCardModule module=giftCardService.getGiftCardModuleByName(giftCardModuleName);
   CombinedPaymentContextSeed seed=((PaymentContext)context).getSeedData();
   Map<PaymentInfo,Referenced> infos=seed.getInfos();
   Iterator<PaymentInfo> itr=infos.keySet().iterator();
@@ -7,13 +6,13 @@
     PaymentInfo info=itr.next();
     if (info.getType().equals(PaymentInfoType.CREDIT_CARD)) {
       if (seed.getActionType() == PaymentActionType.AUTHORIZE) {
-        module.authorize(info);
+        giftCardModule.authorize(info);
       }
  else       if (seed.getActionType() == PaymentActionType.DEBIT) {
-        module.debit(info);
+        giftCardModule.debit(info);
       }
  else {
-        module.authorizeAndDebit(info);
+        giftCardModule.authorizeAndDebit(info);
       }
     }
   }

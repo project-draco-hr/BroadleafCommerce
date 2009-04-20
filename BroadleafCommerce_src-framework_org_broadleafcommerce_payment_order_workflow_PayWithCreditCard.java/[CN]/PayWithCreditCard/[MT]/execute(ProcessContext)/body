@@ -1,5 +1,4 @@
 {
-  CreditCardModule module=creditCardService.getCreditCardModuleByName(creditCardModuleName);
   CombinedPaymentContextSeed seed=((PaymentContext)context).getSeedData();
   Map<PaymentInfo,Referenced> infos=seed.getInfos();
   Iterator<PaymentInfo> itr=infos.keySet().iterator();
@@ -7,13 +6,13 @@
     PaymentInfo info=itr.next();
     if (info.getType().equals(PaymentInfoType.CREDIT_CARD)) {
       if (seed.getActionType() == PaymentActionType.AUTHORIZE) {
-        module.authorize(info,(CreditCardPaymentInfo)infos.get(info));
+        creditCardModule.authorize(info,(CreditCardPaymentInfo)infos.get(info));
       }
  else       if (seed.getActionType() == PaymentActionType.DEBIT) {
-        module.debit(info,(CreditCardPaymentInfo)infos.get(info));
+        creditCardModule.debit(info,(CreditCardPaymentInfo)infos.get(info));
       }
  else {
-        module.authorizeAndDebit(info,(CreditCardPaymentInfo)infos.get(info));
+        creditCardModule.authorizeAndDebit(info,(CreditCardPaymentInfo)infos.get(info));
       }
     }
   }
