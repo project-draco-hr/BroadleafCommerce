@@ -1,9 +1,9 @@
 {
   Order order=((OfferContext)context).getSeedData();
-  Money subTotal=new Money(BigDecimal.ZERO);
+  Money subTotal=new Money(0D);
   List<OrderItem> orderItems=order.getOrderItems();
   for (  OrderItem orderItem : orderItems) {
-    subTotal.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+    subTotal=subTotal.add(orderItem.getPrice().multiply(orderItem.getQuantity()));
   }
   order.setSubTotal(subTotal);
   context.setSeedData(order);

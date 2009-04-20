@@ -6,8 +6,13 @@
   order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
   group.setPrice(total);
-  order.setSubTotal(total);
-  order.setTotal(total);
+  OrderItem item=new OrderItemImpl();
+  item.setPrice(new Money(10D));
+  item.setQuantity(1);
+  List<OrderItem> items=new ArrayList<OrderItem>();
+  items.add(item);
+  order.setOrderItems(items);
+  order.setTotalShipping(new Money(0D));
   CheckoutSeed seed=new CheckoutSeed(order,null);
   pricingWorkflow.doActivities(seed);
   assert(order.getTotal().greaterThan(order.getSubTotal()));

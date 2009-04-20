@@ -1,5 +1,10 @@
 {
   Order order=((OfferContext)context).getSeedData();
+  Money total=new Money(BigDecimal.ZERO);
+  total=total.add(order.getSubTotal());
+  total=total.add(order.getTotalTax());
+  total=total.add(order.getTotalShipping());
+  order.setTotal(total);
   context.setSeedData(order);
   return context;
 }
