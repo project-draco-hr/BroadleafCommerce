@@ -1,14 +1,7 @@
 {
-  Customer customer=null;
-  if (customerId != null) {
-    WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-    CustomerService customerService=(CustomerService)applicationContext.getBean("customerService");
-    customer=customerService.readCustomerById((customerId));
-  }
- else {
-    customer=CustomerState.getCustomer((HttpServletRequest)pageContext.getRequest());
-  }
   WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+  CustomerState customerState=(CustomerState)applicationContext.getBean("customerState");
+  Customer customer=customerState.getCustomer((HttpServletRequest)pageContext.getRequest());
   OrderService orderService=(OrderService)applicationContext.getBean("orderService");
   Order order=null;
   if (orderName != null && orderId != null) {
@@ -20,7 +13,7 @@
  else   if (orderName != null) {
     order=orderService.findNamedOrderForCustomer(orderName,customer);
   }
- else {
+ else   if (customer != null) {
     order=orderService.findCartForCustomer(customer);
   }
   if (orderVar != null) {

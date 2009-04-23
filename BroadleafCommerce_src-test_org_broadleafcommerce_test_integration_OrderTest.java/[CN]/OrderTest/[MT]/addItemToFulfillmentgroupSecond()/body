@@ -7,7 +7,13 @@
   assert(orderItems.size() > 0);
   FulfillmentGroup newFg=new FulfillmentGroupImpl();
   newFg.setAddress(address);
-  FulfillmentGroup newNewFg=orderService.addItemToFulfillmentGroup(orderItems.get(0),newFg,1);
+  FulfillmentGroup newNewFg;
+  try {
+    newNewFg=orderService.addItemToFulfillmentGroup(orderItems.get(0),newFg,1);
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException(e);
+  }
   assert(newNewFg.getFulfillmentGroupItems().size() == 1);
   assert(newNewFg.getFulfillmentGroupItems().get(0).getOrderItem().equals(orderItems.get(0)));
 }

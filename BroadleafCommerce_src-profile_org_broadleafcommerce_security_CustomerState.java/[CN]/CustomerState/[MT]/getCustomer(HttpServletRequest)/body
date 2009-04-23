@@ -1,3 +1,17 @@
 {
-  return (Customer)request.getSession().getAttribute(sessionAttributeName);
+  Object sessionReference=request.getSession().getAttribute(DEFAULTSESSIONATTRIBUTENAME);
+  Customer customer;
+  if (sessionReference instanceof Long) {
+    Long customerId=(Long)sessionReference;
+    if (customerId != null) {
+      customer=customerDao.readCustomerById(customerId);
+    }
+ else {
+      customer=null;
+    }
+  }
+ else {
+    customer=null;
+  }
+  return customer;
 }
