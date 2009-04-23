@@ -9,8 +9,10 @@
       }
     }
     if (!itemsToRemove.isEmpty()) {
-      fulfillmentGroup.getFulfillmentGroupItems().remove(itemsToRemove);
-      fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
+      for (      FulfillmentGroupItem fgi : itemsToRemove) {
+        fulfillmentGroupItemDao.deleteFulfillmentGroupItem(fgi);
+      }
+      fulfillmentGroup.getFulfillmentGroupItems().removeAll(itemsToRemove);
     }
   }
 }
