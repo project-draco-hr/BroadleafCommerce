@@ -1,0 +1,25 @@
+{
+  if (offer.getAppliesToRules() != null && offer.getAppliesToRules().length() != 0) {
+    Serializable exp=(Serializable)expressionCache.get(offer.getAppliesToRules());
+    if (exp == null) {
+      ParserContext context=new ParserContext();
+      context.addImport("OfferType",OfferType.class);
+      exp=MVEL.compileExpression(offer.getAppliesToRules(),context);
+    }
+    expressionCache.put(offer.getAppliesToRules(),exp);
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("order",order);
+    vars.put("offer",offer);
+    if (item != null) {
+      vars.put("item",item);
+    }
+    Boolean expressionOutcome=(Boolean)MVEL.executeExpression(exp,vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      return true;
+    }
+ else {
+      return false;
+    }
+  }
+  return true;
+}

@@ -5,59 +5,58 @@
   order.setCandidateOffers(new ArrayList<Offer>());
   order=pricingService.executePricing(order);
   List<Offer> offersWithValidDates=removeOutOfDateOffers(offers);
-  if (offersWithValidDates != null) {
+  if (offersWithValidDates != null && !offersWithValidDates.isEmpty()) {
     for (    Offer offer : offersWithValidDates) {
       if (offer.getType().equals(OfferType.ORDER)) {
-        offer=calculateAtomOfferDiscount(offer,order.getSubTotal());
-        qualifiedOrderOffers.add(offer);
+        if (couldOfferApply(offer,order)) {
+          offer=calculateAtomOfferDiscount(offer,order.getSubTotal());
+          qualifiedOrderOffers.add(offer);
+        }
       }
  else       if (offer.getType().equals(OfferType.ORDER_ITEM)) {
         for (        OrderItem orderItem : order.getOrderItems()) {
-          if (couldOfferApplyToOrderItem(offer,order,orderItem))           qualifiedItemOffers.add(new CandidateItemOfferImpl(orderItem,offer));
+          if (couldOfferApply(offer,order,orderItem)) {
+            CandidateItemOffer candidateOffer=new CandidateItemOfferImpl(orderItem,offer);
+            qualifiedItemOffers.add(candidateOffer);
+          }
         }
       }
- else       if (offer.getType().equals(OfferType.FULLFILLMENT_GROUP)) {
+ else       if (offer.getType().equals(OfferType.FULFILLMENT_GROUP)) {
       }
     }
     Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
     Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
+    Collections.sort(qualifiedItemOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
+    Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
     order.setCandidateOffers(qualifiedOrderOffers);
-    for (    OrderItem orderItem : order.getOrderItems()) {
-      orderItem.setCandidateItemOffers(qualifiedItemOffers);
-    }
-    for (    OrderItem orderItem : order.getOrderItems()) {
-      for (      CandidateItemOffer itemOffer : qualifiedItemOffers) {
-        if (orderItem.getCandidateItemOffers().contains(itemOffer)) {
-          if (itemOffer.getDiscountedPrice().greaterThan(orderItem.getSalePrice())) {
-            if (requiresMultipleSkus(itemOffer)) {
+    for (    CandidateItemOffer itemOffer : qualifiedItemOffers) {
+      OrderItem orderItem=itemOffer.getOrderItem();
+      if (itemOffer.getDiscountedPrice().greaterThan(orderItem.getSalePrice())) {
+        if (requiresMultipleSkus(itemOffer)) {
+        }
+        if (!orderItem.isMarkedForOffer() || (orderItem.isMarkedForOffer() && itemOffer.getOffer().isApplyDiscountToMarkedItems())) {
+          if (orderItem.isMarkedForOffer()) {
+            if (itemOffer.getOffer().isStackable()) {
+              applyItemOffer(orderItem,itemOffer);
             }
-            if (!orderItem.isMarkedForOffer() || (orderItem.isMarkedForOffer() && itemOffer.getOffer().isApplyDiscountToMarkedItems())) {
-              if (orderItem.isMarkedForOffer()) {
-                if (itemOffer.getOffer().isStackable()) {
-                  applyItemOffer(orderItem,itemOffer);
-                }
-              }
+          }
  else {
-                applyItemOffer(orderItem,itemOffer);
-              }
-            }
+            applyItemOffer(orderItem,itemOffer);
           }
         }
       }
     }
     Money newOrderTotal=pricingService.executePricing(order).getSubTotal();
     for (    Offer offer : qualifiedOrderOffers) {
-      if (order.getCandidateOffers().contains(offer)) {
-        if (newOrderTotal.greaterThan(order.getSubTotal())) {
-          if (!order.isMarkedForOffer() || (order.isMarkedForOffer() && offer.isApplyDiscountToMarkedItems())) {
-            if (order.isMarkedForOffer()) {
-              if (offer.isStackable()) {
-                applyOrderOffer(order,offer);
-              }
-            }
- else {
+      if (newOrderTotal.greaterThan(order.getSubTotal())) {
+        if (!order.isMarkedForOffer() || (order.isMarkedForOffer() && offer.isApplyDiscountToMarkedItems())) {
+          if (order.isMarkedForOffer()) {
+            if (offer.isStackable()) {
               applyOrderOffer(order,offer);
             }
+          }
+ else {
+            applyOrderOffer(order,offer);
           }
         }
       }
