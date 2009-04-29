@@ -17,6 +17,7 @@
         for (        OrderItem orderItem : order.getOrderItems()) {
           if (couldOfferApply(offer,order,orderItem)) {
             CandidateItemOffer candidateOffer=new CandidateItemOfferImpl(orderItem,offer);
+            orderItem.addCandidateItemOffer(candidateOffer);
             qualifiedItemOffers.add(candidateOffer);
           }
         }
@@ -24,24 +25,22 @@
  else       if (offer.getType().equals(OfferType.FULFILLMENT_GROUP)) {
       }
     }
-    Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
+    Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountPrice")));
     Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
     Collections.sort(qualifiedItemOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
     Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
     order.setCandidateOffers(qualifiedOrderOffers);
     for (    CandidateItemOffer itemOffer : qualifiedItemOffers) {
       OrderItem orderItem=itemOffer.getOrderItem();
-      if (itemOffer.getDiscountedPrice().greaterThan(orderItem.getSalePrice())) {
-        if (requiresMultipleSkus(itemOffer)) {
-        }
-        if (!orderItem.isMarkedForOffer() || (orderItem.isMarkedForOffer() && itemOffer.getOffer().isApplyDiscountToMarkedItems())) {
-          if (orderItem.isMarkedForOffer()) {
+      if (itemOffer.getDiscountedPrice().lessThan(orderItem.getSalePrice())) {
+        if (!orderItem.isAllQuantityMarkedForOffer() || itemOffer.getOffer().isApplyDiscountToMarkedItems()) {
+          if (orderItem.getAppliedItemOffers() != null && orderItem.getAppliedItemOffers().size() > 0) {
             if (itemOffer.getOffer().isStackable()) {
-              applyItemOffer(orderItem,itemOffer);
+              applyItemOffer(itemOffer,order);
             }
           }
  else {
-            applyItemOffer(orderItem,itemOffer);
+            applyItemOffer(itemOffer,order);
           }
         }
       }

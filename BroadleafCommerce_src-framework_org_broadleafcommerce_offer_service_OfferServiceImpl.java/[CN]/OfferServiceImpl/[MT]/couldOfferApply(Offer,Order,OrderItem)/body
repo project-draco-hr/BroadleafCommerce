@@ -1,25 +1,31 @@
 {
-  if (offer.getAppliesToRules() != null && offer.getAppliesToRules().length() != 0) {
-    Serializable exp=(Serializable)expressionCache.get(offer.getAppliesToRules());
-    if (exp == null) {
-      ParserContext context=new ParserContext();
-      context.addImport("OfferType",OfferType.class);
-      exp=MVEL.compileExpression(offer.getAppliesToRules(),context);
-    }
-    expressionCache.put(offer.getAppliesToRules(),exp);
+  boolean appliesToItem=false;
+  boolean appliesToCustomer=false;
+  if (offer.getAppliesToItemRules() != null && offer.getAppliesToItemRules().length() != 0) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
     vars.put("order",order);
     vars.put("offer",offer);
-    if (item != null) {
-      vars.put("item",item);
+    if (currentItem != null) {
+      vars.put("currentItem",currentItem);
     }
-    Boolean expressionOutcome=(Boolean)MVEL.executeExpression(exp,vars);
+    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToItemRules(),vars);
     if (expressionOutcome != null && expressionOutcome) {
-      return true;
-    }
- else {
-      return false;
+      appliesToItem=true;
     }
   }
-  return true;
+ else {
+    appliesToItem=true;
+  }
+  if (offer.getAppliesToCustomerRules() != null && offer.getAppliesToCustomerRules().length() != 0) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("customer",order.getCustomer());
+    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToCustomerRules(),vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToCustomer=true;
+    }
+  }
+ else {
+    appliesToCustomer=true;
+  }
+  return appliesToItem && appliesToCustomer;
 }

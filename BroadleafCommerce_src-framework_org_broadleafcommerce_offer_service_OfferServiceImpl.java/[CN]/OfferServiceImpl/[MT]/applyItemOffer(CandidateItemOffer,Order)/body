@@ -1,0 +1,19 @@
+{
+  HashMap<String,Object> vars=new HashMap<String,Object>();
+  vars.put("currentItem",itemOffer.getOrderItem());
+  vars.put("order",order);
+  vars.put("offer",itemOffer.getOffer());
+  String expression=itemOffer.getOffer().getAppliesToCustomerRules();
+  if (expression != null && expression.indexOf("evalItemForOrderContains") >= 0) {
+    StringBuffer exp=new StringBuffer(expression);
+    exp.append(" ");
+    exp.append("applyBogo()");
+    Boolean result=(Boolean)executeExpression(exp.toString(),vars);
+    if (result) {
+      itemOffer.getOrderItem().addAppliedItemOffer(itemOffer.getOffer());
+    }
+  }
+ else {
+    itemOffer.getOrderItem().addAppliedItemOffer(itemOffer.getOffer());
+  }
+}
