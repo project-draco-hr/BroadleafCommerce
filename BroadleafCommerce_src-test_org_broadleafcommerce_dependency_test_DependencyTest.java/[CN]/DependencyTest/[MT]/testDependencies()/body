@@ -1,20 +1,20 @@
 {
   for (  String targetPackage : targetPackages) {
     DependencyVisitor v=new DependencyVisitor();
-    List<Class> classes=getClasses(targetPackage);
-    List<Class> finalClasses=new ArrayList<Class>();
-    for (    Class clazz : classes) {
+    List<String> classes=getClasses(targetPackage);
+    List<String> finalClasses=new ArrayList<String>();
+    for (    String clazz : classes) {
       testPackage: {
         for (        String acceptablePackage : acceptablePackages) {
-          if (clazz.getName().startsWith(acceptablePackage)) {
+          if (clazz.startsWith(acceptablePackage)) {
             break testPackage;
           }
         }
         finalClasses.add(clazz);
       }
     }
-    for (    Class clazz : finalClasses) {
-      new ClassReader(clazz.getName()).accept(v,false);
+    for (    String clazz : finalClasses) {
+      new ClassReader(clazz).accept(v,false);
     }
     Set<String> classPackages=v.getPackages();
     String[] classNames=classPackages.toArray(new String[classPackages.size()]);
