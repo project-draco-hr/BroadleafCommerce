@@ -1,0 +1,9 @@
+{
+  Enumeration<JarEntry> entries=jar.entries();
+  while (entries.hasMoreElements()) {
+    String name=entries.nextElement().getName().replace('/','.');
+    if (name.startsWith(pckgname) && name.endsWith(".class")) {
+      classes.add(Class.forName(name.substring(0,name.length() - 6)));
+    }
+  }
+}

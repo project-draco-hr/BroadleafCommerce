@@ -1,0 +1,30 @@
+{
+  for (  String targetPackage : targetPackages) {
+    DependencyVisitor v=new DependencyVisitor();
+    List<Class> classes=getClasses(targetPackage);
+    List<Class> finalClasses=new ArrayList<Class>();
+    for (    Class clazz : classes) {
+      testPackage: {
+        for (        String acceptablePackage : acceptablePackages) {
+          if (clazz.getName().startsWith(acceptablePackage)) {
+            break testPackage;
+          }
+        }
+        finalClasses.add(clazz);
+      }
+    }
+    for (    Class clazz : finalClasses) {
+      new ClassReader(clazz.getName()).accept(v,false);
+    }
+    Set<String> classPackages=v.getPackages();
+    String[] classNames=classPackages.toArray(new String[classPackages.size()]);
+    for (    String className : classNames) {
+      className=className.replace('/','.');
+      for (      String testPackage : testPackages) {
+        if (className.startsWith(testPackage) || testPackage.startsWith(className)) {
+          throw new RuntimeException("Improper dependency (" + className + ") found in package ("+ targetPackage+ ")");
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  File[] files=directory.listFiles();
+  for (  File file : files) {
+    if (file.getName().endsWith(".class")) {
+      String fileName=file.getName();
+      classes.add(Class.forName(pckgname + "." + fileName.substring(0,fileName.length() - 6)));
+    }
+ else     if (file.isDirectory()) {
+      addClasses(file,classes,pckgname + "." + file.getName());
+    }
+  }
+}
