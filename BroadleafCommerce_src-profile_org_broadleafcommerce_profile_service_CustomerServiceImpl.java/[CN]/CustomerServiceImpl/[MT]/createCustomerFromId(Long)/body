@@ -2,7 +2,12 @@
   Customer customer=customerId != null ? readCustomerById(customerId) : null;
   if (customer == null) {
     customer=(Customer)entityConfiguration.createEntityInstance("org.broadleafcommerce.profile.domain.Customer");
-    customer.setId(idGenerationService.findNextId("org.broadleafcommerce.profile.domain.Customer"));
+    if (customerId != null) {
+      customer.setId(customerId);
+    }
+ else {
+      customer.setId(idGenerationService.findNextId("org.broadleafcommerce.profile.domain.Customer"));
+    }
   }
   return customer;
 }
