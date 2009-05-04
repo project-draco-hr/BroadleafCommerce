@@ -1,0 +1,10 @@
+{
+  if (getPaymentInfos() == null) {
+    return null;
+  }
+  Money totalPayments=new Money(BigDecimal.ZERO);
+  for (  PaymentInfo pi : getPaymentInfos()) {
+    totalPayments=totalPayments.add(pi.getAmount());
+  }
+  return getTotal().subtract(totalPayments);
+}
