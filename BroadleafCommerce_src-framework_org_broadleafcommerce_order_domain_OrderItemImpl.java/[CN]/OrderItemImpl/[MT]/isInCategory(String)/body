@@ -1,0 +1,14 @@
+{
+  Category currentCategory=category;
+  if (currentCategory != null) {
+    if (currentCategory.getName().equals(categoryName)) {
+      return true;
+    }
+    while ((currentCategory=currentCategory.getDefaultParentCategory()) != null) {
+      if (currentCategory.getName().equals(categoryName)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
