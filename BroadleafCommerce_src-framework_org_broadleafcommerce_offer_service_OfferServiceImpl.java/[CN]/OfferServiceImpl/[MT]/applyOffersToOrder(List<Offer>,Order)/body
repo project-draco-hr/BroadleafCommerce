@@ -1,9 +1,8 @@
 {
   List<Offer> qualifiedOrderOffers=new ArrayList<Offer>();
   List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
-  order.removeAllOffers();
+  order=orderService.removeAllOffersFromOrder(order);
   order.setCandidateOffers(new ArrayList<Offer>());
-  order=pricingService.executePricing(order);
   List<Offer> offersWithValidDates=removeOutOfDateOffers(offers);
   if (offersWithValidDates != null && !offersWithValidDates.isEmpty()) {
     for (    Offer offer : offersWithValidDates) {

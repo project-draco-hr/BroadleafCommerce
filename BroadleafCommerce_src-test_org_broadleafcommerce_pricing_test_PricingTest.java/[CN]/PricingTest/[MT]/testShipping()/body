@@ -1,5 +1,5 @@
 {
-  Order order=new OrderImpl();
+  Order order=orderDao.create();
   FulfillmentGroup group1=new FulfillmentGroupImpl();
   FulfillmentGroup group2=new FulfillmentGroupImpl();
   group1.setMethod("standard");
@@ -17,7 +17,7 @@
   group2.setPrice(total);
   order.setSubTotal(total);
   order.setTotal(total);
-  OrderItem item=new OrderItemImpl();
+  OrderItem item=new DiscreteOrderItemImpl();
   item.setPrice(new Money(10D));
   item.setQuantity(1);
   List<OrderItem> items=new ArrayList<OrderItem>();

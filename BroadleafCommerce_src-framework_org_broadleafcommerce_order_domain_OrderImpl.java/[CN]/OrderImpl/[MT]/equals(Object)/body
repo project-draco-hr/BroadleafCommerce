@@ -1,0 +1,11 @@
+{
+  if (this == other)   return true;
+  if (other == null || !(other instanceof OrderImpl))   return false;
+  OrderImpl item=(OrderImpl)other;
+  if (name != null ? !name.equals(item.name) : item.name != null)   return false;
+  if (customer != null ? !customer.equals(item.customer) : item.customer != null)   return false;
+  Date myDateCreated=auditable != null ? auditable.getDateCreated() : null;
+  Date otherDateCreated=item.auditable != null ? item.auditable.getDateCreated() : null;
+  if (myDateCreated != null ? !myDateCreated.equals(otherDateCreated) : otherDateCreated != null)   return false;
+  return true;
+}

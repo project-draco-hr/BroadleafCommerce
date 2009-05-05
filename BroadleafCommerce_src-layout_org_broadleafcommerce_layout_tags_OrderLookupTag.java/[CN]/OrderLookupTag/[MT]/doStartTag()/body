@@ -2,19 +2,19 @@
   WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
   CustomerState customerState=(CustomerState)applicationContext.getBean("customerState");
   Customer customer=customerState.getCustomer((HttpServletRequest)pageContext.getRequest());
-  OrderService orderService=(OrderService)applicationContext.getBean("orderService");
+  CartService cartService=(CartService)applicationContext.getBean("cartService");
   Order order=null;
   if (orderName != null && orderId != null) {
     throw new IllegalArgumentException("Only orderName or orderId attribute may be specified on orderLookup tag");
   }
  else   if (orderId != null) {
-    order=orderService.findOrderById(orderId);
+    order=cartService.findOrderById(orderId);
   }
  else   if (orderName != null) {
-    order=orderService.findNamedOrderForCustomer(orderName,customer);
+    order=cartService.findNamedOrderForCustomer(orderName,customer);
   }
  else   if (customer != null) {
-    order=orderService.findCartForCustomer(customer);
+    order=cartService.findCartForCustomer(customer);
   }
   if (orderVar != null) {
     pageContext.setAttribute(orderVar,order);

@@ -1,7 +1,6 @@
 {
   payment.setOrder(order);
-  if (payment.getAddress() != null && payment.getAddress().getId() == null) {
-    payment.setAddress(addressDao.maintainAddress(payment.getAddress()));
-  }
-  return paymentInfoDao.maintainPaymentInfo(payment);
+  order.getPaymentInfos().add(payment);
+  order=persistOrder(order);
+  return order.getPaymentInfos().get(order.getPaymentInfos().indexOf(payment));
 }

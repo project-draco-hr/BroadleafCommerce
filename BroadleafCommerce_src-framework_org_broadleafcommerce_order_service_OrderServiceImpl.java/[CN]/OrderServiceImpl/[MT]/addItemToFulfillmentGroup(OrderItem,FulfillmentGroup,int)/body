@@ -1,35 +1,20 @@
 {
-  FulfillmentGroupItem fgi=null;
-  Order order=orderDao.readOrderById(item.getOrderId());
+  Order order=item.getOrder();
   if (fulfillmentGroup.getId() == null) {
     fulfillmentGroup=addFulfillmentGroupToOrder(order,fulfillmentGroup);
   }
-  order=orderDao.readOrderById(item.getOrderId());
-  for (Iterator<FulfillmentGroup> fgIterator=order.getFulfillmentGroups().iterator(); fgIterator.hasNext(); ) {
-    FulfillmentGroup fg=fgIterator.next();
-    if (fg.getFulfillmentGroupItems() != null) {
-      List<FulfillmentGroupItem> itemsToRemove=new ArrayList<FulfillmentGroupItem>();
-      for (Iterator<FulfillmentGroupItem> fgiIterator=fg.getFulfillmentGroupItems().iterator(); fgiIterator.hasNext(); ) {
-        FulfillmentGroupItem tempFgi=fgiIterator.next();
-        if (tempFgi.getOrderItem().getId().equals(item.getId())) {
-          fgi=tempFgi;
-          itemsToRemove.add(fgi);
-        }
-      }
-      if (!itemsToRemove.isEmpty()) {
-        fg.getFulfillmentGroupItems().removeAll(itemsToRemove);
-        fulfillmentGroupDao.maintainFulfillmentGroup(fg);
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();
+    while (itr.hasNext()) {
+      FulfillmentGroupItem fgItem=itr.next();
+      if (fgItem.getOrderItem().equals(item)) {
+        itr.remove();
+        fulfillmentGroupItemDao.delete(fgItem);
       }
     }
   }
-  if (fgi == null) {
-    fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup.getId());
-  }
-  if (fulfillmentGroup.getType() == null) {
-    fulfillmentGroup.addFulfillmentGroupItem(fgi);
-  }
-  fulfillmentGroup=fulfillmentGroupDao.maintainFulfillmentGroup(fulfillmentGroup);
-  fgi.setFulfillmentGroupId(fulfillmentGroup.getId());
-  fgi=fulfillmentGroupItemDao.maintainFulfillmentGroupItem(fgi);
-  return fulfillmentGroup;
+  FulfillmentGroupItem fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup,quantity);
+  fulfillmentGroup.addFulfillmentGroupItem(fgi);
+  order=updateOrder(order);
+  return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
 }

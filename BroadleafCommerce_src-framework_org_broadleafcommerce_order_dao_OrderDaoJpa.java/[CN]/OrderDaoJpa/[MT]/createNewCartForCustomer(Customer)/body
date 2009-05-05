@@ -1,0 +1,11 @@
+{
+  Order order=create();
+  if (customer.getUsername() == null) {
+    customer.setUsername(String.valueOf(customer.getId()));
+    customer=customerDao.save(customer);
+  }
+  order.setCustomer(customer);
+  order.setStatus(OrderStatus.IN_PROCESS);
+  order=save(order);
+  return order;
+}

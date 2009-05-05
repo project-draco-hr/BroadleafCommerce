@@ -1,8 +1,7 @@
 {
-  orderItemDao.deleteOrderItem(item);
   removeOrderItemFromFullfillmentGroup(order,item);
-  order=pricingService.executePricing(order);
-  order.getOrderItems().remove(item);
-  orderDao.maintianOrder(order);
-  return orderDao.readOrderById(order.getId());
+  OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(item));
+  order=updateOrder(order);
+  orderItemService.delete(itemFromOrder);
+  return order;
 }

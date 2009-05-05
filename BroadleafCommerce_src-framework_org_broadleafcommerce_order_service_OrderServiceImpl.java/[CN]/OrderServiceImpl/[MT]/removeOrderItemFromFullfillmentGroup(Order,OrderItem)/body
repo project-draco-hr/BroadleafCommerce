@@ -1,18 +1,13 @@
 {
   List<FulfillmentGroup> fulfillmentGroups=order.getFulfillmentGroups();
   for (  FulfillmentGroup fulfillmentGroup : fulfillmentGroups) {
-    List<FulfillmentGroupItem> itemsToRemove=new ArrayList<FulfillmentGroupItem>();
-    List<FulfillmentGroupItem> fgItems=fulfillmentGroup.getFulfillmentGroupItems();
-    for (    FulfillmentGroupItem fulfillmentGroupItem : fgItems) {
+    Iterator<FulfillmentGroupItem> itr=fulfillmentGroup.getFulfillmentGroupItems().iterator();
+    while (itr.hasNext()) {
+      FulfillmentGroupItem fulfillmentGroupItem=itr.next();
       if (fulfillmentGroupItem.getOrderItem().equals(orderItem)) {
-        itemsToRemove.add(fulfillmentGroupItem);
+        itr.remove();
+        fulfillmentGroupItemDao.delete(fulfillmentGroupItem);
       }
-    }
-    if (!itemsToRemove.isEmpty()) {
-      for (      FulfillmentGroupItem fgi : itemsToRemove) {
-        fulfillmentGroupItemDao.deleteFulfillmentGroupItem(fgi);
-      }
-      fulfillmentGroup.getFulfillmentGroupItems().removeAll(itemsToRemove);
     }
   }
 }

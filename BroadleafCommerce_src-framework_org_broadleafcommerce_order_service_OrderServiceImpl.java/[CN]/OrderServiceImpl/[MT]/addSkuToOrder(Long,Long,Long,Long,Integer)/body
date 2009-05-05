@@ -1,0 +1,24 @@
+{
+  Order order=findOrderById(orderId);
+  Sku sku=skuDao.readSkuById(skuId);
+  Product product;
+  if (productId != null) {
+    product=productDao.readProductById(productId);
+  }
+ else {
+    product=null;
+  }
+  Category category;
+  if (categoryId != null) {
+    category=categoryDao.readCategoryById(categoryId);
+  }
+ else {
+    category=null;
+  }
+  DiscreteOrderItemRequest itemRequest=new DiscreteOrderItemRequest();
+  itemRequest.setCategory(category);
+  itemRequest.setProduct(product);
+  itemRequest.setQuantity(quantity);
+  itemRequest.setSku(sku);
+  return addDiscreteItemToOrder(order,itemRequest);
+}

@@ -1,0 +1,14 @@
+{
+  Object returnValue;
+  try {
+    returnValue=call.proceed();
+  }
+  finally {
+    Order orderItem=orderCompileable.getLatestItem();
+    if (orderItem != null) {
+      pricingService.executePricing(orderItem);
+      LOG.debug("Context order priced : order id " + orderItem.getId());
+    }
+  }
+  return returnValue;
+}

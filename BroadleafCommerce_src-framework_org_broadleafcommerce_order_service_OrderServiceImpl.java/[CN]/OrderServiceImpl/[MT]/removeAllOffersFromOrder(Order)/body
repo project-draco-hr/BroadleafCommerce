@@ -1,0 +1,10 @@
+{
+  Iterator<Offer> itr=order.getCandidateOffers().iterator();
+  while (itr.hasNext()) {
+    Offer offer=itr.next();
+    itr.remove();
+    offerDao.delete(offer);
+  }
+  order=updateOrder(order);
+  return order;
+}

@@ -1,7 +1,7 @@
 {
   Customer loggedInCustomer=customerService.readCustomerByUsername((String)authResult.getPrincipal());
   Customer anonymousCustomer=customerState.getCustomer(request);
-  Order cart=orderService.findCartForCustomer(anonymousCustomer);
+  Order cart=cartService.findCartForCustomer(anonymousCustomer);
   Long anonymousCartId;
   if (cart != null) {
     anonymousCartId=cart.getId();
@@ -11,7 +11,7 @@
   }
   MergeCartResponse mergeCartResponse;
   try {
-    mergeCartResponse=orderService.mergeCart(loggedInCustomer,anonymousCartId);
+    mergeCartResponse=cartService.mergeCart(loggedInCustomer,anonymousCartId);
   }
  catch (  PricingException e) {
     throw new RuntimeException(e);

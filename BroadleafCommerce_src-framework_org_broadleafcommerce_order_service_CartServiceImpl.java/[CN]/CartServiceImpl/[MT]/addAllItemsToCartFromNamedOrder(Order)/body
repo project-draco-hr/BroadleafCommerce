@@ -1,0 +1,13 @@
+{
+  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer());
+  if (cartOrder == null) {
+    cartOrder=createNewCartForCustomer(namedOrder.getCustomer());
+  }
+  for (  OrderItem orderItem : namedOrder.getOrderItems()) {
+    if (moveNamedOrderItems) {
+      removeItemFromOrder(namedOrder,orderItem);
+    }
+    addOrderItemToOrder(cartOrder,orderItem);
+  }
+  return cartOrder;
+}

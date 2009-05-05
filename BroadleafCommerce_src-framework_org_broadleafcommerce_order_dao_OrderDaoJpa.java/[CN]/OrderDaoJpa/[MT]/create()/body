@@ -1,3 +1,7 @@
 {
-  return ((Order)entityConfiguration.createEntityInstance("org.broadleafcommerce.order.domain.Order"));
+  Order order=((Order)entityConfiguration.createEntityInstance("org.broadleafcommerce.order.domain.Order"));
+  Auditable auditable=new Auditable();
+  auditable.setDateCreated(new Date());
+  order.setAuditable(auditable);
+  return order;
 }

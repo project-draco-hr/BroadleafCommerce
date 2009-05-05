@@ -3,7 +3,8 @@
     for (Iterator<FulfillmentGroup> iterator=order.getFulfillmentGroups().iterator(); iterator.hasNext(); ) {
       FulfillmentGroup fulfillmentGroup=iterator.next();
       iterator.remove();
-      fulfillmentGroupDao.removeFulfillmentGroupForOrder(order,fulfillmentGroup);
+      fulfillmentGroupDao.delete(fulfillmentGroup);
     }
+    updateOrder(order);
   }
 }

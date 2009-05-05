@@ -13,21 +13,21 @@
     Iterator<PaymentInfo> infos=paymentInfoList.iterator();
     while (infos.hasNext()) {
       PaymentInfo info=infos.next();
-      if (info.getType() == PaymentInfoType.CREDIT_CARD) {
+      if (info.getType() == BLCPaymentInfoType.CREDIT_CARD) {
         CreditCardPaymentInfo ccinfo=securePaymentInfoDao.findCreditCardInfo(info.getReferenceNumber());
         if (ccinfo == null) {
           throw new WorkflowException("No credit card info associated with credit card payment type with reference number: " + info.getReferenceNumber());
         }
         secureMap.put(info,ccinfo);
       }
- else       if (info.getType() == PaymentInfoType.BANK_ACCOUNT) {
+ else       if (info.getType() == BLCPaymentInfoType.BANK_ACCOUNT) {
         BankAccountPaymentInfo bankinfo=securePaymentInfoDao.findBankAccountInfo(info.getReferenceNumber());
         if (bankinfo == null) {
           throw new WorkflowException("No bank account info associated with bank account payment type with reference number: " + info.getReferenceNumber());
         }
         secureMap.put(info,bankinfo);
       }
- else       if (info.getType() == PaymentInfoType.GIFT_CARD) {
+ else       if (info.getType() == BLCPaymentInfoType.GIFT_CARD) {
         secureMap.put(info,null);
       }
  else {
