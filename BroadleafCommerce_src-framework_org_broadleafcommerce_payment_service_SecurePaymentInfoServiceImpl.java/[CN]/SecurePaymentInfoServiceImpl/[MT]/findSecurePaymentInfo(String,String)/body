@@ -1,0 +1,22 @@
+{
+  if (paymentInfoType.equals(BLCPaymentInfoType.CREDIT_CARD)) {
+    CreditCardPaymentInfo ccinfo=findCreditCardInfo(referenceNumber);
+    if (ccinfo == null) {
+      throw new WorkflowException("No credit card info associated with credit card payment type with reference number: " + referenceNumber);
+    }
+    return ccinfo;
+  }
+ else   if (paymentInfoType.equals(BLCPaymentInfoType.BANK_ACCOUNT)) {
+    BankAccountPaymentInfo bankinfo=findBankAccountInfo(referenceNumber);
+    if (bankinfo == null) {
+      throw new WorkflowException("No bank account info associated with bank account payment type with reference number: " + referenceNumber);
+    }
+    return bankinfo;
+  }
+ else   if (paymentInfoType.equals(BLCPaymentInfoType.GIFT_CARD)) {
+    return null;
+  }
+ else {
+    throw new WorkflowException("Payment info type ['" + paymentInfoType + "'] not recognized as a valid payment type.");
+  }
+}

@@ -1,7 +1,11 @@
 {
-  if (this == other)   return true;
-  if (other == null || !(other instanceof FulfillmentGroupImpl))   return false;
-  FulfillmentGroupImpl item=(FulfillmentGroupImpl)other;
-  if (address != null && item.address != null ? !address.equals(item.address) : address != item.address)   return false;
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  FulfillmentGroupImpl other=(FulfillmentGroupImpl)obj;
+  if (address == null) {
+    if (other.address != null)     return false;
+  }
+ else   if (!address.equals(other.address))   return false;
   return true;
 }

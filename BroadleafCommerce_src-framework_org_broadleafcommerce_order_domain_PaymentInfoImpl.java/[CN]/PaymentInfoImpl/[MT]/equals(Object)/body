@@ -1,9 +1,19 @@
 {
-  if (this == other)   return true;
-  if (other == null || !(other instanceof PaymentInfoImpl))   return false;
-  PaymentInfoImpl item=(PaymentInfoImpl)other;
-  if (referenceNumber != null ? !referenceNumber.equals(item.referenceNumber) : item.referenceNumber != null)   return false;
-  if (type != null ? !type.equals(item.type) : item.type != null)   return false;
-  if (order != null ? !order.equals(item.order) : item.order != null)   return false;
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  PaymentInfoImpl other=(PaymentInfoImpl)obj;
+  if (order == null) {
+    if (other.order != null)     return false;
+  }
+ else   if (!order.equals(other.order))   return false;
+  if (referenceNumber == null) {
+    if (other.referenceNumber != null)     return false;
+  }
+ else   if (!referenceNumber.equals(other.referenceNumber))   return false;
+  if (type == null) {
+    if (other.type != null)     return false;
+  }
+ else   if (!type.equals(other.type))   return false;
   return true;
 }
