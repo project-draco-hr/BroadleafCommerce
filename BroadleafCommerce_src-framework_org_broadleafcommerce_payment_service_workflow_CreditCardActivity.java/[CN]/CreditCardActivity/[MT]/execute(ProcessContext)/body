@@ -4,17 +4,27 @@
   Iterator<PaymentInfo> itr=infos.keySet().iterator();
   while (itr.hasNext()) {
     PaymentInfo info=itr.next();
-    if (info.getType().equals(BLCPaymentInfoType.CREDIT_CARD)) {
-      if (seed.getActionType() == PaymentActionType.AUTHORIZE) {
-        creditCardModule.authorize(info,(CreditCardPaymentInfo)infos.get(info));
-      }
- else       if (seed.getActionType() == PaymentActionType.DEBIT) {
-        creditCardModule.debit(info,(CreditCardPaymentInfo)infos.get(info));
-      }
- else {
-        creditCardModule.authorizeAndDebit(info,(CreditCardPaymentInfo)infos.get(info));
-      }
-    }
-  }
-  return context;
+    if (info.getType().equals(BLCPaymentInfoType.GIFT_CARD)) {
+switch (seed.getActionType()) {
+case AUTHORIZE:
+        creditCardService.authorize(info,(CreditCardPaymentInfo)infos.get(info));
+      break;
+case AUTHORIZEANDDEBIT:
+    creditCardService.authorizeAndDebit(info,(CreditCardPaymentInfo)infos.get(info));
+  break;
+case CREDIT:
+creditCardService.credit(info,(CreditCardPaymentInfo)infos.get(info));
+break;
+case DEBIT:
+creditCardService.debit(info,(CreditCardPaymentInfo)infos.get(info));
+break;
+case VOID:
+creditCardService.voidPayment(info,(CreditCardPaymentInfo)infos.get(info));
+break;
+default :
+throw new PaymentException("Module does not support payment type of: " + seed.getActionType().toString());
+}
+}
+}
+return context;
 }

@@ -5,16 +5,29 @@
   while (itr.hasNext()) {
     PaymentInfo info=itr.next();
     if (info.getType().equals(BLCPaymentInfoType.GIFT_CARD)) {
-      if (seed.getActionType() == PaymentActionType.AUTHORIZE) {
-        giftCardModule.authorize(info);
-      }
- else       if (seed.getActionType() == PaymentActionType.DEBIT) {
-        giftCardModule.debit(info);
-      }
- else {
-        giftCardModule.authorizeAndDebit(info);
-      }
-    }
-  }
-  return context;
+switch (seed.getActionType()) {
+case AUTHORIZE:
+        giftCardService.authorize(info);
+      break;
+case AUTHORIZEANDDEBIT:
+    giftCardService.authorizeAndDebit(info);
+  break;
+case BALANCE:
+giftCardService.balance(info);
+break;
+case CREDIT:
+giftCardService.credit(info);
+break;
+case DEBIT:
+giftCardService.debit(info);
+break;
+case VOID:
+giftCardService.voidPayment(info);
+break;
+default :
+throw new PaymentException("Module does not support payment type of: " + seed.getActionType().toString());
+}
+}
+}
+return context;
 }
