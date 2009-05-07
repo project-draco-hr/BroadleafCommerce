@@ -1,0 +1,17 @@
+{
+  EmailInfo info=new EmailInfo(new String[]{emailProperties,clickAndPickupSurveyProperties});
+  List<SurveyTargetUser> users=emailWebTaskDao.retrieveClickAndPickSurveyTargets();
+  Iterator<SurveyTargetUser> itr=users.iterator();
+  long count=0;
+  while (itr.hasNext()) {
+    SurveyTargetUser user=itr.next();
+    EmailStore store=emailWebTaskDao.retrieveStoreById(user.getStoreId());
+    HashMap map=new HashMap();
+    map.put("user",user);
+    map.put("info",info);
+    map.put("store",store);
+    emailService.sendTemplateEmail(map);
+    count++;
+  }
+  return count;
+}

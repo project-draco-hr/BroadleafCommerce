@@ -1,0 +1,21 @@
+{
+  try {
+    Call call=generateCall();
+    call.setOperationName(new QName("EmailManager","setCustomerStore"));
+    call.addParameter("in0",XMLType.XSD_STRING,ParameterMode.IN);
+    call.addParameter("in1",XMLType.XSD_STRING,ParameterMode.IN);
+    call.setReturnType(XMLType.XSD_STRING);
+    call.setTimeout(new Integer(180000));
+    String result=(String)call.invoke(new Object[]{email,store});
+    logger.debug("setCustomerStore() => Result: " + result);
+  }
+ catch (  javax.xml.rpc.ServiceException se) {
+    logger.error("setCustomerStore () => Error setting for for '" + email + "': ",se);
+  }
+catch (  java.net.MalformedURLException meu) {
+    logger.error("setCustomerStore () => Error setting for for '" + email + "': ",meu);
+  }
+catch (  java.rmi.RemoteException re) {
+    logger.error("setCustomerStore () => Error setting for for '" + email + "': ",re);
+  }
+}

@@ -1,0 +1,39 @@
+{
+  AbstractEmailTarget emailUser=new AbstractEmailTarget(){
+  }
+;
+  emailUser.setEmailAddress(emailAProduct.getRecipientEmail());
+  EmailInfo info;
+  try {
+    info=new EmailInfo(new String[]{emailProperties,emailAProductProperties});
+  }
+ catch (  IOException e) {
+    throw new EmailException(e);
+  }
+  info.setFromAddress(emailAProduct.getSenderEmail());
+  Product product=catalogService.findProductById(emailAProduct.getProductId());
+  product.getProductImages().size();
+  product.getSkus().size();
+  HashMap<String,Object> map=new HashMap<String,Object>();
+  map.put("user",emailUser);
+  map.put("info",info);
+  map.put("product",product);
+  map.put("categoryId",emailAProduct.getCategoryId());
+  map.put("emailMessage",emailAProduct.getEmailMessage());
+  map.put("messageFrom",emailAProduct.getSenderEmail());
+  emailService.sendTemplateEmail(map);
+  if (emailAProduct.isCopySender()) {
+    AbstractEmailTarget copyEmailUser=new AbstractEmailTarget(){
+    }
+;
+    copyEmailUser.setEmailAddress(emailAProduct.getSenderEmail());
+    HashMap<String,Object> copyMap=new HashMap<String,Object>();
+    copyMap.put("user",copyEmailUser);
+    copyMap.put("info",info);
+    copyMap.put("product",product);
+    copyMap.put("categoryId",emailAProduct.getCategoryId());
+    copyMap.put("emailMessage",emailAProduct.getEmailMessage());
+    copyMap.put("messageFrom",emailAProduct.getSenderEmail());
+    emailService.sendTemplateEmail(copyMap);
+  }
+}

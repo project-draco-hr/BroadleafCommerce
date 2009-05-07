@@ -1,0 +1,11 @@
+{
+  EmailAProduct emailAProduct=new EmailAProduct();
+  Customer currentCustomer=customerState.getCustomer(request);
+  if (currentCustomer != null) {
+    emailAProduct.setSenderEmail(currentCustomer.getEmailAddress());
+  }
+  emailAProduct.setEmailSubject(defaultSubject);
+  emailAProduct.setEmailMessage(defaultMessage);
+  model.addAttribute("emailAProduct",emailAProduct);
+  return "email/emailAProduct";
+}

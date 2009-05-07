@@ -1,0 +1,25 @@
+{
+  boolean isOnList=false;
+  try {
+    Call call=generateCall();
+    call.setOperationName(new QName("EmailManager","isOnList"));
+    call.addParameter("in0",XMLType.XSD_STRING,ParameterMode.IN);
+    call.addParameter("in1",XMLType.XSD_STRING,ParameterMode.IN);
+    call.setReturnType(XMLType.XSD_BOOLEAN);
+    call.setTimeout(new Integer(180000));
+    Object[] args=new Object[]{emailAddress,emailListType.name()};
+    Boolean result=(Boolean)call.invoke(args);
+    isOnList=result.booleanValue();
+    logger.debug("isOnList() => Result: " + isOnList);
+  }
+ catch (  javax.xml.rpc.ServiceException se) {
+    logger.error("isOnList () => ",se);
+  }
+catch (  java.net.MalformedURLException meu) {
+    logger.error("isOnList () => ",meu);
+  }
+catch (  java.rmi.RemoteException re) {
+    logger.error("isOnList () => ",re);
+  }
+  return isOnList;
+}
