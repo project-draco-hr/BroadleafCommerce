@@ -1,0 +1,35 @@
+{
+  CombinedPaymentContextSeed seed=((WorkflowPaymentContext)context).getSeedData();
+  Map<PaymentInfo,Referenced> infos=seed.getInfos();
+  PaymentContextImpl paymentContext=new PaymentContextImpl(seed.getOrderTotal(),seed.getOrderTotal());
+  Iterator<PaymentInfo> itr=infos.keySet().iterator();
+  while (itr.hasNext()) {
+    PaymentInfo info=itr.next();
+    if (paymentService.isValidCandidate(info.getType())) {
+      paymentContext.setPaymentData(info,infos.get(info));
+switch (seed.getActionType()) {
+case AUTHORIZE:
+        paymentService.authorize(paymentContext);
+      break;
+case AUTHORIZEANDDEBIT:
+    paymentService.authorizeAndDebit(paymentContext);
+  break;
+case BALANCE:
+paymentService.balance(paymentContext);
+break;
+case CREDIT:
+paymentService.credit(paymentContext);
+break;
+case DEBIT:
+paymentService.debit(paymentContext);
+break;
+case VOID:
+paymentService.voidPayment(paymentContext);
+break;
+default :
+throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
+}
+}
+}
+return context;
+}
