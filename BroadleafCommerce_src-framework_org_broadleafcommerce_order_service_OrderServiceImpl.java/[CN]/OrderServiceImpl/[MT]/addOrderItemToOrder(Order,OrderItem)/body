@@ -8,16 +8,9 @@
     addedItem=itemFromOrder;
   }
  else {
-    if (containsItem) {
-      OrderItem itemFromOrder=orderItems.get(orderItems.indexOf(newOrderItem));
-      itemFromOrder.setQuantity(newOrderItem.getQuantity());
-      addedItem=itemFromOrder;
-    }
- else {
-      orderItems.add(newOrderItem);
-      newOrderItem.setOrder(order);
-      addedItem=newOrderItem;
-    }
+    orderItems.add(newOrderItem);
+    newOrderItem.setOrder(order);
+    addedItem=newOrderItem;
   }
   order=updateOrder(order);
   return order.getOrderItems().get(order.getOrderItems().indexOf(addedItem));
