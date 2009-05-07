@@ -1,0 +1,9 @@
+{
+  catalogService=super.getCatalogService(pageContext);
+  Category category=catalogService.findCategoryById(categoryId);
+  if (category == null && log.isDebugEnabled()) {
+    log.debug("The category returned was null for categoryId: " + categoryId);
+  }
+  pageContext.setAttribute(var,category);
+  return EVAL_PAGE;
+}
