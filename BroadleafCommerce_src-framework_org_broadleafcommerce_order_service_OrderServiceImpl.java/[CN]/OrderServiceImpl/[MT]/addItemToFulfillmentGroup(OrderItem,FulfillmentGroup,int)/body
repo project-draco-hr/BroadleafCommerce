@@ -7,7 +7,7 @@
     Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();
     while (itr.hasNext()) {
       FulfillmentGroupItem fgItem=itr.next();
-      if (fgItem.getOrderItem().equals(item)) {
+      if (fgItem.getOrderItem().getId().equals(item.getId())) {
         itr.remove();
         fulfillmentGroupItemDao.delete(fgItem);
       }

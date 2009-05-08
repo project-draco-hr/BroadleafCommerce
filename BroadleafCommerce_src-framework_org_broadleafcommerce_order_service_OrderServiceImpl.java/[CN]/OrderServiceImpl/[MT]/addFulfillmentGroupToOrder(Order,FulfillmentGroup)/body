@@ -1,29 +1,24 @@
 {
   FulfillmentGroup dfg=findDefaultFulfillmentGroupForOrder(order);
   if (dfg == null) {
-    dfg=createDefaultFulfillmentGroup(order,fulfillmentGroup.getAddress());
-    order.getFulfillmentGroups().add(dfg);
-    order=updateOrder(order);
-    return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(dfg));
+    fulfillmentGroup.setType(FulfillmentGroupType.DEFAULT);
   }
-  if (dfg.equals(fulfillmentGroup)) {
+ else   if (dfg.equals(fulfillmentGroup)) {
     fulfillmentGroup.setType(FulfillmentGroupType.DEFAULT);
     order.getFulfillmentGroups().remove(dfg);
-    order.getFulfillmentGroups().add(fulfillmentGroup);
-    order=updateOrder(order);
     fulfillmentGroupDao.delete(dfg);
-    return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
   }
- else {
-    fulfillmentGroup.setOrder(order);
-    for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
-      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
-        fg.getFulfillmentGroupItems().remove(fgItem);
-        fulfillmentGroupItemDao.delete(fgItem);
+  fulfillmentGroup.setOrder(order);
+  for (  FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      for (      FulfillmentGroupItem oldItem : fg.getFulfillmentGroupItems()) {
+        if (oldItem.getOrderItem().getId().equals(fgItem.getOrderItem().getId())) {
+          fg.getFulfillmentGroupItems().remove(oldItem);
+        }
       }
     }
-    order.getFulfillmentGroups().add(fulfillmentGroup);
-    order=updateOrder(order);
-    return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
   }
+  order.getFulfillmentGroups().add(fulfillmentGroup);
+  order=updateOrder(order);
+  return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
 }
