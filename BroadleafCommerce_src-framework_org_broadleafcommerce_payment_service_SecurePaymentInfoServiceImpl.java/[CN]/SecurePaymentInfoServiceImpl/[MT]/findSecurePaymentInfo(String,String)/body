@@ -14,7 +14,11 @@
     return bankinfo;
   }
  else   if (paymentInfoType.equals(BLCPaymentInfoType.GIFT_CARD)) {
-    return null;
+    GiftCardPaymentInfo gcinfo=findGiftCardInfo(referenceNumber);
+    if (gcinfo == null) {
+      throw new WorkflowException("No bank account info associated with gift card payment type with reference number: " + referenceNumber);
+    }
+    return gcinfo;
   }
  else {
     throw new WorkflowException("Payment info type ['" + paymentInfoType + "'] not recognized as a valid payment type.");

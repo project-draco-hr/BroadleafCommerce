@@ -1,0 +1,6 @@
+{
+  Query query=em.createNamedQuery("READ_GIFT_CARD_BY_REFERENCE_NUMBER");
+  query.setParameter("referenceNumber",referenceNumber);
+  List<GiftCardPaymentInfo> infos=query.getResultList();
+  return (infos == null || infos.size() == 0) ? null : infos.get(0);
+}
