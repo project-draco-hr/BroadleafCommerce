@@ -11,11 +11,7 @@
   fulfillmentGroup.setOrder(order);
   for (  FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
     for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
-      for (      FulfillmentGroupItem oldItem : fg.getFulfillmentGroupItems()) {
-        if (oldItem.getOrderItem().getId().equals(fgItem.getOrderItem().getId())) {
-          fg.getFulfillmentGroupItems().remove(oldItem);
-        }
-      }
+      fg.getFulfillmentGroupItems().remove(fgItem);
     }
   }
   order.getFulfillmentGroups().add(fulfillmentGroup);
