@@ -1,0 +1,13 @@
+{
+  WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+  CustomerState customerState=(CustomerState)applicationContext.getBean("customerState");
+  CustomerPhoneService customerPhoneService=(CustomerPhoneService)applicationContext.getBean("customerPhoneService");
+  Customer customer=customerState.getCustomer((HttpServletRequest)pageContext.getRequest());
+  if (customerPhoneId != null) {
+    pageContext.setAttribute(var,customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,customer.getId()));
+  }
+ else {
+    pageContext.setAttribute(var,customerPhoneService.readActiveCustomerPhonesByCustomerId(customer.getId()));
+  }
+  return EVAL_PAGE;
+}

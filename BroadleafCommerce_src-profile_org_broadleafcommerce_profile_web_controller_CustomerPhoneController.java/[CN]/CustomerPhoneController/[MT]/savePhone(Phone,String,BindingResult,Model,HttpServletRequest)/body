@@ -1,0 +1,14 @@
+{
+  phoneFormatter.formatPhoneNumber(phone);
+  phoneValidator.validate(phone,bindResult);
+  if (!bindResult.hasErrors()) {
+    CustomerPhone customerPhone=new CustomerPhoneImpl();
+    customerPhone.setCustomerId(customerState.getCustomerId(request));
+    customerPhone.setPhoneName(phoneName);
+    customerPhone.setPhone(phone);
+    customerPhoneService.saveCustomerPhone(customerPhone);
+    return "success";
+  }
+  model.addAttribute("phone",phone);
+  return "success";
+}
