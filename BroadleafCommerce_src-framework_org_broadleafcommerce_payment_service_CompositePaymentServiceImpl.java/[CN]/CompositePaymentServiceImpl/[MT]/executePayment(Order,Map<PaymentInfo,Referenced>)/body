@@ -1,9 +1,3 @@
 {
-  try {
-    PaymentSeed seed=new PaymentSeed(order,payments);
-    paymentWorkflow.doActivities(seed);
-  }
- catch (  WorkflowException e) {
-    throw new PaymentException("Unable to execute payment for order -- id: " + order.getId(),e);
-  }
+  return executePayment(order,payments,new PaymentResponseImpl());
 }
