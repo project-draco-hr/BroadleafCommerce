@@ -14,6 +14,7 @@
     }
   }
   FulfillmentGroupItem fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup,quantity);
+  fgi=fulfillmentGroupItemDao.save(fgi);
   fulfillmentGroup.addFulfillmentGroupItem(fgi);
   order=updateOrder(order);
   return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
