@@ -1,0 +1,9 @@
+{
+  payment.setOrder(order);
+  order.getPaymentInfos().add(payment);
+  order=persistOrder(order);
+  if (securePaymentInfo != null) {
+    securePaymentInfoService.save(securePaymentInfo);
+  }
+  return order.getPaymentInfos().get(order.getPaymentInfos().indexOf(payment));
+}
