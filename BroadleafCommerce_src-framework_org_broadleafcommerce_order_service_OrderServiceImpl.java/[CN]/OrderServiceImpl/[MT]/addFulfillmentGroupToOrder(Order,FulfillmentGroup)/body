@@ -1,10 +1,10 @@
 {
   FulfillmentGroup dfg=findDefaultFulfillmentGroupForOrder(order);
   if (dfg == null) {
-    fulfillmentGroup.setType(FulfillmentGroupType.DEFAULT);
+    fulfillmentGroup.setPrimary(true);
   }
  else   if (dfg.equals(fulfillmentGroup)) {
-    fulfillmentGroup.setType(FulfillmentGroupType.DEFAULT);
+    fulfillmentGroup.setPrimary(true);
     order.getFulfillmentGroups().remove(dfg);
     fulfillmentGroupDao.delete(dfg);
   }
