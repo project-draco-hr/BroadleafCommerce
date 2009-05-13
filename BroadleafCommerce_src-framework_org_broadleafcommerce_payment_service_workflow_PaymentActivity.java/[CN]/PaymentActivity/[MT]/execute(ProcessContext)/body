@@ -1,12 +1,13 @@
 {
   CombinedPaymentContextSeed seed=((WorkflowPaymentContext)context).getSeedData();
   Map<PaymentInfo,Referenced> infos=seed.getInfos();
-  PaymentContextImpl paymentContext=new PaymentContextImpl(seed.getOrderTotal(),seed.getOrderTotal());
+  Money orderTotal=seed.getOrderTotal();
+  Money remainingTotal=seed.getOrderTotal();
   Iterator<PaymentInfo> itr=infos.keySet().iterator();
   while (itr.hasNext()) {
     PaymentInfo info=itr.next();
     if (paymentService.isValidCandidate(info.getType())) {
-      paymentContext.setPaymentData(info,infos.get(info));
+      PaymentContextImpl paymentContext=new PaymentContextImpl(orderTotal,remainingTotal,info,infos.get(info));
       PaymentResponseItem paymentResponseItem;
 switch (seed.getActionType()) {
 case AUTHORIZE:
@@ -30,11 +31,13 @@ break;
 default :
 throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
 }
+if (paymentResponseItem != null) {
 if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
 throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
 }
 seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
-paymentContext.addPayment(paymentResponseItem.getAmountPaid());
+remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
+}
 }
 }
 return context;
