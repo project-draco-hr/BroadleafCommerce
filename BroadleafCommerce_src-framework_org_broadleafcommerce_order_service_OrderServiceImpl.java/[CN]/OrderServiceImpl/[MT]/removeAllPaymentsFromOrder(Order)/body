@@ -1,0 +1,14 @@
+{
+  for (  PaymentInfo paymentInfo : order.getPaymentInfos()) {
+    Referenced securePaymentInfo=null;
+    try {
+      securePaymentInfo=securePaymentInfoService.findSecurePaymentInfo(paymentInfo.getReferenceNumber(),paymentInfo.getType());
+    }
+ catch (    WorkflowException e) {
+    }
+    if (securePaymentInfo != null) {
+      securePaymentInfoService.remove(securePaymentInfo);
+    }
+    paymentInfoDao.delete(paymentInfo);
+  }
+}
