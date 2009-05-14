@@ -1,0 +1,16 @@
+{
+  if (customerPhoneId == null) {
+    return "success";
+  }
+ else {
+    CustomerPhone cPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,customerState.getCustomerId(request));
+    if (cPhone != null) {
+      phoneNameForm.setPhone(cPhone.getPhone());
+      phoneNameForm.setPhoneName(cPhone.getPhoneName());
+      return "success";
+    }
+ else {
+      return "error";
+    }
+  }
+}
