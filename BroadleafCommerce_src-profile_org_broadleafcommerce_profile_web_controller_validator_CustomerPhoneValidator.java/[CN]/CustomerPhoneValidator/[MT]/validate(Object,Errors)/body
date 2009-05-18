@@ -1,0 +1,18 @@
+{
+  CustomerPhone cPhone=(CustomerPhone)obj;
+  if (!errors.hasErrors()) {
+    List<CustomerPhone> phones=customerPhoneService.readAllCustomerPhonesByCustomerId(cPhone.getCustomerId());
+    String phoneNum=cPhone.getPhone().getPhoneNumber();
+    String phoneName=cPhone.getPhoneName();
+    for (    CustomerPhone existingPhone : phones) {
+      if (phoneNum.equals(existingPhone.getPhone().getPhoneNumber())) {
+        errors.pushNestedPath("phone");
+        errors.rejectValue("phoneNumber","phoneNumber.duplicate",null);
+        errors.popNestedPath();
+      }
+      if (phoneName.equalsIgnoreCase(existingPhone.getPhoneName())) {
+        errors.rejectValue("phoneName","phoneName.duplicate",null);
+      }
+    }
+  }
+}
