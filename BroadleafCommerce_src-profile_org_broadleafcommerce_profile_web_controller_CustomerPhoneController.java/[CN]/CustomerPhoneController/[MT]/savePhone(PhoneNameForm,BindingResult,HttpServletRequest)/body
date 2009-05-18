@@ -7,16 +7,18 @@
   phoneValidator.validate(phoneNameForm.getPhone(),errors);
   errors.popNestedPath();
   if (!errors.hasErrors()) {
-    CustomerPhone customerPhone=new CustomerPhoneImpl();
+    CustomerPhone customerPhone=(CustomerPhone)entityConfiguration.createEntityInstance("org.broadleafcommerce.profile.domain.CustomerPhone");
     customerPhone.setCustomerId(customerState.getCustomerId(request));
     customerPhone.setPhoneName(phoneNameForm.getPhoneName());
     customerPhone.setPhone(phoneNameForm.getPhone());
-    customerPhoneService.saveCustomerPhone(customerPhone);
-    return new ModelAndView(new RedirectView("success")).addObject("confirmationMessage","The stuff was completed.");
+    customerPhoneValidator.validate(customerPhone,errors);
+    if (!errors.hasErrors()) {
+      customerPhoneService.saveCustomerPhone(customerPhone);
+      request.setAttribute("customerPhoneId",customerPhone.getId());
+    }
+    return "success";
   }
  else {
-    ModelAndView mv=new ModelAndView(new RedirectView("success"));
-    mv.getModel().put("confirmationMessage","some random confirmation message");
-    return mv;
+    return "success";
   }
 }
