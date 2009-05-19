@@ -1,0 +1,10 @@
+{
+  EmailInfo info=(EmailInfo)props.get(EmailPropertyType.INFO.toString());
+  if (Boolean.parseBoolean(info.getSendEmailReliableAsync())) {
+    emailServiceProducer.send(props);
+  }
+ else {
+    messageCreator.sendMessage(props);
+  }
+  return true;
+}
