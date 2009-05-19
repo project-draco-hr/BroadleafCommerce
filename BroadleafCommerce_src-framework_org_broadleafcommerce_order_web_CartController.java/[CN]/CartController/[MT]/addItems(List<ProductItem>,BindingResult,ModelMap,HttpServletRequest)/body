@@ -1,0 +1,17 @@
+{
+  Order currentCartOrder=retrieveOrder(request);
+  List<OrderItem> orderItemsAdded=new ArrayList<OrderItem>();
+  for (  ProductItem productItem : productItemList) {
+    if (productItem.getQuantity() > 0) {
+      try {
+        OrderItem orderItem=cartService.addSkuToOrder(currentCartOrder.getId(),productItem.getSkuId(),productItem.getProductId(),productItem.getCategoryId(),productItem.getQuantity());
+        orderItemsAdded.add(orderItem);
+      }
+ catch (      PricingException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  model.addAttribute("orderItemsAdded",orderItemsAdded);
+  return "success";
+}

@@ -1,0 +1,11 @@
+{
+  String view=updateItemQuantity(orderItemList,errors,model,request);
+  if (!view.equals("error")) {
+    model.addAttribute("isStorePickup",isStorePickup);
+    if (SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+      model.addAttribute("nextStep","checkout");
+      return "login";
+    }
+  }
+  return view;
+}

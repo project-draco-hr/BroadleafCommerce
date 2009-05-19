@@ -1,0 +1,11 @@
+{
+  Order currentCartOrder=retrieveOrder(request);
+  try {
+    currentCartOrder=cartService.removeItemFromOrder(currentCartOrder.getId(),orderItemId);
+  }
+ catch (  PricingException e) {
+    model.addAttribute("error","remove");
+    logger.error("An error occurred while removing an item from the cart.",e);
+  }
+  return "success";
+}
