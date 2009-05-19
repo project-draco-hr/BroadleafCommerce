@@ -1,0 +1,20 @@
+{
+  Long nonDefaultPhoneId=null;
+  List<CustomerPhone> phones_1=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
+  for (  CustomerPhone p : phones_1) {
+    if (!p.getPhone().isDefault()) {
+      nonDefaultPhoneId=p.getId();
+      break;
+    }
+  }
+  request=this.getNewServletInstance();
+  String view=customerPhoneController.makePhoneDefault(nonDefaultPhoneId,request);
+  assert(view.indexOf("success") >= 0);
+  List<CustomerPhone> phones=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
+  for (  CustomerPhone p : phones) {
+    if (p.getId() == nonDefaultPhoneId) {
+      assert(p.getPhone().isDefault());
+      break;
+    }
+  }
+}
