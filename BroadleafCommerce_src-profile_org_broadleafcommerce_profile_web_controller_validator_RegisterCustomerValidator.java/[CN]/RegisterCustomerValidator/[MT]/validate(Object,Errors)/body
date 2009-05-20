@@ -1,0 +1,30 @@
+{
+  RegisterCustomer user=(RegisterCustomer)obj;
+  Customer customerFromDb=customerService.readCustomerByUsername(user.getUsername());
+  if (customerFromDb != null) {
+    errors.rejectValue("username","username.used",null,null);
+  }
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName","firstName.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName","lastName.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"username","username.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"password","password.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"passwordConfirm","passwordConfirm.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"emailAddress","emailAddress.required");
+  if (!errors.hasErrors()) {
+    if (!user.getFirstName().matches(REGEX_VALID_NAME)) {
+      errors.rejectValue("firstName","firstName.invalid",null,null);
+    }
+    if (!user.getLastName().matches(REGEX_VALID_NAME)) {
+      errors.rejectValue("lastName","lastName.invalid",null,null);
+    }
+    if (!user.getPassword().matches(REGEX_VALID_PASSWORD)) {
+      errors.rejectValue("password","password.invalid",null,null);
+    }
+    if (!user.getPassword().equals(user.getPasswordConfirm())) {
+      errors.rejectValue("password","passwordConfirm.invalid",null,null);
+    }
+    if (!GenericValidator.isEmail(user.getEmailAddress())) {
+      errors.rejectValue("emailAddress","emailAddress.invalid",null,null);
+    }
+  }
+}

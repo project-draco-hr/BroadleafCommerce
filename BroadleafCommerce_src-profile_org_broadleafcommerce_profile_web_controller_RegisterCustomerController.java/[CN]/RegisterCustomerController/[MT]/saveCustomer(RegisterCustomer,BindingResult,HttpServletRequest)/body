@@ -1,0 +1,9 @@
+{
+  registerCustomerValidator.validate(registerCustomer,errors);
+  if (errors.getAllErrors().isEmpty()) {
+    createCustomer(registerCustomer);
+    this.sendConfirmationEmail(request,registerCustomer);
+    new ModelAndView("customerRegistered");
+  }
+  return new ModelAndView("registerCustomer");
+}

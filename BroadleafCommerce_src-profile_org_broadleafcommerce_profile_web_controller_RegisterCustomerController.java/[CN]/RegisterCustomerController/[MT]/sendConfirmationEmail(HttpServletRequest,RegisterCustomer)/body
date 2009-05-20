@@ -1,0 +1,12 @@
+{
+  ServletContext servletContext=request.getSession().getServletContext();
+  WebApplicationContext wac=WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+  EmailInfo emailInfo=(EmailInfo)wac.getBean("blRegistrationEmailInfo");
+  EmailTarget target=new AbstractEmailTarget(){
+  }
+;
+  target.setEmailAddress(customer.getEmailAddress());
+  HashMap<String,Object> props=new HashMap<String,Object>();
+  props.put("user",target);
+  emailService.sendTemplateEmail(emailInfo,props);
+}
