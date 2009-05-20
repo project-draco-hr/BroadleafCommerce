@@ -1,12 +1,9 @@
 {
-  order.setTotalTax(new Money(0));
-  List<OrderItem> items=order.getOrderItems();
-  Iterator<OrderItem> itr=items.iterator();
-  Money tax=new Money(0D);
-  while (itr.hasNext()) {
-    OrderItem item=itr.next();
-    tax=tax.add(item.getPrice().multiply(factor));
+  Money totalTax=order.getSubTotal().multiply(factor);
+  order.setTotalTax(totalTax);
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    Money fgTotalTax=fulfillmentGroup.getShippingPrice().multiply(factor);
+    fulfillmentGroup.setTotalTax(fgTotalTax);
   }
-  order.setTotalTax(tax);
   return order;
 }
