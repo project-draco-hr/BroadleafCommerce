@@ -6,12 +6,13 @@
  else   if (dfg.equals(fulfillmentGroup)) {
     fulfillmentGroup.setPrimary(true);
     order.getFulfillmentGroups().remove(dfg);
-    fulfillmentGroupDao.delete(dfg);
   }
   fulfillmentGroup.setOrder(order);
   for (  FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
     for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
-      fg.getFulfillmentGroupItems().remove(fgItem);
+      if (!fg.equals(fulfillmentGroup)) {
+        fg.getFulfillmentGroupItems().remove(fgItem);
+      }
     }
   }
   fulfillmentGroup=fulfillmentGroupDao.save(fulfillmentGroup);
