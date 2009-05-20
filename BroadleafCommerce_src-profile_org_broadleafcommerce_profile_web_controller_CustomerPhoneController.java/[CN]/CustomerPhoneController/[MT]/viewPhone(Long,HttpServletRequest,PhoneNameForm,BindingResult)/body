@@ -1,17 +1,22 @@
 {
   if (customerPhoneId == null) {
-    return "success";
+    return viewPhoneSuccessUrl;
   }
  else {
-    CustomerPhone cPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,customerState.getCustomerId(request));
+    Long currCustomerId=customerState.getCustomerId(request);
+    CustomerPhone cPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,currCustomerId);
     if (cPhone != null) {
+      if (!cPhone.getCustomerId().equals(currCustomerId)) {
+        return viewPhoneErrorUrl;
+      }
       phoneNameForm.setPhone(cPhone.getPhone());
       phoneNameForm.setPhoneName(cPhone.getPhoneName());
       request.setAttribute("customerPhoneId",cPhone.getId());
-      return "success";
+      request.setAttribute("phoneId",cPhone.getPhone().getId());
+      return viewPhoneSuccessUrl;
     }
  else {
-      return "errors";
+      return viewPhoneErrorUrl;
     }
   }
 }
