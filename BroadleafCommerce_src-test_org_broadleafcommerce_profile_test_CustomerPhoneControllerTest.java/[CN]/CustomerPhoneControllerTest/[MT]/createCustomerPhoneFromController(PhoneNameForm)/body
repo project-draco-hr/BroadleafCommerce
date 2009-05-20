@@ -2,8 +2,8 @@
   BindingResult errors=new BeanPropertyBindingResult(phoneNameForm,"phoneNameForm");
   request=this.getNewServletInstance();
   request.getSession().setAttribute("customer_session",userId);
-  String view=customerPhoneController.savePhone(phoneNameForm,errors,request);
-  assert(view.indexOf("success") >= 0);
+  String view=customerPhoneController.savePhone(phoneNameForm,errors,request,null,null);
+  assert(view.indexOf(SUCCESS) >= 0);
   List<CustomerPhone> phones=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
   boolean inPhoneList=false;
   Long id=(Long)request.getAttribute("customerPhoneId");
