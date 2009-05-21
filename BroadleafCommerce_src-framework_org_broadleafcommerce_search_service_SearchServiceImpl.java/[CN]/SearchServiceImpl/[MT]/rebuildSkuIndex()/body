@@ -1,31 +1,20 @@
 {
-  try {
-    List<Sku> skus=catalogService.findAllSkus();
-    if (skus != null) {
-      File indexDir=new File("/temp/search/lucene");
-      if (!indexDir.exists()) {
-        indexDir.mkdir();
-      }
-      MaxFieldLength mfl=new MaxFieldLength(IndexWriter.DEFAULT_MAX_FIELD_LENGTH);
-      IndexWriter writer=new IndexWriter(indexDir,new StandardAnalyzer(),true,mfl);
-      for (Iterator<Sku> itr=skus.iterator(); itr.hasNext(); ) {
-        Sku item=itr.next();
-        Document doc=new Document();
-        doc.add(new Field("ID",item.getId().toString(),Field.Store.YES,Field.Index.NO));
-        doc.add(new Field("name",item.getName(),Field.Store.YES,Field.Index.ANALYZED));
-        doc.add(new Field("price",item.getSalePrice() + "",Field.Store.YES,Field.Index.ANALYZED));
-        writer.addDocument(doc);
-      }
-      writer.close();
+  List<Sku> skus=catalogService.findAllSkus();
+  if (skus != null) {
+    File indexDir=new File("/temp/search/lucene");
+    if (!indexDir.exists()) {
+      indexDir.mkdir();
     }
-  }
- catch (  CorruptIndexException e) {
-    e.printStackTrace();
-  }
-catch (  LockObtainFailedException e) {
-    e.printStackTrace();
-  }
-catch (  IOException e) {
-    e.printStackTrace();
+    MaxFieldLength mfl=new MaxFieldLength(IndexWriter.DEFAULT_MAX_FIELD_LENGTH);
+    IndexWriter writer=new IndexWriter(indexDir,new StandardAnalyzer(),true,mfl);
+    for (Iterator<Sku> itr=skus.iterator(); itr.hasNext(); ) {
+      Sku item=itr.next();
+      Document doc=new Document();
+      doc.add(new Field("ID",item.getId().toString(),Field.Store.YES,Field.Index.NO));
+      doc.add(new Field("name",item.getName(),Field.Store.YES,Field.Index.ANALYZED));
+      doc.add(new Field("price",item.getSalePrice() + "",Field.Store.YES,Field.Index.ANALYZED));
+      writer.addDocument(doc);
+    }
+    writer.close();
   }
 }
