@@ -1,4 +1,10 @@
 {
+  if (BundleOrderItem.class.isAssignableFrom(orderItem.getClass())) {
+    BundleOrderItem bundle=(BundleOrderItem)orderItem;
+    for (    DiscreteOrderItem discreteOrderItem : bundle.getDiscreteOrderItems()) {
+      delete(discreteOrderItem);
+    }
+  }
   if (GiftWrapOrderItem.class.isAssignableFrom(orderItem.getClass())) {
     GiftWrapOrderItem giftItem=(GiftWrapOrderItem)orderItem;
     for (    OrderItem wrappedItem : giftItem.getWrappedItems()) {
