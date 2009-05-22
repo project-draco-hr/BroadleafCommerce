@@ -1,28 +1,4 @@
 {
-  System.out.println("*** in BandedShippingModule.calculateShippingForFG()");
-  String shippingMethod=fulfillmentGroup.getMethod();
-  Address address=fulfillmentGroup.getAddress();
-  if ("truck".equalsIgnoreCase(shippingMethod)) {
-    System.out.println("**** price: " + fulfillmentGroup.getShippingPrice());
-    fulfillmentGroup.setShippingPrice(new Money(0));
-    System.out.println("**** price: " + fulfillmentGroup.getShippingPrice());
-    return fulfillmentGroup;
-  }
-  if ("pickup".equalsIgnoreCase(shippingMethod)) {
-    fulfillmentGroup.setShippingPrice(new Money(0));
-    return fulfillmentGroup;
-  }
-  if ("delivery".equalsIgnoreCase(shippingMethod)) {
-    throw new UnsupportedOperationException();
-  }
-  if ("expedited".equalsIgnoreCase(shippingMethod)) {
-    throw new UnsupportedOperationException();
-  }
-  if ("standard".equalsIgnoreCase(shippingMethod)) {
-    calculateShipping(fulfillmentGroup);
-    return fulfillmentGroup;
-  }
-  System.out.println("*** address: " + address);
-  fulfillmentGroup.setShippingPrice(new Money(0D));
+  calculateShipping(fulfillmentGroup);
   return fulfillmentGroup;
 }
