@@ -1,17 +1,23 @@
 {
   Object sessionReference=request.getSession().getAttribute(DEFAULTSESSIONATTRIBUTENAME);
   Customer customer;
-  if (sessionReference instanceof Long) {
-    Long customerId=(Long)sessionReference;
-    if (customerId != null) {
-      customer=customerService.createCustomerFromId(customerId);
-    }
+  checkCustomer: {
+    if (sessionReference instanceof Long) {
+      Long customerId=(Long)sessionReference;
+      if (customerId != null) {
+        customer=customerService.readCustomerById(customerId);
+        if (customer == null) {
+          customer=(Customer)request.getSession().getAttribute(SERIALIZEDSESSIONATTRIBUTENAME);
+          if (customer != null) {
+            break checkCustomer;
+          }
+        }
  else {
-      customer=null;
+          break checkCustomer;
+        }
+      }
     }
-  }
- else {
-    customer=null;
+    customer=customerService.createCustomerFromId((Long)sessionReference);
   }
   return customer;
 }
