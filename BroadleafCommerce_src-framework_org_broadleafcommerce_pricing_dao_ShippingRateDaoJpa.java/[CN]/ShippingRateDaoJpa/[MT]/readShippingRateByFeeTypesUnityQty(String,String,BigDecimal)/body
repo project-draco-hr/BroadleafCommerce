@@ -3,5 +3,11 @@
   query.setParameter("feeType",feeType);
   query.setParameter("feeSubType",feeSubType);
   query.setParameter("bandUnitQuantity",unitQuantity);
-  return (ShippingRate)query.getResultList().get(0);
+  List<ShippingRate> returnedRates=query.getResultList();
+  if (returnedRates.size() > 0) {
+    return returnedRates.get(0);
+  }
+ else {
+    return null;
+  }
 }
