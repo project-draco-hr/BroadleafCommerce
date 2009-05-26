@@ -8,7 +8,7 @@
       priceToUse=offer.getValue();
     }
     if (offer.getDiscountType() == OfferDiscountType.PERCENT_OFF) {
-      priceToUse=priceToUse.multiply(offer.getValue().divide(new BigDecimal("100")).getAmount());
+      priceToUse=priceToUse.subtract(priceToUse.multiply(offer.getValue().divide(new BigDecimal("100")).getAmount()));
     }
     discountedPrice=priceToUse;
   }

@@ -1,0 +1,32 @@
+{
+  boolean appliesToItem=false;
+  boolean appliesToCustomer=false;
+  if (offer.getAppliesToItemRules() != null && offer.getAppliesToItemRules().length() != 0) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("doMark",Boolean.FALSE);
+    vars.put("order",order);
+    vars.put("offer",offer);
+    if (discreteOrderItem != null) {
+      vars.put("discreteOrderItem",discreteOrderItem);
+    }
+    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToItemRules(),vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToItem=true;
+    }
+  }
+ else {
+    appliesToItem=true;
+  }
+  if (offer.getAppliesToCustomerRules() != null && offer.getAppliesToCustomerRules().length() != 0) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("customer",order.getCustomer());
+    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToCustomerRules(),vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToCustomer=true;
+    }
+  }
+ else {
+    appliesToCustomer=true;
+  }
+  return appliesToItem && appliesToCustomer;
+}
