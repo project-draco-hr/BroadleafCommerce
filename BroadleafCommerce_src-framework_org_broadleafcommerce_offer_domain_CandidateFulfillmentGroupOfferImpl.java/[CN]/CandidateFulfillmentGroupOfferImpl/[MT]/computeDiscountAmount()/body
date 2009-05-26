@@ -1,9 +1,6 @@
 {
   if (offer != null && fulfillmentGroup != null) {
     Money priceToUse=fulfillmentGroup.getRetailShippingPrice();
-    if (offer.getApplyDiscountToSalePrice()) {
-      priceToUse=fulfillmentGroup.getSaleShippingPrice();
-    }
     if (offer.getDiscountType() == OfferDiscountType.AMOUNT_OFF) {
       priceToUse.subtract(offer.getValue());
     }
@@ -11,7 +8,7 @@
       priceToUse=offer.getValue();
     }
     if (offer.getDiscountType() == OfferDiscountType.PERCENT_OFF) {
-      priceToUse=priceToUse.multiply(offer.getValue().divide(new BigDecimal("100")).getAmount());
+      priceToUse=priceToUse.subtract(priceToUse.multiply(offer.getValue().divide(new BigDecimal("100")).getAmount()));
     }
     discountedPrice=priceToUse;
   }

@@ -1,0 +1,8 @@
+{
+  Money bundleRetailPrice=new Money();
+  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+    Money itemRetailPrice=discreteOrderItem.getRetailPrice();
+    bundleRetailPrice=bundleRetailPrice.add(new Money(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity()));
+  }
+  return bundleRetailPrice;
+}
