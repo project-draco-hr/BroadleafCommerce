@@ -4,6 +4,7 @@
     customer.setRegistered(true);
     Customer retCustomer=saveCustomer(customer);
     notifyPostRegisterListeners(retCustomer);
+    this.sendConfirmationEmail(retCustomer);
     response.setCustomer(retCustomer);
   }
   return response;

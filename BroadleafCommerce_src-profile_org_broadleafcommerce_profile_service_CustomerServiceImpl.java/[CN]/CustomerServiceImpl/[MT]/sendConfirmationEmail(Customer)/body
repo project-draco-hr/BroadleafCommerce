@@ -1,0 +1,12 @@
+{
+  if (emailInfo == null || emailInfo instanceof NullEmailInfo) {
+    logger.info("Customer Registration Email not being sent because blRegistrationEmailInfo is not configured");
+    return;
+  }
+  EmailTarget target=new AbstractEmailTarget(){
+  }
+;
+  target.setEmailAddress(customer.getEmailAddress());
+  HashMap<String,Object> props=new HashMap<String,Object>();
+  emailService.sendTemplateEmail(emailInfo,target,props);
+}
