@@ -1,0 +1,7 @@
+{
+  BindingResult errors=new BeanPropertyBindingResult(registerCustomer,"registerCustomer");
+  GreenMail greenMail=new GreenMail(new ServerSetup[]{new ServerSetup(30000,"127.0.0.1",ServerSetup.PROTOCOL_SMTP)});
+  greenMail.start();
+  greenMail.stop();
+  assert(errors.getErrorCount() == 0);
+}
