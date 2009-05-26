@@ -2,7 +2,7 @@
   Order order=null;
   Query query=em.createNamedQuery("BC_READ_ORDERS_BY_CUSTOMER_ID_AND_NAME_NULL");
   query.setParameter("customerId",customer.getId());
-  query.setParameter("orderStatus",OrderStatus.IN_PROCESS.toString());
+  query.setParameter("orderStatus",OrderStatus.IN_PROCESS.getName());
   List<Order> result=query.getResultList();
   if (result.size() > 0) {
     order=result.get(0);
