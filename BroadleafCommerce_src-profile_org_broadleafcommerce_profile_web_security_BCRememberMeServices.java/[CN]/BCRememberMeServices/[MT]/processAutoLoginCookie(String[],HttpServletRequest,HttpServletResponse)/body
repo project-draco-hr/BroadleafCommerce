@@ -1,0 +1,8 @@
+{
+  if (!CustomerCookie.getInstance().isValid(request)) {
+    throw new RememberMeAuthenticationException("Invalid Authentication");
+  }
+  Long customerId=CustomerCookie.getInstance().getCustomerIdFromCookie(request);
+  Customer customer=customerService.readCustomerById(customerId);
+  return this.getUserDetailsService().loadUserByUsername(customer.getUsername());
+}
