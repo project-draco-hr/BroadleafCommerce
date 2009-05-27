@@ -1,0 +1,8 @@
+{
+  List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();
+  grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
+  for (  CustomerRole role : customerRoles) {
+    grantedAuthorities.add(new GrantedAuthorityImpl(role.getRoleName()));
+  }
+  return grantedAuthorities;
+}
