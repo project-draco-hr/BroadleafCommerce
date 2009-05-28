@@ -2,20 +2,16 @@
   if (accountNumber == null) {
     throw new RuntimeException("account number is null");
   }
-  if (startPosition >= endPosition) {
-    throw new RuntimeException("Start position must be less than end position");
-  }
-  if (startPosition >= accountNumber.length() || endPosition > accountNumber.length()) {
-    throw new RuntimeException("startPosition must be less than account number length and end position must be less than or equal to account number length");
-  }
   char[] characters=accountNumber.toCharArray();
   char[] newCharacters=new char[characters.length];
-  if (startPosition > 0) {
-    System.arraycopy(characters,0,newCharacters,0,startPosition);
-  }
-  Arrays.fill(newCharacters,startPosition,endPosition,maskCharacter);
-  if (endPosition < accountNumber.length()) {
-    System.arraycopy(characters,endPosition,newCharacters,endPosition,accountNumber.length() - endPosition);
+  Arrays.fill(newCharacters,0,newCharacters.length,maskCharacter);
+  for (  UnmaskRange range : ranges) {
+    if (range.getPositionType() == UnmaskRange.BEGINNINGTYPE) {
+      System.arraycopy(characters,0,newCharacters,0,range.getLength());
+    }
+ else {
+      System.arraycopy(characters,characters.length - range.getLength(),newCharacters,newCharacters.length - range.getLength(),range.getLength());
+    }
   }
   return new String(newCharacters);
 }
