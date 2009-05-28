@@ -1,105 +1,110 @@
 {
   List<CandidateOrderOffer> qualifiedOrderOffers=new ArrayList<CandidateOrderOffer>();
   List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
-  order=orderService.removeAllOffersFromOrder(order);
+  order.removeAllCandidateOffers();
   order.removeAllAdjustments();
-  order.setSubTotal(order.calculateSubTotal());
-  List<Offer> offersWithValidDates=removeOutOfDateOffers(offers);
-  List<DiscreteOrderItem> discreteOrderItems=order.getDiscreteOrderItems();
-  if (offersWithValidDates != null && !offersWithValidDates.isEmpty()) {
-    for (    Offer offer : offersWithValidDates) {
-      if (offer.getType().equals(OfferType.ORDER)) {
-        if (couldOfferApply(offer,order)) {
-          CandidateOrderOffer candidateOffer=new CandidateOrderOfferImpl(order,offer);
-          order.addCandidateOrderOffer(candidateOffer);
-          qualifiedOrderOffers.add(candidateOffer);
+  if (offers != null && !offers.isEmpty()) {
+    order.setSubTotal(order.calculateCurrentSubTotal());
+    List<Offer> filteredOffers=removeOutOfDateOffers(offers);
+    filteredOffers=removeInvalidCustomerOffers(filteredOffers,order);
+    List<DiscreteOrderItem> discreteOrderItems=order.getDiscountableDiscreteOrderItems();
+    if (filteredOffers != null && !filteredOffers.isEmpty()) {
+      for (      Offer offer : filteredOffers) {
+        if (offer.getType().equals(OfferType.ORDER)) {
+          if (couldOfferApply(offer,order)) {
+            CandidateOrderOffer candidateOffer=new CandidateOrderOfferImpl(order,offer);
+            order.addCandidateOrderOffer(candidateOffer);
+            qualifiedOrderOffers.add(candidateOffer);
+          }
         }
-      }
- else       if (offer.getType().equals(OfferType.ORDER_ITEM)) {
-        for (        DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-          if (couldOfferApply(offer,order,discreteOrderItem)) {
-            CandidateItemOffer candidateOffer=new CandidateItemOfferImpl(discreteOrderItem,offer);
-            discreteOrderItem.addCandidateItemOffer(candidateOffer);
-            qualifiedItemOffers.add(candidateOffer);
+ else         if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+          for (          DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+            if (couldOfferApply(offer,order,discreteOrderItem)) {
+              CandidateItemOffer candidateOffer=new CandidateItemOfferImpl(discreteOrderItem,offer);
+              discreteOrderItem.addCandidateItemOffer(candidateOffer);
+              qualifiedItemOffers.add(candidateOffer);
+            }
+          }
+        }
+ else         if (offer.getType().equals(OfferType.FULFILLMENT_GROUP)) {
+          for (          FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+            if (couldOfferApply(offer,order,fulfillmentGroup)) {
+              CandidateFulfillmentGroupOffer candidateOffer=new CandidateFulfillmentGroupOfferImpl(fulfillmentGroup,offer);
+              fulfillmentGroup.addCandidateFulfillmentGroupOffer(candidateOffer);
+            }
           }
         }
       }
- else       if (offer.getType().equals(OfferType.FULFILLMENT_GROUP)) {
-        for (        FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
-          if (couldOfferApply(offer,order,fulfillmentGroup)) {
-            CandidateFulfillmentGroupOffer candidateOffer=new CandidateFulfillmentGroupOfferImpl(fulfillmentGroup,offer);
-            fulfillmentGroup.addCandidateFulfillmentGroupOffer(candidateOffer);
+      Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
+      Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
+      Collections.sort(qualifiedItemOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
+      Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
+      boolean isItemAdjustmentApplied=false;
+      for (      CandidateItemOffer itemOffer : qualifiedItemOffers) {
+        OrderItem orderItem=itemOffer.getOrderItem();
+        if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (isItemAdjustmentApplied)) {
+          if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
+            applyOrderItemOffer(itemOffer);
+            isItemAdjustmentApplied=true;
+            if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
+              break;
+            }
           }
         }
-      }
-    }
-    Collections.sort(qualifiedOrderOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
-    Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
-    Collections.sort(qualifiedItemOffers,ComparatorUtils.reversedComparator(new BeanComparator("discountedPrice")));
-    Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
-    boolean isItemAdjustmentApplied=false;
-    for (    CandidateItemOffer itemOffer : qualifiedItemOffers) {
-      OrderItem orderItem=itemOffer.getOrderItem();
-      if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (isItemAdjustmentApplied)) {
-        if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
-          applyOrderItemOffer(itemOffer);
-          isItemAdjustmentApplied=true;
-          if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
-            break;
-          }
-        }
-      }
  else {
+        }
       }
-    }
-    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-      Money itemPrice=discreteOrderItem.getRetailPrice();
-      if (discreteOrderItem.getSalePrice() != null) {
-        itemPrice=discreteOrderItem.getSalePrice();
+      for (      DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+        Money itemPrice=discreteOrderItem.getRetailPrice();
+        if (discreteOrderItem.getSalePrice() != null) {
+          itemPrice=discreteOrderItem.getSalePrice();
+        }
+        if ((discreteOrderItem.getAdjustmentPrice() != null) && (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice))) {
+          discreteOrderItem.removeAllAdjustments();
+        }
       }
-      if ((discreteOrderItem.getAdjustmentPrice() != null) && (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice))) {
-        discreteOrderItem.removeAllAdjustments();
+      for (      CandidateOrderOffer orderOffer : qualifiedOrderOffers) {
+        if (order.getOrderAdjustments().size() == 0) {
+          if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
+            applyOrderOffer(orderOffer);
+            if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateCurrentSubTotal())) {
+              order.removeAllAdjustments();
+            }
+ else {
+              order.removeAllItemAdjustments();
+              isItemAdjustmentApplied=false;
+            }
+          }
+ else {
+            applyOrderOffer(orderOffer);
+          }
+        }
+ else         if (orderOffer.getOffer().isCombinableWithOtherOffers()) {
+          if (orderOffer.getOffer().isStackable()) {
+            applyOrderOffer(orderOffer);
+            if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
+              break;
+            }
+          }
+        }
+ else {
+        }
       }
-    }
-    for (    CandidateOrderOffer orderOffer : qualifiedOrderOffers) {
-      if (order.getOrderAdjustments().size() == 0) {
-        if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
-          applyOrderOffer(orderOffer);
-          if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateSubTotal())) {
+      if ((order.getOrderAdjustments().size() > 0) && (isItemAdjustmentApplied)) {
+        if ((order.containsNotCombinableItemOffer()) || (order.containsNotStackableOrderOffer())) {
+          if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateCurrentSubTotal())) {
             order.removeAllAdjustments();
           }
  else {
             order.removeAllItemAdjustments();
-            isItemAdjustmentApplied=false;
-          }
-        }
- else {
-          applyOrderOffer(orderOffer);
-        }
-      }
- else       if (orderOffer.getOffer().isCombinableWithOtherOffers()) {
-        if (orderOffer.getOffer().isStackable()) {
-          applyOrderOffer(orderOffer);
-          if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
-            break;
           }
         }
       }
- else {
-      }
     }
-    if ((order.getOrderAdjustments().size() > 0) && (isItemAdjustmentApplied)) {
-      if ((order.containsNotCombinableItemOffer()) || (order.containsNotStackableOrderOffer())) {
-        if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateSubTotal())) {
-          order.removeAllAdjustments();
-        }
- else {
-          order.removeAllItemAdjustments();
-        }
-      }
-    }
-    order.assignOrderItemsFinalPrice();
-    order.setSubTotal(order.calculateSubTotal());
+  }
+  order.assignOrderItemsFinalPrice();
+  order.setSubTotal(order.calculateFinalSubTotal());
+  if (!order.getOrderAdjustments().isEmpty()) {
     order.reapplyOrderAdjustments();
   }
 }

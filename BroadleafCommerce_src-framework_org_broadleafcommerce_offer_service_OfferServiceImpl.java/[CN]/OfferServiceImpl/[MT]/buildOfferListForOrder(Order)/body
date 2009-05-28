@@ -1,0 +1,22 @@
+{
+  List<Offer> offers=new ArrayList<Offer>();
+  List<OfferCustomer> offerCustomers=lookupOfferCustomerByCustomer(order.getCustomer());
+  for (  OfferCustomer customerOfferCode : offerCustomers) {
+    if (!offers.contains(customerOfferCode.getOfferCode().getOffer())) {
+      offers.add(customerOfferCode.getOfferCode().getOffer());
+    }
+  }
+  List<OfferCode> orderOfferCodes=order.getAddedOfferCodes();
+  for (  OfferCode orderOfferCode : orderOfferCodes) {
+    if (!offers.contains(orderOfferCode.getOffer())) {
+      offers.add(orderOfferCode.getOffer());
+    }
+  }
+  List<OfferCode> globalOfferCodes=lookupAllGlobalOffers();
+  for (  OfferCode globalOfferCode : globalOfferCodes) {
+    if (!offers.contains(globalOfferCode.getOffer())) {
+      offers.add(globalOfferCode.getOffer());
+    }
+  }
+  return offers;
+}
