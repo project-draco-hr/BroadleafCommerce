@@ -1,0 +1,6 @@
+{
+  Query query=em.createNamedQuery("BC_READ_CATEGORY_BY_NAME");
+  query.setParameter("categoryName",categoryName);
+  query.setHint("org.hibernate.cacheable",true);
+  return (Category)query.getSingleResult();
+}
