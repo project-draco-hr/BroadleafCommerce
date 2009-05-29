@@ -8,10 +8,10 @@
   }
  else {
     Category currentCategory=(Category)model.get("currentCategory");
-    if (currentCategory.getUrl() != null) {
+    if (currentCategory.getUrl() != null && !"".equals(currentCategory.getUrl())) {
       return new ModelAndView("redirect:" + currentCategory.getUrl());
     }
- else     if (currentCategory.getDisplayTemplate() != null) {
+ else     if (currentCategory.getDisplayTemplate() != null && !"".equals(currentCategory.getUrl())) {
       view=categoryTemplatePrefix + currentCategory.getDisplayTemplate();
     }
  else {

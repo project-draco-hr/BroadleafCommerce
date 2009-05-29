@@ -3,6 +3,9 @@
   if (getRootCategoryId() != null) {
     rootCategory=catalogService.findCategoryById(getRootCategoryId());
   }
+ else   if (getRootCategoryName() != null) {
+    rootCategory=catalogService.findCategoryByName(getRootCategoryName());
+  }
   if (rootCategory == null) {
     throw new IllegalStateException("Catalog Controller configured incorrectly - root category not found: " + rootCategoryId);
   }
