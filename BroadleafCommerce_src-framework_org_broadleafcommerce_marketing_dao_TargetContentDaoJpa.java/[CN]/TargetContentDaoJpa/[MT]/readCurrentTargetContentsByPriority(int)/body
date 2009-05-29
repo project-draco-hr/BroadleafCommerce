@@ -1,6 +1,6 @@
 {
   Query query=em.createNamedQuery("BC_READ_TARGET_CONTENTS_BY_PRIORITY");
   query.setParameter("priority",priority);
-  query.setHint("org.hibernate.cacheable",true);
+  query.setHint(getQueryCacheableKey(),true);
   return query.getResultList();
 }
