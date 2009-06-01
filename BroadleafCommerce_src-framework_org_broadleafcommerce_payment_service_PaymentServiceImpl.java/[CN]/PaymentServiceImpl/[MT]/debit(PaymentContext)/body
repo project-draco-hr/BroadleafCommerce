@@ -1,5 +1,9 @@
 {
+  PaymentInfo info=paymentContext.getPaymentInfo();
   PaymentResponseItem response=paymentModule.debit(paymentContext);
   response.setTransactionType(BLCTransactionType.DEBIT);
+  response.setPaymentInfo(info);
+  info.getPaymentResponseItems().add(response);
+  paymentInfoService.save(info);
   return response;
 }

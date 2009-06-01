@@ -1,5 +1,9 @@
 {
+  PaymentInfo info=paymentContext.getPaymentInfo();
   PaymentResponseItem response=paymentModule.authorize(paymentContext);
   response.setTransactionType(BLCTransactionType.AUTHORIZE);
+  response.setPaymentInfo(info);
+  info.getPaymentResponseItems().add(response);
+  paymentInfoService.save(info);
   return response;
 }

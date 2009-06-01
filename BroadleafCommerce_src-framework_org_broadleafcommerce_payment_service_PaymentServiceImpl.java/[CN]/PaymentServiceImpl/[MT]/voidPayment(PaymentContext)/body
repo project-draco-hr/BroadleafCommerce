@@ -1,5 +1,9 @@
 {
+  PaymentInfo info=paymentContext.getPaymentInfo();
   PaymentResponseItem response=paymentModule.voidPayment(paymentContext);
   response.setTransactionType(BLCTransactionType.VOIDPAYMENT);
+  response.setPaymentInfo(info);
+  info.getPaymentResponseItems().add(response);
+  paymentInfoService.save(info);
   return response;
 }
