@@ -1,5 +1,5 @@
 {
-  categoryTag.setPageContext(pageContext);
+  categoryTag.setJspContext(pageContext);
   categoryTag.setVar("categoryVar");
   categoryTag.setCatalogService(catalogService);
   pageContext.setAttribute("categoryVar",category);
@@ -7,7 +7,7 @@
   categoryTag.setCategoryId(0L);
   EasyMock.expect(catalogService.findCategoryById(0L)).andReturn(category);
   super.replayAdditionalMockObjects(category);
-  categoryTag.doStartTag();
+  categoryTag.doTag();
   Category ret=(Category)pageContext.getAttribute("categoryVar");
   assert(category.equals(ret));
   super.verifyBaseMockObjects(category);

@@ -1,5 +1,5 @@
 {
-  getProductsByCategoryIdTag.setPageContext(pageContext);
+  getProductsByCategoryIdTag.setJspContext(pageContext);
   getProductsByCategoryIdTag.setCatalogService(catalogService);
   List<Product> productList=new ArrayList<Product>();
   Product p1=EasyMock.createStrictMock(Product.class);
@@ -15,7 +15,7 @@
   EasyMock.expect(catalogService.findActiveProductsByCategory(c)).andReturn(productList);
   EasyMock.replay(p1,p2,c);
   super.replayAdditionalMockObjects();
-  getProductsByCategoryIdTag.doStartTag();
+  getProductsByCategoryIdTag.doTag();
   List<Product> list=(List<Product>)pageContext.getAttribute("productListVar");
   assert(list.get(0).equals(p1));
   assert(list.get(1).equals(p2));
