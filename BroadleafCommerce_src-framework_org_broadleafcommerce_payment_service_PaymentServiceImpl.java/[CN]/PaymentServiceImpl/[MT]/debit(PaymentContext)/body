@@ -4,6 +4,8 @@
   response.setTransactionType(BLCTransactionType.DEBIT);
   response.setPaymentInfo(info);
   response.setUserName(paymentContext.getUserName());
+  response.setCustomer(info.getOrder().getCustomer());
+  response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
   info.getPaymentResponseItems().add(response);
   paymentInfoService.save(info);
   return response;
