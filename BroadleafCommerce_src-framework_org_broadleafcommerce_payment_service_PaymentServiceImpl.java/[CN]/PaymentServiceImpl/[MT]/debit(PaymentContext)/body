@@ -3,6 +3,7 @@
   PaymentResponseItem response=paymentModule.debit(paymentContext);
   response.setTransactionType(BLCTransactionType.DEBIT);
   response.setPaymentInfo(info);
+  response.setUserName(paymentContext.getUserName());
   info.getPaymentResponseItems().add(response);
   paymentInfoService.save(info);
   return response;
