@@ -1,5 +1,6 @@
 {
   Order order=orderDao.create();
+  order.setCustomer(createCustomer());
   FulfillmentGroup group=new FulfillmentGroupImpl();
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   group.setMethod("standard");
@@ -7,12 +8,25 @@
   order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
   group.setShippingPrice(total);
-  OrderItem item=new DiscreteOrderItemImpl();
-  item.setRetailPrice(new Money(10D));
+  DiscreteOrderItemImpl item=new DiscreteOrderItemImpl();
+  Sku sku=new SkuImpl();
+  sku.setId(123456L);
+  sku.setRetailPrice(new Money(10D));
+  sku.setDiscountable(true);
+  item.setSku(sku);
+  item.setQuantity(2);
+  order.addOrderItem(item);
+  item=new DiscreteOrderItemImpl();
+  sku=new SkuImpl();
+  sku.setId(1234567L);
+  sku.setRetailPrice(new Money(20D));
+  sku.setDiscountable(true);
+  item.setSku(sku);
   item.setQuantity(1);
-  List<OrderItem> items=new ArrayList<OrderItem>();
-  items.add(item);
-  order.setOrderItems(items);
+  order.addOrderItem(item);
+  order.addAddedOfferCode(createOfferCode("20 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,20,null,"discreteOrderItem.sku.id == 123456"));
+  order.addAddedOfferCode(createOfferCode("3 Dollars Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.AMOUNT_OFF,3,null,"discreteOrderItem.sku.id != 123456"));
+  order.addAddedOfferCode(createOfferCode("1.20 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,1.20,null,null));
   order.setTotalShipping(new Money(0D));
   order=pricingService.executePricing(order);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
