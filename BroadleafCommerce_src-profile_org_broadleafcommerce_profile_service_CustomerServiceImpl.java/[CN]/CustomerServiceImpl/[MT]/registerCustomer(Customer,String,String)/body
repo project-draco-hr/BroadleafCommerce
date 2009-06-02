@@ -6,10 +6,5 @@
   customer.setUnencodedPassword(password);
   Customer retCustomer=saveCustomer(customer);
   notifyPostRegisterListeners(retCustomer);
-  this.sendConfirmationEmail(retCustomer);
-  HashMap<String,Object> emailDataMap=new HashMap<String,Object>();
-  emailDataMap.put("customer",retCustomer);
-  emailService.sendTemplateEmail(retCustomer.getEmailAddress(),emailInfo,emailDataMap);
-  authenticateUser(customer.getUsername(),password);
   return retCustomer;
 }
