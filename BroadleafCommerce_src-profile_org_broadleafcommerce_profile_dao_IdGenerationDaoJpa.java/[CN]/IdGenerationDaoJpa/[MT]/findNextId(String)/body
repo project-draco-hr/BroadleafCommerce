@@ -1,6 +1,28 @@
 {
+  IdGeneration idGeneration;
   Query query=em.createNamedQuery("BC_FIND_NEXT_ID");
   query.setParameter("idType",idType);
   query.setHint(getQueryCacheableKey(),false);
-  return (IdGeneration)query.getSingleResult();
+  try {
+    idGeneration=(IdGeneration)query.getSingleResult();
+  }
+ catch (  NoResultException nre) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("No row found in idGenerator table for " + idType + " creating row.");
+    }
+    idGeneration=(IdGeneration)entityConfiguration.createEntityInstance("org.broadleafcommerce.profile.domain.IdGeneration");
+    idGeneration.setType(idType);
+    idGeneration.setBatchStart(getDefaultBatchStart());
+    idGeneration.setBatchSize(getDefaultBatchSize());
+    try {
+      em.persist(idGeneration);
+    }
+ catch (    EntityExistsException e) {
+      if (logger.isWarnEnabled()) {
+        logger.warn("Error inserting row id generation for idType " + idType + ".  Requerying table.");
+      }
+      return findNextId(idType);
+    }
+  }
+  return idGeneration;
 }

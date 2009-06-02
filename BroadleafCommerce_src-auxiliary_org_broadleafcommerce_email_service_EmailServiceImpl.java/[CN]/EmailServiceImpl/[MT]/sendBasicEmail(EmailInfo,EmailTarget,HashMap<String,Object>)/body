@@ -1,0 +1,12 @@
+{
+  if (props == null)   return false;
+  props.put(EmailPropertyType.INFO.toString(),emailInfo);
+  props.put(EmailPropertyType.USER.toString(),emailTarget);
+  if (Boolean.parseBoolean(emailInfo.getSendEmailReliableAsync())) {
+    emailServiceProducer.send(props);
+  }
+ else {
+    messageCreator.sendMessage(props);
+  }
+  return true;
+}

@@ -1,15 +1,7 @@
 {
   GreenMail greenMail=new GreenMail(new ServerSetup[]{new ServerSetup(30000,"127.0.0.1",ServerSetup.PROTOCOL_SMTP)});
   greenMail.start();
-  EmailTarget target=new AbstractEmailTarget(){
-  }
-;
-  target.setEmailAddress("to@localhost");
-  EmailInfo info=new EmailInfo();
-  HashMap<String,Object> map=new HashMap<String,Object>();
-  map.put("user",target);
-  map.put("info",info);
-  emailService.sendTemplateEmail(map);
-  assert(1 == greenMail.getReceivedMessages().length);
+  emailService.sendTemplateEmail("to@localhost",new EmailInfo(),null);
+  assert(greenMail.waitForIncomingEmail(10000,1));
   greenMail.stop();
 }
