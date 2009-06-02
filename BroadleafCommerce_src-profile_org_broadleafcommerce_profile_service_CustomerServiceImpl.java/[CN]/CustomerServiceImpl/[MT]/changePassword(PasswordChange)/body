@@ -3,9 +3,6 @@
   customer.setUnencodedPassword(passwordChange.getNewPassword());
   customer.setPasswordChangeRequired(passwordChange.getPasswordChangeRequired());
   customer=saveCustomer(customer);
-  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-  UsernamePasswordAuthenticationToken authRequest=new UsernamePasswordAuthenticationToken(passwordChange.getUsername(),passwordChange.getNewPassword(),auth.getAuthorities());
-  SecurityContextHolder.getContext().setAuthentication(authRequest);
-  auth.setAuthenticated(false);
+  authenticateUser(passwordChange.getUsername(),passwordChange.getNewPassword());
   return customer;
 }

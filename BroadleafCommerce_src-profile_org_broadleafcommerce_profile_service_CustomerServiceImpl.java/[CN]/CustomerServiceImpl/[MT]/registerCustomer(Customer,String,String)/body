@@ -1,11 +1,15 @@
 {
-  RegistrationResponse response=new RegistrationResponse(customer,customer.getClass().getSimpleName());
-  if (!response.hasErrors()) {
-    customer.setRegistered(true);
-    Customer retCustomer=saveCustomer(customer);
-    notifyPostRegisterListeners(retCustomer);
-    this.sendConfirmationEmail(retCustomer);
-    response.setCustomer(retCustomer);
+  customer.setRegistered(true);
+  if (customer.getId() == null) {
+    customer.setId(idGenerationService.findNextId("org.broadleafcommerce.profile.domain.Customer"));
   }
-  return response;
+  customer.setUnencodedPassword(password);
+  Customer retCustomer=saveCustomer(customer);
+  notifyPostRegisterListeners(retCustomer);
+  this.sendConfirmationEmail(retCustomer);
+  HashMap<String,Object> emailDataMap=new HashMap<String,Object>();
+  emailDataMap.put("customer",retCustomer);
+  emailService.sendTemplateEmail(retCustomer.getEmailAddress(),emailInfo,emailDataMap);
+  authenticateUser(customer.getUsername(),password);
+  return retCustomer;
 }
