@@ -1,12 +1,17 @@
 {
-  PaymentInfo info=paymentContext.getPaymentInfo();
-  PaymentResponseItem response=paymentModule.balance(paymentContext);
-  response.setTransactionType(BLCTransactionType.BALANCE);
-  response.setPaymentInfo(info);
-  response.setUserName(paymentContext.getUserName());
-  response.setCustomer(info.getOrder().getCustomer());
-  response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
-  info.getPaymentResponseItems().add(response);
-  paymentInfoService.save(info);
+  logPaymentStartEvent(paymentContext,BLCTransactionType.BALANCE);
+  PaymentResponseItem response=null;
+  try {
+    response=paymentModule.balance(paymentContext);
+  }
+ catch (  PaymentException e) {
+    if (e instanceof PaymentProcessorException) {
+      response=((PaymentProcessorException)e).getPaymentResponseItem();
+    }
+    throw e;
+  }
+ finally {
+    logResponseItem(paymentContext,response,BLCTransactionType.BALANCE);
+  }
   return response;
 }

@@ -1,0 +1,12 @@
+{
+  if (response != null) {
+    PaymentInfo info=paymentContext.getPaymentInfo();
+    response.setTransactionType(transactionType);
+    response.setPaymentInfo(info);
+    response.setCustomer(info.getOrder().getCustomer());
+    response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
+    response.setUserName(paymentContext.getUserName());
+    info.getPaymentResponseItems().add(response);
+    paymentInfoService.save(info);
+  }
+}
