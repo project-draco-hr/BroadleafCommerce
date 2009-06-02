@@ -1,5 +1,10 @@
 {
-  if (props == null)   return false;
+  if (props == null) {
+    props=new HashMap<String,Object>();
+  }
+  if (emailInfo == null) {
+    emailInfo=new EmailInfo();
+  }
   props.put(EmailPropertyType.INFO.toString(),emailInfo);
   props.put(EmailPropertyType.USER.toString(),emailTarget);
   return sendBasicEmail(emailInfo,emailTarget,props);
