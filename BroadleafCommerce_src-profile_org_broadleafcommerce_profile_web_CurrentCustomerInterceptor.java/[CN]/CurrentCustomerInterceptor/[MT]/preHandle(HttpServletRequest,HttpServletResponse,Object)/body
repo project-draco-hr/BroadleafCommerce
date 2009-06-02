@@ -1,6 +1,6 @@
 {
   WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
-  CustomerState customerState=(CustomerState)applicationContext.getBean("customerState");
+  CustomerState customerState=(CustomerState)applicationContext.getBean("blCustomerState");
   Customer requestCustomer=null;
   checkSession: {
     Customer sessionCustomer=customerState.getCustomer(request);
@@ -13,7 +13,7 @@
     if (cookieCustomerIdVal != null) {
       cookieCustomerId=new Long(cookieCustomerIdVal);
     }
-    CustomerService customerService=(CustomerService)applicationContext.getBean("customerService");
+    CustomerService customerService=(CustomerService)applicationContext.getBean("blCustomerService");
     if (cookieCustomerId != null) {
       Customer cookieCustomer=customerService.createCustomerFromId(cookieCustomerId);
       customerState.setCustomer(cookieCustomer,request);
