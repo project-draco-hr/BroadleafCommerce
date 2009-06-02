@@ -1,17 +1,17 @@
 {
-  OrderItem addedItem;
+  int orderItemIndex;
   List<OrderItem> orderItems=order.getOrderItems();
   boolean containsItem=orderItems.contains(newOrderItem);
   if (rollupOrderItems && containsItem) {
     OrderItem itemFromOrder=orderItems.get(orderItems.indexOf(newOrderItem));
     itemFromOrder.setQuantity(itemFromOrder.getQuantity() + newOrderItem.getQuantity());
-    addedItem=itemFromOrder;
+    orderItemIndex=orderItems.indexOf(itemFromOrder);
   }
  else {
     orderItems.add(newOrderItem);
     newOrderItem.setOrder(order);
-    addedItem=newOrderItem;
+    orderItemIndex=orderItems.size() - 1;
   }
   order=updateOrder(order);
-  return order.getOrderItems().get(order.getOrderItems().indexOf(addedItem));
+  return order.getOrderItems().get(orderItemIndex);
 }

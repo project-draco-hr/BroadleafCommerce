@@ -2,8 +2,9 @@
   payment.setOrder(order);
   order.getPaymentInfos().add(payment);
   order=persistOrder(order);
+  int paymentIndex=order.getPaymentInfos().size() - 1;
   if (securePaymentInfo != null) {
     securePaymentInfoService.save(securePaymentInfo);
   }
-  return order.getPaymentInfos().get(order.getPaymentInfos().indexOf(payment));
+  return order.getPaymentInfos().get(paymentIndex);
 }

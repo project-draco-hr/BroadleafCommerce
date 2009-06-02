@@ -17,6 +17,7 @@
   }
   fulfillmentGroup=fulfillmentGroupDao.save(fulfillmentGroup);
   order.getFulfillmentGroups().add(fulfillmentGroup);
+  int fulfillmentGroupIndex=order.getFulfillmentGroups().size() - 1;
   order=updateOrder(order);
-  return order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(fulfillmentGroup));
+  return order.getFulfillmentGroups().get(fulfillmentGroupIndex);
 }
