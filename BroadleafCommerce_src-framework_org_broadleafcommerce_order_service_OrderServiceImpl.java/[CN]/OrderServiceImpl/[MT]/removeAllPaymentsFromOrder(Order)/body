@@ -4,6 +4,7 @@
       securePaymentInfoService.findAndRemoveSecurePaymentInfo(paymentInfo.getReferenceNumber(),paymentInfo.getType());
     }
  catch (    WorkflowException e) {
+      LOG.debug("No secure payment is associated with the PaymentInfo",e);
     }
     paymentInfoDao.delete(paymentInfo);
   }
