@@ -2,8 +2,8 @@
   boolean appliesToCustomer=false;
   if (offer.getAppliesToCustomerRules() != null && offer.getAppliesToCustomerRules().length() != 0) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
-    vars.put("customer",order.getCustomer());
-    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToCustomerRules(),vars);
+    vars.put("customer",customer);
+    Boolean expressionOutcome=executeExpression(offer.getAppliesToCustomerRules(),vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToCustomer=true;
     }

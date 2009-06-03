@@ -1,0 +1,17 @@
+{
+  boolean isItemOfferApplied=false;
+  for (  CandidateItemOffer itemOffer : itemOffers) {
+    OrderItem orderItem=itemOffer.getOrderItem();
+    if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (isItemOfferApplied)) {
+      if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
+        applyOrderItemOffer(itemOffer);
+        isItemOfferApplied=true;
+        if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
+          break;
+        }
+      }
+    }
+ else {
+    }
+  }
+}

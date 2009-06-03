@@ -4,10 +4,8 @@
     ParserContext context=new ParserContext();
     context.addImport("OfferType",OfferType.class);
     context.addImport("FulfillmentGroupType",FulfillmentGroupType.class);
-    StringBuffer completeExpression=new StringBuffer(functions.toString());
-    completeExpression.append(" ").append(expression);
-    exp=MVEL.compileExpression(completeExpression.toString(),context);
+    exp=MVEL.compileExpression(expression.toString(),context);
   }
   expressionCache.put(expression,exp);
-  return MVEL.executeExpression(exp,vars);
+  return (Boolean)MVEL.executeExpression(exp,vars);
 }

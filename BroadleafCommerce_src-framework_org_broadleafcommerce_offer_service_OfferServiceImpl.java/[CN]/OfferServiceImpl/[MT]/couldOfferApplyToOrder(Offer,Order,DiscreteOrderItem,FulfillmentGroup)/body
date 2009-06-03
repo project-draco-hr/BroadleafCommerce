@@ -2,13 +2,15 @@
   boolean appliesToItem=false;
   if (offer.getAppliesToOrderRules() != null && offer.getAppliesToOrderRules().length() != 0) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
-    vars.put("doMark",Boolean.FALSE);
     vars.put("order",order);
     vars.put("offer",offer);
+    if (fulfillmentGroup != null) {
+      vars.put("fulfillmentGroup",fulfillmentGroup);
+    }
     if (discreteOrderItem != null) {
       vars.put("discreteOrderItem",discreteOrderItem);
     }
-    Boolean expressionOutcome=(Boolean)executeExpression(offer.getAppliesToOrderRules(),vars);
+    Boolean expressionOutcome=executeExpression(offer.getAppliesToOrderRules(),vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToItem=true;
     }
