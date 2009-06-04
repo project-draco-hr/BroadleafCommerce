@@ -1,6 +1,7 @@
 {
   logPaymentStartEvent(paymentContext,BLCTransactionType.VOIDPAYMENT);
   PaymentResponseItem response=null;
+  PaymentException paymentException=null;
   try {
     response=paymentModule.voidPayment(paymentContext);
   }
@@ -8,10 +9,12 @@
     if (e instanceof PaymentProcessorException) {
       response=((PaymentProcessorException)e).getPaymentResponseItem();
     }
+    paymentException=e;
     throw e;
   }
  finally {
     logResponseItem(paymentContext,response,BLCTransactionType.VOIDPAYMENT);
+    logPaymentFinishEvent(paymentContext,BLCTransactionType.VOIDPAYMENT,paymentException);
   }
   return response;
 }

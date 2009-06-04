@@ -1,6 +1,7 @@
 {
   logPaymentStartEvent(paymentContext,BLCTransactionType.AUTHORIZE);
   PaymentResponseItem response=null;
+  PaymentException paymentException=null;
   try {
     response=paymentModule.authorize(paymentContext);
   }
@@ -8,10 +9,12 @@
     if (e instanceof PaymentProcessorException) {
       response=((PaymentProcessorException)e).getPaymentResponseItem();
     }
+    paymentException=e;
     throw e;
   }
  finally {
     logResponseItem(paymentContext,response,BLCTransactionType.AUTHORIZE);
+    logPaymentFinishEvent(paymentContext,BLCTransactionType.AUTHORIZE,paymentException);
   }
   return response;
 }

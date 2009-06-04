@@ -1,6 +1,7 @@
 {
   logPaymentStartEvent(paymentContext,BLCTransactionType.BALANCE);
   PaymentResponseItem response=null;
+  PaymentException paymentException=null;
   try {
     response=paymentModule.balance(paymentContext);
   }
@@ -8,10 +9,12 @@
     if (e instanceof PaymentProcessorException) {
       response=((PaymentProcessorException)e).getPaymentResponseItem();
     }
+    paymentException=e;
     throw e;
   }
  finally {
     logResponseItem(paymentContext,response,BLCTransactionType.BALANCE);
+    logPaymentFinishEvent(paymentContext,BLCTransactionType.BALANCE,paymentException);
   }
   return response;
 }
