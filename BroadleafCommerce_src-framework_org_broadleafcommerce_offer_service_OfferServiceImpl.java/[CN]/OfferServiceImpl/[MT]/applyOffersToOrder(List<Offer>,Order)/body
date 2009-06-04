@@ -35,27 +35,35 @@
           }
         }
       }
-      Collections.sort(qualifiedOrderOffers,new BeanComparator("discountedPrice"));
-      Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
-      Collections.sort(qualifiedItemOffers,new BeanComparator("discountedPrice"));
-      Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
-      applyAllItemOffers(qualifiedItemOffers);
-      for (      DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-        Money itemPrice=discreteOrderItem.getRetailPrice();
-        if (discreteOrderItem.getSalePrice() != null) {
-          itemPrice=discreteOrderItem.getSalePrice();
-        }
-        if ((discreteOrderItem.getAdjustmentPrice() != null) && (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice))) {
-          discreteOrderItem.removeAllAdjustments();
+      if (!qualifiedItemOffers.isEmpty()) {
+        Collections.sort(qualifiedItemOffers,new BeanComparator("discountedPrice"));
+        Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
+        int appliedItemOffersCount=applyAllItemOffers(qualifiedItemOffers);
+        if (appliedItemOffersCount > 0) {
+          for (          DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+            if (discreteOrderItem.getAdjustmentPrice() != null) {
+              Money itemPrice=discreteOrderItem.getRetailPrice();
+              if (discreteOrderItem.getSalePrice() != null) {
+                itemPrice=discreteOrderItem.getSalePrice();
+              }
+              if (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
+                discreteOrderItem.removeAllAdjustments();
+              }
+            }
+          }
         }
       }
-      applyAllOrderOffers(qualifiedOrderOffers,order);
-      if ((order.getOrderAdjustments().size() > 0) && (order.containsNotCombinableItemOffer())) {
-        if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice())) {
-          order.removeAllOrderAdjustments();
-        }
+      if (!qualifiedOrderOffers.isEmpty()) {
+        Collections.sort(qualifiedOrderOffers,new BeanComparator("discountedPrice"));
+        Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
+        applyAllOrderOffers(qualifiedOrderOffers,order);
+        if ((order.getOrderAdjustments().size() > 0) && (order.containsNotCombinableItemOffer())) {
+          if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice())) {
+            order.removeAllOrderAdjustments();
+          }
  else {
-          order.removeAllItemAdjustments();
+            order.removeAllItemAdjustments();
+          }
         }
       }
     }
@@ -63,6 +71,15 @@
   order.assignOrderItemsFinalPrice();
   order.setSubTotal(order.calculateOrderItemsFinalPrice());
   if (!order.getOrderAdjustments().isEmpty()) {
-    order.reapplyOrderAdjustments();
+    List<CandidateOrderOffer> finalQualifiedOrderOffers=new ArrayList<CandidateOrderOffer>();
+    order.removeAllOrderAdjustments();
+    for (    CandidateOrderOffer condidateOrderOffer : qualifiedOrderOffers) {
+      if (couldOfferApplyToOrder(condidateOrderOffer.getOffer(),order)) {
+        finalQualifiedOrderOffers.add(condidateOrderOffer);
+      }
+    }
+    if (!finalQualifiedOrderOffers.isEmpty()) {
+      applyAllOrderOffers(finalQualifiedOrderOffers,order);
+    }
   }
 }

@@ -1,11 +1,11 @@
 {
-  boolean isItemOfferApplied=false;
+  int appliedOffersCount=0;
   for (  CandidateItemOffer itemOffer : itemOffers) {
     OrderItem orderItem=itemOffer.getOrderItem();
-    if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (isItemOfferApplied)) {
+    if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (appliedOffersCount == 0)) {
       if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
         applyOrderItemOffer(itemOffer);
-        isItemOfferApplied=true;
+        appliedOffersCount++;
         if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
           break;
         }
@@ -14,4 +14,5 @@
  else {
     }
   }
+  return appliedOffersCount;
 }

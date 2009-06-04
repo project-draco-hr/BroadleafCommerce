@@ -1,0 +1,13 @@
+{
+  Order order=cartService.createNewCartForCustomer(createCustomer());
+  order.setFulfillmentGroups(createFulfillmentGroups("standard",5D));
+  order.addOrderItem(createDiscreteOrderItem(30L,100D,50D,true,2));
+  order.addOrderItem(createDiscreteOrderItem(31L,100D,null,true,2));
+  order.addAddedOfferCode(createOfferCode("20 Percent Off Order Offer",OfferType.ORDER,OfferDiscountType.PERCENT_OFF,20,null,"order.subTotal.getAmount() >= 400",true,true,1));
+  order.addAddedOfferCode(createOfferCode("50 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,50,null,"order.subTotal.getAmount() >= 400",false,true,1));
+  order.addAddedOfferCode(createOfferCode("100 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,100,null,"order.subTotal.getAmount() >= 400",false,true,1));
+  order.addAddedOfferCode(createOfferCode("30 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,30,null,"order.subTotal.getAmount() < 400",false,true,1));
+  List<Offer> offers=offerService.buildOfferListForOrder(order);
+  offerService.applyOffersToOrder(offers,order);
+  assert(order.getAdjustmentPrice().equals(new Money(270D)));
+}
