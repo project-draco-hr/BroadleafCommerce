@@ -1,5 +1,5 @@
 {
-  logPaymentStartEvent(paymentContext,BLCTransactionType.CREDIT);
+  logPaymentStartEvent(paymentContext,TransactionType.CREDIT);
   PaymentResponseItem response=null;
   PaymentException paymentException=null;
   try {
@@ -13,8 +13,8 @@
     throw e;
   }
  finally {
-    logResponseItem(paymentContext,response,BLCTransactionType.CREDIT);
-    logPaymentFinishEvent(paymentContext,BLCTransactionType.CREDIT,paymentException);
+    logResponseItem(paymentContext,response,TransactionType.CREDIT);
+    logPaymentFinishEvent(paymentContext,TransactionType.CREDIT,paymentException);
   }
   return response;
 }

@@ -9,36 +9,35 @@
     if (paymentService.isValidCandidate(info.getType())) {
       PaymentContextImpl paymentContext=new PaymentContextImpl(orderTotal,remainingTotal,info,infos.get(info),userName);
       PaymentResponseItem paymentResponseItem;
-switch (seed.getActionType()) {
-case AUTHORIZE:
+      if (seed.getActionType() == PaymentActionType.AUTHORIZE) {
         paymentResponseItem=paymentService.authorize(paymentContext);
-      break;
-case AUTHORIZEANDDEBIT:
-    paymentResponseItem=paymentService.authorizeAndDebit(paymentContext);
-  break;
-case BALANCE:
-paymentResponseItem=paymentService.balance(paymentContext);
-break;
-case CREDIT:
-paymentResponseItem=paymentService.credit(paymentContext);
-break;
-case DEBIT:
-paymentResponseItem=paymentService.debit(paymentContext);
-break;
-case VOID:
-paymentResponseItem=paymentService.voidPayment(paymentContext);
-break;
-default :
-throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
-}
-if (paymentResponseItem != null) {
-if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
-throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
-}
-seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
-remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
-}
-}
-}
-return context;
+      }
+ else       if (seed.getActionType() == PaymentActionType.AUTHORIZEANDDEBIT) {
+        paymentResponseItem=paymentService.authorizeAndDebit(paymentContext);
+      }
+ else       if (seed.getActionType() == PaymentActionType.BALANCE) {
+        paymentResponseItem=paymentService.balance(paymentContext);
+      }
+ else       if (seed.getActionType() == PaymentActionType.CREDIT) {
+        paymentResponseItem=paymentService.credit(paymentContext);
+      }
+ else       if (seed.getActionType() == PaymentActionType.DEBIT) {
+        paymentResponseItem=paymentService.debit(paymentContext);
+      }
+ else       if (seed.getActionType() == PaymentActionType.VOID) {
+        paymentResponseItem=paymentService.voidPayment(paymentContext);
+      }
+ else {
+        throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
+      }
+      if (paymentResponseItem != null) {
+        if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
+          throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
+        }
+        seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
+        remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
+      }
+    }
+  }
+  return context;
 }

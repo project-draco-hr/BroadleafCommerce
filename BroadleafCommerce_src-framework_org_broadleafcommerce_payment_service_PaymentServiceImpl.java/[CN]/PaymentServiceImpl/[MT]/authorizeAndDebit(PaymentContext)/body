@@ -1,5 +1,5 @@
 {
-  logPaymentStartEvent(paymentContext,BLCTransactionType.AUTHORIZEANDDEBIT);
+  logPaymentStartEvent(paymentContext,TransactionType.AUTHORIZEANDDEBIT);
   PaymentResponseItem response=null;
   PaymentException paymentException=null;
   try {
@@ -13,8 +13,8 @@
     throw e;
   }
  finally {
-    logResponseItem(paymentContext,response,BLCTransactionType.AUTHORIZEANDDEBIT);
-    logPaymentFinishEvent(paymentContext,BLCTransactionType.AUTHORIZEANDDEBIT,paymentException);
+    logResponseItem(paymentContext,response,TransactionType.AUTHORIZEANDDEBIT);
+    logPaymentFinishEvent(paymentContext,TransactionType.AUTHORIZEANDDEBIT,paymentException);
   }
   return response;
 }

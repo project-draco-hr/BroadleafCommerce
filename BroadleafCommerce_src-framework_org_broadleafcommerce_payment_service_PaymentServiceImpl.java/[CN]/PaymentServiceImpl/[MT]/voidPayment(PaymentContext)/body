@@ -1,5 +1,5 @@
 {
-  logPaymentStartEvent(paymentContext,BLCTransactionType.VOIDPAYMENT);
+  logPaymentStartEvent(paymentContext,TransactionType.VOIDPAYMENT);
   PaymentResponseItem response=null;
   PaymentException paymentException=null;
   try {
@@ -13,8 +13,8 @@
     throw e;
   }
  finally {
-    logResponseItem(paymentContext,response,BLCTransactionType.VOIDPAYMENT);
-    logPaymentFinishEvent(paymentContext,BLCTransactionType.VOIDPAYMENT,paymentException);
+    logResponseItem(paymentContext,response,TransactionType.VOIDPAYMENT);
+    logPaymentFinishEvent(paymentContext,TransactionType.VOIDPAYMENT,paymentException);
   }
   return response;
 }

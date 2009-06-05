@@ -1,0 +1,16 @@
+{
+  PaymentInfo info=paymentContext.getPaymentInfo();
+  PaymentLog log=paymentInfoService.createLog();
+  log.setLogType(PaymentLogEventType.START);
+  log.setTransactionTimestamp(new Date());
+  log.setTransactionSuccess(Boolean.TRUE);
+  log.setTransactionType(transactionType);
+  log.setCustomer(info.getOrder().getCustomer());
+  log.setPaymentInfoReferenceNumber(info.getReferenceNumber());
+  log.setUserName(paymentContext.getUserName());
+  log.setExceptionMessage(null);
+  log.setAmountPaid(info.getAmount());
+  log.setPaymentInfo(info);
+  info.getPaymentLogs().add(log);
+  paymentInfoService.save(info);
+}
