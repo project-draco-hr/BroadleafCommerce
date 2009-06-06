@@ -1,0 +1,16 @@
+{
+  List<CandidateOrderOffer> remainingCandidateOffers=new ArrayList<CandidateOrderOffer>();
+  int offerCount=0;
+  for (  CandidateOrderOffer candidateOffer : candidateOffers) {
+    if (offerCount == 0) {
+      remainingCandidateOffers.add(candidateOffer);
+    }
+ else {
+      if (candidateOffer.getOffer().isCombinableWithOtherOffers()) {
+        remainingCandidateOffers.add(candidateOffer);
+      }
+    }
+    offerCount++;
+  }
+  return remainingCandidateOffers;
+}

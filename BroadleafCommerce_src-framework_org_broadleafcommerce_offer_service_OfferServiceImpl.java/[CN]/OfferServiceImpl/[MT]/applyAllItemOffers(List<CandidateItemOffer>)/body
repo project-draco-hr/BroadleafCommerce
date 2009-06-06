@@ -1,18 +1,20 @@
 {
-  int appliedOffersCount=0;
+  Offer notCombinableOfferApplied=null;
   for (  CandidateItemOffer itemOffer : itemOffers) {
     OrderItem orderItem=itemOffer.getOrderItem();
-    if ((itemOffer.getOffer().isCombinableWithOtherOffers()) || (appliedOffersCount == 0)) {
+    if (notCombinableOfferApplied == null) {
       if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
         applyOrderItemOffer(itemOffer);
-        appliedOffersCount++;
         if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
-          break;
+          notCombinableOfferApplied=itemOffer.getOffer();
         }
       }
     }
  else {
+      if (itemOffer.getOffer().equals(notCombinableOfferApplied)) {
+        applyOrderItemOffer(itemOffer);
+      }
     }
   }
-  return appliedOffersCount;
+  return notCombinableOfferApplied;
 }
