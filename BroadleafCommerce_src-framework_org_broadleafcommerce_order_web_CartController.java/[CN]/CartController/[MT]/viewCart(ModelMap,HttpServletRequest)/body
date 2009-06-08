@@ -1,0 +1,13 @@
+{
+  logger.debug("Processing View Cart!");
+  Order cart=retrieveCartOrder(request,model);
+  CartSummary cartSummary=new CartSummary();
+  for (  OrderItem orderItem : cart.getOrderItems()) {
+    CartOrderItem cartOrderItem=new CartOrderItem();
+    cartOrderItem.setOrderItemId(orderItem.getId());
+    cartOrderItem.setQuantity(orderItem.getQuantity());
+    cartSummary.getRows().add(cartOrderItem);
+  }
+  model.addAttribute("cartSummary",cartSummary);
+  return cartViewRedirect ? "redirect:" + cartView : cartView;
+}

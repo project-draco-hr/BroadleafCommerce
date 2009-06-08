@@ -1,0 +1,34 @@
+{
+  if (errors.hasErrors()) {
+    model.addAttribute("cartSummary",cartSummary);
+    return cartView;
+  }
+  Order currentCartOrder=retrieveCartOrder(request,model);
+  List<OrderItem> orderItems=currentCartOrder.getOrderItems();
+  for (  CartOrderItem cartOrderItem : cartSummary.getRows()) {
+    OrderItem orderItem=(OrderItem)CollectionUtils.find(orderItems,new BeanPropertyValueEqualsPredicate("id",cartOrderItem.getOrderItemId()));
+    if (orderItem != null) {
+      if (cartOrderItem.getQuantity() > 0) {
+        orderItem.setQuantity(cartOrderItem.getQuantity());
+        try {
+          cartService.updateItemInOrder(currentCartOrder,orderItem);
+        }
+ catch (        ItemNotFoundException e) {
+          e.printStackTrace();
+        }
+catch (        PricingException e) {
+          e.printStackTrace();
+        }
+      }
+ else {
+        try {
+          cartService.removeItemFromOrder(currentCartOrder,orderItem);
+        }
+ catch (        Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+  return cartViewRedirect ? "redirect:" + removeItemView : removeItemView;
+}
