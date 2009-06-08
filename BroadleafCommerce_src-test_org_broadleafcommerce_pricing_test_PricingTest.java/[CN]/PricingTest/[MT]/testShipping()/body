@@ -16,8 +16,6 @@
   Money total=new Money(5D);
   group1.setShippingPrice(total);
   group2.setShippingPrice(total);
-  group1.setTotalTax(new Money(1D));
-  group2.setTotalTax(new Money(1D));
   order.setSubTotal(total);
   order.setTotal(total);
   OrderItem item=new DiscreteOrderItemImpl();
@@ -36,6 +34,6 @@
   order.setTotalShipping(new Money(0D));
   order=pricingService.executePricing(order);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
-  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D).add(group1.getShippingPrice().multiply(0.05D))));
   assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax().add(order.getTotalShipping()))));
 }
