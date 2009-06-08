@@ -1,22 +1,22 @@
 {
   if (customerPhoneId == null) {
-    return viewPhoneSuccessUrl;
+    return viewPhoneSuccessView;
   }
  else {
     Long currCustomerId=customerState.getCustomerId(request);
     CustomerPhone cPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,currCustomerId);
     if (cPhone != null) {
       if (!cPhone.getCustomerId().equals(currCustomerId)) {
-        return viewPhoneErrorUrl;
+        return viewPhoneErrorView;
       }
       phoneNameForm.setPhone(cPhone.getPhone());
       phoneNameForm.setPhoneName(cPhone.getPhoneName());
       request.setAttribute("customerPhoneId",cPhone.getId());
       request.setAttribute("phoneId",cPhone.getPhone().getId());
-      return viewPhoneSuccessUrl;
+      return viewPhoneSuccessView;
     }
  else {
-      return viewPhoneErrorUrl;
+      return viewPhoneErrorView;
     }
   }
 }
