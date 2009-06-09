@@ -6,7 +6,7 @@
     Long currCustomerId=customerState.getCustomerId(request);
     CustomerPhone cPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,currCustomerId);
     if (cPhone != null) {
-      if (!cPhone.getCustomerId().equals(currCustomerId)) {
+      if (!cPhone.getCustomer().getId().equals(currCustomerId)) {
         return viewPhoneErrorView;
       }
       phoneNameForm.setPhone(cPhone.getPhone());

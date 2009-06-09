@@ -3,6 +3,9 @@
   if (obj == null)   return false;
   if (getClass() != obj.getClass())   return false;
   CustomerAddressImpl other=(CustomerAddressImpl)obj;
+  if (id != null && other.id != null) {
+    return id.equals(other.id);
+  }
   if (address == null) {
     if (other.address != null)     return false;
   }
@@ -11,9 +14,9 @@
     if (other.addressName != null)     return false;
   }
  else   if (!addressName.equals(other.addressName))   return false;
-  if (customerId == null) {
-    if (other.customerId != null)     return false;
+  if (customer == null) {
+    if (other.customer != null)     return false;
   }
- else   if (!customerId.equals(other.customerId))   return false;
+ else   if (!customer.equals(other.customer))   return false;
   return true;
 }

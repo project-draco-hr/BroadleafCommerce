@@ -1,7 +1,14 @@
 {
-  if (this == other)   return true;
-  if (other == null || !(other instanceof CustomerImpl))   return false;
-  CustomerImpl item=(CustomerImpl)other;
-  if (username != null ? !username.equals(item.username) : item.username != null)   return false;
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  CustomerImpl other=(CustomerImpl)obj;
+  if (id != null && other.id != null) {
+    return id.equals(other.id);
+  }
+  if (username == null) {
+    if (other.username != null)     return false;
+  }
+ else   if (!username.equals(other.username))   return false;
   return true;
 }

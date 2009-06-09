@@ -1,6 +1,6 @@
 {
   CustomerPhone customerPhone=customerPhoneService.readCustomerPhoneByIdAndCustomerId(customerPhoneId,customerState.getCustomerId(request));
-  customerPhoneService.makeCustomerPhoneDefault(customerPhone.getId(),customerPhone.getCustomerId());
+  customerPhoneService.makeCustomerPhoneDefault(customerPhone.getId(),customerPhone.getCustomer().getId());
   request.setAttribute("phone.madePhoneDefault","true");
   return makePhoneDefaultSuccessView;
 }
