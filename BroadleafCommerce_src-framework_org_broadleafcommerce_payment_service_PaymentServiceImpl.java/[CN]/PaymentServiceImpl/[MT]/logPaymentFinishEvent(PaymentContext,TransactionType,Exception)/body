@@ -1,12 +1,9 @@
 {
-  PaymentInfo info=paymentContext.getPaymentInfo();
   PaymentLog log=paymentInfoService.createLog();
   log.setLogType(PaymentLogEventType.FINISHED);
   log.setTransactionTimestamp(new Date());
   log.setTransactionSuccess(e == null ? Boolean.TRUE : Boolean.FALSE);
   log.setTransactionType(transactionType);
-  log.setCustomer(info.getOrder().getCustomer());
-  log.setPaymentInfoReferenceNumber(info.getReferenceNumber());
   log.setUserName(paymentContext.getUserName());
   String exceptionMessage;
   if (e != null) {
@@ -24,8 +21,16 @@
     exceptionMessage=null;
   }
   log.setExceptionMessage(exceptionMessage);
-  log.setAmountPaid(info.getAmount());
-  log.setPaymentInfo(info);
-  info.getPaymentLogs().add(log);
-  paymentInfoService.save(info);
+  PaymentInfo info=paymentContext.getPaymentInfo();
+  if (info != null) {
+    log.setCustomer(info.getOrder().getCustomer());
+    log.setPaymentInfoReferenceNumber(info.getReferenceNumber());
+    log.setAmountPaid(info.getAmount());
+    log.setPaymentInfo(info);
+    info.getPaymentLogs().add(log);
+    paymentInfoService.save(info);
+  }
+ else {
+    paymentInfoService.save(log);
+  }
 }

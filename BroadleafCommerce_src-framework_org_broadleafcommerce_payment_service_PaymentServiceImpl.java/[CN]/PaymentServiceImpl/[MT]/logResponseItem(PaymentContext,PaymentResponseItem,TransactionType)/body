@@ -1,12 +1,17 @@
 {
   if (response != null) {
-    PaymentInfo info=paymentContext.getPaymentInfo();
     response.setTransactionType(transactionType);
-    response.setPaymentInfo(info);
-    response.setCustomer(info.getOrder().getCustomer());
-    response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
     response.setUserName(paymentContext.getUserName());
-    info.getPaymentResponseItems().add(response);
-    paymentInfoService.save(info);
+    PaymentInfo info=paymentContext.getPaymentInfo();
+    if (info != null) {
+      response.setPaymentInfo(info);
+      response.setCustomer(info.getOrder().getCustomer());
+      response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
+      info.getPaymentResponseItems().add(response);
+      paymentInfoService.save(info);
+    }
+ else {
+      paymentInfoService.save(response);
+    }
   }
 }
