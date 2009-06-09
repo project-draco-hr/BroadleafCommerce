@@ -1,0 +1,20 @@
+{
+  boolean zipFound=false;
+  Order order=orderService.findOrderByOrderNumber(Long.parseLong(findOrderForm.getOrderNumber()));
+  if (order == null) {
+    return "findOrderError";
+  }
+  List<FulfillmentGroup> orderFulfillmentGroups=order.getFulfillmentGroups();
+  if (orderFulfillmentGroups != null) {
+    orderLoop:     for (    FulfillmentGroup fulfillmentGroup : orderFulfillmentGroups) {
+      if (fulfillmentGroup.getAddress().getPostalCode().equals(findOrderForm.getPostalCode())) {
+        zipFound=true;
+        break orderLoop;
+      }
+    }
+  }
+  if (zipFound) {
+    return viewOrderDetails(model,request,order.getOrderNumber());
+  }
+  return "findOrderError";
+}
