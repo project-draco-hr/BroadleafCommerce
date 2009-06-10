@@ -13,7 +13,9 @@
     for (    Offer offer : filteredOffers) {
       if (offer.getType() == OfferType.ORDER) {
         if (couldOfferApplyToOrder(offer,order)) {
-          CandidateOrderOffer candidateOffer=new CandidateOrderOfferImpl(order,offer);
+          CandidateOrderOffer candidateOffer=offerDao.createCandidateOrderOffer();
+          candidateOffer.setOrder(order);
+          candidateOffer.setOffer(offer);
           order.addCandidateOrderOffer(candidateOffer);
           qualifiedOrderOffers.add(candidateOffer);
         }
@@ -21,7 +23,9 @@
  else       if (offer.getType() == OfferType.ORDER_ITEM) {
         for (        DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
           if (couldOfferApplyToOrder(offer,order,discreteOrderItem)) {
-            CandidateItemOffer candidateOffer=new CandidateItemOfferImpl(discreteOrderItem,offer);
+            CandidateItemOffer candidateOffer=offerDao.createCandidateItemOffer();
+            candidateOffer.setOrderItem(discreteOrderItem);
+            candidateOffer.setOffer(offer);
             discreteOrderItem.addCandidateItemOffer(candidateOffer);
             qualifiedItemOffers.add(candidateOffer);
           }
@@ -30,7 +34,9 @@
  else       if (offer.getType() == OfferType.FULFILLMENT_GROUP) {
         for (        FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
           if (couldOfferApplyToOrder(offer,order,fulfillmentGroup)) {
-            CandidateFulfillmentGroupOffer candidateOffer=new CandidateFulfillmentGroupOfferImpl(fulfillmentGroup,offer);
+            CandidateFulfillmentGroupOffer candidateOffer=offerDao.createCandidateFulfillmentGroupOffer();
+            candidateOffer.setFulfillmentGroup(fulfillmentGroup);
+            candidateOffer.setOffer(offer);
             fulfillmentGroup.addCandidateFulfillmentGroupOffer(candidateOffer);
           }
         }
