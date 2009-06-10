@@ -8,10 +8,10 @@
       for (      CustomerAddress activeCustomerAddress : activeCustomerAddresses) {
         if (activeCustomerAddress.getId() != customerAddress.getId() && activeCustomerAddress.getAddress().isDefault()) {
           activeCustomerAddress.getAddress().setDefault(false);
-          customerAddressDao.maintainCustomerAddress(activeCustomerAddress);
+          customerAddressDao.save(activeCustomerAddress);
         }
       }
     }
   }
-  return customerAddressDao.maintainCustomerAddress(customerAddress);
+  return customerAddressDao.save(customerAddress);
 }
