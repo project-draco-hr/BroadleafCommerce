@@ -2,7 +2,12 @@
   if (offer != null && orderItem != null) {
     Money adjustmentPrice=orderItem.getAdjustmentPrice();
     if (adjustmentPrice == null) {
-      adjustmentPrice=orderItem.getRetailPrice();
+      if ((offer.getApplyDiscountToSalePrice()) && (orderItem.getSalePrice() != null)) {
+        adjustmentPrice=orderItem.getSalePrice();
+      }
+ else {
+        adjustmentPrice=orderItem.getRetailPrice();
+      }
     }
     if (offer.getDiscountType() == OfferDiscountType.AMOUNT_OFF) {
       value=offer.getValue().getAmount();
