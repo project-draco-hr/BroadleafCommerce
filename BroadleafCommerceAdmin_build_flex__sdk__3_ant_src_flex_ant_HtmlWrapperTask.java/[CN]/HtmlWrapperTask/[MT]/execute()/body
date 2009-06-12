@@ -1,0 +1,53 @@
+{
+  if (swf == null) {
+    throw new BuildException("The <html-wrapper> task requires the 'swf' attribute.",getLocation());
+  }
+  InputStream inputStream=getInputStream();
+  if (inputStream != null) {
+    BufferedReader bufferedReader=null;
+    PrintWriter printWriter=null;
+    String path=null;
+    try {
+      bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+      if (output != null) {
+        File outputDir=new File(output);
+        if (outputDir.exists() && outputDir.isDirectory()) {
+          path=output + File.separatorChar + fileName;
+        }
+ else {
+          String base=getProject().getBaseDir().getAbsolutePath();
+          outputDir=new File(base + File.separatorChar + output);
+          if (outputDir.exists() && outputDir.isDirectory()) {
+            path=base + File.separatorChar + output+ File.separatorChar+ fileName;
+          }
+ else {
+            throw new BuildException("output directory does not exist: " + output);
+          }
+        }
+      }
+ else {
+        path=fileName;
+      }
+      printWriter=new PrintWriter(new FileWriter(path));
+      String line;
+      while ((line=bufferedReader.readLine()) != null) {
+        printWriter.println(substitute(line));
+      }
+    }
+ catch (    IOException ioException) {
+      System.err.println("Error outputting resource: " + path);
+      ioException.printStackTrace();
+    }
+ finally {
+      try {
+        bufferedReader.close();
+        printWriter.close();
+      }
+ catch (      Exception exception) {
+      }
+    }
+  }
+ else {
+    throw new BuildException("Missing resources",getLocation());
+  }
+}

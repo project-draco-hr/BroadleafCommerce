@@ -1,0 +1,14 @@
+{
+  String flexHomeProperty=getProject().getProperty("FLEX_HOME");
+  if (flexHomeProperty == null) {
+    throw new BuildException("FLEX_HOME must be set to use the Flex Ant Tasks");
+  }
+  System.setProperty("FLEX_HOME",flexHomeProperty);
+{
+    final String tmpFlexHomeProperty=fork ? ('"' + flexHomeProperty + "/frameworks\"") : (flexHomeProperty + "/frameworks");
+    cmdl.createArgument().setValue("+flexlib=" + tmpFlexHomeProperty);
+  }
+  prepareCommandline();
+  if (fork)   executeOutProcess();
+ else   executeInProcess();
+}

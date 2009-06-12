@@ -1,0 +1,29 @@
+{
+  try {
+    Class toolClass=resolveClass(toolClassName);
+    Class threadLocalToolkitClass=resolveClass("flex2.compiler.util.ThreadLocalToolkit");
+    log("FlexTask.execute: " + cmdl,Project.MSG_DEBUG);
+    int errorCount=0;
+    try {
+      Method toolMethod=toolClass.getMethod(toolName,new Class[]{String[].class});
+      toolMethod.invoke(null,new Object[]{cmdl.getArguments()});
+      Method errorCountMethod=threadLocalToolkitClass.getMethod("errorCount",(Class[])null);
+      errorCount=((Integer)errorCountMethod.invoke(null,(Object[])null)).intValue();
+    }
+ catch (    Exception e) {
+      StringWriter stringWriter=new StringWriter();
+      PrintWriter printWriter=new PrintWriter(stringWriter);
+      e.printStackTrace(printWriter);
+      log(stringWriter.toString(),Project.MSG_DEBUG);
+      throw new BuildException("Unable to run " + toolName + ": "+ e.getMessage(),e);
+    }
+    if (errorCount > 0) {
+      throw new BuildException(toolName + " task failed");
+    }
+  }
+  finally {
+    if (originalContextClassLoader != null) {
+      Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+    }
+  }
+}
