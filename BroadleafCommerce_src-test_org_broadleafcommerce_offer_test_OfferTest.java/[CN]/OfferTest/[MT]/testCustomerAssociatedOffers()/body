@@ -1,10 +1,10 @@
 {
   Order order=cartService.createNewCartForCustomer(createCustomer());
-  order.setFulfillmentGroups(createFulfillmentGroups("standard",5D));
-  order.addOrderItem(createDiscreteOrderItem(50L,10D,null,true,2));
-  order.addOrderItem(createDiscreteOrderItem(51L,20D,null,true,1));
-  order.addAddedOfferCode(createOfferCode("20 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,20,null,"discreteOrderItem.sku.id == 50",true,true,10));
-  order.addAddedOfferCode(createOfferCode("3 Dollars Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.AMOUNT_OFF,3,null,"discreteOrderItem.sku.id != 50",true,true,10));
+  order.setFulfillmentGroups(createFulfillmentGroups("standard",5D,order));
+  order.addOrderItem(createDiscreteOrderItem(sku1,10D,null,true,2));
+  order.addOrderItem(createDiscreteOrderItem(sku2,20D,null,true,1));
+  order.addAddedOfferCode(createOfferCode("20 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,20,null,"discreteOrderItem.sku.id == " + sku1,true,true,10));
+  order.addAddedOfferCode(createOfferCode("3 Dollars Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.AMOUNT_OFF,3,null,"discreteOrderItem.sku.id != " + sku1,true,true,10));
   Offer offer=createOffer("1.20 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,1.20,null,null,true,true,10);
   offer.setDeliveryType(OfferDeliveryType.MANUAL);
   offerDao.save(offer);

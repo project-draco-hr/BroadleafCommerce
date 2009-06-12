@@ -1,5 +1,5 @@
 {
-  Offer offer=new OfferImpl();
+  Offer offer=offerDao.create();
   offer.setName(offerName);
   offer.setStartDate(new Date());
   Calendar calendar=Calendar.getInstance();
@@ -16,5 +16,6 @@
   offer.setAppliesToCustomerRules(customerRule);
   offer.setCombinableWithOtherOffers(combinable);
   offer.setPriority(priority);
+  offerDao.save(offer);
   return offer;
 }
