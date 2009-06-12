@@ -1,0 +1,8 @@
+{
+  product=productDao.save(product);
+  Long productId=product.getId();
+  product.setFeaturedProduct(true);
+  productDao.save(product);
+  Product testProduct=productDao.readProductById(productId);
+  assert(testProduct.getIsFeaturedProduct() == true);
+}

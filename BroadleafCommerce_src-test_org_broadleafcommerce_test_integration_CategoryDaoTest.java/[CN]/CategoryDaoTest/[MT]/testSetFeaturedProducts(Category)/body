@@ -1,0 +1,19 @@
+{
+  category=categoryDao.save(category);
+  Product product=new ProductImpl();
+  product.setModel("KGX200");
+  product.setDescription("This thing will change your life");
+  product=productDao.save(product);
+  FeaturedProduct featuredProduct=new FeaturedProductImpl();
+  featuredProduct.setCategory(category);
+  featuredProduct.setProduct(product);
+  featuredProduct.setPromotionMessage("BUY ME NOW!!!!");
+  List<FeaturedProduct> featuredProducts=new ArrayList<FeaturedProduct>();
+  featuredProducts.add(featuredProduct);
+  category.setFeaturedProducts(featuredProducts);
+  category=categoryDao.save(category);
+  Category categoryTest=categoryDao.readCategoryById(1L);
+  FeaturedProduct featuredProductTest=categoryTest.getFeaturedProducts().get(0);
+  assert(featuredProductTest.getPromotionMessage() == "BUY ME NOW!!!!");
+  assert(featuredProductTest.getProduct().getModel().equals("KGX200"));
+}
