@@ -1,0 +1,11 @@
+{
+  Customer currentCustomer=customerState.getCustomer(request);
+  checkoutForm.setCustomer(currentCustomer);
+  List<CustomerPhone> customerPhones=customerPhoneService.readAllCustomerPhonesByCustomerId(currentCustomer.getId());
+  while (customerPhones.size() < 2) {
+    customerPhones.add(new CustomerPhoneImpl());
+  }
+  customerAddressService.readActiveCustomerAddressesByCustomerId(currentCustomer.getId());
+  checkoutForm.setOrder(retrieveCartOrder(request,model));
+  return checkoutView;
+}

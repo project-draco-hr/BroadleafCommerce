@@ -1,0 +1,11 @@
+{
+  Customer currentCustomer=customerState.getCustomer(request);
+  Order currentCartOrder=null;
+  if (currentCustomer != null) {
+    currentCartOrder=cartService.findCartForCustomer(currentCustomer);
+    if (currentCartOrder == null) {
+      currentCartOrder=cartService.createNewCartForCustomer(currentCustomer);
+    }
+  }
+  return currentCartOrder;
+}
