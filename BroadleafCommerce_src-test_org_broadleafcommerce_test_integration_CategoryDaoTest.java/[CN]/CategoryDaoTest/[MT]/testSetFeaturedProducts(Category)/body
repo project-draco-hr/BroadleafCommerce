@@ -13,7 +13,7 @@
   featuredProducts.add(featuredProduct);
   category.setFeaturedProducts(featuredProducts);
   category=categoryDao.save(category);
-  Category categoryTest=categoryDao.readCategoryById(1L);
+  Category categoryTest=categoryDao.readCategoryById(category.getId());
   FeaturedProduct featuredProductTest=categoryTest.getFeaturedProducts().get(0);
   assert(featuredProductTest.getPromotionMessage() == "BUY ME NOW!!!!");
   assert(featuredProductTest.getProduct().getModel().equals("KGX200"));
