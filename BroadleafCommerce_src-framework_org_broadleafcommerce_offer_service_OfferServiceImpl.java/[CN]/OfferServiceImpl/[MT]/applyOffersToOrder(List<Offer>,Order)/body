@@ -52,7 +52,7 @@
         Collections.sort(qualifiedItemOffers,new BeanComparator("discountedPrice"));
         Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
         qualifiedItemOffers=removeTrailingNotCombinableItemOffers(qualifiedItemOffers);
-        notCombinableItemOfferApplied=applyAllItemOffers(qualifiedItemOffers);
+        notCombinableItemOfferApplied=applyAllItemOffers(qualifiedItemOffers,discreteOrderItems);
       }
       Offer notCombinableOrderOfferApplied=null;
       if (!qualifiedOrderOffers.isEmpty()) {
@@ -75,7 +75,7 @@
           qualifiedItemOffers=removeOfferFromCandidateItemOffers(qualifiedItemOffers,notCombinableItemOfferApplied);
           notCombinableItemOfferApplied=null;
           if (!qualifiedItemOffers.isEmpty()) {
-            applyAllItemOffers(qualifiedItemOffers);
+            applyAllItemOffers(qualifiedItemOffers,discreteOrderItems);
           }
         }
       }
@@ -89,7 +89,7 @@
           qualifiedItemOffers=removeOfferFromCandidateItemOffers(qualifiedItemOffers,notCombinableItemOfferApplied);
           notCombinableItemOfferApplied=null;
           if (!qualifiedItemOffers.isEmpty()) {
-            applyAllItemOffers(qualifiedItemOffers);
+            applyAllItemOffers(qualifiedItemOffers,discreteOrderItems);
           }
         }
       }
