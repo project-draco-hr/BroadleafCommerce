@@ -1,13 +1,12 @@
 {
   Address addr=new AddressImpl();
+  addr.setAddressLine1("12700 Merit Drive Way");
   addr.setCity("Dallas");
-  State state=new StateImpl();
-  state.setAbbreviation("TX");
-  state.setName("Texas");
-  addr.setState(state);
-  addr.setAddressLine1("5657 Amesbury Drive");
-  addr.setPostalCode("75206");
+  addr.setState(stateService.findStateByAbbreviation("TX"));
+  addr.setPostalCode("75251");
+  addr.setCountry(countryService.findCountryByAbbreviation("US"));
   Order order=retrieveCartOrder(request,model);
+  order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date()));
   FulfillmentGroup group=fulfillmentGroupService.createEmptyFulfillmentGroup();
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   group.setMethod("standard");
@@ -19,21 +18,20 @@
   for (  OrderItem item : order.getOrderItems()) {
     FulfillmentGroupItem fulfillmentGroupItem=new FulfillmentGroupItemImpl();
     fulfillmentGroupItem.setOrderItem(item);
+    fulfillmentGroupItem.setFulfillmentGroup(group);
     group.getFulfillmentGroupItems().add(fulfillmentGroupItem);
   }
   PaymentInfo paymentInfo=paymentInfoService.create();
   paymentInfo.setAddress(addr);
   paymentInfo.setOrder(order);
-  List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
-  paymentInfos.add(paymentInfo);
-  order.setPaymentInfos(paymentInfos);
+  Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
   order.setStatus(OrderStatus.SUBMITTED.toString());
   order.setSubmitDate(new Date());
   try {
-    orderService.save(order);
+    checkoutService.performCheckout(order,payments);
   }
- catch (  PricingException e) {
+ catch (  CheckoutException e) {
     e.printStackTrace();
   }
-  return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderDetails?orderNumber" + order.getOrderNumber();
+  return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderDetails?orderNumber=" + order.getOrderNumber();
 }
