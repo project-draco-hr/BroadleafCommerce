@@ -4,14 +4,10 @@
     response.setUserName(paymentContext.getUserName());
     PaymentInfo info=paymentContext.getPaymentInfo();
     if (info != null) {
-      response.setPaymentInfo(info);
+      response.setPaymentInfoId(info.getId());
       response.setCustomer(info.getOrder().getCustomer());
       response.setPaymentInfoReferenceNumber(info.getReferenceNumber());
-      info.getPaymentResponseItems().add(response);
-      paymentInfoService.save(info);
     }
- else {
-      paymentInfoService.save(response);
-    }
+    paymentInfoService.save(response);
   }
 }

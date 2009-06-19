@@ -6,14 +6,6 @@
  catch (    WorkflowException e) {
       LOG.debug("No secure payment is associated with the PaymentInfo",e);
     }
-    for (    PaymentLog paymentLog : paymentInfo.getPaymentLogs()) {
-      paymentLog.setPaymentInfo(null);
-      paymentInfoDao.save(paymentLog);
-    }
-    for (    PaymentResponseItem paymentResponseItem : paymentInfo.getPaymentResponseItems()) {
-      paymentResponseItem.setPaymentInfo(null);
-      paymentInfoDao.save(paymentResponseItem);
-    }
     paymentInfoDao.delete(paymentInfo);
   }
   order.getPaymentInfos().clear();
