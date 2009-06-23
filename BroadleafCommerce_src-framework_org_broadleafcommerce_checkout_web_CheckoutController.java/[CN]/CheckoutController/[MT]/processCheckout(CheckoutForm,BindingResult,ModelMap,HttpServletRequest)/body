@@ -31,7 +31,7 @@
     checkoutService.performCheckout(order,payments);
   }
  catch (  CheckoutException e) {
-    e.printStackTrace();
+    LOG.error("Cannot perform checkout",e);
   }
   return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderDetails?orderNumber=" + order.getOrderNumber();
 }

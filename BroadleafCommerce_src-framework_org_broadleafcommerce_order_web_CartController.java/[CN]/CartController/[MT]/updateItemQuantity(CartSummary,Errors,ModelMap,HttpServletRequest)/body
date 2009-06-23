@@ -14,10 +14,10 @@
           cartService.updateItemInOrder(currentCartOrder,orderItem);
         }
  catch (        ItemNotFoundException e) {
-          e.printStackTrace();
+          LOG.error("Item not found in order: (" + orderItem.getId() + ")",e);
         }
 catch (        PricingException e) {
-          e.printStackTrace();
+          LOG.error("Unable to price the order: (" + currentCartOrder.getId() + ")",e);
         }
       }
  else {
@@ -25,7 +25,7 @@ catch (        PricingException e) {
           cartService.removeItemFromOrder(currentCartOrder,orderItem);
         }
  catch (        Exception e) {
-          e.printStackTrace();
+          LOG.error("Unable to remove item from the order: (" + currentCartOrder.getId() + ")");
         }
       }
     }
