@@ -10,15 +10,15 @@
     return addressStandarizationResponse;
   }
  catch (  IOException e) {
-    logger.error("IOException",e);
+    LOG.error("IOException",e);
     return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
   }
 catch (  SAXException e) {
-    logger.error("SAXException",e);
+    LOG.error("SAXException",e);
     return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
   }
 catch (  ParserConfigurationException e) {
-    logger.error("ParserConfigurationException",e);
+    LOG.error("ParserConfigurationException",e);
     return (AddressStandarizationResponse)getDownResponse("standardizeAddress",new Object[]{address});
   }
  finally {
@@ -27,7 +27,7 @@ catch (  ParserConfigurationException e) {
         response.close();
       }
  catch (      IOException e) {
-        logger.error("IOException while closing the InputStream",e);
+        LOG.error("IOException while closing the InputStream",e);
       }
     }
   }

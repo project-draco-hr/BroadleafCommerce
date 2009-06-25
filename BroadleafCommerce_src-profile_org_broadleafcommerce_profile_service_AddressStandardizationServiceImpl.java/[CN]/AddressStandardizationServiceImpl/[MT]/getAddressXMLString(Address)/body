@@ -14,7 +14,7 @@
   XMLWriter writer=new XMLWriter(strWriter);
   try {
     writer.write(document);
-    logger.debug("strWriter.toString(): " + strWriter.toString());
+    LOG.debug("strWriter.toString(): " + strWriter.toString());
     return URLEncoder.encode(strWriter.toString(),uspsCharSet);
   }
   finally {
@@ -24,7 +24,7 @@
         writer.close();
       }
  catch (      IOException e) {
-        logger.warn("There was an unexpected error closing the Dom4J XMLWriter",e);
+        LOG.warn("There was an unexpected error closing the Dom4J XMLWriter",e);
       }
     }
     if (strWriter != null) {
@@ -32,7 +32,7 @@
         strWriter.close();
       }
  catch (      IOException e) {
-        logger.warn("There was an unexpected error closing a java.io.StringWriter associated with the Dom4J XMLWriter",e);
+        LOG.warn("There was an unexpected error closing a java.io.StringWriter associated with the Dom4J XMLWriter",e);
       }
     }
   }

@@ -5,8 +5,8 @@
 synchronized (idTypeIdMap) {
       id=idTypeIdMap.get(idType);
       if (id == null) {
-        if (logger.isDebugEnabled()) {
-          logger.debug("Getting the initial id from the database.");
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Getting the initial id from the database.");
         }
         idGeneration=idGenerationDao.findNextId(idType);
         id=new Id(idGeneration.getBatchStart(),0L);
@@ -16,8 +16,8 @@ synchronized (idTypeIdMap) {
   }
 synchronized (id) {
     if (id.batchSize == 0L) {
-      if (logger.isDebugEnabled()) {
-        logger.debug("Updating batch size for idType " + idType);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Updating batch size for idType " + idType);
       }
       Long prevBatchStart=idGeneration.getBatchStart();
       Long batchSize=idGeneration.getBatchSize();

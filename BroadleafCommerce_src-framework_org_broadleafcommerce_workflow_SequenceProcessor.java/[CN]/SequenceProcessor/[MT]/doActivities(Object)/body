@@ -1,13 +1,13 @@
 {
-  if (logger.isDebugEnabled()) {
-    logger.debug(getBeanName() + " processor is running..");
+  if (LOG.isDebugEnabled()) {
+    LOG.debug(getBeanName() + " processor is running..");
   }
   List<Activity> activities=getActivities();
   ProcessContext context=createContext(seedData);
   for (Iterator<Activity> it=activities.iterator(); it.hasNext(); ) {
     Activity activity=it.next();
-    if (logger.isDebugEnabled()) {
-      logger.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
     }
     try {
       context=activity.execute(context);
@@ -15,12 +15,12 @@
  catch (    Throwable th) {
       ErrorHandler errorHandler=activity.getErrorHandler();
       if (errorHandler == null) {
-        logger.info("no error handler for this action, run default error" + "handler and abort processing ");
+        LOG.info("no error handler for this action, run default error" + "handler and abort processing ");
         getDefaultErrorHandler().handleError(context,th);
         break;
       }
  else {
-        logger.info("run error handler and continue");
+        LOG.info("run error handler and continue");
         errorHandler.handleError(context,th);
       }
     }
@@ -28,6 +28,6 @@
       break;
     }
   }
-  logger.debug(getBeanName() + " processor is done.");
+  LOG.debug(getBeanName() + " processor is done.");
   return context;
 }

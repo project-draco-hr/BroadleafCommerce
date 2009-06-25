@@ -7,8 +7,8 @@
     idGeneration=(IdGeneration)query.getSingleResult();
   }
  catch (  NoResultException nre) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("No row found in idGenerator table for " + idType + " creating row.");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("No row found in idGenerator table for " + idType + " creating row.");
     }
     idGeneration=(IdGeneration)entityConfiguration.createEntityInstance("org.broadleafcommerce.profile.domain.IdGeneration");
     idGeneration.setType(idType);
@@ -18,8 +18,8 @@
       em.persist(idGeneration);
     }
  catch (    EntityExistsException e) {
-      if (logger.isWarnEnabled()) {
-        logger.warn("Error inserting row id generation for idType " + idType + ".  Requerying table.");
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Error inserting row id generation for idType " + idType + ".  Requerying table.");
       }
       return findNextId(idType);
     }

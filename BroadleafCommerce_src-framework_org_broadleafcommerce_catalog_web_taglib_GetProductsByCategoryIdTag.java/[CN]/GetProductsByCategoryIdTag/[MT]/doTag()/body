@@ -3,13 +3,13 @@
   Category c=catalogService.findCategoryById(categoryId);
   if (c == null) {
     getJspContext().setAttribute(var,null);
-    if (log.isDebugEnabled()) {
-      log.debug("The category returned was null for categoryId: " + categoryId);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("The category returned was null for categoryId: " + categoryId);
     }
   }
   List<Product> productList=catalogService.findActiveProductsByCategory(c);
-  if (CollectionUtils.isEmpty(productList) && log.isDebugEnabled()) {
-    log.debug("The productList returned was null for categoryId: " + categoryId);
+  if (CollectionUtils.isEmpty(productList) && LOG.isDebugEnabled()) {
+    LOG.debug("The productList returned was null for categoryId: " + categoryId);
   }
   getJspContext().setAttribute(var,productList);
 }
