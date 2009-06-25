@@ -1,0 +1,16 @@
+{
+  String emailId=request.getParameter("email_id");
+  if (emailId != null) {
+    Map<String,String> parameterMap=new HashMap<String,String>();
+    Enumeration names=request.getParameterNames();
+    while (names.hasMoreElements()) {
+      String name=(String)names.nextElement();
+      parameterMap.put(name,request.getParameter(name));
+    }
+    Customer customer=customerState.getCustomer((HttpServletRequest)request);
+    Map<String,String> extraValues=new HashMap<String,String>();
+    extraValues.put("requestUri",((HttpServletRequest)request).getRequestURI());
+    emailTrackingManager.recordClick(Long.valueOf(emailId),parameterMap,customer,extraValues);
+  }
+  chain.doFilter(request,response);
+}

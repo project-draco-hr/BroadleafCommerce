@@ -1,0 +1,31 @@
+{
+  super.postProcessPersistenceUnitInfo(newPU);
+  if (validPersistenceUnitNames == null) {
+    throw new IllegalArgumentException("validPersistenceUnitNames must be set");
+  }
+  String persistenceUnitName=newPU.getPersistenceUnitName();
+  if (validPersistenceUnitNames.contains(persistenceUnitName)) {
+    final URL persistenceUnitRootUrl=newPU.getPersistenceUnitRootUrl();
+    if (!masterPU.getJarFileUrls().contains(persistenceUnitRootUrl)) {
+      masterPU.addJarFileUrl(persistenceUnitRootUrl);
+    }
+    List<URL> urls=newPU.getJarFileUrls();
+    for (    URL url : urls) {
+      if (!masterPU.getJarFileUrls().contains(url)) {
+        masterPU.addJarFileUrl(url);
+      }
+    }
+    List<String> managedClassNames=newPU.getManagedClassNames();
+    for (    String managedClassName : managedClassNames) {
+      if (!masterPU.getManagedClassNames().contains(managedClassName)) {
+        masterPU.addManagedClassName(managedClassName);
+      }
+    }
+    List<String> mappingFileNames=newPU.getMappingFileNames();
+    for (    String mappingFileName : mappingFileNames) {
+      if (!masterPU.getMappingFileNames().contains(mappingFileName)) {
+        masterPU.addMappingFileName(mappingFileName);
+      }
+    }
+  }
+}

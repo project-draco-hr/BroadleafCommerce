@@ -1,0 +1,33 @@
+{
+  String[] response;
+  BufferedReader reader=null;
+  try {
+    reader=new BufferedReader(new InputStreamReader(StandardConfigLocations.class.getResourceAsStream("StandardConfigLocations.txt")));
+    ArrayList<String> items=new ArrayList<String>();
+    boolean eof=false;
+    while (!eof) {
+      String temp=reader.readLine();
+      if (temp == null) {
+        eof=true;
+      }
+ else {
+        if (!temp.startsWith("#") && temp.trim().length() > 0) {
+          items.add(temp.trim());
+        }
+      }
+    }
+    response=new String[]{};
+    response=items.toArray(response);
+  }
+  finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      Throwable e) {
+        LOG.error("Unable to merge source and patch locations",e);
+      }
+    }
+  }
+  return response;
+}

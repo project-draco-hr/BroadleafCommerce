@@ -1,0 +1,20 @@
+{
+  if (handler.getChildren() != null) {
+    MergeHandler[] children=handler.getChildren();
+    for (int j=0; j < children.length; j++) {
+      Node[] temp=merge(children[j],exhaustedNodes);
+      if (temp != null) {
+        Node[] newExhausted=new Node[exhaustedNodes.length + temp.length];
+        System.arraycopy(exhaustedNodes,0,newExhausted,0,exhaustedNodes.length);
+        System.arraycopy(temp,0,newExhausted,exhaustedNodes.length,temp.length);
+        exhaustedNodes=newExhausted;
+      }
+    }
+  }
+  NodeList nodeList1=(NodeList)xPath.evaluate(handler.getXPath(),doc1,XPathConstants.NODESET);
+  NodeList nodeList2=(NodeList)xPath.evaluate(handler.getXPath(),doc2,XPathConstants.NODESET);
+  if (nodeList1 != null && nodeList2 != null) {
+    return handler.merge(nodeList1,nodeList2,exhaustedNodes);
+  }
+  return null;
+}
