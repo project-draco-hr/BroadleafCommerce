@@ -3,6 +3,7 @@
   Money totalShipping=new Money(0D);
   for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
     fulfillmentGroup=shippingModule.calculateShippingForFulfillmentGroup(fulfillmentGroup);
+    offerService.applyFulfillmentGroupOffers(fulfillmentGroup);
     totalShipping=totalShipping.add(fulfillmentGroup.getShippingPrice());
   }
   order.setTotalShipping(totalShipping);
