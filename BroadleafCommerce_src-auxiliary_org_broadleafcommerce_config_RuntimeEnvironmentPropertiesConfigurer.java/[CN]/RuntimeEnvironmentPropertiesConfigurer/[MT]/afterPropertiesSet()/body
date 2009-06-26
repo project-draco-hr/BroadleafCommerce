@@ -1,0 +1,12 @@
+{
+  if (!m_environments.contains(m_defaultEnvironment)) {
+    throw new AssertionError("Default environment '" + m_defaultEnvironment + "' not listed in environment list");
+  }
+  if (m_keyResolver == null) {
+    m_keyResolver=new SystemPropertyRuntimeEnvironmentKeyResolver();
+  }
+  String environment=determineEnvironment();
+  Resource propertiesLocation=createPropertiesResource(environment);
+  setLocation(propertiesLocation);
+  validateProperties();
+}

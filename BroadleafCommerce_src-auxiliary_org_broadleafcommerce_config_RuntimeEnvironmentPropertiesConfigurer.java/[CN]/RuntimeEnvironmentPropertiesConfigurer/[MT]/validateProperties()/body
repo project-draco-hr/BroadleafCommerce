@@ -1,0 +1,15 @@
+{
+  boolean missingKeys=false;
+  for (  String envOuter : m_environments) {
+    for (    String envInner : m_environments) {
+      if (!envOuter.equals(envInner)) {
+        Resource resource1=createPropertiesResource(envOuter);
+        Resource resource2=createPropertiesResource(envInner);
+        missingKeys|=compareProperties(resource1,resource2);
+      }
+    }
+  }
+  if (missingKeys) {
+    throw new AssertionError("Missing runtime properties keys (log entries above have details)");
+  }
+}

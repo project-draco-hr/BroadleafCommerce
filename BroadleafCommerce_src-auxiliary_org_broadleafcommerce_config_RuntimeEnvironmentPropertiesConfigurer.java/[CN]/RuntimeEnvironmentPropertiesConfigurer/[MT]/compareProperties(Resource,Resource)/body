@@ -1,0 +1,16 @@
+{
+  Properties props1=new Properties();
+  props1.load(resource1.getInputStream());
+  Properties props2=new Properties();
+  props2.load(resource2.getInputStream());
+  Set<Object> outerKeys=props1.keySet();
+  boolean missingKeys=false;
+  for (  Object keyObj : outerKeys) {
+    String key=(String)keyObj;
+    if (!props2.containsKey(key)) {
+      missingKeys=true;
+      getLog().error("Property file mismatch: " + resource1.toString() + " contains key '"+ key+ "', missing from "+ resource2.toString());
+    }
+  }
+  return missingKeys;
+}
