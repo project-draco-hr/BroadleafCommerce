@@ -6,7 +6,11 @@
     m_keyResolver=new SystemPropertyRuntimeEnvironmentKeyResolver();
   }
   String environment=determineEnvironment();
-  Resource propertiesLocation=createPropertiesResource(environment);
-  setLocation(propertiesLocation);
+  Resource[] propertiesLocation=createPropertiesResource(environment);
+  Resource[] commonLocation=createCommonResource();
+  Resource[] allLocations=new Resource[propertiesLocation.length + commonLocation.length];
+  System.arraycopy(commonLocation,0,allLocations,0,commonLocation.length);
+  System.arraycopy(propertiesLocation,0,allLocations,commonLocation.length,propertiesLocation.length);
+  setLocations(allLocations);
   validateProperties();
 }
