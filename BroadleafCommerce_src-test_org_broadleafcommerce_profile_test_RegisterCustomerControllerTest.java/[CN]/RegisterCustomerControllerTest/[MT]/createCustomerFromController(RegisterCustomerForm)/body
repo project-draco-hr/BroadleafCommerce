@@ -1,10 +1,7 @@
 {
   BindingResult errors=new BeanPropertyBindingResult(registerCustomer,"registerCustomer");
   MockHttpServletRequest request=new MockHttpServletRequest();
-  GreenMail greenMail=new GreenMail(new ServerSetup[]{new ServerSetup(30000,"127.0.0.1",ServerSetup.PROTOCOL_SMTP)});
-  greenMail.start();
   registerCustomerController.registerCustomer(registerCustomer,errors,request);
-  greenMail.stop();
   assert(errors.getErrorCount() == 0);
   Customer customerFromDb=customerService.readCustomerByUsername(registerCustomer.getCustomer().getUsername());
   assert(customerFromDb != null);

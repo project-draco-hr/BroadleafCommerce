@@ -1,6 +1,4 @@
 {
-  GreenMail greenMail=new GreenMail(new ServerSetup[]{new ServerSetup(30000,"127.0.0.1",ServerSetup.PROTOCOL_SMTP)});
-  greenMail.start();
   EmailInfo info=new EmailInfo();
   info.setFromAddress("me@test.com");
   info.setSubject("test");
@@ -8,5 +6,4 @@
   info.setSendEmailReliableAsync("false");
   emailService.sendTemplateEmail("to@localhost",info,null);
   assert(greenMail.waitForIncomingEmail(10000,1));
-  greenMail.stop();
 }
