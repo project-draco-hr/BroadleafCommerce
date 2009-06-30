@@ -1,8 +1,13 @@
 {
   Properties props=new Properties();
   for (  Resource resource : locations) {
-    props=new Properties(props);
-    props.load(resource.getInputStream());
+    if (resource.exists()) {
+      props=new Properties(props);
+      props.load(resource.getInputStream());
+    }
+ else {
+      LOG.warn("Unable to locate resource: " + resource.getFilename());
+    }
   }
   return props;
 }
