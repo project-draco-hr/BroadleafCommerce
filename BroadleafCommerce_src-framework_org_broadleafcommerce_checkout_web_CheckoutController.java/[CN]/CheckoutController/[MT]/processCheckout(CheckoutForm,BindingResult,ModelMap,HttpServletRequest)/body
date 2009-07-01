@@ -1,17 +1,15 @@
 {
-  Address addr=new AddressImpl();
-  addr.setAddressLine1("12700 Merit Drive Way");
-  addr.setCity("Dallas");
-  addr.setState(stateService.findStateByAbbreviation("TX"));
-  addr.setPostalCode("75251");
-  addr.setCountry(countryService.findCountryByAbbreviation("US"));
+  checkoutForm.getBillingAddress().setCountry(countryService.findCountryByAbbreviation("US"));
+  checkoutForm.getBillingAddress().setState(stateService.findStateByAbbreviation("TX"));
+  checkoutForm.getShippingAddress().setCountry(countryService.findCountryByAbbreviation("US"));
+  checkoutForm.getShippingAddress().setState(stateService.findStateByAbbreviation("TX"));
   Order order=retrieveCartOrder(request,model);
   order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date()));
   FulfillmentGroup group=fulfillmentGroupService.createEmptyFulfillmentGroup();
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   group.setMethod("standard");
   group.setOrder(order);
-  group.setAddress(addr);
+  group.setAddress(checkoutForm.getShippingAddress());
   group.setShippingPrice(order.getTotalShipping());
   groups.add(group);
   order.setFulfillmentGroups(groups);
@@ -21,17 +19,29 @@
     fulfillmentGroupItem.setFulfillmentGroup(group);
     group.getFulfillmentGroupItems().add(fulfillmentGroupItem);
   }
-  PaymentInfo paymentInfo=paymentInfoService.create();
-  paymentInfo.setAddress(addr);
-  paymentInfo.setOrder(order);
   Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+  CreditCardPaymentInfo creditCardPaymentInfo=((CreditCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.CREDIT_CARD));
+  creditCardPaymentInfo.setCvvCode(checkoutForm.getCreditCardCvvCode());
+  creditCardPaymentInfo.setExpirationMonth(Integer.parseInt(checkoutForm.getCreditCardExpMonth()));
+  creditCardPaymentInfo.setExpirationYear(Integer.parseInt(checkoutForm.getCreditCardExpYear()));
+  creditCardPaymentInfo.setPan(checkoutForm.getCreditCardNumber());
+  creditCardPaymentInfo.setReferenceNumber(checkoutForm.getCreditCardNumber());
+  PaymentInfo paymentInfo=paymentInfoService.create();
+  paymentInfo.setAddress(checkoutForm.getBillingAddress());
+  paymentInfo.setOrder(order);
+  paymentInfo.setType(PaymentInfoType.CREDIT_CARD);
+  paymentInfo.setReferenceNumber(checkoutForm.getCreditCardNumber());
+  payments.put(paymentInfo,creditCardPaymentInfo);
+  List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
+  paymentInfos.add(paymentInfo);
+  order.setPaymentInfos(paymentInfos);
   order.setStatus(OrderStatus.SUBMITTED);
-  order.setSubmitDate(new Date());
+  order.setSubmitDate(Calendar.getInstance().getTime());
   try {
     checkoutService.performCheckout(order,payments);
   }
  catch (  CheckoutException e) {
     LOG.error("Cannot perform checkout",e);
   }
-  return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderDetails?orderNumber=" + order.getOrderNumber();
+  return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderDetails.htm?orderNumber=" + order.getOrderNumber();
 }
