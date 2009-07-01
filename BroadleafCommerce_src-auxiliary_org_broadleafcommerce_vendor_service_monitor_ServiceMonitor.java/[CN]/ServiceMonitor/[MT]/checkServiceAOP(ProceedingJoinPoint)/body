@@ -1,10 +1,9 @@
 {
-  Object returnValue;
   try {
-    returnValue=call.proceed();
-  }
-  finally {
     checkService((ServiceStatusDetectable)call.getThis());
   }
-  return returnValue;
+ catch (  Throwable e) {
+    LOG.error("Could not check service status",e);
+  }
+  return call.proceed();
 }
