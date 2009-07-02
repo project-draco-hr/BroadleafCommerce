@@ -1,5 +1,12 @@
 {
-  AddressStandarizationResponse standardizationResponse=standardizeAddress(address);
+  AddressStandarizationResponse standardizationResponse;
+  try {
+    standardizationResponse=standardizeAddress(address);
+  }
+ catch (  AddressStandardizationException e) {
+    LOG.error("Exception",e);
+    standardizationResponse=getDownResponse("standardizeAddress",new Object[]{address});
+  }
   if (standardizationResponse.isErrorDetected()) {
     address.setStandardized(false);
   }
@@ -7,5 +14,5 @@
     address.setStandardized(true);
     address=standardizationResponse.getAddress();
   }
-  tokenizeAddress(address,!standardizationResponse.isErrorDetected());
+  return tokenizeAddress(address,!standardizationResponse.isErrorDetected());
 }

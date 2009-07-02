@@ -11,9 +11,8 @@
     return addressStandarizationResponse;
   }
  catch (  Exception e) {
-    LOG.error("Exception",e);
     incrementFailure();
-    return getDownResponse("standardizeAddress",new Object[]{address});
+    throw new AddressStandardizationException(e);
   }
  finally {
     if (response != null) {
