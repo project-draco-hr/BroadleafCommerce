@@ -5,6 +5,7 @@ synchronized (requests) {
     sessionId=((HttpServletRequest)request).getSession().getId();
     requestURI=((HttpServletRequest)request).getRequestURI();
     if (requests.containsKey(sessionId) && requests.get(sessionId).contains(requestURI)) {
+      ((HttpServletResponse)response).setStatus(HttpServletResponse.SC_NO_CONTENT);
       return;
     }
     List<String> myRequests=requests.get(sessionId);
