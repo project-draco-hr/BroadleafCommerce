@@ -1,15 +1,15 @@
 {
-  Id id=idTypeIdMap.get(idType);
-  IdGeneration idGeneration=null;
-  if (id == null) {
+  Id id;
 synchronized (idTypeIdMap) {
+    id=idTypeIdMap.get(idType);
+    if (id == null) {
       id=idTypeIdMap.get(idType);
       if (id == null) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Getting the initial id from the database.");
         }
-        idGeneration=idGenerationDao.findNextId(idType);
-        id=new Id(idGeneration.getBatchStart(),0L);
+        IdGeneration idGeneration=idGenerationDao.findNextId(idType);
+        id=new Id(idGeneration.getBatchStart(),idGeneration.getBatchSize());
       }
       idTypeIdMap.put(idType,id);
     }
@@ -19,11 +19,9 @@ synchronized (id) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Updating batch size for idType " + idType);
       }
-      Long prevBatchStart=idGeneration.getBatchStart();
-      Long batchSize=idGeneration.getBatchSize();
-      idGeneration.setBatchStart(prevBatchStart + batchSize);
-      idGeneration=idGenerationDao.updateNextId(idGeneration);
-      id.nextId=prevBatchStart;
+      IdGeneration idGeneration=idGenerationDao.findNextId(idType);
+      id.nextId=idGeneration.getBatchStart();
+      id.batchSize=idGeneration.getBatchSize();
     }
     Long retId=id.nextId++;
     id.batchSize--;
