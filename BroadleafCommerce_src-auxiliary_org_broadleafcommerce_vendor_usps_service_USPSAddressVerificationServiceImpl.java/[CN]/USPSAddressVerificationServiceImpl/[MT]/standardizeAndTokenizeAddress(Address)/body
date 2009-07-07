@@ -1,18 +1,4 @@
 {
-  AddressStandarizationResponse standardizationResponse;
-  try {
-    standardizationResponse=standardizeAddress(address);
-  }
- catch (  AddressStandardizationException e) {
-    LOG.error("Exception",e);
-    standardizationResponse=getDownResponse("standardizeAddress",new Object[]{address});
-  }
-  if (standardizationResponse.isErrorDetected()) {
-    address.setStandardized(false);
-  }
- else {
-    address.setStandardized(true);
-    address=standardizationResponse.getAddress();
-  }
-  return tokenizeAddress(address,!standardizationResponse.isErrorDetected());
+  USPSAddressStandardizationResponse standardizationResponse=standardizeAddress(address);
+  return tokenizeAddress(standardizationResponse.getAddress(),!standardizationResponse.isErrorDetected());
 }

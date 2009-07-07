@@ -7,8 +7,13 @@
   State state=new StateImpl();
   state.setAbbreviation("CL");
   testAddress.setState(state);
-  AddressStandarizationResponse standardizedResponse=addressStandardizationService.standardizeAddress(testAddress);
-  assert(standardizedResponse.isErrorDetected());
+  try {
+    addressStandardizationService.standardizeAddress(testAddress);
+    assert(false);
+  }
+ catch (  AddressStandardizationException e) {
+    assert(e.getStandardizationResponse().isErrorDetected());
+  }
   assert(greenMail.waitForIncomingEmail(10000,1));
   assert(greenMail.getReceivedMessages()[0].getSubject().contains("is reporting a status"));
 }

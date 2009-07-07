@@ -1,14 +1,12 @@
 {
-  AddressStandarizationResponse addressStandarizationResponse=new AddressStandarizationResponse();
+  USPSAddressStandardizationResponse addressStandardizationResponse=new USPSAddressStandardizationResponse();
   InputStream response=null;
   try {
     response=callUSPSAddressStandardization(address);
-    ArrayList<AddressStandarizationResponse> AddressResponseList=parseUSPSResponse(response);
+    ArrayList<USPSAddressStandardizationResponse> AddressResponseList=parseUSPSResponse(response);
     if ((AddressResponseList != null) && !AddressResponseList.isEmpty()) {
-      addressStandarizationResponse=AddressResponseList.get(0);
+      addressStandardizationResponse=AddressResponseList.get(0);
     }
-    clearStatus();
-    return addressStandarizationResponse;
   }
  catch (  Exception e) {
     incrementFailure();
@@ -24,4 +22,12 @@
       }
     }
   }
+  clearStatus();
+  if (addressStandardizationResponse.isErrorDetected()) {
+    AddressStandardizationHostException e=new AddressStandardizationHostException();
+    e.setStandardizationResponse(addressStandardizationResponse);
+    throw e;
+  }
+  addressStandardizationResponse.getAddress().setStandardized(true);
+  return addressStandardizationResponse;
 }

@@ -3,7 +3,7 @@
     return;
   }
   Address testAddress=getValidAddress();
-  AddressStandarizationResponse standardizedResponse=addressStandardizationService.standardizeAddress(testAddress);
+  USPSAddressStandardizationResponse standardizedResponse=addressStandardizationService.standardizeAddress(testAddress);
   logger.debug("Get ZipCode: " + standardizedResponse.getAddress().getPostalCode());
   assert(!standardizedResponse.isErrorDetected());
   assert(greenMail.waitForIncomingEmail(10000,1));
