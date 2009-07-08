@@ -1,6 +1,5 @@
 {
-  Customer customer=customerService.readCustomerById(1L);
-  List<Order> orders=orderService.findOrdersForCustomer(customer,OrderStatus.SUBMITTED);
+  List<Order> orders=orderService.findOrdersForCustomer(customerState.getCustomer(request),OrderStatus.SUBMITTED);
   model.addAttribute("orderList",orders);
   return "listOrders";
 }
