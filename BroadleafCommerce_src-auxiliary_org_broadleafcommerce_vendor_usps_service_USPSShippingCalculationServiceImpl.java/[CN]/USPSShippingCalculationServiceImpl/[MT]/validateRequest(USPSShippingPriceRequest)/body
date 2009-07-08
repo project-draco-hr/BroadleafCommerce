@@ -9,7 +9,7 @@
     if (itemRequest.getWeight().doubleValue() > 70D) {
       throw buildException(USPSShippingPriceErrorCode.OVERWEIGHT.getType(),USPSShippingPriceErrorCode.OVERWEIGHT.getMessage());
     }
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.REGULAR) && itemRequest.getContainerShape() == null) {
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape() == null) {
       throw buildException(USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getMessage());
     }
     if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && (itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR))) {
