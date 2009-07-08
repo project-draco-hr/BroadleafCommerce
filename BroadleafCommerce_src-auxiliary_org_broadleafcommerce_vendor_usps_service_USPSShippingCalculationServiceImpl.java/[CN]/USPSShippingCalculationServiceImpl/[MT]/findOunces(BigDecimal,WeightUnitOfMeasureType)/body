@@ -1,0 +1,9 @@
+{
+  if (type.equals(WeightUnitOfMeasureType.KILOGRAMS)) {
+    weight=UnitOfMeasureUtil.convertKilogramsToPounds(weight);
+  }
+  double fractionalPounds=weight.doubleValue() - Math.floor(weight.doubleValue());
+  BigDecimal ounces=UnitOfMeasureUtil.convertPoundsToOunces(BigDecimal.valueOf(fractionalPounds));
+  DecimalFormat format=new DecimalFormat("0.0000");
+  return format.format(ounces.doubleValue());
+}

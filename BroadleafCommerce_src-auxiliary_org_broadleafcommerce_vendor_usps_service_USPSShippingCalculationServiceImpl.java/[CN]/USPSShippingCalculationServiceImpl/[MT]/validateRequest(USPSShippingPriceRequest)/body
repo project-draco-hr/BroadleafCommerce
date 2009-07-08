@@ -1,4 +1,7 @@
 {
+  if (request.getContainerItems().size() > 25) {
+    throw buildException(USPSShippingPriceErrorCode.TOOMANYCONTAINERITEMS.getType(),USPSShippingPriceErrorCode.TOOMANYCONTAINERITEMS.getMessage());
+  }
   for (  USPSContainerItemRequest itemRequest : request.getContainerItems()) {
     if (itemRequest.getWeight() == null) {
       throw buildException(USPSShippingPriceErrorCode.WEIGHTNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.WEIGHTNOTSPECIFIED.getMessage());
@@ -9,8 +12,16 @@
     if (itemRequest.getContainerSize().equals(ContainerSizeType.REGULAR) && itemRequest.getContainerShape() == null) {
       throw buildException(USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getMessage());
     }
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && (itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR)) && (itemRequest.getDepth() == null || itemRequest.getHeight() == null || itemRequest.getWidth() == null)) {
-      throw buildException(USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getMessage());
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && (itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR))) {
+      if (itemRequest.getDepth() == null || itemRequest.getHeight() == null || itemRequest.getWidth() == null) {
+        throw buildException(USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getMessage());
+      }
+      if (itemRequest.getDimensionUnitOfMeasureType() == null) {
+        throw buildException(USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getMessage());
+      }
+      if (!itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.METERS) && !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.FEET) && !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.CENTIMETERS)&& !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.INCHES)) {
+        throw buildException(USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getMessage());
+      }
     }
     if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR) && itemRequest.getGirth() == null) {
       throw buildException(USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getMessage());
@@ -20,6 +31,17 @@
     }
     if (itemRequest.getZipDestination() == null || itemRequest.getZipOrigination() == null) {
       throw buildException(USPSShippingPriceErrorCode.ZIPNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.ZIPNOTSPECIFIED.getMessage());
+    }
+    if (itemRequest.getWeightUnitOfMeasureType() == null) {
+      throw buildException(USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getMessage());
+    }
+    if (!itemRequest.getWeightUnitOfMeasureType().equals(WeightUnitOfMeasureType.KILOGRAMS) && !itemRequest.getWeightUnitOfMeasureType().equals(WeightUnitOfMeasureType.POUNDS)) {
+      throw buildException(USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getMessage());
+    }
+    Calendar maxAdvance=Calendar.getInstance();
+    maxAdvance.add(Calendar.DATE,3);
+    if (itemRequest.getShipDate() != null && itemRequest.getShipDate().getTime() > maxAdvance.getTime().getTime()) {
+      throw buildException(USPSShippingPriceErrorCode.SHIPDATETOOFAR.getType(),USPSShippingPriceErrorCode.SHIPDATETOOFAR.getMessage());
     }
   }
 }

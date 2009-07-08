@@ -1,0 +1,13 @@
+{
+  if (type.equals(DimensionUnitOfMeasureType.CENTIMETERS)) {
+    dimension=UnitOfMeasureUtil.convertFeetToInches(UnitOfMeasureUtil.convertMetersToFeet(dimension.multiply(BigDecimal.valueOf(0.01))));
+  }
+  if (type.equals(DimensionUnitOfMeasureType.METERS)) {
+    dimension=UnitOfMeasureUtil.convertFeetToInches(UnitOfMeasureUtil.convertMetersToFeet(dimension));
+  }
+  if (type.equals(DimensionUnitOfMeasureType.FEET)) {
+    dimension=UnitOfMeasureUtil.convertFeetToInches(dimension);
+  }
+  DecimalFormat format=new DecimalFormat("0.0000");
+  return format.format(dimension.doubleValue());
+}

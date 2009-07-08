@@ -1,4 +1,30 @@
 {
   validateRequest(request);
-  return null;
+  USPSShippingPriceResponse shippingPriceResponse=new USPSShippingPriceResponse();
+  InputStream response=null;
+  try {
+    response=callUSPSPricingCalculation(request);
+    shippingPriceResponse=parseUSPSResponse(response);
+  }
+ catch (  Exception e) {
+    incrementFailure();
+    throw new ShippingPriceException(e);
+  }
+ finally {
+    if (response != null) {
+      try {
+        response.close();
+      }
+ catch (      IOException e) {
+        LOG.error("IOException while closing the InputStream",e);
+      }
+    }
+  }
+  clearStatus();
+  if (shippingPriceResponse.isErrorDetected()) {
+    ShippingPriceHostException e=new ShippingPriceHostException();
+    e.setShippingPriceResponse(shippingPriceResponse);
+    throw e;
+  }
+  return shippingPriceResponse;
 }

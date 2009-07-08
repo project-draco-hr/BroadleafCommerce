@@ -8,6 +8,27 @@
     dom.addElement(SERVICE_ELEM).setText(SERVICE_TEXT);
     dom.addElement(ZIP_ORIGIN_ELEMENT).setText(itemRequest.getZipOrigination());
     dom.addElement(ZIP_DESTINATION_ELEMENT).setText(itemRequest.getZipDestination());
+    dom.addElement(POUNDS_ELEMENT).setText(findPounds(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
+    dom.addElement(OUNCES_ELEMENT).setText(findOunces(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
+    dom.addElement(SIZE_ELEMENT).setText(itemRequest.getContainerSize().getType());
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE)) {
+      dom.addElement(CONTAINER_ELEMENT).setText(itemRequest.getContainerShape().getType());
+    }
+    dom.addElement(MACHINABLE_ELEMENT).setText(Boolean.toString(itemRequest.isMachineSortable()));
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE)) {
+      if (itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR)) {
+        dom.addElement(WIDTH_ELEMENT).setText(findInches(itemRequest.getWidth(),itemRequest.getDimensionUnitOfMeasureType()));
+        dom.addElement(HEIGHT_ELEMENT).setText(findInches(itemRequest.getHeight(),itemRequest.getDimensionUnitOfMeasureType()));
+        dom.addElement(LENGTH_ELEMENT).setText(findInches(itemRequest.getDepth(),itemRequest.getDimensionUnitOfMeasureType()));
+      }
+      if (itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR)) {
+        dom.addElement(GIRTH_ELEMENT).setText(findInches(itemRequest.getGirth(),itemRequest.getDimensionUnitOfMeasureType()));
+      }
+    }
+    if (itemRequest.getShipDate() != null) {
+      SimpleDateFormat format=new SimpleDateFormat("dd-MMM-yyyy");
+      dom.addElement(SHIP_DATE_ELEMENT).setText(format.format(itemRequest.getShipDate()));
+    }
   }
   StringWriter strWriter=new StringWriter();
   XMLWriter writer=new XMLWriter(strWriter);

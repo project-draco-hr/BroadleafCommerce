@@ -1,0 +1,16 @@
+{
+  if (qName.equals(RATE_TAG)) {
+    if (shippingMethod != null) {
+      Money rate=new Money(buffer.toString(),Currency.getInstance(Locale.US));
+      shippingPriceResponse.getResponses().peek().getRates().put(shippingMethod,rate);
+    }
+  }
+ else   if (qName.equals(RESTRICTIONS_TAG)) {
+    shippingPriceResponse.getResponses().peek().setRestrictions(buffer.toString());
+  }
+ else   if (qName.equals(RETURN_TEXT_TAG)) {
+    shippingPriceResponse.setErrorText(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+  reset();
+}

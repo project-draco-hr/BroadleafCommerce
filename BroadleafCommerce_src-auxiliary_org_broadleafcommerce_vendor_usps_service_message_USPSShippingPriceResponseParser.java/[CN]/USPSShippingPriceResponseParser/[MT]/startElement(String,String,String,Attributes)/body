@@ -1,0 +1,18 @@
+{
+  if (qName.equals(RESPONSE_TAG)) {
+    shippingPriceResponse=new USPSShippingPriceResponse();
+  }
+  if (qName.equals(PACKAGE_TAG)) {
+    shippingPriceResponse.getResponses().add(new USPSContainerItem());
+    shippingPriceResponse.getResponses().peek().setPackageId(attributes.getValue("ID"));
+  }
+  if (qName.equals(POSTAGE_TAG)) {
+    shippingMethod=USPSShippingMethodType.getInstance(attributes.getValue("CLASSID"));
+    if (shippingMethod == null) {
+      LOG.warn("Shipping method with class id (" + attributes.getValue("CLASSID") + ") not recognized. Not including in results.");
+    }
+  }
+  if (qName.equals(ERROR_TAG)) {
+    shippingPriceResponse.setErrorDetected(true);
+  }
+}
