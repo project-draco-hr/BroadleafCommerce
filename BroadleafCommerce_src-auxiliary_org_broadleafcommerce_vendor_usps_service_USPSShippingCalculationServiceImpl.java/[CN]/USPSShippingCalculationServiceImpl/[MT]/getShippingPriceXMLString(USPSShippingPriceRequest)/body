@@ -11,17 +11,17 @@
     dom.addElement(POUNDS_ELEMENT).setText(findPounds(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
     dom.addElement(OUNCES_ELEMENT).setText(findOunces(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
     dom.addElement(SIZE_ELEMENT).setText(itemRequest.getContainerSize().getType());
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape() != null) {
+    if (itemRequest.getContainerSize().equals(USPSContainerSizeType.LARGE) && itemRequest.getContainerShape() != null) {
       dom.addElement(CONTAINER_ELEMENT).setText(itemRequest.getContainerShape().getType());
     }
     dom.addElement(MACHINABLE_ELEMENT).setText(Boolean.toString(itemRequest.isMachineSortable()));
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE)) {
-      if (itemRequest.getContainerShape() != null && (itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR))) {
+    if (itemRequest.getContainerSize().equals(USPSContainerSizeType.LARGE)) {
+      if (itemRequest.getContainerShape() != null && (itemRequest.getContainerShape().equals(USPSContainerShapeType.NONRECTANGULAR) || itemRequest.getContainerShape().equals(USPSContainerShapeType.RECTANGULAR))) {
         dom.addElement(WIDTH_ELEMENT).setText(findInches(itemRequest.getWidth(),itemRequest.getDimensionUnitOfMeasureType()));
         dom.addElement(HEIGHT_ELEMENT).setText(findInches(itemRequest.getHeight(),itemRequest.getDimensionUnitOfMeasureType()));
         dom.addElement(LENGTH_ELEMENT).setText(findInches(itemRequest.getDepth(),itemRequest.getDimensionUnitOfMeasureType()));
       }
-      if (itemRequest.getContainerShape() != null && itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR)) {
+      if (itemRequest.getContainerShape() != null && itemRequest.getContainerShape().equals(USPSContainerShapeType.NONRECTANGULAR)) {
         dom.addElement(GIRTH_ELEMENT).setText(findInches(itemRequest.getGirth(),itemRequest.getDimensionUnitOfMeasureType()));
       }
     }
