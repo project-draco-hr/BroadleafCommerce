@@ -1,8 +1,8 @@
 {
-  checkoutForm.getBillingAddress().setCountry(countryService.findCountryByAbbreviation("US"));
-  checkoutForm.getBillingAddress().setState(stateService.findStateByAbbreviation("TX"));
-  checkoutForm.getShippingAddress().setCountry(countryService.findCountryByAbbreviation("US"));
-  checkoutForm.getShippingAddress().setState(stateService.findStateByAbbreviation("TX"));
+  checkoutFormValidator.validate(checkoutForm,errors);
+  if (errors.hasErrors()) {
+    return checkout(checkoutForm,errors,model,request);
+  }
   Order order=retrieveCartOrder(request,model);
   order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date()));
   FulfillmentGroup group=fulfillmentGroupService.createEmptyFulfillmentGroup();
