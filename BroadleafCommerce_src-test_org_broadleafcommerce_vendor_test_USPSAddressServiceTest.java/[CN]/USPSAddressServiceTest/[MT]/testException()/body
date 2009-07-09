@@ -9,4 +9,20 @@
  catch (  Exception e) {
     assert(true);
   }
+  try {
+    addressStandardizationService.standardizeAddress(null);
+    assert(false);
+  }
+ catch (  Exception e) {
+    assert(true);
+  }
+  try {
+    addressStandardizationService.standardizeAddress(null);
+    assert(false);
+  }
+ catch (  Exception e) {
+    assert(true);
+  }
+  assert(greenMail.waitForIncomingEmail(10000,1));
+  assert(greenMail.getReceivedMessages()[0].getSubject().contains("is reporting a status"));
 }

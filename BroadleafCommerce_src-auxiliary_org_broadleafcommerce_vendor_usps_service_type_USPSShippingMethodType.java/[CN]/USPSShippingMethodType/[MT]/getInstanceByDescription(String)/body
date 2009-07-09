@@ -1,0 +1,12 @@
+{
+  USPSShippingMethodType closestMatch=null;
+  Double closestChecksumDeviation=null;
+  for (  USPSShippingMethodType type : types.values()) {
+    double deviation=StringUtil.determineSimilarity(description,type.getDescription());
+    if ((closestChecksumDeviation == null && deviation <= 5000000.0) || (closestChecksumDeviation != null && deviation < closestChecksumDeviation)) {
+      closestChecksumDeviation=deviation;
+      closestMatch=type;
+    }
+  }
+  return closestMatch;
+}

@@ -1,12 +1,21 @@
 {
   if (qName.equals(PACKAGE_TAG)) {
-    shippingPriceResponse.getResponses().add(new USPSContainerItem());
-    shippingPriceResponse.getResponses().peek().setPackageId(attributes.getValue("ID"));
+    String id=attributes.getValue("ID");
+    USPSContainerItem key=new USPSContainerItem();
+    key.setPackageId(id);
+    USPSContainerItem originalItem=(USPSContainerItem)request.getContainerItems().get(request.getContainerItems().indexOf(key));
+    shippingPriceResponse.getResponses().push(originalItem);
   }
   if (qName.equals(POSTAGE_TAG)) {
-    shippingMethod=USPSShippingMethodType.getInstance(attributes.getValue("CLASSID"));
-    if (shippingMethod == null) {
-      LOG.warn("Shipping method with class id (" + attributes.getValue("CLASSID") + ") not recognized. Not including in results.");
+    String classId=attributes.getValue("CLASSID");
+    if (classId != null) {
+      shippingMethod=USPSShippingMethodType.getInstance(classId);
+      if (shippingMethod == null) {
+        LOG.warn("Shipping method with class id (" + attributes.getValue("CLASSID") + ") not recognized. Not including in results.");
+      }
+    }
+ else {
+      shippingMethod=null;
     }
   }
   if (qName.equals(ERROR_TAG)) {

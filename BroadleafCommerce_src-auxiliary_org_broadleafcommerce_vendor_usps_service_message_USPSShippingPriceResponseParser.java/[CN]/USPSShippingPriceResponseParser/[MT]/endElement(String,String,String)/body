@@ -9,7 +9,21 @@
     shippingPriceResponse.getResponses().peek().setRestrictions(buffer.toString());
   }
  else   if (qName.equals(DESCRIPTION_TAG)) {
-    shippingPriceResponse.setErrorText(buffer.toString().trim());
+    if (shippingPriceResponse.getResponses().empty()) {
+      shippingPriceResponse.setErrorText(buffer.toString().trim());
+    }
+ else {
+      shippingPriceResponse.getResponses().peek().setErrorDetected(true);
+      shippingPriceResponse.getResponses().peek().setErrorText(buffer.toString().trim());
+    }
+  }
+ else   if (qName.equals(MAILSERVICE_TAG)) {
+    if (shippingMethod == null) {
+      shippingMethod=USPSShippingMethodType.getInstanceByDescription(buffer.toString().trim());
+      if (shippingMethod == null) {
+        LOG.warn("Shipping method with description (" + buffer.toString().trim() + ") not recognized. Not including in results.");
+      }
+    }
   }
   reset();
 }

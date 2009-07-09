@@ -9,10 +9,7 @@
     if (itemRequest.getWeight().doubleValue() > 70D) {
       throw buildException(USPSShippingPriceErrorCode.OVERWEIGHT.getType(),USPSShippingPriceErrorCode.OVERWEIGHT.getMessage());
     }
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape() == null) {
-      throw buildException(USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.SHAPENOTSPECIFIED.getMessage());
-    }
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && (itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR))) {
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape() != null && (itemRequest.getContainerShape().equals(ContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR))) {
       if (itemRequest.getDepth() == null || itemRequest.getHeight() == null || itemRequest.getWidth() == null) {
         throw buildException(USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getMessage());
       }
@@ -23,7 +20,7 @@
         throw buildException(USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getMessage());
       }
     }
-    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR) && itemRequest.getGirth() == null) {
+    if (itemRequest.getContainerSize().equals(ContainerSizeType.LARGE) && itemRequest.getContainerShape() != null && itemRequest.getContainerShape().equals(ContainerShapeType.NONRECTANGULAR) && itemRequest.getGirth() == null) {
       throw buildException(USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getMessage());
     }
     if (itemRequest.getPackageId() == null) {
