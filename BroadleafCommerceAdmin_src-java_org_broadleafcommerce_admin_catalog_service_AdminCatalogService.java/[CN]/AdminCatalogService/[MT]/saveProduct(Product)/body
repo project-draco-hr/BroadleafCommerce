@@ -1,0 +1,14 @@
+{
+  ASObject asObjectProductImages=(ASObject)product.getProductImages();
+  Map<String,String> productImages=new HashMap<String,String>();
+  for (  Object key : asObjectProductImages.keySet()) {
+    if (String.class.equals(key.getClass())) {
+      Object test=asObjectProductImages.get(key);
+      if (String.class.equals(test.getClass())) {
+        productImages.put((String)key,(String)asObjectProductImages.get(key));
+      }
+    }
+  }
+  product.setProductImages(productImages);
+  return catalogService.saveProduct(product);
+}
