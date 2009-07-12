@@ -1,0 +1,33 @@
+{
+  USPSAddressStandardizationResponse addressStandardizationResponse=new USPSAddressStandardizationResponse();
+  InputStream response=null;
+  try {
+    response=callUSPSAddressStandardization(address);
+    ArrayList<USPSAddressStandardizationResponse> AddressResponseList=parseUSPSResponse(response);
+    if ((AddressResponseList != null) && !AddressResponseList.isEmpty()) {
+      addressStandardizationResponse=AddressResponseList.get(0);
+    }
+  }
+ catch (  Exception e) {
+    incrementFailure();
+    throw new AddressStandardizationException(e);
+  }
+ finally {
+    if (response != null) {
+      try {
+        response.close();
+      }
+ catch (      IOException e) {
+        LOG.error("IOException while closing the InputStream",e);
+      }
+    }
+  }
+  clearStatus();
+  if (addressStandardizationResponse.isErrorDetected()) {
+    AddressStandardizationHostException e=new AddressStandardizationHostException();
+    e.setStandardizationResponse(addressStandardizationResponse);
+    throw e;
+  }
+  addressStandardizationResponse.getAddress().setStandardized(true);
+  return addressStandardizationResponse;
+}

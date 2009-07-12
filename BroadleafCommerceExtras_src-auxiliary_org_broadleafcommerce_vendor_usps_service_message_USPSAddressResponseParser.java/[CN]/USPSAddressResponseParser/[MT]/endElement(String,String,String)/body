@@ -1,0 +1,50 @@
+{
+  if (qName.equals(ADDRESS_TAG)) {
+    addressResponseList.add(addressStandarizationResponse);
+  }
+ else   if (qName.equals(ADDRESS1_TAG)) {
+    address.setAddressLine2(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(ADDRESS2_TAG)) {
+    address.setAddressLine1(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(CITY_TAG)) {
+    address.setCity(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(STATE_TAG)) {
+    state.setAbbreviation(buffer.toString().trim());
+    address.setState(state);
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(ZIP5_TAG)) {
+    address.setPostalCode(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(ZIP4_TAG)) {
+    address.setZipFour(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(RETURN_TEXT_TAG)) {
+    addressStandarizationResponse.setErrorDetected(true);
+    addressStandarizationResponse.setErrorText(buffer.toString().trim());
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(NUMBER_TAG)) {
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(SOURCE_TAG)) {
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(DESCRIPTION_TAG)) {
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(HELP_FILE_TAG)) {
+    buffer=new StringBuffer();
+  }
+ else   if (qName.equals(HELP_CONTEXT_TAG)) {
+    buffer=new StringBuffer();
+  }
+}

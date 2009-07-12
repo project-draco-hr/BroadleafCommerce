@@ -1,0 +1,13 @@
+{
+  USPSAddressStandardizationResponse addressStandarizationResponse=new USPSAddressStandardizationResponse();
+  addressStandarizationResponse.setErrorDetected(true);
+  if ("standardizeAndTokenizeAddress".equals(method)) {
+    if (args != null && args.length > 0 && args[0] != null) {
+      addressStandarizationResponse.setAddress(((Address)args[0]));
+    }
+  }
+ else   if ("standardizeAddress".equals(method)) {
+    addressStandarizationResponse.setAddress((Address)args[0]);
+  }
+  return addressStandarizationResponse;
+}

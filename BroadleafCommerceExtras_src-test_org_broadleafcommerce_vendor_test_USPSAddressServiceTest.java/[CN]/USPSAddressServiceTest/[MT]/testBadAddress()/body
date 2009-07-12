@@ -1,0 +1,17 @@
+{
+  if (addressStandardizationService.getUspsUserName().equals("?")) {
+    return;
+  }
+  Address testAddress=getValidAddress();
+  testAddress.setPostalCode("70057");
+  State state=new StateImpl();
+  state.setAbbreviation("CL");
+  testAddress.setState(state);
+  try {
+    addressStandardizationService.standardizeAddress(testAddress);
+    assert(false);
+  }
+ catch (  AddressStandardizationException e) {
+    assert(e.getStandardizationResponse().isErrorDetected());
+  }
+}
