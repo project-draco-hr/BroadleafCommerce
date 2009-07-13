@@ -1,10 +1,10 @@
 {
-  uspsValidator.validateRequest(request);
+  uspsRequestValidator.validateRequest(request);
   USPSShippingPriceResponse shippingPriceResponse=new USPSShippingPriceResponse();
   InputStream response=null;
   try {
     response=callUSPSPricingCalculation(request);
-    shippingPriceResponse=parseUSPSResponse(request,response);
+    shippingPriceResponse=uspsResponseBuilder.buildResponse(response,request);
   }
  catch (  Exception e) {
     incrementFailure();

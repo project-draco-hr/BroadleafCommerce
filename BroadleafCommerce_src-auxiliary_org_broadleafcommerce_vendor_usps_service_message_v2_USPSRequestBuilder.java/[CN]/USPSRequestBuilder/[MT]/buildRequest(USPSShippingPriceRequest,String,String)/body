@@ -1,0 +1,36 @@
+{
+  RateV2RequestDocument doc=RateV2RequestDocument.Factory.newInstance();
+  RateV2RequestType v2Request=doc.addNewRateV2Request();
+  v2Request.setUSERID(username);
+  v2Request.setPASSWORD(password);
+  for (  USPSContainerItemRequest itemRequest : request.getContainerItems()) {
+    RequestPackageV2Type requestPackage=v2Request.addNewPackage();
+    if (itemRequest.getContainerShape() != null) {
+      requestPackage.setContainer(RequestPackageV2Type.Container.Enum.forString(itemRequest.getContainerShape().getType()));
+    }
+    if (itemRequest.getPackageId() != null) {
+      requestPackage.setID(itemRequest.getPackageId());
+    }
+    if (itemRequest.isMachineSortable() != null) {
+      requestPackage.setMachinable(itemRequest.isMachineSortable());
+    }
+    if (itemRequest.getWeight() != null) {
+      DecimalFormat format=new DecimalFormat("0.#");
+      requestPackage.setOunces(format.format(UnitOfMeasureUtil.findRemainingOunces(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()).doubleValue()));
+      requestPackage.setPounds(UnitOfMeasureUtil.findWholePounds(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
+    }
+    if (itemRequest.getService() != null) {
+      requestPackage.setService(RequestPackageV2Type.Service.Enum.forString(itemRequest.getService().getType()));
+    }
+    if (itemRequest.getContainerSize() != null) {
+      requestPackage.setSize(RequestPackageV2Type.Size.Enum.forString(itemRequest.getContainerSize().getType()));
+    }
+    if (itemRequest.getZipDestination() != null) {
+      requestPackage.setZipDestination(Integer.valueOf(itemRequest.getZipDestination()));
+    }
+    if (itemRequest.getZipOrigination() != null) {
+      requestPackage.setZipOrigination(Integer.valueOf(itemRequest.getZipOrigination()));
+    }
+  }
+  return doc;
+}

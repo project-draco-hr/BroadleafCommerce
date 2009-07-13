@@ -2,6 +2,11 @@
   URL contentURL=new URL(new StringBuffer(httpProtocol).append("://").append(uspsServerName).append(uspsServiceAPI).toString());
   Map<String,String> content=new HashMap<String,String>();
   content.put("API",uspsShippingAPI);
-  content.put("XML",getShippingPriceXMLString(request));
+  XmlTokenSource doc=uspsRequestBuilder.buildRequest(request,uspsUserName,uspsPassword);
+  String text=doc.xmlText();
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("xml request source: " + text);
+  }
+  content.put("XML",text);
   return postMessage(content,contentURL,uspsCharSet);
 }
