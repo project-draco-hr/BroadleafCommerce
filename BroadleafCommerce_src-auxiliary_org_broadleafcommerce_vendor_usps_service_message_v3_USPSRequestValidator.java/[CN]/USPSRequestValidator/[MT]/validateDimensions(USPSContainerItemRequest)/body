@@ -1,0 +1,13 @@
+{
+  if ((itemRequest.getService().equals(USPSServiceType.ALL) || itemRequest.getService().equals(USPSServiceType.ONLINE) || itemRequest.getService().equals(USPSServiceType.PRIORITY)|| itemRequest.getService().equals(USPSServiceType.PRIORITYCOMMERCIAL)) && itemRequest.getContainerSize().equals(USPSContainerSizeType.LARGE) && itemRequest.getContainerShape() != null && (itemRequest.getContainerShape().equals(USPSContainerShapeType.RECTANGULAR) || itemRequest.getContainerShape().equals(USPSContainerShapeType.NONRECTANGULAR))) {
+    if (itemRequest.getDepth() == null || itemRequest.getHeight() == null || itemRequest.getWidth() == null) {
+      throw org.broadleafcommerce.vendor.usps.service.message.USPSRequestValidator.buildException(USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.DIMENSIONSNOTSPECIFIED.getMessage());
+    }
+    if (itemRequest.getDimensionUnitOfMeasureType() == null) {
+      throw org.broadleafcommerce.vendor.usps.service.message.USPSRequestValidator.buildException(USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSPECIFIED.getMessage());
+    }
+    if (!itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.METERS) && !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.FEET) && !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.CENTIMETERS)&& !itemRequest.getDimensionUnitOfMeasureType().equals(DimensionUnitOfMeasureType.INCHES)) {
+      throw org.broadleafcommerce.vendor.usps.service.message.USPSRequestValidator.buildException(USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getType(),USPSShippingPriceErrorCode.UNITTYPENOTSUPPORTED.getMessage());
+    }
+  }
+}

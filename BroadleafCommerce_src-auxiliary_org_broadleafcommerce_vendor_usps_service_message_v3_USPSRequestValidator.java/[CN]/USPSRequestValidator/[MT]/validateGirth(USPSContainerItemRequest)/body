@@ -1,0 +1,5 @@
+{
+  if ((itemRequest.getService().equals(USPSServiceType.ALL) || itemRequest.getService().equals(USPSServiceType.ONLINE) || itemRequest.getService().equals(USPSServiceType.PRIORITY)|| itemRequest.getService().equals(USPSServiceType.PRIORITYCOMMERCIAL)) && itemRequest.getContainerSize().equals(USPSContainerSizeType.LARGE) && itemRequest.getContainerShape() != null && itemRequest.getContainerShape().equals(USPSContainerShapeType.NONRECTANGULAR) && itemRequest.getGirth() == null) {
+    throw org.broadleafcommerce.vendor.usps.service.message.USPSRequestValidator.buildException(USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getType(),USPSShippingPriceErrorCode.GIRTHNOTSPECIFIED.getMessage());
+  }
+}

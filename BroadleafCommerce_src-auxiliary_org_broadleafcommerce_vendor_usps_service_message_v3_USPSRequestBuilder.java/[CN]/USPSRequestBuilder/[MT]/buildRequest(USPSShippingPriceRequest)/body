@@ -1,0 +1,18 @@
+{
+  RateV3RequestDocument doc=RateV3RequestDocument.Factory.newInstance();
+  RateV3RequestType v3Request=doc.addNewRateV3Request();
+  for (  USPSContainerItemRequest itemRequest : request.getContainerItems()) {
+    RequestPackageType requestPackage=v3Request.addNewPackage();
+    requestPackage.setContainer(RequestPackageType.Container.Enum.forString(itemRequest.getContainerShape().getType()));
+    requestPackage.setFirstClassMailType(RequestPackageType.FirstClassMailType.Enum.forString(itemRequest.getFirstClassType().getType()));
+    requestPackage.setGirth(itemRequest.getGirth().floatValue());
+    requestPackage.setHeight(itemRequest.getHeight().floatValue());
+    requestPackage.setID(itemRequest.getPackageId());
+    requestPackage.setLength(itemRequest.getDepth().floatValue());
+    requestPackage.setMachinable(itemRequest.isMachineSortable());
+    requestPackage.setOunces(UnitOfMeasureUtil.findRemainingOunces(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()).floatValue());
+    requestPackage.setPounds(UnitOfMeasureUtil.findWholePounds(itemRequest.getWeight(),itemRequest.getWeightUnitOfMeasureType()));
+    requestPackage.setReturnLocations(itemRequest.isReturnLocations());
+  }
+  return null;
+}
