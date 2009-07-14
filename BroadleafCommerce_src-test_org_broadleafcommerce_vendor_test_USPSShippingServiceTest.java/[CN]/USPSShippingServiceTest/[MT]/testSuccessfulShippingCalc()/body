@@ -14,8 +14,7 @@
   itemRequest.setMachineSortable(true);
   request.getContainerItems().add(itemRequest);
   USPSShippingPriceResponse response=shippingCalculationService.retrieveShippingRates(request);
-  assert(response.getResponses().peek().getPostage().size() == 6);
-  assert(response.getResponses().peek().getPostage().get(USPSServiceResponseType.PARCELPOST).getRate().getAmount().doubleValue() > 0D);
+  assert(response.getResponses().peek().getPostage().size() > 0);
   USPSShippingPriceRequest request2=new USPSShippingPriceRequest();
   USPSContainerItemRequest itemRequest2=new USPSContainerItem();
   itemRequest2.setService(USPSServiceType.PRIORITY);
