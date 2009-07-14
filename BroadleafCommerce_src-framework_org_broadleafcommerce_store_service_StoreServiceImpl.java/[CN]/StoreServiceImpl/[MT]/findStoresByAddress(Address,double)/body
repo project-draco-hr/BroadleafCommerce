@@ -2,7 +2,7 @@
   Map<Store,Double> matchingStores=new HashMap<Store,Double>();
   for (  Store store : readAllStores()) {
     Double storeDistance=findStoreDistance(store,Integer.parseInt(searchAddress.getPostalCode()));
-    if (storeDistance <= distance) {
+    if (storeDistance != null && storeDistance <= distance) {
       matchingStores.put(store,storeDistance);
     }
   }
