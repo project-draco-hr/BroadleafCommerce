@@ -1,0 +1,68 @@
+{
+  if (pZipGeo != null) {
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_GEO");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("geo",pZipGeo);
+    query.setParameter("city",pCity);
+    query.setParameter("zipCode",pZipCode);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+  if (pCounty != null && !pCounty.trim().isEmpty()) {
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_COUNTY");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("county",pCounty);
+    query.setParameter("city",pCity);
+    query.setParameter("zipCode",pZipCode);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+{
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_CITY_STATE_ZIP");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("city",pCity);
+    query.setParameter("zipCode",pZipCode);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+{
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_SOUNDEX");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("city",pCity);
+    query.setParameter("zipCode",pZipCode);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+{
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_STATE_ZIP");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("zipCode",pZipCode);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+{
+    Query query=em.createNamedQuery("FIND_ZIP_WITH_STATE");
+    query.setHint("org.hibernate.cacheable",true);
+    query.setParameter("state",pState);
+    List<ZipCode> result=query.getResultList();
+    if (result.size() > 0) {
+      return result.get(0);
+    }
+  }
+  return null;
+}
