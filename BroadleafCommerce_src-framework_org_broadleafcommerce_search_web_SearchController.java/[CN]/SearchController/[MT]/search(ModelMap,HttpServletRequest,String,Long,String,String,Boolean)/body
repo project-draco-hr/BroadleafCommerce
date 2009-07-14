@@ -1,0 +1,40 @@
+{
+  SearchQuery input=new SearchQuery();
+  input.setQueryString(queryString);
+  List<Sku> skus=null;
+  skus=searchService.performSearch(input.getQueryString());
+  if (categoryId != null) {
+    for (Iterator<Sku> itr=skus.iterator(); itr.hasNext(); ) {
+      Sku sku=itr.next();
+      List<Product> parents=sku.getAllParentProducts();
+      boolean found=false;
+      for (      Product parent : parents) {
+        if (parent.getDefaultCategory().getId().equals(categoryId)) {
+          found=true;
+          break;
+        }
+      }
+      if (!found) {
+        itr.remove();
+      }
+    }
+  }
+  if (minPrice != null && maxPrice != null) {
+    Money minimumPrice=new Money(minPrice.replaceAll("[^0-9.]",""));
+    Money maximumPrice=new Money(maxPrice.replaceAll("[^0-9.]",""));
+    for (Iterator<Sku> itr=skus.iterator(); itr.hasNext(); ) {
+      Sku sku=itr.next();
+      if (sku.getSalePrice().lessThan(minimumPrice) || sku.getSalePrice().greaterThan(maximumPrice)) {
+        itr.remove();
+      }
+    }
+  }
+  model.addAttribute("queryString",input.getQueryString());
+  model.addAttribute("skus",skus);
+  if (ajax == null || !ajax.booleanValue()) {
+    return "search";
+  }
+ else {
+    return "searchAjax";
+  }
+}
