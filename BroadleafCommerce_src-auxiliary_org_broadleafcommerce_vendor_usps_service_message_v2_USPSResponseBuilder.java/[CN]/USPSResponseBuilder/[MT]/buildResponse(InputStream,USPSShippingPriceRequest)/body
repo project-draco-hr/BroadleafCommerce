@@ -50,7 +50,7 @@ catch (  IOException e) {
     }
     PostageV2Type[] postages=packageItem.getPostageArray();
     for (    PostageV2Type postage : postages) {
-      USPSShippingMethodType shippingMethod=USPSShippingMethodType.getInstanceByDescription(postage.getMailService());
+      USPSServiceResponseType shippingMethod=USPSServiceResponseType.getInstanceByDescription(postage.getMailService());
       if (shippingMethod == null) {
         LOG.warn("Unable to identify shipping method based on description: " + postage.getMailService() + ". Skipping this postage element.");
         continue;
