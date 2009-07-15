@@ -1,0 +1,11 @@
+{
+  SearchEngineIndexManager manager=compass.getSearchEngineIndexManager();
+  manager.createIndex();
+  CompassIndexSession session=compass.openIndexSession();
+  List<Product> products=catalogService.findAllProducts();
+  for (  Product product : products) {
+    session.save(product);
+  }
+  session.commit();
+  session.close();
+}

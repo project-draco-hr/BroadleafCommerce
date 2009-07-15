@@ -1,25 +1,24 @@
 {
   JspWriter out=getJspContext().getOut();
   Hashtable<Category,Integer> categories=new Hashtable<Category,Integer>();
-  if (skus == null) {
+  if (products == null || products.size() == 0) {
     return;
   }
   Money minPrice=null;
   Money maxPrice=null;
-  for (  Sku sku : skus) {
-    if (sku.getSalePrice() != null) {
-      minPrice=sku.getSalePrice().min(minPrice);
-      maxPrice=sku.getSalePrice().max(maxPrice);
+  for (  Product product : products) {
+    for (    Sku sku : product.getSkus()) {
+      if (sku.getSalePrice() != null) {
+        minPrice=sku.getSalePrice().min(minPrice);
+        maxPrice=sku.getSalePrice().max(maxPrice);
+      }
     }
-    List<Product> products=sku.getAllParentProducts();
-    for (    Product product : products) {
-      Integer integer=categories.get(product.getDefaultCategory());
-      if (integer == null) {
-        categories.put(product.getDefaultCategory(),new Integer(1));
-      }
+    Integer integer=categories.get(product.getDefaultCategory());
+    if (integer == null) {
+      categories.put(product.getDefaultCategory(),new Integer(1));
+    }
  else {
-        categories.put(product.getDefaultCategory(),new Integer(integer + 1));
-      }
+      categories.put(product.getDefaultCategory(),new Integer(integer + 1));
     }
   }
   out.println("<h3>Your Search</h3>");
