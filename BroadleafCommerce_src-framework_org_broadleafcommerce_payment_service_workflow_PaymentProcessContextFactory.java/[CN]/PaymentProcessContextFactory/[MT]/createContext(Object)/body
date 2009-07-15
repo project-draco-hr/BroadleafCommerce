@@ -6,7 +6,7 @@
   Map<PaymentInfo,Referenced> secureMap=paymentSeed.getInfos();
   if (secureMap == null) {
     secureMap=new HashMap<PaymentInfo,Referenced>();
-    List<PaymentInfo> paymentInfoList=orderService.readPaymentInfosForOrder(paymentSeed.getOrder());
+    List<PaymentInfo> paymentInfoList=cartService.readPaymentInfosForOrder(paymentSeed.getOrder());
     if (paymentInfoList == null || paymentInfoList.size() == 0) {
       throw new WorkflowException("No payment info instances associated with the order -- id: " + paymentSeed.getOrder().getId());
     }
