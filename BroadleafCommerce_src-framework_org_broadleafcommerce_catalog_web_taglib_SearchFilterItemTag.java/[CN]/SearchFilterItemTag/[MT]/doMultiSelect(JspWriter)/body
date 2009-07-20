@@ -1,0 +1,58 @@
+{
+  List<Product> products=((SearchFilterTag)getParent()).getProducts();
+  Class<Product> productClass=Product.class;
+  Method propertyMethod;
+  try {
+    propertyMethod=productClass.getMethod(getterName(property),(Class[])null);
+  }
+ catch (  NoSuchMethodException e1) {
+    throw new JspException(e1);
+  }
+  Class<?> propertyClass=propertyMethod.getReturnType();
+  HashMap<Object,Integer> countMap=new HashMap<Object,Integer>();
+  for (  Product product : products) {
+    Object propertyObject;
+    try {
+      propertyObject=propertyMethod.invoke(product,(Object[])null);
+    }
+ catch (    Exception e) {
+      throw new JspException("Invalid propertyValue",e);
+    }
+    Integer integer=countMap.get(propertyObject);
+    if (integer == null) {
+      countMap.put(propertyObject,new Integer(1));
+    }
+ else {
+      countMap.put(propertyObject,new Integer(integer + 1));
+    }
+  }
+  Method displayMethod=null;
+  Method valueMethod=null;
+  try {
+    displayMethod=propertyClass.getMethod(getterName(propertyDisplay),(Class[])null);
+  }
+ catch (  NoSuchMethodException e) {
+    throw new JspException("Invalid propertyDisplay",e);
+  }
+  try {
+    valueMethod=propertyClass.getMethod(getterName(propertyValue),(Class[])null);
+  }
+ catch (  NoSuchMethodException e) {
+    throw new JspException("Invalid propertyValue",e);
+  }
+  out.println("<ul class='searchFilter-" + property + "'>");
+  for (  Object propertyObject : countMap.keySet()) {
+    String display;
+    String value;
+    try {
+      display=displayMethod.invoke(propertyObject,(Object[])null).toString();
+      value=valueMethod.invoke(propertyObject,(Object[])null).toString();
+    }
+ catch (    Exception e) {
+      throw new JspException(e);
+    }
+    out.println("<li value='" + value + "'><input type='checkbox' class='searchFilter-"+ property+ "Checkbox' name='"+ property+ "' value='"+ value+ "'/> "+ display+ " <span class='searchFilter"+ property+ "-count'>("+ countMap.get(propertyObject).toString()+ ")</span></li>");
+  }
+  out.println("</ul>");
+  out.println("<script>" + " var " + property + "Checked = 0;\r\n"+ "    \r\n"+ "    $('.searchFilter-"+ property+ " li').click(function() {\r\n"+ "        var value = $(this).attr('value');\r\n"+ "        var checkbox = $('.searchFilter-"+ property+ "Checkbox[value=\"'+value+'\"]');\r\n"+ "        if ("+ property+ "Checked == 0) {\r\n"+ "            $('.searchFilter-"+ property+ " li').each(function(){$(this).addClass('searchFilterDisabledSelect')});\r\n"+ "            $(this).removeClass('searchFilterDisabledSelect');\r\n"+ "            checkbox.attr('checked',true);\r\n"+ "            "+ property+ "Checked++;\r\n"+ "        } else if (checkbox.attr('checked') == true) {\r\n"+ "            $(this).addClass('searchFilterDisabledSelect');\r\n"+ "            if ("+ property+ "Checked == 1) {\r\n"+ "                // unchecking the only checked category, so reactivate all categories\r\n"+ "                $('.searchFilter-defaultCategory li').each(function(){$(this).removeClass('searchFilterDisabledSelect')});\r\n"+ "            } \r\n"+ "            checkbox.attr('checked',false);\r\n"+ "            "+ property+ "Checked--;\r\n"+ "        } else {\r\n"+ "            $(this).removeClass('searchFilterDisabledSelect');\r\n"+ "            checkbox.attr('checked',true);\r\n"+ "            "+ property+ "Checked++;\r\n"+ "        }\r\n"+ "        updateSearchFilterResults();\r\n"+ "    } );"+ "</script>");
+}
