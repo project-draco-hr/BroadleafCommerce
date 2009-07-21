@@ -1,12 +1,3 @@
 {
-  for (  PaymentInfo paymentInfo : order.getPaymentInfos()) {
-    try {
-      securePaymentInfoService.findAndRemoveSecurePaymentInfo(paymentInfo.getReferenceNumber(),paymentInfo.getType());
-    }
- catch (    WorkflowException e) {
-      LOG.debug("No secure payment is associated with the PaymentInfo",e);
-    }
-    paymentInfoDao.delete(paymentInfo);
-  }
-  order.getPaymentInfos().clear();
+  removePaymentsFromOrder(order,null);
 }
