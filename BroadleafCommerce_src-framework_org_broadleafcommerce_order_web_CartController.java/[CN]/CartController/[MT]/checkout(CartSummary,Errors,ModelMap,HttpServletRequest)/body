@@ -1,0 +1,6 @@
+{
+  Order currentCartOrder=retrieveCartOrder(request,model);
+  currentCartOrder.getFulfillmentGroups().set(0,cartSummary.getFulfillmentGroups().get(0));
+  cartService.save(currentCartOrder,true);
+  return "redirect:/checkout/checkout.htm";
+}
