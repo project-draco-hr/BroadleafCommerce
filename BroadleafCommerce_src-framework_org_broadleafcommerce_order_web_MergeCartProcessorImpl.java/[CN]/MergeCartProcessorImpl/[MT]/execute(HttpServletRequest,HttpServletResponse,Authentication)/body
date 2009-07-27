@@ -16,10 +16,5 @@
  catch (  PricingException e) {
     throw new RuntimeException(e);
   }
-  if (!mergeCartResponse.getAddedItems().isEmpty()) {
-    request.getSession().setAttribute(mergeCartItemsAddedKey,mergeCartResponse.getAddedItems());
-  }
-  if (!mergeCartResponse.getRemovedItems().isEmpty()) {
-    request.getSession().setAttribute(mergeCartItemsRemovedKey,mergeCartResponse.getRemovedItems());
-  }
+  request.getSession().setAttribute(mergeCartResponseKey,mergeCartResponse);
 }
