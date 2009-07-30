@@ -15,7 +15,12 @@
       view=categoryTemplatePrefix + currentCategory.getDisplayTemplate();
     }
  else {
-      view=defaultCategoryView;
+      if ("true".equals(request.getParameter("ajax"))) {
+        view="catalog/categoryView/mainContentFragment";
+      }
+ else {
+        view=defaultCategoryView;
+      }
     }
   }
   return new ModelAndView(view,model);
