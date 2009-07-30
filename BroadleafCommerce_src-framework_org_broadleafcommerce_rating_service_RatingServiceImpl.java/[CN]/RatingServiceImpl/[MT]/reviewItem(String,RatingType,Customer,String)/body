@@ -1,0 +1,9 @@
+{
+  RatingSummary ratingSummary=this.readRatingSummary(itemId,type);
+  if (ratingSummary == null) {
+    ratingSummary=new RatingSummaryImpl(itemId,type);
+  }
+  ReviewDetail reviewDetail=new ReviewDetailImpl(customer,new Date(),reviewText,ratingSummary);
+  ratingSummary.getReviews().add(reviewDetail);
+  ratingSummaryDao.saveRatingSummary(ratingSummary);
+}
