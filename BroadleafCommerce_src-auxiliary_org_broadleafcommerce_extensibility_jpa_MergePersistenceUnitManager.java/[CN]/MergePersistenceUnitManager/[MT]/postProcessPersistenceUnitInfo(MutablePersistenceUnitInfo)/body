@@ -1,31 +1,30 @@
 {
   super.postProcessPersistenceUnitInfo(newPU);
-  if (validPersistenceUnitNames == null) {
-    throw new IllegalArgumentException("validPersistenceUnitNames must be set");
-  }
+  newPU.addJarFileUrl(newPU.getPersistenceUnitRootUrl());
   String persistenceUnitName=newPU.getPersistenceUnitName();
-  if (validPersistenceUnitNames.contains(persistenceUnitName)) {
-    final URL persistenceUnitRootUrl=newPU.getPersistenceUnitRootUrl();
-    if (!masterPU.getJarFileUrls().contains(persistenceUnitRootUrl)) {
-      masterPU.addJarFileUrl(persistenceUnitRootUrl);
-    }
-    List<URL> urls=newPU.getJarFileUrls();
-    for (    URL url : urls) {
-      if (!masterPU.getJarFileUrls().contains(url)) {
-        masterPU.addJarFileUrl(url);
-      }
-    }
-    List<String> managedClassNames=newPU.getManagedClassNames();
-    for (    String managedClassName : managedClassNames) {
-      if (!masterPU.getManagedClassNames().contains(managedClassName)) {
-        masterPU.addManagedClassName(managedClassName);
-      }
-    }
-    List<String> mappingFileNames=newPU.getMappingFileNames();
-    for (    String mappingFileName : mappingFileNames) {
-      if (!masterPU.getMappingFileNames().contains(mappingFileName)) {
-        masterPU.addMappingFileName(mappingFileName);
-      }
+  MutablePersistenceUnitInfo temp=getMergedUnit(persistenceUnitName,newPU);
+  final URL persistenceUnitRootUrl=newPU.getPersistenceUnitRootUrl();
+  temp.setPersistenceUnitRootUrl(persistenceUnitRootUrl);
+  List<String> managedClassNames=newPU.getManagedClassNames();
+  for (  String managedClassName : managedClassNames) {
+    if (!temp.getManagedClassNames().contains(managedClassName)) {
+      temp.addManagedClassName(managedClassName);
     }
   }
+  List<String> mappingFileNames=newPU.getMappingFileNames();
+  for (  String mappingFileName : mappingFileNames) {
+    if (!temp.getMappingFileNames().contains(mappingFileName)) {
+      temp.addMappingFileName(mappingFileName);
+    }
+  }
+  temp.setExcludeUnlistedClasses(newPU.excludeUnlistedClasses());
+  for (  URL url : newPU.getJarFileUrls()) {
+    if (!temp.getJarFileUrls().contains(url)) {
+      temp.addJarFileUrl(url);
+    }
+  }
+  temp.setJtaDataSource(newPU.getJtaDataSource());
+  temp.setNonJtaDataSource(newPU.getNonJtaDataSource());
+  temp.setProperties(newPU.getProperties());
+  temp.setTransactionType(newPU.getTransactionType());
 }
