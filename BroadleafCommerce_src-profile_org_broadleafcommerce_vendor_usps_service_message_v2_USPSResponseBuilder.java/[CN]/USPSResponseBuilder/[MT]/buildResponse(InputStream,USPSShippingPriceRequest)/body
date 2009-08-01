@@ -1,0 +1,64 @@
+{
+  USPSShippingPriceResponse shippingPriceResponse=new USPSShippingPriceResponse();
+  RateV2ResponseDocument doc;
+  String xml=null;
+  try {
+    xml=generateXml(hostInput);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Host Response: " + xml);
+    }
+    doc=RateV2ResponseDocument.Factory.parse(xml);
+  }
+ catch (  XmlException e) {
+    if (xml != null) {
+      try {
+        ErrorDocument error=ErrorDocument.Factory.parse(xml);
+        ErrorV2Type errorType=error.getError();
+        shippingPriceResponse.setErrorDetected(true);
+        shippingPriceResponse.setErrorCode(String.valueOf(errorType.getNumber()));
+        shippingPriceResponse.setErrorText(errorType.getDescription());
+        return shippingPriceResponse;
+      }
+ catch (      XmlException e1) {
+        throw new RuntimeException(e);
+      }
+    }
+ else {
+      throw new RuntimeException(e);
+    }
+  }
+catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+  RateV2ResponseType responseType=doc.getRateV2Response();
+  ResponsePackageV2Type[] packages=responseType.getPackageArray();
+  for (  ResponsePackageV2Type packageItem : packages) {
+    String id=packageItem.getID();
+    USPSContainerItem key=new USPSContainerItem();
+    key.setPackageId(id);
+    USPSContainerItem originalItem=(USPSContainerItem)request.getContainerItems().get(request.getContainerItems().indexOf(key));
+    shippingPriceResponse.getResponses().push(originalItem);
+    if (packageItem.getError() != null) {
+      shippingPriceResponse.setErrorDetected(true);
+      originalItem.setErrorDetected(true);
+      originalItem.setErrorCode(packageItem.getError().getSource());
+      originalItem.setErrorText(packageItem.getError().getDescription());
+    }
+    originalItem.setZone(packageItem.getZone());
+    if (packageItem.xgetRestrictions() != null) {
+      originalItem.setRestrictions(packageItem.getRestrictions());
+    }
+    PostageV2Type[] postages=packageItem.getPostageArray();
+    for (    PostageV2Type postage : postages) {
+      USPSServiceResponseType shippingMethod=USPSServiceResponseType.getInstanceByDescription(postage.getMailService());
+      if (shippingMethod == null) {
+        LOG.warn("Unable to identify shipping method based on description: " + postage.getMailService() + ". Skipping this postage element.");
+        continue;
+      }
+      USPSPostage uspsPostage=new USPSPostage();
+      uspsPostage.setRate(new Money(postage.getRate()));
+      originalItem.getPostage().put(shippingMethod,uspsPostage);
+    }
+  }
+  return shippingPriceResponse;
+}

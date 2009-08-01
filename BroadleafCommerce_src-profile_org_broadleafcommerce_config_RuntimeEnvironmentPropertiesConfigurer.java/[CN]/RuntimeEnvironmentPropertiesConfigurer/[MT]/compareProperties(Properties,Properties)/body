@@ -1,0 +1,12 @@
+{
+  Set<Object> outerKeys=props1.keySet();
+  boolean missingKeys=false;
+  for (  Object keyObj : outerKeys) {
+    String key=(String)keyObj;
+    if (!props2.containsKey(key)) {
+      missingKeys=true;
+      LOG.error("Property file mismatch: " + key + " missing");
+    }
+  }
+  return missingKeys;
+}

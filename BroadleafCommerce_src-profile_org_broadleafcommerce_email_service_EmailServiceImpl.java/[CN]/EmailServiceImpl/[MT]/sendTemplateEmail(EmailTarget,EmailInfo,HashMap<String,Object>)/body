@@ -1,0 +1,13 @@
+{
+  if (props == null) {
+    props=new HashMap<String,Object>();
+  }
+  if (emailInfo == null) {
+    emailInfo=new EmailInfo();
+  }
+  props.put(EmailPropertyType.INFO.getType(),emailInfo);
+  props.put(EmailPropertyType.USER.getType(),emailTarget);
+  Long emailId=emailTrackingManager.createTrackedEmail(emailTarget.getEmailAddress(),emailInfo.getEmailType(),null);
+  props.put("emailTrackingId",emailId);
+  return sendBasicEmail(emailInfo,emailTarget,props);
+}

@@ -1,0 +1,24 @@
+{
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  boolean eof=false;
+  try {
+    while (!eof) {
+      int temp=source.read();
+      if (temp == -1) {
+        eof=true;
+      }
+ else {
+        baos.write(temp);
+      }
+    }
+  }
+  finally {
+    try {
+      source.close();
+    }
+ catch (    Throwable e) {
+      LOG.error("Unable to merge source and patch locations",e);
+    }
+  }
+  return baos.toByteArray();
+}

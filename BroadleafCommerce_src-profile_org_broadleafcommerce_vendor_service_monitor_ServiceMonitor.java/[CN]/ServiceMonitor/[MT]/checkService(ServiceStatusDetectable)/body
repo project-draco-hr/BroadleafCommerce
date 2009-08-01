@@ -1,0 +1,13 @@
+{
+  ServiceStatusType type=statusDetectable.getServiceStatus();
+  if (!statusMap.containsKey(statusDetectable)) {
+    statusMap.put(statusDetectable,type);
+    if (type.equals(ServiceStatusType.DOWN)) {
+      handleStatusChange(statusDetectable,type);
+    }
+  }
+  if (!statusMap.get(statusDetectable).equals(type)) {
+    handleStatusChange(statusDetectable,type);
+    statusMap.put(statusDetectable,type);
+  }
+}

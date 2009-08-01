@@ -1,0 +1,52 @@
+{
+  Resource[] configResources=null;
+  InputStream merged=null;
+  try {
+    merged=merge(sources);
+    byte[] mergedArray=buildArrayFromStream(merged);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Merged Stage1 Sources: \n" + serialize(new ByteArrayInputStream(mergedArray)));
+    }
+    if (patches != null) {
+      InputStream[] patches2=new InputStream[patches.length + 1];
+      patches2[0]=new ByteArrayInputStream(mergedArray);
+      System.arraycopy(patches,0,patches2,1,patches.length);
+      merged=merge(patches2);
+    }
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    boolean eof=false;
+    while (!eof) {
+      int temp=merged.read();
+      if (temp == -1) {
+        eof=true;
+      }
+ else {
+        baos.write(temp);
+      }
+    }
+    configResources=new Resource[]{new ByteArrayResource(baos.toByteArray())};
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Merged ApplicationContext Including Patches: \n" + serialize(configResources[0]));
+    }
+  }
+ catch (  MergeException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  MergeManagerSetupException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+catch (  IOException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
+ finally {
+    if (merged != null) {
+      try {
+        merged.close();
+      }
+ catch (      Throwable e) {
+        LOG.error("Unable to merge source and patch locations",e);
+      }
+    }
+  }
+  return configResources;
+}

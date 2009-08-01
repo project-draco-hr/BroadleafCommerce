@@ -1,0 +1,32 @@
+{
+  InputStreamReader reader=null;
+  int temp;
+  StringBuffer item=new StringBuffer();
+  boolean eof=false;
+  try {
+    reader=new InputStreamReader(in);
+    while (!eof) {
+      temp=reader.read();
+      if (temp == -1) {
+        eof=true;
+      }
+ else {
+        item.append((char)temp);
+      }
+    }
+  }
+ catch (  IOException e) {
+    LOG.error("Unable to merge source and patch locations",e);
+  }
+ finally {
+    if (reader != null) {
+      try {
+        reader.close();
+      }
+ catch (      Throwable e) {
+        LOG.error("Unable to merge source and patch locations",e);
+      }
+    }
+  }
+  return item.toString();
+}

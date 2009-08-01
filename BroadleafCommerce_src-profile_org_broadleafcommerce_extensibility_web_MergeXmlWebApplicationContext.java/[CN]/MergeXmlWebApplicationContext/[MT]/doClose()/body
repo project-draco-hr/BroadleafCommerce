@@ -1,0 +1,13 @@
+{
+  if (getShutdownBean() != null && getShutdownMethod() != null) {
+    try {
+      Object shutdownBean=getBean(getShutdownBean());
+      Method shutdownMethod=shutdownBean.getClass().getMethod(getShutdownMethod(),new Class[]{});
+      shutdownMethod.invoke(shutdownBean,new Object[]{});
+    }
+ catch (    Throwable e) {
+      LOG.error("Unable to execute custom shutdown call",e);
+    }
+  }
+  super.doClose();
+}

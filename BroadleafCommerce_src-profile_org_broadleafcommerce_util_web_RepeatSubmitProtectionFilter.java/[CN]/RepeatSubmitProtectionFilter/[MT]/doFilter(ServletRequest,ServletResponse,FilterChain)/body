@@ -1,0 +1,30 @@
+{
+  String sessionId;
+  String requestURI;
+synchronized (requests) {
+    sessionId=((HttpServletRequest)request).getSession().getId();
+    requestURI=((HttpServletRequest)request).getRequestURI();
+    if (requests.containsKey(sessionId) && requests.get(sessionId).contains(requestURI)) {
+      ((HttpServletResponse)response).setStatus(HttpServletResponse.SC_NO_CONTENT);
+      return;
+    }
+    List<String> myRequests=requests.get(sessionId);
+    if (myRequests == null) {
+      myRequests=new ArrayList<String>();
+      requests.put(sessionId,myRequests);
+    }
+    myRequests.add(requestURI);
+  }
+  try {
+    chain.doFilter(request,response);
+  }
+  finally {
+synchronized (requests) {
+      List<String> myRequests=requests.get(sessionId);
+      myRequests.remove(requestURI);
+      if (myRequests.isEmpty()) {
+        requests.remove(sessionId);
+      }
+    }
+  }
+}
