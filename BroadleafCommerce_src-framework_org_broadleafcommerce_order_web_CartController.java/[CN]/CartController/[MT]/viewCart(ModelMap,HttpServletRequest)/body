@@ -8,7 +8,18 @@
     cartOrderItem.setQuantity(orderItem.getQuantity());
     cartSummary.getRows().add(cartOrderItem);
   }
+  if ((cart.getFulfillmentGroups() != null) && (cart.getFulfillmentGroups().isEmpty() == false)) {
+    String cartShippingMethod=cart.getFulfillmentGroups().get(0).getMethod();
+    if (cartShippingMethod != null) {
+      if (cartShippingMethod.equals("standard")) {
+        cartSummary=createFulfillmentGroup(cartSummary,"standard",cart);
+      }
+ else       if (cartShippingMethod.equals("expedited")) {
+        cartSummary=createFulfillmentGroup(cartSummary,"expedited",cart);
+      }
+    }
+  }
+  updateFulfillmentGroups(cartSummary,cart);
   model.addAttribute("cartSummary",cartSummary);
-  model.addAttribute("fulfillmentGroups",createFulfillmentGroups());
   return cartViewRedirect ? "redirect:" + cartView : cartView;
 }
