@@ -1,6 +1,8 @@
 {
   model.addAttribute("stateList",stateService.findStates());
-  model.addAttribute("countryList",countryService.findCountries());
+  List<Country> countries=countryService.findCountries();
+  Collections.sort(countries,new ReverseComparator(new BeanComparator("abbreviation")));
+  model.addAttribute("countryList",countries);
   Customer currentCustomer=customerState.getCustomer(request);
   model.addAttribute("customer",currentCustomer);
   List<CustomerPhone> customerPhones=customerPhoneService.readAllCustomerPhonesByCustomerId(currentCustomer.getId());
