@@ -1,0 +1,9 @@
+{
+  CodeType newCodeType=codeTypeService.save(codeType);
+  CodeType codeTypeFromDB=codeTypeService.lookupCodeTypeByKey(codeType.getKey());
+  assert(newCodeType.getId() == codeTypeFromDB.getId());
+  assert(codeType.getKey() == codeTypeFromDB.getKey());
+  assert(codeType.getCodeType().equals(codeTypeFromDB.getCodeType()));
+  assert(codeType.getDescription().equals(codeTypeFromDB.getDescription()));
+  assert(codeType.getModifyable() == codeTypeFromDB.getModifyable());
+}
