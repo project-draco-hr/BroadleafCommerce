@@ -1,6 +1,10 @@
 {
   SearchQuery input=new SearchQuery();
   input.setQueryString(queryString);
+  SearchIntercept intercept=searchService.getInterceptForTerm(queryString);
+  if (intercept != null) {
+    return "redirect:" + intercept.getRedirect();
+  }
   List<Product> products=null;
   products=searchService.performSearch(input.getQueryString());
   SearchFilterUtil.filterProducts(products,request.getParameterMap(),new String[]{"manufacturer","defaultCategory.id","skus[0].salePrice"});
