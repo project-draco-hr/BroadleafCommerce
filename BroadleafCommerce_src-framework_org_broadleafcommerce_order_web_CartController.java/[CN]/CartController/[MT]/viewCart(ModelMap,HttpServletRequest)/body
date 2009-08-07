@@ -1,12 +1,13 @@
 {
-  LOG.debug("Processing View Cart!");
   Order cart=retrieveCartOrder(request,model);
   CartSummary cartSummary=new CartSummary();
-  for (  OrderItem orderItem : cart.getOrderItems()) {
-    CartOrderItem cartOrderItem=new CartOrderItem();
-    cartOrderItem.setOrderItem(orderItem);
-    cartOrderItem.setQuantity(orderItem.getQuantity());
-    cartSummary.getRows().add(cartOrderItem);
+  if (cart.getOrderItems() != null) {
+    for (    OrderItem orderItem : cart.getOrderItems()) {
+      CartOrderItem cartOrderItem=new CartOrderItem();
+      cartOrderItem.setOrderItem(orderItem);
+      cartOrderItem.setQuantity(orderItem.getQuantity());
+      cartSummary.getRows().add(cartOrderItem);
+    }
   }
   if ((cart.getFulfillmentGroups() != null) && (cart.getFulfillmentGroups().isEmpty() == false)) {
     String cartShippingMethod=cart.getFulfillmentGroups().get(0).getMethod();
@@ -20,6 +21,7 @@
     }
   }
   updateFulfillmentGroups(cartSummary,cart);
+  cartSummary.setOrderDiscounts(getOrderDiscounts(cart));
   model.addAttribute("cartSummary",cartSummary);
   return cartViewRedirect ? "redirect:" + cartView : cartView;
 }
