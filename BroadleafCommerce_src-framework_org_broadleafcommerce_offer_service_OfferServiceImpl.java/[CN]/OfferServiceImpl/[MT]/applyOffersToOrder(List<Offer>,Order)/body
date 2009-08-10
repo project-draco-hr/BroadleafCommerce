@@ -8,7 +8,7 @@
  else {
     List<CandidateOrderOffer> qualifiedOrderOffers=new ArrayList<CandidateOrderOffer>();
     List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
-    order.setSubTotal(order.calculateOrderItemsCurrentPrice());
+    order.setSubTotal(order.calculateOrderItemsCurrentPrice(false));
     List<DiscreteOrderItem> discreteOrderItems=order.getDiscountableDiscreteOrderItems();
     for (    Offer offer : filteredOffers) {
       if (offer.getType().equals(OfferType.ORDER)) {
@@ -62,7 +62,7 @@
         notCombinableOrderOfferApplied=applyAllOrderOffers(qualifiedOrderOffers,order);
       }
       if ((notCombinableItemOfferApplied != null) && (notCombinableOrderOfferApplied != null)) {
-        if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice())) {
+        if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice(true))) {
           order.removeAllOrderAdjustments();
           qualifiedOrderOffers=removeOfferFromCandidateOrderOffers(qualifiedOrderOffers,notCombinableOrderOfferApplied);
           notCombinableOrderOfferApplied=null;
@@ -80,7 +80,7 @@
         }
       }
       if ((notCombinableItemOfferApplied != null) && (!qualifiedOrderOffers.isEmpty())) {
-        if (order.getAdjustmentPrice().greaterThan(order.calculateOrderItemsCurrentPrice())) {
+        if (order.getAdjustmentPrice().greaterThan(order.calculateOrderItemsCurrentPrice(true))) {
           order.removeAllOrderAdjustments();
           qualifiedOrderOffers.clear();
         }
@@ -94,7 +94,7 @@
         }
       }
       if ((notCombinableOrderOfferApplied != null) && (!qualifiedItemOffers.isEmpty())) {
-        if (order.getAdjustmentPrice().lessThan(order.calculateOrderItemsCurrentPrice())) {
+        if (order.getAdjustmentPrice().lessThan(order.calculateOrderItemsCurrentPrice(true))) {
           order.removeAllItemAdjustments();
           qualifiedItemOffers.clear();
         }

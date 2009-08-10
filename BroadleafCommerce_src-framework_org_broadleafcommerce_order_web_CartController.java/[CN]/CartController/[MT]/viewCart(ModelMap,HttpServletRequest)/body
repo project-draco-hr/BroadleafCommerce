@@ -39,7 +39,7 @@
     }
   }
   updateFulfillmentGroups(cartSummary,cart);
-  cartSummary.setOrderDiscounts(cart.getOrderDiscounts());
+  cartSummary.setOrderDiscounts(cart.getTotalAdjustmentsValue().getAmount());
   model.addAttribute("cartSummary",cartSummary);
   return cartViewRedirect ? "redirect:" + cartView : cartView;
 }
