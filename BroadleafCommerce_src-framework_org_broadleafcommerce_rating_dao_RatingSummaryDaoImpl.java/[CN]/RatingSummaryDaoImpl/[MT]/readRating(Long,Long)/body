@@ -2,6 +2,11 @@
   Query query=em.createNamedQuery("BC_READ_RATING_DETAIL_BY_CUSTOMER_ID_AND_RATING_SUMMARY_ID");
   query.setParameter("customerId",customerId);
   query.setParameter("ratingSummaryId",ratingSummaryId);
-  RatingDetail ratingDetail=(RatingDetail)query.getSingleResult();
+  RatingDetail ratingDetail=null;
+  try {
+    ratingDetail=(RatingDetail)query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+  }
   return ratingDetail;
 }

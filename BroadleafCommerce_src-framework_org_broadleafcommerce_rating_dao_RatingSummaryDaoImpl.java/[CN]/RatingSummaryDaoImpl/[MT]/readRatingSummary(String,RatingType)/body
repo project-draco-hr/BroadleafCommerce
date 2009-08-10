@@ -2,6 +2,11 @@
   Query query=em.createNamedQuery("BC_READ_RATING_SUMMARY_BY_ITEM_ID_AND_TYPE");
   query.setParameter("itemId",itemId);
   query.setParameter("ratingType",type.getType());
-  RatingSummary ratingSummary=(RatingSummary)query.getSingleResult();
+  RatingSummary ratingSummary=null;
+  try {
+    ratingSummary=(RatingSummary)query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+  }
   return ratingSummary;
 }
