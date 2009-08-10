@@ -7,7 +7,7 @@
       List<Offer> offers=offerService.buildOfferListForOrder(currentCartOrder);
       offerService.applyOffersToOrder(offers,currentCartOrder);
       currentCartOrder=updateFulfillmentGroups(cartSummary,currentCartOrder);
-      cartSummary.setOrderDiscounts(getOrderDiscounts(currentCartOrder));
+      cartSummary.setOrderDiscounts(currentCartOrder.getOrderDiscounts());
     }
  else {
       model.addAttribute("promoError","Invalid promo code entered.");
