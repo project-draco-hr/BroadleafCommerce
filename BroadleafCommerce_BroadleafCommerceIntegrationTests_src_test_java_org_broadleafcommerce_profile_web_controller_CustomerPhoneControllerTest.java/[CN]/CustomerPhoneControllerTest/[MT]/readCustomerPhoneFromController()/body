@@ -1,0 +1,9 @@
+{
+  List<CustomerPhone> phones_1=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
+  int phones_1_size=phones_1.size();
+  request=this.getNewServletInstance();
+  String view=customerPhoneController.deletePhone(createdCustomerPhoneIds.get(0),request);
+  assert(view.indexOf("viewPhone") >= 0);
+  List<CustomerPhone> phones_2=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
+  assert((phones_1_size - phones_2.size()) == 1);
+}

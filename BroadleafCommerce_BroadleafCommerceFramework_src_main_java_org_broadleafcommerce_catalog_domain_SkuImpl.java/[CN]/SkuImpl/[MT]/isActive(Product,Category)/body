@@ -1,0 +1,14 @@
+{
+  if (LOG.isDebugEnabled()) {
+    if (!DateUtil.isActive(getActiveStartDate(),getActiveEndDate(),false)) {
+      LOG.debug("sku, " + id + ", inactive due to date");
+    }
+ else     if (!product.isActive()) {
+      LOG.debug("sku, " + id + ", inactive due to product being inactive");
+    }
+ else     if (!category.isActive()) {
+      LOG.debug("sku, " + id + ", inactive due to category being inactive");
+    }
+  }
+  return DateUtil.isActive(getActiveStartDate(),getActiveEndDate(),false) || !product.isActive() || !category.isActive();
+}

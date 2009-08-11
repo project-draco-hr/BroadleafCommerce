@@ -1,0 +1,19 @@
+{
+  boolean categoryError=false;
+  while (categoryList == null) {
+    categoryError=true;
+    int pos=url.indexOf("/");
+    if (pos == -1) {
+      categoryList=new ArrayList<Category>();
+      categoryList.add(rootCategory);
+    }
+ else {
+      url=url.substring(0,url.lastIndexOf("/"));
+      categoryList=rootCategory.getChildCategoryURLMap().get(url);
+    }
+  }
+  model.addAttribute("breadcrumbCategories",categoryList);
+  model.addAttribute("currentCategory",categoryList.get(categoryList.size() - 1));
+  model.addAttribute("categoryError",categoryError);
+  return categoryError;
+}

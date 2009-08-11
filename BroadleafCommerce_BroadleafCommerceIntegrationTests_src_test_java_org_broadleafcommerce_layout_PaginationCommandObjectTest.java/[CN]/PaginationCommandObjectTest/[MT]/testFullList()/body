@@ -1,0 +1,21 @@
+{
+  PaginationCommandObject pco=new PaginationCommandObject();
+  List<Integer> tmp=new LinkedList<Integer>();
+  for (int i=0; i < 60; i++) {
+    tmp.add(new Integer(i));
+  }
+  pco.setFullList(tmp);
+  pco.setPageSize(25);
+  pco.setPageNumber(1);
+  List<Integer> dl=(List<Integer>)pco.getDisplayList();
+  Integer index3=dl.get(3);
+  Integer index13=dl.get(13);
+  assert(dl.size() == 25);
+  assert(index3.intValue() == 28);
+  assert(index13.intValue() == 38);
+  pco.setPageNumber(2);
+  dl=(List<Integer>)pco.getDisplayList();
+  index3=dl.get(3);
+  assert(dl.size() == 10);
+  assert(index3.intValue() == 53);
+}

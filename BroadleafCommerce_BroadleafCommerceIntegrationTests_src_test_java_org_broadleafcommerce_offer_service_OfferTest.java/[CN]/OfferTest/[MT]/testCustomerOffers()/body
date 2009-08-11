@@ -1,0 +1,10 @@
+{
+  Order order=cartService.createNewCartForCustomer(createCustomer());
+  Offer offer=createOffer("1.20 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,1.20,null,null,true,true,10);
+  CustomerOffer customerOffer=new CustomerOfferImpl();
+  customerOffer.setCustomer(order.getCustomer());
+  customerOffer.setOffer(offer);
+  customerOffer=customerOfferDao.save(customerOffer);
+  CustomerOffer customerOfferTest=customerOfferDao.readCustomerOfferById(customerOffer.getId());
+  assert(customerOffer.getId().equals(customerOfferTest.getId()));
+}

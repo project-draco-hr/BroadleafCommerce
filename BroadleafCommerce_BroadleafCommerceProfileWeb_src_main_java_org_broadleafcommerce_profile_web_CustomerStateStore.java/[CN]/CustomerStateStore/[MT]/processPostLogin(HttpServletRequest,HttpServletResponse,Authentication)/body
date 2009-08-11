@@ -1,0 +1,5 @@
+{
+  Customer customer=customerService.readCustomerByUsername((String)authResult.getPrincipal());
+  CookieUtils.setCookieValue(response,CookieUtils.CUSTOMER_COOKIE_NAME,customer.getId() + "","/",604800);
+  customerState.setCustomer(customer,request);
+}

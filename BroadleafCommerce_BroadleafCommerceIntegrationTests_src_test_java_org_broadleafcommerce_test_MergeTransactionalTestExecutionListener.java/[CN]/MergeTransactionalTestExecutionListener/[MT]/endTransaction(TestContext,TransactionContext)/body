@@ -1,0 +1,10 @@
+{
+  boolean rollback=isRollback(testContext);
+  if (logger.isTraceEnabled()) {
+    logger.trace("Ending transaction for test context [" + testContext + "]; transaction manager ["+ txContext.transactionStatus+ "]; rollback ["+ rollback+ "]");
+  }
+  txContext.endTransaction(rollback);
+  if (logger.isInfoEnabled()) {
+    logger.info((rollback ? "Rolled back" : "Committed") + " transaction after test execution for test context [" + testContext+ "]");
+  }
+}

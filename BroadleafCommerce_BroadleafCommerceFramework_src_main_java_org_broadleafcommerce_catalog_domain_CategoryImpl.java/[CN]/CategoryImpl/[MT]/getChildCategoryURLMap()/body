@@ -1,0 +1,12 @@
+{
+  if (cachedChildCategoryUrlMap.isEmpty()) {
+synchronized (cachedChildCategoryUrlMap) {
+      if (cachedChildCategoryUrlMap.isEmpty()) {
+        Map<String,List<Category>> newMap=new HashMap<String,List<Category>>();
+        fillInURLMapForCategory(newMap,this,"",new ArrayList<Category>());
+        cachedChildCategoryUrlMap=newMap;
+      }
+    }
+  }
+  return cachedChildCategoryUrlMap;
+}

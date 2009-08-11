@@ -1,0 +1,15 @@
+{
+  catalogService=super.getCatalogService();
+  Category c=catalogService.findCategoryById(categoryId);
+  if (c == null) {
+    getJspContext().setAttribute(var,null);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("The category returned was null for categoryId: " + categoryId);
+    }
+  }
+  List<Product> productList=catalogService.findActiveProductsByCategory(c);
+  if (CollectionUtils.isEmpty(productList) && LOG.isDebugEnabled()) {
+    LOG.debug("The productList returned was null for categoryId: " + categoryId);
+  }
+  getJspContext().setAttribute(var,productList);
+}

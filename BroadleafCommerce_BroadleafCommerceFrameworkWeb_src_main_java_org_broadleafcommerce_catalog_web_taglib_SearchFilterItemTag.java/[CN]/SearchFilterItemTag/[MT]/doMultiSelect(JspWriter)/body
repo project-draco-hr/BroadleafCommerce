@@ -1,0 +1,33 @@
+{
+  List<Product> products=((SearchFilterTag)getParent()).getProducts();
+  BeanToPropertyValueTransformer valueTransformer=new BeanToPropertyValueTransformer(property,true);
+  BeanToPropertyValueTransformer displayTransformer;
+  if (propertyDisplay != null) {
+    displayTransformer=new BeanToPropertyValueTransformer(propertyDisplay,true);
+  }
+ else {
+    displayTransformer=valueTransformer;
+  }
+  HashMap<Object,Integer> countMap=new HashMap<Object,Integer>();
+  HashMap<Object,Object> valueDisplayMap=new HashMap<Object,Object>();
+  for (  Product product : products) {
+    Object value=valueTransformer.transform(product);
+    Object display=displayTransformer.transform(product);
+    valueDisplayMap.put(value,display);
+    Integer integer=countMap.get(value);
+    if (integer == null) {
+      countMap.put(value,new Integer(1));
+    }
+ else {
+      countMap.put(value,new Integer(integer + 1));
+    }
+  }
+  String propertyCss=property.replaceAll("[\\.\\[\\]]","_");
+  out.println("<ul class='searchFilter-" + propertyCss + "'>");
+  for (  Object value : countMap.keySet()) {
+    Object display=valueDisplayMap.get(value);
+    out.println("<li value='" + value + "'><input type='checkbox' class='searchFilter-"+ propertyCss+ "Checkbox' name='"+ property+ "' value='"+ value+ "'/> "+ display+ " <span class='searchFilter"+ propertyCss+ "-count'>("+ countMap.get(value).toString()+ ")</span></li>");
+  }
+  out.println("</ul>");
+  out.println("<script>" + " var " + propertyCss + "Checked = 0;\r\n"+ "    \r\n"+ "    $('.searchFilter-"+ propertyCss+ " li').click(function() {\r\n"+ "        var value = $(this).attr('value');\r\n"+ "        var checkbox = $(this).find(':checkbox');\r\n"+ "        if ("+ propertyCss+ "Checked == 0) {\r\n"+ "            $('.searchFilter-"+ propertyCss+ " li').each(function(){$(this).addClass('searchFilterDisabledSelect')});\r\n"+ "            $(this).removeClass('searchFilterDisabledSelect');\r\n"+ "            checkbox.attr('checked',true);\r\n"+ "            "+ propertyCss+ "Checked++;\r\n"+ "        } else if (checkbox.attr('checked') == true) {\r\n"+ "            $(this).addClass('searchFilterDisabledSelect');\r\n"+ "            if ("+ propertyCss+ "Checked == 1) {\r\n"+ "                // unchecking the only checked category, so reactivate all categories\r\n"+ "                $('.searchFilter-"+ propertyCss+ " li').each(function(){$(this).removeClass('searchFilterDisabledSelect')});\r\n"+ "            } \r\n"+ "            checkbox.attr('checked',false);\r\n"+ "            "+ propertyCss+ "Checked--;\r\n"+ "        } else {\r\n"+ "            $(this).removeClass('searchFilterDisabledSelect');\r\n"+ "            checkbox.attr('checked',true);\r\n"+ "            "+ propertyCss+ "Checked++;\r\n"+ "        }\r\n"+ "        updateSearchFilterResults();\r\n"+ "    } );"+ "</script>");
+}

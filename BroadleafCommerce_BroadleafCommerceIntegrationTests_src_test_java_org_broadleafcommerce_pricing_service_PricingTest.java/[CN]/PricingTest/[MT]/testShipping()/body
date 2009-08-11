@@ -1,0 +1,39 @@
+{
+  Order order=orderDao.create();
+  order.setCustomer(createCustomer());
+  FulfillmentGroup group1=new FulfillmentGroupImpl();
+  FulfillmentGroup group2=new FulfillmentGroupImpl();
+  group1.setMethod("standard");
+  Address address=new AddressImpl();
+  State state=new StateImpl();
+  state.setAbbreviation("hi");
+  address.setState(state);
+  group1.setAddress(address);
+  group2.setMethod("truck");
+  List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
+  groups.add(group1);
+  order.setFulfillmentGroups(groups);
+  Money total=new Money(5D);
+  group1.setShippingPrice(total);
+  group2.setShippingPrice(total);
+  order.setSubTotal(total);
+  order.setTotal(total);
+  OrderItem item=new DiscreteOrderItemImpl();
+  item.setPrice(new Money(10D));
+  item.setRetailPrice(new Money(15D));
+  item.setQuantity(1);
+  List<OrderItem> items=new ArrayList<OrderItem>();
+  items.add(item);
+  order.setOrderItems(items);
+  for (  OrderItem orderItem : items) {
+    FulfillmentGroupItem fgi=new FulfillmentGroupItemImpl();
+    fgi.setOrderItem(orderItem);
+    fgi.setRetailPrice(new Money(15D));
+    group1.addFulfillmentGroupItem(fgi);
+  }
+  order.setTotalShipping(new Money(0D));
+  order=pricingService.executePricing(order);
+  assert(order.getTotal().greaterThan(order.getSubTotal()));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D).add(group1.getShippingPrice().multiply(0.05D))));
+  assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax().add(order.getTotalShipping()))));
+}

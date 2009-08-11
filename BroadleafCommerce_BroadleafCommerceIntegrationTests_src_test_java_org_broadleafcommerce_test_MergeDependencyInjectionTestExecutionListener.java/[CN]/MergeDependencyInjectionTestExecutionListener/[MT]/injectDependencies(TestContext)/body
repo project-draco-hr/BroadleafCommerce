@@ -1,0 +1,8 @@
+{
+  MergeClassPathXMLApplicationContext context=BaseTest.getContext();
+  Object bean=testContext.getTestInstance();
+  AutowireCapableBeanFactory beanFactory=context.getAutowireCapableBeanFactory();
+  beanFactory.autowireBeanProperties(bean,AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT,true);
+  beanFactory.initializeBean(bean,testContext.getTestClass().getName());
+  testContext.removeAttribute(REINJECT_DEPENDENCIES_ATTRIBUTE);
+}

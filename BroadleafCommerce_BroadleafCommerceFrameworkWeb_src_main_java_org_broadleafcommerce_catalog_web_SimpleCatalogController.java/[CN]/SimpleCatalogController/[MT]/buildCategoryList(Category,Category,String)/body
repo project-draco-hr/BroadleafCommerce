@@ -1,0 +1,12 @@
+{
+  List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(url);
+  if (categoryList == null) {
+    categoryList=new ArrayList<Category>();
+    while (currentCategory != null) {
+      categoryList.add(currentCategory);
+      currentCategory=currentCategory.getDefaultParentCategory();
+    }
+    Collections.reverse(categoryList);
+  }
+  return categoryList;
+}

@@ -1,0 +1,12 @@
+{
+  try {
+    if (AopUtils.isAopProxy(managedBean) && managedBean instanceof Advised) {
+      Advised advised=(Advised)managedBean;
+      managedBean=advised.getTargetSource().getTarget();
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return managedBean;
+}

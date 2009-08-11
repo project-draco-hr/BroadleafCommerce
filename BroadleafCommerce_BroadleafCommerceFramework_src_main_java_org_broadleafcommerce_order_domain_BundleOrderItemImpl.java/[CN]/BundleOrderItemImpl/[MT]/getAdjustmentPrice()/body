@@ -1,0 +1,20 @@
+{
+  Money bundleAdjustmentPrice=null;
+  if (hasAdjustmentItems()) {
+    bundleAdjustmentPrice=new Money();
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      Money itemAdjustmentPrice=null;
+      if (discreteOrderItem.getAdjustmentPrice() != null) {
+        itemAdjustmentPrice=discreteOrderItem.getAdjustmentPrice();
+      }
+ else       if (discreteOrderItem.getSalePrice() != null) {
+        itemAdjustmentPrice=discreteOrderItem.getSalePrice();
+      }
+ else {
+        itemAdjustmentPrice=discreteOrderItem.getRetailPrice();
+      }
+      bundleAdjustmentPrice=bundleAdjustmentPrice.add(new Money(itemAdjustmentPrice.doubleValue() * discreteOrderItem.getQuantity()));
+    }
+  }
+  return bundleAdjustmentPrice;
+}

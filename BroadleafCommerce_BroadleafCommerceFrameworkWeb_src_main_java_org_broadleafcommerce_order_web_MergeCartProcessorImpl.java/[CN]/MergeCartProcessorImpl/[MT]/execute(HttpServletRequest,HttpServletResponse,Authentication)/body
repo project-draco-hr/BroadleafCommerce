@@ -1,0 +1,20 @@
+{
+  Customer loggedInCustomer=customerService.readCustomerByUsername((String)authResult.getPrincipal());
+  Customer anonymousCustomer=customerState.getCustomer(request);
+  Order cart=cartService.findCartForCustomer(anonymousCustomer);
+  Long anonymousCartId;
+  if (cart != null) {
+    anonymousCartId=cart.getId();
+  }
+ else {
+    anonymousCartId=null;
+  }
+  MergeCartResponse mergeCartResponse;
+  try {
+    mergeCartResponse=cartService.mergeCart(loggedInCustomer,anonymousCartId);
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException(e);
+  }
+  request.getSession().setAttribute(mergeCartResponseKey,mergeCartResponse);
+}

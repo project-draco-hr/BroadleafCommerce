@@ -1,0 +1,16 @@
+{
+  Date now=new Date();
+  List<Offer> offersToRemove=new ArrayList<Offer>();
+  for (  Offer offer : offers) {
+    if ((offer.getStartDate() == null) || (offer.getStartDate().after(now))) {
+      offersToRemove.add(offer);
+    }
+ else     if (offer.getEndDate() != null && offer.getEndDate().before(now)) {
+      offersToRemove.add(offer);
+    }
+  }
+  for (  Offer offer : offersToRemove) {
+    offers.remove(offer);
+  }
+  return offers;
+}

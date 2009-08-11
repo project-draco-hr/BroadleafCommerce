@@ -1,0 +1,9 @@
+{
+  Query query=em.createNamedQuery("BC_READ_SKU_AVAILABILITIES_BY_LOCATION_ID_AND_SKU_IDS");
+  if (!realTime) {
+    query.setHint(getQueryCacheableKey(),true);
+  }
+  query.setParameter("skuIds",skuIds);
+  query.setParameter("locationId",locationId);
+  return query.getResultList();
+}

@@ -1,0 +1,13 @@
+{
+  Method testMethod=testContext.getTestMethod();
+  Assert.notNull(testMethod,"The test method of the supplied TestContext must not be null");
+  TransactionContext txContext=this.transactionContextCache.remove(testMethod);
+  if (txContext != null && !txContext.transactionStatus.isCompleted()) {
+    try {
+      endTransaction(testContext,txContext);
+    }
+  finally {
+      runAfterTransactionMethods(testContext);
+    }
+  }
+}

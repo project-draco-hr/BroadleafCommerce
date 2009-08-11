@@ -1,0 +1,11 @@
+{
+  Order order=((PricingContext)context).getSeedData();
+  Money totalShipping=new Money(0D);
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    fulfillmentGroup=shippingService.calculateShippingForFulfillmentGroup(fulfillmentGroup);
+    totalShipping=totalShipping.add(fulfillmentGroup.getShippingPrice());
+  }
+  order.setTotalShipping(totalShipping);
+  context.setSeedData(order);
+  return context;
+}

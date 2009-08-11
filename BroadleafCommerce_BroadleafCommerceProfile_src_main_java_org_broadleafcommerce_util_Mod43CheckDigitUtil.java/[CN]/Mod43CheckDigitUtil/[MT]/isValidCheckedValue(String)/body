@@ -1,0 +1,16 @@
+{
+  boolean valid=false;
+  if (value != null && !"".equals(value)) {
+    String code=value.substring(0,value.length() - 1);
+    char checkDigit=value.substring(value.length() - 1).charAt(0);
+    try {
+      if (generateCheckDigit(code) == checkDigit) {
+        valid=true;
+      }
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+    }
+  }
+  return valid;
+}

@@ -1,0 +1,29 @@
+{
+  final Method testMethod=testContext.getTestMethod();
+  Assert.notNull(testMethod,"The test method of the supplied TestContext must not be null");
+  if (this.transactionContextCache.remove(testMethod) != null) {
+    throw new IllegalStateException("Cannot start new transaction without ending existing transaction: " + "Invoke endTransaction() before startNewTransaction().");
+  }
+  if (!testMethod.isAnnotationPresent(Transactional.class)) {
+    return;
+  }
+  TransactionAttribute transactionAttribute=this.attributeSource.getTransactionAttribute(testMethod,testContext.getTestClass());
+  TransactionDefinition transactionDefinition=null;
+  if (transactionAttribute != null) {
+    transactionDefinition=new DelegatingTransactionAttribute(transactionAttribute){
+      public String getName(){
+        return testMethod.getName();
+      }
+    }
+;
+  }
+  if (transactionDefinition != null) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("Explicit transaction definition [" + transactionDefinition + "] found for test context ["+ testContext+ "]");
+    }
+    TransactionContext txContext=new TransactionContext(getTransactionManager(testContext),transactionDefinition);
+    runBeforeTransactionMethods(testContext);
+    startNewTransaction(testContext,txContext);
+    this.transactionContextCache.put(testMethod,txContext);
+  }
+}

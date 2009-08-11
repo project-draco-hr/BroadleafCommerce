@@ -1,0 +1,22 @@
+{
+  Product p1=getProduct(1L);
+  Product p2=getProduct(2L);
+  Product rel1=getProduct(3L);
+  Product rel2=getProduct(4L);
+  Product rel3=getProduct(5L);
+  Product rel4=getProduct(6L);
+  Product rel5=getProduct(7L);
+  List<RelatedProduct> p1UpSales=new ArrayList<RelatedProduct>();
+  getRelatedCrossProduct(p1,rel1,p1UpSales);
+  getRelatedCrossProduct(p1,rel2,p1UpSales);
+  getRelatedCrossProduct(p1,rel3,p1UpSales);
+  p1.setCrossSaleProducts(p1UpSales);
+  List<RelatedProduct> p2UpSales=new ArrayList<RelatedProduct>();
+  getRelatedCrossProduct(p2,rel4,p2UpSales);
+  getRelatedCrossProduct(p2,rel5,p2UpSales);
+  p2.setCrossSaleProducts(p2UpSales);
+  Object[][] objs=new Object[2][1];
+  objs[0]=new Object[]{p1};
+  objs[1]=new Object[]{p2};
+  return objs;
+}

@@ -1,0 +1,10 @@
+{
+  customer.setRegistered(true);
+  if (customer.getId() == null) {
+    customer.setId(idGenerationService.findNextId("org.broadleafcommerce.profile.domain.Customer"));
+  }
+  customer.setUnencodedPassword(password);
+  Customer retCustomer=saveCustomer(customer);
+  notifyPostRegisterListeners(retCustomer);
+  return retCustomer;
+}

@@ -1,0 +1,19 @@
+{
+  Offer offer=new OfferImpl();
+  offer.setName(offerName);
+  offer.setStartDate(new Date());
+  Calendar calendar=Calendar.getInstance();
+  calendar.add(Calendar.DATE,-1);
+  offer.setStartDate(calendar.getTime());
+  calendar.add(Calendar.DATE,2);
+  offer.setEndDate(calendar.getTime());
+  offer.setType(offerType);
+  offer.setDiscountType(discountType);
+  offer.setValue(new Money(value));
+  offer.setDeliveryType(OfferDeliveryType.CODE);
+  offer.setStackable(true);
+  offer.setAppliesToOrderRules(orderRule);
+  offer.setAppliesToCustomerRules(customerRule);
+  offer.setCombinableWithOtherOffers(true);
+  return offer;
+}

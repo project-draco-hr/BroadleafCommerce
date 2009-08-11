@@ -1,0 +1,21 @@
+{
+  String userName="customer1";
+  Customer customer=customerService.readCustomerByUsername(userName);
+  Address address=customerAddressService.readActiveCustomerAddressesByCustomerId(customer.getId()).get(0).getAddress();
+  Order order=orderService.findOrderById(orderId);
+  List<OrderItem> orderItems=order.getOrderItems();
+  assert(orderItems.size() > 0);
+  FulfillmentGroup newFg=new FulfillmentGroupImpl();
+  newFg.setAddress(address);
+  newFg.setMethod("standard");
+  try {
+    newFg=orderService.addItemToFulfillmentGroup(orderItems.get(0),newFg,1);
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException(e);
+  }
+  order=orderService.findOrderById(orderId);
+  FulfillmentGroup newNewFg=order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(newFg));
+  assert(newNewFg.getFulfillmentGroupItems().size() == 1);
+  assert(newNewFg.getFulfillmentGroupItems().get(0).getOrderItem().equals(orderItems.get(0)));
+}

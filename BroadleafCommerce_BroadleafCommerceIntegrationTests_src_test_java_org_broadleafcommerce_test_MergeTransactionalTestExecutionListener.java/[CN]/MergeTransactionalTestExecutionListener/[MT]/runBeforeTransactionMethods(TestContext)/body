@@ -1,0 +1,16 @@
+{
+  try {
+    List<Method> methods=getAnnotatedMethods(testContext.getTestClass(),BeforeTransaction.class);
+    Collections.reverse(methods);
+    for (    Method method : methods) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("Executing @BeforeTransaction method [" + method + "] for test context ["+ testContext+ "]");
+      }
+      method.invoke(testContext.getTestInstance());
+    }
+  }
+ catch (  InvocationTargetException ex) {
+    logger.error("Exception encountered while executing @BeforeTransaction methods for test context [" + testContext + "]",ex.getTargetException());
+    ReflectionUtils.rethrowException(ex.getTargetException());
+  }
+}

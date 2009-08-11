@@ -1,0 +1,20 @@
+{
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  OrderImpl other=(OrderImpl)obj;
+  if (id != null && other.id != null) {
+    return id.equals(other.id);
+  }
+  if (customer == null) {
+    if (other.customer != null)     return false;
+  }
+ else   if (!customer.equals(other.customer))   return false;
+  Date myDateCreated=auditable != null ? auditable.getDateCreated() : null;
+  Date otherDateCreated=other.auditable != null ? other.auditable.getDateCreated() : null;
+  if (myDateCreated == null) {
+    if (otherDateCreated != null)     return false;
+  }
+ else   if (!myDateCreated.equals(otherDateCreated))   return false;
+  return true;
+}

@@ -1,0 +1,17 @@
+{
+  clearCache();
+  Object returnValue;
+  try {
+    returnValue=call.proceed();
+  }
+  finally {
+    Order orderItem=getLatestItem();
+    clearCache();
+    if (orderItem != null) {
+      orderItem=pricingService.executePricing(orderItem);
+      orderItem=orderDao.save(orderItem);
+      LOG.debug("Context order priced : order id " + orderItem.getId());
+    }
+  }
+  return returnValue;
+}

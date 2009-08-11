@@ -1,0 +1,8 @@
+{
+  Money currentBundleTaxablePrice=new Money();
+  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+    Money currentItemTaxablePrice=discreteOrderItem.getTaxablePrice();
+    currentBundleTaxablePrice=currentBundleTaxablePrice.add(new Money(currentItemTaxablePrice.doubleValue() * discreteOrderItem.getQuantity()));
+  }
+  return currentBundleTaxablePrice;
+}

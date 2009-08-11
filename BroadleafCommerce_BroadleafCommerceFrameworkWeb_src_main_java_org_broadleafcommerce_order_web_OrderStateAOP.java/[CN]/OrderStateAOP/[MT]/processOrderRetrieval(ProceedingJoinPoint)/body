@@ -1,0 +1,14 @@
+{
+  Object returnValue;
+  OrderState orderState=(OrderState)applicationContext.getBean("blOrderState");
+  Customer customer=(Customer)call.getArgs()[0];
+  Order order=orderState.getOrder(customer);
+  if (order != null) {
+    returnValue=order;
+  }
+ else {
+    returnValue=call.proceed();
+    orderState.setOrder(customer,(Order)returnValue);
+  }
+  return returnValue;
+}

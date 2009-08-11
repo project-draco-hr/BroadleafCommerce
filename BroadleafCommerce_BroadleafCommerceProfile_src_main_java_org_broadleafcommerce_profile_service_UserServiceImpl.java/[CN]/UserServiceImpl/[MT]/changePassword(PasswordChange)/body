@@ -1,0 +1,11 @@
+{
+  User user=readUserByUsername(passwordChange.getUsername());
+  user.setUnencodedPassword(passwordChange.getNewPassword());
+  user.setPasswordChangeRequired(false);
+  user=saveUser(user);
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  UsernamePasswordAuthenticationToken authRequest=new UsernamePasswordAuthenticationToken(passwordChange.getUsername(),passwordChange.getNewPassword(),auth.getAuthorities());
+  SecurityContextHolder.getContext().setAuthentication(authRequest);
+  auth.setAuthenticated(false);
+  return user;
+}

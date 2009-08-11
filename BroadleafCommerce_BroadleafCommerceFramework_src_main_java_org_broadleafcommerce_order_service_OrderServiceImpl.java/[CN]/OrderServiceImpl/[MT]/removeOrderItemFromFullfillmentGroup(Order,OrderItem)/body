@@ -1,0 +1,13 @@
+{
+  List<FulfillmentGroup> fulfillmentGroups=order.getFulfillmentGroups();
+  for (  FulfillmentGroup fulfillmentGroup : fulfillmentGroups) {
+    Iterator<FulfillmentGroupItem> itr=fulfillmentGroup.getFulfillmentGroupItems().iterator();
+    while (itr.hasNext()) {
+      FulfillmentGroupItem fulfillmentGroupItem=itr.next();
+      if (fulfillmentGroupItem.getOrderItem().equals(orderItem)) {
+        itr.remove();
+        fulfillmentGroupItemDao.delete(fulfillmentGroupItem);
+      }
+    }
+  }
+}

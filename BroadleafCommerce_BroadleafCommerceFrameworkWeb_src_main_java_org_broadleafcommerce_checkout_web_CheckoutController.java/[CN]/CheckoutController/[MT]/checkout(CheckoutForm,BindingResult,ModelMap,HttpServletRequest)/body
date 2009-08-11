@@ -1,0 +1,15 @@
+{
+  model.addAttribute("stateList",stateService.findStates());
+  List<Country> countries=countryService.findCountries();
+  Collections.sort(countries,new ReverseComparator(new BeanComparator("abbreviation")));
+  model.addAttribute("countryList",countries);
+  Customer currentCustomer=customerState.getCustomer(request);
+  model.addAttribute("customer",currentCustomer);
+  List<CustomerPhone> customerPhones=customerPhoneService.readAllCustomerPhonesByCustomerId(currentCustomer.getId());
+  while (customerPhones.size() < 2) {
+    customerPhones.add(new CustomerPhoneImpl());
+  }
+  customerAddressService.readActiveCustomerAddressesByCustomerId(currentCustomer.getId());
+  model.addAttribute("order",retrieveCartOrder(request,model));
+  return checkoutView;
+}

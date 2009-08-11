@@ -1,0 +1,31 @@
+{
+  StringBuffer sb=new StringBuffer();
+  if (order != null) {
+    sb.append("<script type=\"text/javascript\">");
+    sb.append("var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");");
+    sb.append("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"))");
+    sb.append("</script> <script type=\"text/javascript\">");
+    sb.append(" try { var pageTracker = _gat._getTracker(\"" + webPropertyId + "\");");
+    sb.append("pageTracker._trackPageview();");
+    Address paymentAddress=order.getPaymentInfos().get(0).getAddress();
+    sb.append("pageTracker._addTrans(" + order.getId() + ","+ order.getName()+ ","+ order.getTotal()+ ","+ order.getTotalTax()+ ","+ order.getTotalShipping()+ ","+ paymentAddress.getCity()+ ","+ paymentAddress.getState().getName()+ ","+ paymentAddress.getCountry().getName()+ ");");
+    for (    FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+      for (      FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+        DiscreteOrderItem orderItem=(DiscreteOrderItem)fulfillmentGroupItem.getOrderItem();
+        sb.append("pageTracker._addItem(" + order.getId() + ","+ orderItem.getSku().getId()+ ","+ orderItem.getSku().getName()+ ","+ null+ ","+ orderItem.getPrice()+ ","+ orderItem.getQuantity()+ ");");
+      }
+    }
+    sb.append("pageTracker._trackTrans();");
+    sb.append("} catch(err) {}</script>");
+  }
+ else {
+    sb.append("<script type=\"text/javascript\">");
+    sb.append("var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");");
+    sb.append("document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"))");
+    sb.append("</script> <script type=\"text/javascript\">");
+    sb.append(" try { var pageTracker = _gat._getTracker(\"" + webPropertyId + "\");");
+    sb.append("pageTracker._trackPageview();");
+    sb.append("} catch(err) {}</script>");
+  }
+  return sb.toString();
+}

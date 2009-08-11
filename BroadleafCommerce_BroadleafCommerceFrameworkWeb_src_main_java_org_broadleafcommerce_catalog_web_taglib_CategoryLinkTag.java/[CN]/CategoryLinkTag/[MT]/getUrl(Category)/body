@@ -1,0 +1,16 @@
+{
+  PageContext pageContext=(PageContext)getJspContext();
+  HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
+  StringBuffer sb=new StringBuffer();
+  sb.append("<a href=\"");
+  sb.append(request.isSecure() ? "https://" : "http://");
+  sb.append(request.getServerName());
+  sb.append(request.getLocalPort() != 80 ? ":" + request.getLocalPort() : "");
+  sb.append(request.getContextPath());
+  sb.append("/");
+  sb.append(category.getGeneratedUrl());
+  sb.append("\">");
+  sb.append(category.getName());
+  sb.append("</a>");
+  return sb.toString();
+}

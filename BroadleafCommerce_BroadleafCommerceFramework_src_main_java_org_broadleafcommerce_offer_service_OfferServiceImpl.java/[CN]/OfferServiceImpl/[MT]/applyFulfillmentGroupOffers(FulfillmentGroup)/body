@@ -1,0 +1,17 @@
+{
+  List<CandidateFulfillmentGroupOffer> qualifiedFulfillmentGroupOffers=fulfillmentGroup.getCandidateFulfillmentGroupOffers();
+  if (qualifiedFulfillmentGroupOffers.size() > 0) {
+    Collections.sort(qualifiedFulfillmentGroupOffers,new BeanComparator("discountedPrice"));
+    Collections.sort(qualifiedFulfillmentGroupOffers,new BeanComparator("priority"));
+    applyAllFulfillmentGroupOffers(qualifiedFulfillmentGroupOffers,fulfillmentGroup);
+  }
+  if (fulfillmentGroup.getAdjustmentPrice() != null) {
+    fulfillmentGroup.setShippingPrice(fulfillmentGroup.getAdjustmentPrice());
+  }
+ else   if (fulfillmentGroup.getSaleShippingPrice() != null) {
+    fulfillmentGroup.setShippingPrice(fulfillmentGroup.getSaleShippingPrice());
+  }
+ else {
+    fulfillmentGroup.setShippingPrice(fulfillmentGroup.getRetailShippingPrice());
+  }
+}

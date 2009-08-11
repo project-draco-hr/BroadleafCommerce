@@ -1,0 +1,23 @@
+{
+  FulfillmentGroup dfg=findDefaultFulfillmentGroupForOrder(order);
+  if (dfg == null) {
+    fulfillmentGroup.setPrimary(true);
+  }
+ else   if (dfg.equals(fulfillmentGroup)) {
+    fulfillmentGroup.setPrimary(true);
+    order.getFulfillmentGroups().remove(dfg);
+  }
+  fulfillmentGroup.setOrder(order);
+  for (  FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      if (!fg.equals(fulfillmentGroup)) {
+        fg.getFulfillmentGroupItems().remove(fgItem);
+      }
+    }
+  }
+  fulfillmentGroup=fulfillmentGroupDao.save(fulfillmentGroup);
+  order.getFulfillmentGroups().add(fulfillmentGroup);
+  int fulfillmentGroupIndex=order.getFulfillmentGroups().size() - 1;
+  order=updateOrder(order,true);
+  return order.getFulfillmentGroups().get(fulfillmentGroupIndex);
+}

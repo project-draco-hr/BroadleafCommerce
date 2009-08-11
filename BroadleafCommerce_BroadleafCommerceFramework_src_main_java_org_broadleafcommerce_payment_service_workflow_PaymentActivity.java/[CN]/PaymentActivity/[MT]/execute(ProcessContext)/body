@@ -1,0 +1,43 @@
+{
+  CombinedPaymentContextSeed seed=((WorkflowPaymentContext)context).getSeedData();
+  Map<PaymentInfo,Referenced> infos=seed.getInfos();
+  Money orderTotal=seed.getOrderTotal();
+  Money remainingTotal=seed.getOrderTotal();
+  Iterator<PaymentInfo> itr=infos.keySet().iterator();
+  while (itr.hasNext()) {
+    PaymentInfo info=itr.next();
+    if (paymentService.isValidCandidate(info.getType())) {
+      PaymentContextImpl paymentContext=new PaymentContextImpl(orderTotal,remainingTotal,info,infos.get(info),userName);
+      PaymentResponseItem paymentResponseItem;
+      if (seed.getActionType().equals(PaymentActionType.AUTHORIZE)) {
+        paymentResponseItem=paymentService.authorize(paymentContext);
+      }
+ else       if (seed.getActionType().equals(PaymentActionType.AUTHORIZEANDDEBIT)) {
+        paymentResponseItem=paymentService.authorizeAndDebit(paymentContext);
+      }
+ else       if (seed.getActionType().equals(PaymentActionType.BALANCE)) {
+        paymentResponseItem=paymentService.balance(paymentContext);
+      }
+ else       if (seed.getActionType().equals(PaymentActionType.CREDIT)) {
+        paymentResponseItem=paymentService.credit(paymentContext);
+      }
+ else       if (seed.getActionType().equals(PaymentActionType.DEBIT)) {
+        paymentResponseItem=paymentService.debit(paymentContext);
+      }
+ else       if (seed.getActionType().equals(PaymentActionType.VOID)) {
+        paymentResponseItem=paymentService.voidPayment(paymentContext);
+      }
+ else {
+        throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
+      }
+      if (paymentResponseItem != null) {
+        if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
+          throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
+        }
+        seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
+        remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
+      }
+    }
+  }
+  return context;
+}

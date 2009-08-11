@@ -1,0 +1,21 @@
+{
+  RegisterCustomerForm form=(RegisterCustomerForm)obj;
+  Customer customerFromDb=customerService.readCustomerByUsername(form.getCustomer().getUsername());
+  if (customerFromDb != null) {
+    errors.rejectValue("username","username.used",null,null);
+  }
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"password","password.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"passwordConfirm","passwordConfirm.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"customer.emailAddress","emailAddress.required");
+  if (!errors.hasErrors()) {
+    if (!form.getPassword().matches(REGEX_VALID_PASSWORD)) {
+      errors.rejectValue("password","password.invalid",null,null);
+    }
+    if (!form.getPassword().equals(form.getPasswordConfirm())) {
+      errors.rejectValue("password","passwordConfirm.invalid",null,null);
+    }
+    if (!GenericValidator.isEmail(form.getCustomer().getEmailAddress())) {
+      errors.rejectValue("customer.emailAddress","emailAddress.invalid",null,null);
+    }
+  }
+}

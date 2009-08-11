@@ -1,0 +1,15 @@
+{
+  if (this.configAttributes == null) {
+    this.configAttributes=retrieveTransactionConfigurationAttributes(testContext.getTestClass());
+  }
+  String transactionManagerName=this.configAttributes.getTransactionManagerName();
+  try {
+    return (PlatformTransactionManager)BaseTest.getContext().getBean(transactionManagerName,PlatformTransactionManager.class);
+  }
+ catch (  BeansException ex) {
+    if (logger.isWarnEnabled()) {
+      logger.warn("Caught exception while retrieving transaction manager with bean name [" + transactionManagerName + "] for test context ["+ testContext+ "]",ex);
+    }
+    throw ex;
+  }
+}
