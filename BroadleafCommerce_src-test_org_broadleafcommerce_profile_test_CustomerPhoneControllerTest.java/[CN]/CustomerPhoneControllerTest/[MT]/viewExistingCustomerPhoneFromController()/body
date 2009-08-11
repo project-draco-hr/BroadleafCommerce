@@ -1,9 +1,0 @@
-{
-  List<CustomerPhone> phones_1=customerPhoneService.readAllCustomerPhonesByCustomerId(1L);
-  PhoneNameForm pnf=new PhoneNameForm();
-  BindingResult errors=new BeanPropertyBindingResult(pnf,"phoneNameForm");
-  request=this.getNewServletInstance();
-  String view=customerPhoneController.viewPhone(phones_1.get(0).getId(),request,pnf,errors);
-  assert(view.indexOf(SUCCESS) >= 0);
-  assert(request.getAttribute("customerPhoneId").equals(phones_1.get(0).getId()));
-}

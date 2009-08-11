@@ -1,8 +1,0 @@
-{
-  BindingResult errors=new BeanPropertyBindingResult(registerCustomer,"registerCustomer");
-  MockHttpServletRequest request=new MockHttpServletRequest();
-  registerCustomerController.registerCustomer(registerCustomer,errors,request);
-  assert(errors.getErrorCount() == 0);
-  Customer customerFromDb=customerService.readCustomerByUsername(registerCustomer.getCustomer().getUsername());
-  assert(customerFromDb != null);
-}
