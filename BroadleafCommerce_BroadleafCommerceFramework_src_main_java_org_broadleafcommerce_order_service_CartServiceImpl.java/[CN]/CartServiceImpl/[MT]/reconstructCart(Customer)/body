@@ -2,12 +2,12 @@
   ReconstructCartResponse reconstructCartResponse=new ReconstructCartResponse();
   Order customerCart=findCartForCustomer(customer);
   if (customerCart != null) {
+    List<OrderItem> itemsToRemove=new ArrayList<OrderItem>();
     for (    OrderItem orderItem : customerCart.getOrderItems()) {
       if (orderItem instanceof DiscreteOrderItem) {
         DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
         if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-          reconstructCartResponse.getRemovedItems().add(orderItem);
-          removeItemFromOrder(customerCart,discreteOrderItem);
+          itemsToRemove.add(orderItem);
         }
       }
  else       if (orderItem instanceof BundleOrderItem) {
@@ -20,11 +20,14 @@
           }
         }
         if (removeBundle) {
-          reconstructCartResponse.getRemovedItems().add(orderItem);
-          removeItemFromOrder(customerCart,bundleOrderItem);
+          itemsToRemove.add(orderItem);
         }
       }
     }
+    for (    OrderItem item : itemsToRemove) {
+      removeItemFromOrder(customerCart,item);
+    }
+    reconstructCartResponse.setRemovedItems(itemsToRemove);
   }
   reconstructCartResponse.setOrder(customerCart);
   return reconstructCartResponse;

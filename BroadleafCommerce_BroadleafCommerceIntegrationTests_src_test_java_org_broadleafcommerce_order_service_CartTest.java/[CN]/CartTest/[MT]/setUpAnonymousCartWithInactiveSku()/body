@@ -1,0 +1,13 @@
+{
+  Customer customer=customerService.saveCustomer(customerService.createCustomerFromId(null));
+  Order order=cartService.createNewCartForCustomer(customer);
+  Sku newSku=addTestSku("Small Plastic Crate","Plastic Crate","Crates");
+  Sku newInactiveSku=addTestSku("Small Red Plastic Crate","Plastic Crate","Crates",false);
+  Product newProduct=newSku.getAllParentProducts().get(0);
+  Category newCategory=newProduct.getDefaultCategory();
+  orderService.addSkuToOrder(order.getId(),newSku.getId(),newProduct.getId(),newCategory.getId(),2);
+  orderService.addSkuToOrder(order.getId(),newInactiveSku.getId(),newProduct.getId(),newCategory.getId(),2);
+  orderService.addBundleItemToOrder(order,createBundleOrderItemRequest());
+  orderService.addBundleItemToOrder(order,createBundleOrderItemRequestWithInactiveSku());
+  return order;
+}
