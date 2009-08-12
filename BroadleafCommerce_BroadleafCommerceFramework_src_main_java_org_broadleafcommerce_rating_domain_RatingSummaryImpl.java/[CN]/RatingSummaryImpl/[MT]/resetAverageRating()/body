@@ -1,7 +1,12 @@
 {
-  double sum=0;
-  for (  RatingDetail detail : ratings) {
-    sum+=detail.getRating();
+  if (ratings == null || ratings.isEmpty()) {
+    this.averageRating=new Double(0);
   }
-  this.averageRating=sum / ratings.size();
+ else {
+    double sum=0;
+    for (    RatingDetail detail : ratings) {
+      sum+=detail.getRating();
+    }
+    this.averageRating=new Double(sum / ratings.size());
+  }
 }
