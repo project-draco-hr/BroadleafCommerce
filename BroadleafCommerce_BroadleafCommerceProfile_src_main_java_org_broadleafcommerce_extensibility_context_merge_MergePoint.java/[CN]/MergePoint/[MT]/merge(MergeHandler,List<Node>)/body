@@ -1,0 +1,22 @@
+{
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Processing handler: " + handler.getXPath());
+  }
+  if (handler.getChildren() != null) {
+    MergeHandler[] children=handler.getChildren();
+    for (int j=0; j < children.length; j++) {
+      Node[] temp=merge(children[j],exhaustedNodes);
+      if (temp != null) {
+        for (        Node node : temp) {
+          exhaustedNodes.add(node);
+        }
+      }
+    }
+  }
+  NodeList nodeList1=(NodeList)xPath.evaluate(handler.getXPath(),doc1,XPathConstants.NODESET);
+  NodeList nodeList2=(NodeList)xPath.evaluate(handler.getXPath(),doc2,XPathConstants.NODESET);
+  if (nodeList1 != null && nodeList2 != null) {
+    return handler.merge(nodeList1,nodeList2,exhaustedNodes);
+  }
+  return null;
+}

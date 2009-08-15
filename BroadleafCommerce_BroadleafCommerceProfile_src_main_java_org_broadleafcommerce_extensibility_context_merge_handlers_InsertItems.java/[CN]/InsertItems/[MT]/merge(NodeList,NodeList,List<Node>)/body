@@ -1,0 +1,12 @@
+{
+  if (nodeList1 == null || nodeList2 == null || nodeList1.getLength() == 0 || nodeList2.getLength() == 0) {
+    return null;
+  }
+  Node node1Parent=nodeList1.item(0).getParentNode();
+  for (int j=0; j < nodeList2.getLength(); j++) {
+    Node tempNode=node1Parent.getOwnerDocument().importNode(nodeList2.item(j).cloneNode(true),true);
+    node1Parent.appendChild(tempNode);
+  }
+  Node[] response={nodeList2.item(0).getParentNode()};
+  return response;
+}
