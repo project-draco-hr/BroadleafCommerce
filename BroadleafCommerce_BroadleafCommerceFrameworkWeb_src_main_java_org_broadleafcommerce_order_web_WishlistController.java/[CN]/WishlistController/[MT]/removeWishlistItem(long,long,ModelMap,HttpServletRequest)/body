@@ -1,0 +1,10 @@
+{
+  Order wishlist=cartService.findOrderById(orderId);
+  try {
+    wishlist=cartService.removeItemFromOrder(wishlist.getId(),orderItemId);
+  }
+ catch (  PricingException e) {
+    LOG.error("An error occurred while removing an item from the cart: (" + orderItemId + ")",e);
+  }
+  return viewWishlist(model,request,wishlist.getId());
+}

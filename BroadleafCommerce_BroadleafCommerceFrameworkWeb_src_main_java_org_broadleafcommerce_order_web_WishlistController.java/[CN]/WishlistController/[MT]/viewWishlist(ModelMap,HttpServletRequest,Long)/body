@@ -1,0 +1,18 @@
+{
+  Order wishlist=cartService.findOrderById(id);
+  CartSummary cartSummary=new CartSummary();
+  if (wishlist == null) {
+    return "redirect:/basket/viewCart.htm";
+  }
+  if (wishlist.getOrderItems() != null) {
+    for (    OrderItem orderItem : wishlist.getOrderItems()) {
+      CartOrderItem cartOrderItem=new CartOrderItem();
+      cartOrderItem.setOrderItem(orderItem);
+      cartOrderItem.setQuantity(orderItem.getQuantity());
+      cartSummary.getRows().add(cartOrderItem);
+    }
+  }
+  model.addAttribute("cartSummary",cartSummary);
+  model.addAttribute("wishlist",wishlist);
+  return "wishlist/viewWishlist";
+}

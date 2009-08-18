@@ -1,10 +1,10 @@
 {
   Order wishlistOrder=cartService.findNamedOrderForCustomer(wishlistName,customerState.getCustomer(request));
   try {
-    cartService.moveAllItemsToCartFromNamedOrder(wishlistOrder);
+    cartService.moveItemToCartFromNamedOrder(customerState.getCustomer(request).getId(),wishlistOrder.getName(),orderItemId,new Integer(1));
   }
- catch (  PricingException e) {
+ catch (  Exception e) {
     LOG.error("An exception occured while pricing the order: (" + wishlistOrder.getId() + ")",e);
   }
-  return "redirect:/basket/viewCart.htm";
+  return viewWishlist(model,request,wishlistOrder.getId());
 }

@@ -34,5 +34,11 @@
  else {
     model.addAttribute("productError",true);
   }
+  WishlistRequest wishlistRequest=new WishlistRequest();
+  wishlistRequest.setAddCategoryId(currentCategory.getId());
+  wishlistRequest.setAddProductId(product.getId());
+  wishlistRequest.setQuantity(1);
+  wishlistRequest.setAddSkuId(product.getSkus().get(0).getId());
+  model.addAttribute("wishlistRequest",wishlistRequest);
   return (productPosition != 0);
 }

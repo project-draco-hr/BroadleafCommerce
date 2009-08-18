@@ -6,7 +6,13 @@
   List<OrderItem> orderItemsAdded=new ArrayList<OrderItem>();
   if (addToCartItem.getQuantity() > 0) {
     try {
-      OrderItem orderItem=cartService.addSkuToOrder(currentCartOrder.getId(),addToCartItem.getSkuId(),addToCartItem.getProductId(),addToCartItem.getCategoryId(),addToCartItem.getQuantity());
+      OrderItem orderItem;
+      if (addToCartItem.getOrderId() != null) {
+        orderItem=cartService.addSkuToOrder(addToCartItem.getOrderId(),addToCartItem.getSkuId(),addToCartItem.getProductId(),addToCartItem.getCategoryId(),addToCartItem.getQuantity());
+      }
+ else {
+        orderItem=cartService.addSkuToOrder(currentCartOrder.getId(),addToCartItem.getSkuId(),addToCartItem.getProductId(),addToCartItem.getCategoryId(),addToCartItem.getQuantity());
+      }
       orderItemsAdded.add(orderItem);
     }
  catch (    PricingException e) {

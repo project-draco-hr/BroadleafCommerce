@@ -25,5 +25,7 @@
   if (catalogSort == null) {
     model.addAttribute("catalogSort",new CatalogSort());
   }
+  List<Order> wishlists=cartService.findOrdersForCustomer(customerState.getCustomer(request),OrderStatus.NAMED);
+  model.addAttribute("wishlists",wishlists);
   return view;
 }
