@@ -1,3 +1,16 @@
 {
   this.orderItemAdjustments=orderItemAdjustments;
+  if ((orderItemAdjustments == null) || (orderItemAdjustments.size() == 0)) {
+    removeAllAdjustments();
+  }
+ else {
+    for (    OrderItemAdjustment orderItemAdjustment : orderItemAdjustments) {
+      if (!notCombinableOfferApplied) {
+        addOrderItemAdjustment(orderItemAdjustment);
+      }
+ else {
+        break;
+      }
+    }
+  }
 }

@@ -1,13 +1,20 @@
 {
-  Offer notCombinableOfferApplied=null;
+  boolean orderOffersApplied=false;
   for (  CandidateOrderOffer orderOffer : orderOffers) {
-    if ((orderOffer.getOffer().isStackable()) || order.getOrderAdjustments().size() == 0) {
+    if ((orderOffer.getOffer().isStackable()) || !order.isHasOrderAdjustments()) {
       applyOrderOffer(orderOffer);
+      orderOffersApplied=true;
       if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
-        notCombinableOfferApplied=orderOffer.getOffer();
-        break;
+        if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice())) {
+          order.removeAllOrderAdjustments();
+          orderOffersApplied=false;
+        }
+ else {
+          order.removeAllItemAdjustments();
+          break;
+        }
       }
     }
   }
-  return notCombinableOfferApplied;
+  return orderOffersApplied;
 }

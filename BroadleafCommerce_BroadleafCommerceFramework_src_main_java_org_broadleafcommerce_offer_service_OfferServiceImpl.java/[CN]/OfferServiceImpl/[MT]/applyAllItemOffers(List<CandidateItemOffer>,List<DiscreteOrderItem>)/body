@@ -1,20 +1,21 @@
 {
-  Offer notCombinableOfferApplied=null;
+  boolean itemOffersApplied=false;
   int appliedItemOffersCount=0;
   for (  CandidateItemOffer itemOffer : itemOffers) {
     OrderItem orderItem=itemOffer.getOrderItem();
-    if (notCombinableOfferApplied == null) {
-      if ((itemOffer.getOffer().isStackable()) || orderItem.getOrderItemAdjustments().size() == 0) {
+    if (!orderItem.isNotCombinableOfferApplied()) {
+      if ((itemOffer.getOffer().isCombinableWithOtherOffers() && itemOffer.getOffer().isStackable()) || !orderItem.isHasOrderItemAdjustments()) {
         applyOrderItemOffer(itemOffer);
-        appliedItemOffersCount++;
         if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
-          notCombinableOfferApplied=itemOffer.getOffer();
+          Money itemPrice=itemOffer.getOrderItem().getRetailPrice();
+          if (itemOffer.getOrderItem().getSalePrice() != null) {
+            itemPrice=itemOffer.getOrderItem().getSalePrice();
+          }
+          if (itemOffer.getOrderItem().getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
+            itemOffer.getOrderItem().removeAllAdjustments();
+            appliedItemOffersCount--;
+          }
         }
-      }
-    }
- else {
-      if (itemOffer.getOffer().equals(notCombinableOfferApplied)) {
-        applyOrderItemOffer(itemOffer);
         appliedItemOffersCount++;
       }
     }
@@ -27,19 +28,14 @@
           itemPrice=discreteOrderItem.getSalePrice();
         }
         if (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
-          int offersApplied=discreteOrderItem.getOrderItemAdjustments().size();
-          discreteOrderItem.removeAllAdjustments();
-          appliedItemOffersCount=appliedItemOffersCount - offersApplied;
+          int offersRemoved=discreteOrderItem.removeAllAdjustments();
+          appliedItemOffersCount=appliedItemOffersCount - offersRemoved;
         }
       }
     }
-    if ((notCombinableOfferApplied != null) && (appliedItemOffersCount == 0)) {
-      itemOffers=removeOfferFromCandidateItemOffers(itemOffers,notCombinableOfferApplied);
-      notCombinableOfferApplied=null;
-      if (!itemOffers.isEmpty()) {
-        applyAllItemOffers(itemOffers,discreteOrderItems);
-      }
-    }
   }
-  return notCombinableOfferApplied;
+  if (appliedItemOffersCount > 0) {
+    itemOffersApplied=true;
+  }
+  return itemOffersApplied;
 }

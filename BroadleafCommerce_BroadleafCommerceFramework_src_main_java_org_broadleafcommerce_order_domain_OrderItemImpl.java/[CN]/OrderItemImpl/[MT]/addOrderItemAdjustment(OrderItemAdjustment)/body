@@ -4,5 +4,8 @@
   }
   adjustmentPrice=adjustmentPrice.subtract(orderItemAdjustment.getValue().getAmount());
   this.orderItemAdjustments.add(orderItemAdjustment);
-  return this.orderItemAdjustments;
+  if (!orderItemAdjustment.getOffer().isCombinableWithOtherOffers()) {
+    notCombinableOfferApplied=true;
+  }
+  hasOrderItemAdjustments=true;
 }
