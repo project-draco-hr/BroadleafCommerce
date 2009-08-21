@@ -1,3 +1,9 @@
 {
+  if (sku.getSkuImages() != null && sku.getSkuImages() instanceof ASObject) {
+    sku.setSkuImages(getImagesMapFromAsObject((ASObject)sku.getSkuImages()));
+  }
+  if (sku.getSkuMedia() != null && sku.getSkuMedia() instanceof ASObject) {
+    sku.setSkuMedia(getMediaMapFromAsObject((ASObject)sku.getSkuMedia()));
+  }
   return catalogService.saveSku(sku);
 }

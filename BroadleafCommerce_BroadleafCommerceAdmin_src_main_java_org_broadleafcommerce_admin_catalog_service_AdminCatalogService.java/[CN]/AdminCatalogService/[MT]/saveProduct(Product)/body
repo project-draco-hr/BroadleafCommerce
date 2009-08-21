@@ -1,14 +1,9 @@
 {
-  ASObject asObjectProductImages=(ASObject)product.getProductImages();
-  Map<String,String> productImages=new HashMap<String,String>();
-  for (  Object key : asObjectProductImages.keySet()) {
-    if (String.class.equals(key.getClass())) {
-      Object test=asObjectProductImages.get(key);
-      if (String.class.equals(test.getClass())) {
-        productImages.put((String)key,(String)asObjectProductImages.get(key));
-      }
-    }
+  if (product.getProductImages() != null && product.getProductImages() instanceof ASObject) {
+    product.setProductImages(getImagesMapFromAsObject((ASObject)product.getProductImages()));
   }
-  product.setProductImages(productImages);
+  if (product.getProductMedia() != null && product.getProductMedia() instanceof ASObject) {
+    product.setProductMedia(getMediaMapFromAsObject((ASObject)product.getProductMedia()));
+  }
   return catalogService.saveProduct(product);
 }

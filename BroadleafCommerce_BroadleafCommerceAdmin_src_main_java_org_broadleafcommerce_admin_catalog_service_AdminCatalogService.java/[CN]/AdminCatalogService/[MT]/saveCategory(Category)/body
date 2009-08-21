@@ -1,30 +1,9 @@
 {
   if (category.getCategoryImages() != null && category.getCategoryImages() instanceof ASObject) {
-    ASObject asObjectCategoryImages=(ASObject)category.getCategoryImages();
-    Map<String,String> categoryImages=new HashMap<String,String>();
-    for (    Object key : asObjectCategoryImages.keySet()) {
-      if (String.class.equals(key.getClass())) {
-        Object test=asObjectCategoryImages.get(key);
-        if (String.class.equals(test.getClass())) {
-          categoryImages.put((String)key,(String)asObjectCategoryImages.get(key));
-        }
-      }
-    }
-    category.setCategoryImages(categoryImages);
+    category.setCategoryImages(getImagesMapFromAsObject((ASObject)category.getCategoryImages()));
   }
   if (category.getCategoryMedia() != null && category.getCategoryMedia() instanceof ASObject) {
-    ASObject asObjectCategoryMedia=(ASObject)category.getCategoryMedia();
-    Map<String,Media> categoryMedia=new HashMap<String,Media>();
-    for (    Object key : asObjectCategoryMedia.keySet()) {
-      if (String.class.equals(key.getClass())) {
-        Object test=asObjectCategoryMedia.get(key);
-        if (test instanceof MediaImpl) {
-          String keyString=(String)key;
-          categoryMedia.put(keyString,(MediaImpl)asObjectCategoryMedia.get(key));
-        }
-      }
-    }
-    category.setCategoryMedia(categoryMedia);
+    category.setCategoryMedia(getMediaMapFromAsObject((ASObject)category.getCategoryMedia()));
   }
   return catalogService.saveCategory(category);
 }
