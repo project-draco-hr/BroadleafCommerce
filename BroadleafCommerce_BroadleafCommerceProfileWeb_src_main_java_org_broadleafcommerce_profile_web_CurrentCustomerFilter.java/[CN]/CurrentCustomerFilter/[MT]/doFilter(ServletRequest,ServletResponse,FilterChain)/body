@@ -1,30 +1,32 @@
 {
-  Customer requestCustomer=null;
-  checkSession: {
-    Customer sessionCustomer=customerState.getCustomer((HttpServletRequest)request);
-    if (sessionCustomer != null) {
-      requestCustomer=sessionCustomer;
-      break checkSession;
-    }
-    String cookieCustomerIdVal=CookieUtils.getCookieValue((HttpServletRequest)request,CookieUtils.CUSTOMER_COOKIE_NAME);
-    Long cookieCustomerId=null;
-    if (cookieCustomerIdVal != null) {
-      cookieCustomerId=new Long(cookieCustomerIdVal);
-    }
-    if (cookieCustomerId != null) {
-      Customer cookieCustomer=customerService.createCustomerFromId(cookieCustomerId);
-      customerState.setCustomer(cookieCustomer,(HttpServletRequest)request);
-      requestCustomer=cookieCustomer;
-      break checkSession;
-    }
+  if (checkUriValidity(request)) {
+    Customer requestCustomer=null;
+    checkSession: {
+      Customer sessionCustomer=customerState.getCustomer((HttpServletRequest)request);
+      if (sessionCustomer != null) {
+        requestCustomer=sessionCustomer;
+        break checkSession;
+      }
+      String cookieCustomerIdVal=CookieUtils.getCookieValue((HttpServletRequest)request,CookieUtils.CUSTOMER_COOKIE_NAME);
+      Long cookieCustomerId=null;
+      if (cookieCustomerIdVal != null) {
+        cookieCustomerId=new Long(cookieCustomerIdVal);
+      }
+      if (cookieCustomerId != null) {
+        Customer cookieCustomer=customerService.createCustomerFromId(cookieCustomerId);
+        customerState.setCustomer(cookieCustomer,(HttpServletRequest)request);
+        requestCustomer=cookieCustomer;
+        break checkSession;
+      }
  else {
-      Customer firstTimeCustomer=customerService.createCustomerFromId(null);
-      CookieUtils.setCookieValue((HttpServletResponse)response,CookieUtils.CUSTOMER_COOKIE_NAME,firstTimeCustomer.getId() + "","/",604800);
-      customerState.setCustomer(firstTimeCustomer,(HttpServletRequest)request);
-      requestCustomer=firstTimeCustomer;
-      break checkSession;
+        Customer firstTimeCustomer=customerService.createCustomerFromId(null);
+        CookieUtils.setCookieValue((HttpServletResponse)response,CookieUtils.CUSTOMER_COOKIE_NAME,firstTimeCustomer.getId() + "","/",604800);
+        customerState.setCustomer(firstTimeCustomer,(HttpServletRequest)request);
+        requestCustomer=firstTimeCustomer;
+        break checkSession;
+      }
     }
+    request.setAttribute(CUSTOMER_REQUEST_ATTR_NAME,requestCustomer);
   }
-  request.setAttribute(CUSTOMER_REQUEST_ATTR_NAME,requestCustomer);
   chain.doFilter(request,response);
 }

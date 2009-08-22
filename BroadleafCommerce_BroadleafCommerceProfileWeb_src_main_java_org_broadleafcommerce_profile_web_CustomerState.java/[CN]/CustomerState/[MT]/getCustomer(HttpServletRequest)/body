@@ -3,23 +3,32 @@
   Customer customer;
   checkCustomer: {
     if (sessionReference instanceof Long) {
-      Long customerId=1L;
+      Long customerId=(Long)sessionReference;
       if (customerId != null) {
-        customer=customerService.readCustomerById(customerId);
+        customer=(Customer)request.getAttribute(SERIALIZEDREQUESTATTRIBUTENAME);
         if (customer == null) {
-          customer=(Customer)request.getSession().getAttribute(SERIALIZEDSESSIONATTRIBUTENAME);
-          if (customer != null) {
+          customer=customerService.readCustomerById(customerId);
+          if (customer == null) {
+            customer=(Customer)request.getSession().getAttribute(SERIALIZEDSESSIONATTRIBUTENAME);
+            if (customer != null) {
+              break checkCustomer;
+            }
+          }
+ else {
             break checkCustomer;
           }
+          customer=customerService.createCustomerFromId(customerId);
+          break checkCustomer;
         }
  else {
           break checkCustomer;
         }
-        customer=customerService.createCustomerFromId(customerId);
-        break checkCustomer;
       }
     }
-    customer=customerService.readCustomerById(1L);
+    customer=null;
+  }
+  if (customer != null) {
+    request.setAttribute(SERIALIZEDREQUESTATTRIBUTENAME,customer);
   }
   return customer;
 }
