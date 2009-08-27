@@ -1,10 +1,6 @@
 {
-  product.setAllParentCategories(normalizeCategories(product.getAllParentCategories()));
-  if (product.getProductImages() != null && product.getProductImages() instanceof ASObject) {
-    product.setProductImages(getImagesMapFromAsObject((ASObject)product.getProductImages()));
-  }
-  if (product.getProductMedia() != null && product.getProductMedia() instanceof ASObject) {
-    product.setProductMedia(getMediaMapFromAsObject((ASObject)product.getProductMedia()));
-  }
+  Product newProduct=catalogService.findProductById(product.getId());
+  newProduct.getAllParentCategories().clear();
+  newProduct.getAllParentCategories().add(newProduct.getDefaultCategory());
   return catalogService.saveProduct(product);
 }
