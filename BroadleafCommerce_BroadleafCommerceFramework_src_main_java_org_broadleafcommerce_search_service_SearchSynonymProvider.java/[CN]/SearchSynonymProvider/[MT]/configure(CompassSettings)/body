@@ -1,0 +1,13 @@
+{
+  if (searchSynonymDao == null) {
+    ApplicationContext context=ApplicationContextHolder.getApplicationContext();
+    if (context == null)     return;
+    searchSynonymDao=(SearchSynonymDao)context.getBean("blSearchSynonymDao");
+  }
+  synonymMap=new HashMap<String,String[]>();
+  List<SearchSynonym> synonyms=searchSynonymDao.getAllSynonyms();
+  synonymMap.clear();
+  for (  SearchSynonym synonym : synonyms) {
+    synonymMap.put(synonym.getTerm(),synonym.getSynonyms());
+  }
+}

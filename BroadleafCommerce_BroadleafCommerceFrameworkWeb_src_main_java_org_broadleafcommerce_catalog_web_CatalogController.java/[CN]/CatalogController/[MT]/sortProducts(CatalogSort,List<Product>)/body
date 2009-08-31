@@ -1,0 +1,18 @@
+{
+  if (catalogSort.getSort().equals("priceL")) {
+    Collections.sort(displayProducts,new BeanComparator("skus[0].salePrice"));
+  }
+ else   if (catalogSort.getSort().equals("priceH")) {
+    Collections.sort(displayProducts,new ReverseComparator(new BeanComparator("skus[0].salePrice")));
+  }
+ else   if (catalogSort.getSort().equals("manufacturerA")) {
+    Collections.sort(displayProducts,new BeanComparator("manufacturer"));
+  }
+ else   if (catalogSort.getSort().equals("manufacturerZ")) {
+    Collections.sort(displayProducts,new ReverseComparator(new BeanComparator("manufacturer")));
+  }
+ else   if (catalogSort.getSort().equals("featured")) {
+    Collections.sort(displayProducts,new ReverseComparator(new BeanComparator("promoMessage")));
+  }
+  return displayProducts;
+}

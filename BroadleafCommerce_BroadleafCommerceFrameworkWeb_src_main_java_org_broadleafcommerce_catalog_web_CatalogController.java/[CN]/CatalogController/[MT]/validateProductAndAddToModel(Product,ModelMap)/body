@@ -4,14 +4,16 @@
   int productPosition=0;
   List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
   if (productList != null) {
-    model.addAttribute("displayProducts",populateProducts(productList,currentCategory));
+    populateProducts(productList,currentCategory);
+    model.addAttribute("products",productList);
   }
   productPosition=findProductPositionInList(product,productList);
   if (productPosition == 0) {
     currentCategory=product.getDefaultCategory();
     productList=catalogService.findActiveProductsByCategory(currentCategory);
     if (productList != null) {
-      model.addAttribute("displayProducts",populateProducts(productList,currentCategory));
+      populateProducts(productList,currentCategory);
+      model.addAttribute("products",productList);
     }
     String url=currentCategory.getGeneratedUrl();
     List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(url);

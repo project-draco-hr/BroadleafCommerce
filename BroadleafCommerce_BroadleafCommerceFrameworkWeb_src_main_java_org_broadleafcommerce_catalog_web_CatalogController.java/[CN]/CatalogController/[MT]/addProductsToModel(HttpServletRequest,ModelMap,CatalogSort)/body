@@ -13,16 +13,14 @@
     List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
     SearchFilterUtil.filterProducts(productList,request.getParameterMap(),new String[]{"manufacturer","skus[0].salePrice"});
     if ((catalogSort != null) && (catalogSort.getSort() != null)) {
-      List<DisplayProduct> displayProducts=new ArrayList<DisplayProduct>();
-      displayProducts=populateProducts(productList,currentCategory);
-      model.addAttribute("displayProducts",sortProducts(catalogSort,displayProducts));
+      populateProducts(productList,currentCategory);
+      model.addAttribute("displayProducts",sortProducts(catalogSort,productList));
     }
  else {
       catalogSort=new CatalogSort();
       catalogSort.setSort("featured");
-      List<DisplayProduct> displayProducts=new ArrayList<DisplayProduct>();
-      displayProducts=populateProducts(productList,currentCategory);
-      model.addAttribute("displayProducts",sortProducts(catalogSort,displayProducts));
+      populateProducts(productList,currentCategory);
+      model.addAttribute("displayProducts",sortProducts(catalogSort,productList));
     }
   }
   return productFound;
