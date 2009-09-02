@@ -1,6 +1,9 @@
 {
   Product newProduct=catalogService.findProductById(product.getId());
-  newProduct.getAllParentCategories().clear();
-  newProduct.getAllParentCategories().add(newProduct.getDefaultCategory());
+  List<Sku> skus=product.getAllSkus();
+  product.getAllSkus().clear();
+  for (int i=0; i < skus.size(); i++) {
+    product.getAllSkus().add(catalogService.saveSku(product.getSkus().get(i)));
+  }
   return catalogService.saveProduct(product);
 }
