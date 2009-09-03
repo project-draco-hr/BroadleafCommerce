@@ -7,7 +7,7 @@
   }
  else {
     List<CandidateOrderOffer> qualifiedOrderOffers=new ArrayList<CandidateOrderOffer>();
-    List<OrderItemOffer> orderItemOffers=new ArrayList<OrderItemOffer>();
+    List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
     order.setSubTotal(order.calculateOrderItemsCurrentPrice());
     List<DiscreteOrderItem> discreteOrderItems=order.getDiscountableDiscreteOrderItems();
     for (    Offer offer : filteredOffers) {
@@ -21,19 +21,14 @@
         }
       }
  else       if (offer.getType().equals(OfferType.ORDER_ITEM)) {
-        OrderItemOffer orderItemOffer=new OrderItemOfferImpl();
-        orderItemOffer.setOffer(offer);
         for (        DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
           if (couldOfferApplyToOrder(offer,order,discreteOrderItem)) {
             CandidateItemOffer candidateOffer=offerDao.createCandidateItemOffer();
             candidateOffer.setOrderItem(discreteOrderItem);
             candidateOffer.setOffer(offer);
             discreteOrderItem.addCandidateItemOffer(candidateOffer);
-            orderItemOffer.addCandidateItemOffer(candidateOffer);
+            qualifiedItemOffers.add(candidateOffer);
           }
-        }
-        if (orderItemOffer.getCandidateItemOffers().size() > 0) {
-          orderItemOffers.add(orderItemOffer);
         }
       }
  else       if (offer.getType().equals(OfferType.FULFILLMENT_GROUP)) {
@@ -47,27 +42,21 @@
         }
       }
     }
-    if ((orderItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
+    if ((qualifiedItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
       order.assignOrderItemsFinalPrice();
       order.setSubTotal(order.calculateOrderItemsFinalPrice());
     }
  else {
-      boolean notCombinableItemOfferApplied=false;
-      List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
-      if (!orderItemOffers.isEmpty()) {
-        Collections.sort(orderItemOffers,new BeanComparator("totalDiscount",Collections.reverseOrder()));
-        Collections.sort(orderItemOffers,new BeanComparator("priority"));
-        for (        OrderItemOffer orderItemOffer : orderItemOffers) {
-          qualifiedItemOffers.addAll(orderItemOffer.getCandidateItemOffers());
-        }
-        notCombinableItemOfferApplied=applyAllItemOffers(qualifiedItemOffers,discreteOrderItems);
+      if (!qualifiedItemOffers.isEmpty()) {
+        Collections.sort(qualifiedItemOffers,new BeanComparator("discountAmount",Collections.reverseOrder()));
+        Collections.sort(qualifiedItemOffers,new BeanComparator("priority"));
+        applyAllItemOffers(qualifiedItemOffers,discreteOrderItems);
       }
-      boolean notCombinableOrderOfferApplied=false;
       if (!qualifiedOrderOffers.isEmpty()) {
         Collections.sort(qualifiedOrderOffers,new BeanComparator("discountAmount",Collections.reverseOrder()));
         Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
         qualifiedOrderOffers=removeTrailingNotCombinableOrderOffers(qualifiedOrderOffers);
-        notCombinableOrderOfferApplied=applyAllOrderOffers(qualifiedOrderOffers,order);
+        applyAllOrderOffers(qualifiedOrderOffers,order);
       }
       order.assignOrderItemsFinalPrice();
       order.setSubTotal(order.calculateOrderItemsFinalPrice());

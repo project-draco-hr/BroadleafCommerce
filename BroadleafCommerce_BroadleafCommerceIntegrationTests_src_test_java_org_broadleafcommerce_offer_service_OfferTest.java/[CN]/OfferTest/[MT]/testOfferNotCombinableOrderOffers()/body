@@ -5,7 +5,6 @@
   order.addAddedOfferCode(createOfferCode("20 Percent Off Order Offer",OfferType.ORDER,OfferDiscountType.PERCENT_OFF,20,null,null,true,true,1));
   order.addAddedOfferCode(createOfferCode("30 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,30,null,null,true,true,1));
   order.addAddedOfferCode(createOfferCode("50 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,50,null,null,true,false,1));
-  order.setFulfillmentGroups(createFulfillmentGroups("standard",5D,order));
   List<Offer> offers=offerService.buildOfferListForOrder(order);
   offerService.applyOffersToOrder(offers,order);
   assert(order.getAdjustmentPrice().equals(new Money(290D)));
