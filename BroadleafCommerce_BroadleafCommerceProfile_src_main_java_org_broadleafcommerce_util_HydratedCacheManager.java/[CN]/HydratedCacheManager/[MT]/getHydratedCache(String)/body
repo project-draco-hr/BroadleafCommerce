@@ -1,3 +1,14 @@
 {
-  return hydratedCacheManager.get(cacheName);
+  HydratedCache myCache=hydratedCacheManager.get(cacheName);
+  if (myCache != null) {
+    CacheManager cacheManager=CacheManager.getInstance();
+    if (myCache.getCacheGuid() == null) {
+      myCache.setCacheGuid(cacheManager.getCache(cacheName).getGuid());
+    }
+ else     if (!cacheManager.getCache(cacheName).getGuid().equals(myCache.getCacheGuid())) {
+      notifyCacheRemoved(cacheName);
+      myCache.setCacheGuid(cacheManager.getCache(cacheName).getGuid());
+    }
+  }
+  return myCache;
 }

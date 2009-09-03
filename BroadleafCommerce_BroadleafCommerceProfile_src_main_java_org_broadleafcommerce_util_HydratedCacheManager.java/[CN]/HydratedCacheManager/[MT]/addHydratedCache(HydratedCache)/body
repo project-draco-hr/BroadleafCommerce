@@ -1,3 +1,7 @@
 {
+  CacheManager cacheManager=CacheManager.getInstance();
+  if (cacheManager.cacheExists(cache.getCacheName())) {
+    cache.setCacheGuid(cacheManager.getCache(cache.getCacheName()).getGuid());
+  }
   hydratedCacheManager.put(cache.getCacheName(),cache);
 }
