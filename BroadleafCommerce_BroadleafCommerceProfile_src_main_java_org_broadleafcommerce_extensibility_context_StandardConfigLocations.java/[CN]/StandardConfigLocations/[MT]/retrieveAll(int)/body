@@ -12,7 +12,9 @@
       }
  else {
         if (!temp.startsWith("#") && temp.trim().length() > 0 && StandardConfigLocations.class.getClassLoader().getResource(temp.trim()) != null) {
-          items.add(temp.trim());
+          if (contextType == ALLCONTEXTTYPE || (contextType == WEBCONTEXTTYPE && temp.indexOf("-web-") >= 0) || (contextType == SERVICECONTEXTTYPE && temp.indexOf("-web-") < 0)) {
+            items.add(temp.trim());
+          }
         }
       }
     }
