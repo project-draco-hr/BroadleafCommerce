@@ -1,0 +1,15 @@
+{
+  if (key instanceof CacheKey) {
+    key=((CacheKey)key).getKey();
+  }
+  if (hydratedCacheContainer.containsKey(cacheName)) {
+    HydratedCache cache=hydratedCacheContainer.get(cacheName);
+    String myKey=cacheName + "_" + key;
+    if (cache.containsKey(myKey)) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Clearing hydrated cache for cache name: " + cacheName + "_"+ key);
+      }
+      cache.removeCacheElement(cacheName,key);
+    }
+  }
+}
