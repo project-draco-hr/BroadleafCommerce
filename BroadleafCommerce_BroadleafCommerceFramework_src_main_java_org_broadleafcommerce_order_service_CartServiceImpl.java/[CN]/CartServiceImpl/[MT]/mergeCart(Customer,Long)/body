@@ -3,6 +3,7 @@
   ReconstructCartResponse reconstructCartResponse=reconstructCart(customer);
   mergeCartResponse.setRemovedItems(reconstructCartResponse.getRemovedItems());
   Order customerCart=reconstructCartResponse.getOrder();
+  mergeCartResponse.setMerged(customerCart != null && customerCart.getOrderItems().size() > 0);
   if ((customerCart == null || !customerCart.getId().equals(anonymousCartId)) && anonymousCartId != null) {
     Order anonymousCart=findOrderById(anonymousCartId);
     if (anonymousCart != null && anonymousCart.getOrderItems() != null && !anonymousCart.getOrderItems().isEmpty()) {
@@ -41,7 +42,6 @@
             mergeCartResponse.getRemovedItems().add(orderItem);
           }
         }
-        mergeCartResponse.setMerged(true);
       }
       cancelOrder(anonymousCart);
     }

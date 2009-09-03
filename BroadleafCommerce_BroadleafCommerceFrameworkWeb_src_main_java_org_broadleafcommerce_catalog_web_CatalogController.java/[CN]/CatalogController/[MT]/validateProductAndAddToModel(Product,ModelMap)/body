@@ -16,7 +16,7 @@
       model.addAttribute("products",productList);
     }
     String url=currentCategory.getGeneratedUrl();
-    List<Category> categoryList=rootCategory.getChildCategoryURLMap().get(url);
+    List<Category> categoryList=catalogService.getChildCategoryURLMapByCategoryId(rootCategory.getId()).get(url);
     if (categoryList != null && !addCategoryListToModel(categoryList,rootCategory,url,model)) {
       productPosition=findProductPositionInList(product,productList);
     }

@@ -47,18 +47,11 @@
         }
         LOG.debug(sb.toString());
       }
-      if (replaceNode(primaryNodes,node,"id",usedNodes)) {
-        continue;
+      if (!checkNode(usedNodes,primaryNodes,node)) {
+        Node newNode=ownerDocument.importNode(node.cloneNode(true),true);
+        parentNode.appendChild(newNode);
+        usedNodes.add(node);
       }
-      if (replaceNode(primaryNodes,node,"name",usedNodes)) {
-        continue;
-      }
-      if (exactNodeExists(primaryNodes,node,usedNodes)) {
-        continue;
-      }
-      Node newNode=ownerDocument.importNode(node.cloneNode(true),true);
-      parentNode.appendChild(newNode);
-      usedNodes.add(node);
     }
   }
   return usedNodes;

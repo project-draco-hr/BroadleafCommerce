@@ -1,12 +1,12 @@
 {
-  Date date=null;
+  Long date=null;
   if (includeTime) {
     date=getNow();
   }
  else {
     date=getToday();
   }
-  if (startDate == null || startDate.after(date) || (endDate != null && endDate.before(date))) {
+  if (startDate == null || startDate.getTime() > date || (endDate != null && endDate.getTime() < date)) {
     return false;
   }
   return true;
