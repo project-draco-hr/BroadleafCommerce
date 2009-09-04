@@ -1,0 +1,11 @@
+{
+  if (cacheRegions.containsKey(entity.getClass().getName())) {
+    return cacheRegions.get(entity.getClass().getName());
+  }
+  String cacheRegion=scanner.retrieveCacheRegion(entity.getClass());
+  if (cacheRegion == null || "".equals(cacheRegion)) {
+    cacheRegion=entity.getClass().getName();
+  }
+  cacheRegions.put(entity.getClass().getName(),cacheRegion);
+  return cacheRegion;
+}

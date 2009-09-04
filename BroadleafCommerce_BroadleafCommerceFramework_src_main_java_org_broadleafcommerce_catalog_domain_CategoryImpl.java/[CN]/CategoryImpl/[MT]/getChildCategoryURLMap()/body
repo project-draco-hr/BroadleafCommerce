@@ -1,5 +1,4 @@
 {
-  Map<String,List<Category>> cachedChildCategoryUrlMap=(Map<String,List<Category>>)HydratedCacheManagerImpl.getInstance().getHydratedCacheElementItem(CategoryImpl.class.getName(),getId(),"cachedChildCategoryUrlMap");
   if (cachedChildCategoryUrlMap != null) {
     return cachedChildCategoryUrlMap;
   }
@@ -7,6 +6,5 @@
   Map<String,List<Category>> newMap=new HashMap<String,List<Category>>();
   fillInURLMapForCategory(newMap,this,"",new ArrayList<Category>());
   cachedChildCategoryUrlMap=newMap;
-  HydratedCacheManagerImpl.getInstance().addHydratedCacheElementItem(CategoryImpl.class.getName(),getId(),"cachedChildCategoryUrlMap",cachedChildCategoryUrlMap);
   return cachedChildCategoryUrlMap;
 }
