@@ -1,0 +1,9 @@
+{
+  try {
+    InputStream in=HydrationScanner.class.getClassLoader().getResourceAsStream(entity.getClass().getName().replace('.','/') + ".class");
+    new ClassReader(in).accept(this,true);
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+}

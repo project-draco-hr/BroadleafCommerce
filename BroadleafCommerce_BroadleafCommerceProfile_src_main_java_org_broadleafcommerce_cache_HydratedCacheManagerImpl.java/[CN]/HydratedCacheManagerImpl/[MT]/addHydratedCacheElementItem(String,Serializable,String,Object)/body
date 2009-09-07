@@ -1,11 +1,9 @@
 {
   HydratedCache hydratedCache=getHydratedCache(cacheName);
-  if (hydratedCache != null) {
-    HydratedCacheElement element=hydratedCache.getCacheElement(cacheName,elementKey);
-    if (element == null) {
-      element=new HydratedCacheElement();
-      hydratedCache.addCacheElement(cacheName,elementKey,element);
-    }
-    element.putCacheElementItem(elementItemName,elementKey,elementValue);
+  HydratedCacheElement element=hydratedCache.getCacheElement(cacheName,elementKey);
+  if (element == null) {
+    element=new HydratedCacheElement();
+    hydratedCache.addCacheElement(cacheName,elementKey,element);
   }
+  element.putCacheElementItem(elementItemName,elementKey,elementValue);
 }

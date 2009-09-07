@@ -1,0 +1,11 @@
+{
+  if (Cache.class.getName().equals(annotation) && "region".equals(arg0)) {
+    cacheRegion=(String)arg1;
+  }
+  if (Hydrated.class.getName().equals(annotation) && "factoryMethod".equals(arg0)) {
+    HydrationItemDescriptor itemDescriptor=new HydrationItemDescriptor();
+    itemDescriptor.setFactoryMethod((String)arg1);
+    itemDescriptor.setMutators(retrieveMutators());
+    cacheMutators.put(fieldName,itemDescriptor);
+  }
+}

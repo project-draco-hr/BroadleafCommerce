@@ -1,0 +1,29 @@
+{
+  Type annotationType=Type.getType(arg0);
+switch (stage) {
+case CLASSSTAGE:
+{
+      if (annotationType.getClassName().equals(Cache.class.getName())) {
+        annotation=Cache.class.getName();
+      }
+      break;
+    }
+case FIELDSTAGE:
+{
+    if (annotationType.getClassName().equals(Id.class.getName())) {
+      idMutators.put(fieldName,retrieveMutators());
+    }
+    if (annotationType.getClassName().equals(Hydrated.class.getName())) {
+      annotation=Hydrated.class.getName();
+    }
+    break;
+  }
+default :
+{
+  annotation=null;
+  fieldName=null;
+  break;
+}
+}
+return this;
+}

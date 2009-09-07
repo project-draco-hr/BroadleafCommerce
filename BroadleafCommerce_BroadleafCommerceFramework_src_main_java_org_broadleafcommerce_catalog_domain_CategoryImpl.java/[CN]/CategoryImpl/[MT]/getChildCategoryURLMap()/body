@@ -1,10 +1,8 @@
 {
-  if (cachedChildCategoryUrlMap != null) {
-    return cachedChildCategoryUrlMap;
+  try {
+    return createChildCategoryURLMap();
   }
-  cachedChildCategoryUrlMap=new HashMap<String,List<Category>>();
-  Map<String,List<Category>> newMap=new HashMap<String,List<Category>>();
-  fillInURLMapForCategory(newMap,this,"",new ArrayList<Category>());
-  cachedChildCategoryUrlMap=newMap;
-  return cachedChildCategoryUrlMap;
+ catch (  CacheFactoryException e) {
+    throw new RuntimeException(e);
+  }
 }

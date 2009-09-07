@@ -1,17 +1,25 @@
 {
   HydratedCacheManagerImpl manager=HydratedCacheManagerImpl.getInstance();
-  Map<Field,Method[]> mutators=((HydratedAnnotationManager)manager).getHydratedMutators(entity);
-  if (mutators != null && mutators.size() > 0) {
-    String cacheRegion=((HydratedAnnotationManager)manager).getCacheRegion(entity);
-    Method[] idMutators=((HydratedAnnotationManager)manager).getIdMutators(entity);
-    for (    Field field : mutators.keySet()) {
+  HydrationDescriptor descriptor=((HydratedAnnotationManager)manager).getHydrationDescriptor(entity);
+  if (descriptor.getHydratedMutators() != null && descriptor.getHydratedMutators().size() > 0) {
+    Method[] idMutators=descriptor.getIdMutators();
+    String cacheRegion=descriptor.getCacheRegion();
+    for (    String field : descriptor.getHydratedMutators().keySet()) {
       try {
-        Object fieldVal=mutators.get(field)[0].invoke(entity,new Object[]{});
+        Object fieldVal=descriptor.getHydratedMutators().get(field).getMutators()[0].invoke(entity,new Object[]{});
         Serializable entityId=(Serializable)idMutators[0].invoke(entity,new Object[]{});
-        ((HydratedCacheManager)manager).addHydratedCacheElementItem(cacheRegion,entityId,field.getName(),fieldVal);
+        ((HydratedCacheManager)manager).addHydratedCacheElementItem(cacheRegion,entityId,field,fieldVal);
       }
- catch (      Exception e) {
-        throw new RuntimeException("There was a problem while adding a hydrated cache item - field(" + field.getName() + ") : entity("+ entity.getClass().getName()+ ")",e);
+ catch (      InvocationTargetException e) {
+        if (e.getTargetException() != null && e.getTargetException() instanceof CacheFactoryException) {
+          LOG.warn("Unable to setup the hydrated cache for an entity. " + e.getTargetException().getMessage());
+        }
+ else {
+          throw new RuntimeException("There was a problem while replacing a hydrated cache item - field(" + field + ") : entity("+ entity.getClass().getName()+ ")",e);
+        }
+      }
+catch (      Exception e) {
+        throw new RuntimeException("There was a problem while replacing a hydrated cache item - field(" + field + ") : entity("+ entity.getClass().getName()+ ")",e);
       }
     }
   }

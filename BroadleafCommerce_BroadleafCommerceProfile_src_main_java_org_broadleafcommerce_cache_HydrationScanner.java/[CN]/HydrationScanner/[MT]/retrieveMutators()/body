@@ -1,0 +1,33 @@
+{
+  String mutatorName=fieldName.substring(0,1).toUpperCase() + fieldName.substring(1,fieldName.length());
+  Method getMethod=null;
+  try {
+    getMethod=clazz.getMethod("get" + mutatorName,new Class[]{});
+  }
+ catch (  Exception e) {
+  }
+  if (getMethod == null) {
+    try {
+      getMethod=clazz.getMethod("is" + mutatorName,new Class[]{});
+    }
+ catch (    Exception e) {
+    }
+  }
+  if (getMethod == null) {
+    try {
+      getMethod=clazz.getMethod(fieldName,new Class[]{});
+    }
+ catch (    Exception e) {
+    }
+  }
+  Method setMethod=null;
+  try {
+    setMethod=clazz.getMethod("set" + mutatorName,new Class[]{fieldClass});
+  }
+ catch (  Exception e) {
+  }
+  if (getMethod == null || setMethod == null) {
+    throw new RuntimeException("Unable to find a getter and setter method for the Hydrated field: " + fieldName + ". Make sure you have a getter method entitled: get"+ mutatorName+ "(), or is"+ mutatorName+ "(), or "+ fieldName+ "(). Make sure you have a setter method entitled: set"+ mutatorName+ "(..).");
+  }
+  return new Method[]{getMethod,setMethod};
+}

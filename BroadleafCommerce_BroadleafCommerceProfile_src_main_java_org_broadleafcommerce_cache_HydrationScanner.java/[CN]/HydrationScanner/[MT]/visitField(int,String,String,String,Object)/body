@@ -1,0 +1,40 @@
+{
+  stage=FIELDSTAGE;
+  fieldName=arg1;
+  Type fieldType=Type.getType(arg2);
+switch (fieldType.getSort()) {
+case Type.BOOLEAN:
+    fieldClass=boolean.class;
+  break;
+case Type.BYTE:
+fieldClass=byte.class;
+break;
+case Type.CHAR:
+fieldClass=char.class;
+break;
+case Type.DOUBLE:
+fieldClass=double.class;
+break;
+case Type.FLOAT:
+fieldClass=float.class;
+break;
+case Type.INT:
+fieldClass=int.class;
+break;
+case Type.LONG:
+fieldClass=long.class;
+break;
+case Type.SHORT:
+fieldClass=short.class;
+break;
+case Type.OBJECT:
+try {
+fieldClass=Class.forName(Type.getType(arg2).getClassName());
+}
+ catch (ClassNotFoundException e) {
+throw new RuntimeException(e);
+}
+break;
+}
+return this;
+}
