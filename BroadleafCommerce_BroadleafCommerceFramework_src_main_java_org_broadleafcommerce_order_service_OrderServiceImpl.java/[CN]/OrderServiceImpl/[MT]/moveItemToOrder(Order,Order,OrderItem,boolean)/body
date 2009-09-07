@@ -1,0 +1,8 @@
+{
+  removeOrderItemFromFullfillmentGroup(originalOrder,item);
+  OrderItem itemFromOrder=originalOrder.getOrderItems().remove(originalOrder.getOrderItems().indexOf(item));
+  itemFromOrder.setOrder(null);
+  originalOrder=updateOrder(originalOrder,priceOrder);
+  addOrderItemToOrder(destinationOrder,item,priceOrder);
+  return destinationOrder;
+}

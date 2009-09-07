@@ -1,16 +1,3 @@
 {
-  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer());
-  if (cartOrder == null) {
-    cartOrder=createNewCartForCustomer(namedOrder.getCustomer());
-  }
-  for (int i=0; i < namedOrder.getOrderItems().size(); i++) {
-    OrderItem orderItem=namedOrder.getOrderItems().get(i);
-    if (moveNamedOrderItems) {
-      moveItemToOrder(namedOrder,cartOrder,orderItem);
-    }
- else {
-      addOrderItemToOrder(cartOrder,orderItem);
-    }
-  }
-  return cartOrder;
+  return addAllItemsToCartFromNamedOrder(namedOrder,true);
 }

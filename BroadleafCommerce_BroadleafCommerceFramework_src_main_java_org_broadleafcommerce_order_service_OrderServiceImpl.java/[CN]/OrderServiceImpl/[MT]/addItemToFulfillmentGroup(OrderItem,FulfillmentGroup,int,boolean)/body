@@ -1,0 +1,21 @@
+{
+  Order order=item.getOrder();
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();
+    while (itr.hasNext()) {
+      FulfillmentGroupItem fgItem=itr.next();
+      if (fgItem.getOrderItem().equals(item)) {
+        itr.remove();
+        fulfillmentGroupItemDao.delete(fgItem);
+      }
+    }
+  }
+  if (fulfillmentGroup.getId() == null) {
+    fulfillmentGroup=addFulfillmentGroupToOrder(order,fulfillmentGroup,priceOrder);
+  }
+  FulfillmentGroupItem fgi=createFulfillmentGroupItemFromOrderItem(item,fulfillmentGroup,quantity);
+  fgi=fulfillmentGroupItemDao.save(fgi);
+  fulfillmentGroup.addFulfillmentGroupItem(fgi);
+  order=updateOrder(order,priceOrder);
+  return fulfillmentGroup;
+}

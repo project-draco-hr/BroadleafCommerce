@@ -1,0 +1,8 @@
+{
+  if (!order.getOrderItems().contains(item)) {
+    throw new ItemNotFoundException("Order Item (" + item.getId() + ") not found in Order ("+ order.getId()+ ")");
+  }
+  OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(item));
+  itemFromOrder.setQuantity(item.getQuantity());
+  order=updateOrder(order,priceOrder);
+}
