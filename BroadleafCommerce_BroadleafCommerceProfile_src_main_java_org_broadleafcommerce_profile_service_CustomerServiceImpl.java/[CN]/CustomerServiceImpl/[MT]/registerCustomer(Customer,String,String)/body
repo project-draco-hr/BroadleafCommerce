@@ -5,6 +5,11 @@
   }
   customer.setUnencodedPassword(password);
   Customer retCustomer=saveCustomer(customer);
+  Role role=roleDao.readRoleByName("ROLE_USER");
+  CustomerRole customerRole=new CustomerRoleImpl();
+  customerRole.setRole(role);
+  customerRole.setCustomer(retCustomer);
+  roleDao.addRoleToCustomer(customerRole);
   notifyPostRegisterListeners(retCustomer);
   return retCustomer;
 }
