@@ -7,13 +7,18 @@
   if (ratingDetail == null) {
     ratingDetail=new RatingDetailImpl(ratingSummary,rating,new Date(),customer);
   }
-  ratingDetail.setRating(rating);
+ else {
+    ratingDetail.setRating(rating);
+  }
   ratingSummary.getRatings().add(ratingDetail);
   ReviewDetail reviewDetail=ratingSummaryDao.readReview(customer.getId(),ratingSummary.getId());
   if (reviewDetail == null) {
     reviewDetail=new ReviewDetailImpl(customer,new Date(),ratingDetail,reviewText,ratingSummary);
   }
-  reviewDetail.setReviewText(reviewText);
+ else {
+    reviewDetail.setReviewText(reviewText);
+  }
   ratingSummary.getReviews().add(reviewDetail);
+  ratingSummary.getReviews().size();
   ratingSummaryDao.saveRatingSummary(ratingSummary);
 }
