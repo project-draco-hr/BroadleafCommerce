@@ -2,6 +2,10 @@
   registerCustomerValidator.validate(registerCustomerForm,errors);
   if (!errors.hasErrors()) {
     customerService.registerCustomer(registerCustomerForm.getCustomer(),registerCustomerForm.getPassword(),registerCustomerForm.getPasswordConfirm());
+    UserDetails principal=userDetailsService.loadUserByUsername(registerCustomerForm.getCustomer().getUsername());
+    UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(principal,registerCustomerForm.getPassword(),principal.getAuthorities());
+    Authentication authentication=authenticationManager.authenticate(token);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
     return new ModelAndView(getRegistrationSuccessView());
   }
  else {
