@@ -12,17 +12,6 @@
   checkoutForm.getShippingAddress().setState(stateService.findStateByAbbreviation(checkoutForm.getShippingAddress().getState().getAbbreviation()));
   Order order=retrieveCartOrder(request,model);
   order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date()));
-  List<FulfillmentGroup> groups=order.getFulfillmentGroups();
-  FulfillmentGroup group=groups.get(0);
-  group.setOrder(order);
-  group.setAddress(checkoutForm.getShippingAddress());
-  group.setShippingPrice(order.getTotalShipping());
-  for (  OrderItem item : order.getOrderItems()) {
-    FulfillmentGroupItem fulfillmentGroupItem=new FulfillmentGroupItemImpl();
-    fulfillmentGroupItem.setOrderItem(item);
-    fulfillmentGroupItem.setFulfillmentGroup(group);
-    group.getFulfillmentGroupItems().add(fulfillmentGroupItem);
-  }
   Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
   CreditCardPaymentInfo creditCardPaymentInfo=((CreditCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.CREDIT_CARD));
   creditCardPaymentInfo.setCvvCode(checkoutForm.getCreditCardCvvCode());
