@@ -3,7 +3,8 @@
     return hydrationDescriptors.get(entity.getClass().getName());
   }
   HydrationDescriptor descriptor=new HydrationDescriptor();
-  HydrationScanner scanner=new HydrationScanner(entity);
+  Class topEntityClass=getTopEntityClass(entity);
+  HydrationScanner scanner=new HydrationScanner(topEntityClass,entity.getClass());
   scanner.init();
   descriptor.setHydratedMutators(scanner.getCacheMutators());
   Map<String,Method[]> mutators=scanner.getIdMutators();
@@ -14,7 +15,7 @@
   descriptor.setIdMutators(singleMutators);
   String cacheRegion=scanner.getCacheRegion();
   if (cacheRegion == null || "".equals(cacheRegion)) {
-    cacheRegion=entity.getClass().getName();
+    cacheRegion=topEntityClass.getName();
   }
   descriptor.setCacheRegion(cacheRegion);
   hydrationDescriptors.put(entity.getClass().getName(),descriptor);
