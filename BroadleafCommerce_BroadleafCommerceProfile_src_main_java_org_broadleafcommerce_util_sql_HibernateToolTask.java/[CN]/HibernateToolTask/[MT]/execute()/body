@@ -57,9 +57,12 @@
       File[] sqlFiles=destDir.listFiles(new SqlFileFilter());
       for (      File file : sqlFiles) {
         String filename=file.getName();
-        if (filename.startsWith("org.hibernate.dialect.")) {
-          String newFileName=filename.substring("org.hibernate.dialect.".length(),filename.length());
-          file.renameTo(new File(destDir,newFileName));
+        String[] starters={"org.hibernate.dialect.","org.broadleafcommerce.util.sql."};
+        for (        String starter : starters) {
+          if (filename.startsWith(starter)) {
+            String newFileName=filename.substring(starter.length(),filename.length());
+            file.renameTo(new File(destDir,newFileName));
+          }
         }
       }
     }
