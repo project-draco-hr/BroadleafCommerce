@@ -1,10 +1,10 @@
 {
-  BundleOrderItem item=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
+  final BundleOrderItem item=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
   item.setQuantity(itemRequest.getQuantity());
   item.setCategory(itemRequest.getCategory());
   item.setName(itemRequest.getName());
   for (  DiscreteOrderItemRequest discreteItemRequest : itemRequest.getDiscreteOrderItems()) {
-    DiscreteOrderItem discreteOrderItem=createDiscreteOrderItem(discreteItemRequest);
+    final DiscreteOrderItem discreteOrderItem=createDiscreteOrderItem(discreteItemRequest);
     discreteOrderItem.setBundleOrderItem(item);
     item.getDiscreteOrderItems().add(discreteOrderItem);
     item.assignFinalPrice();
