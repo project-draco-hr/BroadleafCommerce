@@ -2,13 +2,12 @@
   if (category == null || (ignoreTopLevel && category.getDefaultParentCategory() == null)) {
     return link;
   }
- else {
-    if (link == null) {
-      link=category.getUrlKey();
-    }
- else {
-      link=category.getUrlKey() + "/" + link;
-    }
+  String lLink;
+  if (link == null) {
+    lLink=category.getUrlKey();
   }
-  return buildLink(link,category.getDefaultParentCategory(),ignoreTopLevel);
+ else {
+    lLink=category.getUrlKey() + "/" + link;
+  }
+  return buildLink(lLink,category.getDefaultParentCategory(),ignoreTopLevel);
 }

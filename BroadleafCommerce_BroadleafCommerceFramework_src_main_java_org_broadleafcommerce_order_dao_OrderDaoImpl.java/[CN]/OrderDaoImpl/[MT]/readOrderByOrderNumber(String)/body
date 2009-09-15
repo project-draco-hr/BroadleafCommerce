@@ -3,10 +3,10 @@
     return null;
   }
   Order order=null;
-  Query query=em.createNamedQuery("BC_READ_ORDER_BY_ORDER_NUMBER");
+  final Query query=em.createNamedQuery("BC_READ_ORDER_BY_ORDER_NUMBER");
   query.setParameter("orderNumber",orderNumber);
-  List<Order> result=query.getResultList();
-  if (result.size() > 0) {
+  final List<Order> result=query.getResultList();
+  if (result != null && !result.isEmpty()) {
     order=result.get(0);
   }
   return order;
