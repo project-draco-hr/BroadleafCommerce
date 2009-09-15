@@ -1,7 +1,12 @@
 {
-  childCategoryURLMap=new HashMap<String,List<Category>>();
-  final Map<String,List<Category>> newMap=new HashMap<String,List<Category>>();
-  fillInURLMapForCategory(newMap,this,"",new ArrayList<Category>());
-  childCategoryURLMap=newMap;
-  return childCategoryURLMap;
+  try {
+    childCategoryURLMap=new HashMap<String,List<Category>>();
+    final Map<String,List<Category>> newMap=new HashMap<String,List<Category>>();
+    fillInURLMapForCategory(newMap,this,"",new ArrayList<Category>());
+    childCategoryURLMap=newMap;
+    return childCategoryURLMap;
+  }
+ catch (  CacheFactoryException e) {
+    throw new RuntimeException(e);
+  }
 }
