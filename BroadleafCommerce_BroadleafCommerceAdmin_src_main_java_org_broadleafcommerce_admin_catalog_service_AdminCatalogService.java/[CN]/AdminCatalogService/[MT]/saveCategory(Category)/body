@@ -1,9 +1,4 @@
 {
-  if (category.getCategoryImages() != null && category.getCategoryImages() instanceof ASObject) {
-    category.setCategoryImages(getImagesMapFromAsObject((ASObject)category.getCategoryImages()));
-  }
-  if (category.getCategoryMedia() != null && category.getCategoryMedia() instanceof ASObject) {
-    category.setCategoryMedia(getMediaMapFromAsObject((ASObject)category.getCategoryMedia()));
-  }
-  return catalogService.saveCategory(category);
+  Category cat=catalogService.saveCategory(mendCategoryTrees(category));
+  return cat;
 }
