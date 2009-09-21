@@ -1,0 +1,13 @@
+{
+  Category updatedOldParent=null;
+  if (oldParent != null) {
+    updatedOldParent=catalogService.saveCategory(mendCategoryTrees(oldParent));
+  }
+  Category updatedNewParent=catalogService.saveCategory(mendCategoryTrees(newParent));
+  Category updatedCategory=catalogService.saveCategory(mendCategoryTrees(category));
+  if (updatedOldParent != null) {
+    saveCategoryDisplayOrders(updatedOldParent);
+  }
+  saveCategoryDisplayOrders(updatedNewParent);
+  return updatedCategory;
+}
