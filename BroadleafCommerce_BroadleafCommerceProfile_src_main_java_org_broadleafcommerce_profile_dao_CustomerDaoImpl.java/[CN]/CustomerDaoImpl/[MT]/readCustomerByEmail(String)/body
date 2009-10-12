@@ -1,10 +1,6 @@
 {
   Query query=em.createNamedQuery("BC_READ_CUSTOMER_BY_EMAIL");
   query.setParameter("email",emailAddress);
-  try {
-    return (Customer)query.getSingleResult();
-  }
- catch (  NoResultException ne) {
-    return null;
-  }
+  List<Customer> customers=query.getResultList();
+  return customers == null || customers.isEmpty() ? null : customers.get(0);
 }
