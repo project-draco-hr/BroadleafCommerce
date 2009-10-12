@@ -1,0 +1,8 @@
+{
+  List<Product> featuredProducts=getFeaturedProducts(products);
+  if (maxFeatures != null && !"".equals(maxFeatures)) {
+    featuredProducts=featuredProducts.subList(0,(getMaxFeatureCount(maxFeatures,featuredProducts.size())));
+  }
+  super.pageContext.setAttribute(var,featuredProducts);
+  return EVAL_BODY_INCLUDE;
+}
