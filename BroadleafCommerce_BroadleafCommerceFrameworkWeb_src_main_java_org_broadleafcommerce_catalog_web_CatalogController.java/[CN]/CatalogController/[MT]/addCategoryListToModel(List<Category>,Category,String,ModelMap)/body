@@ -12,8 +12,12 @@
       categoryList=catalogService.getChildCategoryURLMapByCategoryId(rootCategory.getId()).get(url);
     }
   }
+  List<Category> siblingCategories=new ArrayList<Category>();
+  Category currentCategory=(Category)categoryList.get(categoryList.size() - 1);
+  siblingCategories=currentCategory.getAllChildCategories();
   model.addAttribute("breadcrumbCategories",categoryList);
   model.addAttribute("currentCategory",categoryList.get(categoryList.size() - 1));
   model.addAttribute("categoryError",categoryError);
+  model.addAttribute("displayCategories",siblingCategories);
   return categoryError;
 }
