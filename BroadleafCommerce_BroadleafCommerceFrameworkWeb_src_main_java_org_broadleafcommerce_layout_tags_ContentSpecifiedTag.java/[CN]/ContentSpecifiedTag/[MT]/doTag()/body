@@ -1,0 +1,35 @@
+{
+  PageContext pageContext=(PageContext)getJspContext();
+  WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+  ContentService contentService=(ContentService)applicationContext.getBean("blContentService");
+  List<ContentDetails> contentDetailObjs;
+  Date displayDate=null;
+  String sandbox="PROD";
+  List<String> contentXmls=new ArrayList<String>();
+  HttpSession session=pageContext.getSession();
+  if (session != null) {
+    String newSandbox=(String)session.getAttribute("BLC_CONTENT_SANDBOX");
+    String displayDateString=(String)session.getAttribute("BLC_CONTENT_DATE_TIME");
+    if (newSandbox != null && newSandbox != "") {
+      sandbox=newSandbox;
+    }
+    if (displayDateString != null && displayDateString != "") {
+      try {
+        displayDate=new SimpleDateFormat("MMddyyyy").parse(displayDateString);
+      }
+ catch (      ParseException exp) {
+        throw new JspException();
+      }
+    }
+  }
+  if (displayDate == null) {
+    contentDetailObjs=contentService.findContentDetails(sandbox,contentType,parameterMap);
+  }
+ else {
+    contentDetailObjs=contentService.findContentDetails(sandbox,contentType,parameterMap,displayDate);
+  }
+  for (  ContentDetails cd : contentDetailObjs) {
+    contentXmls.add(cd.getXmlContent());
+  }
+  pageContext.setAttribute(contentDetailsProperty,contentXmls);
+}

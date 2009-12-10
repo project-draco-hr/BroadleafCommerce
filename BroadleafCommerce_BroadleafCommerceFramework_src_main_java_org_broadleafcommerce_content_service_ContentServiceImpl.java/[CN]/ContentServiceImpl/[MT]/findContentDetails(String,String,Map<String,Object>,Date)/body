@@ -1,0 +1,20 @@
+{
+  List<Content> contents=contentDao.readContentSpecified(sandbox,contentType,displayDate);
+  List<Long> contentIds=new ArrayList<Long>();
+  for (  Content content : contents) {
+    if (mvelParameters != null && content.getMvel() != null && content.getMvel() != "") {
+      if (!executeExpression(content.getMvel(),mvelParameters)) {
+        contentIds.add(content.getId());
+      }
+    }
+ else {
+      contentIds.add(content.getId());
+    }
+  }
+  if (contentIds.size() > 0) {
+    return contentDetailsDao.readContentDetailsByOrderedIds(contentIds);
+  }
+ else {
+    return new ArrayList<ContentDetails>();
+  }
+}
