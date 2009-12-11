@@ -1,11 +1,9 @@
 {
-  PageContext pageContext=(PageContext)getJspContext();
   WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
   ContentService contentService=(ContentService)applicationContext.getBean("blContentService");
   List<ContentDetails> contentDetailObjs;
   Date displayDate=null;
   String sandbox="PROD";
-  List<String> contentXmls=new ArrayList<String>();
   HttpSession session=pageContext.getSession();
   if (session != null) {
     String newSandbox=(String)session.getAttribute("BLC_CONTENT_SANDBOX");
@@ -28,8 +26,12 @@
  else {
     contentDetailObjs=contentService.findContentDetails(sandbox,contentType,parameterMap,displayDate);
   }
-  for (  ContentDetails cd : contentDetailObjs) {
-    contentXmls.add(cd.getXmlContent());
+  JspWriter out=pageContext.getOut();
+  try {
+    out.write(contentService.renderedContentDetails((String)xslt,contentDetailObjs));
   }
-  pageContext.setAttribute(contentDetailsProperty,contentXmls);
+ catch (  Exception e) {
+    throw new JspException();
+  }
+  return EVAL_PAGE;
 }
