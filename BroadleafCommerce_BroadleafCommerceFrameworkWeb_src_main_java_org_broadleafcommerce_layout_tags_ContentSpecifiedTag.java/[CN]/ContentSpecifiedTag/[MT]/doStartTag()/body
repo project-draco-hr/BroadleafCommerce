@@ -28,7 +28,13 @@
   }
   JspWriter out=pageContext.getOut();
   try {
-    out.write(contentService.renderedContentDetails((String)xslt,contentDetailObjs));
+    String renderedText=contentService.renderedContentDetails((String)xslt,contentDetailObjs);
+    if (!escapeXml) {
+      out.write(renderedText);
+    }
+ else {
+      writeEscapedXml(renderedText.toCharArray(),renderedText.length(),out);
+    }
   }
  catch (  Exception e) {
     throw new JspException();
