@@ -3,7 +3,11 @@
   String sandbox=(String)request.getParameter("blcSandbox");
   String displayDate=(String)request.getParameter("blcCurrentTime");
   HttpSession session=req.getSession(true);
-  session.setAttribute(SESSION_SANDBOX_VAR,sandbox);
-  session.setAttribute(SESSION_DATE_VAR,displayDate);
+  if (sandbox != null && sandbox != "") {
+    session.setAttribute(SESSION_SANDBOX_VAR,sandbox);
+  }
+  if (displayDate != null && displayDate != "") {
+    session.setAttribute(SESSION_DATE_VAR,displayDate);
+  }
   filterChain.doFilter(request,response);
 }
