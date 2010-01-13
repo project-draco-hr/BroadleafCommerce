@@ -1,0 +1,26 @@
+{
+  if (__hashCodeCalc) {
+    return 0;
+  }
+  __hashCodeCalc=true;
+  int _hashCode=1;
+  if (getLeg() != null) {
+    for (int i=0; i < java.lang.reflect.Array.getLength(getLeg()); i++) {
+      java.lang.Object obj=java.lang.reflect.Array.get(getLeg(),i);
+      if (obj != null && !obj.getClass().isArray()) {
+        _hashCode+=obj.hashCode();
+      }
+    }
+  }
+  if (getDepartureDateTime() != null) {
+    _hashCode+=getDepartureDateTime().hashCode();
+  }
+  if (getCompleteRoute() != null) {
+    _hashCode+=getCompleteRoute().hashCode();
+  }
+  if (getJourneyType() != null) {
+    _hashCode+=getJourneyType().hashCode();
+  }
+  __hashCodeCalc=false;
+  return _hashCode;
+}
