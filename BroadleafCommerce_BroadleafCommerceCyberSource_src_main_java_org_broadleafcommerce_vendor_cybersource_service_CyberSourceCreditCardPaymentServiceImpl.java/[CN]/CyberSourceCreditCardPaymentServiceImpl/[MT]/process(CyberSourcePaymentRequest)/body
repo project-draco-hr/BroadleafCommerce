@@ -1,0 +1,37 @@
+{
+  CyberSourcePaymentResponse paymentResponse=new CyberSourcePaymentResponse();
+  paymentResponse.setServiceType(paymentRequest.getServiceType());
+  paymentResponse.setTransactionType(paymentRequest.getTransactionType());
+  paymentResponse.setVenueType(paymentRequest.getVenueType());
+  RequestMessage request=buildRequestMessage(paymentRequest);
+  ReplyMessage reply;
+  try {
+    reply=sendRequest(request);
+  }
+ catch (  Exception e) {
+    incrementFailure();
+    throw new PaymentException(e);
+  }
+  clearStatus();
+  String[] invalidFields=reply.getInvalidField();
+  String[] missingFields=reply.getMissingField();
+  if ((invalidFields != null && invalidFields.length > 0) || (missingFields != null && missingFields.length > 0)) {
+    PaymentHostException e=new PaymentHostException();
+    paymentResponse.setErrorDetected(true);
+    StringBuffer sb=new StringBuffer();
+    sb.append("invalid fields :[ ");
+    for (    String invalidField : invalidFields) {
+      sb.append(invalidField);
+    }
+    sb.append(" ]\nmissing fields: [ ");
+    for (    String missingField : missingFields) {
+      sb.append(missingField);
+    }
+    sb.append(" ]");
+    paymentResponse.setErrorText(sb.toString());
+    e.setPaymentResponse(paymentResponse);
+    throw e;
+  }
+  buildResponse(paymentResponse);
+  return paymentResponse;
+}

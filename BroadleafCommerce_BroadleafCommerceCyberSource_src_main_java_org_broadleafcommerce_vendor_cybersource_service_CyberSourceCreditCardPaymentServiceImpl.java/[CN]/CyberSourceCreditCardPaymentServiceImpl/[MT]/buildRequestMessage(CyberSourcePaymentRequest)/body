@@ -1,0 +1,9 @@
+{
+  RequestMessage request=super.buildRequestMessage(paymentRequest);
+  setCardInformation(paymentRequest,request);
+  if (CyberSourceTransactionType.AUTHORIZE.equals(paymentRequest.getTransactionType())) {
+    request.setCcAuthService(new CCAuthService());
+    request.getCcAuthService().setRun("true");
+  }
+  return request;
+}

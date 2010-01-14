@@ -1,0 +1,9 @@
+{
+  EngineConfiguration config=new FileProvider("CyberSourceDeploy.wsdd");
+  TransactionProcessorLocator service=new TransactionProcessorLocator(config);
+  URL endpoint=new URL(serverUrl);
+  ITransactionProcessorStub stub=(ITransactionProcessorStub)service.getportXML(endpoint);
+  stub._setProperty(WSHandlerConstants.USER,request.getMerchantID());
+  ReplyMessage reply=stub.runTransaction(request);
+  return reply;
+}
