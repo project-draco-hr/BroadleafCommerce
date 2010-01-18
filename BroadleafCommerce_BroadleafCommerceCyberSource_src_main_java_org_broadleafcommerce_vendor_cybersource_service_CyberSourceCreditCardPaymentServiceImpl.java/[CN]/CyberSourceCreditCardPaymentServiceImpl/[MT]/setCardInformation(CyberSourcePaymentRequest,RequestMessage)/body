@@ -6,12 +6,20 @@
   card.setCardType(cardRequest.getCardType());
   card.setCvIndicator(cardRequest.getCvIndicator());
   card.setCvNumber(cardRequest.getCvNumber());
-  card.setExpirationMonth(cardRequest.getExpirationMonth());
-  card.setExpirationYear(cardRequest.getExpirationYear());
+  if (cardRequest.getExpirationMonth() != null) {
+    card.setExpirationMonth(new BigInteger(String.valueOf(cardRequest.getExpirationMonth())));
+  }
+  if (cardRequest.getExpirationYear() != null) {
+    card.setExpirationYear(new BigInteger(String.valueOf(cardRequest.getExpirationYear())));
+  }
   card.setFullName(cardRequest.getFullName());
   card.setIssueNumber(cardRequest.getIssueNumber());
   card.setPin(cardRequest.getPin());
-  card.setStartMonth(cardRequest.getStartMonth());
-  card.setStartYear(cardRequest.getStartYear());
+  if (cardRequest.getStartMonth() != null) {
+    card.setStartMonth(new BigInteger(String.valueOf(cardRequest.getStartMonth())));
+  }
+  if (cardRequest.getStartYear() != null) {
+    card.setStartYear(new BigInteger(String.valueOf(cardRequest.getStartYear())));
+  }
   request.setCard(card);
 }

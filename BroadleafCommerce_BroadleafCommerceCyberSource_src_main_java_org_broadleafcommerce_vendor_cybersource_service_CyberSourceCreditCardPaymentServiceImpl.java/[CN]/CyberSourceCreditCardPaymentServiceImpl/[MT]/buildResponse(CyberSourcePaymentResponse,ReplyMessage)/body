@@ -2,9 +2,9 @@
   if (CyberSourceTransactionType.AUTHORIZE.equals(paymentResponse.getTransactionType())) {
     CCAuthReply authReply=reply.getCcAuthReply();
     CyberSourceAuthResponse authResponse=new CyberSourceAuthResponse();
-    authResponse.setAccountBalance(authReply.getAccountBalance());
-    authResponse.setAmount(authReply.getAmount());
-    authResponse.setApprovedAmount(authReply.getApprovedAmount());
+    authResponse.setAccountBalance(new Money(authReply.getAccountBalance()));
+    authResponse.setAmount(new Money(authReply.getAmount()));
+    authResponse.setApprovedAmount(new Money(authReply.getApprovedAmount()));
     authResponse.setApprovedTerms(authReply.getApprovedTerms());
     authResponse.setAuthenticationXID(authReply.getAuthenticationXID());
     authResponse.setAuthFactorCode(authReply.getAuthFactorCode());
@@ -32,6 +32,6 @@
     authResponse.setReconciliationID(authReply.getReconciliationID());
     authResponse.setReferralResponseNumber(authReply.getReferralResponseNumber());
     authResponse.setSubResponseCode(authReply.getSubResponseCode());
-    ((CyberSourceCreditCardResponse)paymentResponse).setAuthResponse(authResponse);
+    ((CyberSourceCardResponse)paymentResponse).setAuthResponse(authResponse);
   }
 }
