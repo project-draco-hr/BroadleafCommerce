@@ -2,7 +2,7 @@
   CyberSourcePaymentResponse paymentResponse=new CyberSourcePaymentResponse();
   paymentResponse.setServiceType(paymentRequest.getServiceType());
   paymentResponse.setTransactionType(paymentRequest.getTransactionType());
-  paymentResponse.setVenueType(paymentRequest.getVenueType());
+  paymentResponse.setVenueType(paymentRequest.getMethodType());
   RequestMessage request=buildRequestMessage(paymentRequest);
   ReplyMessage reply;
   try {
@@ -32,6 +32,6 @@
     e.setPaymentResponse(paymentResponse);
     throw e;
   }
-  buildResponse(paymentResponse);
+  buildResponse(paymentResponse,reply);
   return paymentResponse;
 }
