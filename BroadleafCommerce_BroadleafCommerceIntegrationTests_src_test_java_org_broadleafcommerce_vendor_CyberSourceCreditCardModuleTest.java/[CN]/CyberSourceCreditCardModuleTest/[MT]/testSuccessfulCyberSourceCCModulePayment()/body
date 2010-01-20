@@ -1,0 +1,34 @@
+{
+  CyberSourceCreditCardModule module=new CyberSourceCreditCardModule();
+  module.setServiceManager(serviceManager);
+  Money amount=new Money(81.46);
+  PaymentInfo paymentInfo=new PaymentInfoImpl();
+  paymentInfo.setAmount(amount);
+  Address address=new AddressImpl();
+  address.setAddressLine1("1295 Charleston Road");
+  address.setCity("Mountain View");
+  address.setCountry(new CountryImpl(){
+    @Override public String getAbbreviation(){
+      return "US";
+    }
+  }
+);
+  address.setFirstName("John");
+  address.setLastName("Doe");
+  address.setPostalCode("94043");
+  address.setState(new StateImpl(){
+    @Override public String getAbbreviation(){
+      return "CA";
+    }
+  }
+);
+  paymentInfo.setAddress(address);
+  paymentInfo.setCustomerIpAddress("10.7.111.111");
+  Order order=new OrderImpl();
+  order.setEmailAddress("null@cybersource.com");
+  paymentInfo.setOrder(order);
+  Referenced referenced=createCreditCardPaymentInfo("4111111111111111",12,2020,null);
+  PaymentContext context=new PaymentContextImpl(amount,amount,paymentInfo,referenced,"test");
+  PaymentResponseItem responseItem=module.authorize(context);
+  assert(responseItem.getAmountPaid().equals(amount));
+}
