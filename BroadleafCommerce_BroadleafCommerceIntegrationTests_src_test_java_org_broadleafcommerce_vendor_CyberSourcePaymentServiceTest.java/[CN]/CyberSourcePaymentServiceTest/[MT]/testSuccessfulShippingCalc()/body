@@ -2,4 +2,40 @@
   if (serviceManager.getMerchantId().equals("?")) {
     return;
   }
+  CyberSourceCardRequest cardRequest=new CyberSourceCardRequest();
+  cardRequest.setTransactionType(CyberSourceTransactionType.AUTHORIZE);
+  cardRequest.setServiceType(CyberSourceServiceType.PAYMENT);
+  cardRequest.setMethodType(CyberSourceMethodType.CREDITCARD);
+  cardRequest.setCurrency(Currency.getInstance(Locale.US).getCurrencyCode());
+  CyberSourceBillingRequest billingRequest=new CyberSourceBillingRequest();
+  billingRequest.setCity("Mountain View");
+  billingRequest.setFirstName("John");
+  billingRequest.setLastName("Doe");
+  billingRequest.setPostalCode("94043");
+  billingRequest.setIpAddress("10.7.111.111");
+  billingRequest.setState("CA");
+  billingRequest.setStreet1("1295 Charleston Road");
+  billingRequest.setCountry("US");
+  billingRequest.setEmail("null@cybersource.com");
+  cardRequest.setBillingRequest(billingRequest);
+  CyberSourceItemRequest itemRequest1=new CyberSourceItemRequest();
+  itemRequest1.setDescription("First Item");
+  itemRequest1.setId(1L);
+  itemRequest1.setQuantity(2L);
+  itemRequest1.setShortDescription("firstItem");
+  itemRequest1.setUnitPrice(new Money(12.34));
+  cardRequest.getItemRequests().add(itemRequest1);
+  CyberSourceItemRequest itemRequest2=new CyberSourceItemRequest();
+  itemRequest2.setDescription("Second Item");
+  itemRequest2.setId(2L);
+  itemRequest2.setQuantity(1L);
+  itemRequest2.setShortDescription("secondItem");
+  itemRequest2.setUnitPrice(new Money(56.78));
+  cardRequest.getItemRequests().add(itemRequest2);
+  cardRequest.setAccountNumber("4111111111111111");
+  cardRequest.setExpirationMonth(12);
+  cardRequest.setExpirationYear(2020);
+  CyberSourcePaymentService service=(CyberSourcePaymentService)serviceManager.getValidService(cardRequest);
+  CyberSourceCardResponse response=(CyberSourceCardResponse)service.process(cardRequest);
+  assert(response.getAuthResponse().getAmount().doubleValue() > 0D);
 }
