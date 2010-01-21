@@ -1,0 +1,9 @@
+{
+  List<Content> contentList=contentDao.readContentByIdsAndSandbox(contentIds,sandboxName);
+  for (  Content content : contentList) {
+    content.setSubmittedBy(username);
+    content.setSubmittedDate(new Date());
+    content.setSandbox("AwaitingApproval_" + username + "_"+ new Date().getTime());
+  }
+  contentDao.saveContent(contentList);
+}

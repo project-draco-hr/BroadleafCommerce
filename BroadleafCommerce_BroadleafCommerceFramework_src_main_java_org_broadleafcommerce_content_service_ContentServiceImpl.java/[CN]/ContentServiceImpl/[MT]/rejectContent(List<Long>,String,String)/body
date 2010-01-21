@@ -1,0 +1,11 @@
+{
+  List<Content> contentList=contentDao.readContentByIdsAndSandbox(contentIds,sandbox);
+  for (  Content content : contentList) {
+    content.setRejectedBy(username);
+    content.setRejectedDate(new Date());
+    content.setSandbox(content.getSubmittedBy());
+    content.setSubmittedBy(null);
+    content.setSubmittedDate(null);
+  }
+  contentDao.saveContent(contentList);
+}

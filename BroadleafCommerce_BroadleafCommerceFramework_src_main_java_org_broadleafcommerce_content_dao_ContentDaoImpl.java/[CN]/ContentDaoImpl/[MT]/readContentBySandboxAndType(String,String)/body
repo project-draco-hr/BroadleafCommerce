@@ -1,0 +1,7 @@
+{
+  Query query=em.createNamedQuery("BC_READ_CONTENT_BY_SANDBOX_AND_CONTENT_TYPE");
+  query.setParameter("sandbox",sandbox);
+  query.setParameter("contentType",contentType);
+  query.setHint(getQueryCacheableKey(),true);
+  return (List<Content>)query.getResultList();
+}
