@@ -1,34 +1,18 @@
 {
   CyberSourceCardRequest cardRequest=createCardRequest(paymentContext);
+  setCardInfo(paymentContext,cardRequest);
   cardRequest.setTransactionType(CyberSourceTransactionType.AUTHORIZE);
-  Currency currency=paymentContext.getPaymentInfo().getAmount().getCurrency();
-  if (currency == null) {
-    currency=Money.defaultCurrency();
-  }
-  cardRequest.setCurrency(currency.getCurrencyCode());
+  setCurrency(paymentContext,cardRequest);
   CyberSourceBillingRequest billingRequest=createBillingRequest(paymentContext);
   cardRequest.setBillingRequest(billingRequest);
   CyberSourceItemRequest itemRequest=createItemRequest(paymentContext);
   cardRequest.getItemRequests().add(itemRequest);
-  CyberSourcePaymentService service=(CyberSourcePaymentService)serviceManager.getValidService(cardRequest);
-  CyberSourceCardResponse response;
-  try {
-    response=(CyberSourceCardResponse)service.process(cardRequest);
-  }
- catch (  org.broadleafcommerce.vendor.service.exception.PaymentException e) {
-    throw new PaymentException(e);
-  }
-  PaymentResponseItem responseItem=new PaymentResponseItemImpl();
-  responseItem.setTransactionTimestamp(new Date());
-  responseItem.setProcessorResponseCode(response.getAuthResponse().getProcessorResponse());
-  responseItem.setProcessorResponseText(response.getAuthResponse().getProcessorResponse());
-  responseItem.setMiddlewareResponseCode(response.getReasonCode().toString());
-  responseItem.setMiddlewareResponseText(response.getDecision());
-  responseItem.setReferenceNumber(response.getMerchantReferenceCode());
-  responseItem.setTransactionId(response.getRequestToken());
+  CyberSourceCardResponse response=callService(cardRequest);
+  PaymentResponseItem responseItem=buildBasicResponse(response);
   responseItem.setAvsCode(response.getAuthResponse().getAvsCode());
   responseItem.setAuthorizationCode(response.getAuthResponse().getAuthorizationCode());
-  responseItem.setTransactionSuccess(response.getReasonCode().intValue() == 100);
   responseItem.setAmountPaid(response.getAuthResponse().getAmount());
+  responseItem.setProcessorResponseCode(response.getAuthResponse().getProcessorResponse());
+  responseItem.setProcessorResponseText(response.getAuthResponse().getProcessorResponse());
   return responseItem;
 }

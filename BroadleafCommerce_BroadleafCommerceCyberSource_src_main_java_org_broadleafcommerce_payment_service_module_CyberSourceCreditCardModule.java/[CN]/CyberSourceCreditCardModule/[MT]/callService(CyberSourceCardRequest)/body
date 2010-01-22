@@ -1,0 +1,11 @@
+{
+  CyberSourcePaymentService service=(CyberSourcePaymentService)serviceManager.getValidService(cardRequest);
+  CyberSourceCardResponse response;
+  try {
+    response=(CyberSourceCardResponse)service.process(cardRequest);
+  }
+ catch (  org.broadleafcommerce.vendor.service.exception.PaymentException e) {
+    throw new PaymentException(e);
+  }
+  return response;
+}

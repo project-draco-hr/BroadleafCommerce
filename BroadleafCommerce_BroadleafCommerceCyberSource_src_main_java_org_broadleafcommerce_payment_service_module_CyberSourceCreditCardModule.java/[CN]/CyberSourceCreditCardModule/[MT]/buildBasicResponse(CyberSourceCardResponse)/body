@@ -1,0 +1,12 @@
+{
+  PaymentResponseItem responseItem=new PaymentResponseItemImpl();
+  responseItem.setTransactionTimestamp(new Date());
+  responseItem.setMiddlewareResponseCode(response.getReasonCode().toString());
+  responseItem.setMiddlewareResponseText(response.getDecision());
+  responseItem.setReferenceNumber(response.getMerchantReferenceCode());
+  responseItem.setTransactionId(response.getRequestToken());
+  responseItem.setTransactionSuccess(response.getReasonCode().intValue() == 100);
+  responseItem.getAdditionalFields().put("requestId",response.getRequestID());
+  responseItem.getAdditionalFields().put("requestToken",response.getRequestToken());
+  return responseItem;
+}
