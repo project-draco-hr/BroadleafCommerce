@@ -73,4 +73,14 @@
     creditResponse.setRequestDateTime(creditReply.getRequestDateTime());
     ((CyberSourceCardResponse)paymentResponse).setCreditResponse(creditResponse);
   }
+  if (CyberSourceTransactionType.VOIDTRANSACTION.equals(paymentResponse.getTransactionType())) {
+    VoidReply voidReply=reply.getVoidReply();
+    CyberSourceVoidResponse voidResponse=new CyberSourceVoidResponse();
+    if (voidReply.getAmount() != null) {
+      voidResponse.setAmount(new Money(voidReply.getAmount()));
+    }
+    voidResponse.setReasonCode(voidReply.getReasonCode());
+    voidResponse.setRequestDateTime(voidReply.getRequestDateTime());
+    ((CyberSourceCardResponse)paymentResponse).setVoidResponse(voidResponse);
+  }
 }
