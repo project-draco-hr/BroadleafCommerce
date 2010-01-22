@@ -44,4 +44,9 @@
   paymentInfo.getAdditionalFields().put("requestToken",responseItem3.getAdditionalFields().get("requestToken"));
   PaymentResponseItem responseItem4=module.credit(context);
   assert(responseItem4.getAmountPaid().equals(amount));
+  PaymentResponseItem responseItem5=module.authorize(context);
+  paymentInfo.getAdditionalFields().put("requestId",responseItem5.getAdditionalFields().get("requestId"));
+  paymentInfo.getAdditionalFields().put("requestToken",responseItem5.getAdditionalFields().get("requestToken"));
+  PaymentResponseItem responseItem6=module.reverseAuthorize(context);
+  assert(responseItem6.getAmountPaid().equals(amount));
 }

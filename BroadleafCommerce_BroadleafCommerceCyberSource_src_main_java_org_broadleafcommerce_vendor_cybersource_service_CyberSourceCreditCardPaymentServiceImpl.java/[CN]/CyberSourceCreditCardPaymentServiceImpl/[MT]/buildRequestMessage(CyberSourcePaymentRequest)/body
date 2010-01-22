@@ -34,5 +34,13 @@
     request.getVoidService().setVoidRequestID(cardRequest.getRequestID());
     request.getVoidService().setVoidRequestToken(cardRequest.getRequestToken());
   }
+  if (CyberSourceTransactionType.REVERSEAUTHORIZE.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest cardRequest=(CyberSourceCardRequest)paymentRequest;
+    setItemInformation(paymentRequest,request);
+    request.setCcAuthReversalService(new CCAuthReversalService());
+    request.getCcAuthReversalService().setRun("true");
+    request.getCcAuthReversalService().setAuthRequestID(cardRequest.getRequestID());
+    request.getCcAuthReversalService().setAuthRequestToken(cardRequest.getRequestToken());
+  }
   return request;
 }

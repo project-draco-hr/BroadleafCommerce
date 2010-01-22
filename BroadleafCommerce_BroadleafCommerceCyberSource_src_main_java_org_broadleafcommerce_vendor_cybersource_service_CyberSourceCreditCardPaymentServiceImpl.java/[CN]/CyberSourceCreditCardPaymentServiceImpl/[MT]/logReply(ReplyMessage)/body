@@ -125,6 +125,20 @@
       sb.append("\nReason Code: ");
       sb.append(voidReply.getReasonCode());
     }
+    if (reply.getCcAuthReversalReply() != null) {
+      sb.append("\nAUTH REVERSE REPLY");
+      CCAuthReversalReply authReverseReply=reply.getCcAuthReversalReply();
+      sb.append("\nAmount: ");
+      sb.append(authReverseReply.getAmount());
+      sb.append("\nAuthorization Code: ");
+      sb.append(authReverseReply.getAuthorizationCode());
+      sb.append("\nRequest Date Time: ");
+      sb.append(authReverseReply.getRequestDateTime());
+      sb.append("\nReason Code: ");
+      sb.append(authReverseReply.getReasonCode());
+      sb.append("\nProcessor Response: ");
+      sb.append(authReverseReply.getProcessorResponse());
+    }
     LOG.debug("CyberSource Response:\n" + sb.toString());
   }
 }

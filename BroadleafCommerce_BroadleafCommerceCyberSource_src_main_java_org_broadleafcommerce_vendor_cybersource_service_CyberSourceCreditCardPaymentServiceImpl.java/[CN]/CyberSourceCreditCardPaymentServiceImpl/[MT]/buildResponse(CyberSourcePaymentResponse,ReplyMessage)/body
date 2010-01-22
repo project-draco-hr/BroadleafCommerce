@@ -83,4 +83,16 @@
     voidResponse.setRequestDateTime(voidReply.getRequestDateTime());
     ((CyberSourceCardResponse)paymentResponse).setVoidResponse(voidResponse);
   }
+  if (CyberSourceTransactionType.REVERSEAUTHORIZE.equals(paymentResponse.getTransactionType())) {
+    CCAuthReversalReply authReverseReply=reply.getCcAuthReversalReply();
+    CyberSourceAuthReverseResponse authReverseResponse=new CyberSourceAuthReverseResponse();
+    if (authReverseReply.getAmount() != null) {
+      authReverseResponse.setAmount(new Money(authReverseReply.getAmount()));
+    }
+    authReverseResponse.setReasonCode(authReverseReply.getReasonCode());
+    authReverseResponse.setRequestDateTime(authReverseReply.getRequestDateTime());
+    authReverseResponse.setAuthorizationCode(authReverseReply.getAuthorizationCode());
+    authReverseResponse.setProcessorResponse(authReverseReply.getProcessorResponse());
+    ((CyberSourceCardResponse)paymentResponse).setAuthReverseResponse(authReverseResponse);
+  }
 }
