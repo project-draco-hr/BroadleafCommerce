@@ -38,4 +38,6 @@
   paymentInfo.getAdditionalFields().put("requestToken",responseItem.getAdditionalFields().get("requestToken"));
   PaymentResponseItem responseItem2=module.debit(context);
   assert(responseItem2.getAmountPaid().equals(amount));
+  PaymentResponseItem responseItem3=module.authorizeAndDebit(context);
+  assert(responseItem3.getAmountPaid().equals(amount));
 }

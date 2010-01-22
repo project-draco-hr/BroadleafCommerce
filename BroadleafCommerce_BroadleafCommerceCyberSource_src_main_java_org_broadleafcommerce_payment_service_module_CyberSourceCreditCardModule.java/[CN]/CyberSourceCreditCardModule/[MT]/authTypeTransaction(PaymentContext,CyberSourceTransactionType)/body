@@ -1,0 +1,18 @@
+{
+  CyberSourceCardRequest cardRequest=createCardRequest(paymentContext);
+  setCardInfo(paymentContext,cardRequest);
+  cardRequest.setTransactionType(transactionType);
+  setCurrency(paymentContext,cardRequest);
+  CyberSourceBillingRequest billingRequest=createBillingRequest(paymentContext);
+  cardRequest.setBillingRequest(billingRequest);
+  CyberSourceItemRequest itemRequest=createItemRequest(paymentContext);
+  cardRequest.getItemRequests().add(itemRequest);
+  CyberSourceCardResponse response=callService(cardRequest);
+  PaymentResponseItem responseItem=buildBasicResponse(response);
+  responseItem.setAvsCode(response.getAuthResponse().getAvsCode());
+  responseItem.setAuthorizationCode(response.getAuthResponse().getAuthorizationCode());
+  responseItem.setAmountPaid(response.getAuthResponse().getAmount());
+  responseItem.setProcessorResponseCode(response.getAuthResponse().getProcessorResponse());
+  responseItem.setProcessorResponseText(response.getAuthResponse().getProcessorResponse());
+  return responseItem;
+}
