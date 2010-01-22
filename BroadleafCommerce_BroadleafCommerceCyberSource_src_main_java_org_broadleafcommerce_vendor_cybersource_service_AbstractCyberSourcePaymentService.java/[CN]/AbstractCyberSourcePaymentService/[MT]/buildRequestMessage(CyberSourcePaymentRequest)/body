@@ -5,17 +5,8 @@
   request.setClientLibrary("Java Axis WSS4J");
   request.setClientLibraryVersion(libVersion);
   request.setClientEnvironment(System.getProperty("os.name") + "/" + System.getProperty("os.version")+ "/"+ System.getProperty("java.vendor")+ "/"+ System.getProperty("java.version"));
-  setBillingInformation(paymentRequest,request);
   PurchaseTotals purchaseTotals=new PurchaseTotals();
   purchaseTotals.setCurrency(paymentRequest.getCurrency());
   request.setPurchaseTotals(purchaseTotals);
-  Item[] items=new Item[paymentRequest.getItemRequests().size()];
-  for (int j=0; j < items.length; j++) {
-    items[j]=new Item();
-    items[j].setId(new BigInteger(String.valueOf(paymentRequest.getItemRequests().get(j).getId())));
-    items[j].setUnitPrice(paymentRequest.getItemRequests().get(j).getUnitPrice().toString());
-    items[j].setQuantity(new BigInteger(String.valueOf(paymentRequest.getItemRequests().get(j).getQuantity())));
-  }
-  request.setItem(items);
   return request;
 }

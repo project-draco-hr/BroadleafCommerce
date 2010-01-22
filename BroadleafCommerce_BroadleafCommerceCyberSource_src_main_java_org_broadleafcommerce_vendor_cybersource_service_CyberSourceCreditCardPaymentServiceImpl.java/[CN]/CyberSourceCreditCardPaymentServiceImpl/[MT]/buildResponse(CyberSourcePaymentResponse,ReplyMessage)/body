@@ -9,7 +9,7 @@
   }
   paymentResponse.setRequestID(reply.getRequestID());
   paymentResponse.setRequestToken(reply.getRequestToken());
-  if (CyberSourceTransactionType.AUTHORIZE.equals(paymentResponse.getTransactionType())) {
+  if (CyberSourceTransactionType.AUTHORIZE.equals(paymentResponse.getTransactionType()) || CyberSourceTransactionType.AUTHORIZEANDCAPTURE.equals(paymentResponse.getTransactionType())) {
     CCAuthReply authReply=reply.getCcAuthReply();
     CyberSourceAuthResponse authResponse=new CyberSourceAuthResponse();
     if (authReply.getAccountBalance() != null) {
@@ -50,5 +50,16 @@
     authResponse.setReferralResponseNumber(authReply.getReferralResponseNumber());
     authResponse.setSubResponseCode(authReply.getSubResponseCode());
     ((CyberSourceCardResponse)paymentResponse).setAuthResponse(authResponse);
+  }
+  if (CyberSourceTransactionType.AUTHORIZEANDCAPTURE.equals(paymentResponse.getTransactionType()) || CyberSourceTransactionType.CAPTURE.equals(paymentResponse.getTransactionType())) {
+    CCCaptureReply captureReply=reply.getCcCaptureReply();
+    CyberSourceCaptureResponse captureResponse=new CyberSourceCaptureResponse();
+    if (captureReply.getAmount() != null) {
+      captureResponse.setAmount(new Money(captureReply.getAmount()));
+    }
+    captureResponse.setReasonCode(captureReply.getReasonCode());
+    captureResponse.setRequestDateTime(captureResponse.getRequestDateTime());
+    captureResponse.setReconciliationID(captureReply.getReconciliationID());
+    ((CyberSourceCardResponse)paymentResponse).setCaptureResponse(captureResponse);
   }
 }
