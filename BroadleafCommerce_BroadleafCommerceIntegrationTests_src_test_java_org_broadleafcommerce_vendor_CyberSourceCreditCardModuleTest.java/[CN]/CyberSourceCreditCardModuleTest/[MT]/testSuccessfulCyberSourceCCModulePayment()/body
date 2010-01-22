@@ -40,4 +40,8 @@
   assert(responseItem2.getAmountPaid().equals(amount));
   PaymentResponseItem responseItem3=module.authorizeAndDebit(context);
   assert(responseItem3.getAmountPaid().equals(amount));
+  paymentInfo.getAdditionalFields().put("requestId",responseItem3.getAdditionalFields().get("requestId"));
+  paymentInfo.getAdditionalFields().put("requestToken",responseItem3.getAdditionalFields().get("requestToken"));
+  PaymentResponseItem responseItem4=module.credit(context);
+  assert(responseItem4.getAmountPaid().equals(amount));
 }

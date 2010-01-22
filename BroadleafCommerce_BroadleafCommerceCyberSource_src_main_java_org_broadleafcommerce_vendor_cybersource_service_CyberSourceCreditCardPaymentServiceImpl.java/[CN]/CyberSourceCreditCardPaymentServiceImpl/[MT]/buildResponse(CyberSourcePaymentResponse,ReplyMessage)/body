@@ -62,4 +62,15 @@
     captureResponse.setReconciliationID(captureReply.getReconciliationID());
     ((CyberSourceCardResponse)paymentResponse).setCaptureResponse(captureResponse);
   }
+  if (CyberSourceTransactionType.CREDIT.equals(paymentResponse.getTransactionType())) {
+    CCCreditReply creditReply=reply.getCcCreditReply();
+    CyberSourceCreditResponse creditResponse=new CyberSourceCreditResponse();
+    if (creditReply.getAmount() != null) {
+      creditResponse.setAmount(new Money(creditReply.getAmount()));
+    }
+    creditResponse.setReasonCode(creditReply.getReasonCode());
+    creditResponse.setReconciliationID(creditReply.getReconciliationID());
+    creditResponse.setRequestDateTime(creditReply.getRequestDateTime());
+    ((CyberSourceCardResponse)paymentResponse).setCreditResponse(creditResponse);
+  }
 }

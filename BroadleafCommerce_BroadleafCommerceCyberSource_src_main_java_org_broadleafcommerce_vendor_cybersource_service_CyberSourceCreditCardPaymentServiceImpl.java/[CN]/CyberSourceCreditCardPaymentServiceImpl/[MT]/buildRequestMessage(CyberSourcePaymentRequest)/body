@@ -19,5 +19,13 @@
     request.getCcCaptureService().setAuthRequestID(captureRequest.getRequestID());
     request.getCcCaptureService().setAuthRequestToken(captureRequest.getRequestToken());
   }
+  if (CyberSourceTransactionType.CREDIT.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest captureRequest=(CyberSourceCardRequest)paymentRequest;
+    setItemInformation(paymentRequest,request);
+    request.setCcCreditService(new CCCreditService());
+    request.getCcCreditService().setRun("true");
+    request.getCcCreditService().setCaptureRequestID(captureRequest.getRequestID());
+    request.getCcCreditService().setCaptureRequestToken(captureRequest.getRequestToken());
+  }
   return request;
 }
