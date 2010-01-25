@@ -1,0 +1,46 @@
+{
+  RequestMessage request=super.buildRequestMessage(paymentRequest);
+  if (CyberSourceTransactionType.AUTHORIZE.equals(paymentRequest.getTransactionType()) || CyberSourceTransactionType.AUTHORIZEANDCAPTURE.equals(paymentRequest.getTransactionType())) {
+    setCardInformation(paymentRequest,request);
+    setBillingInformation(paymentRequest,request);
+    setItemInformation(paymentRequest,request);
+    request.setCcAuthService(new CCAuthService());
+    request.getCcAuthService().setRun("true");
+  }
+  if (CyberSourceTransactionType.AUTHORIZEANDCAPTURE.equals(paymentRequest.getTransactionType())) {
+    request.setCcCaptureService(new CCCaptureService());
+    request.getCcCaptureService().setRun("true");
+  }
+  if (CyberSourceTransactionType.CAPTURE.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest cardRequest=(CyberSourceCardRequest)paymentRequest;
+    setItemInformation(paymentRequest,request);
+    request.setCcCaptureService(new CCCaptureService());
+    request.getCcCaptureService().setRun("true");
+    request.getCcCaptureService().setAuthRequestID(cardRequest.getRequestID());
+    request.getCcCaptureService().setAuthRequestToken(cardRequest.getRequestToken());
+  }
+  if (CyberSourceTransactionType.CREDIT.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest cardRequest=(CyberSourceCardRequest)paymentRequest;
+    setItemInformation(paymentRequest,request);
+    request.setCcCreditService(new CCCreditService());
+    request.getCcCreditService().setRun("true");
+    request.getCcCreditService().setCaptureRequestID(cardRequest.getRequestID());
+    request.getCcCreditService().setCaptureRequestToken(cardRequest.getRequestToken());
+  }
+  if (CyberSourceTransactionType.VOIDTRANSACTION.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest cardRequest=(CyberSourceCardRequest)paymentRequest;
+    request.setVoidService(new VoidService());
+    request.getVoidService().setRun("true");
+    request.getVoidService().setVoidRequestID(cardRequest.getRequestID());
+    request.getVoidService().setVoidRequestToken(cardRequest.getRequestToken());
+  }
+  if (CyberSourceTransactionType.REVERSEAUTHORIZE.equals(paymentRequest.getTransactionType())) {
+    CyberSourceCardRequest cardRequest=(CyberSourceCardRequest)paymentRequest;
+    setItemInformation(paymentRequest,request);
+    request.setCcAuthReversalService(new CCAuthReversalService());
+    request.getCcAuthReversalService().setRun("true");
+    request.getCcAuthReversalService().setAuthRequestID(cardRequest.getRequestID());
+    request.getCcAuthReversalService().setAuthRequestToken(cardRequest.getRequestToken());
+  }
+  return request;
+}

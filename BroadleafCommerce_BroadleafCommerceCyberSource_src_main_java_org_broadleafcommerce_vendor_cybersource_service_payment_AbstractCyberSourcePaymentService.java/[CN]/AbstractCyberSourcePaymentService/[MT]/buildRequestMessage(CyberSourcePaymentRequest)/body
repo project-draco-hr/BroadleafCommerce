@@ -1,0 +1,15 @@
+{
+  RequestMessage request=new RequestMessage();
+  request.setMerchantID(getMerchantId());
+  request.setMerchantReferenceCode(getIdGenerationService().findNextId("org.broadleafcommerce.vendor.cybersource.service.CyberSourcePaymentService").toString());
+  request.setClientLibrary("Java Axis WSS4J");
+  request.setClientLibraryVersion(getLibVersion());
+  request.setClientEnvironment(System.getProperty("os.name") + "/" + System.getProperty("os.version")+ "/"+ System.getProperty("java.vendor")+ "/"+ System.getProperty("java.version"));
+  PurchaseTotals purchaseTotals=new PurchaseTotals();
+  purchaseTotals.setCurrency(paymentRequest.getCurrency());
+  if (paymentRequest.getGrandTotal() != null && paymentRequest.getUseGrandTotal().booleanValue()) {
+    purchaseTotals.setGrandTotalAmount(paymentRequest.getGrandTotal().toString());
+  }
+  request.setPurchaseTotals(purchaseTotals);
+  return request;
+}

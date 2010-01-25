@@ -1,0 +1,31 @@
+{
+  RequestMessage request=new RequestMessage();
+  request.setMerchantID(getMerchantId());
+  request.setMerchantReferenceCode(getIdGenerationService().findNextId("org.broadleafcommerce.vendor.cybersource.service.CyberSourceTaxService").toString());
+  request.setClientLibrary("Java Axis WSS4J");
+  request.setClientLibraryVersion(getLibVersion());
+  request.setClientEnvironment(System.getProperty("os.name") + "/" + System.getProperty("os.version")+ "/"+ System.getProperty("java.vendor")+ "/"+ System.getProperty("java.version"));
+  PurchaseTotals purchaseTotals=new PurchaseTotals();
+  purchaseTotals.setCurrency(taxRequest.getCurrency());
+  if (taxRequest.getUseGrandTotal().booleanValue() && taxRequest.getGrandTotal() != null) {
+    purchaseTotals.setGrandTotalAmount(taxRequest.getGrandTotal().toString());
+  }
+  request.setPurchaseTotals(purchaseTotals);
+  setItemInformation(taxRequest,request);
+  TaxService taxService=new TaxService();
+  taxService.setNexus(taxRequest.getNexus());
+  taxService.setNoNexus(taxRequest.getNoNexus());
+  taxService.setOrderAcceptanceCity(taxRequest.getOrderAcceptanceCity());
+  taxService.setOrderAcceptanceCountry(taxRequest.getOrderAcceptanceCountry());
+  taxService.setOrderAcceptanceCounty(taxRequest.getOrderAcceptanceCounty());
+  taxService.setOrderAcceptancePostalCode(taxRequest.getOrderAcceptancePostalCode());
+  taxService.setOrderAcceptanceState(taxRequest.getOrderAcceptanceState());
+  taxService.setOrderOriginCity(taxRequest.getOrderOriginCity());
+  taxService.setOrderOriginCountry(taxRequest.getOrderOriginCountry());
+  taxService.setOrderOriginCounty(taxRequest.getOrderOriginCounty());
+  taxService.setOrderOriginPostalCode(taxRequest.getOrderOriginPostalCode());
+  taxService.setOrderOriginState(taxRequest.getOrderOriginState());
+  taxService.setRun("true");
+  request.setTaxService(taxService);
+  return request;
+}
