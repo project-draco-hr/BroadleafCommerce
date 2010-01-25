@@ -1,0 +1,29 @@
+{
+  if (serviceManager.getMerchantId().equals("?")) {
+    return;
+  }
+  CyberSourceTaxRequest taxRequest=new CyberSourceTaxRequest();
+  taxRequest.setCurrency(Currency.getInstance(Locale.US).getCurrencyCode());
+  taxRequest.setNexus("CA");
+  taxRequest.setOrderAcceptancePostalCode("94043");
+  taxRequest.setOrderOriginPostalCode("94043");
+  CyberSourceBillingRequest billingRequest=new CyberSourceBillingRequest();
+  billingRequest.setCity("Mountain View");
+  billingRequest.setPostalCode("94043");
+  billingRequest.setState("CA");
+  billingRequest.setStreet1("1295 Charleston Road");
+  billingRequest.setCountry("US");
+  taxRequest.setBillingRequest(billingRequest);
+  CyberSourceTaxItemRequest itemRequest1=new CyberSourceTaxItemRequest();
+  itemRequest1.setDescription("First Item");
+  itemRequest1.setId(1L);
+  itemRequest1.setQuantity(2L);
+  itemRequest1.setShortDescription("firstItem");
+  itemRequest1.setUnitPrice(new Money(12.34));
+  ArrayList<CyberSourceTaxItemRequest> itemRequests=new ArrayList<CyberSourceTaxItemRequest>();
+  itemRequests.add(itemRequest1);
+  taxRequest.setItemRequests(itemRequests);
+  CyberSourceTaxService service=(CyberSourceTaxService)serviceManager.getValidService(taxRequest);
+  CyberSourceTaxResponse response=(CyberSourceTaxResponse)service.process(taxRequest);
+  assert(response.getReasonCode().intValue() == 100);
+}

@@ -26,45 +26,49 @@
     sb.append("\nRequest Token: ");
     sb.append(reply.getRequestToken());
     TaxReply taxReply=reply.getTaxReply();
-    sb.append("\nCity: ");
-    sb.append(taxReply.getCity());
-    sb.append("\nCounty: ");
-    sb.append(taxReply.getCounty());
-    sb.append("\nCurrency: ");
-    sb.append(taxReply.getCurrency());
-    sb.append("\nGeoCode: ");
-    sb.append(taxReply.getGeocode());
-    sb.append("\nGrand Total Amount: ");
-    sb.append(taxReply.getGrandTotalAmount());
-    sb.append("\nPostal Code: ");
-    sb.append(taxReply.getPostalCode());
-    sb.append("\nState: ");
-    sb.append(taxReply.getState());
-    sb.append("\nTotal City Tax: ");
-    sb.append(taxReply.getTotalCityTaxAmount());
-    sb.append("\nTotal County Tax: ");
-    sb.append(taxReply.getTotalCountyTaxAmount());
-    sb.append("\nTotal District Tax: ");
-    sb.append(taxReply.getTotalDistrictTaxAmount());
-    sb.append("\nTotal State Tax: ");
-    sb.append(taxReply.getTotalStateTaxAmount());
-    sb.append("\nTotal Tax: ");
-    sb.append(taxReply.getTotalTaxAmount());
-    TaxReplyItem[] replies=taxReply.getItem();
-    for (    TaxReplyItem item : replies) {
-      sb.append("\nITEM");
-      sb.append("\nCity Tax: ");
-      sb.append(item.getCityTaxAmount());
-      sb.append("\nCounty Tax: ");
-      sb.append(item.getCountyTaxAmount());
-      sb.append("\nDistrict Tax: ");
-      sb.append(item.getDistrictTaxAmount());
-      sb.append("\nState Tax: ");
-      sb.append(item.getStateTaxAmount());
+    if (taxReply != null) {
+      sb.append("\nCity: ");
+      sb.append(taxReply.getCity());
+      sb.append("\nCounty: ");
+      sb.append(taxReply.getCounty());
+      sb.append("\nCurrency: ");
+      sb.append(taxReply.getCurrency());
+      sb.append("\nGeoCode: ");
+      sb.append(taxReply.getGeocode());
+      sb.append("\nGrand Total Amount: ");
+      sb.append(taxReply.getGrandTotalAmount());
+      sb.append("\nPostal Code: ");
+      sb.append(taxReply.getPostalCode());
+      sb.append("\nState: ");
+      sb.append(taxReply.getState());
+      sb.append("\nTotal City Tax: ");
+      sb.append(taxReply.getTotalCityTaxAmount());
+      sb.append("\nTotal County Tax: ");
+      sb.append(taxReply.getTotalCountyTaxAmount());
+      sb.append("\nTotal District Tax: ");
+      sb.append(taxReply.getTotalDistrictTaxAmount());
+      sb.append("\nTotal State Tax: ");
+      sb.append(taxReply.getTotalStateTaxAmount());
       sb.append("\nTotal Tax: ");
-      sb.append(item.getTotalTaxAmount());
-      sb.append("\nId: ");
-      sb.append(item.getId());
+      sb.append(taxReply.getTotalTaxAmount());
+      TaxReplyItem[] replies=taxReply.getItem();
+      if (replies != null) {
+        for (        TaxReplyItem item : replies) {
+          sb.append("\nITEM");
+          sb.append("\nCity Tax: ");
+          sb.append(item.getCityTaxAmount());
+          sb.append("\nCounty Tax: ");
+          sb.append(item.getCountyTaxAmount());
+          sb.append("\nDistrict Tax: ");
+          sb.append(item.getDistrictTaxAmount());
+          sb.append("\nState Tax: ");
+          sb.append(item.getStateTaxAmount());
+          sb.append("\nTotal Tax: ");
+          sb.append(item.getTotalTaxAmount());
+          sb.append("\nId: ");
+          sb.append(item.getId());
+        }
+      }
     }
     LOG.debug("CyberSource Response:\n" + sb.toString());
   }
