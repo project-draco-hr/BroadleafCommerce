@@ -1,5 +1,7 @@
 {
-  Query query=em.createNamedQuery("BC_READ_CONTENT_BY_SANDBOX");
+  Query query=null;
+  if (sandbox.endsWith("*"))   query=em.createNamedQuery("BC_READ_CONTENT_BY_LIKE_SANDBOX");
+ else   query=em.createNamedQuery("BC_READ_CONTENT_BY_SANDBOX");
   query.setParameter("sandbox",sandbox);
   query.setHint(getQueryCacheableKey(),true);
   return (List<Content>)query.getResultList();
