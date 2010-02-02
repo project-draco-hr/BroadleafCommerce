@@ -22,23 +22,25 @@
       String elName=fstNode.getNodeName();
       NodeList nl=fstElmnt.getChildNodes();
       Node dataNode=nl.item(0);
-      String nodeData=dataNode.getNodeValue();
-      if (elName.contains("64")) {
-        try {
-          root.put(elName,new String(Base64.decodeBase64(nodeData.getBytes()),"UTF-8"));
+      if (dataNode != null) {
+        String nodeData=dataNode.getNodeValue();
+        if (elName.contains("64")) {
+          try {
+            root.put(elName,new String(Base64.decodeBase64(nodeData.getBytes()),"UTF-8"));
+          }
+ catch (          Exception e) {
+            LOG.error("Error during decode. ",e);
+            throw e;
+          }
         }
- catch (        Exception e) {
-          LOG.error("Error during decode. ",e);
-          throw e;
+ else         if (nodeData.contains("<![CDATA[")) {
+          nodeData.replace("<![CDATA[","");
+          nodeData.replace("]]>","");
+          root.put(elName,nodeData);
         }
-      }
- else       if (nodeData.contains("<![CDATA[")) {
-        nodeData.replace("<![CDATA[","");
-        nodeData.replace("]]>","");
-        root.put(elName,nodeData);
-      }
  else {
-        root.put(elName,nodeData);
+          root.put(elName,nodeData);
+        }
       }
     }
   }
