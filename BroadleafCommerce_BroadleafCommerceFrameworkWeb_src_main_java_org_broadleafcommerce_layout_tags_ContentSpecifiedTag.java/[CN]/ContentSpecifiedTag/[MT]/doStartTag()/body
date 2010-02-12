@@ -1,7 +1,7 @@
 {
   WebApplicationContext applicationContext=WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
   ContentService contentService=(ContentService)applicationContext.getBean("blContentService");
-  List<ContentDetails> contentDetailObjs;
+  List<Content> contentObjs;
   Date displayDate=null;
   String sandbox="PROD";
   HttpSession session=pageContext.getSession();
@@ -21,14 +21,14 @@
     }
   }
   if (displayDate == null) {
-    contentDetailObjs=contentService.findContentDetails(sandbox,contentType,parameterMap);
+    contentObjs=contentService.findContent(sandbox,contentType,parameterMap,new Date());
   }
  else {
-    contentDetailObjs=contentService.findContentDetails(sandbox,contentType,parameterMap,displayDate);
+    contentObjs=contentService.findContent(sandbox,contentType,parameterMap,displayDate);
   }
   JspWriter out=pageContext.getOut();
   try {
-    String renderedText=contentService.renderedContentDetails((String)xslt,contentDetailObjs,rowCount);
+    String renderedText=contentService.renderedContent((String)xslt,contentObjs,rowCount);
     if (!escapeXml) {
       out.write(renderedText);
     }
