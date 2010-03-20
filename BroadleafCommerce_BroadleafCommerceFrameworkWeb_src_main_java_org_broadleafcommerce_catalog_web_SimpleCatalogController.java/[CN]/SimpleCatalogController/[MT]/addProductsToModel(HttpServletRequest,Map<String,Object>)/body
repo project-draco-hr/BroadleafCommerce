@@ -3,13 +3,13 @@
   String productId=request.getParameter("productId");
   if (productId != null) {
     Product product=catalogService.findProductById(new Long(productId));
-    if (product != null) {
+    if (product != null && product.isActive()) {
       productFound=validateProductAndAddToModel(product,model);
     }
   }
  else {
     Category currentCategory=(Category)model.get("currentCategory");
-    List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
+    List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory,SystemTime.asDate());
     model.put("currentProducts",productList);
   }
   return productFound;

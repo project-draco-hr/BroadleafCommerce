@@ -1,0 +1,12 @@
+{
+  boolean foundItem=false;
+  for (int j=0; j < primaryNodes.length; j++) {
+    if (primaryNodes[j].getNodeName().equals(testNode.getNodeName())) {
+      Node newNode=primaryNodes[j].getOwnerDocument().importNode(testNode.cloneNode(true),true);
+      primaryNodes[j].getParentNode().replaceChild(newNode,primaryNodes[j]);
+      usedNodes.add(testNode);
+      foundItem=true;
+    }
+  }
+  return foundItem;
+}

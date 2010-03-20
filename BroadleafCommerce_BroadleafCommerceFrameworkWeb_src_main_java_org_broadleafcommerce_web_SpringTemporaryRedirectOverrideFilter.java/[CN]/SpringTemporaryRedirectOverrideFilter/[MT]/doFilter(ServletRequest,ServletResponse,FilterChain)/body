@@ -1,0 +1,7 @@
+{
+  BroadleafResponseWrapper responseWrapper=new BroadleafResponseWrapper((HttpServletResponse)response);
+  chain.doFilter(request,responseWrapper);
+  if (response instanceof BroadleafResponseWrapper && 302 == ((BroadleafResponseWrapper)response).getStatus() && isUrlMatch(((HttpServletRequest)request).getRequestURI())) {
+    ((HttpServletResponse)response).setStatus(301);
+  }
+}

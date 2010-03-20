@@ -1,0 +1,14 @@
+{
+  TimeSource applicableTimeSource;
+  TimeSource localTS=localTimeSource.get();
+  if (localTS != null) {
+    applicableTimeSource=localTS;
+  }
+ else   if (globalTimeSource != null) {
+    applicableTimeSource=globalTimeSource;
+  }
+ else {
+    applicableTimeSource=defaultTimeSource;
+  }
+  return applicableTimeSource;
+}

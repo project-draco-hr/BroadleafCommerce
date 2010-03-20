@@ -2,22 +2,24 @@
   Category currentCategory=(Category)model.get("currentCategory");
   Category rootCategory=(Category)model.get("rootCategory");
   int productPosition=0;
-  List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
+  List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory,SystemTime.asDate());
   if (productList != null) {
     model.put("currentProducts",productList);
   }
   productPosition=findProductPositionInList(product,productList);
   if (productPosition == 0) {
     currentCategory=product.getDefaultCategory();
-    model.put("currentCategory",currentCategory);
-    productList=catalogService.findActiveProductsByCategory(currentCategory);
-    if (productList != null) {
-      model.put("currentProducts",productList);
-    }
-    String url=currentCategory.getGeneratedUrl();
-    List<Category> categoryList=buildCategoryList(rootCategory,currentCategory,url);
-    if (categoryList != null) {
-      productPosition=findProductPositionInList(product,productList);
+    if (currentCategory.isActive()) {
+      model.put("currentCategory",currentCategory);
+      productList=catalogService.findActiveProductsByCategory(currentCategory,SystemTime.asDate());
+      if (productList != null) {
+        model.put("currentProducts",productList);
+      }
+      String url=currentCategory.getGeneratedUrl();
+      List<Category> categoryList=buildCategoryList(rootCategory,currentCategory,url);
+      if (categoryList != null) {
+        productPosition=findProductPositionInList(product,productList);
+      }
     }
   }
   if (productPosition != 0) {

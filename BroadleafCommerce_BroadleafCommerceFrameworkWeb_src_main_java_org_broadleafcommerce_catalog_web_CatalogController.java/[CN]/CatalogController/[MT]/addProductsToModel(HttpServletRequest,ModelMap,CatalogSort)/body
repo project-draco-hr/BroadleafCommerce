@@ -3,14 +3,14 @@
   String productId=request.getParameter("productId");
   if (productId != null) {
     Product product=catalogService.findProductById(new Long(productId));
-    if (product != null) {
+    if (product != null && product.isActive()) {
       productFound=validateProductAndAddToModel(product,model);
       addRatingSummaryToModel(productId,model);
     }
   }
  else {
     Category currentCategory=(Category)model.get("currentCategory");
-    List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory);
+    List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory,SystemTime.asDate());
     SearchFilterUtil.filterProducts(productList,request.getParameterMap(),new String[]{"manufacturer","skus[0].salePrice"});
     if ((catalogSort != null) && (catalogSort.getSort() != null)) {
       populateProducts(productList,currentCategory);
