@@ -12,7 +12,7 @@
   getProductsByCategoryIdTag.setVar("productListVar");
   EasyMock.expect(pageContext.getAttribute("productListVar")).andReturn(productList);
   EasyMock.expect(catalogService.findCategoryById(0L)).andReturn(c);
-  EasyMock.expect(catalogService.findActiveProductsByCategory(c,SystemTime.asDate())).andReturn(productList);
+  EasyMock.expect(catalogService.findActiveProductsByCategory(c,new Date())).andReturn(productList);
   EasyMock.replay(p1,p2,c);
   super.replayAdditionalMockObjects();
   getProductsByCategoryIdTag.doTag();
