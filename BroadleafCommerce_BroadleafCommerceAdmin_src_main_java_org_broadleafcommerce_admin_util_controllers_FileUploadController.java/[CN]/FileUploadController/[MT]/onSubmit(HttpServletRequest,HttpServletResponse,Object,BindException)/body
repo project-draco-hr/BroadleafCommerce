@@ -4,8 +4,7 @@
   if (file == null) {
   }
   try {
-    String uriBegining=request.getRequestURI().substring(1,request.getRequestURI().indexOf("/",2));
-    String basepath=request.getPathTranslated().substring(0,request.getPathTranslated().indexOf(uriBegining) + uriBegining.length());
+    String basepath=request.getPathTranslated().substring(0,request.getPathTranslated().indexOf("/upload"));
     String absoluteFilename=basepath + File.separator + bean.getDirectory()+ File.separator+ file.getOriginalFilename();
     FileSystemResource fileResource=new FileSystemResource(absoluteFilename);
     checkDirectory(basepath + bean.getDirectory());
