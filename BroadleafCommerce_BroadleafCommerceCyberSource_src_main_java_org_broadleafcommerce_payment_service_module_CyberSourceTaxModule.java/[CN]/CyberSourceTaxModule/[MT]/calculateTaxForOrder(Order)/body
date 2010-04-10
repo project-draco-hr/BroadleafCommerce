@@ -1,3 +1,16 @@
 {
-  throw new RuntimeException("not implemented!");
+  if (orderAcceptanceCountry != null && !orderAcceptanceCountry.equalsIgnoreCase("CA") && !orderAcceptanceCountry.equalsIgnoreCase("US")) {
+    throw new RuntimeException("CyberSource tax calculation only supported for the United States and Canada.");
+  }
+  HashMap<Long,CyberSourceTaxItemRequest> requestLibrary=new HashMap<Long,CyberSourceTaxItemRequest>();
+  CyberSourceTaxRequest taxRequest=createTaxRequest(order,requestLibrary);
+  CyberSourceTaxResponse response;
+  try {
+    response=callService(taxRequest);
+  }
+ catch (  org.broadleafcommerce.vendor.service.exception.TaxException e) {
+    throw new TaxException(e);
+  }
+  calculateTaxes(order,requestLibrary,response);
+  return order;
 }

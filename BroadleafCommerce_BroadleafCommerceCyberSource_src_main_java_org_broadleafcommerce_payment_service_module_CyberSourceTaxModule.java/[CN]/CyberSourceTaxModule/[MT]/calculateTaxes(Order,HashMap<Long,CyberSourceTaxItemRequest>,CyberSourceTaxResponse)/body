@@ -1,0 +1,30 @@
+{
+  order.setCityTax(new Money(0D));
+  order.setCountyTax(new Money(0D));
+  order.setStateTax(new Money(0D));
+  order.setDistrictTax(new Money(0D));
+  order.setCountryTax(new Money(0D));
+  order.setTotalTax(new Money(0D));
+  for (  CyberSourceTaxItemResponse itemResponse : response.getItemResponses()) {
+    CyberSourceTaxItemRequest itemRequest=requestLibrary.get(itemResponse.getId().longValue());
+    order.setCityTax(order.getCityTax().add(itemResponse.getCityTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    order.setCountyTax(order.getCountyTax().add(itemResponse.getCountyTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    order.setStateTax(order.getStateTax().add(itemResponse.getStateTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    order.setDistrictTax(order.getDistrictTax().add(itemResponse.getDistrictTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    order.setTotalTax(order.getTotalTax().add(itemResponse.getTotalTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    FulfillmentGroupImpl searchParam=new FulfillmentGroupImpl();
+    searchParam.setId(itemRequest.getNonCyberSourceFulfillmentGroupId());
+    FulfillmentGroup myGroup=order.getFulfillmentGroups().get(order.getFulfillmentGroups().indexOf(searchParam));
+    if (myGroup.getCityTax() == null)     myGroup.setCityTax(new Money(0D));
+    if (myGroup.getCountyTax() == null)     myGroup.setCountyTax(new Money(0D));
+    if (myGroup.getStateTax() == null)     myGroup.setStateTax(new Money(0D));
+    if (myGroup.getDistrictTax() == null)     myGroup.setDistrictTax(new Money(0D));
+    if (myGroup.getCountryTax() == null)     myGroup.setCountryTax(new Money(0D));
+    if (myGroup.getTotalTax() == null)     myGroup.setTotalTax(new Money(0D));
+    myGroup.setCityTax(myGroup.getCityTax().add(itemResponse.getCityTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    myGroup.setCountyTax(myGroup.getCountyTax().add(itemResponse.getCountyTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    myGroup.setStateTax(myGroup.getStateTax().add(itemResponse.getStateTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    myGroup.setDistrictTax(myGroup.getDistrictTax().add(itemResponse.getDistrictTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+    myGroup.setTotalTax(myGroup.getTotalTax().add(itemResponse.getTotalTaxAmount().multiply(itemRequest.getNonCyberSourceQuantity())));
+  }
+}
