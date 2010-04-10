@@ -1,6 +1,6 @@
 {
   if (orderAcceptanceCountry != null && !orderAcceptanceCountry.equalsIgnoreCase("CA") && !orderAcceptanceCountry.equalsIgnoreCase("US")) {
-    throw new RuntimeException("CyberSource tax calculation only supported for the United States and Canada.");
+    throw new TaxException("CyberSource tax calculation only supported for the United States and Canada.");
   }
   HashMap<Long,CyberSourceTaxItemRequest> requestLibrary=new HashMap<Long,CyberSourceTaxItemRequest>();
   CyberSourceTaxRequest taxRequest=createTaxRequest(order,requestLibrary);
