@@ -11,13 +11,13 @@
             if (field.get(entity) == null || field.getAnnotation(AutoPopulate.class).autoUpdateValue()) {
               if (type.isAssignableFrom(Date.class)) {
                 if (cal == null) {
-                  cal=new GregorianCalendar();
+                  cal=SystemTime.asCalendar();
                 }
                 field.set(entity,cal.getTime());
               }
  else               if (type.isAssignableFrom(Calendar.class)) {
                 if (cal == null) {
-                  cal=new GregorianCalendar();
+                  cal=SystemTime.asCalendar();
                 }
                 field.set(entity,cal);
               }
