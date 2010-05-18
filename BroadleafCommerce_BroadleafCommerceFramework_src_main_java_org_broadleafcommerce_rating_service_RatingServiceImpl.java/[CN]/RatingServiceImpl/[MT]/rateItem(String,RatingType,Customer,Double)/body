@@ -5,7 +5,7 @@
   }
   RatingDetail ratingDetail=ratingSummaryDao.readRating(customer.getId(),ratingSummary.getId());
   if (ratingDetail == null) {
-    ratingDetail=new RatingDetailImpl(ratingSummary,rating,new Date(),customer);
+    ratingDetail=new RatingDetailImpl(ratingSummary,rating,SystemTime.asDate(),customer);
   }
   ratingDetail.setRating(rating);
   ratingSummary.getRatings().add(ratingDetail);

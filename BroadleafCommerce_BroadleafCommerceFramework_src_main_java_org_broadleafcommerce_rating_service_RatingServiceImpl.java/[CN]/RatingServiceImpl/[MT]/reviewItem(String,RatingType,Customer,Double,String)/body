@@ -5,7 +5,7 @@
   }
   RatingDetail ratingDetail=ratingSummaryDao.readRating(customer.getId(),ratingSummary.getId());
   if (ratingDetail == null) {
-    ratingDetail=new RatingDetailImpl(ratingSummary,rating,new Date(),customer);
+    ratingDetail=new RatingDetailImpl(ratingSummary,rating,SystemTime.asDate(),customer);
   }
  else {
     ratingDetail.setRating(rating);
@@ -13,7 +13,7 @@
   ratingSummary.getRatings().add(ratingDetail);
   ReviewDetail reviewDetail=ratingSummaryDao.readReview(customer.getId(),ratingSummary.getId());
   if (reviewDetail == null) {
-    reviewDetail=new ReviewDetailImpl(customer,new Date(),ratingDetail,reviewText,ratingSummary);
+    reviewDetail=new ReviewDetailImpl(customer,SystemTime.asDate(),ratingDetail,reviewText,ratingSummary);
   }
  else {
     reviewDetail.setReviewText(reviewText);

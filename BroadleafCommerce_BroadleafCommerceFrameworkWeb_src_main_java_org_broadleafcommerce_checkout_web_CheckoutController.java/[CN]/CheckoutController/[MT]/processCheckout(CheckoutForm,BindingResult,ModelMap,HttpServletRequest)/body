@@ -11,7 +11,7 @@
   checkoutForm.getShippingAddress().setCountry(countryService.findCountryByAbbreviation(checkoutForm.getShippingAddress().getCountry().getAbbreviation()));
   checkoutForm.getShippingAddress().setState(stateService.findStateByAbbreviation(checkoutForm.getShippingAddress().getState().getAbbreviation()));
   Order order=retrieveCartOrder(request,model);
-  order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(new Date()));
+  order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(SystemTime.asDate()));
   List<FulfillmentGroup> groups=order.getFulfillmentGroups();
   if (groups.size() < 1) {
     return "redirect:/basket/currentCart.htm";

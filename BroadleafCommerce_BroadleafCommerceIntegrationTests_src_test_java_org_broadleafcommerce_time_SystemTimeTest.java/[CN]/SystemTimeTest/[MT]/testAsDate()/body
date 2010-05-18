@@ -1,0 +1,7 @@
+{
+  expect(mockTimeSource.timeInMillis()).andReturn(1100L).atLeastOnce();
+  replay(mockTimeSource);
+  SystemTime.setGlobalTimeSource(mockTimeSource);
+  assertEquals(1100L,SystemTime.asDate().getTime());
+  verify();
+}

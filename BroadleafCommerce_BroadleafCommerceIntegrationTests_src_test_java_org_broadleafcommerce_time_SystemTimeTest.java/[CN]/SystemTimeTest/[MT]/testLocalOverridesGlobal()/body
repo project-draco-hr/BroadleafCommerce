@@ -1,0 +1,12 @@
+{
+  TimeSource mockLocalTimeSource=createMock(TimeSource.class);
+  expect(mockTimeSource.timeInMillis()).andReturn(500L).anyTimes();
+  expect(mockLocalTimeSource.timeInMillis()).andReturn(600L).atLeastOnce();
+  replay(mockTimeSource,mockLocalTimeSource);
+  SystemTime.setGlobalTimeSource(mockTimeSource);
+  SystemTime.setLocalTimeSource(mockLocalTimeSource);
+  assertEquals(600L,SystemTime.asMillis());
+  SystemTime.resetLocalTimeSource();
+  assertEquals(500L,SystemTime.asMillis());
+  verify();
+}

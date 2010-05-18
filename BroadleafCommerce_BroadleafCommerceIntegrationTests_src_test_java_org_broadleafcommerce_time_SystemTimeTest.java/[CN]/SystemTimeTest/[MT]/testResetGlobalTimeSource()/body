@@ -1,0 +1,8 @@
+{
+  expect(mockTimeSource.timeInMillis()).andReturn(200L).anyTimes();
+  replay(mockTimeSource);
+  SystemTime.setGlobalTimeSource(mockTimeSource);
+  SystemTime.resetGlobalTimeSource();
+  assertTrue(200L != SystemTime.asMillis());
+  verify();
+}

@@ -1,0 +1,12 @@
+{
+  Calendar cal=new GregorianCalendar(2010,1,2,3,4,5);
+  long timeInMillis=cal.getTimeInMillis() + 3;
+  expect(mockTimeSource.timeInMillis()).andReturn(timeInMillis).atLeastOnce();
+  replay(mockTimeSource);
+  SystemTime.setGlobalTimeSource(mockTimeSource);
+  Calendar calMidnight=new GregorianCalendar(2010,1,2,0,0,0);
+  calMidnight.set(Calendar.MILLISECOND,0);
+  assertEquals(calMidnight.getTimeInMillis(),SystemTime.asMillis(false));
+  assertEquals(timeInMillis,SystemTime.asMillis(true));
+  verify();
+}
