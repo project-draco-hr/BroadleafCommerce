@@ -1,11 +1,14 @@
 {
   boolean productFound=false;
   String productId=request.getParameter("productId");
-  if (productId != null) {
-    Product product=catalogService.findProductById(new Long(productId));
-    if (product != null && product.isActive()) {
-      productFound=validateProductAndAddToModel(product,model);
-    }
+  Product product=null;
+  try {
+    product=catalogService.findProductById(new Long(productId));
+  }
+ catch (  Exception e) {
+  }
+  if (product != null && product.isActive()) {
+    productFound=validateProductAndAddToModel(product,model);
   }
  else {
     Category currentCategory=(Category)model.get("currentCategory");
