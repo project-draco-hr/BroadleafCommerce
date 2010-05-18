@@ -1,16 +1,21 @@
 {
   CyberSourceTaxResponse taxResponse=new CyberSourceTaxResponse();
   taxResponse.setServiceType(taxRequest.getServiceType());
-  RequestMessage request=buildRequestMessage(taxRequest);
   ReplyMessage reply;
-  try {
-    reply=sendRequest(request);
+  RequestMessage request=buildRequestMessage(taxRequest);
+  if (taxRequest.getItemRequests().size() > 0) {
+    try {
+      reply=sendRequest(request);
+    }
+ catch (    Exception e) {
+      incrementFailure();
+      throw new TaxException(e);
+    }
+    clearStatus();
   }
- catch (  Exception e) {
-    incrementFailure();
-    throw new TaxException(e);
+ else {
+    reply=createDefaultReply(taxRequest,request);
   }
-  clearStatus();
   buildResponse(taxResponse,reply);
   String[] invalidFields=reply.getInvalidField();
   String[] missingFields=reply.getMissingField();
