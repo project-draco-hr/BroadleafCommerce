@@ -1,0 +1,12 @@
+{
+  if (fulfillmentGroup.getFulfillmentGroupItems().size() == 0) {
+    LOG.warn("fulfillment group (" + fulfillmentGroup.getId() + ") does not contain any fulfillment group items. Unable to price USPS shipping");
+    fulfillmentGroup.setShippingPrice(new Money(0D));
+    fulfillmentGroup.setSaleShippingPrice(new Money(0D));
+    fulfillmentGroup.setRetailShippingPrice(new Money(0D));
+    return fulfillmentGroup;
+  }
+  Address address=fulfillmentGroup.getAddress();
+  String state=(address != null && address.getState() != null) ? address.getState().getAbbreviation() : null;
+  return null;
+}

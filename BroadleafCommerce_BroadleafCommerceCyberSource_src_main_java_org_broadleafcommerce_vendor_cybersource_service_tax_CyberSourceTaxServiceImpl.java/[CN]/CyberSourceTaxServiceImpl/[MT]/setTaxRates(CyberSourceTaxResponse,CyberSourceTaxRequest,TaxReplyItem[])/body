@@ -1,0 +1,36 @@
+{
+  CyberSourceTaxItemRequest requestItem=(CyberSourceTaxItemRequest)taxRequest.getItemRequests().get(0);
+  BigDecimal unitPrice=requestItem.getUnitPrice().getAmount();
+  BigInteger requestId=new BigInteger(String.valueOf(requestItem.getId()));
+  TaxReplyItem key=new TaxReplyItem();
+  key.setId(requestId);
+  int pos=Arrays.binarySearch(replyItems,key,new Comparator<TaxReplyItem>(){
+    public int compare(    TaxReplyItem one,    TaxReplyItem two){
+      return one.getId().compareTo(two.getId());
+    }
+  }
+);
+  if (pos >= 0) {
+    TaxReplyItem replyItem=replyItems[pos];
+    if (replyItem.getCityTaxAmount() != null) {
+      BigDecimal cityRate=new BigDecimal(replyItem.getCityTaxAmount()).divide(unitPrice,5,RoundingMode.HALF_EVEN);
+      taxResponse.setCityRate(cityRate);
+    }
+    if (replyItem.getCountyTaxAmount() != null) {
+      BigDecimal countyRate=new BigDecimal(replyItem.getCountyTaxAmount()).divide(unitPrice,5,RoundingMode.HALF_EVEN);
+      taxResponse.setCountyRate(countyRate);
+    }
+    if (replyItem.getDistrictTaxAmount() != null) {
+      BigDecimal districtRate=new BigDecimal(replyItem.getDistrictTaxAmount()).divide(unitPrice,5,RoundingMode.HALF_EVEN);
+      taxResponse.setDistrictRate(districtRate);
+    }
+    if (replyItem.getStateTaxAmount() != null) {
+      BigDecimal stateRate=new BigDecimal(replyItem.getStateTaxAmount()).divide(unitPrice,5,RoundingMode.HALF_EVEN);
+      taxResponse.setStateRate(stateRate);
+    }
+    if (replyItem.getTotalTaxAmount() != null) {
+      BigDecimal totalRate=new BigDecimal(replyItem.getTotalTaxAmount()).divide(unitPrice,5,RoundingMode.HALF_EVEN);
+      taxResponse.setTotalRate(totalRate);
+    }
+  }
+}

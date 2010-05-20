@@ -1,9 +1,13 @@
 {
   CyberSourceTaxResponse taxResponse=new CyberSourceTaxResponse();
   taxResponse.setServiceType(taxRequest.getServiceType());
-  ReplyMessage reply;
-  RequestMessage request=buildRequestMessage(taxRequest);
-  if (taxRequest.getItemRequests().size() > 0) {
+  if (cache.isKeyInCache(taxRequest.cacheKey())) {
+    CyberSourceTaxResponse cachedResponse=(CyberSourceTaxResponse)cache.get(taxRequest.cacheKey()).getValue();
+    buildResponse(taxResponse,cachedResponse,taxRequest);
+  }
+ else {
+    ReplyMessage reply;
+    RequestMessage request=buildRequestMessage(taxRequest);
     try {
       reply=sendRequest(request);
     }
@@ -12,34 +16,35 @@
       throw new TaxException(e);
     }
     clearStatus();
-  }
- else {
-    reply=createDefaultReply(taxRequest,request);
-  }
-  buildResponse(taxResponse,reply);
-  String[] invalidFields=reply.getInvalidField();
-  String[] missingFields=reply.getMissingField();
-  if ((invalidFields != null && invalidFields.length > 0) || (missingFields != null && missingFields.length > 0)) {
-    TaxHostException e=new TaxHostException();
-    taxResponse.setErrorDetected(true);
-    StringBuffer sb=new StringBuffer();
-    if (invalidFields != null && invalidFields.length > 0) {
-      sb.append("invalid fields :[ ");
-      for (      String invalidField : invalidFields) {
-        sb.append(invalidField);
+    buildResponse(taxResponse,reply,taxRequest);
+    String[] invalidFields=reply.getInvalidField();
+    String[] missingFields=reply.getMissingField();
+    if ((invalidFields != null && invalidFields.length > 0) || (missingFields != null && missingFields.length > 0)) {
+      TaxHostException e=new TaxHostException();
+      taxResponse.setErrorDetected(true);
+      StringBuffer sb=new StringBuffer();
+      if (invalidFields != null && invalidFields.length > 0) {
+        sb.append("invalid fields :[ ");
+        for (        String invalidField : invalidFields) {
+          sb.append(invalidField);
+        }
+        sb.append(" ]\n");
       }
-      sb.append(" ]\n");
-    }
-    if (missingFields != null && missingFields.length > 0) {
-      sb.append("missing fields: [ ");
-      for (      String missingField : missingFields) {
-        sb.append(missingField);
+      if (missingFields != null && missingFields.length > 0) {
+        sb.append("missing fields: [ ");
+        for (        String missingField : missingFields) {
+          sb.append(missingField);
+        }
+        sb.append(" ]");
       }
-      sb.append(" ]");
+      taxResponse.setErrorText(sb.toString());
+      e.setTaxResponse(taxResponse);
+      throw e;
     }
-    taxResponse.setErrorText(sb.toString());
-    e.setTaxResponse(taxResponse);
-    throw e;
+    if (taxResponse.getDecision().equals("ACCEPT") && taxResponse.getReasonCode().equals(100)) {
+      Element element=new Element(taxRequest.cacheKey(),taxResponse);
+      cache.put(element);
+    }
   }
   return taxResponse;
 }
