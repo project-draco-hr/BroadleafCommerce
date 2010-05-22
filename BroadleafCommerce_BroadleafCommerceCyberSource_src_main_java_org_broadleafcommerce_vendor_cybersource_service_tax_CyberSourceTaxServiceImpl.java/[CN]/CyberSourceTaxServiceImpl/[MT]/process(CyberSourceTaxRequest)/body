@@ -1,7 +1,14 @@
 {
+  if (isCacheEnabled) {
+synchronized (this) {
+      if (cache == null) {
+        cache=CacheManager.getInstance().getCache("CyberSourceTaxRequests");
+      }
+    }
+  }
   CyberSourceTaxResponse taxResponse=new CyberSourceTaxResponse();
   taxResponse.setServiceType(taxRequest.getServiceType());
-  if (cache.isKeyInCache(taxRequest.cacheKey())) {
+  if (isCacheEnabled && cache.isKeyInCache(taxRequest.cacheKey())) {
     CyberSourceTaxResponse cachedResponse=(CyberSourceTaxResponse)cache.get(taxRequest.cacheKey()).getValue();
     buildResponse(taxResponse,cachedResponse,taxRequest);
   }
@@ -41,7 +48,7 @@
       e.setTaxResponse(taxResponse);
       throw e;
     }
-    if (taxResponse.getDecision().equals("ACCEPT") && taxResponse.getReasonCode().equals(100)) {
+    if (isCacheEnabled && taxResponse.getDecision().equals("ACCEPT") && taxResponse.getReasonCode().equals(100)) {
       Element element=new Element(taxRequest.cacheKey(),taxResponse);
       cache.put(element);
     }
