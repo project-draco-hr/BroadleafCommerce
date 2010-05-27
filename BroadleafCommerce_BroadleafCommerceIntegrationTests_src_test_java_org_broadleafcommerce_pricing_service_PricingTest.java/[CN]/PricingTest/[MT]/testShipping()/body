@@ -4,12 +4,14 @@
   FulfillmentGroup group1=new FulfillmentGroupImpl();
   FulfillmentGroup group2=new FulfillmentGroupImpl();
   group1.setMethod("standard");
+  group1.setService(ShippingServiceType.BANDED_SHIPPING.getType());
   Address address=new AddressImpl();
   State state=new StateImpl();
   state.setAbbreviation("hi");
   address.setState(state);
   group1.setAddress(address);
   group2.setMethod("truck");
+  group2.setService(ShippingServiceType.BANDED_SHIPPING.getType());
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   groups.add(group1);
   order.setFulfillmentGroups(groups);

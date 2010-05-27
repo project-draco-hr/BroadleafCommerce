@@ -1,0 +1,34 @@
+{
+  if (!isValidModuleForService(fulfillmentGroup.getService()) && !isDefaultModule()) {
+    LOG.info("fulfillment group (" + fulfillmentGroup.getId() + ") with a service type of ("+ fulfillmentGroup.getService()+ ") is not valid for this module service type ("+ getServiceName()+ ")");
+    return fulfillmentGroup;
+  }
+  if (fulfillmentGroup.getFulfillmentGroupItems().size() == 0) {
+    LOG.warn("fulfillment group (" + fulfillmentGroup.getId() + ") does not contain any fulfillment group items. Unable to price USPS shipping");
+    fulfillmentGroup.setShippingPrice(new Money(0D));
+    fulfillmentGroup.setSaleShippingPrice(new Money(0D));
+    fulfillmentGroup.setRetailShippingPrice(new Money(0D));
+    return fulfillmentGroup;
+  }
+  List<USPSContainerItemRequest> requestItems=createPackages(fulfillmentGroup);
+  USPSShippingPriceRequest request=new USPSShippingPriceRequest();
+  request.getContainerItems().addAll(requestItems);
+  USPSShippingPriceResponse response=shippingCalculationService.retrieveShippingRates(request);
+  Stack<USPSContainerItemResponse> itemResponses=response.getResponses();
+  USPSServiceResponseType responseType=USPSServiceResponseType.getInstance(fulfillmentGroup.getMethod());
+  if (responseType == null) {
+    throw new ShippingPriceException("No USPSServiceResponseType found for the shipping method (" + fulfillmentGroup.getMethod() + ") and service type ("+ getServiceName()+ ")");
+  }
+  Money shippingPrice=new Money(0D);
+  for (  USPSContainerItemResponse itemResponse : itemResponses) {
+    USPSPostage postage=itemResponse.getPostage().get(responseType);
+    if (postage == null) {
+      throw new ShippingPriceException("No postage found in the USPS response for the USPSServiceResponseType (" + responseType.getDescription() + ")");
+    }
+    shippingPrice=shippingPrice.add(postage.getRate());
+  }
+  fulfillmentGroup.setShippingPrice(shippingPrice);
+  fulfillmentGroup.setSaleShippingPrice(fulfillmentGroup.getShippingPrice());
+  fulfillmentGroup.setRetailShippingPrice(fulfillmentGroup.getSaleShippingPrice());
+  return fulfillmentGroup;
+}

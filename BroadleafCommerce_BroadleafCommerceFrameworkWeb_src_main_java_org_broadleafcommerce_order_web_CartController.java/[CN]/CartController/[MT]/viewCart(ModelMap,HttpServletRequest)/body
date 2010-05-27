@@ -31,12 +31,13 @@
   }
   if ((cart.getFulfillmentGroups() != null) && (cart.getFulfillmentGroups().isEmpty() == false)) {
     String cartShippingMethod=cart.getFulfillmentGroups().get(0).getMethod();
+    String cartShippingService=cart.getFulfillmentGroups().get(0).getService();
     if (cartShippingMethod != null) {
       if (cartShippingMethod.equals("standard")) {
-        cartSummary=createFulfillmentGroup(cartSummary,"standard",cart);
+        cartSummary=createFulfillmentGroup(cartSummary,"standard",cartShippingService,cart);
       }
  else       if (cartShippingMethod.equals("expedited")) {
-        cartSummary=createFulfillmentGroup(cartSummary,"expedited",cart);
+        cartSummary=createFulfillmentGroup(cartSummary,"expedited",cartShippingService,cart);
       }
     }
   }
