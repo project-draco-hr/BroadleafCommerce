@@ -1,0 +1,25 @@
+{
+  if (shippingCalculationService.getUspsUserName().equals("?")) {
+    return;
+  }
+  FulfillmentGroup fg=new FulfillmentGroupImpl();
+  fg.setService(ShippingServiceType.USPS.getType());
+  fg.setMethod(USPSServiceMethod.PRIORITYMAIL.getType());
+  DiscreteOrderItem dsItem1=new DiscreteOrderItemImpl();
+  Product product1=new ProductImpl();
+  product1.setSize(USPSContainerSizeType.REGULAR);
+  product1.setContainer(USPSContainerShapeType.FLATRATEBOX);
+  ProductWeight weight=new ProductWeight();
+  weight.setWeight(BigDecimal.valueOf(10L).add(UnitOfMeasureUtil.convertOuncesToPounds(BigDecimal.valueOf(5L))));
+  weight.setWeightUnitOfMeasure(WeightUnitOfMeasureType.POUNDS);
+  product1.setWeight(weight);
+  dsItem1.setProduct(product1);
+  Address address=new AddressImpl();
+  address.setPostalCode("20008");
+  fg.setAddress(address);
+  FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();
+  fgItem.setOrderItem(dsItem1);
+  fg.getFulfillmentGroupItems().add(fgItem);
+  FulfillmentGroup response=shippingCalculationModule.calculateShippingForFulfillmentGroup(fg);
+  assert(response.getShippingPrice().greaterThan(new Money(0D)));
+}

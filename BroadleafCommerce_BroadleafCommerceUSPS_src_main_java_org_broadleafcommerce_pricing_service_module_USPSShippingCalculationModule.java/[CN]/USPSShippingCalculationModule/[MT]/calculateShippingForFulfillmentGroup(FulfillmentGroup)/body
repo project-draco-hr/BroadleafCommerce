@@ -15,13 +15,13 @@
   request.getContainerItems().addAll(requestItems);
   USPSShippingPriceResponse response=shippingCalculationService.retrieveShippingRates(request);
   Stack<USPSContainerItemResponse> itemResponses=response.getResponses();
-  USPSServiceResponseType responseType=USPSServiceResponseType.getInstance(fulfillmentGroup.getMethod());
+  USPSServiceResponseType responseType=USPSServiceResponseType.getInstanceByName(fulfillmentGroup.getMethod());
   if (responseType == null) {
     throw new ShippingPriceException("No USPSServiceResponseType found for the shipping method (" + fulfillmentGroup.getMethod() + ") and service type ("+ getServiceName()+ ")");
   }
   Money shippingPrice=new Money(0D);
   for (  USPSContainerItemResponse itemResponse : itemResponses) {
-    USPSPostage postage=itemResponse.getPostage().get(responseType);
+    USPSPostage postage=deducePostage(responseType,requestItems,itemResponse);
     if (postage == null) {
       throw new ShippingPriceException("No postage found in the USPS response for the USPSServiceResponseType (" + responseType.getDescription() + ")");
     }

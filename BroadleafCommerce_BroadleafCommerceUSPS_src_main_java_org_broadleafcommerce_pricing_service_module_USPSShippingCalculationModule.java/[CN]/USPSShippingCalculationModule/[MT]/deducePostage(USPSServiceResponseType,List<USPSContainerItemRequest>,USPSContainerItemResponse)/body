@@ -1,0 +1,18 @@
+{
+  USPSPostage postage=itemResponse.getPostage().get(responseType);
+  if (postage == null) {
+    USPSContainerItemRequest itemRequest=findRequestByPackageId(itemResponse.getPackageId(),requestItems);
+    if (itemRequest != null) {
+      String shape=itemRequest.getContainerShape().getType().replaceAll(" ","");
+      String moreSpecificResponseType=responseType.getName() + shape;
+      USPSServiceResponseType nextResponseType=USPSServiceResponseType.getInstanceByName(moreSpecificResponseType);
+      if (nextResponseType != null) {
+        postage=itemResponse.getPostage().get(nextResponseType);
+      }
+    }
+    if (postage == null && itemResponse.getPostage().size() == 1) {
+      postage=itemResponse.getPostage().values().iterator().next();
+    }
+  }
+  return postage;
+}

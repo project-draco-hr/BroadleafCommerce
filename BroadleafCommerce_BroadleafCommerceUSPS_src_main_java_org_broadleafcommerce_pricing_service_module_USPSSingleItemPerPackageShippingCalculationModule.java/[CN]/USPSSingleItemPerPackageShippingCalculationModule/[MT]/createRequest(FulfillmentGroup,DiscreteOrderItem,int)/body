@@ -1,5 +1,7 @@
 {
-  USPSServiceMethod uspsMethod=USPSServiceMethod.getInstance(fulfillmentGroup.getMethod());
+  String method=fulfillmentGroup.getMethod();
+  String[] methods=method.split("_");
+  USPSServiceMethod uspsMethod=USPSServiceMethod.getInstance(methods[0]);
   if (uspsMethod == null) {
     throw new ShippingPriceException("Unable to find a USPSShippingMethod for the method found on the fulfillment group: (" + fulfillmentGroup.getMethod() + ")");
   }
@@ -11,11 +13,22 @@
   itemRequest.setService(serviceType);
   Product product=discreteItem.getProduct();
   itemRequest.setContainerSize((USPSContainerSizeType)product.getSize());
+  itemRequest.setContainerShape((USPSContainerShapeType)product.getContainer());
+  itemRequest.setDepth(product.getDepth());
+  itemRequest.setDimensionUnitOfMeasureType(product.getDimension().getDimensionUnitOfMeasure());
+  if (serviceType.equals(USPSServiceType.FIRSTCLASS) && methods.length > 1) {
+    itemRequest.setFirstClassType(USPSFirstClassType.getInstance(methods[1]));
+  }
+  itemRequest.setGirth(product.getGirth());
+  itemRequest.setHeight(product.getHeight());
+  if (serviceType.equals(USPSServiceType.ALL) || serviceType.equals(USPSServiceType.PARCEL)) {
+    itemRequest.setMachineSortable(product.isMachineSortable());
+  }
   itemRequest.setPackageId(String.valueOf(counter));
   itemRequest.setWeight(product.getWeight().getWeight());
   itemRequest.setWeightUnitOfMeasureType(product.getWeight().getWeightUnitOfMeasure());
+  itemRequest.setWidth(product.getWidth());
   itemRequest.setZipDestination(fulfillmentGroup.getAddress().getPostalCode());
   itemRequest.setZipOrigination(getOriginationPostalCode());
-  itemRequest.setMachineSortable(product.isMachineSortable());
   return itemRequest;
 }
