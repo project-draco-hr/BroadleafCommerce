@@ -8,7 +8,7 @@ synchronized (idTypeIdMap) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("Getting the initial id from the database.");
         }
-        IdGeneration idGeneration=idGenerationDao.findNextId(idType);
+        IdGeneration idGeneration=getCurrentIdRange(idType);
         id=new Id(idGeneration.getBatchStart(),idGeneration.getBatchSize());
       }
       idTypeIdMap.put(idType,id);
@@ -19,7 +19,7 @@ synchronized (id) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Updating batch size for idType " + idType);
       }
-      IdGeneration idGeneration=idGenerationDao.findNextId(idType);
+      IdGeneration idGeneration=getCurrentIdRange(idType);
       id.nextId=idGeneration.getBatchStart();
       id.batchSize=idGeneration.getBatchSize();
     }
