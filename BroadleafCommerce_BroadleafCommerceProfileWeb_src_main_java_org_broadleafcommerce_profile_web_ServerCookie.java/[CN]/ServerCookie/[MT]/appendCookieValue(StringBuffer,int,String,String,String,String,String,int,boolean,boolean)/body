@@ -1,0 +1,44 @@
+{
+  StringBuffer buf=new StringBuffer();
+  buf.append(name);
+  buf.append("=");
+  version=maybeQuote2(version,buf,value,true);
+  if (version == 1) {
+    buf.append("; Version=1");
+    if (comment != null) {
+      buf.append("; Comment=");
+      maybeQuote2(version,buf,comment);
+    }
+  }
+  if (domain != null) {
+    buf.append("; Domain=");
+    maybeQuote2(version,buf,domain);
+  }
+  if (maxAge >= 0) {
+    if (version > 0) {
+      buf.append("; Max-Age=");
+      buf.append(maxAge);
+    }
+    if (version == 0 || ALWAYS_ADD_EXPIRES) {
+      buf.append("; Expires=");
+      if (maxAge == 0)       buf.append(ancientDate);
+ else       OLD_COOKIE_FORMAT.get().format(new Date(System.currentTimeMillis() + maxAge * 1000L),buf,new FieldPosition(0));
+    }
+  }
+  if (path != null) {
+    buf.append("; Path=");
+    if (version == 0) {
+      maybeQuote2(version,buf,path);
+    }
+ else {
+      maybeQuote2(version,buf,path,ServerCookie.tspecials2NoSlash,false);
+    }
+  }
+  if (isSecure) {
+    buf.append("; Secure");
+  }
+  if (isHttpOnly) {
+    buf.append("; HttpOnly");
+  }
+  headerBuf.append(buf);
+}

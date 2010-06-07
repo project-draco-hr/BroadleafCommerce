@@ -1,0 +1,31 @@
+{
+  if (value == null || value.length() == 0) {
+    buf.append("\"\"");
+  }
+ else   if (containsCTL(value,version))   throw new IllegalArgumentException("Control character in cookie value, consider BASE64 encoding your value");
+ else   if (alreadyQuoted(value)) {
+    buf.append('"');
+    buf.append(escapeDoubleQuotes(value,1,value.length() - 1));
+    buf.append('"');
+  }
+ else   if (allowVersionSwitch && (!STRICT_SERVLET_COMPLIANCE) && version == 0 && !isToken2(value,literals)) {
+    buf.append('"');
+    buf.append(escapeDoubleQuotes(value,0,value.length()));
+    buf.append('"');
+    version=1;
+  }
+ else   if (version == 0 && !isToken(value,literals)) {
+    buf.append('"');
+    buf.append(escapeDoubleQuotes(value,0,value.length()));
+    buf.append('"');
+  }
+ else   if (version == 1 && !isToken2(value,literals)) {
+    buf.append('"');
+    buf.append(escapeDoubleQuotes(value,0,value.length()));
+    buf.append('"');
+  }
+ else {
+    buf.append(value);
+  }
+  return version;
+}
