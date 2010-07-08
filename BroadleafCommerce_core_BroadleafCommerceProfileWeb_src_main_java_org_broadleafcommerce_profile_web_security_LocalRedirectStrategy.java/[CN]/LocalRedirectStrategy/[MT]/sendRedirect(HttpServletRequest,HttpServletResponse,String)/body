@@ -1,0 +1,13 @@
+{
+  if (!url.startsWith("/")) {
+    if (StringUtils.equals(request.getParameter("successUrl"),url) || StringUtils.equals(request.getParameter("failureUrl"),url)) {
+      validateRedirectUrl(request.getContextPath(),url,request.getServerName(),request.getServerPort());
+    }
+  }
+  String redirectUrl=calculateRedirectUrl(request.getContextPath(),url);
+  redirectUrl=response.encodeRedirectURL(redirectUrl);
+  if (logger.isDebugEnabled()) {
+    logger.debug("Redirecting to '" + url + "'");
+  }
+  response.sendRedirect(redirectUrl);
+}

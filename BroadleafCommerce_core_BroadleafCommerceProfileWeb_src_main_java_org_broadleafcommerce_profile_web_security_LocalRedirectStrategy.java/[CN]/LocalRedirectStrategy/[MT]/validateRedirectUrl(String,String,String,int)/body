@@ -1,0 +1,15 @@
+{
+  URL urlObject=new URL(url);
+  if (urlObject.getProtocol().equals("http") || urlObject.getProtocol().equals("https")) {
+    if (StringUtils.equals(requestServerName,urlObject.getHost())) {
+      if (!enforcePortMatch || requestServerPort == urlObject.getPort()) {
+        if (StringUtils.isEmpty(contextPath) || urlObject.getPath().startsWith("/" + contextPath)) {
+          return;
+        }
+      }
+    }
+  }
+  String errorMessage="Invalid redirect url specified.  Must be of the form /<relative view> or http[s]://<server name>[:<server port>][/<context path>]/...";
+  logger.warn(errorMessage + ":  " + url);
+  throw new MalformedURLException(errorMessage + ":  " + url);
+}
