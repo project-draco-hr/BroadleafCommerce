@@ -1,0 +1,11 @@
+{
+  List<T> response=new ArrayList<T>();
+  int start=0;
+  while (start < params.size()) {
+    List<?> batchParams=params.subList(start,params.size() < inClauseBatchSize ? params.size() : inClauseBatchSize);
+    query.setParameter(parameterName,batchParams);
+    response.addAll(query.getResultList());
+    start+=inClauseBatchSize;
+  }
+  return response;
+}

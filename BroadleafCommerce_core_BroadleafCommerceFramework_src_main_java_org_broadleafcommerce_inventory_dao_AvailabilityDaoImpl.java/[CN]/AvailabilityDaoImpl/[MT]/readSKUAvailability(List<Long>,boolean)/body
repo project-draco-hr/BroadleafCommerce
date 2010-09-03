@@ -3,6 +3,5 @@
   if (!realTime) {
     query.setHint(getQueryCacheableKey(),true);
   }
-  query.setParameter("skuIds",skuIds);
-  return query.getResultList();
+  return batchExecuteReadQuery(query,skuIds,"skuIds");
 }
