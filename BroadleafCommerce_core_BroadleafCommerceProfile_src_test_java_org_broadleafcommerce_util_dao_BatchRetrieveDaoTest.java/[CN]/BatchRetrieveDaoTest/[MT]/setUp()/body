@@ -1,0 +1,8 @@
+{
+  dao=new BatchRetrieveDao();
+  queryMock=EasyMock.createMock(Query.class);
+  List<String> response=new ArrayList<String>();
+  response.add("test");
+  EasyMock.expect(queryMock.getResultList()).andReturn(response).times(2);
+  EasyMock.expect(queryMock.setParameter(EasyMock.eq("test"),EasyMock.isA(List.class))).andReturn(queryMock).times(2);
+}

@@ -1,0 +1,11 @@
+{
+  EasyMock.replay(queryMock);
+  dao.setInClauseBatchSize(BATCHSIZE);
+  List<Integer> keys=new ArrayList<Integer>();
+  for (int j=0; j < 10; j++) {
+    keys.add(j);
+  }
+  List<Object> response=dao.batchExecuteReadQuery(queryMock,keys,"test");
+  assertTrue(response.size() == 2);
+  EasyMock.verify(queryMock);
+}
