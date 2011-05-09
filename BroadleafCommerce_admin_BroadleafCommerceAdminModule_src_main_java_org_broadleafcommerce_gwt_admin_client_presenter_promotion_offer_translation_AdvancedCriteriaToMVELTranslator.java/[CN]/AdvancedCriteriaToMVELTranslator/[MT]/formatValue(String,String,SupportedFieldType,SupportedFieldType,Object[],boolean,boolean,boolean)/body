@@ -8,7 +8,7 @@ case MONEY:
   response.append(value[0]);
 response.append(".getAmount()");
 break;
-default :
+case STRING:
 if (ignoreCase) {
 response.append("MVEL.eval(\"toUpperCase()\",");
 }
@@ -18,6 +18,11 @@ response.append(value[0]);
 if (ignoreCase) {
 response.append(")");
 }
+break;
+default :
+response.append(entityKey);
+response.append(".");
+response.append(value[0]);
 break;
 }
 }

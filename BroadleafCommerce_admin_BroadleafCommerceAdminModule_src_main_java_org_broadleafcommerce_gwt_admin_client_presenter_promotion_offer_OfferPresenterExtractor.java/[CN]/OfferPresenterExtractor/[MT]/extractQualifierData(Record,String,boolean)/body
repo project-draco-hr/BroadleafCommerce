@@ -1,8 +1,9 @@
 {
-  if ((getDisplay().getBogoRadio().getValue().equals("YES") && type.equals("ORDER_ITEM")) || getDisplay().getItemRuleRadio().equals("ITEM_RULE") && !type.equals("ORDER_ITEM")) {
+  if ((getDisplay().getBogoRadio().getValue().equals("YES") && type.equals("ORDER_ITEM")) || getDisplay().getItemRuleRadio().getValue().equals("ITEM_RULE") && !type.equals("ORDER_ITEM")) {
     for (    final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
       if (builder.getDirty()) {
-        Integer quantity=(Integer)builder.getItemQuantity().getValue();
+        String temper=builder.getItemQuantity().getValue().toString();
+        Integer quantity=Integer.parseInt(temper);
         String mvel;
         if (builder.getIncompatibleMVEL()) {
           mvel=builder.getRawItemTextArea().getValueAsString();
@@ -12,8 +13,7 @@
         }
         if (!isValidation) {
           if (builder.getRecord() != null) {
-            builder.getRecord().setAttribute("requiresQuantity",quantity);
-            builder.getRecord().setAttribute("receiveQuantity",0);
+            builder.getRecord().setAttribute("quantity",quantity);
             builder.getRecord().setAttribute("orderItemMatchRule",mvel);
             presenter.offerItemCriteriaDataSource.updateData(builder.getRecord(),new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
@@ -24,8 +24,7 @@
           }
  else {
             final Record temp=new Record();
-            temp.setAttribute("requiresQuantity",quantity);
-            temp.setAttribute("receiveQuantity",0);
+            temp.setAttribute("quantity",quantity);
             temp.setAttribute("orderItemMatchRule",mvel);
             temp.setAttribute("_type",new String[]{((DynamicEntityDataSource)presenter.offerItemCriteriaDataSource).getDefaultNewEntityFullyQualifiedClassname()});
             temp.setAttribute(OfferItemCriteriaListDataSourceFactory.foreignKeyName,presenter.entityDataSource.getPrimaryKeyValue(selectedRecord));

@@ -40,8 +40,22 @@
     if (props != null) {
       for (      Object key : props.keySet()) {
         temp.getProperties().setProperty((String)key,props.getProperty((String)key));
+        for (        BroadleafClassTransformer transformer : classTransformers) {
+          try {
+            transformer.compileJPAProperties(props,key);
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
       }
     }
   }
   temp.setTransactionType(newPU.getTransactionType());
+  if (newPU.getPersistenceProviderClassName() != null) {
+    temp.setPersistenceProviderClassName(newPU.getPersistenceProviderClassName());
+  }
+  if (newPU.getPersistenceProviderPackageName() != null) {
+    temp.setPersistenceProviderPackageName(newPU.getPersistenceProviderPackageName());
+  }
 }

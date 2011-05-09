@@ -6,6 +6,10 @@
       chargeableItems=new ArrayList<OrderItem>();
       OrderItem firstItem=clone();
       OrderItem secondItem=clone();
+      firstItem.clearAllDiscount();
+      firstItem.clearAllQualifiers();
+      secondItem.clearAllDiscount();
+      secondItem.clearAllQualifiers();
       chargeableItems.add(firstItem);
       chargeableItems.add(secondItem);
       int firstItemQty=discountQty;
@@ -18,7 +22,7 @@
           pq1.resetQty(firstItemQty);
           firstItem.getPromotionQualifiers().add(pq1);
           PromotionQualifier pq2=pq.copy();
-          pq2.resetQty(pq1.getQuantity() - firstItemQty);
+          pq2.resetQty(pq.getQuantity() - firstItemQty);
           secondItem.getPromotionQualifiers().add(pq2);
         }
  else {
@@ -32,7 +36,7 @@
           pd1.resetDiscountAmount(this);
           firstItem.getPromotionDiscounts().add(pd1);
           PromotionDiscount pd2=pd.copy();
-          pd2.resetQty(pd1.getQuantity() - firstItemQty);
+          pd2.resetQty(pd.getQuantity() - firstItemQty);
           secondItem.getPromotionDiscounts().add(pd2);
         }
  else {

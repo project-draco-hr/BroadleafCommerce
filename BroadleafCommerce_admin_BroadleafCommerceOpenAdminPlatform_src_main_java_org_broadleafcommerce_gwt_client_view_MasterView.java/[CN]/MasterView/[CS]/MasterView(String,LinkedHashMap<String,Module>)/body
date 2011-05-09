@@ -61,7 +61,9 @@
     tab.setAttribute("token",page);
     tab.setID(page);
     topTabSet.setShowPaneContainerEdges(false);
-    topTabSet.addTab(tab);
+    if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(page)[0])) {
+      topTabSet.addTab(tab);
+    }
   }
   topTabSet.addTabSelectedHandler(new TabSelectedHandler(){
     public void onTabSelected(    TabSelectedEvent event){

@@ -1,4 +1,10 @@
 {
+  for (  Property p : entity.getProperties()) {
+    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.UPDATE);
+      break;
+    }
+  }
   RemoteServiceModule myModule=getCompatibleModule(persistencePerspective.getOperationTypes().getUpdateType());
   return myModule.update(entity,persistencePerspective,customCriteria);
 }

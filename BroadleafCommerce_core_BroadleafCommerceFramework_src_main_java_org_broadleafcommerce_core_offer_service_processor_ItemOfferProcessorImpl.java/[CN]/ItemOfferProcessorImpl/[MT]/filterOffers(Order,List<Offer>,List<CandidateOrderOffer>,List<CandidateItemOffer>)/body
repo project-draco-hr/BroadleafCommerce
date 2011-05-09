@@ -1,0 +1,15 @@
+{
+  order.setSubTotal(order.calculateOrderItemsCurrentPrice());
+  List<OrderItem> discreteOrderItems=order.getDiscountableDiscreteOrderItems();
+  for (  Offer offer : filteredOffers) {
+    OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(offer);
+    Collections.sort(discreteOrderItems,priceComparator);
+    if (offer.getType().equals(OfferType.ORDER)) {
+      filterOrderLevelOffer(order,qualifiedOrderOffers,discreteOrderItems,offer);
+    }
+ else     if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+      filterItemLevelOffer(order,qualifiedItemOffers,discreteOrderItems,offer);
+    }
+  }
+  return discreteOrderItems;
+}

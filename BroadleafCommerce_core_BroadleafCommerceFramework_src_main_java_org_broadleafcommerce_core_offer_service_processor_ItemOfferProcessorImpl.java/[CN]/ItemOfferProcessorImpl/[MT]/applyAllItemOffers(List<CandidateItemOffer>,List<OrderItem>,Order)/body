@@ -1,0 +1,26 @@
+{
+  boolean itemOffersApplied=false;
+  int appliedItemOffersCount=0;
+  boolean isLegacyFormat=false;
+  for (  CandidateItemOffer itemOffer : itemOffers) {
+    int beforeCount=appliedItemOffersCount;
+    OrderItem orderItem=itemOffer.getOrderItem();
+    if (orderItem != null) {
+      isLegacyFormat=true;
+      appliedItemOffersCount=applyLegacyAdjustments(discreteOrderItems,appliedItemOffersCount,itemOffer,beforeCount,orderItem);
+    }
+ else {
+      appliedItemOffersCount=applyAdjustments(discreteOrderItems,order,appliedItemOffersCount,itemOffer,beforeCount);
+    }
+  }
+  if (isLegacyFormat) {
+    appliedItemOffersCount=checkLegacyAdjustments(discreteOrderItems,appliedItemOffersCount);
+  }
+ else {
+    appliedItemOffersCount=checkAdjustments(order,appliedItemOffersCount);
+  }
+  if (appliedItemOffersCount > 0) {
+    itemOffersApplied=true;
+  }
+  return itemOffersApplied;
+}

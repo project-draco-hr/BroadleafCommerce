@@ -1,4 +1,22 @@
 {
+  if (BLCMain.isLogDebugEnabled("classmetadata")) {
+    Map<String,List<String>> props=new HashMap<String,List<String>>();
+    for (    Property property : metadata.getProperties()) {
+      String type=property.getMetadata().getInheritedFromType();
+      List<String> myProps=props.get(type);
+      if (myProps == null) {
+        props.put(type,new ArrayList<String>());
+        myProps=props.get(type);
+      }
+      myProps.add(property.getName());
+    }
+    for (    String key : props.keySet()) {
+      List<String> myProps=props.get(key);
+      for (      String prop : myProps) {
+        BLCMain.logDebug(key + " : " + prop,"classmetadata");
+      }
+    }
+  }
   Property[] properties=metadata.getProperties();
   if (overrideFieldSort) {
     Arrays.sort(properties,new Comparator<Property>(){
@@ -40,6 +58,7 @@
       if (friendlyName == null) {
         friendlyName=property.getName();
       }
+      String securityLevel=property.getMetadata().getPresentationAttributes().getSecurityLevel();
       Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
       String group=property.getMetadata().getPresentationAttributes().getGroup();
       Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
@@ -155,6 +174,12 @@ field.setAttribute("permanentlyHidden",hidden);
  else if (field.getAttribute("permanentlyHidden") == null) {
 field.setHidden(false);
 field.setAttribute("permanentlyHidden",false);
+}
+if (securityLevel != null && !"".equals(securityLevel)) {
+String uniqueID=ceilingEntityFullyQualifiedClassname + field.getName();
+SecurityManager.getInstance().registerField(uniqueID,securityLevel);
+field.setAttribute("uniqueID",uniqueID);
+field.setAttribute("securityLevel",securityLevel);
 }
 if (group != null) {
 field.setAttribute("formGroup",group);

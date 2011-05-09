@@ -1,4 +1,10 @@
 {
+  for (  Property p : entity.getProperties()) {
+    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
+      break;
+    }
+  }
   RemoteServiceModule myModule=getCompatibleModule(persistencePerspective.getOperationTypes().getRemoveType());
   myModule.remove(entity,persistencePerspective,customCriteria);
 }

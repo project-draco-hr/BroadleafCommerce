@@ -1,0 +1,13 @@
+{
+  Serializable exp=(Serializable)EXPRESSION_CACHE.get(expression);
+  if (exp == null) {
+    ParserContext context=new ParserContext();
+    context.addImport("OfferType",OfferType.class);
+    context.addImport("FulfillmentGroupType",FulfillmentGroupType.class);
+    context.addImport("MVEL",MVEL.class);
+    exp=MVEL.compileExpression(expression.toString(),context);
+  }
+  EXPRESSION_CACHE.put(expression,exp);
+  Object test=MVEL.executeExpression(exp,vars);
+  return (Boolean)test;
+}

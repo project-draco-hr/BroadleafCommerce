@@ -1,0 +1,19 @@
+{
+  final DiscreteOrderItem item=(DiscreteOrderItem)orderItemDao.create(OrderItemType.EXTERNALLY_PRICED);
+  item.setSku(itemRequest.getSku());
+  item.setQuantity(itemRequest.getQuantity());
+  item.setCategory(itemRequest.getCategory());
+  item.setProduct(itemRequest.getProduct());
+  DynamicSkuPrices prices=dynamicSkuPricingService.getSkuPrices(itemRequest.getSku(),skuPricingConsiderations);
+  item.setBaseRetailPrice(prices.getRetailPrice());
+  item.setBaseSalePrice(prices.getSalePrice());
+  item.setSalePrice(prices.getSalePrice());
+  item.setRetailPrice(prices.getRetailPrice());
+  for (  BigDecimal fee : itemRequest.getAdditionalFees().values()) {
+    item.setSalePrice(item.getSalePrice().add(new Money(fee)));
+    item.setRetailPrice(item.getRetailPrice().add(new Money(fee)));
+  }
+  item.assignFinalPrice();
+  item.setPersonalMessage(itemRequest.getPersonalMessage());
+  return item;
+}

@@ -1,0 +1,18 @@
+{
+  if (appliedItemOffersCount > 0) {
+    for (    OrderItem splitItem : order.getSplitItems()) {
+      if (splitItem.isHasOrderItemAdjustments()) {
+        Money itemPrice=splitItem.getRetailPrice();
+        if (splitItem.getSalePrice() != null) {
+          itemPrice=splitItem.getSalePrice();
+        }
+        if (splitItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
+          int offersRemoved=splitItem.removeAllAdjustments();
+          appliedItemOffersCount-=offersRemoved;
+        }
+      }
+    }
+    mergeSplitItems(order);
+  }
+  return appliedItemOffersCount;
+}

@@ -1,0 +1,18 @@
+{
+  EasyMock.expect(offerDaoMock.createCandidateOrderOffer()).andReturn(new CandidateOrderOfferImpl()).times(2);
+  replay();
+  Order order=dataProvider.createBasicOrder();
+  List<CandidateOrderOffer> qualifiedOffers=new ArrayList<CandidateOrderOffer>();
+  List<Offer> offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF);
+  orderProcessor.filterOrderLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(0));
+  assertTrue(qualifiedOffers.size() == 1 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)));
+  qualifiedOffers=new ArrayList<CandidateOrderOffer>();
+  offers=dataProvider.createOrderBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  orderProcessor.filterOrderLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(0));
+  assertTrue(qualifiedOffers.size() == 1 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)));
+  qualifiedOffers=new ArrayList<CandidateOrderOffer>();
+  offers=dataProvider.createOrderBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([5,6] contains discreteOrderItem.category.id.intValue())");
+  orderProcessor.filterOrderLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(0));
+  assertTrue(qualifiedOffers.size() == 0);
+  verify();
+}

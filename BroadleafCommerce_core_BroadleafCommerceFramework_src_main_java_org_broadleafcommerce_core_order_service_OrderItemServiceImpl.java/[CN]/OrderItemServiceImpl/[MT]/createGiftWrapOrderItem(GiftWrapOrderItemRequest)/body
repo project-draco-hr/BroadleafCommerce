@@ -4,8 +4,10 @@
   item.setQuantity(itemRequest.getQuantity());
   item.setCategory(itemRequest.getCategory());
   item.setProduct(itemRequest.getProduct());
-  item.setSalePrice(itemRequest.getSku().getSalePrice());
-  item.setRetailPrice(itemRequest.getSku().getRetailPrice());
+  item.setBaseSalePrice(itemRequest.getSku().getSalePrice());
+  item.setBaseRetailPrice(itemRequest.getSku().getRetailPrice());
+  item.setAdditionalFees(itemRequest.getAdditionalFees());
+  item.updatePrices();
   item.assignFinalPrice();
   item.getWrappedItems().addAll(itemRequest.getWrappedItems());
   for (  OrderItem orderItem : item.getWrappedItems()) {

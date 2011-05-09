@@ -1,0 +1,16 @@
+{
+  int maxItemCriteriaUses=candidate.calculateMaxUsesForItemCriteria(offer.getTargetItemCriteria(),offer);
+  assertTrue(maxItemCriteriaUses == 2);
+  PromotionQualifier qualifier=new PromotionQualifier();
+  qualifier.setPromotion(offer);
+  qualifier.setQuantity(1);
+  orderItem1.getPromotionQualifiers().add(qualifier);
+  maxItemCriteriaUses=candidate.calculateMaxUsesForItemCriteria(offer.getTargetItemCriteria(),offer);
+  assertTrue(maxItemCriteriaUses == 1);
+  PromotionDiscount discount=new PromotionDiscount();
+  discount.setPromotion(offer);
+  discount.setQuantity(1);
+  orderItem1.getPromotionDiscounts().add(discount);
+  maxItemCriteriaUses=candidate.calculateMaxUsesForItemCriteria(offer.getTargetItemCriteria(),offer);
+  assertTrue(maxItemCriteriaUses == 0);
+}

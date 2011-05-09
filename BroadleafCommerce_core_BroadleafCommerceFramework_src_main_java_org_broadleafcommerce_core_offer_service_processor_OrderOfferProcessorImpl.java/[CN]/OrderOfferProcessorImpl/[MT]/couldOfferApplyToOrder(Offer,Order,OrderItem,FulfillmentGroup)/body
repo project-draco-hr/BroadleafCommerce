@@ -1,6 +1,16 @@
 {
   boolean appliesToItem=false;
+  String rule=null;
   if (offer.getAppliesToOrderRules() != null && offer.getAppliesToOrderRules().trim().length() != 0) {
+    rule=offer.getAppliesToOrderRules();
+  }
+ else {
+    OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
+    if (orderRule != null) {
+      rule=orderRule.getMatchRule();
+    }
+  }
+  if (rule != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
     vars.put("order",order);
     vars.put("offer",offer);
@@ -10,7 +20,7 @@
     if (discreteOrderItem != null) {
       vars.put("discreteOrderItem",discreteOrderItem);
     }
-    Boolean expressionOutcome=executeExpression(offer.getAppliesToOrderRules(),vars);
+    Boolean expressionOutcome=executeExpression(rule,vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToItem=true;
     }

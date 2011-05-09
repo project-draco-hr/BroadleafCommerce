@@ -1,0 +1,31 @@
+{
+  if (((String)key).equals(SINGLE_TABLE_ENTITIES)) {
+    String[] classes=StringUtils.tokenizeToStringArray(props.getProperty((String)key),ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+    for (    String clazz : classes) {
+      String keyName;
+      int pos=clazz.lastIndexOf(".");
+      if (pos >= 0) {
+        keyName=clazz.substring(pos + 1,clazz.length());
+      }
+ else {
+        keyName=clazz;
+      }
+      SingleTableInheritanceInfo info=new SingleTableInheritanceInfo();
+      info.setClassName(clazz);
+      String discriminatorName=props.getProperty("broadleaf.ejb." + keyName + ".discriminator.name");
+      if (discriminatorName != null) {
+        info.setDiscriminatorName(discriminatorName);
+        String type=props.getProperty("broadleaf.ejb." + keyName + ".discriminator.type");
+        if (type != null) {
+          info.setDiscriminatorType(DiscriminatorType.valueOf(type));
+        }
+        String length=props.getProperty("broadleaf.ejb." + keyName + ".discriminator.length");
+        if (length != null) {
+          info.setDiscriminatorLength(Integer.parseInt(length));
+        }
+      }
+      infos.remove(info);
+      infos.add(info);
+    }
+  }
+}

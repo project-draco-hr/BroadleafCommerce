@@ -1,9 +1,10 @@
 {
   boolean appliesToItem=false;
-  if (offer.getAppliesToFulfillmentGroupRules() != null && offer.getAppliesToFulfillmentGroupRules().trim().length() != 0) {
+  OfferRule rule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+  if (rule != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
     vars.put("fulfillmentGroup",fulfillmentGroup);
-    Boolean expressionOutcome=executeExpression(offer.getAppliesToFulfillmentGroupRules(),vars);
+    Boolean expressionOutcome=executeExpression(rule.getMatchRule(),vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToItem=true;
     }

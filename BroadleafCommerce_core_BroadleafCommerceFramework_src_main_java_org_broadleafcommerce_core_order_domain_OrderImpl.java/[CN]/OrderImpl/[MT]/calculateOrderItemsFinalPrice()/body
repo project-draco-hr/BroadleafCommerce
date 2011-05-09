@@ -1,8 +1,8 @@
 {
   Money calculatedSubTotal=new Money();
   for (  OrderItem orderItem : orderItems) {
-    Money currentItemPrice=orderItem.getPrice();
-    calculatedSubTotal=calculatedSubTotal.add(new Money(currentItemPrice.doubleValue() * orderItem.getQuantity()));
+    Money price=orderItem.getPrice();
+    calculatedSubTotal=calculatedSubTotal.add(price.multiply(orderItem.getQuantity()));
   }
   return calculatedSubTotal;
 }

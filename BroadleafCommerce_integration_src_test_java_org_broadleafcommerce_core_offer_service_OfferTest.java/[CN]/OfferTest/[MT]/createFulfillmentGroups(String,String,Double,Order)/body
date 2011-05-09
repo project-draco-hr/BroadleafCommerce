@@ -13,14 +13,16 @@
   address.setLastName("Fischer");
   address.setPostalCode("75240");
   address.setPrimaryPhone("972-978-9067");
-  State state=new StateImpl();
-  state.setAbbreviation("TX");
-  state.setName("Texas");
-  address.setState(state);
   Country country=new CountryImpl();
   country.setAbbreviation("US");
   country.setName("United States");
+  countryService.save(country);
+  State state=new StateImpl();
+  state.setAbbreviation("TX");
+  state.setName("Texas");
   state.setCountry(country);
+  stateService.save(state);
+  address.setState(state);
   address.setCountry(country);
   for (  OrderItem orderItem : order.getOrderItems()) {
     FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();

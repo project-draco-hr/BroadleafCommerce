@@ -1,4 +1,8 @@
 {
+  if (offer.getDiscountType().getType().equals(OfferDiscountType.FIX_PRICE.getType())) {
+    LOG.warn("Offers of type ORDER may not have a discount type of FIX_PRICE. Ignoring order offer (name=" + offer.getName() + ")");
+    return;
+  }
   boolean orderLevelQualification=false;
   orderQualification: {
     if (couldOfferApplyToOrder(offer,order)) {
@@ -20,9 +24,9 @@
   }
   if (orderLevelQualification) {
     CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,discreteOrderItems);
-    if (candidates.isMatchedCandidate()) {
+    if (candidates.isMatchedQualifier()) {
       CandidateQualifiedOffer candidateOffer=createCandidateOrderOffer(order,qualifiedOrderOffers,offer);
-      candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateItemsMap());
+      candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
     }
   }
 }

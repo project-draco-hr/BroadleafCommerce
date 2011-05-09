@@ -1,6 +1,7 @@
 {
   if (type.equals("ORDER_ITEM")) {
-    Integer quantity=(Integer)getDisplay().getTargetItemBuilder().getItemQuantity().getValue();
+    String temp=getDisplay().getTargetItemBuilder().getItemQuantity().getValue().toString();
+    Integer quantity=Integer.parseInt(temp);
     String mvel;
     if (getDisplay().getTargetItemBuilder().getIncompatibleMVEL()) {
       mvel=getDisplay().getTargetItemBuilder().getRawItemTextArea().getValueAsString();
@@ -8,8 +9,7 @@
  else {
       mvel=TRANSLATOR.createMVEL(getDisplay().getTargetItemBuilder().getItemFilterBuilder().getCriteria(),FilterType.ORDER_ITEM,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource());
     }
-    selectedRecord.setAttribute("targetItemCriteria.receiveQuantity",quantity);
-    selectedRecord.setAttribute("targetItemCriteria.requiresQuantity",0);
+    selectedRecord.setAttribute("targetItemCriteria.quantity",quantity);
     selectedRecord.setAttribute("targetItemCriteria.orderItemMatchRule",mvel);
   }
  else {

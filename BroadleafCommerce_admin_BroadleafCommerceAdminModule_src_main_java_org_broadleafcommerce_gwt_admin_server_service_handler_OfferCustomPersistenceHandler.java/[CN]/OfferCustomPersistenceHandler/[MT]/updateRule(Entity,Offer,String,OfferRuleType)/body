@@ -1,0 +1,14 @@
+{
+  Property ruleProperty=entity.findProperty(propertyName);
+  if (ruleProperty != null && !StringUtils.isEmpty(ruleProperty.getValue())) {
+    OfferRule rule=offerInstance.getOfferMatchRules().get(type.getType());
+    if (rule == null) {
+      rule=(OfferRule)entityConfiguration.createEntityInstance(OfferRule.class.getName());
+    }
+    rule.setMatchRule(ruleProperty.getValue());
+    offerInstance.getOfferMatchRules().put(type.getType(),rule);
+  }
+ else {
+    offerInstance.getOfferMatchRules().remove(type.getType());
+  }
+}

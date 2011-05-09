@@ -5,9 +5,9 @@
       qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
     }
  else {
-      OfferItemRestrictionRuleType qualifierType=promotion.getOfferItemTargetRuleType();
+      OfferItemRestrictionRuleType qualifierType=promotionDiscount.getPromotion().getOfferItemTargetRuleType();
       if (OfferItemRestrictionRuleType.NONE.equals(qualifierType) || OfferItemRestrictionRuleType.TARGET.equals(qualifierType)) {
-        qtyAvailable=qtyAvailable - qtyAvailable;
+        qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
       }
     }
   }
@@ -16,9 +16,9 @@
       qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
     }
  else {
-      OfferItemRestrictionRuleType qualifierType=promotion.getOfferItemQualifierRuleType();
+      OfferItemRestrictionRuleType qualifierType=promotionQualifier.getPromotion().getOfferItemQualifierRuleType();
       if (OfferItemRestrictionRuleType.NONE.equals(qualifierType) || OfferItemRestrictionRuleType.TARGET.equals(qualifierType)) {
-        qtyAvailable=qtyAvailable - qtyAvailable;
+        qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
       }
     }
   }

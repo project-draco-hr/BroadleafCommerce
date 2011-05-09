@@ -22,6 +22,7 @@
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   group.setMethod("standard");
   group.setService(ShippingServiceType.BANDED_SHIPPING.getType());
+  group.setOrder(order);
   groups.add(group);
   order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
@@ -33,6 +34,7 @@
   sku.setDiscountable(true);
   item.setSku(sku);
   item.setQuantity(2);
+  item.setOrder(order);
   order.addOrderItem(item);
   FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();
   fgItem.setFulfillmentGroup(group);
@@ -47,6 +49,7 @@
   sku.setDiscountable(true);
   item.setSku(sku);
   item.setQuantity(1);
+  item.setOrder(order);
   order.addOrderItem(item);
   fgItem=new FulfillmentGroupItemImpl();
   fgItem.setFulfillmentGroup(group);

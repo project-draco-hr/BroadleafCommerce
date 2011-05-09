@@ -1,0 +1,32 @@
+{
+  int quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 2);
+  PromotionDiscount discount=new PromotionDiscount();
+  discount.setPromotion(offer);
+  discount.setQuantity(1);
+  orderItem1.getPromotionDiscounts().add(discount);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 1);
+  Offer testOffer=new OfferImpl();
+  testOffer.setOfferItemQualifierRuleType(OfferItemRestrictionRuleType.NONE);
+  testOffer.setOfferItemTargetRuleType(OfferItemRestrictionRuleType.NONE);
+  discount.setPromotion(testOffer);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 1);
+  testOffer.setOfferItemTargetRuleType(OfferItemRestrictionRuleType.QUALIFIER);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 2);
+  orderItem1.getPromotionDiscounts().clear();
+  PromotionQualifier qualifier=new PromotionQualifier();
+  qualifier.setPromotion(offer);
+  qualifier.setQuantity(1);
+  orderItem1.getPromotionQualifiers().add(qualifier);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 1);
+  qualifier.setPromotion(testOffer);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 1);
+  testOffer.setOfferItemQualifierRuleType(OfferItemRestrictionRuleType.QUALIFIER);
+  quantity=orderItem1.getQuantityAvailableToBeUsedAsQualifier(offer);
+  assertTrue(quantity == 2);
+}

@@ -4,6 +4,9 @@
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
     Map<String,FieldMetadata> offerProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective,dynamicEntityDao,entityClasses);
     offerInstance=(Offer)helper.createPopulatedInstance(offerInstance,entity,offerProperties,false);
+    addRule(entity,offerInstance,"appliesToOrderRules",OfferRuleType.ORDER);
+    addRule(entity,offerInstance,"appliesToCustomerRules",OfferRuleType.CUSTOMER);
+    addRule(entity,offerInstance,"appliesToFulfillmentGroupRules",OfferRuleType.FULFILLMENT_GROUP);
     dynamicEntityDao.persist(offerInstance);
     OfferCode offerCode=null;
     if (entity.findProperty("deliveryType").getValue().equals("CODE")) {

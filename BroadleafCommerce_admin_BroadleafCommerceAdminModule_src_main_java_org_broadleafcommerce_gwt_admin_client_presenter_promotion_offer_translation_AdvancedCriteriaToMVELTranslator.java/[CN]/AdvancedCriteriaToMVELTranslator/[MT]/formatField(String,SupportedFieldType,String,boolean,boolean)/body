@@ -16,7 +16,7 @@ response.append(".");
 response.append(field);
 response.append(".getAmount()");
 break;
-default :
+case STRING:
 if (ignoreCase) {
 response.append("MVEL.eval(\"toUpperCase()\",");
 }
@@ -26,6 +26,11 @@ response.append(field);
 if (ignoreCase) {
 response.append(")");
 }
+break;
+default :
+response.append(entityKey);
+response.append(".");
+response.append(field);
 break;
 }
 return response.toString();

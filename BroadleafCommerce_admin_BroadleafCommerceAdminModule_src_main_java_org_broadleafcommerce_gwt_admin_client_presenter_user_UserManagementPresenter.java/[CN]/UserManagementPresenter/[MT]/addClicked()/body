@@ -1,0 +1,12 @@
+{
+  Map<String,Object> initialValues=new HashMap<String,Object>();
+  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
+  BLCMain.ENTITY_ADD.editNewRecord(AdminModule.ADMINMESSAGES.newAdminUserTitle(),(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
+    public void onNewItemCreated(    NewItemCreatedEvent event){
+      Criteria myCriteria=new Criteria();
+      myCriteria.addCriteria("login",event.getRecord().getAttribute("login"));
+      display.getListDisplay().getGrid().fetchData(myCriteria);
+    }
+  }
+,"90%",null,null);
+}

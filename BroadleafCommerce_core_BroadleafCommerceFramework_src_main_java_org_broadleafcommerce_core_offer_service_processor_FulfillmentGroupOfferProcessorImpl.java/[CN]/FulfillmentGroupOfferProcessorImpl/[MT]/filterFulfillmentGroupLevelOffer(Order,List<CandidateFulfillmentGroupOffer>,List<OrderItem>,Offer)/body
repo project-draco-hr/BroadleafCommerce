@@ -12,16 +12,18 @@
           break fgQualification;
         }
       }
+    }
+    if (fgLevelQualification) {
+      fgLevelQualification=false;
       if (couldOfferApplyToFulfillmentGroup(offer,fulfillmentGroup)) {
         fgLevelQualification=true;
-        break fgQualification;
       }
     }
     if (fgLevelQualification) {
-      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,discreteOrderItems);
-      if (candidates.isMatchedCandidate()) {
+      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,fulfillmentGroup.getDiscountableDiscreteOrderItems());
+      if (candidates.isMatchedQualifier()) {
         CandidateQualifiedOffer candidateOffer=createCandidateFulfillmentGroupOffer(offer,qualifiedFGOffers,fulfillmentGroup);
-        candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateItemsMap());
+        candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
       }
     }
   }

@@ -1,0 +1,35 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("50%");
+  leftVerticalLayout.setShowResizeBar(true);
+  listDisplay=new DynamicEntityListView(AdminModule.ADMINMESSAGES.userListTitle(),entityDataSource,false,false);
+  leftVerticalLayout.addMember(listDisplay);
+  TabSet topTabSet=new TabSet();
+  topTabSet.setTabBarPosition(Side.TOP);
+  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
+  topTabSet.setWidth("50%");
+  topTabSet.setHeight100();
+  topTabSet.setPaneMargin(0);
+  Tab detailsTab=new Tab(AdminModule.ADMINMESSAGES.userDetailsTitle());
+  dynamicFormDisplay=new DynamicFormView(AdminModule.ADMINMESSAGES.userDetailsTitle(),entityDataSource);
+  ToolStrip toolbar=dynamicFormDisplay.getToolbar();
+  toolbar.addFill();
+  Label label=new Label();
+  label.setContents(AdminModule.ADMINMESSAGES.updatePasswordPrompt());
+  label.setWrap(false);
+  toolbar.addMember(label);
+  detailsTab.setPane(dynamicFormDisplay);
+  topTabSet.addTab(detailsTab);
+  Tab userRolesTab=new Tab(AdminModule.ADMINMESSAGES.userRolesTitle());
+  userRolesDisplay=new UserRoleView(AdminModule.ADMINMESSAGES.userRolesTitle(),false,false);
+  userRolesTab.setPane(userRolesDisplay);
+  topTabSet.addTab(userRolesTab);
+  updateLoginButton=new ToolStripButton();
+  updateLoginButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/settings.png");
+  updateLoginButton.setDisabled(true);
+  toolbar.addButton(updateLoginButton);
+  toolbar.addSpacer(6);
+  addMember(leftVerticalLayout);
+  addMember(topTabSet);
+}

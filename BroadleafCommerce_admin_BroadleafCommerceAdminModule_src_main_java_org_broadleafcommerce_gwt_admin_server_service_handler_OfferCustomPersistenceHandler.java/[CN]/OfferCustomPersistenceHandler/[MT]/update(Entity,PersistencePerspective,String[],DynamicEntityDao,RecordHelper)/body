@@ -5,6 +5,9 @@
     Object primaryKey=helper.getPrimaryKey(entity,offerProperties);
     Offer offerInstance=(Offer)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     offerInstance=(Offer)helper.createPopulatedInstance(offerInstance,entity,offerProperties,false);
+    updateRule(entity,offerInstance,"appliesToOrderRules",OfferRuleType.ORDER);
+    updateRule(entity,offerInstance,"appliesToCustomerRules",OfferRuleType.CUSTOMER);
+    updateRule(entity,offerInstance,"appliesToFulfillmentGroupRules",OfferRuleType.FULFILLMENT_GROUP);
     dynamicEntityDao.merge(offerInstance);
     Property offerCodeId=entity.findProperty("offerCode.id");
     OfferCode offerCode=null;

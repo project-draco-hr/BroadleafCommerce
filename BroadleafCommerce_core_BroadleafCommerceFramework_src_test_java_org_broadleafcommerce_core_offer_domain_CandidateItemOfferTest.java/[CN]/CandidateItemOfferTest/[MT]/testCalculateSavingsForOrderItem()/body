@@ -1,0 +1,10 @@
+{
+  Money savings=candidate.calculateSavingsForOrderItem(orderItem1,1);
+  assertTrue(savings.equals(new Money(2D)));
+  offer.setDiscountType(OfferDiscountType.AMOUNT_OFF);
+  savings=candidate.calculateSavingsForOrderItem(orderItem1,1);
+  assertTrue(savings.equals(new Money(10D)));
+  offer.setDiscountType(OfferDiscountType.FIX_PRICE);
+  savings=candidate.calculateSavingsForOrderItem(orderItem1,1);
+  assertTrue(savings.equals(new Money(19.99D - 10D)));
+}

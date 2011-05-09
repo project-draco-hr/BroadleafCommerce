@@ -1,0 +1,72 @@
+{
+  if (infos.isEmpty()) {
+    return classfileBuffer;
+  }
+  String convertedClassName=className.replace('/','.');
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Converting " + convertedClassName + " to a SingleTable inheritance strategy.");
+  }
+  SingleTableInheritanceInfo key=new SingleTableInheritanceInfo();
+  key.setClassName(convertedClassName);
+  int pos=infos.indexOf(key);
+  if (pos >= 0) {
+    try {
+      SingleTableInheritanceInfo myInfo=infos.get(pos);
+      ClassFile classFile=new ClassFile(new DataInputStream(new ByteArrayInputStream(classfileBuffer)));
+      ConstPool constantPool=classFile.getConstPool();
+      AnnotationsAttribute annotationsAttribute=new AnnotationsAttribute(constantPool,AnnotationsAttribute.visibleTag);
+      List<?> attributes=classFile.getAttributes();
+      Iterator<?> itr=attributes.iterator();
+      while (itr.hasNext()) {
+        Object object=itr.next();
+        if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+          AnnotationsAttribute attr=(AnnotationsAttribute)object;
+          Annotation[] items=attr.getAnnotations();
+          for (          Annotation annotation : items) {
+            String typeName=annotation.getTypeName();
+            if (!typeName.equals(Inheritance.class.getName()) && ((myInfo.getDiscriminatorName() == null && !typeName.equals(Table.class.getName())) || myInfo.getDiscriminatorName() != null)) {
+              annotationsAttribute.addAnnotation(annotation);
+            }
+          }
+          itr.remove();
+        }
+      }
+      Annotation inheritance=new Annotation(Inheritance.class.getName(),constantPool);
+      ClassPool pool=ClassPool.getDefault();
+      pool.importPackage("javax.persistence");
+      pool.importPackage("java.lang");
+      EnumMemberValue strategy=(EnumMemberValue)Annotation.createMemberValue(constantPool,pool.makeClass("InheritanceType"));
+      strategy.setType(InheritanceType.class.getName());
+      strategy.setValue(InheritanceType.SINGLE_TABLE.name());
+      inheritance.addMemberValue("strategy",strategy);
+      annotationsAttribute.addAnnotation(inheritance);
+      if (myInfo.getDiscriminatorName() != null) {
+        Annotation discriminator=new Annotation(DiscriminatorColumn.class.getName(),constantPool);
+        StringMemberValue name=new StringMemberValue(constantPool);
+        name.setValue(myInfo.getDiscriminatorName());
+        discriminator.addMemberValue("name",name);
+        EnumMemberValue discriminatorType=(EnumMemberValue)Annotation.createMemberValue(constantPool,pool.makeClass("DiscriminatorType"));
+        discriminatorType.setType(DiscriminatorType.class.getName());
+        discriminatorType.setValue(myInfo.getDiscriminatorType().name());
+        discriminator.addMemberValue("discriminatorType",discriminatorType);
+        IntegerMemberValue length=new IntegerMemberValue(constantPool);
+        length.setValue(myInfo.getDiscriminatorLength());
+        discriminator.addMemberValue("length",length);
+        annotationsAttribute.addAnnotation(discriminator);
+      }
+      classFile.addAttribute(annotationsAttribute);
+      ByteArrayOutputStream bos=new ByteArrayOutputStream();
+      DataOutputStream os=new DataOutputStream(bos);
+      classFile.write(os);
+      os.close();
+      return bos.toByteArray();
+    }
+ catch (    Exception ex) {
+      ex.printStackTrace();
+      throw new IllegalClassFormatException("Unable to convert " + convertedClassName + " to a SingleTable inheritance strategy: "+ ex.getMessage());
+    }
+  }
+ else {
+    return classfileBuffer;
+  }
+}

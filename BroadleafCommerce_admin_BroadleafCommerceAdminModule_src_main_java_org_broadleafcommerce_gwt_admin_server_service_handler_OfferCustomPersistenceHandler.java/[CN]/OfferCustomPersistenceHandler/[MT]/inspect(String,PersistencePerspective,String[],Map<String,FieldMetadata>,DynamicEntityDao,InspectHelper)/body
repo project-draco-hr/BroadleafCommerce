@@ -4,6 +4,7 @@
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
     Map<String,FieldMetadata> mergedProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective,dynamicEntityDao,entityClasses);
     allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
+    mergedProperties.put("appliesToFulfillmentGroupRules",mergedProperties.get("appliesToOrderRules"));
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
     Class<?>[] offerCodeEntityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(OfferCode.class);
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective,dynamicEntityDao,offerCodeEntityClasses);

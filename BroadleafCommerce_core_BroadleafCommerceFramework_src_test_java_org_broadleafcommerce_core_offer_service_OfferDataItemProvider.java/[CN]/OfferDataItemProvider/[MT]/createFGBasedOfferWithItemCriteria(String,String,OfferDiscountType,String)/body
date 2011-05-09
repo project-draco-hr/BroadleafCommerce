@@ -1,0 +1,11 @@
+{
+  List<Offer> offers=createFGBasedOffer(orderRule,fgRule,discountType);
+  OfferItemCriteria qualCriteria=new OfferItemCriteriaImpl();
+  qualCriteria.setOffer(offers.get(0));
+  qualCriteria.setQuantity(1);
+  qualCriteria.setOrderItemMatchRule(orderItemMatchRule);
+  List<OfferItemCriteria> criterias=new ArrayList<OfferItemCriteria>();
+  criterias.add(qualCriteria);
+  offers.get(0).setQualifyingItemCriteria(criterias);
+  return offers;
+}

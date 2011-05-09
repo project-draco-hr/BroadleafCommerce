@@ -1,0 +1,19 @@
+{
+  order.removeAllCandidateFulfillmentGroupOffers();
+  order.removeAllFulfillmentAdjustments();
+  List<Offer> possibleFGOffers=new ArrayList<Offer>();
+  for (  Offer offer : offers) {
+    if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {
+      possibleFGOffers.add(offer);
+    }
+  }
+  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,order.getCustomer());
+  List<CandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<CandidateFulfillmentGroupOffer>();
+  for (  Offer offer : filteredOffers) {
+    fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedFGOffers,order.getDiscountableDiscreteOrderItems(),offer);
+  }
+  if (!qualifiedFGOffers.isEmpty()) {
+    fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,order);
+  }
+  fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(order);
+}

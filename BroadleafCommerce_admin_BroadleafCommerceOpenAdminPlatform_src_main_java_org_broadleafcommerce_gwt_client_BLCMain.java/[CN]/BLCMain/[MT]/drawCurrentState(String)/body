@@ -4,15 +4,15 @@
   }
   final String finalKey=moduleKey;
   modules.get(finalKey).preDraw();
-  MASTERVIEW=new MasterView(finalKey,modules);
-  MASTERVIEW.draw();
   AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
     @Override public void onSuccess(    AdminUser result){
-      USER=result;
-      if (USER == null) {
+      SecurityManager.USER=result;
+      if (result == null) {
         SC.say("This page cannot be accessed without first successfully logging in.");
       }
  else {
+        MASTERVIEW=new MasterView(finalKey,modules);
+        MASTERVIEW.draw();
         AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(finalKey).getPages());
         modules.get(finalKey).postDraw();
       }

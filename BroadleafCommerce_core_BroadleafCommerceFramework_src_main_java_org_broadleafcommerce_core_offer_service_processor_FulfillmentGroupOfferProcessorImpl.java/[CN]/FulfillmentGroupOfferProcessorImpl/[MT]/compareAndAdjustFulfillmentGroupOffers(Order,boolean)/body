@@ -1,0 +1,24 @@
+{
+  Money regularOrderDiscountShippingTotal=new Money(0D);
+  regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(order.calculateOrderItemsPriceWithoutAdjustments());
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(fg.getAdjustmentPrice());
+  }
+  Money discountOrderRegularShippingTotal=new Money(0D);
+  discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(order.getSubTotal());
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(fg.getPriceBeforeAdjustments(true));
+  }
+  if (discountOrderRegularShippingTotal.lessThan(regularOrderDiscountShippingTotal)) {
+    order.removeAllFulfillmentAdjustments();
+    fgOfferApplied=false;
+  }
+ else {
+    order.removeAllOrderAdjustments();
+    order.removeAllItemAdjustments();
+    order.getSplitItems().clear();
+    order.getSplitItems().addAll(order.getOrderItems());
+    mergeSplitItems(order);
+  }
+  return fgOfferApplied;
+}

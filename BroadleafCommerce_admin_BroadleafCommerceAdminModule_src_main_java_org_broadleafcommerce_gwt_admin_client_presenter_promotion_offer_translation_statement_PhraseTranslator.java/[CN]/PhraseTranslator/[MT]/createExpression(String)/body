@@ -9,6 +9,29 @@
     isIgnoreCase=true;
     field=field.substring(caseInsensitivityKey.length(),field.length() - 1);
   }
+  while (value.contains(caseInsensitivityKey)) {
+    value=value.substring(0,value.indexOf(caseInsensitivityKey)) + value.substring(value.indexOf(caseInsensitivityKey) + caseInsensitivityKey.length(),value.length());
+    value=value.substring(0,value.indexOf(")")) + value.substring(value.indexOf(")") + 1,value.length());
+  }
+  if (value.startsWith("[") && value.endsWith("]")) {
+    value=value.substring(1,value.length() - 1);
+    String[] temps=value.split(",");
+    for (int j=0; j < temps.length; j++) {
+      if (temps[j].startsWith("\"") && temps[j].endsWith("\"")) {
+        temps[j]=temps[j].substring(1,temps[j].length() - 1);
+      }
+    }
+    StringBuffer sb=new StringBuffer();
+    sb.append("[");
+    for (int j=0; j < temps.length; j++) {
+      sb.append(temps[j]);
+      if (j < temps.length - 1) {
+        sb.append(",");
+      }
+    }
+    sb.append("]");
+    value=sb.toString();
+  }
   String dateFormatKey="java.text.DateFormat.getDateTimeInstance(3,3).parse(";
   if (value.startsWith(dateFormatKey)) {
     value=value.substring(dateFormatKey.length(),value.length() - 1);

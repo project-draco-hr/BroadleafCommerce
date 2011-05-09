@@ -1,0 +1,19 @@
+{
+  if (!orderItem.isNotCombinableOfferApplied()) {
+    if ((itemOffer.getOffer().isCombinableWithOtherOffers() && itemOffer.getOffer().isStackable()) || !orderItem.isHasOrderItemAdjustments()) {
+      applyOrderItemAdjustment(itemOffer,orderItem);
+      appliedItemOffersCount++;
+    }
+  }
+  if (!itemOffer.getOffer().isCombinableWithOtherOffers() && appliedItemOffersCount > beforeCount) {
+    Money adjustmentTotal=new Money(0D);
+    Money saleTotal=new Money(0D);
+    adjustmentTotal=adjustmentTotal.add(orderItem.getCurrentPrice().multiply(orderItem.getQuantity()));
+    saleTotal=saleTotal.add(orderItem.getPriceBeforeAdjustments(true).multiply(orderItem.getQuantity()));
+    if (adjustmentTotal.greaterThanOrEqual(saleTotal)) {
+      orderItem.removeAllAdjustments();
+      appliedItemOffersCount--;
+    }
+  }
+  return appliedItemOffersCount;
+}

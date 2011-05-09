@@ -1,0 +1,35 @@
+{
+  BLCMain.MODAL_PROGRESS.startProgress(new Timer(){
+    public void run(){
+      if (loaded) {
+        UserManagementPresenter.super.go(container);
+        return;
+      }
+      AdminUserListDataSourceFactory.createDataSource("adminUserDS",new AsyncCallbackAdapter(){
+        public void onSuccess(        final DataSource top){
+          setupDisplayItems(top);
+          ((ListGridDataSource)top).setupGridFields(new String[]{"name","login","email"},new Boolean[]{true,true,true});
+          AdminRoleListDataSourceFactory.createDataSource("adminRoleDS",new AsyncCallbackAdapter(){
+            public void onSuccess(            final DataSource adminRoleDS){
+              roleSearchView=new EntitySearchDialog((ListGridDataSource)adminRoleDS);
+              AdminPermissionListDataSourceFactory.createDataSource("adminPermissionDS",new AsyncCallbackAdapter(){
+                public void onSuccess(                DataSource adminPermissionDS){
+                  userRolePresenter=new UserRolePresenter((UserRoleDisplay)getDisplay().getUserRolesDisplay(),roleSearchView);
+                  userRolePresenter.setDataSource((ListGridDataSource)adminRoleDS,new String[]{"name","description"},new Boolean[]{false,false});
+                  userRolePresenter.setExpansionDataSource((ListGridDataSource)adminPermissionDS,new String[]{"name","description"},new Boolean[]{false,false});
+                  userRolePresenter.setReadOnly(false);
+                  userRolePresenter.bind();
+                  UserManagementPresenter.super.go(container);
+                }
+              }
+);
+            }
+          }
+);
+        }
+      }
+);
+    }
+  }
+);
+}

@@ -1,0 +1,14 @@
+{
+  this.associatedRecord=associatedRecord;
+  this.abstractDynamicDataSource=abstractDynamicDataSource;
+  String id=abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
+  ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      setStartState();
+      if (cb != null) {
+        cb.execute(response,rawData,request);
+      }
+    }
+  }
+);
+}

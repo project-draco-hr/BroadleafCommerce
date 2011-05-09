@@ -6,6 +6,24 @@
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,Offer.class.getName());
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Offer.class);
     Entity[] entities=helper.getRecords(offerProperties,records,null,null);
+    for (int j=0; j < entities.length; j++) {
+      Offer offer=(Offer)records.get(j);
+      OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
+      if (orderRule != null) {
+        entities[j].findProperty("appliesToOrderRules").setValue(orderRule.getMatchRule());
+      }
+      OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
+      if (customerRule != null) {
+        entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
+      }
+      OfferRule fgRule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+      if (fgRule != null) {
+        Property prop=new Property();
+        prop.setName("appliesToFulfillmentGroupRules");
+        prop.setValue(fgRule.getMatchRule());
+        entities[j].addProperty(prop);
+      }
+    }
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
     Class<?>[] offerCodeEntityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(OfferCode.class);
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective,dynamicEntityDao,offerCodeEntityClasses);

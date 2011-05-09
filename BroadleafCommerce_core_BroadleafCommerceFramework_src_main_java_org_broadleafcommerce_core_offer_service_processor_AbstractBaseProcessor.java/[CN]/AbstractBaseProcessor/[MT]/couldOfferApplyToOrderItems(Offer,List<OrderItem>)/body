@@ -1,0 +1,21 @@
+{
+  CandidatePromotionItems candidates=new CandidatePromotionItems();
+  if (offer.getQualifyingItemCriteria() == null || offer.getQualifyingItemCriteria().size() == 0) {
+    candidates.setMatchedQualifier(true);
+  }
+ else {
+    for (    OfferItemCriteria criteria : offer.getQualifyingItemCriteria()) {
+      checkForItemRequirements(candidates,criteria,discreteOrderItems,true);
+      if (!candidates.isMatchedQualifier()) {
+        break;
+      }
+    }
+  }
+  if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+    if (offer.getTargetItemCriteria() == null) {
+      throw new RuntimeException("Invalid promotion data : Order Item promotions must specify a target criteria. This promotion does not appear to have a target criteria.");
+    }
+    checkForItemRequirements(candidates,offer.getTargetItemCriteria(),discreteOrderItems,false);
+  }
+  return candidates;
+}

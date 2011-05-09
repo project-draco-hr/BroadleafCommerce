@@ -1,0 +1,40 @@
+{
+  Map<String,List<OrderItem>> splitMap=new HashMap<String,List<OrderItem>>();
+  for (  OrderItem splitItem : order.getSplitItems()) {
+    if (!splitMap.containsKey(splitItem.getName())) {
+      List<OrderItem> mySplits=new ArrayList<OrderItem>();
+      splitMap.put(splitItem.getName(),mySplits);
+    }
+    splitMap.get(splitItem.getName()).add(splitItem);
+  }
+  Iterator<OrderItem> finalItems=order.getOrderItems().iterator();
+  while (finalItems.hasNext()) {
+    OrderItem nextItem=finalItems.next();
+    List<OrderItem> mySplits=splitMap.get(nextItem.getName());
+    if (mySplits != null && mySplits.size() > 0) {
+      OrderItem cloneItem=nextItem.clone();
+      cloneItem.clearAllDiscount();
+      cloneItem.clearAllQualifiers();
+      cloneItem.removeAllAdjustments();
+      cloneItem.setQuantity(0);
+      Iterator<OrderItem> splitItemIterator=mySplits.iterator();
+      while (splitItemIterator.hasNext()) {
+        OrderItem splitItem=splitItemIterator.next();
+        if (!splitItem.isHasOrderItemAdjustments()) {
+          cloneItem.setQuantity(cloneItem.getQuantity() + splitItem.getQuantity());
+          splitItemIterator.remove();
+        }
+      }
+      if (cloneItem.getQuantity() > 0) {
+        mySplits.add(cloneItem);
+      }
+      finalItems.remove();
+    }
+  }
+  for (  String key : splitMap.keySet()) {
+    List<OrderItem> mySplits=splitMap.get(key);
+    if (mySplits != null && mySplits.size() > 0) {
+      order.getOrderItems().addAll(mySplits);
+    }
+  }
+}
