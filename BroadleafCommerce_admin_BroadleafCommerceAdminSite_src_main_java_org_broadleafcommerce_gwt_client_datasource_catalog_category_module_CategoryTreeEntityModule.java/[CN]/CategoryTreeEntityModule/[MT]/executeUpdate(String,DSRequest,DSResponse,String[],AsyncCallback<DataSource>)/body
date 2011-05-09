@@ -1,0 +1,30 @@
+{
+  BLCMain.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  final TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  service.update(entity,persistencePerspective,null,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      String startingId=dataSource.stripDuplicateAllowSpecialCharacters(dataSource.getPrimaryKeyValue(record));
+      RecordList resultSet=((PresentationLayerAssociatedDataSource)dataSource).getAssociatedGrid().getRecordList();
+      if (resultSet != null) {
+        Record[] myRecords=resultSet.toArray();
+        int count=1;
+        for (        Record myRecord : myRecords) {
+          String myId=dataSource.stripDuplicateAllowSpecialCharacters(dataSource.getPrimaryKeyValue(myRecord));
+          if (startingId.equals(myId) && !dataSource.getPrimaryKeyValue(record).equals(myId)) {
+            updateRecord(result,(TreeNode)myRecord,false);
+            ((PresentationLayerAssociatedDataSource)dataSource).getAssociatedGrid().refreshRow(count);
+          }
+          count++;
+        }
+      }
+      TreeNode myRecord=(TreeNode)updateRecord(result,(Record)record,false);
+      TreeNode[] recordList=new TreeNode[]{myRecord};
+      response.setData(recordList);
+      dataSource.processResponse(requestId,response);
+    }
+  }
+);
+}

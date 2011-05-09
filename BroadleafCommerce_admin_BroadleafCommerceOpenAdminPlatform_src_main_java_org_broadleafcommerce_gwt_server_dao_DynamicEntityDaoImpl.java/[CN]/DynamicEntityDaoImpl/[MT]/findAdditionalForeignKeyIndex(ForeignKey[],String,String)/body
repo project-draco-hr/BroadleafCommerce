@@ -1,0 +1,12 @@
+{
+  int additionalForeignKeyIndexPosition=-1;
+  if (additionalForeignFields != null) {
+    additionalForeignKeyIndexPosition=Arrays.binarySearch(additionalForeignFields,new ForeignKey(prefix + propertyName,null,null),new Comparator<ForeignKey>(){
+      public int compare(      ForeignKey o1,      ForeignKey o2){
+        return o1.getManyToField().compareTo(o2.getManyToField());
+      }
+    }
+);
+  }
+  return additionalForeignKeyIndexPosition;
+}

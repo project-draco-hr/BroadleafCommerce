@@ -1,0 +1,35 @@
+{
+  try {
+    Map<String,FieldMetadata> metadataOverrides=null;
+    if (metadataOverrideKeys != null) {
+      metadataOverrides=new HashMap<String,FieldMetadata>();
+      for (int j=0; j < metadataOverrideKeys.length; j++) {
+        metadataOverrides.put(metadataOverrideKeys[j],metadataOverrideValues[j]);
+      }
+    }
+    if (metadataOverrides == null && this.metadataOverrides != null) {
+      metadataOverrides=this.metadataOverrides;
+    }
+    for (    CustomPersistenceHandler handler : customPersistenceHandlers) {
+      if (handler.canHandleInspect(ceilingEntityFullyQualifiedClassname,customCriteria)) {
+        DynamicResultSet results=handler.inspect(ceilingEntityFullyQualifiedClassname,persistencePerspective,customCriteria,metadataOverrides,dynamicEntityDao,this);
+        return results;
+      }
+    }
+    Class<?>[] entities=getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    for (    RemoteServiceModule module : modules) {
+      module.updateMergedProperties(ceilingEntityFullyQualifiedClassname,persistencePerspective,allMergedProperties,metadataOverrides);
+    }
+    ClassMetadata mergedMetadata=getMergedClassMetadata(entities,allMergedProperties);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
+    return results;
+  }
+ catch (  ServiceException e) {
+    throw e;
+  }
+catch (  Exception e) {
+    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

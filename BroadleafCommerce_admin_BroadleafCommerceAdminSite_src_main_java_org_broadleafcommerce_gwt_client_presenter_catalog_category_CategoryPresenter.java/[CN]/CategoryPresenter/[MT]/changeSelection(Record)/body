@@ -1,0 +1,33 @@
+{
+  final AbstractDynamicDataSource dataSource=(AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource();
+  if (categorySearchDataSource.stripDuplicateAllowSpecialCharacters(dataSource.getPrimaryKeyValue(selectedRecord)).equals(rootId)) {
+    formPresenter.disable();
+    display.getListDisplay().getRemoveButton().disable();
+  }
+  allChildCategoriesPresenter.load(selectedRecord,dataSource,new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getErrors().isEmpty()) {
+        if (((CategoryDisplay)display).getOrphanedCategoryGrid().getSelectedRecord() != null) {
+          ((CategoryDisplay)display).getInsertOrphanButton().enable();
+        }
+        allChildCategoriesPresenter.setStartState();
+        mediaPresenter.load(selectedRecord,dataSource,null);
+      }
+ else {
+        ((CategoryDisplay)display).getInsertOrphanButton().disable();
+      }
+    }
+  }
+);
+  display.getListDisplay().getAddButton().disable();
+  featuredPresenter.load(selectedRecord,dataSource,new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getErrors().isEmpty()) {
+        display.getListDisplay().getAddButton().enable();
+      }
+    }
+  }
+);
+  childProductsPresenter.load(selectedRecord,dataSource,null);
+  ((CategoryDisplay)display).getAllCategoriesDisplay().getRemoveButton().disable();
+}

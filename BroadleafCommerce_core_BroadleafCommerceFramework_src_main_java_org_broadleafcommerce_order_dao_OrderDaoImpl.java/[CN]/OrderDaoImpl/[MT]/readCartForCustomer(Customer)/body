@@ -3,7 +3,7 @@
   final Query query=em.createNamedQuery("BC_READ_ORDERS_BY_CUSTOMER_ID_AND_NAME_NULL");
   query.setParameter("customerId",customer.getId());
   query.setParameter("orderStatus",OrderStatus.IN_PROCESS.getType());
-  final List temp=query.getResultList();
+  @SuppressWarnings("rawtypes") final List temp=query.getResultList();
   if (temp != null && !temp.isEmpty()) {
     order=(Order)temp.get(0);
   }

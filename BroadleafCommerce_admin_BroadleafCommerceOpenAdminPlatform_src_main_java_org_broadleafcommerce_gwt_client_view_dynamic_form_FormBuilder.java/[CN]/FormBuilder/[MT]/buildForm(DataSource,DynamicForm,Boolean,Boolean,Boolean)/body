@@ -1,0 +1,30 @@
+{
+  form.setDataSource(dataSource);
+  Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
+  List<String> sectionNames=new ArrayList<String>();
+  DataSourceField[] fields=dataSource.getFields();
+  for (  DataSourceField field : fields) {
+    String fieldType=field.getAttribute("fieldType");
+    if (fieldType != null && !field.getHidden()) {
+      String group=field.getAttribute("formGroup");
+      if (group == null) {
+        if (fieldType.equals(SupportedFieldType.ID.toString())) {
+          group="Primary Key";
+        }
+ else {
+          group="General";
+        }
+      }
+      if (!fieldType.equals(SupportedFieldType.ID.toString()) || (fieldType.equals(SupportedFieldType.ID.toString()) && showId)) {
+        Boolean largeEntry=field.getAttributeAsBoolean("largeEntry");
+        if (largeEntry == null) {
+          largeEntry=false;
+        }
+        final FormItem formItem=buildField(dataSource,field,fieldType,largeEntry);
+        final FormItem displayFormItem=buildDisplayField(field,fieldType);
+        setupField(showDisabledState,canEdit,sections,sectionNames,field,group,formItem,displayFormItem);
+      }
+    }
+  }
+  groupFields(form,sections,sectionNames);
+}

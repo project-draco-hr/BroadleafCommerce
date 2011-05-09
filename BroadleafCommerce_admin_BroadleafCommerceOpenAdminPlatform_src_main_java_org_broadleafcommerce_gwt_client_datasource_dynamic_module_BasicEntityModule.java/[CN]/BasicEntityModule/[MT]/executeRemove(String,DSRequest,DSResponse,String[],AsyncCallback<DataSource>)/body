@@ -1,0 +1,41 @@
+{
+  BLCMain.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  String componentId=request.getComponentId();
+  if (componentId != null) {
+    if (entity.getType() == null) {
+      String[] type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttributeAsStringArray("_type");
+      entity.setType(type);
+    }
+  }
+  service.remove(entity,persistencePerspective,customCriteria,new EntityServiceAsyncCallback<Void>(EntityOperationType.REMOVE,requestId,request,response,dataSource){
+    public void onSuccess(    Void item){
+      super.onSuccess(null);
+      if (cb != null) {
+        cb.onSuccess(dataSource);
+      }
+      dataSource.processResponse(requestId,response);
+    }
+    @Override protected void onSecurityException(    ApplicationSecurityException exception){
+      super.onSecurityException(exception);
+      if (cb != null) {
+        cb.onFailure(exception);
+      }
+    }
+    @Override protected void onOtherException(    Throwable exception){
+      super.onOtherException(exception);
+      if (cb != null) {
+        cb.onFailure(exception);
+      }
+    }
+    @Override protected void onError(    EntityOperationType opType,    String requestId,    DSRequest request,    DSResponse response,    Throwable caught){
+      super.onError(opType,requestId,request,response,caught);
+      if (cb != null) {
+        cb.onFailure(caught);
+      }
+    }
+  }
+);
+}

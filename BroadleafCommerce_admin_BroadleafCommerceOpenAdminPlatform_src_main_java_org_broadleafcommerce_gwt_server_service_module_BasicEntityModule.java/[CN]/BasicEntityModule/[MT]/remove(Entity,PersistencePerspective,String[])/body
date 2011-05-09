@@ -1,0 +1,44 @@
+{
+  try {
+    for (    CustomPersistenceHandler handler : customPersistenceHandlers) {
+      if (handler.canHandleRemove(entity.getType()[0],customCriteria)) {
+        handler.remove(entity,persistencePerspective,customCriteria,dynamicEntityDao,this);
+        return;
+      }
+    }
+    Class<?>[] entities=dynamicEntityRemoteService.getPolymorphicEntities(entity.getType()[0]);
+    Map<String,FieldMetadata> mergedProperties=dynamicEntityDao.getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
+    Object primaryKey=getPrimaryKey(entity,mergedProperties);
+    Serializable instance=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+switch (persistencePerspective.getOperationTypes().getRemoveType()) {
+case FOREIGNKEY:
+      for (      Property property : entity.getProperties()) {
+        String originalPropertyName=new String(property.getName());
+        FieldManager fieldManager=getFieldManager();
+        if (fieldManager.getField(instance.getClass(),property.getName()) == null) {
+          LOG.debug("Unable to find a bean property for the reported property: " + originalPropertyName + ". Ignoring property.");
+          continue;
+        }
+        if (SupportedFieldType.FOREIGN_KEY.equals(mergedProperties.get(originalPropertyName).getFieldType())) {
+          String value=property.getValue();
+          Serializable foreignInstance=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),Long.valueOf(value));
+          Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+          collection.remove(foreignInstance);
+          break;
+        }
+      }
+    break;
+case ENTITY:
+  dynamicEntityDao.remove(instance);
+break;
+}
+}
+ catch (ServiceException e) {
+LOG.error("Problem removing entity",e);
+throw e;
+}
+catch (Exception e) {
+LOG.error("Problem removing entity",e);
+throw new ServiceException("Problem removing entity : " + e.getMessage(),e);
+}
+}

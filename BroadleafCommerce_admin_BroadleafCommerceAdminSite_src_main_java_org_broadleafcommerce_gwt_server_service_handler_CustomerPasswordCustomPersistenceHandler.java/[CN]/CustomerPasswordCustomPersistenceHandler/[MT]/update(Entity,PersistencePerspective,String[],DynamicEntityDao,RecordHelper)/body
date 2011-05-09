@@ -1,0 +1,8 @@
+{
+  PasswordChange passwordChange=new PasswordChange();
+  passwordChange.setUsername(entity.findProperty("username").getValue());
+  passwordChange.setNewPassword(entity.findProperty("password").getValue());
+  passwordChange.setPasswordChangeRequired(Boolean.valueOf(entity.findProperty("changeRequired").getValue()));
+  customerService.changePassword(passwordChange);
+  return entity;
+}

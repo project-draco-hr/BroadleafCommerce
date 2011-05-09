@@ -1,0 +1,26 @@
+{
+  BLCMain.MODAL_PROGRESS.startProgress(new Timer(){
+    public void run(){
+      if (loaded) {
+        OfferCodePresenter.super.go(container);
+        return;
+      }
+      OfferCodeListDataSourceFactory.createDataSource("offerCodeDS",new AsyncCallbackAdapter(){
+        public void onSuccess(        final DataSource top){
+          setupDisplayItems(top);
+          OfferListDataSourceFactory.createDataSource("offerCodeOfferDS",new AsyncCallbackAdapter(){
+            public void onSuccess(            final DataSource offerCodeOfferDS){
+              final EntitySearchDialog offerSearchView=new EntitySearchDialog((ListGridDataSource)offerCodeOfferDS);
+              ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("offer",offerSearchView,"Search For A Offer",display.getDynamicFormDisplay());
+              ((ListGridDataSource)top).setupGridFields(new String[]{"offerCode","startDate","endDate","maxUses","uses"},new Boolean[]{true,true,true,true,false});
+              OfferCodePresenter.super.go(container);
+            }
+          }
+);
+        }
+      }
+);
+    }
+  }
+);
+}

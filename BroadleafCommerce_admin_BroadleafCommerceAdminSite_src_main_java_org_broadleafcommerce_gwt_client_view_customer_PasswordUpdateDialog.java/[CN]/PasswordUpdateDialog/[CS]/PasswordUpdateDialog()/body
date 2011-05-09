@@ -1,0 +1,67 @@
+{
+  this.setIsModal(true);
+  this.setShowModalMask(true);
+  this.setShowMinimizeButton(false);
+  this.setWidth(600);
+  this.setAutoHeight();
+  this.setHeight(300);
+  this.setCanDragResize(true);
+  this.setOverflow(Overflow.VISIBLE);
+  VStack stack=new VStack();
+  stack.setWidth100();
+  stack.setLayoutRightMargin(20);
+  dynamicForm=new DynamicForm();
+  dynamicForm.setNumCols(2);
+  dynamicForm.setPadding(10);
+  stack.addMember(dynamicForm);
+  addItem(stack);
+  IButton saveButton=new IButton("Save");
+  saveButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (dynamicForm.validate()) {
+        PersistencePerspective tempPerspective=new PersistencePerspective();
+        OperationTypes opTypes=new OperationTypes();
+        opTypes.setUpdateType(OperationType.ENTITY);
+        tempPerspective.setOperationTypes(opTypes);
+        final Entity entity=new Entity();
+        Property prop1=new Property();
+        prop1.setName("password");
+        prop1.setValue((String)dynamicForm.getField("password1").getValue());
+        Property prop2=new Property();
+        prop2.setName("changeRequired");
+        prop2.setValue(String.valueOf(dynamicForm.getField("changeRequired").getValue()));
+        Property prop3=new Property();
+        prop3.setName("username");
+        prop3.setValue(associatedRecord.getAttribute("username"));
+        entity.setProperties(new Property[]{prop1,prop2,prop3});
+        BLCMain.NON_MODAL_PROGRESS.startProgress();
+        AppServices.DYNAMIC_ENTITY.update(entity,tempPerspective,new String[]{"passwordUpdate"},new AbstractCallback<Entity>(){
+          public void onSuccess(          Entity arg0){
+            BLCMain.NON_MODAL_PROGRESS.stopProgress();
+          }
+        }
+);
+        hide();
+      }
+    }
+  }
+);
+  IButton cancelButton=new IButton("Cancel");
+  cancelButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      hide();
+    }
+  }
+);
+  VLayout vLayout=new VLayout();
+  vLayout.setHeight100();
+  vLayout.setAlign(VerticalAlignment.BOTTOM);
+  HLayout hLayout=new HLayout(10);
+  hLayout.setAlign(Alignment.CENTER);
+  hLayout.addMember(saveButton);
+  hLayout.addMember(cancelButton);
+  hLayout.setLayoutTopMargin(40);
+  hLayout.setLayoutBottomMargin(40);
+  vLayout.addMember(hLayout);
+  addItem(vLayout);
+}

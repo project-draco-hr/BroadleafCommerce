@@ -1,0 +1,36 @@
+{
+  for (  Property property : entity.getProperties()) {
+    String attributeName=property.getName();
+    if (property.getValue() != null && dataSource.getField(attributeName).getType().equals(FieldType.DATETIME)) {
+      record.setAttribute(attributeName,formatter.parse(property.getValue()));
+    }
+ else     if (dataSource.getField(attributeName).getType().equals(FieldType.BOOLEAN)) {
+      if (property.getValue() == null) {
+        record.setAttribute(attributeName,false);
+      }
+ else {
+        String lower=property.getValue().toLowerCase();
+        if (lower.equals("y") || lower.equals("yes") || lower.equals("true")|| lower.equals("1")) {
+          record.setAttribute(attributeName,true);
+        }
+ else {
+          record.setAttribute(attributeName,false);
+        }
+      }
+    }
+ else     if (property.getMetadata() != null && property.getMetadata().getFieldType() != null && property.getMetadata().getFieldType().equals(SupportedFieldType.FOREIGN_KEY)) {
+      record.setAttribute(attributeName,linkedValue);
+    }
+ else {
+      String propertyValue;
+      propertyValue=property.getValue();
+      record.setAttribute(attributeName,propertyValue);
+    }
+    if (property.getDisplayValue() != null) {
+      record.setAttribute("__display_" + attributeName,property.getDisplayValue());
+    }
+  }
+  String[] entityType=entity.getType();
+  record.setAttribute("_type",entityType);
+  return record;
+}

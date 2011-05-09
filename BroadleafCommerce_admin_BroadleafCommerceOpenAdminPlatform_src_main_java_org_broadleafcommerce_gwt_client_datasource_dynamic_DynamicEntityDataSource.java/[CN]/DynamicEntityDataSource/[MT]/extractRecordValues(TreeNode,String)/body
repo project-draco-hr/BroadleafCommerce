@@ -1,0 +1,17 @@
+{
+  Map extractedValues=new HashMap();
+  for (  String attribute : record.getAttributes()) {
+    if (!attribute.startsWith("__") && getField(attribute) != null && Arrays.binarySearch(excludeFields,attribute) < 0) {
+      if (record.getAttribute(attribute) != null && this.getField(attribute) != null && getField(attribute).getType().equals(FieldType.DATETIME)) {
+        extractedValues.put(attribute,record.getAttributeAsDate(attribute));
+      }
+ else       if (attribute.equals("_type")) {
+        extractedValues.put(attribute,record.getAttributeAsStringArray(attribute));
+      }
+ else {
+        extractedValues.put(attribute,record.getAttribute(attribute));
+      }
+    }
+  }
+  return extractedValues;
+}

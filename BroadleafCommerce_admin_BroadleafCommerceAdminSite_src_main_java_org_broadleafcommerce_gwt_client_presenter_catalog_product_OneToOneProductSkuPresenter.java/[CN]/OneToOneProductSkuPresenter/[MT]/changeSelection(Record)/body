@@ -1,0 +1,16 @@
+{
+  AbstractDynamicDataSource dataSource=(AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource();
+  display.getListDisplay().getAddButton().disable();
+  crossSalePresenter.load(selectedRecord,dataSource,new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getErrors().isEmpty()) {
+        display.getListDisplay().getAddButton().enable();
+      }
+    }
+  }
+);
+  upSalePresenter.load(selectedRecord,dataSource,null);
+  mediaPresenter.load(selectedRecord,dataSource,null);
+  productAttributePresenter.load(selectedRecord,dataSource,null);
+  parentCategoriesPresenter.load(selectedRecord,dataSource,null);
+}

@@ -1,0 +1,42 @@
+{
+  Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
+  FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
+  presentationAttribute.setFriendlyName(friendlyPropertyName);
+  if (String.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.STRING,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+ else   if (Boolean.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.BOOLEAN);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.BOOLEAN,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+ else   if (Date.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.DATE);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.DATE,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+ else   if (Money.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.MONEY);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.MONEY,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+ else   if (Byte.class.isAssignableFrom(targetClass) || Integer.class.isAssignableFrom(targetClass) || Long.class.isAssignableFrom(targetClass)|| Short.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.INTEGER);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.INTEGER,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+ else   if (Double.class.isAssignableFrom(targetClass) || BigDecimal.class.isAssignableFrom(targetClass)) {
+    presentationAttribute.setExplicitFieldType(SupportedFieldType.DECIMAL);
+    presentationAttribute.setHidden(false);
+    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.DECIMAL,null,parentClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
+  fields.get(propertyName).setLength(255);
+  fields.get(propertyName).setCollection(false);
+  fields.get(propertyName).setRequired(true);
+  fields.get(propertyName).setUnique(true);
+  fields.get(propertyName).setScale(100);
+  fields.get(propertyName).setPrecision(100);
+  return fields;
+}

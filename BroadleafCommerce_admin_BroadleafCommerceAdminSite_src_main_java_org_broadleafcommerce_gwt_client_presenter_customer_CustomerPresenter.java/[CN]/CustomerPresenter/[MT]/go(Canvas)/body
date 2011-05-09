@@ -1,0 +1,27 @@
+{
+  BLCMain.MODAL_PROGRESS.startProgress(new Timer(){
+    public void run(){
+      if (loaded) {
+        CustomerPresenter.super.go(container);
+        return;
+      }
+      CustomerListDataSourceFactory.createDataSource("customerDS",new AsyncCallbackAdapter(){
+        public void onSuccess(        final DataSource top){
+          setupDisplayItems(top);
+          ((ListGridDataSource)top).setupGridFields(new String[]{"username","firstName","lastName","emailAddress"},new Boolean[]{true,true,true,true});
+          ChallengeQuestionListDataSourceFactory.createDataSource("challengeQuestionDS",new AsyncCallbackAdapter(){
+            public void onSuccess(            final DataSource challengeQuestionDS){
+              ((ListGridDataSource)challengeQuestionDS).resetFieldVisibility("question");
+              final EntitySearchDialog challengeQuestionSearchView=new EntitySearchDialog((ListGridDataSource)challengeQuestionDS);
+              ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("challengeQuestion",challengeQuestionSearchView,"Search For A Challenge Question",display.getDynamicFormDisplay());
+              CustomerPresenter.super.go(container);
+            }
+          }
+);
+        }
+      }
+);
+    }
+  }
+);
+}

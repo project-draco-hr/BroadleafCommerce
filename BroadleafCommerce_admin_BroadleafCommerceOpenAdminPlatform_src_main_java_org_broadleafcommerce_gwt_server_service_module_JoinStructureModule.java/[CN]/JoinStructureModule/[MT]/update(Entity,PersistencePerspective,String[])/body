@@ -1,0 +1,50 @@
+{
+  if (customCriteria != null && customCriteria.length > 0) {
+    LOG.warn("custom persistence handlers and custom criteria not supported for update types other than ENTITY");
+  }
+  JoinStructure joinStructure=(JoinStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+  try {
+    CriteriaTransferObject cto=new CriteriaTransferObject();
+    FilterAndSortCriteria filterCriteria=cto.get(joinStructure.getName());
+    filterCriteria.setFilterValue(entity.findProperty(joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty()).getValue());
+    if (joinStructure.getSortField() != null) {
+      FilterAndSortCriteria sortCriteria=cto.get(joinStructure.getSortField());
+      sortCriteria.setSortAscending(joinStructure.getSortAscending());
+    }
+    Map<String,FieldMetadata> mergedProperties=dynamicEntityDao.getMergedProperties(joinStructure.getJoinStructureEntityClassname(),new Class[]{Class.forName(joinStructure.getJoinStructureEntityClassname())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
+    BaseCtoConverter ctoConverter=getJoinStructureCtoConverter(persistencePerspective,cto,mergedProperties,joinStructure);
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,joinStructure.getJoinStructureEntityClassname());
+    List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(joinStructure.getJoinStructureEntityClassname()));
+    int index=0;
+    Long myEntityId=Long.valueOf(entity.findProperty(joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty()).getValue());
+    FieldManager fieldManager=getFieldManager();
+    for (    Serializable record : records) {
+      Long targetId=(Long)fieldManager.getFieldValue(record,joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty());
+      if (myEntityId.equals(targetId)) {
+        break;
+      }
+      index++;
+    }
+    if (joinStructure.getSortField() != null && entity.findProperty(joinStructure.getSortField()).getValue() != null) {
+      Serializable myRecord=records.remove(index);
+      myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
+      Integer newPos=Integer.valueOf(entity.findProperty(joinStructure.getSortField()).getValue());
+      records.add(newPos,myRecord);
+      index=1;
+      for (      Serializable record : records) {
+        fieldManager.setFieldValue(record,joinStructure.getSortField(),Long.valueOf(index));
+        index++;
+      }
+    }
+ else {
+      Serializable myRecord=records.get(index);
+      myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
+      dynamicEntityDao.merge(myRecord);
+    }
+    return entity;
+  }
+ catch (  Exception e) {
+    LOG.error("Problem editing entity",e);
+    throw new ServiceException("Problem updating entity : " + e.getMessage(),e);
+  }
+}
