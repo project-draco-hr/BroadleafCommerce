@@ -1,0 +1,19 @@
+{
+  try {
+    Class<?>[] entities=getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    for (    RemoteServiceModule module : modules) {
+      module.updateMergedProperties(ceilingEntityFullyQualifiedClassname,persistencePerspective,allMergedProperties);
+    }
+    ClassMetadata mergedMetadata=getMergedClassMetadata(entities,allMergedProperties,ceilingEntityFullyQualifiedClassname);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
+    return results;
+  }
+ catch (  ServiceException e) {
+    throw e;
+  }
+catch (  Exception e) {
+    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

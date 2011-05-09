@@ -1,0 +1,34 @@
+{
+  StringBuffer sb=new StringBuffer();
+  sb.append(ceilingEntityFullyQualifiedClassname);
+  if (foreignField != null) {
+    sb.append(foreignField.getManyToField());
+  }
+  if (additionalNonPersistentProperties != null) {
+    for (    String additionalNonPersistentProperty : additionalNonPersistentProperties) {
+      sb.append(additionalNonPersistentProperty);
+    }
+  }
+  if (additionalForeignFields != null) {
+    for (    ForeignKey foreignKey : additionalForeignFields) {
+      sb.append(foreignKey.getManyToField());
+    }
+  }
+  Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
+  for (  Class<?> clazz : entities) {
+    Map<String,FieldMetadata> props=dynamicEntityDao.getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType);
+    for (    Class<?> clazz2 : entities) {
+      if (!clazz2.getName().equals(clazz.getName())) {
+        for (        String key : props.keySet()) {
+          FieldMetadata metadata=props.get(key);
+          if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
+            metadata.setAvailableToTypes(metadata.getAvailableToTypes() + ";" + clazz2.getName());
+          }
+        }
+      }
+    }
+    mergedProperties.putAll(props);
+  }
+  mergedPropertyLibrary.put(sb.toString(),mergedProperties);
+  return mergedPropertyLibrary.get(sb.toString());
+}

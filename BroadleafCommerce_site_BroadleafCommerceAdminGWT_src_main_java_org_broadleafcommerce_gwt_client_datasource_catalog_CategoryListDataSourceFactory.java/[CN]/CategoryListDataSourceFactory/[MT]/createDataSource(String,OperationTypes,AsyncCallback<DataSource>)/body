@@ -1,0 +1,7 @@
+{
+  PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{new ForeignKey(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey,EntityImplementations.CATEGORY,null)});
+  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.JOINTABLE,new JoinTable(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.CATEGORY_XREF,sortField,true));
+  DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY),new JoinTableModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+  ListGridDataSource dataSource=new ListGridDataSource(CeilingEntities.CATEGORY,name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+  dataSource.buildFields(cb);
+}

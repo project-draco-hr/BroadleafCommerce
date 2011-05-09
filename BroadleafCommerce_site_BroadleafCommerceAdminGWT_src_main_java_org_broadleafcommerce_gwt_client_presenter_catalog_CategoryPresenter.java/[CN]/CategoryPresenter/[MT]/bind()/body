@@ -1,76 +1,53 @@
 {
   super.bind();
-  ((CategoryDisplay)display).getAddParentCategoryButton().addClickHandler(new ClickHandler(){
+  display.getSaveFormButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
-      if (categorySearchDataSource == null) {
-        CategoryListDataSourceFactory.createDataSource("categorySearch",RemoveType.REGULAR,new AsyncCallback<DataSource>(){
-          public void onFailure(          Throwable caught){
-          }
-          public void onSuccess(          DataSource result){
-            categorySearchDataSource=(CategoryListDataSource)result;
-            categorySearchDataSource.resetFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
-            Main.SEARCH_VIEW.search(categorySearchDataSource,"Category Search",new SearchItemSelectedEventHandler(){
-              public void onSearchItemSelected(              SearchItemSelectedEvent event){
-                ((CategoryDisplay)display).getAllParentCategoryGrid().addData(event.getRecord(),new DSCallback(){
-                  public void execute(                  DSResponse response,                  Object rawData,                  DSRequest request){
-                    if (response.getErrors().isEmpty()) {
-                      TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
-                      LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
-                      if (loaded != null) {
-                        ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
-                      }
-                      ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
-                    }
-                  }
-                }
-);
-              }
-            }
-);
-          }
-        }
-);
-      }
- else {
-        Main.SEARCH_VIEW.search(categorySearchDataSource,"Category Search",new SearchItemSelectedEventHandler(){
-          public void onSearchItemSelected(          SearchItemSelectedEvent event){
-            ((CategoryDisplay)display).getAllParentCategoryGrid().addData(event.getRecord(),new DSCallback(){
-              public void execute(              DSResponse response,              Object rawData,              DSRequest request){
-                if (response.getErrors().isEmpty()) {
-                  TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
-                  LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
-                  if (loaded != null) {
-                    ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
-                  }
-                  ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
-                }
-              }
-            }
-);
-          }
-        }
-);
+      if (event.isLeftButtonDown()) {
+        display.getDynamicForm().saveData();
+        display.getSaveFormButton().disable();
       }
     }
   }
 );
-  ((CategoryDisplay)display).getRemoveParentCategoryButton().addClickHandler(new ClickHandler(){
+  ((CategoryDisplay)display).getAddChildCategoryButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
-      ((CategoryDisplay)display).getAllParentCategoryGrid().removeData(((CategoryDisplay)display).getAllParentCategoryGrid().getSelectedRecord());
-      TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
-      LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
-      if (loaded != null) {
-        ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
+      categorySearchView.search("Category Search",new SearchItemSelectedEventHandler(){
+        public void onSearchItemSelected(        SearchItemSelectedEvent event){
+          ((CategoryDisplay)display).getAllChildCategoryGrid().addData(event.getRecord(),new DSCallback(){
+            public void execute(            DSResponse response,            Object rawData,            DSRequest request){
+              if (response.getErrors().isEmpty()) {
+                reloadParentTreeNodeRecords(true);
+              }
+            }
+          }
+);
+        }
       }
-      ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+);
     }
   }
 );
-  ((CategoryDisplay)display).getGrid().addDataArrivedHandler(new DataArrivedHandler(){
-    public void onDataArrived(    DataArrivedEvent event){
+  ((CategoryDisplay)display).getRemoveChildCategoryButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      ((CategoryDisplay)display).getAllChildCategoryGrid().removeData(((CategoryDisplay)display).getAllChildCategoryGrid().getSelectedRecord(),new DSCallback(){
+        public void execute(        DSResponse response,        Object rawData,        DSRequest request){
+          if (response.getErrors().isEmpty()) {
+            reloadParentTreeNodeRecords(true);
+            ((CategoryDisplay)display).getOrphanedCategoryGrid().invalidateCache();
+            ((CategoryDisplay)display).getRemoveOrphanedButton().disable();
+            ((CategoryDisplay)display).getInsertOrphanButton().disable();
+          }
+        }
+      }
+);
+    }
+  }
+);
+  ((CategoryDisplay)display).getGrid().addDataArrivedHandler(new com.smartgwt.client.widgets.tree.events.DataArrivedHandler(){
+    public void onDataArrived(    com.smartgwt.client.widgets.tree.events.DataArrivedEvent event){
       Record[] records=event.getParentNode().getAttributeAsRecordArray("children");
       for (      Record record : records) {
-        String hasChildren=((TreeNode)record).getAttribute(CategoryTreeDataSource.hasChildrenProperty);
+        String hasChildren=((TreeNode)record).getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty);
         if (hasChildren != null && !Boolean.parseBoolean(hasChildren)) {
           ((CategoryDisplay)display).getGrid().getTree().loadChildren((TreeNode)record);
         }
@@ -78,19 +55,221 @@
     }
   }
 );
-  ((CategoryDisplay)display).getAllParentCategoryGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+  ((CategoryDisplay)display).getAllChildCategoryGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
-        ((CategoryDisplay)display).getRemoveParentCategoryButton().enable();
+        ((CategoryDisplay)display).getRemoveChildCategoryButton().enable();
       }
  else {
-        ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+        ((CategoryDisplay)display).getRemoveChildCategoryButton().disable();
       }
     }
   }
 );
-  ((CategoryDisplay)display).getAllParentCategoryGrid().addRecordDropHandler(new RecordDropHandler(){
+  ((CategoryDisplay)display).getAllChildCategoryGrid().addRecordDropHandler(new RecordDropHandler(){
     public void onRecordDrop(    RecordDropEvent event){
+      ListGridRecord record=event.getDropRecords()[0];
+      int originalIndex=((ListGrid)event.getSource()).getRecordIndex(record);
+      int newIndex=event.getIndex();
+      if (newIndex > originalIndex) {
+        newIndex--;
+      }
+      JoinTable joinTable=(JoinTable)((DynamicEntityDataSource)((CategoryDisplay)display).getAllChildCategoryGrid().getDataSource()).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINTABLE);
+      record.setAttribute(joinTable.getSortField(),newIndex);
+      ((CategoryDisplay)display).getAllChildCategoryGrid().updateData(record,new DSCallback(){
+        public void execute(        DSResponse response,        Object rawData,        DSRequest request){
+          if (response.getErrors().isEmpty()) {
+            reloadParentTreeNodeRecords(false);
+          }
+        }
+      }
+);
+    }
+  }
+);
+  ((CategoryDisplay)display).getRemoveOrphanedButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        SC.confirm("Are your sure you want to delete this entity (" + ((CategoryDisplay)display).getOrphanedCategoryGrid().getSelectedRecord().getAttribute("name") + ")?",new BooleanCallback(){
+          public void execute(          Boolean value){
+            if (value) {
+              ((CategoryDisplay)display).getOrphanedCategoryGrid().removeSelectedData();
+              ((CategoryDisplay)display).getRemoveOrphanedButton().disable();
+              ((CategoryDisplay)display).getInsertOrphanButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getInsertOrphanButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CategoryDisplay)display).getAllChildCategoryGrid().addData(((CategoryDisplay)display).getOrphanedCategoryGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              reloadParentTreeNodeRecords(true);
+              ((CategoryDisplay)display).getOrphanedCategoryGrid().invalidateCache();
+              ((CategoryDisplay)display).getRemoveOrphanedButton().disable();
+              ((CategoryDisplay)display).getInsertOrphanButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getOrphanedCategoryGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((CategoryDisplay)display).getRemoveOrphanedButton().enable();
+        if (display.getGrid().getSelectedRecord() != null && !((CategoryDisplay)display).getAllChildCategoryGrid().isDisabled()) {
+          ((CategoryDisplay)display).getInsertOrphanButton().enable();
+        }
+      }
+ else {
+        ((CategoryDisplay)display).getRemoveOrphanedButton().disable();
+        ((CategoryDisplay)display).getInsertOrphanButton().disable();
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getAddDefaultParentCategoryButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      categorySearchView.search("Category Search",new SearchItemSelectedEventHandler(){
+        public void onSearchItemSelected(        final SearchItemSelectedEvent event){
+          Criteria myCriteria=new Criteria();
+          myCriteria.addCriteria("id",categorySearchDataSource.stripDuplicateAllowSpecialCharacters(display.getGrid().getSelectedRecord().getAttribute("id")));
+          categorySearchDataSource.fetchData(myCriteria,new DSCallback(){
+            public void execute(            DSResponse response,            Object rawData,            DSRequest request){
+              final Record myRecord=response.getData()[0];
+              myRecord.setAttribute(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey,event.getRecord().getAttribute("id"));
+              categorySearchDataSource.updateData(myRecord,new DSCallback(){
+                public void execute(                DSResponse response,                Object rawData,                DSRequest request){
+                  categorySearchDataSource.setLinkedValue(event.getRecord().getAttribute("id"));
+                  categorySearchDataSource.addData(myRecord,new DSCallback(){
+                    public void execute(                    DSResponse response,                    Object rawData,                    DSRequest request){
+                      ((CategoryDisplay)display).getDefaultParentCategoryTextItem().setValue(event.getRecord().getAttribute("name"));
+                      display.getGrid().getSelectedRecord().setAttribute(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey,event.getRecord().getAttribute("id"));
+                      reloadAllChildRecordsForId(event.getRecord().getAttribute("id"));
+                    }
+                  }
+);
+                }
+              }
+);
+            }
+          }
+);
+        }
+      }
+);
+    }
+  }
+);
+  ((CategoryDisplay)display).getAddFeaturedProductButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        productSearchView.search("Product Search",new SearchItemSelectedEventHandler(){
+          @SuppressWarnings({"rawtypes"}) public void onSearchItemSelected(          SearchItemSelectedEvent event){
+            Map initialValues=((DynamicEntityDataSource)((CategoryDisplay)display).getFeaturedProductGrid().getDataSource()).extractRecordValues((TreeNode)event.getRecord());
+            Main.ENTITY_ADD.editNewRecord((DynamicEntityDataSource)((CategoryDisplay)display).getFeaturedProductGrid().getDataSource(),initialValues,null,"promotionMessage");
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getFeaturedProductGrid().addRecordDropHandler(new RecordDropHandler(){
+    public void onRecordDrop(    RecordDropEvent event){
+      ListGridRecord record=event.getDropRecords()[0];
+      int originalIndex=((ListGrid)event.getSource()).getRecordIndex(record);
+      int newIndex=event.getIndex();
+      if (newIndex > originalIndex) {
+        newIndex--;
+      }
+      JoinTable joinTable=(JoinTable)((DynamicEntityDataSource)((CategoryDisplay)display).getAllChildCategoryGrid().getDataSource()).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINTABLE);
+      record.setAttribute(joinTable.getSortField(),newIndex);
+      ((CategoryDisplay)display).getFeaturedProductGrid().updateData(record);
+    }
+  }
+);
+  ((CategoryDisplay)display).getFeaturedProductGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((CategoryDisplay)display).getRemoveFeaturedProductButton().enable();
+      }
+ else {
+        ((CategoryDisplay)display).getRemoveFeaturedProductButton().disable();
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getRemoveFeaturedProductButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CategoryDisplay)display).getFeaturedProductGrid().removeData(((CategoryDisplay)display).getFeaturedProductGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              ((CategoryDisplay)display).getRemoveFeaturedProductButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getMediaGrid().addDataArrivedHandler(new DataArrivedHandler(){
+    public void onDataArrived(    DataArrivedEvent event){
+      ((CategoryDisplay)display).getRemoveMediaButton().disable();
+    }
+  }
+);
+  ((CategoryDisplay)display).getMediaGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((CategoryDisplay)display).getRemoveMediaButton().enable();
+      }
+ else {
+        ((CategoryDisplay)display).getRemoveMediaButton().disable();
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getRemoveMediaButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CategoryDisplay)display).getMediaGrid().removeData(((CategoryDisplay)display).getMediaGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              ((CategoryDisplay)display).getRemoveMediaButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getAddMediaButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        Map<String,String> initialValues=new HashMap<String,String>();
+        initialValues.put("name","Untitled");
+        initialValues.put("label","untitled");
+        initialValues.put("symbolicId",((DynamicEntityDataSource)((CategoryDisplay)display).getMediaGrid().getDataSource()).getLinkedValue());
+        String type=display.getGrid().getSelectedRecord().getAttribute("type");
+        if (type == null) {
+          type=((DynamicEntityDataSource)((CategoryDisplay)display).getMediaGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname();
+        }
+        initialValues.put("type",type);
+        getMediaEntityView().editNewRecord("Add new Category Media",(DynamicEntityDataSource)((CategoryDisplay)display).getMediaGrid().getDataSource(),initialValues,null);
+      }
     }
   }
 );

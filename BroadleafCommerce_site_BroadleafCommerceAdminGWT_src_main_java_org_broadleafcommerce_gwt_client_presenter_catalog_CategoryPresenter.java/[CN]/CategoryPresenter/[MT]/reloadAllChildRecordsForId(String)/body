@@ -1,0 +1,13 @@
+{
+  String startingId=categorySearchDataSource.stripDuplicateAllowSpecialCharacters(id);
+  RecordList resultSet=display.getGrid().getRecordList();
+  if (resultSet != null) {
+    Record[] myRecords=resultSet.toArray();
+    for (    Record myRecord : myRecords) {
+      String myId=categorySearchDataSource.stripDuplicateAllowSpecialCharacters(myRecord.getAttribute("id"));
+      if (startingId.equals(myId)) {
+        ((CategoryDisplay)display).getGrid().getTree().reloadChildren((TreeNode)myRecord);
+      }
+    }
+  }
+}

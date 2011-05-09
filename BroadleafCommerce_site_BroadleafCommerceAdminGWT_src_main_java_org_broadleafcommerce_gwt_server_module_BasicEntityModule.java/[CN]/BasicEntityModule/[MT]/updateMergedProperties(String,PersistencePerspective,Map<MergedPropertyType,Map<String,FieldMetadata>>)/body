@@ -1,0 +1,11 @@
+{
+  try {
+    Class<?>[] entities=dynamicEntityRemoteService.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+    Map<String,FieldMetadata> mergedProperties=getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalNonPersistentForeignKeys(),MergedPropertyType.PRIMARY);
+    allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
+  }
+ catch (  Exception e) {
+    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

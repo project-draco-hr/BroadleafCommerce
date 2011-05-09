@@ -1,0 +1,14 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  CriteriaTransferObject cto=getCto(request);
+  service.fetch(ceilingEntityFullyQualifiedClassname,cto,persistencePerspective,null,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response,dataSource){
+    public void onSuccess(    DynamicResultSet result){
+      super.onSuccess(result);
+      TreeNode[] recordList=buildRecords(result,null);
+      response.setData(recordList);
+      response.setTotalRows(result.getTotalRecords());
+      dataSource.processResponse(requestId,response);
+    }
+  }
+);
+}

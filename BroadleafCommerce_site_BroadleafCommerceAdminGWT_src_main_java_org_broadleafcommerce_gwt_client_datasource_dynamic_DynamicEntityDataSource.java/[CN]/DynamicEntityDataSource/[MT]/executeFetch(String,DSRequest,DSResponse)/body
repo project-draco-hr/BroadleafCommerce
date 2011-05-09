@@ -1,27 +1,5 @@
 {
   Main.NON_MODAL_PROGRESS.startProgress();
-  if (joinTable != null) {
-    service.fetch(ceilingEntityFullyQualifiedClassname,joinTable,getCto(request),additionalNonPersistentProperties,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response){
-      public void onSuccess(      DynamicResultSet result){
-        super.onSuccess(result);
-        TreeNode[] recordList=buildRecords(result);
-        response.setData(recordList);
-        response.setTotalRows(result.getTotalRecords());
-        processResponse(requestId,response);
-      }
-    }
-);
-  }
- else {
-    service.fetch(ceilingEntityFullyQualifiedClassname,foreignFields,getCto(request),additionalNonPersistentProperties,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response){
-      public void onSuccess(      DynamicResultSet result){
-        super.onSuccess(result);
-        TreeNode[] recordList=buildRecords(result);
-        response.setData(recordList);
-        response.setTotalRows(result.getTotalRecords());
-        processResponse(requestId,response);
-      }
-    }
-);
-  }
+  DataSourceModule myModule=getCompatibleModule(persistencePerspective.getOperationTypes().getFetchType());
+  myModule.executeFetch(requestId,request,response);
 }

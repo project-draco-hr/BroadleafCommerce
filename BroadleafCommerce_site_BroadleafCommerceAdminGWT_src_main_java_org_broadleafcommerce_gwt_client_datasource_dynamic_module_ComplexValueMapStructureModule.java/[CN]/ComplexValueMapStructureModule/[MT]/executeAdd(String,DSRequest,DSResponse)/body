@@ -1,0 +1,17 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  service.add(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,null,new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      TreeNode record=(TreeNode)buildRecord(result);
+      TreeNode[] recordList=new TreeNode[]{record};
+      response.setData(recordList);
+      response.setInvalidateCache(true);
+      dataSource.processResponse(requestId,response);
+    }
+  }
+);
+}

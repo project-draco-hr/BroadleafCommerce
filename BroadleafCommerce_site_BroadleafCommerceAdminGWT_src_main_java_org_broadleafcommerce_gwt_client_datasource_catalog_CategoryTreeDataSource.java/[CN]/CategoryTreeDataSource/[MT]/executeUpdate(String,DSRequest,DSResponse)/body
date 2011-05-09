@@ -3,28 +3,24 @@
   JavaScriptObject data=request.getData();
   final TreeNode record=new TreeNode(data);
   Entity entity=buildEntity(record);
-  String componentId=request.getComponentId();
-  if (componentId != null) {
-    if (entity.getType() == null) {
-      String type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttribute("type");
-      entity.setType(type);
-    }
-  }
-  service.update(entity,foreignFields,additionalNonPersistentProperties,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response){
+  service.update(entity,persistencePerspective,null,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,this){
     public void onSuccess(    Entity result){
       super.onSuccess(result);
       String startingId=stripDuplicateAllowSpecialCharacters(record.getAttribute("id"));
-      Record[] myRecords=CategoryTreeDataSource.this.getAssociatedGrid().getResultSet().toArray();
-      int count=1;
-      for (      Record myRecord : myRecords) {
-        String myId=stripDuplicateAllowSpecialCharacters(myRecord.getAttribute("id"));
-        if (startingId.equals(myId)) {
-          updateRecord(result,(TreeNode)myRecord,false);
-          CategoryTreeDataSource.this.getAssociatedGrid().refreshRow(count);
+      RecordList resultSet=CategoryTreeDataSource.this.getAssociatedGrid().getRecordList();
+      if (resultSet != null) {
+        Record[] myRecords=resultSet.toArray();
+        int count=1;
+        for (        Record myRecord : myRecords) {
+          String myId=stripDuplicateAllowSpecialCharacters(myRecord.getAttribute("id"));
+          if (startingId.equals(myId) && !record.getAttribute("id").equals(myId)) {
+            updateRecord(result,(TreeNode)myRecord,false);
+            CategoryTreeDataSource.this.getAssociatedGrid().refreshRow(count);
+          }
+          count++;
         }
-        count++;
       }
-      TreeNode myRecord=updateRecord(result,record,false);
+      TreeNode myRecord=(TreeNode)updateRecord(result,(Record)record,false);
       TreeNode[] recordList=new TreeNode[]{myRecord};
       response.setData(recordList);
       processResponse(requestId,response);

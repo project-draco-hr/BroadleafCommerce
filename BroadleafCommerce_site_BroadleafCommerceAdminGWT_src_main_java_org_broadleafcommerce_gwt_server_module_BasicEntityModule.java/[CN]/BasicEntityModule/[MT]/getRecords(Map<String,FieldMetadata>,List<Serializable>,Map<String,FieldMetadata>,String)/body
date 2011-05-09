@@ -1,0 +1,43 @@
+{
+  String idProperty=null;
+  getIdProperty: {
+    if (alternateMergedProperties != null) {
+      for (      String property : alternateMergedProperties.keySet()) {
+        if (alternateMergedProperties.get(property).getFieldType().equals(SupportedFieldType.ID)) {
+          idProperty=property;
+          break getIdProperty;
+        }
+      }
+    }
+    for (    String property : primaryMergedProperties.keySet()) {
+      if (primaryMergedProperties.get(property).getFieldType().equals(SupportedFieldType.ID)) {
+        idProperty=property;
+        break getIdProperty;
+      }
+    }
+  }
+  Entity[] entities=new Entity[records.size()];
+  int j=0;
+  for (  Serializable recordEntity : records) {
+    Serializable entity;
+    if (pathToTargetObject != null) {
+      entity=(Serializable)PropertyUtils.getProperty(recordEntity,pathToTargetObject);
+    }
+ else {
+      entity=recordEntity;
+    }
+    Entity entityItem=new Entity();
+    entityItem.setType(entity.getClass().getName());
+    entities[j]=entityItem;
+    List<Property> props=new ArrayList<Property>();
+    extractPropertiesFromPersistentEntity(primaryMergedProperties,idProperty,entity,props);
+    if (alternateMergedProperties != null) {
+      extractPropertiesFromPersistentEntity(alternateMergedProperties,null,recordEntity,props);
+    }
+    Property[] properties=new Property[props.size()];
+    properties=props.toArray(properties);
+    entityItem.setProperties(properties);
+    j++;
+  }
+  return entities;
+}

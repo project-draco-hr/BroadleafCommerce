@@ -1,0 +1,37 @@
+{
+  for (  String property : mergedProperties.keySet()) {
+    Property prop=new Property();
+    prop.setName(property);
+    if (properties.contains(prop)) {
+      continue;
+    }
+    properties.add(prop);
+    FieldMetadata metadata=mergedProperties.get(property);
+    prop.setType(metadata.getFieldType().toString());
+    if (metadata.getLength() != null) {
+      prop.setLength(Long.valueOf(metadata.getLength().toString()));
+      prop.setRequired(Boolean.valueOf(metadata.getRequired().toString()));
+      prop.setUnique(Boolean.valueOf(metadata.getUnique().toString()));
+      prop.setScale(Integer.valueOf(metadata.getScale().toString()));
+      prop.setPrecision(Integer.valueOf(metadata.getPrecision().toString()));
+    }
+    prop.setMutable(Boolean.valueOf(metadata.getMutable().toString()));
+    prop.setInheritedFromType(metadata.getInheritedFromType().toString());
+    prop.setAvailableToTypes(metadata.getAvailableToTypes().toString());
+    prop.setForeignKeyClass(metadata.getProvidedForeignKeyClass());
+    prop.setForeignKeyProperty(metadata.getComplexIdProperty());
+    prop.setIsCollection(metadata.getCollection());
+    if (metadata.getPresentationAttributes() != null) {
+      prop.setFriendlyName(metadata.getPresentationAttributes().getFriendlyName());
+      prop.setOrder(metadata.getPresentationAttributes().getOrder());
+      prop.setHidden(metadata.getPresentationAttributes().isHidden());
+      prop.setGroup(metadata.getPresentationAttributes().getGroup());
+      prop.setLargeEntry(metadata.getPresentationAttributes().isLargeEntry());
+      prop.setProminent(metadata.getPresentationAttributes().isProminent());
+    }
+    if (isHiddenOverride) {
+      prop.setHidden(true);
+    }
+    prop.setMergedPropertyType(metadata.getMergedPropertyType().toString());
+  }
+}

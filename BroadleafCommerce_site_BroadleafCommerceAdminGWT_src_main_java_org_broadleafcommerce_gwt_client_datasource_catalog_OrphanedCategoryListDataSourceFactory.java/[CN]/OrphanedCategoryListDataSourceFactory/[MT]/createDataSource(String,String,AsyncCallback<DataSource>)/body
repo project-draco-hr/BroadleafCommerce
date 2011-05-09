@@ -1,0 +1,8 @@
+{
+  OperationTypes operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY);
+  PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey(foreignKeyName,EntityImplementations.CATEGORY,null));
+  DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+  OrphanedCategoryListDataSource dataSource=new OrphanedCategoryListDataSource(CeilingEntities.CATEGORY,root,name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+  dataSource.buildFields(cb);
+}

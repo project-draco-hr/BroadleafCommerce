@@ -1,3 +1,10 @@
 {
+  HydratedCacheManagerImpl manager=HydratedCacheManagerImpl.getInstance();
+  Object hydratedItem=((HydratedCacheManager)manager).getHydratedCacheElementItem(CategoryImpl.class.getName(),getId(),"childCategoryURLMap");
+  if (hydratedItem != null) {
+    return (Map<String,List<Category>>)hydratedItem;
+  }
+  childCategoryURLMap=createChildCategoryURLMap();
+  ((HydratedCacheManager)manager).addHydratedCacheElementItem(CategoryImpl.class.getName(),getId(),"childCategoryURLMap",childCategoryURLMap);
   return childCategoryURLMap;
 }

@@ -1,20 +1,73 @@
 {
-  CategoryTreeDataSourceFactory.createDataSource("categoryTreeDS",RemoveType.COLLECTION,new AsyncCallback<DataSource>(){
+  CategoryTreeDataSourceFactory.createDataSource("categoryTreeDS",rootId,rootName,new AsyncCallback<DataSource>(){
     public void onFailure(    Throwable caught){
     }
     public void onSuccess(    DataSource top){
       ((CategoryDisplay)getDisplay()).build(top);
       ((TreeGridDataSource)top).setAssociatedGrid(((CategoryDisplay)getDisplay()).getGrid());
-      ((TreeGridDataSource)top).setupFields();
-      CategoryListDataSourceFactory.createDataSource("allParentCategoriesDS",RemoveType.COLLECTION,new AsyncCallback<DataSource>(){
+      ((TreeGridDataSource)top).setupFields(new String[]{},new Boolean[]{},"250","100");
+      CategoryListDataSourceFactory.createDataSource("allParentCategoriesDS",new AsyncCallback<DataSource>(){
         public void onFailure(        Throwable caught){
         }
         public void onSuccess(        DataSource result){
-          ((DynamicEntityDataSource)result).resetFieldVisibility("urlKey","name");
-          ((CategoryDisplay)getDisplay()).getAllParentCategoryGrid().setDataSource(result);
-          ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getAllParentCategoryGrid());
-          ((ListGridDataSource)result).setupFields();
-          CategoryPresenter.super.go(container);
+          ((CategoryDisplay)getDisplay()).getAllChildCategoryGrid().setDataSource(result);
+          ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getAllChildCategoryGrid());
+          ((ListGridDataSource)result).setupFields(new String[]{"name","urlKey"},new Boolean[]{false,false});
+          OrphanedCategoryListDataSourceFactory.createDataSource("orphanedCategoriesDS",rootId,new AsyncCallback<DataSource>(){
+            public void onFailure(            Throwable caught){
+            }
+            public void onSuccess(            DataSource result){
+              ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().setDataSource(result);
+              ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid());
+              ((ListGridDataSource)result).setupFields(new String[]{"name","urlKey"},new Boolean[]{false,false});
+              Criteria myCriteria=new Criteria();
+              myCriteria.addCriteria(OrphanedCategoryListDataSourceFactory.foreignKeyName,"0");
+              ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().fetchData(myCriteria);
+              OperationTypes operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.JOINTABLE,OperationType.ENTITY,OperationType.ENTITY);
+              CategoryListDataSourceFactory.createDataSource("categorySearch",operationTypes,new AsyncCallback<DataSource>(){
+                public void onFailure(                Throwable caught){
+                }
+                public void onSuccess(                DataSource result){
+                  categorySearchDataSource=(ListGridDataSource)result;
+                  categorySearchDataSource.resetFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
+                  categorySearchView=new DynamicEntitySearchView(categorySearchDataSource);
+                  FeaturedProductListDataSourceFactory.createDataSource("featuredProductsDS",new AsyncCallback<DataSource>(){
+                    public void onFailure(                    Throwable caught){
+                    }
+                    public void onSuccess(                    DataSource result){
+                      ((CategoryDisplay)getDisplay()).getFeaturedProductGrid().setDataSource(result);
+                      ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getFeaturedProductGrid());
+                      ((ListGridDataSource)result).setupFields(new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+                      ProductListDataSourceFactory.createDataSource("productSearch",new AsyncCallback<DataSource>(){
+                        public void onFailure(                        Throwable caught){
+                        }
+                        public void onSuccess(                        DataSource result){
+                          productSearchDataSource=(ListGridDataSource)result;
+                          productSearchDataSource.resetFieldVisibility("name","description","model","manufacturer","activeStartDate","activeEndDate");
+                          productSearchView=new DynamicEntitySearchView(productSearchDataSource);
+                          MediaMapDataSourceFactory.createDataSource("mediaMapDS",getMediaMapKeys(),((CategoryDisplay)getDisplay()).getMediaGrid(),new AsyncCallback<DataSource>(){
+                            public void onFailure(                            Throwable caught){
+                            }
+                            public void onSuccess(                            DataSource result){
+                              ((CategoryDisplay)getDisplay()).getMediaGrid().setDataSource(result);
+                              ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getMediaGrid());
+                              ((ListGridDataSource)result).setupFields(new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
+                              CategoryPresenter.super.go(container);
+                            }
+                          }
+);
+                        }
+                      }
+);
+                    }
+                  }
+);
+                }
+              }
+);
+            }
+          }
+);
         }
       }
 );

@@ -1,21 +1,16 @@
 {
-  ClickHandler addHandler=getAddHandler();
-  display.getAddButton().addClickHandler(addHandler);
+  display.getAddButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        addClicked();
+      }
+    }
+  }
+);
   display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        SC.confirm("Are your sure you want to delete this entity (" + ((DynamicEntityDataSource)display.getGrid().getDataSource()).getPolymorphicEntities().get(((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()) + ")?",new BooleanCallback(){
-          public void execute(          Boolean value){
-            if (value) {
-              display.getGrid().removeSelectedData();
-              display.getDynamicForm().disable();
-              display.getFormToolBar().disable();
-              display.getDynamicForm().reset();
-              display.getRemoveButton().disable();
-            }
-          }
-        }
-);
+        removeClicked();
       }
     }
   }
@@ -26,13 +21,20 @@
       if (event.getState()) {
         if (!selectedRecord.equals(lastSelectedRecord)) {
           lastSelectedRecord=selectedRecord;
-          display.getDynamicForm().enable();
-          display.getFormToolBar().enable();
-          ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetFieldVisibilityBasedOnType(selectedRecord.getAttribute("type"));
-          ((AbstractView)display).buildFields(display.getGrid().getDataSource(),display.getDynamicForm());
-          display.getDynamicForm().editRecord(selectedRecord);
-          display.getRemoveButton().enable();
-          changeSelection();
+          if (selectedRecord.getAttribute("name") == null || selectedRecord.getAttribute("type") == null) {
+            display.getDynamicForm().disable();
+            display.getFormToolBar().disable();
+            display.getRemoveButton().disable();
+          }
+ else {
+            display.getDynamicForm().enable();
+            display.getFormToolBar().enable();
+            ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetFieldVisibilityBasedOnType(selectedRecord.getAttribute("type"));
+            ((AbstractView)display).buildFields(display.getGrid().getDataSource(),display.getDynamicForm());
+            display.getDynamicForm().editRecord(selectedRecord);
+            display.getRemoveButton().enable();
+          }
+          changeSelection(selectedRecord);
         }
       }
     }

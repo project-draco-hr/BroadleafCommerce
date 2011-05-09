@@ -6,15 +6,31 @@
   this.setHeight(300);
   this.setCanDragResize(true);
   this.setOverflow(Overflow.AUTO);
+  VStack stack=new VStack();
+  stack.setWidth100();
+  stack.setLayoutRightMargin(20);
   dynamicForm=new DynamicForm();
   dynamicForm.setNumCols(4);
   dynamicForm.setPadding(10);
-  addItem(dynamicForm);
+  stack.addMember(dynamicForm);
+  addItem(stack);
   IButton saveButton=new IButton("Save");
   saveButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (dynamicForm.validate()) {
-        dynamicForm.saveData();
+        dynamicForm.saveData(new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              TreeNode record=new TreeNode(request.getData());
+              if (handler != null) {
+                AppController.getInstance().getEventBus().addHandler(NewItemCreatedEvent.TYPE,handler);
+                AppController.getInstance().getEventBus().fireEvent(new NewItemCreatedEvent((ListGridRecord)record,dynamicForm.getDataSource()));
+                AppController.getInstance().getEventBus().removeHandler(NewItemCreatedEvent.TYPE,handler);
+              }
+            }
+          }
+        }
+);
         hide();
       }
     }

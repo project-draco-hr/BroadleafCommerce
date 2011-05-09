@@ -1,0 +1,29 @@
+{
+  JavaScriptObject data=request.getData();
+  final ListGridRecord temp=new ListGridRecord(data);
+  Entity tempEntity=buildEntity(temp);
+  final ListGridRecord record=associatedGrid.getRecord(associatedGrid.getRecordIndex(temp));
+  Entity entity=buildEntity(record);
+  for (  Property property : tempEntity.getProperties()) {
+    entity.findProperty(property.getName()).setValue(property.getValue());
+  }
+  String componentId=request.getComponentId();
+  if (componentId != null) {
+    if (entity.getType() == null) {
+      String type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttribute("type");
+      entity.setType(type);
+    }
+  }
+  service.update(entity,persistencePerspective,null,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      ListGridRecord myRecord=(ListGridRecord)updateRecord(result,(Record)temp,false);
+      ListGridRecord[] recordList=new ListGridRecord[]{myRecord};
+      response.setData(recordList);
+      response.setTotalRows(1);
+      response.setInvalidateCache(true);
+      dataSource.processResponse(requestId,response);
+    }
+  }
+);
+}

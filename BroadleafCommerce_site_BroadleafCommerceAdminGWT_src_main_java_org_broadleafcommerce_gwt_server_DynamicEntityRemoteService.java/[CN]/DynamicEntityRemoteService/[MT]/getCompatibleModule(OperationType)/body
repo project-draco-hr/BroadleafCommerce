@@ -1,0 +1,14 @@
+{
+  RemoteServiceModule myModule=null;
+  for (  RemoteServiceModule module : modules) {
+    if (module.isCompatible(operationType)) {
+      myModule=module;
+      break;
+    }
+  }
+  if (myModule == null) {
+    LOG.error("Unable to find a compatible remote service module for the operation type: " + operationType);
+    throw new RuntimeException("Unable to find a compatible remote service module for the operation type: " + operationType);
+  }
+  return myModule;
+}

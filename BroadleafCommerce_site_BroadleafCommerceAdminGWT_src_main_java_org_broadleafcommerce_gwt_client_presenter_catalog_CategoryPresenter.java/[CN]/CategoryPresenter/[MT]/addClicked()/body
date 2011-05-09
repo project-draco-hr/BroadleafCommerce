@@ -1,0 +1,13 @@
+{
+  Map<String,String> initialValues=new HashMap<String,String>();
+  initialValues.put("defaultParentCategory",display.getGrid().getSelectedRecord().getAttribute("id"));
+  initialValues.put("name","Untitled");
+  initialValues.put("type",((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname());
+  Main.ENTITY_ADD.editNewRecord((DynamicEntityDataSource)display.getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
+    public void onNewItemCreated(    NewItemCreatedEvent event){
+      reloadParentTreeNodeRecords(false);
+      ((CategoryDisplay)display).getAllChildCategoryGrid().invalidateCache();
+    }
+  }
+);
+}

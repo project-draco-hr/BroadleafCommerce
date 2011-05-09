@@ -1,0 +1,13 @@
+{
+  try {
+    JoinTable joinTable=(JoinTable)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINTABLE);
+    if (joinTable != null) {
+      Map<String,FieldMetadata> joinMergedProperties=getMergedProperties(joinTable.getJoinTableEntityClassname(),new Class[]{Class.forName(joinTable.getJoinTableEntityClassname())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINTABLE);
+      allMergedProperties.put(MergedPropertyType.JOINTABLE,joinMergedProperties);
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

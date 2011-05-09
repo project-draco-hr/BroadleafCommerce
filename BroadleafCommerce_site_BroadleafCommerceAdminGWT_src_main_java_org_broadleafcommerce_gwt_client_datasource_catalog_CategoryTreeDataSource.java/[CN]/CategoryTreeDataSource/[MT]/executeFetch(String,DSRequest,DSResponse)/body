@@ -1,23 +1,26 @@
 {
-  final CriteriaTransferObject criteriaTransferObject=getCto(request);
-  String parentCategoryId=criteriaTransferObject.get(foreignKeyName).getFilterValues()[0];
+  persistencePerspective.getOperationTypes().setMiscType(OperationType.ENTITY);
+  CriteriaTransferObject criteriaTransferObject=getCto(request);
+  String parentCategoryId=criteriaTransferObject.get(CategoryTreeDataSourceFactory.foreignKeyName).getFilterValues()[0];
   boolean hasChildren=true;
-  TreeNode parentNode=((TreeGrid)associatedGrid).getTree().findById(parentCategoryId);
-  if (parentNode != null) {
-    hasChildren=Boolean.parseBoolean(parentNode.getAttribute(hasChildrenProperty));
-  }
-  if (hasChildren) {
-    Main.NON_MODAL_PROGRESS.startProgress();
-    service.fetch(ceilingEntityFullyQualifiedClassname,foreignFields,criteriaTransferObject,additionalNonPersistentProperties,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response){
-      public void onSuccess(      DynamicResultSet result){
-        super.onSuccess(result);
-        TreeNode[] recordList=buildRecords(result);
-        response.setData(recordList);
-        response.setTotalRows(result.getTotalRecords());
-        processResponse(requestId,response);
-      }
+  if (parentCategoryId != null) {
+    TreeNode parentNode=((TreeGrid)associatedGrid).getTree().findById(parentCategoryId);
+    if (parentNode != null) {
+      hasChildren=Boolean.parseBoolean(parentNode.getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty));
     }
-);
+  }
+  if (hasChildren && parentCategoryId != null) {
+    super.executeFetch(requestId,request,response);
+  }
+ else   if (parentCategoryId == null) {
+    TreeNode node=new TreeNode();
+    node.setAttribute("id",getRootId());
+    node.setAttribute("name",getRootName());
+    node.setAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty,String.valueOf(hasChildren));
+    TreeNode[] recordList=new TreeNode[]{node};
+    response.setData(recordList);
+    response.setTotalRows(0);
+    processResponse(requestId,response);
   }
  else {
     TreeNode[] recordList=new TreeNode[]{};

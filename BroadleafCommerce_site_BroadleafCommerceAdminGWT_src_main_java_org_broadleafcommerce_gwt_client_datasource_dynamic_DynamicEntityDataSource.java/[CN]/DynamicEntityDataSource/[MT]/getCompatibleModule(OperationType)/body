@@ -1,0 +1,14 @@
+{
+  DataSourceModule myModule=null;
+  for (  DataSourceModule dataSourceModule : modules) {
+    if (dataSourceModule.isCompatible(operationType)) {
+      myModule=dataSourceModule;
+      break;
+    }
+  }
+  if (myModule == null) {
+    SC.warn("Unable to find a compatible data source module for the operation type: " + operationType);
+    throw new RuntimeException("Unable to find a compatible data source module for the operation type: " + operationType);
+  }
+  return myModule;
+}

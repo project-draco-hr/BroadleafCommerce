@@ -1,0 +1,19 @@
+{
+  display.getGrid().removeSelectedData(new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getErrors().isEmpty()) {
+        ((CategoryDisplay)display).getOrphanedCategoryGrid().invalidateCache();
+        ((CategoryDisplay)display).getRemoveOrphanedButton().disable();
+        ((CategoryDisplay)display).getInsertOrphanButton().disable();
+      }
+    }
+  }
+,null);
+  display.getDynamicForm().disable();
+  display.getFormToolBar().disable();
+  display.getDynamicForm().reset();
+  display.getRemoveButton().disable();
+  ((CategoryDisplay)display).getAllChildCategoryGrid().disable();
+  ((CategoryDisplay)display).getAddChildCategoryButton().disable();
+  ((CategoryDisplay)display).getRemoveChildCategoryButton().disable();
+}

@@ -1,0 +1,20 @@
+{
+  ForeignKey foreignField=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+  JoinTable joinTable=(JoinTable)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINTABLE);
+  if (foreignField == null && joinTable == null) {
+    throw new RuntimeException("Only datasources that utilize a foreignField or joinTable relationship may utilize this method");
+  }
+  Criteria criteria=new Criteria();
+  String foreignKeyName;
+  if (foreignField != null) {
+    foreignKeyName=foreignField.getManyToField();
+  }
+ else {
+    foreignKeyName=joinTable.getManyToField();
+  }
+  criteria.addCriteria(foreignKeyName,relationshipValue);
+  for (  DataSourceModule dataSourceModule : modules) {
+    dataSourceModule.setLinkedValue(relationshipValue);
+  }
+  return criteria;
+}

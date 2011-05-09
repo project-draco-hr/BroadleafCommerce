@@ -1,0 +1,44 @@
+{
+  CriteriaTransferObject cto=new CriteriaTransferObject();
+  if (request.getStartRow() != null) {
+    cto.setFirstResult(request.getStartRow());
+    if (request.getEndRow() != null) {
+      cto.setMaxResults(request.getEndRow() - request.getStartRow());
+    }
+  }
+  try {
+    SortSpecifier[] sortBy=request.getSortBy();
+    if (sortBy != null && sortBy.length > 0) {
+      String sortPropertyId=sortBy[0].getField();
+      boolean sortAscending=sortBy[0].getSortDirection().equals(SortDirection.ASCENDING);
+      FilterAndSortCriteria sortCriteria=cto.get(sortPropertyId);
+      sortCriteria.setSortAscending(sortAscending);
+    }
+  }
+ catch (  Exception e) {
+    GWT.log("WARN: Unable to set sort criteria because of an exception.",e);
+  }
+  Criteria criteria=request.getCriteria();
+  String jsObj=JSON.encode(criteria.getJsObj());
+  @SuppressWarnings("rawtypes") Map filterData=criteria.getValues();
+  Set<String> filterFieldNames=filterData.keySet();
+  for (  String fieldName : filterFieldNames) {
+    if (!fieldName.equals("_constructor") && !fieldName.equals("operator")) {
+      if (!fieldName.equals("criteria")) {
+        FilterAndSortCriteria filterCriteria=cto.get(fieldName);
+        filterCriteria.setFilterValue(dataSource.stripDuplicateAllowSpecialCharacters((String)filterData.get(fieldName)));
+      }
+ else {
+        JSONValue value=JSONParser.parse(jsObj);
+        JSONObject criteriaObj=value.isObject();
+        JSONArray criteriaArray=criteriaObj.get("criteria").isArray();
+        buildCriteria(criteriaArray,cto);
+      }
+    }
+  }
+  if (getCurrentForeignKey() != null) {
+    FilterAndSortCriteria filterCriteria=cto.get(getCurrentForeignKey().getManyToField());
+    filterCriteria.setFilterValue(getCurrentForeignKey().getCurrentValue());
+  }
+  return cto;
+}
