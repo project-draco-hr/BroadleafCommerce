@@ -1,0 +1,24 @@
+{
+  InputStream is=this.getClass().getResourceAsStream("/org/broadleafcommerce/core/offer/service/mvelFunctions.mvel");
+  try {
+    BufferedReader reader=new BufferedReader(new InputStreamReader(is));
+    String line;
+    while ((line=reader.readLine()) != null) {
+      functions.append(line);
+    }
+    functions.append(" ");
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    if (is != null) {
+      try {
+        is.close();
+      }
+ catch (      Exception e) {
+        logger.error(e);
+      }
+    }
+  }
+}

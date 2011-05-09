@@ -2,9 +2,21 @@
   if (moduleKey == null) {
     moduleKey=modules.keySet().iterator().next();
   }
-  modules.get(moduleKey).preDraw();
-  MASTERVIEW=new MasterView(moduleKey,modules);
+  final String finalKey=moduleKey;
+  modules.get(finalKey).preDraw();
+  MASTERVIEW=new MasterView(finalKey,modules);
   MASTERVIEW.draw();
-  AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(moduleKey).getPages());
-  modules.get(moduleKey).postDraw();
+  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    @Override public void onSuccess(    AdminUser result){
+      USER=result;
+      if (USER == null) {
+        SC.say("This page cannot be accessed without first successfully logging in.");
+      }
+ else {
+        AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(finalKey).getPages());
+        modules.get(finalKey).postDraw();
+      }
+    }
+  }
+);
 }

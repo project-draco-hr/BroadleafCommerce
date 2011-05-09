@@ -3,14 +3,9 @@
   initialValues.put("name",AdminModule.ADMINMESSAGES.offerNameDefault());
   initialValues.put("type","ORDER_ITEM");
   initialValues.put("value",0);
+  initialValues.put("stackable",true);
   initialValues.put("deliveryType","AUTOMATIC");
+  initialValues.put("discountType","PERCENT_OFF");
   initialValues.put("_type",new String[]{((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
-  BLCMain.ENTITY_ADD.editNewRecord(AdminModule.ADMINMESSAGES.newOfferTitle(),(DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
-    public void onNewItemCreated(    NewItemCreatedEvent event){
-      Criteria myCriteria=new Criteria();
-      myCriteria.addCriteria("name",event.getRecord().getAttribute("name"));
-      display.getListDisplay().getGrid().fetchData(myCriteria);
-    }
-  }
-,"90%",new String[]{"name"},null);
+  getDisplay().getListDisplay().getGrid().startEditingNew(initialValues);
 }

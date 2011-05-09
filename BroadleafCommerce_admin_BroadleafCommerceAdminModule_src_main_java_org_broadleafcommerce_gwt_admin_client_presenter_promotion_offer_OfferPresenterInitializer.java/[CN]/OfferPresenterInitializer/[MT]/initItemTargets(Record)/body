@@ -1,10 +1,14 @@
 {
+  getDisplay().getTargetItemBuilder().getItemFilterBuilder().clearCriteria();
   String targetQuantity=selectedRecord.getAttribute("targetItemCriteria.receiveQuantity");
   if (targetQuantity != null) {
-    getDisplay().getTargetItemBuilder().getItemQuantity().setValue(targetQuantity);
+    getDisplay().getTargetItemBuilder().getItemQuantity().setValue(Integer.parseInt(targetQuantity));
     String itemTargetRules=selectedRecord.getAttribute("targetItemCriteria.orderItemMatchRule");
     try {
-      getDisplay().getTargetItemBuilder().getItemFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(itemTargetRules,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource()));
+      AdvancedCriteria myCriteria=TRANSLATOR.createAdvancedCriteria(itemTargetRules,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource());
+      if (myCriteria != null) {
+        getDisplay().getTargetItemBuilder().getItemFilterBuilder().setCriteria(myCriteria);
+      }
     }
  catch (    IncompatibleMVELTranslationException e) {
       GWT.log("Could not translate MVEL",e);

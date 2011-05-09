@@ -1,14 +1,16 @@
 {
   customerRuleIncompatible=false;
+  getDisplay().getCustomerFilterBuilder().clearCriteria();
   String customerRules=selectedRecord.getAttribute("appliesToCustomerRules");
   String customerRule=customerRules == null ? "ALL" : "CUSTOMER_RULE";
-  if (customerRules == null) {
-    getDisplay().getCustomerRuleRadio().setValue(customerRule);
-  }
- else {
+  getDisplay().getCustomerRuleRadio().setValue(customerRule);
+  if (customerRules != null) {
     getDisplay().getCustomerRuleRadio().setValue(customerRule);
     try {
-      getDisplay().getCustomerFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(customerRules,getDisplay().getCustomerFilterBuilder().getDataSource()));
+      AdvancedCriteria myCriteria=TRANSLATOR.createAdvancedCriteria(customerRules,getDisplay().getCustomerFilterBuilder().getDataSource());
+      if (myCriteria != null) {
+        getDisplay().getCustomerFilterBuilder().setCriteria(myCriteria);
+      }
     }
  catch (    IncompatibleMVELTranslationException e) {
       customerRuleIncompatible=true;
@@ -17,5 +19,5 @@
       getDisplay().getRawCustomerTextArea().setValue(customerRules);
     }
   }
-  initCustomerRule(customerRule);
+  initCustomerRule(customerRule,selectedRecord);
 }

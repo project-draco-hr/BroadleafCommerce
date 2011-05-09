@@ -6,7 +6,7 @@
   OperatorId operator=group.getOperatorType();
   myCriteria.setAttribute("operator",operator);
   List<Criterion> myCriteriaList=new ArrayList<Criterion>();
-  if (group.getOperatorType().getValue().equals(OperatorId.NOT.getValue())) {
+  if (group.getOperatorType().getValue().equals(OperatorId.NOT.getValue()) && group.getIsTopGroup()) {
     group=group.getSubGroups().get(0);
     group.setOperatorType(operator);
   }

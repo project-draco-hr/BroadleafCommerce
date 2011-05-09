@@ -1,0 +1,28 @@
+{
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    boolean fgLevelQualification=false;
+    fgQualification: {
+      if (couldOfferApplyToOrder(offer,order,fulfillmentGroup)) {
+        fgLevelQualification=true;
+        break fgQualification;
+      }
+      for (      OrderItem discreteOrderItem : discreteOrderItems) {
+        if (couldOfferApplyToOrder(offer,order,discreteOrderItem,fulfillmentGroup)) {
+          fgLevelQualification=true;
+          break fgQualification;
+        }
+      }
+      if (couldOfferApplyToFulfillmentGroup(offer,fulfillmentGroup)) {
+        fgLevelQualification=true;
+        break fgQualification;
+      }
+    }
+    if (fgLevelQualification) {
+      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,discreteOrderItems);
+      if (candidates.isMatchedCandidate()) {
+        CandidateQualifiedOffer candidateOffer=createCandidateFulfillmentGroupOffer(offer,qualifiedFGOffers,fulfillmentGroup);
+        candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateItemsMap());
+      }
+    }
+  }
+}

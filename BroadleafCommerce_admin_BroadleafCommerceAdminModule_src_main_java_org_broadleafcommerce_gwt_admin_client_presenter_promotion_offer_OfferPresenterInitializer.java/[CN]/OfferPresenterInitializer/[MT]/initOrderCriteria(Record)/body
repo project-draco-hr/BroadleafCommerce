@@ -1,14 +1,15 @@
 {
   orderRuleIncompatible=false;
+  getDisplay().getOrderFilterBuilder().clearCriteria();
   String orderRules=selectedRecord.getAttribute("appliesToOrderRules");
   String orderRule=orderRules == null ? "NONE" : "ORDER_RULE";
-  if (orderRules == null) {
-    getDisplay().getOrderRuleRadio().setValue(orderRule);
-  }
- else {
-    getDisplay().getOrderRuleRadio().setValue(orderRule);
+  getDisplay().getOrderRuleRadio().setValue(orderRule);
+  if (orderRules != null) {
     try {
-      getDisplay().getOrderFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(orderRules,getDisplay().getOrderFilterBuilder().getDataSource()));
+      AdvancedCriteria myCriteria=TRANSLATOR.createAdvancedCriteria(orderRules,getDisplay().getOrderFilterBuilder().getDataSource());
+      if (myCriteria != null) {
+        getDisplay().getOrderFilterBuilder().setCriteria(myCriteria);
+      }
     }
  catch (    IncompatibleMVELTranslationException e) {
       orderRuleIncompatible=true;
@@ -22,5 +23,5 @@
     combinable=false;
   }
   getDisplay().getOrderCombineRuleRadio().setValue(combinable ? "YES" : "NO");
-  initOrderRule(orderRule);
+  initOrderRule(orderRule,selectedRecord);
 }

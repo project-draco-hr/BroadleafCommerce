@@ -6,12 +6,17 @@
     boolean isNegation=false;
     subgroupStartIndex=findGroupStart(segment,startPos);
     if (subgroupStartIndex == startPos || subgroupStartIndex == startPos + 1) {
-      int subgroupEndIndex=findGroupEnd(segment,subgroupStartIndex);
-      if (subgroupStartIndex > 0 && segment.charAt(subgroupStartIndex - 1) == '!') {
-        myGroup.setOperatorType(OperatorId.NOT);
-      }
       Group subGroup=new Group();
       myGroup.getSubGroups().add(subGroup);
+      int subgroupEndIndex=findGroupEnd(segment,subgroupStartIndex);
+      if (subgroupStartIndex > 0 && segment.charAt(subgroupStartIndex - 1) == '!') {
+        if (myGroup.getIsTopGroup()) {
+          myGroup.setOperatorType(OperatorId.NOT);
+        }
+ else {
+          subGroup.setOperatorType(OperatorId.NOT);
+        }
+      }
       parseGroups(subGroup,segment.substring(subgroupStartIndex + 1,subgroupEndIndex - 1).trim());
       startPos=subgroupEndIndex;
       if (startPos == segment.length()) {

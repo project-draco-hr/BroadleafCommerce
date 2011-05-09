@@ -1,0 +1,13 @@
+{
+  Customer customer=customerId != null ? readCustomerById(customerId) : null;
+  if (customer == null) {
+    customer=customerDao.create();
+    if (customerId != null) {
+      customer.setId(customerId);
+    }
+ else {
+      customer.setId(idGenerationService.findNextId("org.broadleafcommerce.profile.core.domain.Customer"));
+    }
+  }
+  return customer;
+}

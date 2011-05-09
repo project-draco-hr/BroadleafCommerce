@@ -1,0 +1,16 @@
+{
+  List<OrderItem> discreteOrderItems=new ArrayList<OrderItem>();
+  for (  OrderItem orderItem : orderItems) {
+    if (orderItem instanceof BundleOrderItemImpl) {
+      BundleOrderItemImpl bundleOrderItem=(BundleOrderItemImpl)orderItem;
+      for (      DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
+        discreteOrderItems.add(discreteOrderItem);
+      }
+    }
+ else {
+      DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
+      discreteOrderItems.add(discreteOrderItem);
+    }
+  }
+  return discreteOrderItems;
+}

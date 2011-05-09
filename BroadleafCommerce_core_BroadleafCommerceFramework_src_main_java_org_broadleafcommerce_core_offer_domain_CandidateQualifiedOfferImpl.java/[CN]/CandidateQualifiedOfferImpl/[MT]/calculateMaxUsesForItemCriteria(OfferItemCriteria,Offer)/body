@@ -1,0 +1,11 @@
+{
+  int numberOfQualifiers=0;
+  List<OrderItem> potentialTargets=getCandidateQualifiersMap().get(itemCriteria);
+  if (potentialTargets != null) {
+    for (    OrderItem potentialTarget : potentialTargets) {
+      numberOfQualifiers=numberOfQualifiers + potentialTarget.getQuantityAvailableToBeUsedAsQualifier(promotion);
+    }
+  }
+  int numberOfUsesForThisItemCriteria=numberOfQualifiers / itemCriteria.getRequiresQuantity();
+  return numberOfUsesForThisItemCriteria;
+}

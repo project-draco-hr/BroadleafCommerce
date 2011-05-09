@@ -43,6 +43,18 @@
       parentCriteria.appendToCriterionList(myCriteriaList.remove(count - 1));
     }
   }
+ else   if (isProjection(temp.getAttribute("value"))) {
+    if (parentCriteria != null) {
+      JavaScriptObject listJS=parentCriteria.getAttributeAsJavaScriptObject("criteria");
+      if (!JSOHelper.isArray(listJS)) {
+        parentCriteria.setAttribute("criteria",JSOHelper.createJavaScriptArray());
+      }
+      parentCriteria.appendToCriterionList(temp);
+    }
+ else {
+      myCriteriaList.add(temp);
+    }
+  }
  else {
     myCriteriaList.add(temp);
   }

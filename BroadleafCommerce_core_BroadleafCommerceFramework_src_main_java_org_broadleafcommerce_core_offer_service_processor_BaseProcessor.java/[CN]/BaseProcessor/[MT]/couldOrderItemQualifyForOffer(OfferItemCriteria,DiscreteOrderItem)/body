@@ -1,0 +1,15 @@
+{
+  boolean appliesToItem=false;
+  if (criteria.getOrderItemMatchRule() != null && criteria.getOrderItemMatchRule().trim().length() != 0) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("discreteOrderItem",discreteOrderItem);
+    Boolean expressionOutcome=executeExpression(criteria.getOrderItemMatchRule(),vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToItem=true;
+    }
+  }
+ else {
+    appliesToItem=true;
+  }
+  return appliesToItem;
+}

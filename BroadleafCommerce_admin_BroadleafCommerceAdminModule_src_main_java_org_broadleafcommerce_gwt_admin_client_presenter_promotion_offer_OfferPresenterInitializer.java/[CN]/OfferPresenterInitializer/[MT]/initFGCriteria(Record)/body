@@ -1,14 +1,16 @@
 {
   fgRuleIncompatible=false;
+  getDisplay().getFulfillmentGroupFilterBuilder().clearCriteria();
   String fgRules=selectedRecord.getAttribute("appliesToFulfillmentGroupRules");
   String fgRule=fgRules == null ? "ALL" : "FG_RULE";
-  if (fgRules == null) {
-    getDisplay().getFgRuleRadio().setValue(fgRule);
-  }
- else {
+  getDisplay().getFgRuleRadio().setValue(fgRule);
+  if (fgRules != null) {
     getDisplay().getFgRuleRadio().setValue(fgRule);
     try {
-      getDisplay().getFulfillmentGroupFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(fgRules,getDisplay().getFulfillmentGroupFilterBuilder().getDataSource()));
+      AdvancedCriteria myCriteria=TRANSLATOR.createAdvancedCriteria(fgRules,getDisplay().getFulfillmentGroupFilterBuilder().getDataSource());
+      if (myCriteria != null) {
+        getDisplay().getFulfillmentGroupFilterBuilder().setCriteria(myCriteria);
+      }
     }
  catch (    IncompatibleMVELTranslationException e) {
       fgRuleIncompatible=true;
@@ -22,5 +24,5 @@
     combinable=false;
   }
   getDisplay().getFgCombineRuleRadio().setValue(combinable ? "YES" : "NO");
-  initFGRule(fgRule);
+  initFGRule(fgRule,selectedRecord);
 }

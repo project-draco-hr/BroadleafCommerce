@@ -9,10 +9,12 @@
       mvel=TRANSLATOR.createMVEL(getDisplay().getTargetItemBuilder().getItemFilterBuilder().getCriteria(),FilterType.ORDER_ITEM,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource());
     }
     selectedRecord.setAttribute("targetItemCriteria.receiveQuantity",quantity);
+    selectedRecord.setAttribute("targetItemCriteria.requiresQuantity",0);
     selectedRecord.setAttribute("targetItemCriteria.orderItemMatchRule",mvel);
   }
  else {
+    Object value=null;
     selectedRecord.setAttribute("targetItemCriteria",0);
-    selectedRecord.setAttribute("targetItemCriteria.orderItemMatchRule","");
+    selectedRecord.setAttribute("targetItemCriteria.orderItemMatchRule",value);
   }
 }

@@ -1,0 +1,54 @@
+{
+  boolean itemOffersApplied=false;
+  int appliedItemOffersCount=0;
+  for (  CandidateItemOffer itemOffer : itemOffers) {
+    OrderItem orderItem=itemOffer.getOrderItem();
+    if (!orderItem.isNotCombinableOfferApplied()) {
+      if ((itemOffer.getOffer().isCombinableWithOtherOffers() && itemOffer.getOffer().isStackable()) || !orderItem.isHasOrderItemAdjustments()) {
+        boolean targetsApplied=false;
+        applyItemQualifiersAndTargets(discreteOrderItems,itemOffer);
+        for (        OrderItem discreteOrderItem : discreteOrderItems) {
+          for (          PromotionDiscount discount : discreteOrderItem.getPromotionDiscounts()) {
+            if (discount.getPromotion().equals(itemOffer.getOffer())) {
+              applyOrderItemOffer(itemOffer);
+              targetsApplied=true;
+              break;
+            }
+          }
+        }
+        if (!targetsApplied) {
+          applyOrderItemOffer(itemOffer);
+        }
+        if (!itemOffer.getOffer().isCombinableWithOtherOffers()) {
+          Money itemPrice=itemOffer.getOrderItem().getRetailPrice();
+          if (itemOffer.getOrderItem().getSalePrice() != null) {
+            itemPrice=itemOffer.getOrderItem().getSalePrice();
+          }
+          if (itemOffer.getOrderItem().getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
+            itemOffer.getOrderItem().removeAllAdjustments();
+            appliedItemOffersCount--;
+          }
+        }
+        appliedItemOffersCount++;
+      }
+    }
+  }
+  if (appliedItemOffersCount > 0) {
+    for (    OrderItem discreteOrderItem : discreteOrderItems) {
+      if (discreteOrderItem.getAdjustmentPrice() != null) {
+        Money itemPrice=discreteOrderItem.getRetailPrice();
+        if (discreteOrderItem.getSalePrice() != null) {
+          itemPrice=discreteOrderItem.getSalePrice();
+        }
+        if (discreteOrderItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
+          int offersRemoved=discreteOrderItem.removeAllAdjustments();
+          appliedItemOffersCount=appliedItemOffersCount - offersRemoved;
+        }
+      }
+    }
+  }
+  if (appliedItemOffersCount > 0) {
+    itemOffersApplied=true;
+  }
+  return itemOffersApplied;
+}

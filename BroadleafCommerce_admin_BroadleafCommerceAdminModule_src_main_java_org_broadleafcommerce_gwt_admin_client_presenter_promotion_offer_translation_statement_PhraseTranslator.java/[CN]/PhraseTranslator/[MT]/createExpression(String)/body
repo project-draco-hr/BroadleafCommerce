@@ -3,8 +3,10 @@
   String field=components[0];
   String operator=components[1];
   String value=components[2];
+  boolean isIgnoreCase=false;
   String caseInsensitivityKey="MVEL.eval(\"toUpperCase()\",";
   if (field.startsWith(caseInsensitivityKey)) {
+    isIgnoreCase=true;
     field=field.substring(caseInsensitivityKey.length(),field.length() - 1);
   }
   String dateFormatKey="java.text.DateFormat.getDateTimeInstance(3,3).parse(";
@@ -15,12 +17,10 @@
   if (entityKeyIndex < 0) {
     throw new IncompatibleMVELTranslationException("Could not identify a valid property field value in the expression: (" + phrase + ")");
   }
-  boolean isIgnoreCase=false;
-  String entityKey=field.substring(0,entityKeyIndex);
   if (value.startsWith(caseInsensitivityKey)) {
-    isIgnoreCase=true;
     value=value.substring(caseInsensitivityKey.length(),value.length() - 1);
   }
+  String entityKey=field.substring(0,entityKeyIndex);
   boolean isFieldComparison=false;
   if (value.startsWith("\"") && value.endsWith("\"")) {
     value=value.substring(1,value.length() - 1);

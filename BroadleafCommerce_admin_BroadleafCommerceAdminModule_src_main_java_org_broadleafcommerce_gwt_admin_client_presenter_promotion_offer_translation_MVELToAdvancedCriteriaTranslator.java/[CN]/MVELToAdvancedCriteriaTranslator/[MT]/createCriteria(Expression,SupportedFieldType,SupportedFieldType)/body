@@ -1,29 +1,9 @@
 {
   AdvancedCriteria criteria;
 switch (type) {
-case ID:
-    if (secondaryType != null && secondaryType.toString().equals(SupportedFieldType.STRING)) {
-      criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),expression.getValue());
-    }
- else {
-      criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Integer.parseInt(expression.getValue()));
-    }
-  break;
-case BOOLEAN:
-criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Boolean.parseBoolean(expression.getValue()));
-break;
-case DECIMAL:
-criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Float.parseFloat(expression.getValue()));
-break;
-case MONEY:
-criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Float.parseFloat(expression.getValue()));
-break;
-case INTEGER:
-criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Integer.parseInt(expression.getValue()));
-break;
 case DATE:
-DateTimeFormat formatter=DateTimeFormat.getFormat("MM/dd/yy H:mm a");
-Date parsedDate=formatter.parse(expression.getValue());
+    DateTimeFormat formatter=DateTimeFormat.getFormat("MM/dd/yy H:mm a");
+  Date parsedDate=formatter.parse(expression.getValue());
 criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),parsedDate);
 break;
 default :

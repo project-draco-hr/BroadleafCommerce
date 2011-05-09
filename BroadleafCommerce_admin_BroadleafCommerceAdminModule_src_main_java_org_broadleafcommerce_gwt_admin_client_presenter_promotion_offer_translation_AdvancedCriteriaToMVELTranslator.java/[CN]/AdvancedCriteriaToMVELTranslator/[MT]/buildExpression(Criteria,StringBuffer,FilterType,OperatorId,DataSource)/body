@@ -5,7 +5,7 @@
   SupportedFieldType type=SupportedFieldType.valueOf(dataSource.getField(field).getAttribute("fieldType"));
   SupportedFieldType secondaryType=null;
   String secondaryTypeVal=dataSource.getField(field).getAttribute("secondaryFieldType");
-  Object value;
+  Object[] value;
   if (secondaryTypeVal != null) {
     secondaryType=SupportedFieldType.valueOf(secondaryTypeVal);
   }
@@ -13,7 +13,7 @@
     value=extractDate(criteria,operator,values,"value");
   }
  else {
-    value=values.get("value");
+    value=extractBasicValues(values.get("value"));
   }
 switch (operator) {
 case CONTAINS:
@@ -103,7 +103,7 @@ break;
 }
 case IS_NULL:
 {
-buildExpression(sb,entityKey,field,"null",type,secondaryType,"==",false,false,false,false,true);
+buildExpression(sb,entityKey,field,new Object[]{"null"},type,secondaryType,"==",false,false,false,false,true);
 break;
 }
 case ISTARTS_WITH:
@@ -153,7 +153,7 @@ break;
 }
 case NOT_NULL:
 {
-buildExpression(sb,entityKey,field,"null",type,secondaryType,"!=",false,false,false,false,true);
+buildExpression(sb,entityKey,field,new Object[]{"null"},type,secondaryType,"!=",false,false,false,false,true);
 break;
 }
 case NOT_STARTS_WITH:
@@ -182,9 +182,9 @@ sb.append(")");
 }
  else {
 sb.append("(");
-buildExpression(sb,entityKey,field,values.get("start"),type,secondaryType,">",false,false,false,false,false);
+buildExpression(sb,entityKey,field,new Object[]{values.get("start")},type,secondaryType,">",false,false,false,false,false);
 sb.append("&&");
-buildExpression(sb,entityKey,field,values.get("end"),type,secondaryType,"<",false,false,false,false,false);
+buildExpression(sb,entityKey,field,new Object[]{values.get("end")},type,secondaryType,"<",false,false,false,false,false);
 sb.append(")");
 }
 break;
@@ -200,9 +200,9 @@ sb.append(")");
 }
  else {
 sb.append("(");
-buildExpression(sb,entityKey,field,values.get("start"),type,secondaryType,">=",false,false,false,false,false);
+buildExpression(sb,entityKey,field,new Object[]{values.get("start")},type,secondaryType,">=",false,false,false,false,false);
 sb.append("&&");
-buildExpression(sb,entityKey,field,values.get("end"),type,secondaryType,"<=",false,false,false,false,false);
+buildExpression(sb,entityKey,field,new Object[]{values.get("end")},type,secondaryType,"<=",false,false,false,false,false);
 sb.append(")");
 }
 break;

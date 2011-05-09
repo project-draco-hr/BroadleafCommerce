@@ -1,0 +1,26 @@
+{
+  if (value == null) {
+    return null;
+  }
+  String stringValue=value.toString().trim();
+  Object[] response=new Object[]{};
+  if (isProjection(value)) {
+    List<String> temp=new ArrayList<String>();
+    int initial=1;
+    boolean eof=false;
+    while (!eof) {
+      int end=stringValue.indexOf(",",initial);
+      if (end == -1) {
+        eof=true;
+        end=stringValue.length() - 1;
+      }
+      temp.add(stringValue.substring(initial,end));
+      initial=end + 1;
+    }
+    response=temp.toArray(response);
+  }
+ else {
+    response=new Object[]{value};
+  }
+  return response;
+}

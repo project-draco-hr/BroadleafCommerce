@@ -5,7 +5,7 @@
       boolean isItemQualifierCriteria=false;
       if (response.getTotalRows() > 0) {
         for (        Record record : response.getData()) {
-          if (record.getAttributeAsInt("requiresQuantity") > 0) {
+          if (Integer.parseInt(record.getAttribute("requiresQuantity")) > 0) {
             isItemQualifierCriteria=true;
             break;
           }
@@ -22,14 +22,23 @@
         getDisplay().getItemRuleRadio().setValue("YES");
         getDisplay().removeAllItemBuilders();
         for (        Record record : response.getData()) {
-          if (record.getAttributeAsInt("requiresQuantity") > 0) {
+          if (Integer.parseInt(record.getAttribute("requiresQuantity")) > 0) {
             final ItemBuilderDisplay display=getDisplay().addItemBuilder(orderItemDataSource);
+            presenter.bindItemBuilderEvents(display);
+            display.getItemFilterBuilder().clearCriteria();
             display.setRecord(record);
-            display.getItemQuantity().setValue(record.getAttributeAsInt("requiresQuantity"));
+            display.getItemQuantity().setValue(Integer.parseInt(record.getAttribute("requiresQuantity")));
             try {
-              display.getItemFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(record.getAttribute("orderItemMatchRule"),offerItemCriteriaDataSource));
+              display.getItemFilterBuilder().setVisible(true);
+              display.getRawItemForm().setVisible(false);
+              AdvancedCriteria myCriteria=TRANSLATOR.createAdvancedCriteria(record.getAttribute("orderItemMatchRule"),orderItemDataSource);
+              if (myCriteria != null) {
+                display.getItemFilterBuilder().setCriteria(myCriteria);
+              }
             }
  catch (            IncompatibleMVELTranslationException e) {
+              GWT.log("Could not translate MVEL",e);
+              BLCMain.MASTERVIEW.getStatus().setContents(AdminModule.ADMINMESSAGES.mvelTranslationProblem());
               display.setIncompatibleMVEL(true);
               display.getItemFilterBuilder().setVisible(false);
               display.getRawItemForm().setVisible(true);
@@ -54,7 +63,7 @@
         getDisplay().getBogoRadio().setValue("NO");
         getDisplay().getItemRuleRadio().setValue("NO");
         getDisplay().removeAllItemBuilders();
-        getDisplay().addItemBuilder(orderItemDataSource);
+        presenter.bindItemBuilderEvents(getDisplay().addItemBuilder(orderItemDataSource));
       }
     }
   }

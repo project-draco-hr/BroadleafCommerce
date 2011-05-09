@@ -8,26 +8,27 @@
     }
     Class<?> returnType=field.getType();
     String value=property.getValue();
-    if (value != null && mergedProperties.get(property.getName()) != null) {
+    if (mergedProperties.get(property.getName()) != null) {
+      if (value != null) {
 switch (mergedProperties.get(property.getName()).getFieldType()) {
 case BOOLEAN:
-        if (Character.class.isAssignableFrom(returnType)) {
-          fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value) ? 'Y' : 'N');
-        }
+          if (Character.class.isAssignableFrom(returnType)) {
+            fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value) ? 'Y' : 'N');
+          }
  else {
-          fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value));
-        }
-      break;
+            fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value));
+          }
+        break;
 case DATE:
-    fieldManager.setFieldValue(instance,property.getName(),dateFormat.parse(value));
-  break;
+      fieldManager.setFieldValue(instance,property.getName(),dateFormat.parse(value));
+    break;
 case DECIMAL:
-if (BigDecimal.class.isAssignableFrom(returnType)) {
-  fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
-}
+  if (BigDecimal.class.isAssignableFrom(returnType)) {
+    fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
+  }
  else {
-  fieldManager.setFieldValue(instance,property.getName(),new Double(value));
-}
+    fieldManager.setFieldValue(instance,property.getName(),new Double(value));
+  }
 break;
 case MONEY:
 if (BigDecimal.class.isAssignableFrom(returnType)) {
@@ -118,6 +119,12 @@ break;
 }
 }
 break;
+}
+}
+ else {
+if (fieldManager.getFieldValue(instance,property.getName()) != null) {
+fieldManager.setFieldValue(instance,property.getName(),null);
+}
 }
 }
 }

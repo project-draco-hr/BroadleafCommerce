@@ -1,0 +1,41 @@
+{
+  boolean isBogo=offer.getQualifyingItemCriteria() != null && offer.getQualifyingItemCriteria().size() > 0;
+  if (isBogo) {
+    boolean itemLevelQualification=false;
+    for (    OrderItem discreteOrderItem : discreteOrderItems) {
+      if (couldOfferApplyToOrder(offer,order,discreteOrderItem)) {
+        itemLevelQualification=true;
+        break;
+      }
+      for (      FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+        if (couldOfferApplyToOrder(offer,order,discreteOrderItem,fulfillmentGroup)) {
+          itemLevelQualification=true;
+          break;
+        }
+      }
+    }
+    if (itemLevelQualification) {
+      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,discreteOrderItems);
+      if (candidates.isMatchedCandidate()) {
+        CandidateQualifiedOffer candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null);
+        candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateItemsMap());
+      }
+    }
+  }
+ else {
+    for (    OrderItem discreteOrderItem : discreteOrderItems) {
+      checkSubItems: {
+        if (couldOfferApplyToOrder(offer,order,discreteOrderItem)) {
+          createCandidateItemOffer(qualifiedItemOffers,offer,discreteOrderItem);
+          break checkSubItems;
+        }
+        for (        FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+          if (couldOfferApplyToOrder(offer,order,discreteOrderItem,fulfillmentGroup)) {
+            createCandidateItemOffer(qualifiedItemOffers,offer,discreteOrderItem);
+            break checkSubItems;
+          }
+        }
+      }
+    }
+  }
+}

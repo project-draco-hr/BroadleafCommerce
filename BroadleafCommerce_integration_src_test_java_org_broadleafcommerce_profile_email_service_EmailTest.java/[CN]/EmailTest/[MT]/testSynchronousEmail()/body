@@ -1,0 +1,9 @@
+{
+  EmailInfo info=new EmailInfo();
+  info.setFromAddress("me@test.com");
+  info.setSubject("test");
+  info.setEmailTemplate("org/broadleafcommerce/profile/email/service/template/default.vm");
+  info.setSendEmailReliableAsync("false");
+  emailService.sendTemplateEmail("to@localhost",info,null);
+  assert(greenMail.waitForIncomingEmail(10000,1));
+}
