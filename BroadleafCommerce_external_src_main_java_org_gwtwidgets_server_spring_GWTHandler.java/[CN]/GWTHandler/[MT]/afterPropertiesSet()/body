@@ -1,0 +1,9 @@
+{
+  if (factory == null)   factory=new DefaultRPCServiceExporterFactory();
+  scanForAnnotatedBeans(getApplicationContext());
+  for (  Map.Entry<String,Object> entry : _mapping.entrySet()) {
+    RPCServiceExporter exporter=factory.create();
+    registerHandler(entry.getKey(),initServiceInstance(exporter,entry.getValue(),ReflectionUtils.getExposedInterfaces(entry.getValue().getClass())));
+  }
+  this._mapping=null;
+}

@@ -1,0 +1,11 @@
+{
+  final Object handlerWrapper=super.getHandlerInternal(request);
+  if (handlerWrapper instanceof HandlerExecutionChain) {
+    final Object handler=((HandlerExecutionChain)handlerWrapper).getHandler();
+    if (handler instanceof GWTRPCServiceExporter) {
+      GWTRPCSecuredServiceExporter securedExporter=new GWTRPCSecuredServiceExporter((GWTRPCServiceExporter)handler);
+      return new HandlerExecutionChain(securedExporter,((HandlerExecutionChain)handlerWrapper).getInterceptors());
+    }
+  }
+  return handlerWrapper;
+}

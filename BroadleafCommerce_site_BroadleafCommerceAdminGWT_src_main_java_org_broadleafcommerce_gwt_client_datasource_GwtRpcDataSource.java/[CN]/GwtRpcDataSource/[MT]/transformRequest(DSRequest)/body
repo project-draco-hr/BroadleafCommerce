@@ -1,0 +1,24 @@
+{
+  request.setUseSimpleHttp(true);
+  String requestId=request.getRequestId();
+  DSResponse response=new DSResponse();
+  response.setAttribute("clientContext",request.getAttributeAsObject("clientContext"));
+  response.setStatus(0);
+switch (request.getOperationType()) {
+case FETCH:
+    executeFetch(requestId,request,response);
+  break;
+case ADD:
+executeAdd(requestId,request,response);
+break;
+case UPDATE:
+executeUpdate(requestId,request,response);
+break;
+case REMOVE:
+executeRemove(requestId,request,response);
+break;
+default :
+break;
+}
+return request.getData();
+}

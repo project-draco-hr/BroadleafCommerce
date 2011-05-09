@@ -1,0 +1,21 @@
+{
+  double sizeOfFraction=DOUBLE_TEN_POW[discardedPrecision];
+  double newScale=scale - discardedPrecision;
+  double unscaledVal=smallValue;
+  double integer=intDivide(unscaledVal,sizeOfFraction);
+  double fraction=unscaledVal % sizeOfFraction;
+  int compRem;
+  if (fraction != 0) {
+    compRem=doubleCompareTo(Math.abs(fraction) * 2,sizeOfFraction);
+    integer+=roundingBehavior(((int)integer) & 1,signum(fraction) * (5 + compRem),mc.getRoundingMode());
+    if (Math.log10(Math.abs(integer)) >= mc.getPrecision()) {
+      integer/=10;
+      newScale--;
+    }
+  }
+  scale=toIntScale(newScale);
+  precision=mc.getPrecision();
+  smallValue=integer;
+  bitLength=bitLength(integer);
+  intVal=null;
+}

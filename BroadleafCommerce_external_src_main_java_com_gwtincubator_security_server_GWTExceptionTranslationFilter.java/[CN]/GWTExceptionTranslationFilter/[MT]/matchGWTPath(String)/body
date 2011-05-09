@@ -1,0 +1,20 @@
+{
+  int firstQuestionMarkIndex=url.indexOf("?");
+  if (firstQuestionMarkIndex != -1) {
+    url=url.substring(0,firstQuestionMarkIndex);
+  }
+  if (matcher.requiresLowerCaseUrl()) {
+    url=url.toLowerCase();
+    if (logger.isDebugEnabled()) {
+      logger.debug("Converted URL to lowercase, from: '" + url + "'; to: '"+ url+ "'");
+    }
+  }
+  boolean matched=false;
+  for (  String path : gwtPaths) {
+    matched=matcher.pathMatchesUrl(path,url);
+    if (matched) {
+      return true;
+    }
+  }
+  return false;
+}

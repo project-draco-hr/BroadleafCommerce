@@ -1,0 +1,8 @@
+{
+  Set<Class<?>> interfaces=getInterfaces(clazz);
+  for (Iterator<Class<?>> ite=interfaces.iterator(); ite.hasNext(); ) {
+    Class<?> c=ite.next();
+    if (!isExposed(c))     ite.remove();
+  }
+  return interfaces.toArray(new Class[interfaces.size()]);
+}

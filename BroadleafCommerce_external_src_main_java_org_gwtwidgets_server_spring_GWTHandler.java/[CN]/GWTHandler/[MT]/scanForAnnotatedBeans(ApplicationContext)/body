@@ -1,0 +1,18 @@
+{
+  if (appContext == null) {
+    return;
+  }
+  for (  String beanName : appContext.getBeanNamesForType(RemoteService.class)) {
+    Object service=appContext.getBean(beanName);
+    if (service == null)     continue;
+    final Class<?> beanClass=service.getClass();
+    final GWTRequestMapping requestMapping=ReflectionUtils.findAnnotation(beanClass,GWTRequestMapping.class);
+    if (requestMapping == null) {
+      continue;
+    }
+    String mapping=requestMapping.value();
+    if (getMappings().containsKey(mapping))     logger.warn("Bean '" + mapping + "' already in mapping, skipping.");
+ else     getMappings().put(mapping,service);
+  }
+  if (scanParentApplicationContext)   scanForAnnotatedBeans(appContext.getParent());
+}

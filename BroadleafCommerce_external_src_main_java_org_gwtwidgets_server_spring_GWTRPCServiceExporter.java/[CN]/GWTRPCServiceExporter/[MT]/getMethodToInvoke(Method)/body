@@ -1,0 +1,6 @@
+{
+  Method method=methodCache.get(decodedMethod);
+  if (method != null)   return method;
+  method=ReflectionUtils.getRPCMethod(service,serviceInterfaces,decodedMethod);
+  return methodCache.put(decodedMethod,method);
+}

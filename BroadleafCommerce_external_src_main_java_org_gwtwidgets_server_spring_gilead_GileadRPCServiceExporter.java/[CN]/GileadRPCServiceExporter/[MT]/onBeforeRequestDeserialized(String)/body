@@ -1,0 +1,13 @@
+{
+  super.onBeforeRequestDeserialized(serializedRequest);
+  if (isUsingProxyClassLoader()) {
+    Thread currentThread=Thread.currentThread();
+    ClassLoader oldContextClassLoader=currentThread.getContextClassLoader();
+    logger.info("Classloader before invocation: " + oldContextClassLoader);
+    logger.info("Replacing with classloader   : " + getClass().getClassLoader());
+    tmpClassloader.set(oldContextClassLoader);
+    currentThread.setContextClassLoader(getClass().getClassLoader());
+    GileadRPCHelper.initClassLoader();
+    logger.info("New classloader              : " + getClass().getClassLoader());
+  }
+}

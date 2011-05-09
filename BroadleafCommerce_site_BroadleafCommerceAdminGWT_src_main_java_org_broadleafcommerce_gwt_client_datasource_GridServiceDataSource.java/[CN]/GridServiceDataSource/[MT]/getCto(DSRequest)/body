@@ -1,0 +1,23 @@
+{
+  CriteriaTransferObject cto=new CriteriaTransferObject();
+  if (request.getStartRow() != null) {
+    cto.setFirstResult(request.getStartRow());
+    if (request.getEndRow() != null) {
+      cto.setMaxResults(request.getEndRow() - request.getStartRow());
+    }
+  }
+  SortSpecifier[] sortBy=request.getSortBy();
+  if (sortBy != null && sortBy.length > 0) {
+    String sortPropertyId=sortBy[0].getField();
+    boolean sortAscending=sortBy[0].getSortDirection().equals(SortDirection.ASCENDING);
+    FilterAndSortCriteria sortCriteria=cto.get(sortPropertyId);
+    sortCriteria.setSortAscending(sortAscending);
+  }
+  Map<String,String> filterData=request.getCriteria().getValues();
+  Set<String> filterFieldNames=filterData.keySet();
+  for (  String fieldName : filterFieldNames) {
+    FilterAndSortCriteria filterCriteria=cto.get(fieldName);
+    filterCriteria.setFilterValue(filterData.get(fieldName));
+  }
+  return cto;
+}

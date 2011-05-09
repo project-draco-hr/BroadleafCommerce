@@ -1,0 +1,30 @@
+{
+  try {
+    chain.doFilter(request,response);
+    if (logger.isDebugEnabled()) {
+      logger.debug("Chain processed normally");
+    }
+  }
+ catch (  IOException ex) {
+    throw ex;
+  }
+catch (  Exception ex) {
+    Throwable[] causeChain=this.throwableAnalyzer.determineCauseChain(ex);
+    Throwable ase=this.throwableAnalyzer.getFirstThrowableOfType(AccessDeniedException.class,causeChain);
+    if (ase == null) {
+      ase=this.throwableAnalyzer.getFirstThrowableOfType(AuthenticationException.class,causeChain);
+    }
+    if (ase != null) {
+      handleException(request,response,chain,ase);
+    }
+ else {
+      if (ex instanceof ServletException) {
+        throw (ServletException)ex;
+      }
+ else       if (ex instanceof RuntimeException) {
+        throw (RuntimeException)ex;
+      }
+      throw new RuntimeException(ex);
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  if (requestSetterName != null)   try {
+    Method method=target.getClass().getMethod(requestSetterName,new Class[]{HttpServletRequest.class});
+    method.invoke(target,new Object[]{request});
+  }
+ catch (  NoSuchMethodException e) {
+  }
+  if (responseSetterName != null)   try {
+    Method method=target.getClass().getMethod(responseSetterName,new Class[]{HttpServletResponse.class});
+    method.invoke(target,new Object[]{response});
+  }
+ catch (  NoSuchMethodException e) {
+  }
+}

@@ -1,0 +1,29 @@
+{
+  if (exception != null && exception instanceof ApplicationSecurityException) {
+    onSecurityException((ApplicationSecurityException)exception);
+  }
+ else {
+    ApplicationSecurityException newException=null;
+    final String msg=exception.getMessage();
+    try {
+      final Document doc=XMLParser.parse(msg);
+      final NodeList securityNode=doc.getElementsByTagName("security");
+      if (securityNode != null && securityNode.getLength() > 0) {
+        final NodeList messageNode=doc.getElementsByTagName("message");
+        String message=new String("Security Exception");
+        if (messageNode != null && messageNode.getLength() > 0 && messageNode.item(0) != null && messageNode.item(0).hasChildNodes()) {
+          message=messageNode.item(0).getChildNodes().item(0).getNodeValue();
+        }
+        newException=new ApplicationSecurityException(message,exception);
+      }
+    }
+ catch (    DOMParseException e) {
+    }
+    if (newException != null) {
+      onSecurityException(newException);
+    }
+ else {
+      onOtherException(exception);
+    }
+  }
+}

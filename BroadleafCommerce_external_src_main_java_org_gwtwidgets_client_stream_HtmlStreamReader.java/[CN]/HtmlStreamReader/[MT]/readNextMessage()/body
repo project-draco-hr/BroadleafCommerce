@@ -1,0 +1,13 @@
+{
+  Document document=getFrameContents(frame);
+  if (null == document)   return null;
+  NodeList<Element> elements=document.getElementsByTagName("div");
+  if (elements.getLength() == 0) {
+    return checkForEOF(document);
+  }
+  Element eDiv=elements.getItem(0);
+  eDiv.getParentElement().removeChild(eDiv);
+  Message message=decodeMessage(eDiv);
+  lastMessageId=message.getSerialNumber();
+  return message;
+}

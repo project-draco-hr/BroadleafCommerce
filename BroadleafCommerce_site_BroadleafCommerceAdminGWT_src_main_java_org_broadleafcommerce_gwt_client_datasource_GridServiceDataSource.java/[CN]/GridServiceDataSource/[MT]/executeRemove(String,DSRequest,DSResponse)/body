@@ -1,0 +1,15 @@
+{
+  JavaScriptObject data=request.getData();
+  final TreeNode record=new TreeNode(data);
+  Entity entity=newEntityInstance();
+  copyValues(record,entity);
+  service.remove(entity,new GridServiceAsyncCallback<Void>(GridOperationType.REMOVE,requestId,request,response){
+    public void onSuccess(    Void result){
+      ListGridRecord[] list=new ListGridRecord[1];
+      list[0]=record;
+      response.setData(list);
+      processResponse(requestId,response);
+    }
+  }
+);
+}

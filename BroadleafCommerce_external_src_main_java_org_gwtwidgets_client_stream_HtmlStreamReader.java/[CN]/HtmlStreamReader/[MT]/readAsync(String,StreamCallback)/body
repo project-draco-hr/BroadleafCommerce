@@ -1,0 +1,35 @@
+{
+  GWT.log("Openeing stream to " + url,null);
+  final String sUrl=url + (url.contains("&") ? "&" : "?") + "lastmessageid="+ lastMessageId;
+  dateOfCreation=new Date();
+  frame=Document.get().createIFrameElement();
+  setInnerFrameVisibility(false);
+  Document.get().getBody().appendChild(frame);
+  frame.setSrc(sUrl);
+  timer=new Timer(){
+    @Override public void run(){
+      try {
+        Message message=null;
+        while (null != (message=readNextMessage())) {
+          if (message.isEOF()) {
+            close();
+            callback.onDisconnect();
+            return;
+          }
+          callback.onMessage(message);
+        }
+        if (isObsolete()) {
+          reconnect(url,callback);
+          return;
+        }
+        timer.schedule((int)getPollingInterval());
+      }
+ catch (      Exception e) {
+        close();
+        callback.onError(e);
+      }
+    }
+  }
+;
+  timer.schedule((int)getPollingInterval());
+}
