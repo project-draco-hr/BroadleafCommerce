@@ -1,0 +1,25 @@
+{
+  super();
+  setWidth100();
+  setLayoutMargin(0);
+  toolbar=new ToolStrip();
+  toolbar.setHeight(20);
+  toolbar.setWidth100();
+  toolbar.addSpacer(6);
+  saveButton=new ToolStripButton();
+  saveButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/save.png");
+  toolbar.addButton(saveButton);
+  saveButton.setDisabled(true);
+  refreshButton=new ToolStripButton();
+  refreshButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/refresh.png");
+  toolbar.addButton(refreshButton);
+  toolbar.addSpacer(6);
+  Label productDetailsLabel=new Label();
+  productDetailsLabel.setContents(title);
+  productDetailsLabel.setWrap(false);
+  toolbar.addMember(productDetailsLabel);
+  addMember(toolbar);
+  formOnlyView=new FormOnlyView(dataSource);
+  addMember(formOnlyView);
+  setOverflow(Overflow.HIDDEN);
+}

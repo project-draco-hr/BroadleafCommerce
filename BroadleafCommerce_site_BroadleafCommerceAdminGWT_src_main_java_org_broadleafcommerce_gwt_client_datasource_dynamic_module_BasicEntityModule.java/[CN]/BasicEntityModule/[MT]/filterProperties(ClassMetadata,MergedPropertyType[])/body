@@ -1,38 +1,44 @@
 {
   for (  Property property : metadata.getProperties()) {
-    String mergedPropertyType=property.getMergedPropertyType();
+    String mergedPropertyType=property.getMetadata().getMergedPropertyType().toString();
     if (Arrays.binarySearch(includeTypes,MergedPropertyType.valueOf(mergedPropertyType)) >= 0) {
       String rawName=property.getName();
       String propertyName=rawName;
-      String fieldType=property.getType();
-      Long length=property.getLength();
-      Boolean required=property.getRequired();
+      String fieldType=property.getMetadata().getFieldType() == null ? null : property.getMetadata().getFieldType().toString();
+      Long length=property.getMetadata().getLength() == null ? null : property.getMetadata().getLength().longValue();
+      Boolean required=property.getMetadata().getRequired();
       if (required == null) {
         required=false;
       }
-      Boolean mutable=property.getMutable();
-      String inheritedFromType=property.getInheritedFromType();
-      String availableToTypes=property.getAvailableToTypes();
-      String foreignKeyClass=property.getForeignKeyClass();
-      String foreignKeyProperty=property.getForeignKeyProperty();
-      String friendlyName=property.getFriendlyName();
+      Boolean mutable=property.getMetadata().getMutable();
+      String inheritedFromType=property.getMetadata().getInheritedFromType();
+      String[] availableToTypes=property.getMetadata().getAvailableToTypes();
+      String foreignKeyClass=property.getMetadata().getForeignKeyClass();
+      String foreignKeyProperty=property.getMetadata().getForeignKeyProperty();
+      String friendlyName=property.getMetadata().getPresentationAttributes().getFriendlyName();
       if (friendlyName == null) {
         friendlyName=property.getName();
       }
-      Boolean hidden=property.getHidden();
-      String group=property.getGroup();
-      Boolean largeEntry=property.getLargeEntry();
-      Boolean prominent=property.getProminent();
-      Integer order=property.getOrder();
+      Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
+      String group=property.getMetadata().getPresentationAttributes().getGroup();
+      Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
+      Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
+      Integer order=property.getMetadata().getPresentationAttributes().getOrder();
+      String columnWidth=property.getMetadata().getPresentationAttributes().getColumnWidth();
+      String[] enumerationValues=property.getMetadata().getEnumerationValues();
       DataSourceField field;
 switch (SupportedFieldType.valueOf(fieldType)) {
 case ID:
-        field=new DataSourceTextField("id");
+        if (propertyName.indexOf(".") >= 0) {
+          field=new DataSourceTextField(propertyName);
+        }
+ else {
+          field=new DataSourceTextField("id");
+          field.setPrimaryKey(true);
+        }
       field.setCanEdit(false);
-    field.setPrimaryKey(true);
-  field.setHidden(true);
-field.setAttribute("permanentlyHidden",true);
-field.setRequired(required);
+    hidden=true;
+  field.setRequired(required);
 break;
 case BOOLEAN:
 field=new DataSourceBooleanField(propertyName,friendlyName);
@@ -66,6 +72,7 @@ field.setCanEdit(mutable);
 field.setRequired(required);
 break;
 case FOREIGN_KEY:
+{
 field=new DataSourceTextField(propertyName,friendlyName);
 String dataSourceName=null;
 ForeignKey foreignField=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
@@ -78,15 +85,30 @@ field.setForeignKey(foreignKeyProperty);
  else {
 field.setForeignKey(dataSourceName + "." + foreignKeyProperty);
 }
-field.setHidden(true);
-field.setAttribute("permanentlyHidden",true);
+if (hidden == null) {
+hidden=true;
+}
 field.setRequired(required);
 break;
+}
 case ADDITIONAL_FOREIGN_KEY:
+{
 field=new DataSourceTextField(propertyName,friendlyName);
-field.setHidden(true);
-field.setAttribute("permanentlyHidden",true);
+if (hidden == null) {
+hidden=true;
+}
 field.setRequired(required);
+break;
+}
+case BROADLEAF_ENUMERATION:
+field=new DataSourceEnumField(propertyName,friendlyName);
+field.setCanEdit(mutable);
+field.setRequired(required);
+LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
+for (String value : enumerationValues) {
+valueMap.put(value,value);
+}
+field.setValueMap(valueMap);
 break;
 default :
 field=new DataSourceTextField(propertyName,friendlyName);
@@ -97,6 +119,10 @@ break;
 if (hidden != null) {
 field.setHidden(hidden);
 field.setAttribute("permanentlyHidden",hidden);
+}
+ else if (field.getAttribute("permanentlyHidden") == null) {
+field.setHidden(false);
+field.setAttribute("permanentlyHidden",false);
 }
 if (group != null) {
 field.setAttribute("formGroup",group);
@@ -112,6 +138,12 @@ field.setAttribute("presentationLayerOrder",order);
 }
 if (length != null) {
 field.setLength(length.intValue());
+}
+if (columnWidth != null) {
+field.setAttribute("columnWidth",columnWidth);
+}
+if (enumerationValues != null) {
+field.setAttribute("enumerationValues",enumerationValues);
 }
 field.setAttribute("inheritedFromType",inheritedFromType);
 field.setAttribute("availableToTypes",availableToTypes);

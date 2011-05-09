@@ -1,0 +1,71 @@
+{
+  display.getAddButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        searchDialog.search(searchDialogTitle,new SearchItemSelectedEventHandler(){
+          public void onSearchItemSelected(          SearchItemSelectedEvent event){
+            display.getGrid().addData(event.getRecord(),new DSCallback(){
+              public void execute(              DSResponse response,              Object rawData,              DSRequest request){
+                if (response.getErrors().isEmpty()) {
+                  categoryPresenter.reloadParentTreeNodeRecords(true);
+                }
+              }
+            }
+);
+          }
+        }
+);
+      }
+    }
+  }
+);
+  display.getGrid().addRecordDropHandler(new RecordDropHandler(){
+    public void onRecordDrop(    RecordDropEvent event){
+      ListGridRecord record=event.getDropRecords()[0];
+      int originalIndex=((ListGrid)event.getSource()).getRecordIndex(record);
+      int newIndex=event.getIndex();
+      if (newIndex > originalIndex) {
+        newIndex--;
+      }
+      JoinStructure joinStructure=(JoinStructure)((DynamicEntityDataSource)display.getGrid().getDataSource()).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+      record.setAttribute(joinStructure.getSortField(),newIndex);
+      display.getGrid().updateData(record,new DSCallback(){
+        public void execute(        DSResponse response,        Object rawData,        DSRequest request){
+          if (response.getErrors().isEmpty()) {
+            categoryPresenter.reloadParentTreeNodeRecords(false);
+          }
+        }
+      }
+);
+    }
+  }
+);
+  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        display.getRemoveButton().enable();
+      }
+ else {
+        display.getRemoveButton().disable();
+      }
+    }
+  }
+);
+  display.getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              categoryPresenter.reloadParentTreeNodeRecords(true);
+              ((CategoryDisplay)categoryPresenter.getDisplay()).getRemoveOrphanedButton().disable();
+              ((CategoryDisplay)categoryPresenter.getDisplay()).getInsertOrphanButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+}

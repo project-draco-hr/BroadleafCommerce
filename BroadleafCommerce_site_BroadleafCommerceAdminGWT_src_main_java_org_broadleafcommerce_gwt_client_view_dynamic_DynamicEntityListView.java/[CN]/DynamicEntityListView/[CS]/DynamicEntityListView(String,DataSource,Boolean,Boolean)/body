@@ -1,0 +1,53 @@
+{
+  super();
+  toolBar=new ToolStrip();
+  toolBar.setHeight(20);
+  toolBar.setWidth100();
+  toolBar.addSpacer(6);
+  addButton=new ToolStripButton();
+  addButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/plus.png");
+  toolBar.addButton(addButton);
+  removeButton=new ToolStripButton();
+  removeButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/minus.png");
+  removeButton.setDisabled(true);
+  toolBar.addButton(removeButton);
+  toolBar.addSpacer(6);
+  Label productLabel=new Label();
+  productLabel.setContents(title);
+  productLabel.setWrap(false);
+  toolBar.addMember(productLabel);
+  toolBar.addFill();
+  HashMap<String,String> polymorphicEntities=((DynamicEntityDataSource)dataSource).getPolymorphicEntities();
+  if (polymorphicEntities.size() > 1) {
+    entityType.setShowTitle(false);
+    entityType.setWidth(180);
+    LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
+    for (    String name : polymorphicEntities.keySet()) {
+      valueMap.put(name,polymorphicEntities.get(name));
+    }
+    entityType.setValueMap(valueMap);
+    entityType.setDefaultValue(((DynamicEntityDataSource)dataSource).getDefaultNewEntityFullyQualifiedClassname());
+    toolBar.addFormItem(entityType);
+  }
+  addMember(toolBar);
+  grid=new ListGrid();
+  grid.setCanReorderRecords(canReorder);
+  grid.setAlternateRecordStyles(true);
+  grid.setSelectionType(SelectionStyle.SINGLE);
+  grid.setCanEdit(true);
+  grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
+  grid.setEditByCell(true);
+  grid.setAutoSaveEdits(true);
+  grid.setSaveByCell(true);
+  grid.setDataSource(dataSource);
+  grid.setAutoFetchData(false);
+  grid.setDrawAllMaxCells(10);
+  grid.setCanSort(true);
+  grid.setCanResizeFields(true);
+  grid.setShowFilterEditor(true);
+  grid.setDataPageSize(10);
+  if (!canEdit) {
+    grid.setAlternateBodyStyleName("editRowDisabled");
+  }
+  addMember(grid);
+}

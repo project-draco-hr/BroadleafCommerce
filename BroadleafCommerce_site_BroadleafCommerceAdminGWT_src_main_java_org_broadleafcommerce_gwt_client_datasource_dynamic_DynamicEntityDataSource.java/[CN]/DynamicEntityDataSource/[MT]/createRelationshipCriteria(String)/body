@@ -1,8 +1,8 @@
 {
   ForeignKey foreignField=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-  JoinTable joinTable=(JoinTable)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINTABLE);
-  if (foreignField == null && joinTable == null) {
-    throw new RuntimeException("Only datasources that utilize a foreignField or joinTable relationship may utilize this method");
+  JoinStructure joinStructure=(JoinStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+  if (foreignField == null && joinStructure == null) {
+    throw new RuntimeException("Only datasources that utilize a foreignField or joinStructure relationship may utilize this method");
   }
   Criteria criteria=new Criteria();
   String foreignKeyName;
@@ -10,7 +10,7 @@
     foreignKeyName=foreignField.getManyToField();
   }
  else {
-    foreignKeyName=joinTable.getManyToField();
+    foreignKeyName=joinStructure.getManyToField();
   }
   criteria.addCriteria(foreignKeyName,relationshipValue);
   for (  DataSourceModule dataSourceModule : modules) {

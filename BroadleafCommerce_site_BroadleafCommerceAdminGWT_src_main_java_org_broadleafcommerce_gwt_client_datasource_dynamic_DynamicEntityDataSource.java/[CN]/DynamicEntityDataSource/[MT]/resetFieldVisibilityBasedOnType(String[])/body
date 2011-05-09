@@ -1,0 +1,25 @@
+{
+  DataSourceField[] fields=getFields();
+  for (  DataSourceField field : fields) {
+    Boolean foundType=false;
+    if (field.getAttribute("permanentlyHidden") == null || field.getAttributeAsBoolean("permanentlyHidden") == false) {
+      String[] availableTypes=field.getAttributeAsStringArray("availableToTypes");
+      if (availableTypes != null) {
+        for (        String singleType : type) {
+          if (Arrays.binarySearch(availableTypes,singleType) >= 0) {
+            foundType=true;
+            break;
+          }
+        }
+      }
+    }
+    if (foundType) {
+      field.setHidden(false);
+      field.setAttribute("prominent",true);
+    }
+ else {
+      field.setHidden(true);
+      field.setAttribute("prominent",false);
+    }
+  }
+}

@@ -1,58 +1,111 @@
 {
-  CategoryTreeDataSourceFactory.createDataSource("categoryTreeDS",rootId,rootName,new AsyncCallback<DataSource>(){
-    public void onFailure(    Throwable caught){
-    }
+  Main.NON_MODAL_PROGRESS.startProgress();
+  if (loaded) {
+    CategoryPresenter.super.go(container);
+    return;
+  }
+  CategoryTreeDataSourceFactory.createDataSource("categoryTreeDS",rootId,rootName,new AsyncCallbackAdapter(){
     public void onSuccess(    DataSource top){
-      ((CategoryDisplay)getDisplay()).build(top);
-      ((TreeGridDataSource)top).setAssociatedGrid(((CategoryDisplay)getDisplay()).getGrid());
-      ((TreeGridDataSource)top).setupFields(new String[]{},new Boolean[]{},"250","100");
-      CategoryListDataSourceFactory.createDataSource("allParentCategoriesDS",new AsyncCallback<DataSource>(){
-        public void onFailure(        Throwable caught){
-        }
+      setupDisplayItems(top);
+      ((TreeGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{},"250","100");
+      CategorySearchDataSourceFactory.createDataSource("categorySearch",new AsyncCallbackAdapter(){
         public void onSuccess(        DataSource result){
-          ((CategoryDisplay)getDisplay()).getAllChildCategoryGrid().setDataSource(result);
-          ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getAllChildCategoryGrid());
-          ((ListGridDataSource)result).setupFields(new String[]{"name","urlKey"},new Boolean[]{false,false});
-          OrphanedCategoryListDataSourceFactory.createDataSource("orphanedCategoriesDS",rootId,new AsyncCallback<DataSource>(){
-            public void onFailure(            Throwable caught){
-            }
-            public void onSuccess(            DataSource result){
-              ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().setDataSource(result);
-              ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid());
-              ((ListGridDataSource)result).setupFields(new String[]{"name","urlKey"},new Boolean[]{false,false});
-              Criteria myCriteria=new Criteria();
-              myCriteria.addCriteria(OrphanedCategoryListDataSourceFactory.foreignKeyName,"0");
-              ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().fetchData(myCriteria);
-              OperationTypes operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.JOINTABLE,OperationType.ENTITY,OperationType.ENTITY);
-              CategoryListDataSourceFactory.createDataSource("categorySearch",operationTypes,new AsyncCallback<DataSource>(){
-                public void onFailure(                Throwable caught){
-                }
-                public void onSuccess(                DataSource result){
-                  categorySearchDataSource=(ListGridDataSource)result;
-                  categorySearchDataSource.resetFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
-                  categorySearchView=new DynamicEntitySearchView(categorySearchDataSource);
-                  FeaturedProductListDataSourceFactory.createDataSource("featuredProductsDS",new AsyncCallback<DataSource>(){
-                    public void onFailure(                    Throwable caught){
-                    }
-                    public void onSuccess(                    DataSource result){
-                      ((CategoryDisplay)getDisplay()).getFeaturedProductGrid().setDataSource(result);
-                      ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getFeaturedProductGrid());
-                      ((ListGridDataSource)result).setupFields(new String[]{"name","promotionMessage"},new Boolean[]{false,true});
-                      ProductListDataSourceFactory.createDataSource("productSearch",new AsyncCallback<DataSource>(){
-                        public void onFailure(                        Throwable caught){
-                        }
-                        public void onSuccess(                        DataSource result){
-                          productSearchDataSource=(ListGridDataSource)result;
-                          productSearchDataSource.resetFieldVisibility("name","description","model","manufacturer","activeStartDate","activeEndDate");
-                          productSearchView=new DynamicEntitySearchView(productSearchDataSource);
-                          MediaMapDataSourceFactory.createDataSource("mediaMapDS",getMediaMapKeys(),((CategoryDisplay)getDisplay()).getMediaGrid(),new AsyncCallback<DataSource>(){
-                            public void onFailure(                            Throwable caught){
+          categorySearchDataSource=(ListGridDataSource)result;
+          categorySearchDataSource.resetProminence("name","urlKey","activeStartDate","activeEndDate");
+          final EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
+          ((DynamicEntityDataSource)((CategoryDisplay)getDisplay()).getListDisplay().getGrid().getDataSource()).getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultParentCategory",new FormItemCallback(){
+            public void execute(            final FormItem formItem){
+              categorySearchView.search("Category Search",new SearchItemSelectedEventHandler(){
+                public void onSearchItemSelected(                final SearchItemSelectedEvent event){
+                  final String myId=event.getRecord().getAttribute("id");
+                  final String myName=event.getRecord().getAttribute("name");
+                  final Record associatedRecord=display.getListDisplay().getGrid().getSelectedRecord();
+                  final String associatedId=associatedRecord.getAttribute("id");
+                  Criteria myCriteria=new Criteria();
+                  myCriteria.addCriteria("id",categorySearchDataSource.stripDuplicateAllowSpecialCharacters(associatedId));
+                  categorySearchDataSource.fetchData(myCriteria,new DSCallback(){
+                    public void execute(                    DSResponse response,                    Object rawData,                    DSRequest request){
+                      final Record myRecord=response.getData()[0];
+                      myRecord.setAttribute(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey,myId);
+                      categorySearchDataSource.updateData(myRecord,new DSCallback(){
+                        public void execute(                        DSResponse response,                        Object rawData,                        DSRequest request){
+                          String parentRecordName=((TreeGrid)((DynamicEditDisplay)getDisplay()).getListDisplay().getGrid()).getTree().getParent((TreeNode)associatedRecord).getAttribute("name");
+                          if (!parentRecordName.equals(myName)) {
+                            categorySearchDataSource.setLinkedValue(myId);
+                            categorySearchDataSource.addData(myRecord,new DSCallback(){
+                              public void execute(                              DSResponse response,                              Object rawData,                              DSRequest request){
+                                formItem.getForm().getField("__display_" + formItem.getName()).setValue(myName);
+                                Timer timer=new Timer(){
+                                  public void run(){
+                                    formItem.setValue(myId);
+                                  }
+                                }
+;
+                                timer.schedule(100);
+                                reloadAllChildRecordsForId(myId);
+                              }
                             }
+);
+                          }
+ else {
+                            formItem.getForm().getField("__display_" + formItem.getName()).setValue(myName);
+                            Timer timer=new Timer(){
+                              public void run(){
+                                formItem.setValue(myId);
+                              }
+                            }
+;
+                            timer.schedule(100);
+                          }
+                        }
+                      }
+);
+                    }
+                  }
+);
+                }
+              }
+);
+            }
+          }
+);
+          CategoryListDataSourceFactory.createDataSource("allChildCategoriesDS",new AsyncCallbackAdapter(){
+            public void onSuccess(            DataSource result){
+              allChildCategoriesPresenter=new AllChildCategoriesPresenter(CategoryPresenter.this,((CategoryDisplay)getDisplay()).getAllCategoriesDisplay(),categorySearchView,"Category Search");
+              ((AllChildCategoriesPresenter)allChildCategoriesPresenter).setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
+              OrphanedCategoryListDataSourceFactory.createDataSource("orphanedCategoriesDS",rootId,new AsyncCallbackAdapter(){
+                public void onSuccess(                DataSource result){
+                  ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().setDataSource(result);
+                  ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid());
+                  ((ListGridDataSource)result).setupGridFields(new String[]{"name","urlKey"},new Boolean[]{false,false});
+                  Criteria myCriteria=new Criteria();
+                  myCriteria.addCriteria(OrphanedCategoryListDataSourceFactory.foreignKeyName,"0");
+                  ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().fetchData(myCriteria);
+                  ProductListDataSourceFactory.createDataSource("productSearchDS",new AsyncCallbackAdapter(){
+                    public void onSuccess(                    DataSource result){
+                      ListGridDataSource productSearchDataSource=(ListGridDataSource)result;
+                      productSearchDataSource.resetFieldVisibility("name","description","model","manufacturer","activeStartDate","activeEndDate");
+                      final EntitySearchDialog productSearchView=new EntitySearchDialog(productSearchDataSource);
+                      FeaturedProductListDataSourceFactory.createDataSource("featuredProductsDS",new AsyncCallbackAdapter(){
+                        public void onSuccess(                        DataSource result){
+                          featuredPresenter=new EditableJoinStructurePresenter(((CategoryDisplay)getDisplay()).getFeaturedDisplay(),productSearchView,"Product Search","Set Promotion Message","promotionMessage");
+                          featuredPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+                          AllProductsDataSourceFactory.createDataSource("allChildProductsDS",new AsyncCallbackAdapter(){
                             public void onSuccess(                            DataSource result){
-                              ((CategoryDisplay)getDisplay()).getMediaGrid().setDataSource(result);
-                              ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getMediaGrid());
-                              ((ListGridDataSource)result).setupFields(new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
-                              CategoryPresenter.super.go(container);
+                              childProductsPresenter=new SimpleSearchJoinStructurePresenter(((CategoryDisplay)getDisplay()).getAllProductsDisplay(),productSearchView,"Search For a Product");
+                              childProductsPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","model","manufacturer"},new Boolean[]{false,false,false});
+                              MediaMapDataSourceFactory.createDataSource("mediaMapDS",getMediaMapKeys(),((CategoryDisplay)getDisplay()).getMediaDisplay().getGrid(),new AsyncCallbackAdapter(){
+                                public void onSuccess(                                DataSource result){
+                                  Map<String,Object> initialValues=new HashMap<String,Object>();
+                                  initialValues.put("name","Untitled");
+                                  initialValues.put("label","untitled");
+                                  mediaPresenter=new MapStructurePresenter(((CategoryDisplay)getDisplay()).getMediaDisplay(),getMediaEntityView(),"Add New Media",initialValues);
+                                  mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
+                                  CategoryPresenter.super.go(container);
+                                  Main.NON_MODAL_PROGRESS.stopProgress();
+                                }
+                              }
+);
                             }
                           }
 );

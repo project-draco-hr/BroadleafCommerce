@@ -1,0 +1,34 @@
+{
+  try {
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Product.class);
+    Map<String,FieldMetadata> mergedProperties=dynamicEntityDao.getMergedProperties(Product.class.getName(),entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateManyToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null);
+    allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
+    Map<String,FieldMetadata> skuMergedProperties=getMergedProperties(Sku.class,dynamicEntityDao,persistencePerspective.getPopulateManyToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    String[] keys=skuMergedProperties.keySet().toArray(new String[]{});
+    int order=29;
+    for (    String key : keys) {
+      String newKey=new String("allSkus." + key);
+      FieldMetadata metadata=skuMergedProperties.remove(key);
+      if (key.equals("activeStartDate") || key.equals("activeEndDate") || key.equals("name")|| key.equals("description")|| key.equals("longDescription")) {
+        metadata.getPresentationAttributes().setHidden(true);
+      }
+      if (metadata.getPresentationAttributes() != null) {
+        metadata.getPresentationAttributes().setProminent(false);
+        if (metadata.getPresentationAttributes().getOrder() != null) {
+          metadata.getPresentationAttributes().setOrder(metadata.getPresentationAttributes().getOrder() + order);
+        }
+      }
+      skuMergedProperties.put(newKey,metadata);
+    }
+    mergedProperties.putAll(skuMergedProperties);
+    Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Product.class);
+    ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entities,allMergedProperties);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
+    return results;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to retrieve inspection results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to retrieve inspection results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

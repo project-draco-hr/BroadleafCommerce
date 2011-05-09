@@ -1,0 +1,22 @@
+{
+  if (customCriteria != null && customCriteria.length > 0) {
+    LOG.warn("custom persistence handlers and custom criteria not supported for remove types other than ENTITY");
+  }
+  try {
+    JoinStructure joinStructure=(JoinStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+    Map<String,FieldMetadata> mergedProperties=dynamicEntityDao.getMergedProperties(joinStructure.getJoinStructureEntityClassname(),new Class[]{Class.forName(joinStructure.getJoinStructureEntityClassname())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,false,new String[]{},new String[]{},null);
+    CriteriaTransferObject ctoInserted=new CriteriaTransferObject();
+    FilterAndSortCriteria filterCriteriaInsertedLinked=ctoInserted.get(joinStructure.getManyToField());
+    filterCriteriaInsertedLinked.setFilterValue(entity.findProperty(joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty()).getValue());
+    FilterAndSortCriteria filterCriteriaInsertedTarget=ctoInserted.get(joinStructure.getManyToField() + "Target");
+    filterCriteriaInsertedTarget.setFilterValue(entity.findProperty(joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty()).getValue());
+    BaseCtoConverter ctoConverterInserted=getJoinStructureCtoConverter(ctoInserted,mergedProperties,joinStructure);
+    PersistentEntityCriteria queryCriteriaInserted=ctoConverterInserted.convert(ctoInserted,joinStructure.getJoinStructureEntityClassname());
+    List<Serializable> recordsInserted=dynamicEntityDao.query(queryCriteriaInserted,Class.forName(joinStructure.getJoinStructureEntityClassname()));
+    dynamicEntityDao.remove(recordsInserted.get(0));
+  }
+ catch (  Exception e) {
+    LOG.error("Problem removing entity",e);
+    throw new ServiceException("Problem removing entity : " + e.getMessage(),e);
+  }
+}

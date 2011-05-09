@@ -5,6 +5,9 @@
       if (record.getAttribute(attribute) != null && this.getField(attribute) != null && getField(attribute).getType().equals(FieldType.DATETIME)) {
         extractedValues.put(attribute,record.getAttributeAsDate(attribute));
       }
+ else       if (attribute.equals("type")) {
+        extractedValues.put(attribute,record.getAttributeAsStringArray(attribute));
+      }
  else {
         extractedValues.put(attribute,record.getAttribute(attribute));
       }

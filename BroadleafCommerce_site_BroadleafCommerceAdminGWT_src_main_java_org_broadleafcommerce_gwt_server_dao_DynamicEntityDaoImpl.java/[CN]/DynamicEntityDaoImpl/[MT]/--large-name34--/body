@@ -1,0 +1,94 @@
+{
+  int j=0;
+  for (  String propertyName : propertyNames) {
+    Type type=propertyTypes.get(j);
+    boolean isPropertyForeignKey=false;
+    if (foreignField != null) {
+      isPropertyForeignKey=foreignField.getManyToField().equals(prefix + propertyName);
+    }
+    int additionalForeignKeyIndexPosition=-1;
+    if (additionalForeignFields != null) {
+      additionalForeignKeyIndexPosition=Arrays.binarySearch(additionalForeignFields,new ForeignKey(prefix + propertyName,null,null),new Comparator<ForeignKey>(){
+        public int compare(        ForeignKey o1,        ForeignKey o2){
+          return o1.getManyToField().compareTo(o2.getManyToField());
+        }
+      }
+);
+    }
+    j++;
+    if ((!type.isAnyType() && !type.isCollectionType()) || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
+      Boolean includeField=checkPropertyForInclusion(includeFields,excludeFields,prefix + propertyName);
+      FieldPresentationAttributes presentationAttribute=presentationAttributes.get(propertyName);
+      SupportedFieldType explicitType=null;
+      if (presentationAttribute != null) {
+        explicitType=presentationAttribute.getExplicitFieldType();
+      }
+      Class<?> returnedClass=type.getReturnedClass();
+      if (type.isComponentType() && includeField) {
+        buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,metadata,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,propertyName,type,returnedClass,metadataOverrides);
+        continue;
+      }
+      if (type.isEntityType() && !returnedClass.equals(targetClass) && populateManyToOneFields&& includeField) {
+        buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,propertyName,returnedClass,targetClass,prefix,metadataOverrides);
+        continue;
+      }
+      if (!includeField && !isPropertyForeignKey && additionalForeignKeyIndexPosition < 0) {
+        continue;
+      }
+      if (explicitType != null && explicitType.equals(SupportedFieldType.BROADLEAF_ENUMERATION)) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.BROADLEAF_ENUMERATION,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.BOOLEAN)) || returnedClass.equals(Boolean.class) || returnedClass.equals(Character.class)) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.BOOLEAN,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.INTEGER)) || returnedClass.equals(Byte.class) || returnedClass.equals(Short.class)|| returnedClass.equals(Integer.class)|| returnedClass.equals(Long.class)) {
+        if (propertyName.equals(idProperty)) {
+          fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.ID,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        }
+ else {
+          fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        }
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.DATE)) || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class)|| returnedClass.equals(Timestamp.class)) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.STRING)) || returnedClass.equals(String.class)) {
+        if (propertyName.equals(idProperty)) {
+          fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.ID,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        }
+ else {
+          fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        }
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.MONEY)) || returnedClass.equals(Money.class)) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.MONEY,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.DECIMAL)) || returnedClass.equals(Double.class) || returnedClass.equals(BigDecimal.class)) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.DECIMAL,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.FOREIGN_KEY)) || foreignField != null && isPropertyForeignKey) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.FOREIGN_KEY,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        ClassMetadata foreignMetadata;
+        foreignMetadata=sessionFactory.getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
+        fields.get(propertyName).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
+        fields.get(propertyName).setForeignKeyClass(foreignField.getForeignKeyClass());
+        continue;
+      }
+      if ((explicitType != null && explicitType.equals(SupportedFieldType.ADDITIONAL_FOREIGN_KEY)) || additionalForeignFields != null && additionalForeignKeyIndexPosition >= 0) {
+        fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+        ClassMetadata foreignMetadata;
+        foreignMetadata=sessionFactory.getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
+        fields.get(propertyName).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
+        fields.get(propertyName).setForeignKeyClass(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass());
+        continue;
+      }
+    }
+  }
+}

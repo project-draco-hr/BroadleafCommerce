@@ -1,0 +1,48 @@
+{
+  Order cart=retrieveCartOrder(request,model);
+  CartSummary cartSummary=new CartSummary();
+  if (cart.getOrderItems() != null) {
+    for (    OrderItem orderItem : cart.getOrderItems()) {
+      if (orderItem instanceof DiscreteOrderItem) {
+        Sku sku=catalogService.findSkuById(((DiscreteOrderItem)orderItem).getSku().getId());
+        if (!(sku.getSalePrice().equals(((DiscreteOrderItem)orderItem).getSalePrice()))) {
+          orderItem.setSalePrice(sku.getSalePrice());
+        }
+        if (!(sku.getRetailPrice().equals(((DiscreteOrderItem)orderItem).getRetailPrice()))) {
+          orderItem.setRetailPrice(sku.getRetailPrice());
+        }
+        if (orderItem.getSalePrice() != orderItem.getRetailPrice()) {
+          orderItem.setPrice(orderItem.getSalePrice());
+        }
+ else {
+          orderItem.setPrice(orderItem.getRetailPrice());
+        }
+        orderItem.getPrice();
+      }
+    }
+  }
+  if (cart.getOrderItems() != null) {
+    for (    OrderItem orderItem : cart.getOrderItems()) {
+      CartOrderItem cartOrderItem=new CartOrderItem();
+      cartOrderItem.setOrderItem(orderItem);
+      cartOrderItem.setQuantity(orderItem.getQuantity());
+      cartSummary.getRows().add(cartOrderItem);
+    }
+  }
+  if ((cart.getFulfillmentGroups() != null) && (cart.getFulfillmentGroups().isEmpty() == false)) {
+    String cartShippingMethod=cart.getFulfillmentGroups().get(0).getMethod();
+    String cartShippingService=cart.getFulfillmentGroups().get(0).getService();
+    if (cartShippingMethod != null) {
+      if (cartShippingMethod.equals("standard")) {
+        cartSummary=createFulfillmentGroup(cartSummary,"standard",cartShippingService,cart);
+      }
+ else       if (cartShippingMethod.equals("expedited")) {
+        cartSummary=createFulfillmentGroup(cartSummary,"expedited",cartShippingService,cart);
+      }
+    }
+  }
+  updateFulfillmentGroups(cartSummary,cart);
+  cartSummary.setOrderDiscounts(cart.getTotalAdjustmentsValue().getAmount());
+  model.addAttribute("cartSummary",cartSummary);
+  return cartViewRedirect ? "redirect:" + cartView : cartView;
+}

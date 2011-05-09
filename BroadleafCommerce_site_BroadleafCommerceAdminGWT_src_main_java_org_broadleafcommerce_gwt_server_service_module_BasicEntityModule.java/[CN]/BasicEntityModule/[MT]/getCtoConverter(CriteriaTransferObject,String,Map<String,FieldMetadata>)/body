@@ -1,0 +1,88 @@
+{
+  BaseCtoConverter ctoConverter=new BaseCtoConverter();
+  for (  String propertyName : mergedProperties.keySet()) {
+    AssociationPath associationPath;
+    int dotIndex=propertyName.lastIndexOf(".");
+    String property;
+    if (dotIndex >= 0) {
+      property=propertyName.substring(dotIndex + 1,propertyName.length());
+      String prefix=propertyName.substring(0,dotIndex);
+      StringTokenizer tokens=new StringTokenizer(prefix,".");
+      AssociationPathElement[] elements=new AssociationPathElement[tokens.countTokens()];
+      int j=0;
+      while (tokens.hasMoreElements()) {
+        elements[j]=new AssociationPathElement(tokens.nextToken());
+        j++;
+      }
+      associationPath=new AssociationPath(elements);
+    }
+ else {
+      property=propertyName;
+      associationPath=AssociationPath.ROOT;
+    }
+switch (mergedProperties.get(propertyName).getFieldType()) {
+case BOOLEAN:
+      ctoConverter.addBooleanMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+    break;
+case DATE:
+  ctoConverter.addDateMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case DECIMAL:
+ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case MONEY:
+ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case INTEGER:
+ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+default :
+ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case EMAIL:
+ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case FOREIGN_KEY:
+if (cto.get(propertyName).getFilterValues().length > 0) {
+if (mergedProperties.get(propertyName).getCollection()) {
+ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
+}
+ else if (cto.get(propertyName).getFilterValues()[0] == null || cto.get(propertyName).getFilterValues()[0].equals("null")) {
+AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
+ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
+}
+ else {
+AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
+ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
+}
+}
+break;
+case ADDITIONAL_FOREIGN_KEY:
+if (cto.get(propertyName).getFilterValues().length > 0) {
+if (mergedProperties.get(propertyName).getCollection()) {
+ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
+}
+ else if (cto.get(propertyName).getFilterValues()[0] == null || cto.get(propertyName).getFilterValues()[0].equals("null")) {
+AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
+ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
+}
+ else {
+AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
+ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
+}
+}
+break;
+case ID:
+switch (mergedProperties.get(propertyName).getSecondaryType()) {
+case INTEGER:
+ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+case STRING:
+ctoConverter.addStringEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+break;
+}
+break;
+}
+}
+return ctoConverter;
+}

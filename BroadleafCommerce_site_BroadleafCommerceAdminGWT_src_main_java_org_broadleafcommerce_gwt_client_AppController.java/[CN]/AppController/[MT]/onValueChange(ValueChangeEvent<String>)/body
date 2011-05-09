@@ -1,8 +1,9 @@
 {
   String token=event.getValue();
   if (token != null) {
-    if (token.equals("catalog") && !uiFactory.equalsCurrentView("category")) {
-      showView("category","categoryPresenter");
+    if (!uiFactory.equalsCurrentView(token)) {
+      String[] vals=pages.get(token);
+      showView(vals[0],vals[1]);
     }
   }
 }

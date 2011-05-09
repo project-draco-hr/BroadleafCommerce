@@ -1,0 +1,19 @@
+{
+  Boolean includeManyToOneField=true;
+  if (!ArrayUtils.isEmpty(includeFields)) {
+    includeManyToOneField=Arrays.binarySearch(includeFields,propertyName) >= 0;
+    if (!includeManyToOneField) {
+      StringTokenizer tokens=new StringTokenizer(propertyName,".");
+      while (tokens.hasMoreElements()) {
+        includeManyToOneField=Arrays.binarySearch(includeFields,tokens.nextToken()) >= 0;
+        if (includeManyToOneField) {
+          break;
+        }
+      }
+    }
+  }
+ else   if (!ArrayUtils.isEmpty(excludeFields)) {
+    includeManyToOneField=!(Arrays.binarySearch(excludeFields,propertyName) >= 0);
+  }
+  return includeManyToOneField;
+}

@@ -1,0 +1,11 @@
+{
+  FormItemIcon formItemIcon=new FormItemIcon();
+  setIcons(formItemIcon);
+  addIconClickHandler(new IconClickHandler(){
+    public void onIconClick(    IconClickEvent event){
+      final String formItemName=event.getItem().getName();
+      ((FormItemCallback)((DynamicEntityDataSource)event.getItem().getForm().getDataSource()).getFormItemCallbackHandlerManager().getSearchFormItemCallback(formItemName)).execute(event.getItem());
+    }
+  }
+);
+}

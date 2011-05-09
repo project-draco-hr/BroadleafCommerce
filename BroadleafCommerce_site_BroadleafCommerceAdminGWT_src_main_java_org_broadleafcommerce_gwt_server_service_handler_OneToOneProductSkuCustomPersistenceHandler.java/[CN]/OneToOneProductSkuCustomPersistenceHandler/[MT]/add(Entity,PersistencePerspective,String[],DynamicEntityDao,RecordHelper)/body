@@ -1,0 +1,34 @@
+{
+  try {
+    Product productInstance=(Product)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> productProperties=getMergedProperties(Product.class,dynamicEntityDao,persistencePerspective.getPopulateManyToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    productInstance=(Product)helper.createPopulatedInstance(productInstance,entity,productProperties,false);
+    Sku skuInstance;
+    Class<?> configuredEntity=helper.getFieldManager().getEntityConfiguration().lookupEntityClass(Sku.class.getName());
+    if (configuredEntity != null) {
+      skuInstance=(Sku)helper.getFieldManager().getEntityConfiguration().createEntityInstance(Sku.class.getName());
+    }
+ else {
+      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
+      skuInstance=(Sku)entities[0].newInstance();
+    }
+    Map<String,FieldMetadata> skuProperties=getMergedProperties(Sku.class,dynamicEntityDao,persistencePerspective.getPopulateManyToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    for (    Property property : entity.getProperties()) {
+      if (property.getName().startsWith("allSkus.")) {
+        property.setName(property.getName().substring("allSkus.".length(),property.getName().length()));
+      }
+    }
+    skuInstance=(Sku)helper.createPopulatedInstance(skuInstance,entity,skuProperties,false);
+    dynamicEntityDao.persist(skuInstance);
+    productInstance.getAllSkus().add(skuInstance);
+    dynamicEntityDao.persist(productInstance);
+    Entity productEntity=helper.getRecord(productProperties,productInstance,null,null);
+    Entity skuEntity=helper.getRecord(skuProperties,skuInstance,null,null);
+    productEntity.mergeProperties("allSkus",skuEntity);
+    return productEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

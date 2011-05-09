@@ -1,0 +1,55 @@
+{
+  formPresenter.bind();
+  addClickHandlerRegistration=display.getListDisplay().getAddButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        addClicked();
+      }
+    }
+  }
+);
+  removeClickHandlerRegistration=display.getListDisplay().getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        removeClicked();
+      }
+    }
+  }
+);
+  selectionChangedHandlerRegistration=display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        if (!selectedRecord.equals(lastSelectedRecord)) {
+          lastSelectedRecord=selectedRecord;
+          if (selectedRecord.getAttributeAsStringArray("type") == null) {
+            formPresenter.disable();
+            display.getListDisplay().getRemoveButton().disable();
+          }
+ else {
+            formPresenter.setStartState();
+            ((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).resetFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("type"));
+            display.getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),true,true);
+            display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
+            display.getListDisplay().getRemoveButton().enable();
+          }
+          changeSelection(selectedRecord);
+        }
+      }
+    }
+  }
+);
+  entityTypeChangedHandlerRegistration=display.getListDisplay().getEntityType().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      ((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).setDefaultNewEntityFullyQualifiedClassname((String)event.getItem().getValue());
+    }
+  }
+);
+  cellSavedHandlerRegistration=display.getListDisplay().getGrid().addCellSavedHandler(new CellSavedHandler(){
+    public void onCellSaved(    CellSavedEvent event){
+      formPresenter.setStartState();
+      display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(event.getRecord());
+    }
+  }
+);
+}

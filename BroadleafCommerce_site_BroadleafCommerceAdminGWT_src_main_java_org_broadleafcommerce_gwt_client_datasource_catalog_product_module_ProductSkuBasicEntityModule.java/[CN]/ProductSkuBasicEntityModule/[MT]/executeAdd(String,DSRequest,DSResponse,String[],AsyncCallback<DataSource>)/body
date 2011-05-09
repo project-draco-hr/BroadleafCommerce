@@ -1,0 +1,69 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  List<Property> newPropList=new ArrayList<Property>();
+{
+    Property myProp=entity.findProperty("name");
+    if (myProp != null) {
+      Property temp=new Property();
+      temp.setName("sku.name");
+      temp.setValue(myProp.getValue());
+      newPropList.add(temp);
+    }
+  }
+{
+    Property myProp=entity.findProperty("activeStartDate");
+    if (myProp != null) {
+      Property temp=new Property();
+      temp.setName("sku.activeStartDate");
+      temp.setValue(myProp.getValue());
+      newPropList.add(temp);
+    }
+  }
+{
+    Property myProp=entity.findProperty("activeEndDate");
+    if (myProp != null) {
+      Property temp=new Property();
+      temp.setName("sku.activeEndDate");
+      temp.setValue(myProp.getValue());
+      newPropList.add(temp);
+    }
+  }
+{
+    Property myProp=entity.findProperty("description");
+    if (myProp != null) {
+      Property temp=new Property();
+      temp.setName("sku.description");
+      temp.setValue(myProp.getValue());
+      newPropList.add(temp);
+    }
+  }
+{
+    Property myProp=entity.findProperty("longDescription");
+    if (myProp != null) {
+      Property temp=new Property();
+      temp.setName("sku.longDescription");
+      temp.setValue(myProp.getValue());
+      newPropList.add(temp);
+    }
+  }
+  newPropList.addAll(Arrays.asList(entity.getProperties()));
+  Property[] newProps=new Property[newPropList.size()];
+  newProps=newPropList.toArray(newProps);
+  entity.setProperties(newProps);
+  service.add(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      TreeNode record=(TreeNode)buildRecord(result,false);
+      TreeNode[] recordList=new TreeNode[]{record};
+      response.setData(recordList);
+      if (cb != null) {
+        cb.onSuccess(dataSource);
+      }
+      dataSource.processResponse(requestId,response);
+    }
+  }
+);
+}

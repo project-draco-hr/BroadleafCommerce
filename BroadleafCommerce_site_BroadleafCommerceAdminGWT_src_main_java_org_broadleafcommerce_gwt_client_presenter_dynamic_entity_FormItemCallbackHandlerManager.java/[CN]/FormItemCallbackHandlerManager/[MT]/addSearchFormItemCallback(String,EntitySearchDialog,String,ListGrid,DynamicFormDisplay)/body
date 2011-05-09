@@ -1,0 +1,23 @@
+{
+  callbacks.put(fieldName,new FormItemCallback(){
+    public void execute(    final FormItem formItem){
+      searchView.search(searchDialogTitle,new SearchItemSelectedEventHandler(){
+        public void onSearchItemSelected(        SearchItemSelectedEvent event){
+          final String myId=event.getRecord().getAttribute("id");
+          String myName=event.getRecord().getAttribute("name");
+          formItem.getForm().getField("__display_" + formItem.getName()).setValue(myName);
+          Timer timer=new Timer(){
+            public void run(){
+              formItem.setValue(myId);
+              dynamicFormDisplay.getSaveButton().enable();
+            }
+          }
+;
+          timer.schedule(100);
+        }
+      }
+);
+    }
+  }
+);
+}

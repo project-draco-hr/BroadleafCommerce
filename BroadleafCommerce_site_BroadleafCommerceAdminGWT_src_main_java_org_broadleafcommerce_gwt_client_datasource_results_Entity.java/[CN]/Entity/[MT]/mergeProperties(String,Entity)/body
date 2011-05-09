@@ -1,0 +1,14 @@
+{
+  int j=0;
+  Property[] merged=new Property[properties.length + entity.getProperties().length];
+  for (  Property property : properties) {
+    merged[j]=property;
+    j++;
+  }
+  for (  Property property : entity.getProperties()) {
+    property.setName(prefix + "." + property.getName());
+    merged[j]=property;
+    j++;
+  }
+  properties=merged;
+}

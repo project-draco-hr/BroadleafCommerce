@@ -1,0 +1,51 @@
+{
+  FieldMetadata fieldMetadata=new FieldMetadata();
+  fieldMetadata.setFieldType(type);
+  fieldMetadata.setSecondaryType(secondaryType);
+  if (entityType != null && !entityType.isCollectionType()) {
+    Column column=null;
+    while (componentProperties.hasNext()) {
+      Property property=(Property)componentProperties.next();
+      if (property.getName().equals(propertyName)) {
+        column=(Column)property.getColumnIterator().next();
+        break;
+      }
+    }
+    if (column != null) {
+      fieldMetadata.setLength(column.getLength());
+      fieldMetadata.setScale(column.getScale());
+      fieldMetadata.setPrecision(column.getPrecision());
+      fieldMetadata.setRequired(!column.isNullable());
+      fieldMetadata.setUnique(column.isUnique());
+    }
+    fieldMetadata.setCollection(false);
+  }
+ else {
+    fieldMetadata.setCollection(true);
+  }
+  fieldMetadata.setMutable(true);
+  fieldMetadata.setInheritedFromType(targetClass.getName());
+  fieldMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
+  if (presentationAttribute != null) {
+    fieldMetadata.setPresentationAttributes(presentationAttribute);
+  }
+  fieldMetadata.setMergedPropertyType(mergedPropertyType);
+  if (SupportedFieldType.BROADLEAF_ENUMERATION.equals(type)) {
+    List<String> enumVals=new ArrayList<String>();
+    Class<?> broadleafEnumeration=Class.forName(presentationAttribute.getBroadleafEnumeration());
+    Method typeMethod=broadleafEnumeration.getMethod("getType",new Class<?>[]{});
+    Field[] fields=broadleafEnumeration.getFields();
+    for (    Field field : fields) {
+      boolean isStatic=Modifier.isStatic(field.getModifiers());
+      boolean isNameEqual=field.getType().getName().equals(broadleafEnumeration.getName());
+      if (isStatic && isNameEqual) {
+        enumVals.add((String)typeMethod.invoke(field.get(null),new Object[]{}));
+      }
+    }
+    String[] enumerationValues=new String[enumVals.size()];
+    enumerationValues=enumVals.toArray(enumerationValues);
+    fieldMetadata.setEnumerationValues(enumerationValues);
+  }
+  overrideMetadata(metadataOverrides,fieldMetadata,prefix + propertyName);
+  return fieldMetadata;
+}

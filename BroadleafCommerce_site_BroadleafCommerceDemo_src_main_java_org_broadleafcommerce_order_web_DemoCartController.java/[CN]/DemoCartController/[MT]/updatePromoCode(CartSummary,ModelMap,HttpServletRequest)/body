@@ -1,0 +1,20 @@
+{
+  Order currentCartOrder=retrieveCartOrder(request,model);
+  if (cartSummary.getPromoCode() != null) {
+    OfferCode code=offerService.lookupOfferCodeByCode(cartSummary.getPromoCode());
+    if (code != null) {
+      currentCartOrder.addAddedOfferCode(code);
+      List<Offer> offers=offerService.buildOfferListForOrder(currentCartOrder);
+      offerService.applyOffersToOrder(offers,currentCartOrder);
+      currentCartOrder=updateFulfillmentGroups(cartSummary,currentCartOrder);
+      cartSummary.setOrderDiscounts(currentCartOrder.getTotalAdjustmentsValue().getAmount());
+    }
+ else {
+      model.addAttribute("promoError","Invalid promo code entered.");
+    }
+  }
+  cartSummary.setPromoCode(null);
+  model.addAttribute("currentCartOrder",currentCartOrder);
+  model.addAttribute("cartSummary",cartSummary);
+  return cartView;
+}

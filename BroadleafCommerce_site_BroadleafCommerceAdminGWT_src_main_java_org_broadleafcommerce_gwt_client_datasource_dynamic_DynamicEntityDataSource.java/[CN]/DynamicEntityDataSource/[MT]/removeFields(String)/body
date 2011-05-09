@@ -1,0 +1,12 @@
+{
+  Arrays.sort(fieldNames);
+  DataSourceField[] fields=getFields();
+  for (  DataSourceField field : fields) {
+    String fieldName=field.getName();
+    int pos=Arrays.binarySearch(fieldNames,fieldName);
+    if (pos >= 0) {
+      field.setHidden(true);
+      field.setAttribute("permanentlyHidden",true);
+    }
+  }
+}

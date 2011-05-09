@@ -1,0 +1,28 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("40%");
+  leftVerticalLayout.setShowResizeBar(true);
+  listDisplay=new DynamicEntityListView("Orders",dataSource,false,false);
+  leftVerticalLayout.addMember(listDisplay);
+  TabSet topTabSet=new TabSet();
+  topTabSet.setTabBarPosition(Side.TOP);
+  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
+  topTabSet.setWidth("60%");
+  topTabSet.setHeight100();
+  topTabSet.setPaneMargin(0);
+  Tab detailsTab=new Tab("Details");
+  dynamicFormDisplay=new DynamicFormView("Order Details",dataSource);
+  detailsTab.setPane(dynamicFormDisplay);
+  topTabSet.addTab(detailsTab);
+  Tab orderItemsTab=new Tab("Order Items");
+  orderItemsDisplay=new OrderItemGridStructureView("Order Items",false,false);
+  orderItemsTab.setPane(orderItemsDisplay);
+  topTabSet.addTab(orderItemsTab);
+  Tab fgTab=new Tab("Fulfillment Groups");
+  fulfillmentGroupDisplay=new FulfillmentGroupView("Fulfillment Groups",false,false);
+  fgTab.setPane(fulfillmentGroupDisplay);
+  topTabSet.addTab(fgTab);
+  addMember(leftVerticalLayout);
+  addMember(topTabSet);
+}

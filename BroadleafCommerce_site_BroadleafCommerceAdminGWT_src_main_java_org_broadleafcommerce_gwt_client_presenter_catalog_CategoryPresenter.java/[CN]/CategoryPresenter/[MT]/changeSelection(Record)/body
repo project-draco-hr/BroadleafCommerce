@@ -1,38 +1,16 @@
 {
   if (categorySearchDataSource.stripDuplicateAllowSpecialCharacters(selectedRecord.getAttribute("id")).equals(rootId)) {
-    display.getDynamicForm().disable();
-    display.getFormToolBar().disable();
-    display.getRemoveButton().disable();
+    formPresenter.disable();
+    display.getListDisplay().getRemoveButton().disable();
   }
-  ((PresentationLayerAssociatedDataSource)((CategoryDisplay)display).getAllChildCategoryGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(selectedRecord.getAttribute("id"),new DSCallback(){
+  allChildCategoriesPresenter.load(selectedRecord,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
       if (response.getErrors().isEmpty()) {
         if (((CategoryDisplay)display).getOrphanedCategoryGrid().getSelectedRecord() != null) {
           ((CategoryDisplay)display).getInsertOrphanButton().enable();
         }
-        ((CategoryDisplay)display).getAllChildCategoryGrid().enable();
-        ((CategoryDisplay)display).getAllChildCategoryToolBar().enable();
-        if (!categorySearchDataSource.stripDuplicateAllowSpecialCharacters(selectedRecord.getAttribute("id")).equals(rootId)) {
-          Criteria myCriteria=new Criteria();
-          myCriteria.addCriteria("id",categorySearchDataSource.stripDuplicateAllowSpecialCharacters(selectedRecord.getAttribute(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey)));
-          categorySearchDataSource.fetchData(myCriteria,new DSCallback(){
-            public void execute(            DSResponse response,            Object rawData,            DSRequest request){
-              String name=response.getData()[0].getAttribute("name");
-              ((CategoryDisplay)display).getDefaultParentCategoryTextItem().setValue(name);
-              ((CategoryDisplay)display).getAddDefaultParentCategoryButton().enable();
-            }
-          }
-);
-        }
-        ((PresentationLayerAssociatedDataSource)((CategoryDisplay)display).getMediaGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(selectedRecord.getAttribute("id"),new DSCallback(){
-          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            if (response.getErrors().isEmpty()) {
-              ((CategoryDisplay)display).getMediaGrid().enable();
-              ((CategoryDisplay)display).getAddMediaButton().enable();
-            }
-          }
-        }
-);
+        allChildCategoriesPresenter.setStartState();
+        mediaPresenter.load(selectedRecord,null);
       }
  else {
         ((CategoryDisplay)display).getInsertOrphanButton().disable();
@@ -40,17 +18,15 @@
     }
   }
 );
-  display.getAddButton().disable();
-  ((PresentationLayerAssociatedDataSource)((CategoryDisplay)display).getFeaturedProductGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(selectedRecord.getAttribute("id"),new DSCallback(){
+  display.getListDisplay().getAddButton().disable();
+  featuredPresenter.load(selectedRecord,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
       if (response.getErrors().isEmpty()) {
-        display.getAddButton().enable();
+        display.getListDisplay().getAddButton().enable();
       }
     }
   }
 );
-  ((CategoryDisplay)display).getRemoveChildCategoryButton().disable();
-  ((CategoryDisplay)display).getAddFeaturedProductButton().enable();
-  ((CategoryDisplay)display).getFeaturedProductGrid().enable();
-  ((CategoryDisplay)display).getRemoveFeaturedProductButton().disable();
+  childProductsPresenter.load(selectedRecord,null);
+  ((CategoryDisplay)display).getAllCategoriesDisplay().getRemoveButton().disable();
 }
