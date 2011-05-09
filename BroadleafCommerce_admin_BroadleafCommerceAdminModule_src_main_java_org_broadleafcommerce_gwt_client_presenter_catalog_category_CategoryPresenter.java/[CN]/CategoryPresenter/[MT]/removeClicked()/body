@@ -1,0 +1,15 @@
+{
+  display.getListDisplay().getGrid().removeSelectedData(new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getErrors().isEmpty()) {
+        getDisplay().getOrphanedCategoryGrid().invalidateCache();
+        getDisplay().getRemoveOrphanedButton().disable();
+        getDisplay().getInsertOrphanButton().disable();
+      }
+    }
+  }
+,null);
+  formPresenter.disable();
+  display.getListDisplay().getRemoveButton().disable();
+  allChildCategoriesPresenter.disable();
+}

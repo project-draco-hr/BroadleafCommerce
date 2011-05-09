@@ -1,0 +1,46 @@
+{
+  super.bind();
+  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        display.getRemoveButton().enable();
+        ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
+        display.getFormOnlyDisplay().buildFields(display.getGrid().getDataSource(),false,false,true);
+        display.getFormOnlyDisplay().getForm().editRecord(event.getRecord());
+        display.getFormOnlyDisplay().getForm().enable();
+      }
+ else {
+        display.getRemoveButton().disable();
+      }
+    }
+  }
+);
+  display.getExpansionGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((DynamicEntityDataSource)display.getExpansionGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
+        display.getFormOnlyDisplay().buildFields(display.getExpansionGrid().getDataSource(),false,false,true);
+        display.getFormOnlyDisplay().getForm().editRecord(event.getRecord());
+        display.getFormOnlyDisplay().getForm().enable();
+      }
+ else {
+      }
+    }
+  }
+);
+  display.getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getErrors().isEmpty()) {
+              display.getRemoveButton().disable();
+            }
+          }
+        }
+);
+      }
+    }
+  }
+);
+}

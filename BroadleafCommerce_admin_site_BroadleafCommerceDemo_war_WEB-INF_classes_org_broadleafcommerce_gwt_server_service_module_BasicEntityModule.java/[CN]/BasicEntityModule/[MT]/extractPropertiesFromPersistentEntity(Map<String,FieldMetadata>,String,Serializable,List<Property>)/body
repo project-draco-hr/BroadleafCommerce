@@ -1,0 +1,137 @@
+{
+  FieldManager fieldManager=getFieldManager();
+  for (  String property : mergedProperties.keySet()) {
+    FieldMetadata metadata=mergedProperties.get(property);
+    String originalProperty=new String(property);
+    if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(entity.getClass())) {
+      boolean proceed=true;
+      if (property.indexOf(".") >= 0) {
+        StringTokenizer tokens=new StringTokenizer(property,".");
+        Object testObject=entity;
+        while (tokens.hasMoreTokens()) {
+          String token=tokens.nextToken();
+          if (tokens.hasMoreTokens()) {
+            testObject=fieldManager.getFieldValue(testObject,token);
+            if (testObject == null) {
+              Property propertyItem=new Property();
+              propertyItem.setName(originalProperty);
+              if (props.contains(propertyItem)) {
+                proceed=false;
+                break;
+              }
+              propertyItem.setValue(null);
+              props.add(propertyItem);
+              proceed=false;
+              break;
+            }
+          }
+        }
+      }
+      if (!proceed) {
+        continue;
+      }
+      boolean isFieldAccessible=true;
+      Object value=null;
+      try {
+        value=fieldManager.getFieldValue(entity,property);
+      }
+ catch (      Exception e1) {
+        isFieldAccessible=false;
+      }
+      if (isFieldAccessible) {
+        Property propertyItem=new Property();
+        propertyItem.setName(originalProperty);
+        if (props.contains(propertyItem)) {
+          continue;
+        }
+        props.add(propertyItem);
+        String strVal;
+        String displayVal=null;
+        if (value == null) {
+          strVal=null;
+        }
+ else {
+          if (metadata.getCollection()) {
+            propertyItem.getMetadata().setFieldType(metadata.getFieldType());
+            strVal=null;
+          }
+ else           if (Date.class.isAssignableFrom(value.getClass())) {
+            strVal=dateFormat.format((Date)value);
+          }
+ else           if (Timestamp.class.isAssignableFrom(value.getClass())) {
+            strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
+          }
+ else           if (Calendar.class.isAssignableFrom(value.getClass())) {
+            strVal=dateFormat.format(((Calendar)value).getTime());
+          }
+ else           if (Double.class.isAssignableFrom(value.getClass())) {
+            strVal=decimalFormat.format((Double)value);
+          }
+ else           if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+            strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
+          }
+ else           if (metadata.getForeignKeyClass() != null) {
+            strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
+            Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+            if (temp != null) {
+              displayVal=temp.toString();
+            }
+          }
+ else {
+            strVal=value.toString();
+          }
+        }
+        propertyItem.setValue(strVal);
+        propertyItem.setDisplayValue(displayVal);
+      }
+ else {
+        try {
+          Method method;
+          try {
+            String temp=new String(originalProperty);
+            temp="get" + originalProperty.substring(0,1).toUpperCase() + originalProperty.substring(1,originalProperty.length());
+            method=entity.getClass().getMethod(temp,new Class[]{});
+          }
+ catch (          NoSuchMethodException e) {
+            method=entity.getClass().getMethod(originalProperty,new Class[]{});
+          }
+          value=method.invoke(entity,new Object[]{});
+          Property propertyItem=new Property();
+          propertyItem.setName(originalProperty);
+          if (props.contains(propertyItem)) {
+            continue;
+          }
+          props.add(propertyItem);
+          String strVal;
+          if (value == null) {
+            strVal=null;
+          }
+ else {
+            if (Date.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format((Date)value);
+            }
+ else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
+            }
+ else             if (Calendar.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format(((Calendar)value).getTime());
+            }
+ else             if (Double.class.isAssignableFrom(value.getClass())) {
+              strVal=decimalFormat.format((Double)value);
+            }
+ else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+              strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
+            }
+ else {
+              strVal=value.toString();
+            }
+          }
+          propertyItem.setValue(strVal);
+        }
+ catch (        NoSuchMethodException e) {
+          LOG.debug("Unable to find a specified property in the entity: " + originalProperty);
+        }
+      }
+    }
+  }
+}

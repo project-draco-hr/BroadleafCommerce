@@ -1,0 +1,63 @@
+{
+  super.bind();
+  orderItemPresenter.bind();
+  fulfillmentGroupPresenter.bind();
+  paymentInfoPresenter.bind();
+  additionalPaymentAttributesPresenter.bind();
+  offerCodePresenter.bind();
+  orderAdjustmentPresenter.bind();
+  orderItemAdjustmentPresenter.bind();
+  fulfillmentGroupAdjustmentPresenter.bind();
+  selectionChangedHandlerRegistration.removeHandler();
+  display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        if (!selectedRecord.equals(lastSelectedRecord)) {
+          lastSelectedRecord=selectedRecord;
+          if (selectedRecord.getAttributeAsStringArray("_type") == null) {
+            formPresenter.disable();
+            display.getListDisplay().getRemoveButton().disable();
+          }
+ else {
+            formPresenter.setStartState();
+            ((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("_type"));
+            display.getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),false,false,true);
+            display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
+            display.getListDisplay().getRemoveButton().enable();
+          }
+          changeSelection(selectedRecord);
+        }
+      }
+    }
+  }
+);
+  getDisplay().getPaymentInfoDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        additionalPaymentAttributesPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getPaymentInfoDisplay().getGrid().getDataSource(),null);
+      }
+    }
+  }
+);
+  getDisplay().getOrderItemsDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        orderItemAdjustmentPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getOrderItemsDisplay().getGrid().getDataSource(),null);
+      }
+    }
+  }
+);
+  getDisplay().getFulfillmentGroupDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        fulfillmentGroupAdjustmentPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getFulfillmentGroupDisplay().getGrid().getDataSource(),null);
+      }
+    }
+  }
+);
+  setReadOnly(true);
+}

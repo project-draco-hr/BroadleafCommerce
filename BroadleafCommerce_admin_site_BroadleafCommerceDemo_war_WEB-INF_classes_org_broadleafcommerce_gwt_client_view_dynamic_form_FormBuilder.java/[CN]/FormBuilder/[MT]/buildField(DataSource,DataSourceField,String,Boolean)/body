@@ -1,0 +1,119 @@
+{
+  final FormItem formItem;
+switch (SupportedFieldType.valueOf(fieldType)) {
+case BOOLEAN:
+    formItem=new BooleanItem();
+  formItem.setValueFormatter(new FormItemValueFormatter(){
+    public String formatValue(    Object value,    Record record,    DynamicForm form,    FormItem item){
+      if (value == null) {
+        item.setValue(false);
+        return "false";
+      }
+      return String.valueOf(value);
+    }
+  }
+);
+break;
+case DATE:
+formItem=new DateTimeItem();
+break;
+case DECIMAL:
+formItem=new FloatItem();
+break;
+case EMAIL:
+formItem=new TextItem();
+((TextItem)formItem).setLength(field.getLength());
+break;
+case INTEGER:
+formItem=new IntegerItem();
+break;
+case MONEY:
+formItem=new FloatItem();
+formItem.setEditorValueFormatter(new FormItemValueFormatter(){
+public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+return value == null ? "" : NumberFormat.getFormat("0.00").format(NumberFormat.getFormat("0.00").parse(String.valueOf(value)));
+}
+}
+);
+break;
+case FOREIGN_KEY:
+formItem=new SearchFormItem();
+formItem.setEditorValueFormatter(new FormItemValueFormatter(){
+public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+String response;
+if (value == null) {
+response="";
+}
+ else {
+response=(String)form.getField("__display_" + item.getName()).getValue();
+}
+return response;
+}
+}
+);
+break;
+case ADDITIONAL_FOREIGN_KEY:
+formItem=new SearchFormItem();
+formItem.setEditorValueFormatter(new FormItemValueFormatter(){
+public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+String response;
+if (value == null) {
+response="";
+}
+ else {
+response=(String)form.getField("__display_" + item.getName()).getValue();
+}
+return response;
+}
+}
+);
+break;
+case BROADLEAF_ENUMERATION:
+formItem=new SelectItem();
+LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
+String[] enumerationValues=field.getAttributeAsStringArray("enumerationValues");
+for (String value : enumerationValues) {
+String shortName;
+String longName;
+int pos=value.indexOf(",");
+if (pos >= 0) {
+shortName=value.substring(0,pos);
+longName=value.substring(pos + 1,value.length());
+}
+ else {
+shortName=value;
+longName=value;
+}
+valueMap.put(shortName,longName);
+}
+formItem.setValueMap(valueMap);
+break;
+case EMPTY_ENUMERATION:
+formItem=new SelectItem();
+break;
+case ID:
+formItem=new TextItem();
+((TextItem)formItem).setLength(field.getLength());
+formItem.setValueFormatter(new FormItemValueFormatter(){
+public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+return value == null ? "" : ((DynamicEntityDataSource)dataSource).stripDuplicateAllowSpecialCharacters(String.valueOf(value));
+}
+}
+);
+break;
+default :
+if (!largeEntry) {
+formItem=new TextItem();
+((TextItem)formItem).setLength(field.getLength());
+}
+ else {
+formItem=new TextAreaItem();
+((TextAreaItem)formItem).setLength(field.getLength());
+formItem.setHeight(70);
+formItem.setColSpan(3);
+formItem.setWidth("400");
+}
+break;
+}
+return formItem;
+}

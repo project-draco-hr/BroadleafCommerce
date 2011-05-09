@@ -1,0 +1,30 @@
+{
+  StringTokenizer tokens=new StringTokenizer(fieldName,".");
+  Field field=null;
+  while (tokens.hasMoreTokens()) {
+    field=getSingleField(clazz,tokens.nextToken());
+    if (field != null && tokens.hasMoreTokens()) {
+      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
+      if (entities.length > 0) {
+        PersistentClass persistentClass=dynamicEntityDao.getPersistentClass(entities[0].getName());
+        if (persistentClass != null) {
+          Class<?> entityClass;
+          try {
+            entityClass=entityConfiguration.lookupEntityClass(field.getType().getName());
+            clazz=entityClass;
+          }
+ catch (          Exception e) {
+            clazz=entities[0];
+          }
+        }
+ else {
+          clazz=field.getType();
+        }
+      }
+    }
+ else {
+      break;
+    }
+  }
+  return field;
+}

@@ -1,0 +1,23 @@
+{
+  formItem.setName(field.getName());
+  formItem.setTitle(field.getTitle());
+  formItem.setRequired(field.getRequired());
+  if (!sections.containsKey(group)) {
+    List<FormItem> temp=new ArrayList<FormItem>();
+    sections.put(group,temp);
+  }
+  if (!sectionNames.contains(group)) {
+    sectionNames.add(group);
+  }
+  List<FormItem> temp=sections.get(group);
+  if (showDisabledState != null) {
+    formItem.setShowDisabled(showDisabledState);
+  }
+  if (canEdit != null) {
+    formItem.setDisabled(!canEdit);
+  }
+  temp.add(formItem);
+  if (displayFormItem != null) {
+    temp.add(displayFormItem);
+  }
+}

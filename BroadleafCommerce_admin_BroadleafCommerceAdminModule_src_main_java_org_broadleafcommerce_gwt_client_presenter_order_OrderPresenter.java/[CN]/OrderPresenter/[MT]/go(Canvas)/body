@@ -1,0 +1,110 @@
+{
+  BLCMain.MODAL_PROGRESS.startProgress(new Timer(){
+    public void run(){
+      if (loaded) {
+        OrderPresenter.super.go(container);
+        return;
+      }
+      OrderListDataSourceFactory.createDataSource("orderDS",new AsyncCallbackAdapter(){
+        public void onSuccess(        final DataSource top){
+          setupDisplayItems(top);
+          ((ListGridDataSource)top).setupGridFields(new String[]{"customer.firstName","customer.lastName","name","orderNumber","status"},new Boolean[]{false,false,false,false,false});
+          OrderItemListDataSourceFactory.createDataSource("orderItemDS",new AsyncCallbackAdapter(){
+            public void onSuccess(            final DataSource orderItemDS){
+              BundledOrderItemListDataSourceFactory.createDataSource("bundleOrderItemDS",new AsyncCallbackAdapter(){
+                public void onSuccess(                DataSource bundleOrderItemDS){
+                  orderItemPresenter=new OrderItemPresenter(((OrderDisplay)getDisplay()).getOrderItemsDisplay());
+                  orderItemPresenter.setDataSource((ListGridDataSource)orderItemDS,new String[]{"name","quantity","price","retailPrice","salePrice"},new Boolean[]{false,false,false,false,false});
+                  ((OrderItemPresenter)orderItemPresenter).setExpansionDataSource((ListGridDataSource)bundleOrderItemDS,new String[]{"name","quantity","price","retailPrice","salePrice"},new Boolean[]{false,false,false,false,false});
+                  orderItemPresenter.setReadOnly(true);
+                  CountryListDataSourceFactory.createDataSource("countryDS",new AsyncCallbackAdapter(){
+                    public void onSuccess(                    final DataSource countryDS){
+                      ((ListGridDataSource)countryDS).resetPermanentFieldVisibility("abbreviation","name");
+                      final EntitySearchDialog countrySearchView=new EntitySearchDialog((ListGridDataSource)countryDS);
+                      ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,"Search For A Country",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                      StateListDataSourceFactory.createDataSource("stateDS",new AsyncCallbackAdapter(){
+                        public void onSuccess(                        final DataSource stateDS){
+                          ((ListGridDataSource)stateDS).resetPermanentFieldVisibility("abbreviation","name");
+                          final EntitySearchDialog stateSearchView=new EntitySearchDialog((ListGridDataSource)stateDS);
+                          ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,"Search For A State",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                          FulfillmentGroupListDataSourceFactory.createDataSource("fulfillmentGroupDS",new AsyncCallbackAdapter(){
+                            public void onSuccess(                            DataSource fgDS){
+                              fulfillmentGroupPresenter=new SubPresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                              fulfillmentGroupPresenter.setDataSource((ListGridDataSource)fgDS,new String[]{"referenceNumber","method","service","shippingPrice","status","address.postalCode"},new Boolean[]{false,false,false,false,false,false});
+                              fulfillmentGroupPresenter.setReadOnly(true);
+                              PaymentInfoListDataSourceFactory.createDataSource("paymentInfoDS",new AsyncCallbackAdapter(){
+                                public void onSuccess(                                final DataSource paymentInfoDS){
+                                  paymentInfoPresenter=new SubPresenter(((OrderDisplay)getDisplay()).getPaymentInfoDisplay());
+                                  paymentInfoPresenter.setDataSource((ListGridDataSource)paymentInfoDS,new String[]{"referenceNumber","type","amount"},new Boolean[]{false,false,false});
+                                  paymentInfoPresenter.setReadOnly(true);
+                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,"Search For A Country",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,"Search For A State",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                                  PaymentAdditionalAttributesDataSourceFactory.createDataSource("paymentAdditionalAttributesDS",((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay().getGrid(),new AsyncCallbackAdapter(){
+                                    public void onSuccess(                                    DataSource attributeDS){
+                                      Map<String,Object> initialValues=new HashMap<String,Object>();
+                                      initialValues.put("key","Untitled");
+                                      initialValues.put("value","Untitled");
+                                      additionalPaymentAttributesPresenter=new MapStructurePresenter(((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay(),new MapStructureEntityEditDialog(),"Add New Attribute",initialValues);
+                                      additionalPaymentAttributesPresenter.setDataSource((ListGridDataSource)attributeDS,new String[]{"key","value"},new Boolean[]{true,true});
+                                      additionalPaymentAttributesPresenter.setReadOnly(true);
+                                      OfferCodeListDataSourceFactory.createDataSource("offerCodeDS",new AsyncCallbackAdapter(){
+                                        public void onSuccess(                                        DataSource attributeDS){
+                                          offerCodePresenter=new SubPresenter(((OrderDisplay)getDisplay()).getOfferCodeDisplay());
+                                          offerCodePresenter.setDataSource((ListGridDataSource)attributeDS,new String[]{"offerCode","startDate","endDate","offer.name","offer.type","offer.value"},new Boolean[]{false,false,false,false,false,false});
+                                          offerCodePresenter.setReadOnly(true);
+                                          OrderAdjustmentListDataSourceFactory.createDataSource("orderAdjustmentDS",new AsyncCallbackAdapter(){
+                                            public void onSuccess(                                            DataSource orderAdjustmentDS){
+                                              orderAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderAdjustmentDisplay(),"Add An Order Ajustment");
+                                              orderAdjustmentPresenter.setDataSource((ListGridDataSource)orderAdjustmentDS,new String[]{"reason","value","offer.name","offer.type"},new Boolean[]{false,false,false,false});
+                                              orderAdjustmentPresenter.setReadOnly(true);
+                                              OrderItemAdjustmentListDataSourceFactory.createDataSource("orderItemAdjustmentDS",new AsyncCallbackAdapter(){
+                                                public void onSuccess(                                                DataSource orderItemAdjustmentDS){
+                                                  orderItemAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderItemAdjustmentDisplay(),"Add An Order Item Adjustment");
+                                                  orderItemAdjustmentPresenter.setDataSource((ListGridDataSource)orderItemAdjustmentDS,new String[]{"reason","value","offer.type"},new Boolean[]{false,false,false});
+                                                  orderItemAdjustmentPresenter.setReadOnly(true);
+                                                  FulfillmentGroupAdjustmentListDataSourceFactory.createDataSource("fulfillmentGroupAdjustmentDS",new AsyncCallbackAdapter(){
+                                                    public void onSuccess(                                                    DataSource fulfillmentGroupAdjustmentDS){
+                                                      fulfillmentGroupAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupAdjustmentDisplay(),"Add A Fulfillment Group Adjustment");
+                                                      fulfillmentGroupAdjustmentPresenter.setDataSource((ListGridDataSource)fulfillmentGroupAdjustmentDS,new String[]{"reason","value","offer.type"},new Boolean[]{false,false,false});
+                                                      fulfillmentGroupAdjustmentPresenter.setReadOnly(true);
+                                                      OrderPresenter.super.go(container);
+                                                    }
+                                                  }
+);
+                                                }
+                                              }
+);
+                                            }
+                                          }
+);
+                                        }
+                                      }
+);
+                                    }
+                                  }
+);
+                                }
+                              }
+);
+                            }
+                          }
+);
+                        }
+                      }
+);
+                    }
+                  }
+);
+                }
+              }
+);
+            }
+          }
+);
+        }
+      }
+);
+    }
+  }
+);
+}

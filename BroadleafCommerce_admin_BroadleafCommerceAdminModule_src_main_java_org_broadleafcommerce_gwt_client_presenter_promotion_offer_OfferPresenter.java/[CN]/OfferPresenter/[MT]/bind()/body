@@ -1,0 +1,132 @@
+{
+  super.bind();
+  getDisplay().getAdvancedButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (((ToolStripButton)event.getSource()).getSelected()) {
+        entityDataSource.resetPermanentFieldVisibilityBasedOnType(display.getListDisplay().getGrid().getSelectedRecord().getAttributeAsStringArray("_type"));
+      }
+ else {
+        entityDataSource.resetVisibilityOnly("name","description","type","discountType","value","priority");
+      }
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().buildFields(entityDataSource,true,true,true);
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(display.getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  selectionChangedHandlerRegistration.removeHandler();
+  getDisplay().getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        if (!selectedRecord.equals(lastSelectedRecord)) {
+          lastSelectedRecord=selectedRecord;
+          if (selectedRecord.getAttributeAsStringArray("_type") == null) {
+            formPresenter.disable();
+            display.getListDisplay().getRemoveButton().disable();
+          }
+ else {
+            formPresenter.setStartState();
+            entityDataSource.resetVisibilityOnly("name","description","type","discountType","value","priority");
+            getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),true,true,true);
+            getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
+            getDisplay().getListDisplay().getRemoveButton().enable();
+          }
+          changeSelection(selectedRecord);
+        }
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonType().addMouseMoveHandler(new MouseMoveHandler(){
+    public void onMouseMove(    MouseMoveEvent event){
+      if (currentHelp == null) {
+        currentHelp=createWin("Offer Obtain Settings Help","<B>Automatic</B> Offer is always made available to eligible customers and carts.<br>" + "<B>Shared Code</B> Offer is made available to all customers who enter the correct code.<br>" + "<B>Limited-Use Code</B> Offer is made available to a single customer who enters the correct code. This type of code may be used only up to a specified number of times.<br>"+ "<B>System</B> Offer is made available to one or more customers via a separate process that the Broadleaf admin is unaware of. Some customers may wish to create a custom feature outside of the Broadleaf Commerce admin to associate offers with customers.",true,300,200,getDisplay().getHelpButtonType().getAbsoluteLeft() + 26,getDisplay().getHelpButtonType().getAbsoluteTop());
+        currentHelp.show();
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonType().addMouseOutHandler(new MouseOutHandler(){
+    public void onMouseOut(    MouseOutEvent event){
+      if (currentHelp != null) {
+        currentHelp.destroy();
+        currentHelp=null;
+      }
+    }
+  }
+);
+  getDisplay().getDeliveryTypeRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      if (event.getValue().toString().equals("CODE") || event.getValue().toString().equals("LIMITED-USE")) {
+        getDisplay().getCodeField().enable();
+      }
+ else {
+        getDisplay().getCodeField().disable();
+      }
+      if (event.getValue().toString().equals("LIMITED-USE")) {
+        getDisplay().getMaxUseField().enable();
+      }
+ else {
+        getDisplay().getMaxUseField().disable();
+      }
+    }
+  }
+);
+  getDisplay().getCustomerRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      if (event.getValue().toString().equals("CUSTOMER_RULE")) {
+        getDisplay().getCustomerFilterBuilder().enable();
+      }
+ else {
+        getDisplay().getCustomerFilterBuilder().disable();
+      }
+    }
+  }
+);
+  getDisplay().getFgRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      if (event.getValue().toString().equals("FG_RULE")) {
+        getDisplay().getFulfillmentGroupFilterBuilder().enable();
+      }
+ else {
+        getDisplay().getFulfillmentGroupFilterBuilder().disable();
+      }
+    }
+  }
+);
+  getDisplay().getItemRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      if (event.getValue().toString().equals("ITEM_RULE")) {
+        getDisplay().getAddItemButton().enable();
+        for (        ItemBuilderDisplay display : getDisplay().getItemBuilderViews()) {
+          display.enable();
+        }
+      }
+ else {
+        getDisplay().getAddItemButton().disable();
+        for (        ItemBuilderDisplay display : getDisplay().getItemBuilderViews()) {
+          display.disable();
+        }
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonBogo().addMouseMoveHandler(new MouseMoveHandler(){
+    public void onMouseMove(    MouseMoveEvent event){
+      if (currentHelp == null) {
+        currentHelp=createWin("Buy One/Get One Help","Buy One/Get One style offers allows promotion administrators to specify offers that are triggered by detection of a certain " + "quantity of one or more items in the cart. Rules are entered that match any combination of items and a quantity is entered for " + "how many times the rule must match. Also, a subsequent target rule is entered that matches any combination of discount target "+ "items in the cart and a quantity. As a result, the system will search for any qualifying items and matching quantities in the cart, "+ "and if found, will apply the defined discount to the matched target items and quantities.",true,300,200,getDisplay().getHelpButtonBogo().getAbsoluteLeft() + 26,getDisplay().getHelpButtonBogo().getAbsoluteTop());
+        currentHelp.show();
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonBogo().addMouseOutHandler(new MouseOutHandler(){
+    public void onMouseOut(    MouseOutEvent event){
+      if (currentHelp != null) {
+        currentHelp.destroy();
+        currentHelp=null;
+      }
+    }
+  }
+);
+}

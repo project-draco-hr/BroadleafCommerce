@@ -1,0 +1,17 @@
+{
+  if (dataSource == null) {
+    OperationTypes operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY);
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey(foreignKeyName,EntityImplementations.ORDER,null));
+    persistencePerspective.setPopulateToOneFields(true);
+    persistencePerspective.setExcludeFields(new String[]{"giftWrapOrderItem","bundleOrderItem","category","product.defaultCategory","product.name","product.description","product.longDescription","product.activeStartDate","product.activeEndDate","sku.name","sku.salePrice","sku.retailPrice","product.sku"});
+    DataSourceModule[] modules=new DataSourceModule[]{new OrderItemEntityModule(CeilingEntities.ORDER_ITEM,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource.buildFields(null,false,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}
