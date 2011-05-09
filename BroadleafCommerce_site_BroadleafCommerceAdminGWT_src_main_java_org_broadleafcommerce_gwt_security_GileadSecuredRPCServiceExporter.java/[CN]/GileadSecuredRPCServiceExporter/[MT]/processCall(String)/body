@@ -5,6 +5,7 @@
     response=super.processCall(payload);
   }
  catch (  final Throwable e) {
+    LOGGER.error("Problem processing call",e);
     final Throwable cause1=e.getCause();
     if (cause1 != null && cause1 instanceof UnexpectedException) {
       final Throwable preciousException=cause1.getCause();

@@ -1,6 +1,9 @@
 {
   GWT.log(msg,exception);
-  if (boxComponent != null) {
-    boxComponent.hide();
+  if (Main.MODAL_PROGRESS.isActive()) {
+    Main.MODAL_PROGRESS.stopProgress();
+  }
+  if (Main.NON_MODAL_PROGRESS.isActive()) {
+    Main.NON_MODAL_PROGRESS.stopProgress();
   }
 }

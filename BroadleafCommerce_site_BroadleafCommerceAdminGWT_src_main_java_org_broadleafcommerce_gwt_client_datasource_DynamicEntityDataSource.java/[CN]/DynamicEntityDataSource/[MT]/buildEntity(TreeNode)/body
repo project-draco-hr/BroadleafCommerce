@@ -1,0 +1,22 @@
+{
+  Entity entity=new Entity();
+  entity.setType(record.getAttribute("type"));
+  List<Property> properties=new ArrayList<Property>();
+  for (  String attribute : record.getAttributes()) {
+    if (!attribute.equals("type") && !attribute.startsWith("__") && getField(attribute) != null) {
+      Property property=new Property();
+      if (record.getAttribute(attribute) != null && this.getField(attribute) != null && getField(attribute).getType().equals(FieldType.DATETIME)) {
+        property.setValue(formatter.format(record.getAttributeAsDate(attribute)));
+      }
+ else {
+        property.setValue(record.getAttribute(attribute));
+      }
+      property.setName(attribute);
+      properties.add(property);
+    }
+  }
+  Property[] props=new Property[properties.size()];
+  props=properties.toArray(props);
+  entity.setProperties(props);
+  return entity;
+}

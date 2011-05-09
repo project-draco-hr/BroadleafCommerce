@@ -1,0 +1,13 @@
+{
+  DataSourceField[] fields=getFields();
+  for (  DataSourceField field : fields) {
+    if (field.getAttribute("permanentlyHidden") == null || field.getAttributeAsBoolean("permanentlyHidden") == false) {
+      if (field.getAttribute("availableToTypes") != null && field.getAttribute("availableToTypes").contains(type)) {
+        field.setHidden(false);
+      }
+ else {
+        field.setHidden(true);
+      }
+    }
+  }
+}

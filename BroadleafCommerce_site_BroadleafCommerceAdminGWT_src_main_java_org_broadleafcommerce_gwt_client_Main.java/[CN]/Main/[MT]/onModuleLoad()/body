@@ -6,7 +6,7 @@
   topBar.addSpacer(6);
   ImgButton sgwtHomeButton=new ImgButton();
   sgwtHomeButton.setSrc("../resources/images/blc_logo.png");
-  sgwtHomeButton.setWidth(101);
+  sgwtHomeButton.setWidth(98);
   sgwtHomeButton.setHeight(50);
   sgwtHomeButton.setPrompt("Broadleaf Commerce Project Page");
   sgwtHomeButton.setHoverStyle("interactImageHover");
@@ -22,13 +22,16 @@
   topBar.addMember(sgwtHomeButton);
   topBar.addSpacer(6);
   topBar.addFill();
+  topBar.addMember(NON_MODAL_PROGRESS);
+  topBar.addSpacer(20);
   vlayout.addMember(topBar);
   vlayout.setWidth100();
   vlayout.setHeight100();
-  Canvas canvas=new Canvas();
+  HLayout canvas=new HLayout();
   canvas.setWidth100();
   canvas.setHeight100();
   vlayout.addMember(canvas);
   vlayout.draw();
   AppController.getInstance().go(canvas);
+  vlayout.reflow();
 }

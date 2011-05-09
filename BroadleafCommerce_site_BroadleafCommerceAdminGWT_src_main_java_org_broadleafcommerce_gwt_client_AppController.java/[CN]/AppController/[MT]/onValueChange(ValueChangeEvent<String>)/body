@@ -1,12 +1,18 @@
 {
   String token=event.getValue();
   if (token != null) {
-    Presenter presenter=null;
-    if (token.equals("catalog")) {
-      presenter=new CatalogPresenter(eventBus,new CatalogView());
-    }
-    if (presenter != null) {
-      presenter.go(container);
+    if (token.equals("catalog") && !viewLibrary.equalsCurrentViewClass(CategoryView.class.getName())) {
+      viewLibrary.clearCurrentView();
+      if (viewLibrary.containsKey(token)) {
+        Presenter presenter=new CategoryPresenter(eventBus,(CategoryView)viewLibrary.getView("category",null,false));
+        presenter.go(container);
+        Presenter presenter2=new ProductPresenter(eventBus,(ProductView)viewLibrary.getView("product",null,false));
+        presenter2.go(container);
+      }
+ else {
+        DynamicEntityDataSource dataSource=new DynamicEntityDataSource(CeilingEntities.CATEGORY,eventBus,"category",AppServices.DYNAMIC_ENTITY,null);
+        dataSource.buildFields();
+      }
     }
   }
 }

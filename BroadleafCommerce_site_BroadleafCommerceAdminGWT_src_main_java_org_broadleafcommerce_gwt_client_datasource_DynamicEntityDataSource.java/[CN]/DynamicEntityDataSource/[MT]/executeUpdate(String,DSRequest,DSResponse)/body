@@ -1,0 +1,23 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  String componentId=request.getComponentId();
+  if (componentId != null) {
+    if (entity.getType() == null) {
+      String type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttribute("type");
+      entity.setType(type);
+    }
+  }
+  service.update(entity,optionalFields,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      TreeNode record=buildRecord(result);
+      TreeNode[] recordList=new TreeNode[]{record};
+      response.setData(recordList);
+      processResponse(requestId,response);
+    }
+  }
+);
+}

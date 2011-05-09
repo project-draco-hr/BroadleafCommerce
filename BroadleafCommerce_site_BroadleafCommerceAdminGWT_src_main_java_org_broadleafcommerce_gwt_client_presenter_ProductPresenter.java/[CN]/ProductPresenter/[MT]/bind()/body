@@ -1,0 +1,13 @@
+{
+  super.bind();
+  eventBus.addHandler(CategorySelectionChangedEvent.TYPE,new CategorySelectionChangedEventHandler(){
+    public void onChangeSelection(    CategorySelectionChangedEvent event){
+      categoryId=event.getRecord().getAttribute("id");
+      Criteria criteria=new Criteria();
+      criteria.addCriteria("defaultCategory",categoryId);
+      display.getGrid().fetchData(criteria);
+      display.getAddButton().enable();
+    }
+  }
+);
+}

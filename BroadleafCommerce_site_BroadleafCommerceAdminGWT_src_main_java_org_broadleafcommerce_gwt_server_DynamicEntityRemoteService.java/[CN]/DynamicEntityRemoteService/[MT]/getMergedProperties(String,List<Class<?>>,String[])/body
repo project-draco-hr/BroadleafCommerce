@@ -1,0 +1,17 @@
+{
+  if (!mergedPropertyLibrary.containsKey(ceilingEntityFullyQualifiedClassname)) {
+    Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
+    for (    Class<?> clazz : entities) {
+      Map<String,FieldMetadata> props=genericDao.getPropertiesForEntityClass(clazz,optionalFields);
+      for (      String key : props.keySet()) {
+        FieldMetadata metadata=props.get(key);
+        if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz) && !metadata.getAvailableToTypes().contains(clazz.getName())) {
+          metadata.setAvailableToTypes(metadata.getAvailableToTypes() + ";" + clazz.getName());
+        }
+      }
+      mergedProperties.putAll(props);
+    }
+    mergedPropertyLibrary.put(ceilingEntityFullyQualifiedClassname,mergedProperties);
+  }
+  return mergedPropertyLibrary.get(ceilingEntityFullyQualifiedClassname);
+}

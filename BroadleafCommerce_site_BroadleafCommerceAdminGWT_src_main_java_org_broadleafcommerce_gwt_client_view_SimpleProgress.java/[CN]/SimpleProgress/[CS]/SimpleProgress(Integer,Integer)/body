@@ -1,0 +1,17 @@
+{
+  setHeight(height);
+  if (width != null)   setWidth(height);
+  setVertical(false);
+  timer=new Timer(){
+    public void run(){
+      barValue+=1 + (int)(10 * Math.random());
+      if (barValue > 100) {
+        barValue=0;
+      }
+      setPercentDone(barValue);
+      if (isActive)       schedule(5 + (int)(50 * Math.random()));
+    }
+  }
+;
+  hide();
+}

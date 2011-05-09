@@ -1,0 +1,17 @@
+{
+  TreeNode record=new TreeNode();
+  for (  Property property : entity.getProperties()) {
+    if (property.getValue() != null && this.getField(property.getName()).getType().equals(FieldType.DATETIME)) {
+      record.setAttribute(property.getName(),formatter.parse(property.getValue()));
+    }
+ else     if (getField(property.getName()).getType().equals(FieldType.BOOLEAN) && property.getValue() == null && getField(property.getName()).getRequired()) {
+      record.setAttribute(property.getName(),false);
+    }
+ else {
+      record.setAttribute(property.getName(),property.getValue());
+    }
+  }
+  String entityType=entity.getType();
+  record.setAttribute("type",entityType);
+  return record;
+}

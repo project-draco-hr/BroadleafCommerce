@@ -1,0 +1,77 @@
+{
+synchronized (this) {
+    if (configuration == null) {
+      Ejb3Configuration temp=new Ejb3Configuration();
+      configuration=temp.configure(persistenceUnitInfo,new HashMap());
+    }
+  }
+  PersistentClass persistentClass=configuration.getClassMapping(targetClass.getName());
+  ClassMetadata metadata=sessionFactory.getClassMetadata(targetClass);
+  Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
+  List<String> propertyNames=new ArrayList<String>();
+  String idProperty=metadata.getIdentifierPropertyName();
+  for (  String propertyName : metadata.getPropertyNames()) {
+    propertyNames.add(propertyName);
+  }
+  propertyNames.add(idProperty);
+  for (  String propertyName : propertyNames) {
+    Type type=metadata.getPropertyType(propertyName);
+    if ((!type.isAnyType() && !type.isEntityType() && !type.isAssociationType()&& !type.isCollectionType()&& !type.isComponentType()) || type.getReturnedClass().equals(targetClass) || (optionalFields != null && Arrays.binarySearch(optionalFields,propertyName) >= 0)) {
+      Class<?> returnedClass=type.getReturnedClass();
+      if (returnedClass.equals(Boolean.class)) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.BOOLEAN,type,targetClass));
+        continue;
+      }
+      if (returnedClass.equals(Byte.class) || returnedClass.equals(Short.class) || returnedClass.equals(Integer.class)|| returnedClass.equals(Long.class)) {
+        if (propertyName.equals(idProperty)) {
+          fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.ID,type,targetClass));
+        }
+ else {
+          fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.INTEGER,type,targetClass));
+        }
+        continue;
+      }
+      if (returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class) || returnedClass.equals(Timestamp.class)) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.DATE,type,targetClass));
+        continue;
+      }
+      if (returnedClass.equals(Character.class) || returnedClass.equals(String.class)) {
+        if (propertyName.equals(idProperty)) {
+          fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.ID,type,targetClass));
+        }
+ else {
+          if (propertyName.toLowerCase().contains("email")) {
+            fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.EMAIL,type,targetClass));
+          }
+ else {
+            fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.STRING,type,targetClass));
+          }
+        }
+        continue;
+      }
+      if (returnedClass.equals(Double.class) || returnedClass.equals(BigDecimal.class)) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.DECIMAL,type,targetClass));
+        continue;
+      }
+      if (returnedClass.equals(Money.class)) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.MONEY,type,targetClass));
+        continue;
+      }
+      if (returnedClass.equals(targetClass)) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.HIERARCHY_KEY,type,targetClass));
+        ClassMetadata foreignMetadata=sessionFactory.getClassMetadata(returnedClass);
+        fields.get(propertyName).setComplexIdProperty(foreignMetadata.getIdentifierPropertyName());
+        fields.get(propertyName).setComplexType(returnedClass.getName());
+        continue;
+      }
+      if (optionalFields != null && Arrays.binarySearch(optionalFields,propertyName) >= 0) {
+        fields.put(propertyName,getFieldMetadata(propertyName,persistentClass,SupportedFieldType.FOREIGN_KEY,type,targetClass));
+        ClassMetadata foreignMetadata=sessionFactory.getClassMetadata(returnedClass);
+        fields.get(propertyName).setComplexIdProperty(foreignMetadata.getIdentifierPropertyName());
+        fields.get(propertyName).setComplexType(returnedClass.getName());
+        continue;
+      }
+    }
+  }
+  return fields;
+}
