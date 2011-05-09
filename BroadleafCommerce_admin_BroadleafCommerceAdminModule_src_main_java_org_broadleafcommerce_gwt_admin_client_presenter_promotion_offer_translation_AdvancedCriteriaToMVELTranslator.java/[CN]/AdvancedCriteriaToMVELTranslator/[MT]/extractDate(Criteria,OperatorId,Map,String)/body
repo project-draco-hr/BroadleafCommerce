@@ -1,0 +1,21 @@
+{
+  Object value;
+  String jsObj=JSON.encode(criteria.getJsObj());
+  JSONObject criteriaObj=JSONParser.parse(jsObj).isObject();
+  JSONObject valueObj=criteriaObj.get(key).isObject();
+  if (valueObj != null) {
+    value=parseRelativeDate((Map<String,String>)values.get(key));
+  }
+ else {
+    value=values.get(key);
+  }
+  if (OperatorId.GREATER_THAN.getValue().equals(operator.getValue()) || OperatorId.LESS_OR_EQUAL.getValue().equals(operator.getValue())) {
+    ((Date)value).setHours(23);
+    ((Date)value).setMinutes(59);
+  }
+ else {
+    ((Date)value).setHours(0);
+    ((Date)value).setMinutes(0);
+  }
+  return value;
+}

@@ -1,0 +1,17 @@
+{
+  Stack<Integer> leftParenPos=new Stack<Integer>();
+  char[] characters=segment.toCharArray();
+  for (int j=subgroupStartIndex; j < characters.length; j++) {
+    if (characters[j] == '(') {
+      leftParenPos.push(j);
+      continue;
+    }
+    if (characters[j] == ')') {
+      leftParenPos.pop();
+      if (leftParenPos.isEmpty()) {
+        return j + 1;
+      }
+    }
+  }
+  throw new IncompatibleMVELTranslationException("Unable to find an end parenthesis for the group started at (" + segment.substring(subgroupStartIndex) + ")");
+}

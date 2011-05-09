@@ -1,0 +1,38 @@
+{
+  String targetQuantity=selectedRecord.getAttribute("targetItemCriteria.receiveQuantity");
+  if (targetQuantity != null) {
+    getDisplay().getTargetItemBuilder().getItemQuantity().setValue(targetQuantity);
+    String itemTargetRules=selectedRecord.getAttribute("targetItemCriteria.orderItemMatchRule");
+    try {
+      getDisplay().getTargetItemBuilder().getItemFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(itemTargetRules,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource()));
+    }
+ catch (    IncompatibleMVELTranslationException e) {
+      GWT.log("Could not translate MVEL",e);
+      BLCMain.MASTERVIEW.getStatus().setContents(AdminModule.ADMINMESSAGES.mvelTranslationProblem());
+      getDisplay().getTargetItemBuilder().setIncompatibleMVEL(true);
+      getDisplay().getTargetItemBuilder().getItemFilterBuilder().setVisible(false);
+      getDisplay().getTargetItemBuilder().getRawItemForm().setVisible(true);
+      getDisplay().getTargetItemBuilder().getRawItemTextArea().setValue(itemTargetRules);
+    }
+  }
+  String offerItemTargetRuleType=selectedRecord.getAttribute("offerItemTargetRuleType");
+  if (offerItemTargetRuleType == null) {
+    offerItemTargetRuleType="NONE";
+  }
+  if (offerItemTargetRuleType.equals("NONE")) {
+    getDisplay().getQualifyForAnotherPromoTargetRadio().setValue("NO");
+    getDisplay().getReceiveFromAnotherPromoTargetRadio().setValue("NO");
+  }
+ else   if (offerItemTargetRuleType.equals("QUALIFIER")) {
+    getDisplay().getQualifyForAnotherPromoTargetRadio().setValue("YES");
+    getDisplay().getReceiveFromAnotherPromoTargetRadio().setValue("NO");
+  }
+ else   if (offerItemTargetRuleType.equals("TARGET")) {
+    getDisplay().getQualifyForAnotherPromoTargetRadio().setValue("NO");
+    getDisplay().getReceiveFromAnotherPromoTargetRadio().setValue("YES");
+  }
+ else   if (offerItemTargetRuleType.equals("QUALIFIER_TARGET")) {
+    getDisplay().getQualifyForAnotherPromoTargetRadio().setValue("YES");
+    getDisplay().getReceiveFromAnotherPromoTargetRadio().setValue("YES");
+  }
+}

@@ -1,0 +1,21 @@
+{
+  customerRuleIncompatible=false;
+  String customerRules=selectedRecord.getAttribute("appliesToCustomerRules");
+  String customerRule=customerRules == null ? "ALL" : "CUSTOMER_RULE";
+  if (customerRules == null) {
+    getDisplay().getCustomerRuleRadio().setValue(customerRule);
+  }
+ else {
+    getDisplay().getCustomerRuleRadio().setValue(customerRule);
+    try {
+      getDisplay().getCustomerFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(customerRules,getDisplay().getCustomerFilterBuilder().getDataSource()));
+    }
+ catch (    IncompatibleMVELTranslationException e) {
+      customerRuleIncompatible=true;
+      GWT.log("Could not translate MVEL",e);
+      BLCMain.MASTERVIEW.getStatus().setContents(AdminModule.ADMINMESSAGES.mvelTranslationProblem());
+      getDisplay().getRawCustomerTextArea().setValue(customerRules);
+    }
+  }
+  initCustomerRule(customerRule);
+}

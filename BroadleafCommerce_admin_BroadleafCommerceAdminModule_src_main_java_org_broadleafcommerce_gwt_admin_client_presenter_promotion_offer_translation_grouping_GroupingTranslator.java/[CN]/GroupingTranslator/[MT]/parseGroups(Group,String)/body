@@ -1,34 +1,50 @@
 {
   boolean eol=false;
   int startPos=0;
-  if (segment.startsWith(GROUPSTARTCHAR)) {
-    startPos=1;
-  }
   while (!eol) {
-    int subgroupStartIndex=segment.indexOf(GROUPSTARTCHAR,startPos);
-    if (subgroupStartIndex >= 0) {
-      compilePhrases(segment.substring(startPos,subgroupStartIndex).trim(),myGroup);
-      int subgroupEndIndex=findGroupEndIndex(segment,subgroupStartIndex);
+    int subgroupStartIndex=-1;
+    boolean isNegation=false;
+    subgroupStartIndex=findGroupStart(segment,startPos);
+    if (subgroupStartIndex == startPos || subgroupStartIndex == startPos + 1) {
+      int subgroupEndIndex=findGroupEnd(segment,subgroupStartIndex);
+      if (subgroupStartIndex > 0 && segment.charAt(subgroupStartIndex - 1) == '!') {
+        myGroup.setOperatorType(OperatorId.NOT);
+      }
       Group subGroup=new Group();
-      myGroup.setSubGroup(subGroup);
-      parseGroups(subGroup,segment.substring(subgroupStartIndex,subgroupEndIndex).trim());
-      if (segment.endsWith(GROUPENDCHAR)) {
+      myGroup.getSubGroups().add(subGroup);
+      parseGroups(subGroup,segment.substring(subgroupStartIndex + 1,subgroupEndIndex - 1).trim());
+      startPos=subgroupEndIndex;
+      if (startPos == segment.length()) {
         eol=true;
       }
  else {
-        startPos=subgroupEndIndex + 1;
+        boolean isAnd=false;
+        boolean isOr=false;
+        if (segment.charAt(startPos) == '&') {
+          isAnd=true;
+        }
+ else         if (segment.charAt(startPos) == '|') {
+          isOr=true;
+        }
+        if (myGroup.getOperatorType() == null) {
+          setGroupOperator(segment,myGroup,isAnd,isOr,false);
+        }
+        if (isAnd || isOr) {
+          startPos+=2;
+        }
       }
+      continue;
     }
  else {
-      segment=segment.substring(startPos,segment.length());
-      if (segment.startsWith(GROUPENDCHAR)) {
-        segment=segment.substring(1,segment.length());
+      if (subgroupStartIndex < 0) {
+        compilePhrases(segment.substring(startPos,segment.length()).trim(),myGroup,isNegation);
+        eol=true;
+        continue;
       }
-      if (segment.endsWith(GROUPENDCHAR)) {
-        segment=segment.substring(0,segment.length() - 1);
-      }
-      compilePhrases(segment.trim(),myGroup);
-      eol=true;
+      String temp=segment.substring(startPos,subgroupStartIndex);
+      compilePhrases(temp.trim(),myGroup,isNegation);
+      startPos=subgroupStartIndex;
+      continue;
     }
   }
 }

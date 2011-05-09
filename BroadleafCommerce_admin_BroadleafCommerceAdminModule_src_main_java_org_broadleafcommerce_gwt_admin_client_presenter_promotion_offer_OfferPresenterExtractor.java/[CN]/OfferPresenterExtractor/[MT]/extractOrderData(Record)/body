@@ -1,0 +1,15 @@
+{
+  if (getDisplay().getOrderRuleRadio().getValue().equals("ORDER_RULE")) {
+    if (!presenter.initializer.orderRuleIncompatible) {
+      selectedRecord.setAttribute("appliesToOrderRules",TRANSLATOR.createMVEL(getDisplay().getOrderFilterBuilder().getCriteria(),FilterType.ORDER,getDisplay().getOrderFilterBuilder().getDataSource()));
+    }
+ else {
+      selectedRecord.setAttribute("appliesToOrderRules",getDisplay().getRawOrderTextArea().getValue());
+    }
+  }
+ else {
+    selectedRecord.setAttribute("appliesToOrderRules","");
+    getDisplay().getOrderFilterBuilder().clearCriteria();
+    getDisplay().getRawOrderTextArea().setValue("");
+  }
+}

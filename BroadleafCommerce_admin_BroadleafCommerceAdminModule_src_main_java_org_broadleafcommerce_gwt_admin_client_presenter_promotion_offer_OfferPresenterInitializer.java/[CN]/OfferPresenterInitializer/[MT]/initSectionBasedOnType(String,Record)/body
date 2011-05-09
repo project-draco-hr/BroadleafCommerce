@@ -1,0 +1,39 @@
+{
+  getDisplay().getItemQualificationSectionView().setVisible(true);
+  if (sectionType.equals("FULFILLMENT_GROUP")) {
+    getDisplay().getFgSectionView().setVisible(true);
+  }
+ else {
+    getDisplay().getFgSectionView().setVisible(false);
+  }
+  if (sectionType.equals("ORDER_ITEM")) {
+    getDisplay().getBogoQuestionLayout().setVisible(true);
+    getDisplay().getItemTargetSectionView().setVisible(true);
+    getDisplay().getOrderItemLayout().setVisible(false);
+    getDisplay().getRequiredItemsLayout().setVisible(false);
+  }
+ else {
+    getDisplay().getBogoQuestionLayout().setVisible(false);
+    getDisplay().getItemTargetSectionView().setVisible(false);
+    getDisplay().getRequiredItemsLayout().setVisible(true);
+    getDisplay().getOrderItemLayout().setVisible(true);
+  }
+  if (sectionType.equals("ORDER")) {
+    getDisplay().getOrderCombineForm().setVisible(true);
+    getDisplay().getOrderCombineLabel().setVisible(true);
+  }
+ else {
+    getDisplay().getOrderCombineForm().setVisible(false);
+    getDisplay().getOrderCombineLabel().setVisible(false);
+  }
+  initBasicItems(selectedRecord);
+  initCustomerCriteria(selectedRecord);
+  initOrderCriteria(selectedRecord);
+  initItemQualifiers(selectedRecord,sectionType);
+  if (sectionType.equals("ORDER_ITEM")) {
+    initItemTargets(selectedRecord);
+  }
+ else   if (sectionType.equals("FULFILLMENT_GROUP")) {
+    initFGCriteria(selectedRecord);
+  }
+}

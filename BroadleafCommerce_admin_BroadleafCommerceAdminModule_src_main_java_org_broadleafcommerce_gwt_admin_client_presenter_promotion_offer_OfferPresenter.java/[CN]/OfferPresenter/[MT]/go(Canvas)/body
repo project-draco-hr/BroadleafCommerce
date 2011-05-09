@@ -12,17 +12,26 @@
             public void onSuccess(            final DataSource offerOrderDS){
               OrderItemListDataSourceFactory.createDataSource("offerOrderItemDS",new AsyncCallbackAdapter(){
                 public void onSuccess(                final DataSource offerOrderItemDS){
+                  orderItemDataSource=(ListGridDataSource)offerOrderItemDS;
                   ((DynamicEntityDataSource)offerOrderItemDS).permanentlyShowFields("product.id","category.id","sku.id");
                   FulfillmentGroupListDataSourceFactory.createDataSource("offerFGDS",new AsyncCallbackAdapter(){
                     public void onSuccess(                    final DataSource offerFGDS){
                       CustomerListDataSourceFactory.createDataSource("offerCustomerDS",new AsyncCallbackAdapter(){
                         public void onSuccess(                        final DataSource offerCustomerDS){
                           ((DynamicEntityDataSource)offerCustomerDS).permanentlyShowFields("id");
-                          ((ListGridDataSource)top).permanentlyHideFields("appliesToOrderRules","appliesToCustomerRules");
-                          ((ListGridDataSource)top).resetVisibilityOnly("name","description","type","discountType","value","priority");
+                          ((ListGridDataSource)top).permanentlyHideFields("appliesToOrderRules","appliesToCustomerRules","appliesToFulfillmentGroupRules","id");
+                          ((ListGridDataSource)top).resetVisibilityOnly("name","description","type","discountType","value","priority","startDate","endDate");
                           setupDisplayItems(top,offerOrderDS,offerOrderItemDS,offerFGDS,offerCustomerDS);
-                          ((ListGridDataSource)top).setupGridFields(new String[]{"name","description","type","value","startDate","endDate"},new Boolean[]{true,true,true,true,true,true});
-                          OfferPresenter.super.go(container);
+                          ((ListGridDataSource)top).setupGridFields(new String[]{"name"},new Boolean[]{true});
+                          OfferItemCriteriaListDataSourceFactory.createDataSource("offerItemCriteriaDS",new AsyncCallbackAdapter(){
+                            public void onSuccess(                            final DataSource offerItemCriteriaDS){
+                              offerItemCriteriaDataSource=(DynamicEntityDataSource)offerItemCriteriaDS;
+                              initializer=new OfferPresenterInitializer(OfferPresenter.this,offerItemCriteriaDataSource,orderItemDataSource);
+                              extractor=new OfferPresenterExtractor(OfferPresenter.this);
+                              OfferPresenter.super.go(container);
+                            }
+                          }
+);
                         }
                       }
 );

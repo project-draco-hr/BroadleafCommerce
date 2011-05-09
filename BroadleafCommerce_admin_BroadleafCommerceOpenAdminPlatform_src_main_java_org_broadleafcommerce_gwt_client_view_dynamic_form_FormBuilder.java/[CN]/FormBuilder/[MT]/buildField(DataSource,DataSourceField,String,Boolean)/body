@@ -16,6 +16,7 @@ case BOOLEAN:
 break;
 case DATE:
 formItem=new DateTimeItem();
+((DateTimeItem)formItem).setDateFormatter(DateDisplayFormat.TOUSSHORTDATE);
 break;
 case DECIMAL:
 formItem=new FloatItem();
@@ -71,20 +72,9 @@ break;
 case BROADLEAF_ENUMERATION:
 formItem=new SelectItem();
 LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
-String[] enumerationValues=field.getAttributeAsStringArray("enumerationValues");
-for (String value : enumerationValues) {
-String shortName;
-String longName;
-int pos=value.indexOf(",");
-if (pos >= 0) {
-shortName=value.substring(0,pos);
-longName=value.substring(pos + 1,value.length());
-}
- else {
-shortName=value;
-longName=value;
-}
-valueMap.put(shortName,longName);
+String[][] enumerationValues=(String[][])field.getAttributeAsObject("enumerationValues");
+for (int j=0; j < enumerationValues.length; j++) {
+valueMap.put(enumerationValues[j][0],enumerationValues[j][1]);
 }
 formItem.setValueMap(valueMap);
 break;

@@ -1,0 +1,15 @@
+{
+  if (getDisplay().getCustomerRuleRadio().getValue().equals("CUSTOMER_RULE")) {
+    if (!presenter.initializer.customerRuleIncompatible) {
+      selectedRecord.setAttribute("appliesToCustomerRules",TRANSLATOR.createMVEL(getDisplay().getCustomerFilterBuilder().getCriteria(),FilterType.CUSTOMER,getDisplay().getCustomerFilterBuilder().getDataSource()));
+    }
+ else {
+      selectedRecord.setAttribute("appliesToCustomerRules",getDisplay().getRawCustomerTextArea().getValue());
+    }
+  }
+ else {
+    selectedRecord.setAttribute("appliesToCustomerRules","");
+    getDisplay().getCustomerFilterBuilder().clearCriteria();
+    getDisplay().getRawCustomerTextArea().setValue("");
+  }
+}

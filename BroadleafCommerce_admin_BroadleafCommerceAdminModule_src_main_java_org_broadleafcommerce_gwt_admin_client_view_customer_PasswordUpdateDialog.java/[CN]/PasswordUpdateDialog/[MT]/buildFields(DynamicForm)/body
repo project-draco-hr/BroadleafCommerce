@@ -1,19 +1,19 @@
 {
   MatchesFieldValidator validator=new MatchesFieldValidator();
   validator.setOtherField("password2");
-  validator.setErrorMessage("Passwords do not match");
+  validator.setErrorMessage(AdminModule.ADMINMESSAGES.passwordNotMatchError());
   FormItem password1=new PasswordItem("password1");
-  password1.setTitle("Password");
+  password1.setTitle(AdminModule.ADMINMESSAGES.passwordPrompt());
   password1.setWidth("100%");
   password1.setRequired(true);
   password1.setValidators(validator);
   FormItem password2=new PasswordItem("password2");
-  password2.setTitle("Password Again");
+  password2.setTitle(AdminModule.ADMINMESSAGES.passwordAgainPrompt());
   password2.setWidth("100%");
   password2.setRequired(true);
   FormItem changeRequired=new BooleanItem();
   changeRequired.setName("changeRequired");
-  changeRequired.setTitle("Password Change Required");
+  changeRequired.setTitle(AdminModule.ADMINMESSAGES.passwordChangeRequiredTitle());
   changeRequired.setWidth("100%");
   changeRequired.setValue(false);
   FormItem[] allFormItems=new FormItem[]{password1,password2,changeRequired};

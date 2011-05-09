@@ -1,0 +1,15 @@
+{
+  Expression expression=phraseTranslator.createExpression(phrase);
+  DataSourceField field=dataSource.getField(expression.getField());
+  if (field == null) {
+    throw new IncompatibleMVELTranslationException("MVEL phrase is not compatible with the datasource associated with the current rules builder. Unable to find the field specified: (" + expression.getField() + ")");
+  }
+  SupportedFieldType type=SupportedFieldType.valueOf(field.getAttribute("fieldType"));
+  SupportedFieldType secondaryType=null;
+  String secondaryTypeVal=dataSource.getField(expression.getField()).getAttribute("secondaryFieldType");
+  if (secondaryTypeVal != null) {
+    secondaryType=SupportedFieldType.valueOf(secondaryTypeVal);
+  }
+  AdvancedCriteria criteria=createCriteria(expression,type,secondaryType);
+  postProcessCriteria(parentCriteria,groupOperator,myCriteriaList,count,criteria,type);
+}

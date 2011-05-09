@@ -1,19 +1,11 @@
 {
+  BLCMain.MASTERVIEW.clearStatus();
   getDisplay().getAdvancedButton().setSelected(false);
   getDisplay().getAdvancedButton().enable();
-  getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").addChangedHandler(new ChangedHandler(){
-    public void onChanged(    ChangedEvent event){
-      if (event.getValue().toString().equals("FULFILLMENT_GROUP")) {
-        getDisplay().getStepFGLabel().setVisible(true);
-        getDisplay().getFulfillmentGroupFilterBuilder().setVisible(true);
-        getDisplay().getStepFGForm().setVisible(true);
-      }
- else {
-        getDisplay().getStepFGLabel().setVisible(false);
-        getDisplay().getFulfillmentGroupFilterBuilder().setVisible(false);
-        getDisplay().getStepFGForm().setVisible(true);
-      }
-    }
-  }
-);
+  rebindFormItems(selectedRecord);
+  getDisplay().getDeliveryTypeRadio().enable();
+  getDisplay().getCustomerRuleRadio().enable();
+  getDisplay().getOrderRuleRadio().enable();
+  String sectionType=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").getValue().toString();
+  initializer.initSectionBasedOnType(sectionType,selectedRecord);
 }

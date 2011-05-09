@@ -1,19 +1,19 @@
 {
   form.setDataSource(dataSource);
   Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
-  List<String> sectionNames=new ArrayList<String>();
+  Map<String,Integer> sectionNames=new HashMap<String,Integer>();
   DataSourceField[] fields=dataSource.getFields();
   for (  DataSourceField field : fields) {
     String fieldType=field.getAttribute("fieldType");
     if (fieldType != null && !field.getHidden()) {
       String group=field.getAttribute("formGroup");
+      String temp=field.getAttribute("formGroupOrder");
+      Integer groupOrder=null;
+      if (temp != null) {
+        groupOrder=Integer.valueOf(temp);
+      }
       if (group == null) {
-        if (fieldType.equals(SupportedFieldType.ID.toString())) {
-          group="Primary Key";
-        }
- else {
-          group="General";
-        }
+        group="General";
       }
       FormItem formItem;
       FormItem displayFormItem=null;
@@ -23,7 +23,7 @@
         ((SelectItem)formItem).setValueMap(mapKeys);
         ((SelectItem)formItem).setMultiple(false);
         ((SelectItem)formItem).setDefaultToFirstOption(true);
-        setupField(null,null,sections,sectionNames,field,group,formItem,displayFormItem);
+        setupField(null,null,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
       }
  else {
         if (!fieldType.equals(SupportedFieldType.ID.toString()) || (fieldType.equals(SupportedFieldType.ID.toString()) && showId)) {
@@ -33,7 +33,7 @@
           }
           formItem=buildField(dataSource,field,fieldType,largeEntry);
           displayFormItem=buildDisplayField(field,fieldType);
-          setupField(null,null,sections,sectionNames,field,group,formItem,displayFormItem);
+          setupField(null,null,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
         }
       }
     }

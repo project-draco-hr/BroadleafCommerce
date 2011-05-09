@@ -1,0 +1,32 @@
+{
+  StringBuffer response=new StringBuffer();
+  if (isNegation) {
+    response.append("!");
+  }
+switch (type) {
+case BROADLEAF_ENUMERATION:
+    response.append(entityKey);
+  response.append(".");
+response.append(field);
+response.append(".toString()");
+break;
+case MONEY:
+response.append(entityKey);
+response.append(".");
+response.append(field);
+response.append(".getAmount()");
+break;
+default :
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+response.append(entityKey);
+response.append(".");
+response.append(field);
+if (ignoreCase) {
+response.append(")");
+}
+break;
+}
+return response.toString();
+}

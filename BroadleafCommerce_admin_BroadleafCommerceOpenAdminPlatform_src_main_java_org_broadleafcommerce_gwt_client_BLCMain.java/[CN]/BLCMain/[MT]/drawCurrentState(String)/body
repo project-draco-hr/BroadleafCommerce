@@ -1,0 +1,10 @@
+{
+  if (moduleKey == null) {
+    moduleKey=modules.keySet().iterator().next();
+  }
+  modules.get(moduleKey).preDraw();
+  MASTERVIEW=new MasterView(moduleKey,modules);
+  MASTERVIEW.draw();
+  AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(moduleKey).getPages());
+  modules.get(moduleKey).postDraw();
+}

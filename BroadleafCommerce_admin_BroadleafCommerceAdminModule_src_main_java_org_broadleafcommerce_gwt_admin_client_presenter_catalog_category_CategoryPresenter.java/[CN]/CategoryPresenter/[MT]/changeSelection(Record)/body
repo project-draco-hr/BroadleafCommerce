@@ -6,15 +6,17 @@
   }
   allChildCategoriesPresenter.load(selectedRecord,dataSource,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
-      if (response.getErrors().isEmpty()) {
+      try {
+        if (response.getErrors().size() > 0) {
+          getDisplay().getInsertOrphanButton().disable();
+        }
+      }
+ catch (      Exception e) {
         if (getDisplay().getOrphanedCategoryGrid().getSelectedRecord() != null) {
           getDisplay().getInsertOrphanButton().enable();
         }
         allChildCategoriesPresenter.setStartState();
         mediaPresenter.load(selectedRecord,dataSource,null);
-      }
- else {
-        getDisplay().getInsertOrphanButton().disable();
       }
     }
   }
@@ -22,9 +24,7 @@
   display.getListDisplay().getAddButton().disable();
   featuredPresenter.load(selectedRecord,dataSource,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
-      if (response.getErrors().isEmpty()) {
-        display.getListDisplay().getAddButton().enable();
-      }
+      display.getListDisplay().getAddButton().enable();
     }
   }
 );

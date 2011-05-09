@@ -1,0 +1,82 @@
+{
+  Criteria relationshipCriteria=offerItemCriteriaDataSource.createRelationshipCriteria(offerItemCriteriaDataSource.getPrimaryKeyValue(selectedRecord));
+  offerItemCriteriaDataSource.fetchData(relationshipCriteria,new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      boolean isItemQualifierCriteria=false;
+      if (response.getTotalRows() > 0) {
+        for (        Record record : response.getData()) {
+          if (record.getAttributeAsInt("requiresQuantity") > 0) {
+            isItemQualifierCriteria=true;
+            break;
+          }
+        }
+      }
+      if (isItemQualifierCriteria) {
+        if (type.equals("ORDER_ITEM")) {
+          initBogoRule("YES");
+        }
+ else {
+          initItemRule("YES");
+        }
+        getDisplay().getBogoRadio().setValue("YES");
+        getDisplay().getItemRuleRadio().setValue("YES");
+        getDisplay().removeAllItemBuilders();
+        for (        Record record : response.getData()) {
+          if (record.getAttributeAsInt("requiresQuantity") > 0) {
+            final ItemBuilderDisplay display=getDisplay().addItemBuilder(orderItemDataSource);
+            display.setRecord(record);
+            display.getItemQuantity().setValue(record.getAttributeAsInt("requiresQuantity"));
+            try {
+              display.getItemFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(record.getAttribute("orderItemMatchRule"),offerItemCriteriaDataSource));
+            }
+ catch (            IncompatibleMVELTranslationException e) {
+              display.setIncompatibleMVEL(true);
+              display.getItemFilterBuilder().setVisible(false);
+              display.getRawItemForm().setVisible(true);
+              display.getRawItemTextArea().setValue(record.getAttribute("orderItemMatchRule"));
+            }
+            display.getRemoveButton().addClickHandler(new ClickHandler(){
+              public void onClick(              ClickEvent event){
+                getDisplay().removeItemBuilder(display);
+              }
+            }
+);
+          }
+        }
+      }
+ else {
+        if (type.equals("ORDER_ITEM")) {
+          initBogoRule("NO");
+        }
+ else {
+          initItemRule("NO");
+        }
+        getDisplay().getBogoRadio().setValue("NO");
+        getDisplay().getItemRuleRadio().setValue("NO");
+        getDisplay().removeAllItemBuilders();
+        getDisplay().addItemBuilder(orderItemDataSource);
+      }
+    }
+  }
+);
+  String offerItemQualifierRuleType=selectedRecord.getAttribute("offerItemQualifierRuleType");
+  if (offerItemQualifierRuleType == null) {
+    offerItemQualifierRuleType="NONE";
+  }
+  if (offerItemQualifierRuleType.equals("NONE")) {
+    getDisplay().getQualifyForAnotherPromoRadio().setValue("NO");
+    getDisplay().getReceiveFromAnotherPromoRadio().setValue("NO");
+  }
+ else   if (offerItemQualifierRuleType.equals("QUALIFIER")) {
+    getDisplay().getQualifyForAnotherPromoRadio().setValue("YES");
+    getDisplay().getReceiveFromAnotherPromoRadio().setValue("NO");
+  }
+ else   if (offerItemQualifierRuleType.equals("TARGET")) {
+    getDisplay().getQualifyForAnotherPromoRadio().setValue("NO");
+    getDisplay().getReceiveFromAnotherPromoRadio().setValue("YES");
+  }
+ else   if (offerItemQualifierRuleType.equals("QUALIFIER_TARGET")) {
+    getDisplay().getQualifyForAnotherPromoRadio().setValue("YES");
+    getDisplay().getReceiveFromAnotherPromoRadio().setValue("YES");
+  }
+}

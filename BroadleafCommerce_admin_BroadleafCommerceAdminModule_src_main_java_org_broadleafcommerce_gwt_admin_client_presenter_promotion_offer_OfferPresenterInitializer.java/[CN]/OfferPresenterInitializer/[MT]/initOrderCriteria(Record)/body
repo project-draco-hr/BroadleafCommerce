@@ -1,0 +1,26 @@
+{
+  orderRuleIncompatible=false;
+  String orderRules=selectedRecord.getAttribute("appliesToOrderRules");
+  String orderRule=orderRules == null ? "NONE" : "ORDER_RULE";
+  if (orderRules == null) {
+    getDisplay().getOrderRuleRadio().setValue(orderRule);
+  }
+ else {
+    getDisplay().getOrderRuleRadio().setValue(orderRule);
+    try {
+      getDisplay().getOrderFilterBuilder().setCriteria(TRANSLATOR.createAdvancedCriteria(orderRules,getDisplay().getOrderFilterBuilder().getDataSource()));
+    }
+ catch (    IncompatibleMVELTranslationException e) {
+      orderRuleIncompatible=true;
+      GWT.log("Could not translate MVEL",e);
+      BLCMain.MASTERVIEW.getStatus().setContents(AdminModule.ADMINMESSAGES.mvelTranslationProblem());
+      getDisplay().getRawOrderTextArea().setValue(orderRules);
+    }
+  }
+  Boolean combinable=selectedRecord.getAttributeAsBoolean("combinableWithOtherOffers");
+  if (combinable == null) {
+    combinable=false;
+  }
+  getDisplay().getOrderCombineRuleRadio().setValue(combinable ? "YES" : "NO");
+  initOrderRule(orderRule);
+}

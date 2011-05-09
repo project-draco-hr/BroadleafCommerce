@@ -15,7 +15,7 @@
               ListGridDataSource categorySearchDataSource=(ListGridDataSource)result;
               categorySearchDataSource.resetPermanentFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
               final EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
-              ((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultCategory",categorySearchView,"Category Search",getDisplay().getDynamicFormDisplay());
+              ((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultCategory",categorySearchView,AdminModule.ADMINMESSAGES.categorySearchTitle(),getDisplay().getDynamicFormDisplay());
               ProductListDataSourceFactory.createDataSource("oneToOneProductSearchDS",new AsyncCallbackAdapter(){
                 public void onSuccess(                DataSource result){
                   final ListGridDataSource productSearchDataSource=(ListGridDataSource)result;
@@ -23,28 +23,28 @@
                   productSearchView=new EntitySearchDialog(productSearchDataSource);
                   CrossSaleProductListDataSourceFactory.createDataSource("crossSaleProductsDS",new AsyncCallbackAdapter(){
                     public void onSuccess(                    DataSource result){
-                      crossSalePresenter=new EditableJoinStructurePresenter(getDisplay().getCrossSaleDisplay(),productSearchView,"Product Search","Set Promotion Message","promotionMessage");
+                      crossSalePresenter=new EditableJoinStructurePresenter(getDisplay().getCrossSaleDisplay(),productSearchView,AdminModule.ADMINMESSAGES.productSearchTitle(),AdminModule.ADMINMESSAGES.setPromotionMessageTitle(),"promotionMessage");
                       crossSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
                       UpSaleProductListDataSourceFactory.createDataSource("upSaleProductsDS",new AsyncCallbackAdapter(){
                         public void onSuccess(                        DataSource result){
-                          upSalePresenter=new EditableJoinStructurePresenter(getDisplay().getUpSaleDisplay(),productSearchView,"Product Search","Set Promotion Message","promotionMessage");
+                          upSalePresenter=new EditableJoinStructurePresenter(getDisplay().getUpSaleDisplay(),productSearchView,AdminModule.ADMINMESSAGES.productSearchTitle(),AdminModule.ADMINMESSAGES.setPromotionMessageTitle(),"promotionMessage");
                           upSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
                           ProductMediaMapDataSourceFactory.createDataSource("productMediaMapDS",getMediaMapKeys(),getDisplay().getMediaDisplay().getGrid(),new AsyncCallbackAdapter(){
                             public void onSuccess(                            DataSource result){
                               Map<String,Object> initialValues=new HashMap<String,Object>();
-                              initialValues.put("name","Untitled");
-                              initialValues.put("label","untitled");
-                              mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),"Add New Media",initialValues);
+                              initialValues.put("name",AdminModule.ADMINMESSAGES.mediaNameDefault());
+                              initialValues.put("label",AdminModule.ADMINMESSAGES.mediaLabelDefault());
+                              mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),AdminModule.ADMINMESSAGES.newMediaTitle(),initialValues);
                               mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
                               ProductAttributeDataSourceFactory.createDataSource("productAttributeDS",new AsyncCallbackAdapter(){
                                 public void onSuccess(                                DataSource result){
                                   Map<String,Object> initialValues=new HashMap<String,Object>();
                                   initialValues.put("name","Untitled");
-                                  productAttributePresenter=new CreateBasedListStructurePresenter(getDisplay().getAttributesDisplay(),"Add New Attribute",initialValues);
+                                  productAttributePresenter=new CreateBasedListStructurePresenter(getDisplay().getAttributesDisplay(),AdminModule.ADMINMESSAGES.newAttributeTitle(),initialValues);
                                   productAttributePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","value","searchable"},new Boolean[]{true,true,true});
                                   ParentCategoryListDataSourceFactory.createDataSource("parentCategoriesDS",new AsyncCallbackAdapter(){
                                     public void onSuccess(                                    DataSource result){
-                                      parentCategoriesPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllCategoriesDisplay(),categorySearchView,"Search For A Category");
+                                      parentCategoriesPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllCategoriesDisplay(),categorySearchView,AdminModule.ADMINMESSAGES.categorySearchPrompt());
                                       parentCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
                                       OneToOneProductSkuPresenter.super.go(container);
                                     }

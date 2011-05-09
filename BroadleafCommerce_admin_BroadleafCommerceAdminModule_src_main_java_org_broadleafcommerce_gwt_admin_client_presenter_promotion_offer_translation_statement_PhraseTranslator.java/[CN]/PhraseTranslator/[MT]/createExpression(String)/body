@@ -1,0 +1,51 @@
+{
+  String[] components=extractComponents(phrase);
+  String field=components[0];
+  String operator=components[1];
+  String value=components[2];
+  String caseInsensitivityKey="MVEL.eval(\"toUpperCase()\",";
+  if (field.startsWith(caseInsensitivityKey)) {
+    field=field.substring(caseInsensitivityKey.length(),field.length() - 1);
+  }
+  String dateFormatKey="java.text.DateFormat.getDateTimeInstance(3,3).parse(";
+  if (value.startsWith(dateFormatKey)) {
+    value=value.substring(dateFormatKey.length(),value.length() - 1);
+  }
+  int entityKeyIndex=field.indexOf(".");
+  if (entityKeyIndex < 0) {
+    throw new IncompatibleMVELTranslationException("Could not identify a valid property field value in the expression: (" + phrase + ")");
+  }
+  boolean isIgnoreCase=false;
+  String entityKey=field.substring(0,entityKeyIndex);
+  if (value.startsWith(caseInsensitivityKey)) {
+    isIgnoreCase=true;
+    value=value.substring(caseInsensitivityKey.length(),value.length() - 1);
+  }
+  boolean isFieldComparison=false;
+  if (value.startsWith("\"") && value.endsWith("\"")) {
+    value=value.substring(1,value.length() - 1);
+  }
+ else   if (value.startsWith(entityKey + ".")) {
+    isFieldComparison=true;
+    value=value.substring(entityKey.length() + 1,value.length());
+  }
+  boolean isNegation=false;
+  if (field.startsWith("!")) {
+    isNegation=true;
+  }
+  field=field.substring(entityKeyIndex + 1,field.length());
+  int methodPos=field.lastIndexOf(".");
+  int parenthesisPos=-1;
+  if (methodPos >= 0) {
+    parenthesisPos=field.indexOf("()",methodPos);
+  }
+  if (methodPos >= 0 && parenthesisPos >= 0) {
+    field=field.substring(0,methodPos);
+  }
+  Expression expression=new Expression();
+  expression.setField(field);
+  OperatorId operatorId=getOperator(field,operator,value,isNegation,isFieldComparison,isIgnoreCase);
+  expression.setOperator(operatorId);
+  expression.setValue(value);
+  return expression;
+}

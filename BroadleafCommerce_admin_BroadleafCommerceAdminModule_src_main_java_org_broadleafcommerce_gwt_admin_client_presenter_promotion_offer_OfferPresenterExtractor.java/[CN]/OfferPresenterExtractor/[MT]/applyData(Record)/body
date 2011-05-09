@@ -1,0 +1,18 @@
+{
+  selectedRecord.setAttribute("totalitarianOffer",getDisplay().getRestrictRuleRadio().getValue().equals("YES"));
+  selectedRecord.setAttribute("deliveryType",getDisplay().getDeliveryTypeRadio().getValue());
+  extractCustomerData(selectedRecord);
+  extractOrderData(selectedRecord);
+  final String type=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").getValue().toString();
+  extractQualifierRuleType(selectedRecord);
+  extractTargetItemData(selectedRecord,type);
+  extractTargetRuleType(selectedRecord);
+  extractFulfillmentGroupData(selectedRecord,type);
+  getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      extractQualifierData(selectedRecord,type);
+      getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+    }
+  }
+);
+}

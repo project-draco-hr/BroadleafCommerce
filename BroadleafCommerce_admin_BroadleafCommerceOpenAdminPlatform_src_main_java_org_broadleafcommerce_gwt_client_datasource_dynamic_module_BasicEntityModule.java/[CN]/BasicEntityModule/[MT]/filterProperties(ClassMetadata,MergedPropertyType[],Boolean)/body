@@ -25,6 +25,7 @@
       String rawName=property.getName();
       String propertyName=rawName;
       String fieldType=property.getMetadata().getFieldType() == null ? null : property.getMetadata().getFieldType().toString();
+      String secondaryFieldType=property.getMetadata().getSecondaryType() == null ? null : property.getMetadata().getSecondaryType().toString();
       Long length=property.getMetadata().getLength() == null ? null : property.getMetadata().getLength().longValue();
       Boolean required=property.getMetadata().getRequired();
       if (required == null) {
@@ -41,11 +42,13 @@
       }
       Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
       String group=property.getMetadata().getPresentationAttributes().getGroup();
+      Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
       Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
       Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
       Integer order=property.getMetadata().getPresentationAttributes().getOrder();
       String columnWidth=property.getMetadata().getPresentationAttributes().getColumnWidth();
-      String[] enumerationValues=property.getMetadata().getEnumerationValues();
+      String[][] enumerationValues=property.getMetadata().getEnumerationValues();
+      String enumerationClass=property.getMetadata().getEnumerationClass();
       if (mutable) {
         Boolean isReadOnly=property.getMetadata().getPresentationAttributes().getReadOnly();
         if (isReadOnly != null) {
@@ -62,44 +65,37 @@ case ID:
     field.setCanEdit(false);
   hidden=true;
 field.setRequired(required);
-field.setValidOperators(getBasicIdOperators());
 break;
 case BOOLEAN:
 field=new DataSourceBooleanField(propertyName,friendlyName);
 field.setCanEdit(mutable);
-field.setValidOperators(getBasicBooleanOperators());
 break;
 case DATE:
 field=new DataSourceDateTimeField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicDateOperators());
 break;
 case INTEGER:
 field=new DataSourceIntegerField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicNumericOperators());
 break;
 case DECIMAL:
 field=new DataSourceFloatField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicNumericOperators());
 break;
 case EMAIL:
 field=new DataSourceTextField(propertyName,friendlyName);
 field.setValidators(Validators.EMAIL);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicTextOperators());
 break;
 case MONEY:
 field=new DataSourceFloatField(propertyName,friendlyName);
 field.setValidators(Validators.USCURRENCY);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicNumericOperators());
 break;
 case FOREIGN_KEY:
 {
@@ -119,7 +115,6 @@ if (hidden == null) {
 hidden=true;
 }
 field.setRequired(required);
-field.setValidOperators(getBasicNumericOperators());
 break;
 }
 case ADDITIONAL_FOREIGN_KEY:
@@ -129,7 +124,6 @@ if (hidden == null) {
 hidden=true;
 }
 field.setRequired(required);
-field.setValidOperators(getBasicNumericOperators());
 break;
 }
 case BROADLEAF_ENUMERATION:
@@ -137,17 +131,15 @@ field=new DataSourceEnumField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
 LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
-for (String value : enumerationValues) {
-valueMap.put(value,value);
+for (int j=0; j < enumerationValues.length; j++) {
+valueMap.put(enumerationValues[j][0],enumerationValues[j][1]);
 }
 field.setValueMap(valueMap);
-field.setValidOperators(getBasicEnumerationOperators());
 break;
 default :
 field=new DataSourceTextField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
-field.setValidOperators(getBasicTextOperators());
 break;
 }
 if (fieldType.equals(SupportedFieldType.ID.toString())) {
@@ -164,6 +156,9 @@ field.setAttribute("permanentlyHidden",false);
 }
 if (group != null) {
 field.setAttribute("formGroup",group);
+}
+if (groupOrder != null) {
+field.setAttribute("formGroupOrder",groupOrder);
 }
 if (largeEntry != null) {
 field.setAttribute("largeEntry",largeEntry);
@@ -183,9 +178,13 @@ field.setAttribute("columnWidth",columnWidth);
 if (enumerationValues != null) {
 field.setAttribute("enumerationValues",enumerationValues);
 }
+if (enumerationClass != null) {
+field.setAttribute("enumerationClass",enumerationClass);
+}
 field.setAttribute("inheritedFromType",inheritedFromType);
 field.setAttribute("availableToTypes",availableToTypes);
 field.setAttribute("fieldType",fieldType);
+field.setAttribute("secondaryFieldType",secondaryFieldType);
 field.setAttribute("mergedPropertyType",mergedPropertyType);
 field.setAttribute("rawName",rawName);
 dataSource.addField(field);

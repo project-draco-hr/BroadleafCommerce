@@ -19,7 +19,7 @@
   getDisplay().getRemoveOrphanedButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        SC.confirm("Are your sure you want to delete this entity (" + getDisplay().getOrphanedCategoryGrid().getSelectedRecord().getAttribute("name") + ")?",new BooleanCallback(){
+        SC.confirm(AdminModule.ADMINMESSAGES.confirmDelete(getDisplay().getOrphanedCategoryGrid().getSelectedRecord().getAttribute("name")),new BooleanCallback(){
           public void execute(          Boolean value){
             if (value) {
               getDisplay().getOrphanedCategoryGrid().removeSelectedData();
@@ -38,12 +38,10 @@
       if (event.isLeftButtonDown()) {
         getDisplay().getAllCategoriesDisplay().getGrid().addData(getDisplay().getOrphanedCategoryGrid().getSelectedRecord(),new DSCallback(){
           public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            if (response.getErrors().isEmpty()) {
-              reloadParentTreeNodeRecords(true);
-              getDisplay().getOrphanedCategoryGrid().invalidateCache();
-              getDisplay().getRemoveOrphanedButton().disable();
-              getDisplay().getInsertOrphanButton().disable();
-            }
+            reloadParentTreeNodeRecords(true);
+            getDisplay().getOrphanedCategoryGrid().invalidateCache();
+            getDisplay().getRemoveOrphanedButton().disable();
+            getDisplay().getInsertOrphanButton().disable();
           }
         }
 );

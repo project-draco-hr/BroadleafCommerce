@@ -1,0 +1,16 @@
+{
+  String offerItemQualifierRuleType;
+  if (getDisplay().getQualifyForAnotherPromoRadio().getValue().equals("YES") && getDisplay().getReceiveFromAnotherPromoRadio().getValue().equals("NO")) {
+    offerItemQualifierRuleType="QUALIFIER";
+  }
+ else   if (getDisplay().getQualifyForAnotherPromoRadio().getValue().equals("NO") && getDisplay().getReceiveFromAnotherPromoRadio().getValue().equals("YES")) {
+    offerItemQualifierRuleType="TARGET";
+  }
+ else   if (getDisplay().getQualifyForAnotherPromoRadio().getValue().equals("YES") && getDisplay().getReceiveFromAnotherPromoRadio().getValue().equals("YES")) {
+    offerItemQualifierRuleType="QUALIFIER_TARGET";
+  }
+ else {
+    offerItemQualifierRuleType="NONE";
+  }
+  selectedRecord.setAttribute("offerItemQualifierRuleType",offerItemQualifierRuleType);
+}

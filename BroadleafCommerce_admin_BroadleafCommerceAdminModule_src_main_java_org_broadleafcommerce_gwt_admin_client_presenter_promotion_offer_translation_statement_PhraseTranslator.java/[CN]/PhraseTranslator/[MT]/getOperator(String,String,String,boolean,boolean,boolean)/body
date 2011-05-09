@@ -1,0 +1,96 @@
+{
+  if (operator.equals("==") && value.equals("null")) {
+    return OperatorId.IS_NULL;
+  }
+ else   if (operator.equals("==") && isFieldComparison) {
+    return OperatorId.EQUALS_FIELD;
+  }
+ else   if (isIgnoreCase && operator.equals("==")) {
+    return OperatorId.IEQUALS;
+  }
+ else   if (operator.equals("==")) {
+    return OperatorId.EQUALS;
+  }
+ else   if (operator.equals("!=") && value.equals("null")) {
+    return OperatorId.NOT_NULL;
+  }
+ else   if (operator.equals("!=") && isFieldComparison) {
+    return OperatorId.NOT_EQUAL_FIELD;
+  }
+ else   if (isIgnoreCase && operator.equals("!=")) {
+    return OperatorId.INOT_EQUAL;
+  }
+ else   if (operator.equals("!=")) {
+    return OperatorId.NOT_EQUAL;
+  }
+ else   if (operator.equals(">") && isFieldComparison) {
+    return OperatorId.GREATER_THAN_FIELD;
+  }
+ else   if (operator.equals(">")) {
+    return OperatorId.GREATER_THAN;
+  }
+ else   if (operator.equals("<") && isFieldComparison) {
+    return OperatorId.LESS_THAN_FIELD;
+  }
+ else   if (operator.equals("<")) {
+    return OperatorId.LESS_THAN;
+  }
+ else   if (operator.equals(">=") && isFieldComparison) {
+    return OperatorId.GREATER_OR_EQUAL_FIELD;
+  }
+ else   if (operator.equals(">=")) {
+    return OperatorId.GREATER_OR_EQUAL;
+  }
+ else   if (operator.equals("<=") && isFieldComparison) {
+    return OperatorId.LESS_OR_EQUAL_FIELD;
+  }
+ else   if (operator.equals("<=")) {
+    return OperatorId.LESS_OR_EQUAL;
+  }
+ else   if (isIgnoreCase && operator.equals("contains") && isNegation) {
+    return OperatorId.INOT_CONTAINS;
+  }
+ else   if (operator.equals("contains") && isNegation) {
+    return OperatorId.NOT_CONTAINS;
+  }
+ else   if (isIgnoreCase && operator.equals("contains")) {
+    return OperatorId.ICONTAINS;
+  }
+ else   if (operator.equals("contains") && isFieldComparison) {
+    return OperatorId.CONTAINS_FIELD;
+  }
+ else   if (operator.equals("contains")) {
+    return OperatorId.CONTAINS;
+  }
+ else   if (isIgnoreCase && operator.equals("startsWith") && isNegation) {
+    return OperatorId.INOT_STARTS_WITH;
+  }
+ else   if (operator.equals("startsWith") && isNegation) {
+    return OperatorId.NOT_STARTS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("startsWith")) {
+    return OperatorId.ISTARTS_WITH;
+  }
+ else   if (operator.equals("startsWith") && isFieldComparison) {
+    return OperatorId.STARTS_WITH_FIELD;
+  }
+ else   if (operator.equals("startsWith")) {
+    return OperatorId.STARTS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("endsWith") && isNegation) {
+    return OperatorId.INOT_ENDS_WITH;
+  }
+ else   if (operator.equals("endsWith") && isNegation) {
+    return OperatorId.NOT_ENDS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("endsWith")) {
+    return OperatorId.IENDS_WITH;
+  }
+ else   if (operator.equals("endsWith") && isFieldComparison) {
+    return OperatorId.ENDS_WITH_FIELD;
+  }
+ else   if (operator.equals("endsWith")) {
+    return OperatorId.ENDS_WITH;
+  }
+  throw new IncompatibleMVELTranslationException("Unable to identify an operator compatible with the rules builder: (" + (isNegation ? "!" : "" + field + operator+ value) + ")");
+}

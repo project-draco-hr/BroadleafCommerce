@@ -1,0 +1,83 @@
+{
+  StringBuffer response=new StringBuffer();
+  if (isFieldComparison) {
+switch (type) {
+case MONEY:
+      response.append(entityKey);
+    response.append(".");
+  response.append(value);
+response.append(".getAmount()");
+break;
+default :
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+response.append(entityKey);
+response.append(".");
+response.append(value);
+if (ignoreCase) {
+response.append(")");
+}
+break;
+}
+}
+ else {
+switch (type) {
+case BOOLEAN:
+response.append(value);
+break;
+case DECIMAL:
+response.append(value);
+break;
+case ID:
+if (secondaryType != null && secondaryType.toString().equals(SupportedFieldType.STRING.toString())) {
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+if (!ignoreQuotes) {
+response.append("\"");
+}
+response.append(value);
+if (!ignoreQuotes) {
+response.append("\"");
+}
+if (ignoreCase) {
+response.append(")");
+}
+}
+ else {
+response.append(value);
+}
+break;
+case INTEGER:
+response.append(value);
+break;
+case MONEY:
+response.append(value);
+break;
+case DATE:
+DateTimeFormat formatter=DateTimeFormat.getFormat("MM/dd/yy H:mm a");
+String formattedDate=formatter.format((Date)value);
+response.append("java.text.DateFormat.getDateTimeInstance(3,3).parse(\"");
+response.append(formattedDate);
+response.append("\")");
+break;
+default :
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+if (!ignoreQuotes) {
+response.append("\"");
+}
+response.append(value);
+if (!ignoreQuotes) {
+response.append("\"");
+}
+if (ignoreCase) {
+response.append(")");
+}
+break;
+}
+}
+return response.toString();
+}

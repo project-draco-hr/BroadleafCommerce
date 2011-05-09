@@ -1,12 +1,17 @@
 {
   form.setDataSource(dataSource);
   Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
-  List<String> sectionNames=new ArrayList<String>();
+  Map<String,Integer> sectionNames=new HashMap<String,Integer>();
   DataSourceField[] fields=dataSource.getFields();
   for (  DataSourceField field : fields) {
     String fieldType=field.getAttribute("fieldType");
     if (fieldType != null && !field.getHidden()) {
       String group=field.getAttribute("formGroup");
+      String temp=field.getAttribute("formGroupOrder");
+      Integer groupOrder=null;
+      if (temp != null) {
+        groupOrder=Integer.valueOf(temp);
+      }
       if (group == null) {
         if (fieldType.equals(SupportedFieldType.ID.toString())) {
           group="Primary Key";
@@ -26,7 +31,7 @@
           canEdit=false;
           showDisabledState=false;
         }
-        setupField(showDisabledState,canEdit,sections,sectionNames,field,group,formItem,displayFormItem);
+        setupField(showDisabledState,canEdit,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
       }
     }
   }

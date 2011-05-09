@@ -21,12 +21,12 @@
                     public void onSuccess(                    final DataSource countryDS){
                       ((ListGridDataSource)countryDS).resetPermanentFieldVisibility("abbreviation","name");
                       final EntitySearchDialog countrySearchView=new EntitySearchDialog((ListGridDataSource)countryDS);
-                      ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,"Search For A Country",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                      ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,AdminModule.ADMINMESSAGES.countrySearchPrompt(),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
                       StateListDataSourceFactory.createDataSource("stateDS",new AsyncCallbackAdapter(){
                         public void onSuccess(                        final DataSource stateDS){
                           ((ListGridDataSource)stateDS).resetPermanentFieldVisibility("abbreviation","name");
                           final EntitySearchDialog stateSearchView=new EntitySearchDialog((ListGridDataSource)stateDS);
-                          ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,"Search For A State",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                          ((DynamicEntityDataSource)top).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,AdminModule.ADMINMESSAGES.stateSearchPrompt(),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
                           FulfillmentGroupListDataSourceFactory.createDataSource("fulfillmentGroupDS",new AsyncCallbackAdapter(){
                             public void onSuccess(                            DataSource fgDS){
                               fulfillmentGroupPresenter=new SubPresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
@@ -37,14 +37,14 @@
                                   paymentInfoPresenter=new SubPresenter(((OrderDisplay)getDisplay()).getPaymentInfoDisplay());
                                   paymentInfoPresenter.setDataSource((ListGridDataSource)paymentInfoDS,new String[]{"referenceNumber","type","amount"},new Boolean[]{false,false,false});
                                   paymentInfoPresenter.setReadOnly(true);
-                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,"Search For A Country",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
-                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,"Search For A State",(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,AdminModule.ADMINMESSAGES.countrySearchPrompt(),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+                                  ((DynamicEntityDataSource)paymentInfoDS).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,AdminModule.ADMINMESSAGES.stateSearchPrompt(),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
                                   PaymentAdditionalAttributesDataSourceFactory.createDataSource("paymentAdditionalAttributesDS",((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay().getGrid(),new AsyncCallbackAdapter(){
                                     public void onSuccess(                                    DataSource attributeDS){
                                       Map<String,Object> initialValues=new HashMap<String,Object>();
-                                      initialValues.put("key","Untitled");
-                                      initialValues.put("value","Untitled");
-                                      additionalPaymentAttributesPresenter=new MapStructurePresenter(((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay(),new MapStructureEntityEditDialog(),"Add New Attribute",initialValues);
+                                      initialValues.put("key",AdminModule.ADMINMESSAGES.paymentAttributeKeyDefault());
+                                      initialValues.put("value",AdminModule.ADMINMESSAGES.paymentAttributeValueDefault());
+                                      additionalPaymentAttributesPresenter=new MapStructurePresenter(((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay(),new MapStructureEntityEditDialog(),AdminModule.ADMINMESSAGES.newAttributeTitle(),initialValues);
                                       additionalPaymentAttributesPresenter.setDataSource((ListGridDataSource)attributeDS,new String[]{"key","value"},new Boolean[]{true,true});
                                       additionalPaymentAttributesPresenter.setReadOnly(true);
                                       OfferCodeListDataSourceFactory.createDataSource("offerCodeDS",new AsyncCallbackAdapter(){
@@ -54,17 +54,17 @@
                                           offerCodePresenter.setReadOnly(true);
                                           OrderAdjustmentListDataSourceFactory.createDataSource("orderAdjustmentDS",new AsyncCallbackAdapter(){
                                             public void onSuccess(                                            DataSource orderAdjustmentDS){
-                                              orderAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderAdjustmentDisplay(),"Add An Order Ajustment");
+                                              orderAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderAdjustmentDisplay(),AdminModule.ADMINMESSAGES.newOrderAdjustmentTitle());
                                               orderAdjustmentPresenter.setDataSource((ListGridDataSource)orderAdjustmentDS,new String[]{"reason","value","offer.name","offer.type"},new Boolean[]{false,false,false,false});
                                               orderAdjustmentPresenter.setReadOnly(true);
                                               OrderItemAdjustmentListDataSourceFactory.createDataSource("orderItemAdjustmentDS",new AsyncCallbackAdapter(){
                                                 public void onSuccess(                                                DataSource orderItemAdjustmentDS){
-                                                  orderItemAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderItemAdjustmentDisplay(),"Add An Order Item Adjustment");
+                                                  orderItemAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderItemAdjustmentDisplay(),AdminModule.ADMINMESSAGES.newOrderItemAdjustmentTitle());
                                                   orderItemAdjustmentPresenter.setDataSource((ListGridDataSource)orderItemAdjustmentDS,new String[]{"reason","value","offer.type"},new Boolean[]{false,false,false});
                                                   orderItemAdjustmentPresenter.setReadOnly(true);
                                                   FulfillmentGroupAdjustmentListDataSourceFactory.createDataSource("fulfillmentGroupAdjustmentDS",new AsyncCallbackAdapter(){
                                                     public void onSuccess(                                                    DataSource fulfillmentGroupAdjustmentDS){
-                                                      fulfillmentGroupAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupAdjustmentDisplay(),"Add A Fulfillment Group Adjustment");
+                                                      fulfillmentGroupAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupAdjustmentDisplay(),AdminModule.ADMINMESSAGES.newFGAdjustmentTitle());
                                                       fulfillmentGroupAdjustmentPresenter.setDataSource((ListGridDataSource)fulfillmentGroupAdjustmentDS,new String[]{"reason","value","offer.type"},new Boolean[]{false,false,false});
                                                       fulfillmentGroupAdjustmentPresenter.setReadOnly(true);
                                                       OrderPresenter.super.go(container);

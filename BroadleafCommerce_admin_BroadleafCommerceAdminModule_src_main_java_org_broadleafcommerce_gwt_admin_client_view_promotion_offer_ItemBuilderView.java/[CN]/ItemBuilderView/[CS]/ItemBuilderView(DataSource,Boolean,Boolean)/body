@@ -1,0 +1,68 @@
+{
+  super(10);
+  if (allowDelete) {
+    VLayout removeLayout=new VLayout();
+    removeLayout.setAlign(VerticalAlignment.CENTER);
+    removeLayout.setHeight(40);
+    removeLayout.setWidth(16);
+    removeButton=new ImgButton();
+    removeButton.setSrc(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/remove.png");
+    removeButton.setShowRollOver(false);
+    removeButton.setShowDownIcon(false);
+    removeButton.setShowDown(false);
+    removeButton.setWidth(16);
+    removeButton.setHeight(16);
+    removeLayout.addMember(removeButton);
+    addMember(removeLayout);
+  }
+  VLayout formLayout=new VLayout();
+  formLayout.setAlign(VerticalAlignment.CENTER);
+  formLayout.setWidth(30);
+  formLayout.setHeight(40);
+  itemForm=new DynamicForm();
+  if (!allowInfiniteQuantity) {
+    itemQuantity=new IntegerItem();
+    itemQuantity.setShowTitle(false);
+    itemQuantity.setValue(1);
+    itemQuantity.setWidth(40);
+  }
+ else {
+    itemQuantity=new ComboBoxItem();
+    itemQuantity.setType("comboBox");
+    LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
+    valueMap.put("-1","All");
+    itemQuantity.setValueMap(valueMap);
+    itemQuantity.setShowTitle(false);
+    itemQuantity.setValue(1);
+    itemQuantity.setWidth(60);
+    itemQuantity.setValidators(new IsIntegerValidator());
+  }
+  itemForm.setItems(itemQuantity);
+  formLayout.addMember(itemForm);
+  addMember(formLayout);
+  VLayout labelLayout=new VLayout();
+  labelLayout.setAlign(VerticalAlignment.CENTER);
+  labelLayout.setWidth(20);
+  labelLayout.setHeight(40);
+  label=new Label("Of");
+  label.setWidth(20);
+  label.setHeight(20);
+  labelLayout.addMember(label);
+  addMember(labelLayout);
+  VLayout builderLayout=new VLayout();
+  builderLayout.setHeight(40);
+  builderLayout.setAlign(VerticalAlignment.TOP);
+  itemFilterBuilder=new FilterBuilder();
+  itemFilterBuilder.setDataSource(itemDataSource);
+  itemFilterBuilder.setLayoutBottomMargin(10);
+  builderLayout.addMember(itemFilterBuilder);
+  rawItemForm=new DynamicForm();
+  rawItemForm.setVisible(false);
+  rawItemTextArea=new TextAreaItem();
+  rawItemTextArea.setHeight(70);
+  rawItemTextArea.setWidth("600");
+  rawItemTextArea.setShowTitle(false);
+  rawItemForm.setFields(rawItemTextArea);
+  builderLayout.addMember(rawItemForm);
+  addMember(builderLayout);
+}
