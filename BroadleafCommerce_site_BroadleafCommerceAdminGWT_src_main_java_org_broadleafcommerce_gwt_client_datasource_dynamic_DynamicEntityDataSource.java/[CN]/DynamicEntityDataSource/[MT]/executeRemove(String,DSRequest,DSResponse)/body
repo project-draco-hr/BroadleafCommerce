@@ -1,0 +1,20 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  String componentId=request.getComponentId();
+  if (componentId != null) {
+    if (entity.getType() == null) {
+      String type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttribute("type");
+      entity.setType(type);
+    }
+  }
+  service.remove(entity,foreignFields,removeType,additionalNonPersistentProperties,new EntityServiceAsyncCallback<Void>(EntityOperationType.REMOVE,requestId,request,response){
+    public void onSuccess(    Void item){
+      super.onSuccess(null);
+      processResponse(requestId,response);
+    }
+  }
+);
+}

@@ -1,0 +1,33 @@
+{
+  if (criteriaArray != null) {
+    for (int i=0; i <= criteriaArray.size() - 1; i++) {
+      JSONObject itemObj=criteriaArray.get(i).isObject();
+      if (itemObj != null) {
+        JSONValue val=itemObj.get("fieldName");
+        if (val == null) {
+          JSONArray array=itemObj.get("criteria").isArray();
+          buildCriteria(array,cto);
+        }
+ else {
+          FilterAndSortCriteria filterCriteria=cto.get(val.isString().stringValue());
+          String[] items=filterCriteria.getFilterValues();
+          String[] newItems=new String[items.length + 1];
+          int j=0;
+          for (          String item : items) {
+            newItems[j]=item;
+            j++;
+          }
+          JSONValue value=itemObj.get("value");
+          JSONString strVal=value.isString();
+          if (strVal != null) {
+            newItems[j]=strVal.stringValue();
+          }
+ else {
+            newItems[j]=value.isObject().get("value").isString().stringValue();
+          }
+          filterCriteria.setFilterValues(newItems);
+        }
+      }
+    }
+  }
+}

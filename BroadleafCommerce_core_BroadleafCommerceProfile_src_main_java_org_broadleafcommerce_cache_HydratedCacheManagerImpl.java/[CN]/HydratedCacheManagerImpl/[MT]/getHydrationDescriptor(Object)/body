@@ -3,7 +3,7 @@
     return hydrationDescriptors.get(entity.getClass().getName());
   }
   HydrationDescriptor descriptor=new HydrationDescriptor();
-  Class topEntityClass=getTopEntityClass(entity);
+  Class<?> topEntityClass=getTopEntityClass(entity);
   HydrationScanner scanner=new HydrationScanner(topEntityClass,entity.getClass());
   scanner.init();
   descriptor.setHydratedMutators(scanner.getCacheMutators());

@@ -15,11 +15,25 @@
   }
   Criteria criteria=request.getCriteria();
   String jsObj=JSON.encode(criteria.getJsObj());
-  Map<String,String> filterData=criteria.getValues();
+  @SuppressWarnings("rawtypes") Map filterData=criteria.getValues();
   Set<String> filterFieldNames=filterData.keySet();
   for (  String fieldName : filterFieldNames) {
-    FilterAndSortCriteria filterCriteria=cto.get(fieldName);
-    filterCriteria.setFilterValue(filterData.get(fieldName));
+    if (!fieldName.equals("_constructor") && !fieldName.equals("operator")) {
+      if (!fieldName.equals("criteria")) {
+        FilterAndSortCriteria filterCriteria=cto.get(fieldName);
+        filterCriteria.setFilterValue(stripDuplicateAllowSpecialCharacters((String)filterData.get(fieldName)));
+      }
+ else {
+        JSONValue value=JSONParser.parse(jsObj);
+        JSONObject criteriaObj=value.isObject();
+        JSONArray criteriaArray=criteriaObj.get("criteria").isArray();
+        buildCriteria(criteriaArray,cto);
+      }
+    }
+  }
+  if (getCurrentForeignKey() != null) {
+    FilterAndSortCriteria filterCriteria=cto.get(getCurrentForeignKey().getManyToField());
+    filterCriteria.setFilterValue(getCurrentForeignKey().getCurrentValue());
   }
   return cto;
 }

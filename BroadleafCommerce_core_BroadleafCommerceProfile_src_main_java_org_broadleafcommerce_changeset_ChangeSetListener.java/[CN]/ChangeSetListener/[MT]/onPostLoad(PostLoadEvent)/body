@@ -1,0 +1,12 @@
+{
+  if (ChangeSetThreadLocal.getChangeSetDao() != null && ChangeSetThreadLocal.getChangeSet() != null && !Map.class.isAssignableFrom(event.getEntity().getClass())) {
+    AuditReader reader=ChangeSetThreadLocal.getChangeSetDao().getAuditReader(event.getSession());
+    @SuppressWarnings("unchecked") List<Number> revisions=(List<Number>)reader.createQuery().forRevisionsOfEntity(event.getEntity().getClass(),false,true).addProjection(AuditEntity.revisionNumber().max()).add(AuditEntity.id().eq(event.getId())).add(AuditEntity.revisionProperty("changeset").eq(ChangeSetThreadLocal.getChangeSet())).getResultList();
+    if (revisions.size() > 1 || (revisions.size() == 1 && revisions.get(0) != null)) {
+      for (      Number revision : revisions) {
+        Serializable changeSetEntity=(Serializable)reader.createQuery().forEntitiesAtRevision(event.getEntity().getClass(),revision).getSingleResult();
+        copyFieldState(changeSetEntity,event.getEntity());
+      }
+    }
+  }
+}

@@ -24,20 +24,19 @@ case EMAIL:
 ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
 break;
 case FOREIGN_KEY:
+if (cto.get(propertyName).getFilterValues().length > 0) {
+if (cto.get(propertyName).getFilterValues()[0] == null) {
+AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
+ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getComplexIdProperty());
+}
+ else {
 AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
 ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getComplexIdProperty());
+}
+}
 break;
 case ID:
 ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
-break;
-case HIERARCHY_KEY:
-if (cto.get(propertyName).getFilterValues()[0] == null) {
-ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
-}
- else {
-AssociationPath parentCategory=new AssociationPath(new AssociationPathElement(propertyName));
-ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,parentCategory,mergedProperties.get(propertyName).getComplexIdProperty());
-}
 break;
 }
 }

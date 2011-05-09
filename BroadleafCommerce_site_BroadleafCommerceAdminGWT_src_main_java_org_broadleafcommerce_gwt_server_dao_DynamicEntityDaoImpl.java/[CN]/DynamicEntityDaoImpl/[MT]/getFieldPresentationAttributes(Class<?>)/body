@@ -1,0 +1,20 @@
+{
+  Map<String,FieldPresentationAttributes> attributes=new HashMap<String,FieldPresentationAttributes>();
+  Field[] fields=targetClass.getDeclaredFields();
+  for (  Field field : fields) {
+    AdminPresentation annot=field.getAnnotation(AdminPresentation.class);
+    if (annot != null) {
+      FieldPresentationAttributes attr=new FieldPresentationAttributes();
+      attr.setName(field.getName());
+      attr.setFriendlyName(annot.friendlyName());
+      attr.setHidden(annot.hidden());
+      attr.setOrder(annot.order());
+      attr.setFieldType(annot.fieldType());
+      attr.setGroup(annot.group());
+      attr.setLargeEntry(annot.largeEntry());
+      attr.setProminent(annot.prominent());
+      attributes.put(field.getName(),attr);
+    }
+  }
+  return attributes;
+}

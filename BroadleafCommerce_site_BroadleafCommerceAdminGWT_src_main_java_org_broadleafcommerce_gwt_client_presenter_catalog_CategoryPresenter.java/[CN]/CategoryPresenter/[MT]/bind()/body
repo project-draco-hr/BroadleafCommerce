@@ -1,0 +1,97 @@
+{
+  super.bind();
+  ((CategoryDisplay)display).getAddParentCategoryButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (categorySearchDataSource == null) {
+        CategoryListDataSourceFactory.createDataSource("categorySearch",RemoveType.REGULAR,new AsyncCallback<DataSource>(){
+          public void onFailure(          Throwable caught){
+          }
+          public void onSuccess(          DataSource result){
+            categorySearchDataSource=(CategoryListDataSource)result;
+            categorySearchDataSource.resetFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
+            Main.SEARCH_VIEW.search(categorySearchDataSource,"Category Search",new SearchItemSelectedEventHandler(){
+              public void onSearchItemSelected(              SearchItemSelectedEvent event){
+                ((CategoryDisplay)display).getAllParentCategoryGrid().addData(event.getRecord(),new DSCallback(){
+                  public void execute(                  DSResponse response,                  Object rawData,                  DSRequest request){
+                    if (response.getErrors().isEmpty()) {
+                      TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
+                      LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
+                      if (loaded != null) {
+                        ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
+                      }
+                      ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+                    }
+                  }
+                }
+);
+              }
+            }
+);
+          }
+        }
+);
+      }
+ else {
+        Main.SEARCH_VIEW.search(categorySearchDataSource,"Category Search",new SearchItemSelectedEventHandler(){
+          public void onSearchItemSelected(          SearchItemSelectedEvent event){
+            ((CategoryDisplay)display).getAllParentCategoryGrid().addData(event.getRecord(),new DSCallback(){
+              public void execute(              DSResponse response,              Object rawData,              DSRequest request){
+                if (response.getErrors().isEmpty()) {
+                  TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
+                  LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
+                  if (loaded != null) {
+                    ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
+                  }
+                  ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+                }
+              }
+            }
+);
+          }
+        }
+);
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getRemoveParentCategoryButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      ((CategoryDisplay)display).getAllParentCategoryGrid().removeData(((CategoryDisplay)display).getAllParentCategoryGrid().getSelectedRecord());
+      TreeNode parentRecord=((CategoryDisplay)display).getGrid().getTree().findById(((CategoryDisplay)display).getGrid().getSelectedRecord().getAttribute("id"));
+      LoadState loaded=((CategoryDisplay)display).getGrid().getTree().getLoadState(parentRecord);
+      if (loaded != null) {
+        ((CategoryDisplay)display).getGrid().getTree().reloadChildren(parentRecord);
+      }
+      ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+    }
+  }
+);
+  ((CategoryDisplay)display).getGrid().addDataArrivedHandler(new DataArrivedHandler(){
+    public void onDataArrived(    DataArrivedEvent event){
+      Record[] records=event.getParentNode().getAttributeAsRecordArray("children");
+      for (      Record record : records) {
+        String hasChildren=((TreeNode)record).getAttribute(CategoryTreeDataSource.hasChildrenProperty);
+        if (hasChildren != null && !Boolean.parseBoolean(hasChildren)) {
+          ((CategoryDisplay)display).getGrid().getTree().loadChildren((TreeNode)record);
+        }
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getAllParentCategoryGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((CategoryDisplay)display).getRemoveParentCategoryButton().enable();
+      }
+ else {
+        ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+      }
+    }
+  }
+);
+  ((CategoryDisplay)display).getAllParentCategoryGrid().addRecordDropHandler(new RecordDropHandler(){
+    public void onRecordDrop(    RecordDropEvent event){
+    }
+  }
+);
+}

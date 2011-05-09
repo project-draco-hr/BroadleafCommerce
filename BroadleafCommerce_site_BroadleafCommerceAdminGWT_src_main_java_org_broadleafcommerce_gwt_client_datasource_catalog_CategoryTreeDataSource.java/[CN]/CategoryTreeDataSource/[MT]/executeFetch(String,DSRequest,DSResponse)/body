@@ -1,0 +1,28 @@
+{
+  final CriteriaTransferObject criteriaTransferObject=getCto(request);
+  String parentCategoryId=criteriaTransferObject.get(foreignKeyName).getFilterValues()[0];
+  boolean hasChildren=true;
+  TreeNode parentNode=((TreeGrid)associatedGrid).getTree().findById(parentCategoryId);
+  if (parentNode != null) {
+    hasChildren=Boolean.parseBoolean(parentNode.getAttribute(hasChildrenProperty));
+  }
+  if (hasChildren) {
+    Main.NON_MODAL_PROGRESS.startProgress();
+    service.fetch(ceilingEntityFullyQualifiedClassname,foreignFields,criteriaTransferObject,additionalNonPersistentProperties,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response){
+      public void onSuccess(      DynamicResultSet result){
+        super.onSuccess(result);
+        TreeNode[] recordList=buildRecords(result);
+        response.setData(recordList);
+        response.setTotalRows(result.getTotalRecords());
+        processResponse(requestId,response);
+      }
+    }
+);
+  }
+ else {
+    TreeNode[] recordList=new TreeNode[]{};
+    response.setData(recordList);
+    response.setTotalRows(0);
+    processResponse(requestId,response);
+  }
+}

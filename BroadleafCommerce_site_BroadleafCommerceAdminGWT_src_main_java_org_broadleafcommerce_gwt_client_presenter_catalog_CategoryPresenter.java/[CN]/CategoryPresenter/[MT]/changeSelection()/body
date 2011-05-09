@@ -1,0 +1,10 @@
+{
+  ((CategoryDisplay)display).getAllParentCategoryGrid().enable();
+  ((CategoryDisplay)display).getAllParentCategoryToolBar().enable();
+  CategoryListDataSource allPDS=(CategoryListDataSource)((CategoryDisplay)getDisplay()).getAllParentCategoryGrid().getDataSource();
+  allPDS.setLinkedValue(lastSelectedRecord.getAttribute("id"));
+  Criteria criteria=new Criteria();
+  criteria.addCriteria("allParentCategories",lastSelectedRecord.getAttribute("id"));
+  ((CategoryDisplay)getDisplay()).getAllParentCategoryGrid().fetchData(criteria);
+  ((CategoryDisplay)display).getRemoveParentCategoryButton().disable();
+}

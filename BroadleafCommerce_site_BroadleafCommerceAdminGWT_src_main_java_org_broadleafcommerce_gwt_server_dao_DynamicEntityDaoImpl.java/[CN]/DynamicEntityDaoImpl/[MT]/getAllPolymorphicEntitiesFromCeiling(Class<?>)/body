@@ -1,0 +1,25 @@
+{
+  List<Class<?>> entities=new ArrayList<Class<?>>();
+  for (  Object item : sessionFactory.getAllClassMetadata().values()) {
+    ClassMetadata metadata=(ClassMetadata)item;
+    Class<?> mappedClass=metadata.getMappedClass(EntityMode.POJO);
+    if (mappedClass != null && ceilingClass.isAssignableFrom(mappedClass)) {
+      entities.add(mappedClass);
+    }
+  }
+  Class<?>[] sortedEntities=new Class<?>[entities.size()];
+  sortedEntities=entities.toArray(sortedEntities);
+  Arrays.sort(sortedEntities,new Comparator<Class<?>>(){
+    public int compare(    Class<?> o1,    Class<?> o2){
+      if (o1.equals(o2)) {
+        return 0;
+      }
+ else       if (o1.isAssignableFrom(o2)) {
+        return 1;
+      }
+      return -1;
+    }
+  }
+);
+  return sortedEntities;
+}

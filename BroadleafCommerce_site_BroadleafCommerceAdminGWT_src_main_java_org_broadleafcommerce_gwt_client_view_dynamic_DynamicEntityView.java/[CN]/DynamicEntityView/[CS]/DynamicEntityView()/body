@@ -1,0 +1,37 @@
+{
+  this.setIsModal(true);
+  this.setShowModalMask(true);
+  this.setShowMinimizeButton(false);
+  this.setWidth(600);
+  this.setHeight(300);
+  this.setCanDragResize(true);
+  this.setOverflow(Overflow.AUTO);
+  dynamicForm=new DynamicForm();
+  dynamicForm.setNumCols(4);
+  dynamicForm.setPadding(10);
+  addItem(dynamicForm);
+  IButton saveButton=new IButton("Save");
+  saveButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (dynamicForm.validate()) {
+        dynamicForm.saveData();
+        hide();
+      }
+    }
+  }
+);
+  IButton cancelButton=new IButton("Cancel");
+  cancelButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      hide();
+    }
+  }
+);
+  HLayout hLayout=new HLayout(10);
+  hLayout.setAlign(Alignment.CENTER);
+  hLayout.addMember(saveButton);
+  hLayout.addMember(cancelButton);
+  hLayout.setLayoutTopMargin(40);
+  hLayout.setLayoutBottomMargin(40);
+  addItem(hLayout);
+}

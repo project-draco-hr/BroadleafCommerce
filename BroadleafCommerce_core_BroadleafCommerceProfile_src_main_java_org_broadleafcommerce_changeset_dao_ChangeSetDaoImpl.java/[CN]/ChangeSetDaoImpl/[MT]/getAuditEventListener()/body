@@ -1,0 +1,11 @@
+{
+synchronized (this) {
+    if (auditEventListener == null) {
+      Ejb3Configuration temp=ejb3ConfigurationDao.getConfiguration();
+      Configuration configuration=temp.getHibernateConfiguration();
+      auditEventListener=new AuditEventListener();
+      auditEventListener.initialize(configuration);
+    }
+  }
+  return auditEventListener;
+}

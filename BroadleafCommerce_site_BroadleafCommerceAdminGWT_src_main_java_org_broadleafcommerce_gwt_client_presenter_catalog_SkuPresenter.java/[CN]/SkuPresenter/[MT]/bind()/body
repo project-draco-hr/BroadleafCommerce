@@ -1,0 +1,19 @@
+{
+  super.bind();
+  eventBus.addHandler(ProductSelectionChangedEvent.TYPE,new ProductSelectionChangedEventHandler(){
+    public void onChangeSelection(    ProductSelectionChangedEvent event){
+      String productId=event.getRecord().getAttribute("id");
+      Criteria criteria=new Criteria();
+      criteria.addCriteria("allParentProduct",productId);
+      ForeignKey currentForeignKey=new ForeignKey();
+      currentForeignKey.setManyToField("allParentProduct");
+      currentForeignKey.setCurrentValue(productId);
+      ((DynamicEntityDataSource)display.getGrid().getDataSource()).setCurrentForeignKey(currentForeignKey);
+      display.getGrid().clearCriteria();
+      display.getGrid().fetchData(criteria);
+      display.getAddButton().enable();
+      display.getEntityType().enable();
+    }
+  }
+);
+}

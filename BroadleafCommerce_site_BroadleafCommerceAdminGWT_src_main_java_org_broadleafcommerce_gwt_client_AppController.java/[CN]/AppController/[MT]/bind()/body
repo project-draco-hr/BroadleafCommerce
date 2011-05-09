@@ -1,18 +1,3 @@
 {
   History.addValueChangeHandler(this);
-  eventBus.addHandler(DataSourcePreparedEvent.TYPE,new DataSourcePreparedEventHandler(){
-    public void onDataSourcePrepared(    DataSourcePreparedEvent event){
-      if ("category".equals(event.getToken())) {
-        Presenter presenter=new CategoryPresenter(eventBus,(CategoryView)viewLibrary.getView(event.getToken(),new CategoryView(event.getDataSource()),false));
-        presenter.go(container);
-        DynamicEntityDataSource productDataSource=new DynamicEntityDataSource(CeilingEntities.PRODUCT,eventBus,"product",AppServices.DYNAMIC_ENTITY,new String[]{"defaultCategory"});
-        productDataSource.buildFields();
-      }
-      if ("product".equals(event.getToken())) {
-        Presenter presenter2=new ProductPresenter(eventBus,(ProductView)viewLibrary.getView(event.getToken(),new ProductView(event.getDataSource()),false));
-        presenter2.go(container);
-      }
-    }
-  }
-);
 }

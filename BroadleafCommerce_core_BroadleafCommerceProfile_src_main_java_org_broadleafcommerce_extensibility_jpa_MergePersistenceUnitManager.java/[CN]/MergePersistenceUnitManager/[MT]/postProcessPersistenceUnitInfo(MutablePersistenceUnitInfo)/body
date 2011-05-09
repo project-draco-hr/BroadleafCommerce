@@ -2,9 +2,16 @@
   super.postProcessPersistenceUnitInfo(newPU);
   newPU.addJarFileUrl(newPU.getPersistenceUnitRootUrl());
   String persistenceUnitName=newPU.getPersistenceUnitName();
-  MutablePersistenceUnitInfo temp=getMergedUnit(persistenceUnitName,newPU);
-  final URL persistenceUnitRootUrl=newPU.getPersistenceUnitRootUrl();
-  temp.setPersistenceUnitRootUrl(persistenceUnitRootUrl);
+  MutablePersistenceUnitInfo temp;
+  PersistenceUnitInfo pui=getMergedUnit(persistenceUnitName,newPU);
+  if (pui != null && Proxy.isProxyClass(pui.getClass())) {
+    Jpa2PersistenceUnitInfoDecorator dec=(Jpa2PersistenceUnitInfoDecorator)Proxy.getInvocationHandler(pui);
+    temp=(MutablePersistenceUnitInfo)dec.getTarget();
+  }
+ else {
+    temp=(MutablePersistenceUnitInfo)pui;
+  }
+  temp.setPersistenceUnitRootUrl(null);
   List<String> managedClassNames=newPU.getManagedClassNames();
   for (  String managedClassName : managedClassNames) {
     if (!temp.getManagedClassNames().contains(managedClassName)) {

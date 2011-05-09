@@ -1,0 +1,10 @@
+{
+  SessionImplementor sessionImpl;
+  if (!(session instanceof SessionImplementor)) {
+    sessionImpl=(SessionImplementor)session.getSessionFactory().getCurrentSession();
+  }
+ else {
+    sessionImpl=(SessionImplementor)session;
+  }
+  return new AuditReaderImpl(getAuditEventListener().getVerCfg(),session,sessionImpl);
+}

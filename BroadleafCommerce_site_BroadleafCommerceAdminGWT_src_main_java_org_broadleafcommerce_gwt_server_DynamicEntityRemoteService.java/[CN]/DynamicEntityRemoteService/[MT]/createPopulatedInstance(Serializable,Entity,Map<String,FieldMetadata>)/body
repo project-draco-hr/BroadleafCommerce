@@ -52,17 +52,21 @@ case EMAIL:
 PropertyUtils.setProperty(instance,property.getName(),value);
 break;
 case FOREIGN_KEY:
-Serializable foreignInstance=(Serializable)Class.forName(mergedProperties.get(originalPropertyName).getComplexType()).newInstance();
-PropertyUtils.setProperty(foreignInstance,mergedProperties.get(originalPropertyName).getComplexIdProperty(),Long.valueOf(value));
+Serializable foreignInstance=dynamicEntityDao.retrieve(Class.forName(entity.getType()),Long.valueOf(value));
+if (Collection.class.isAssignableFrom(returnType)) {
+@SuppressWarnings("rawtypes") Collection collection=(Collection)PropertyUtils.getProperty(instance,property.getName());
+if (!collection.contains(foreignInstance)) {
+collection.add(foreignInstance);
+}
+}
+ else if (Map.class.isAssignableFrom(returnType)) {
+}
+ else {
 PropertyUtils.setProperty(instance,property.getName(),foreignInstance);
+}
 break;
 case ID:
 PropertyUtils.setProperty(instance,property.getName(),Long.valueOf(value));
-break;
-case HIERARCHY_KEY:
-Serializable hierarchyInstance=(Serializable)Class.forName(mergedProperties.get(originalPropertyName).getComplexType()).newInstance();
-PropertyUtils.setProperty(hierarchyInstance,mergedProperties.get(originalPropertyName).getComplexIdProperty(),Long.valueOf(value));
-PropertyUtils.setProperty(instance,property.getName(),hierarchyInstance);
 break;
 }
 }

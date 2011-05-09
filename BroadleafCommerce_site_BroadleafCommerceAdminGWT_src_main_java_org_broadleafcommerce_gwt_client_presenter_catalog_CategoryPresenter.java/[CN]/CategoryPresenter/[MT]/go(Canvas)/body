@@ -1,0 +1,24 @@
+{
+  CategoryTreeDataSourceFactory.createDataSource("categoryTreeDS",RemoveType.COLLECTION,new AsyncCallback<DataSource>(){
+    public void onFailure(    Throwable caught){
+    }
+    public void onSuccess(    DataSource top){
+      ((CategoryDisplay)getDisplay()).build(top);
+      ((TreeGridDataSource)top).setAssociatedGrid(((CategoryDisplay)getDisplay()).getGrid());
+      ((TreeGridDataSource)top).setupFields();
+      CategoryListDataSourceFactory.createDataSource("allParentCategoriesDS",RemoveType.COLLECTION,new AsyncCallback<DataSource>(){
+        public void onFailure(        Throwable caught){
+        }
+        public void onSuccess(        DataSource result){
+          ((DynamicEntityDataSource)result).resetFieldVisibility("urlKey","name");
+          ((CategoryDisplay)getDisplay()).getAllParentCategoryGrid().setDataSource(result);
+          ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getAllParentCategoryGrid());
+          ((ListGridDataSource)result).setupFields();
+          CategoryPresenter.super.go(container);
+        }
+      }
+);
+    }
+  }
+);
+}

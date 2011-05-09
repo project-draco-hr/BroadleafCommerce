@@ -1,0 +1,16 @@
+{
+  if (clearCurrentView) {
+    clearCurrentView();
+  }
+  Display view;
+  if (!containsKey(value)) {
+    view=(Display)ModuleFactory.getInstance().createItem(value);
+    put(value,view);
+  }
+ else {
+    view=get(value);
+  }
+  currentView.push(view);
+  keyStack.push(value);
+  return view;
+}

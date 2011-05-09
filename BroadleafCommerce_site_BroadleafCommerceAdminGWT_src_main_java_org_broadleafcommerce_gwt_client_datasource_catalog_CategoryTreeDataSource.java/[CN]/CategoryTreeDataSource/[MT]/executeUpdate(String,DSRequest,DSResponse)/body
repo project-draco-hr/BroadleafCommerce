@@ -1,0 +1,34 @@
+{
+  Main.NON_MODAL_PROGRESS.startProgress();
+  JavaScriptObject data=request.getData();
+  final TreeNode record=new TreeNode(data);
+  Entity entity=buildEntity(record);
+  String componentId=request.getComponentId();
+  if (componentId != null) {
+    if (entity.getType() == null) {
+      String type=((ListGrid)Canvas.getById(componentId)).getSelectedRecord().getAttribute("type");
+      entity.setType(type);
+    }
+  }
+  service.update(entity,foreignFields,additionalNonPersistentProperties,new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response){
+    public void onSuccess(    Entity result){
+      super.onSuccess(result);
+      String startingId=stripDuplicateAllowSpecialCharacters(record.getAttribute("id"));
+      Record[] myRecords=CategoryTreeDataSource.this.getAssociatedGrid().getResultSet().toArray();
+      int count=1;
+      for (      Record myRecord : myRecords) {
+        String myId=stripDuplicateAllowSpecialCharacters(myRecord.getAttribute("id"));
+        if (startingId.equals(myId)) {
+          updateRecord(result,(TreeNode)myRecord,false);
+          CategoryTreeDataSource.this.getAssociatedGrid().refreshRow(count);
+        }
+        count++;
+      }
+      TreeNode myRecord=updateRecord(result,record,false);
+      TreeNode[] recordList=new TreeNode[]{myRecord};
+      response.setData(recordList);
+      processResponse(requestId,response);
+    }
+  }
+);
+}
