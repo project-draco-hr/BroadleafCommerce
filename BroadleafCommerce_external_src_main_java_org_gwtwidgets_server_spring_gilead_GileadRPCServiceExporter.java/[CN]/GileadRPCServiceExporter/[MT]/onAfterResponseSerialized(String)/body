@@ -1,9 +1,0 @@
-{
-  super.onAfterResponseSerialized(serializedResponse);
-  if (isUsingProxyClassLoader()) {
-    Thread currentThread=Thread.currentThread();
-    ClassLoader oldContextClassLoader=tmpClassloader.get();
-    currentThread.setContextClassLoader(oldContextClassLoader);
-    logger.info("reinstating old classloader");
-  }
-}
