@@ -1,0 +1,18 @@
+{
+  try {
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(AdminUser.class);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminUser.class.getName(),persistencePerspective,dynamicEntityDao,entityClasses);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    AdminUser adminInstance=(AdminUser)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance.setUnencodedPassword(adminInstance.getPassword());
+    adminInstance.setPassword(null);
+    adminInstance=adminSecurityService.saveAdminUser(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

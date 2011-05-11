@@ -16,6 +16,9 @@
  else   if ((explicitType != null && explicitType.equals(SupportedFieldType.DATE)) || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class)|| returnedClass.equals(Timestamp.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
   }
+ else   if (explicitType != null && explicitType.equals(SupportedFieldType.PASSWORD)) {
+    fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.PASSWORD,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+  }
  else   if ((explicitType != null && explicitType.equals(SupportedFieldType.STRING)) || returnedClass.equals(String.class)) {
     if (propertyName.equals(idProperty)) {
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,propertyIterator,SupportedFieldType.ID,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));

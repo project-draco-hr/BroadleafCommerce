@@ -1,0 +1,10 @@
+{
+  AdminUser user=readAdminUserByUserName(passwordChange.getUsername());
+  user.setUnencodedPassword(passwordChange.getNewPassword());
+  user=saveAdminUser(user);
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  UsernamePasswordAuthenticationToken authRequest=new UsernamePasswordAuthenticationToken(passwordChange.getUsername(),passwordChange.getNewPassword(),auth.getAuthorities());
+  SecurityContextHolder.getContext().setAuthentication(authRequest);
+  auth.setAuthenticated(false);
+  return user;
+}

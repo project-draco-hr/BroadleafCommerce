@@ -58,6 +58,20 @@
       if (friendlyName == null) {
         friendlyName=property.getName();
       }
+ else {
+        List<ConstantsWithLookup> constants=ValidationFactoryManager.getInstance().getConstants();
+        for (        ConstantsWithLookup constant : constants) {
+          try {
+            String val=constant.getString(friendlyName);
+            if (val != null) {
+              friendlyName=val;
+              break;
+            }
+          }
+ catch (          MissingResourceException e) {
+          }
+        }
+      }
       String securityLevel=property.getMetadata().getPresentationAttributes().getSecurityLevel();
       Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
       String group=property.getMetadata().getPresentationAttributes().getGroup();
@@ -106,13 +120,11 @@ field.setRequired(required);
 break;
 case EMAIL:
 field=new DataSourceTextField(propertyName,friendlyName);
-field.setValidators(Validators.EMAIL);
 field.setCanEdit(mutable);
 field.setRequired(required);
 break;
 case MONEY:
 field=new DataSourceFloatField(propertyName,friendlyName);
-field.setValidators(Validators.USCURRENCY);
 field.setCanEdit(mutable);
 field.setRequired(required);
 break;
@@ -157,11 +169,20 @@ valueMap.put(enumerationValues[j][0],enumerationValues[j][1]);
 }
 field.setValueMap(valueMap);
 break;
+case PASSWORD:
+field=new DataSourcePasswordField(propertyName,friendlyName);
+field.setCanEdit(mutable);
+field.setRequired(required);
+break;
 default :
 field=new DataSourceTextField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
 break;
+}
+field.setAttribute("friendlyName",friendlyName);
+if (property.getMetadata().getPresentationAttributes().getValidationConfigurations().size() > 0) {
+field.setValidators(ValidationFactoryManager.getInstance().createValidators(property.getMetadata().getPresentationAttributes().getValidationConfigurations(),propertyName));
 }
 if (fieldType.equals(SupportedFieldType.ID.toString())) {
 field.setHidden(true);
