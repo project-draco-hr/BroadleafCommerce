@@ -19,13 +19,10 @@
       throw new RuntimeException("Could not find a primary key property in the passed entity with type: " + entity.getType());
     }
     Object primaryKey=null;
-    for (    Property property : entity.getProperties()) {
-      if (property.getName().equals(idProperty)) {
-        if (!StringUtils.isEmpty(property.getValue())) {
-          primaryKey=property.getValue();
-        }
-        break;
-      }
+    try {
+      primaryKey=getPrimaryKey(entity,mergedProperties);
+    }
+ catch (    Exception e) {
     }
     if (primaryKey == null) {
       Serializable instance=(Serializable)Class.forName(entity.getType()[0]).newInstance();

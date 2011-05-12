@@ -2,11 +2,9 @@
   display.getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        searchDialog.search("All Roles",new SearchItemSelectedEventHandler(){
-          @SuppressWarnings({"rawtypes","unchecked"}) public void onSearchItemSelected(          SearchItemSelectedEvent event){
-            Map initialValues=((DynamicEntityDataSource)display.getGrid().getDataSource()).extractRecordValues((TreeNode)event.getRecord());
-            initialValues.put("backup_id",((DynamicEntityDataSource)display.getGrid().getDataSource()).getPrimaryKeyValue(event.getRecord()));
-            BLCMain.ENTITY_ADD.editNewRecord("Edit Roles",(DynamicEntityDataSource)display.getGrid().getDataSource(),initialValues,null,"200",null,null);
+        searchDialog.search(AdminModule.ADMINMESSAGES.userRolesTitle(),new SearchItemSelectedEventHandler(){
+          public void onSearchItemSelected(          SearchItemSelectedEvent event){
+            display.getGrid().addData(event.getRecord());
           }
         }
 );
@@ -30,8 +28,6 @@
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         ((DynamicEntityDataSource)display.getExpansionGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
-      }
- else {
       }
     }
   }
