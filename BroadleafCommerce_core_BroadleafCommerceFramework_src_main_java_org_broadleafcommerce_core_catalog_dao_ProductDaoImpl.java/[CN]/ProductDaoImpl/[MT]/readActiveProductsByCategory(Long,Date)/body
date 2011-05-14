@@ -1,7 +1,17 @@
 {
+  Date myDate;
+synchronized (this.currentDate) {
+    if (currentDate.getTime() - this.currentDate.getTime() > currentDateResolution) {
+      this.currentDate=currentDate;
+      myDate=currentDate;
+    }
+ else {
+      myDate=this.currentDate;
+    }
+  }
   Query query=em.createNamedQuery("BC_READ_ACTIVE_PRODUCTS_BY_CATEGORY");
   query.setParameter("categoryId",categoryId);
-  query.setParameter("currentDate",currentDate);
+  query.setParameter("currentDate",myDate);
   query.setHint(getQueryCacheableKey(),true);
   return query.getResultList();
 }
