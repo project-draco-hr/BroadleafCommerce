@@ -1,0 +1,12 @@
+{
+  if (SecurityManager.getInstance().isUserAuthorizedToViewSection(viewKey)) {
+    uiFactory.clearCurrentView();
+    Display view=uiFactory.getView(viewKey,false,false);
+    EntityPresenter presenter=uiFactory.getPresenter(presenterKey);
+    presenter.setDisplay(view);
+    presenter.setEventBus(eventBus);
+    presenter.getPresenterSetupManager().setCanvas(container);
+    presenter.setup();
+    presenter.getPresenterSetupManager().launch();
+  }
+}

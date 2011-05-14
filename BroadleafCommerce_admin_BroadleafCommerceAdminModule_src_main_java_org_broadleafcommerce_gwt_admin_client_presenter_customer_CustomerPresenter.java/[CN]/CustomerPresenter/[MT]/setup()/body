@@ -1,0 +1,18 @@
+{
+  getPresenterSetupManager().addOrReplaceItem(new PresenterSetupItem("customerDS",new CustomerListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource top){
+      setupDisplayItems(top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{"username","firstName","lastName","emailAddress"},new Boolean[]{true,true,true,true});
+      library.put("customerDS",top);
+    }
+  }
+));
+  getPresenterSetupManager().addOrReplaceItem(new PresenterSetupItem("challengeQuestionDS",new ChallengeQuestionListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ((ListGridDataSource)result).resetPermanentFieldVisibility("question");
+      final EntitySearchDialog challengeQuestionSearchView=new EntitySearchDialog((ListGridDataSource)result);
+      ((DynamicEntityDataSource)library.get("customerDS")).getFormItemCallbackHandlerManager().addSearchFormItemCallback("challengeQuestion",challengeQuestionSearchView,AdminModule.ADMINMESSAGES.challengeQuestionSearchPrompt(),display.getDynamicFormDisplay());
+    }
+  }
+));
+}

@@ -1,0 +1,15 @@
+{
+  if (dataSource == null) {
+    operationTypes=new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY);
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.JOINSTRUCTURE,new JoinStructure(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.CROSSSALEPRODUCT,sortField,true));
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.PRODUCT,persistencePerspective,AppServices.DYNAMIC_ENTITY),new JoinStructureModule(CeilingEntities.PRODUCT,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource.buildFields(null,false,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}

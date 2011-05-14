@@ -1,0 +1,16 @@
+{
+  if (dataSource == null) {
+    operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY);
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    persistencePerspective.setPopulateToOneFields(true);
+    persistencePerspective.setExcludeFields(new String[]{"personalMessage","order"});
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.FULFILLMENT_GROUP,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource.buildFields(null,true,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}

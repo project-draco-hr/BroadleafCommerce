@@ -1,0 +1,16 @@
+{
+  if (dataSource == null) {
+    operationTypes=new OperationTypes(OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE);
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey("id",EntityImplementations.PAYMENT_INFO,null));
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,MAPSTRUCTURE);
+    DataSourceModule[] modules=new DataSourceModule[]{new MapStructureModule(CeilingEntities.PAYMENT_INFO,persistencePerspective,AppServices.DYNAMIC_ENTITY,((OrderDisplay)presenter.getDisplay()).getAdditionalAttributesDisplay().getGrid())};
+    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource.buildFields(null,false,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}
