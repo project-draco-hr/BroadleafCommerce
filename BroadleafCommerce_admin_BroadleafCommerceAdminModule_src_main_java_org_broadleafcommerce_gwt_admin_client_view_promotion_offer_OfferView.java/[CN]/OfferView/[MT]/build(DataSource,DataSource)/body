@@ -8,6 +8,10 @@
   leftVerticalLayout.setWidth("30%");
   leftVerticalLayout.setShowResizeBar(true);
   listDisplay=new DynamicEntityListView(AdminModule.ADMINMESSAGES.promotionsListTitle(),entityDataSource,false,false);
+  cloneButton=new ToolStripButton();
+  cloneButton.setDisabled(true);
+  cloneButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/double_arrow_right.png");
+  cloneButton.setPrompt(AdminModule.ADMINMESSAGES.clonePromotionHelp());
   leftVerticalLayout.addMember(listDisplay);
   VLayout rightVerticalLayout=new VLayout();
   rightVerticalLayout.setHeight100();
@@ -117,6 +121,7 @@
   customerLayout.addMember(rawCustomerForm);
   customerFilterBuilder=new FilterBuilder();
   customerFilterBuilder.setDataSource(customerDataSource);
+  customerFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(customerDataSource));
   customerFilterBuilder.setVisible(false);
   customerFilterBuilder.setLayoutBottomMargin(10);
   customerFilterBuilder.setAllowEmpty(true);
@@ -158,6 +163,7 @@
   orderSectionLayout.addMember(rawOrderForm);
   orderFilterBuilder=new FilterBuilder();
   orderFilterBuilder.setDataSource(orderDataSource);
+  orderFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(orderDataSource));
   orderFilterBuilder.setVisible(false);
   orderFilterBuilder.setLayoutBottomMargin(10);
   orderFilterBuilder.setAllowEmpty(true);
@@ -378,6 +384,7 @@
   fgQuestionLayout.addMember(stepFGForm);
   fulfillmentGroupFilterBuilder=new FilterBuilder();
   fulfillmentGroupFilterBuilder.setDataSource(fulfillmentGroupDataSource);
+  fulfillmentGroupFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(fulfillmentGroupDataSource));
   fulfillmentGroupFilterBuilder.setVisible(false);
   fulfillmentGroupFilterBuilder.setAllowEmpty(true);
   fulfillmentGroupFilterBuilder.setValidateOnChange(false);

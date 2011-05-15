@@ -27,6 +27,12 @@
     }
     entityType.setValueMap(valueMap);
     entityType.setDefaultValue(((DynamicEntityDataSource)dataSource).getDefaultNewEntityFullyQualifiedClassname());
+    entityType.addFocusHandler(new FocusHandler(){
+      public void onFocus(      FocusEvent event){
+        ((ComboBoxItem)event.getItem()).selectValue();
+      }
+    }
+);
     toolBar.addFormItem(entityType);
   }
   addMember(toolBar);
