@@ -88,4 +88,9 @@
     getDisplay().getQualifyForAnotherPromoRadio().setValue("YES");
     getDisplay().getReceiveFromAnotherPromoRadio().setValue("YES");
   }
+  Boolean combinable=selectedRecord.getAttributeAsBoolean("combinableWithOtherOffers");
+  if (combinable == null) {
+    combinable=true;
+  }
+  getDisplay().getOrderItemCombineRuleRadio().setValue(combinable ? "YES" : "NO");
 }

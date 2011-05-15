@@ -5,9 +5,9 @@
     if (getDisplay().getDeliveryTypeRadio().getValue().equals("CODE")) {
       selectedRecord.setAttribute("offerCode.offerCode",getDisplay().getCodeField().getValue().toString().trim());
     }
-    extractCustomerData(selectedRecord);
-    extractOrderData(selectedRecord);
     final String type=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").getValue().toString();
+    extractCustomerData(selectedRecord);
+    extractOrderData(selectedRecord,type);
     extractQualifierRuleType(selectedRecord);
     extractTargetItemData(selectedRecord,type);
     extractTargetRuleType(selectedRecord);

@@ -6,6 +6,28 @@
     }
   }
 );
+  getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("discountType").addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String eventValue=event.getValue().toString();
+      if (eventValue.equals("FIX_PRICE")) {
+        getDisplay().getOrderCombineForm().disable();
+        getDisplay().getFGCombineForm().disable();
+        getDisplay().getOrderItemCombineForm().disable();
+        getDisplay().getOrderCombineRuleRadio().setValue("NO");
+        getDisplay().getFgCombineRuleRadio().setValue("NO");
+        getDisplay().getOrderItemCombineRuleRadio().setValue("NO");
+      }
+ else {
+        getDisplay().getOrderCombineForm().enable();
+        getDisplay().getFGCombineForm().enable();
+        getDisplay().getOrderItemCombineForm().enable();
+        getDisplay().getOrderCombineRuleRadio().setValue("YES");
+        getDisplay().getFgCombineRuleRadio().setValue("YES");
+        getDisplay().getOrderItemCombineRuleRadio().setValue("YES");
+      }
+    }
+  }
+);
   FormItem endDate=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("endDate");
   if (endDate != null) {
     endDate.addChangedHandler(new ChangedHandler(){
