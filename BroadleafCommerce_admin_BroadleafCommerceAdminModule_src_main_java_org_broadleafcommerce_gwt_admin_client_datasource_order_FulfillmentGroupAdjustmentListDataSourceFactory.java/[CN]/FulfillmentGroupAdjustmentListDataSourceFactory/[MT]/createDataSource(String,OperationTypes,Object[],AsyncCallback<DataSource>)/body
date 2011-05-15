@@ -5,7 +5,7 @@
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey(foreignKeyName,EntityImplementations.FULFILLMENT_GROUP,null));
     persistencePerspective.setPopulateToOneFields(true);
     persistencePerspective.setIncludeFields(new String[]{"id","reason","value","offer.name","offer.type"});
-    DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.FULFILLMENT_GROUP_ADJUSTMENT,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.FULFILLMENT_GROUP_ADJUSTMENT,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
     dataSource.buildFields(null,false,cb);
   }

@@ -4,7 +4,7 @@
     PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
     persistencePerspective.setPopulateToOneFields(true);
     persistencePerspective.setExcludeFields(new String[]{"customer.auditable","customer.challengeQuestion","customer.challengeAnswer","customer.passwordChangeRequired","customer.receiveEmail","customer.registered"});
-    DataSourceModule[] modules=new DataSourceModule[]{new BasicEntityModule(CeilingEntities.ORDER,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.ORDER,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
     dataSource.buildFields(null,false,cb);
   }
