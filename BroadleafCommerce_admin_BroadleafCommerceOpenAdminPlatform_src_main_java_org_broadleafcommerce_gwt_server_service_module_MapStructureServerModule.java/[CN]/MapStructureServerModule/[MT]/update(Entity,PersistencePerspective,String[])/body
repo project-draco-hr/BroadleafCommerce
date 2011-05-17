@@ -15,11 +15,11 @@
  else {
       valueMergedProperties=dynamicEntityDao.getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
     }
-    if (!entity.findProperty("priorKey").getValue().equals(entity.findProperty(mapStructure.getKeyPropertyName()).getValue())) {
-      map.remove(entity.findProperty("priorKey").getValue());
-    }
     if (persistentClass != null) {
       Serializable valueInstance=(Serializable)map.get(entity.findProperty("priorKey").getValue());
+      if (!entity.findProperty("priorKey").getValue().equals(entity.findProperty(mapStructure.getKeyPropertyName()).getValue())) {
+        map.remove(entity.findProperty("priorKey").getValue());
+      }
       valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
       map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
     }
