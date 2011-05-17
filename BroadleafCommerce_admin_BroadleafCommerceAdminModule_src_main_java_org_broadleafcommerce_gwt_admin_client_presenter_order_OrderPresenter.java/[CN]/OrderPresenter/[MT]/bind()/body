@@ -8,6 +8,7 @@
   orderAdjustmentPresenter.bind();
   orderItemAdjustmentPresenter.bind();
   fulfillmentGroupAdjustmentPresenter.bind();
+  feesPresenter.bind();
   selectionChangedHandlerRegistration.removeHandler();
   display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     public void onSelectionChanged(    SelectionEvent event){
@@ -46,6 +47,7 @@
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
         orderItemAdjustmentPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getOrderItemsDisplay().getGrid().getDataSource(),null);
+        feesPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getOrderItemsDisplay().getGrid().getDataSource(),null);
       }
     }
   }

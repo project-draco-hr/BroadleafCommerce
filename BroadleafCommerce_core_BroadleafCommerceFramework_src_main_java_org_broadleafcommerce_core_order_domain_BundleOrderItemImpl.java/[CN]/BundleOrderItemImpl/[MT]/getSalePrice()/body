@@ -12,6 +12,9 @@
       }
       bundleSalePrice=bundleSalePrice.add(new Money(itemSalePrice.doubleValue() * discreteOrderItem.getQuantity()));
     }
+    for (    BigDecimal fee : getAdditionalFees().values()) {
+      bundleSalePrice=bundleSalePrice.add(new Money(fee));
+    }
   }
   return bundleSalePrice;
 }

@@ -22,7 +22,10 @@
       map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
     }
  else {
-      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
+      String propertyName=((SimpleValueMapStructure)mapStructure).getValuePropertyName();
+      String value=entity.findProperty(propertyName).getValue();
+      Object convertedPrimitive=convertPrimitiveBasedOnType(propertyName,value,valueMergedProperties);
+      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),convertedPrimitive);
     }
     instance=dynamicEntityDao.merge(instance);
     return getMapRecords(instance,mapStructure,valueMergedProperties,entity.findProperty("symbolicId"))[0];

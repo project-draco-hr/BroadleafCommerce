@@ -63,7 +63,7 @@
       Map<String,Object> initialValues=new HashMap<String,Object>();
       initialValues.put("key",AdminModule.ADMINMESSAGES.paymentAttributeKeyDefault());
       initialValues.put("value",AdminModule.ADMINMESSAGES.paymentAttributeValueDefault());
-      additionalPaymentAttributesPresenter=new MapStructurePresenter(((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay(),new MapStructureEntityEditDialog(),AdminModule.ADMINMESSAGES.newAttributeTitle(),initialValues);
+      additionalPaymentAttributesPresenter=new SimpleMapStructurePresenter(((OrderDisplay)getDisplay()).getAdditionalAttributesDisplay(),initialValues);
       additionalPaymentAttributesPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","value"},new Boolean[]{true,true});
       additionalPaymentAttributesPresenter.setReadOnly(true);
     }
@@ -98,6 +98,14 @@
       fulfillmentGroupAdjustmentPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getFulfillmentGroupAdjustmentDisplay(),AdminModule.ADMINMESSAGES.newFGAdjustmentTitle());
       fulfillmentGroupAdjustmentPresenter.setDataSource((ListGridDataSource)result,new String[]{"reason","value","offer.type"},new Boolean[]{false,false,false});
       fulfillmentGroupAdjustmentPresenter.setReadOnly(true);
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemAdditionalFeesDS",new OrderItemFeesDataSourceFactory(this),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      feesPresenter=new SimpleMapStructurePresenter(getDisplay().getOrderItemFeeDisplay(),null);
+      feesPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","value"},new Boolean[]{false,false});
+      feesPresenter.setReadOnly(true);
     }
   }
 ));
