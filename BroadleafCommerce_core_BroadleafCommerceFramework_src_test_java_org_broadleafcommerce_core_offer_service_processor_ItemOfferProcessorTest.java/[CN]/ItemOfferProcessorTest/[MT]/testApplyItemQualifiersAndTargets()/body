@@ -30,7 +30,7 @@
     }
   }
   assertTrue(qualCount == 0 && targetCount == 4);
-  assertTrue(order.getSplitItems().size() == 3);
+  assertTrue(itemProcessor.getAllSplitItems(order).size() == 3);
   itemProcessor.applyItemQualifiersAndTargets(order.getDiscountableDiscreteOrderItems(),qualifiedOffers.get(0),order);
   qualCount=0;
   targetCount=0;
@@ -43,7 +43,7 @@
     }
   }
   assertTrue(qualCount == 1 && targetCount == 5);
-  assertTrue(order.getSplitItems().size() == 4);
+  assertTrue(order.getSplitItems().size() == 2 && order.getSplitItems().get(0).getSplitItems().size() == 2 && order.getSplitItems().get(1).getSplitItems().size() == 2);
   itemProcessor.applyItemQualifiersAndTargets(order.getDiscountableDiscreteOrderItems(),qualifiedOffers.get(2),order);
   qualCount=0;
   targetCount=0;
@@ -56,11 +56,12 @@
     }
   }
   int promoCount=0;
-  for (  OrderItem item : order.getSplitItems()) {
+  List<OrderItem> allSplitItems=itemProcessor.getAllSplitItems(order);
+  for (  OrderItem item : allSplitItems) {
     promoCount+=item.getPromotionDiscounts().size();
   }
   assertTrue(qualCount == 1 && targetCount == 5);
-  assertTrue(order.getSplitItems().size() == 4);
+  assertTrue(order.getSplitItems().size() == 2 && order.getSplitItems().get(0).getSplitItems().size() == 2 && order.getSplitItems().get(1).getSplitItems().size() == 2);
   assertTrue(promoCount == 4);
   verify();
 }

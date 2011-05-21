@@ -66,19 +66,19 @@
   }
  while (matchFound);
   if (order.getSplitItems().size() == 0) {
-    order.getSplitItems().addAll(order.getOrderItems());
+    initializeSplitItems(order,order.getOrderItems());
   }
-  Iterator<OrderItem> chargeableItemsIterator=order.getSplitItems().iterator();
-  List<OrderItem> splitChargeableItems=new ArrayList<OrderItem>();
-  while (chargeableItemsIterator.hasNext()) {
-    OrderItem chargeableItem=chargeableItemsIterator.next();
+  List<OrderItem> allSplitItems=getAllSplitItems(order);
+  for (  OrderItem chargeableItem : allSplitItems) {
     if (itemOffer.getCandidateTargets().contains(chargeableItem)) {
       List<OrderItem> splitItems=chargeableItem.split();
       if (splitItems != null && splitItems.size() > 0) {
-        chargeableItemsIterator.remove();
-        splitChargeableItems.addAll(splitItems);
+        List<OrderItem> temp=order.searchSplitItems(chargeableItem);
+        if (!CollectionUtils.isEmpty(temp)) {
+          temp.remove(chargeableItem);
+          temp.addAll(splitItems);
+        }
       }
     }
   }
-  order.getSplitItems().addAll(splitChargeableItems);
 }

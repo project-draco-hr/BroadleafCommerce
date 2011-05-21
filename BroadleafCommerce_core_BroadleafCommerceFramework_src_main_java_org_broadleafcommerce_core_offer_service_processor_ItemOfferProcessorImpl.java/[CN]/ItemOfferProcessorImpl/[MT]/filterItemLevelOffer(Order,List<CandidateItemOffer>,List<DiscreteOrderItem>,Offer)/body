@@ -39,7 +39,12 @@
     }
     if (candidates.isMatchedTarget()) {
       if (candidateOffer == null) {
-        createCandidateItemOffer(qualifiedItemOffers,offer,null);
+        candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null);
+      }
+      for (      OrderItem candidateItem : candidates.getCandidateTargets()) {
+        CandidateItemOffer itemOffer=((CandidateItemOffer)candidateOffer).clone();
+        itemOffer.setOrderItem(candidateItem);
+        candidateItem.getCandidateItemOffers().add(itemOffer);
       }
       candidateOffer.getCandidateTargets().addAll(candidates.getCandidateTargets());
     }

@@ -1,10 +1,11 @@
 {
-  try {
-    OrderItem clone=(OrderItem)SerializationUtils.clone(this);
-    clone.setId(null);
-    return clone;
-  }
- catch (  Exception e) {
-    throw new RuntimeException(e);
-  }
+  DiscreteOrderItem orderItem=(DiscreteOrderItem)super.clone();
+  if (getDiscreteOrderItemFeePrices() != null)   orderItem.getDiscreteOrderItemFeePrices().addAll(getDiscreteOrderItemFeePrices());
+  if (getAdditionalAttributes() != null)   orderItem.getAdditionalAttributes().putAll(getAdditionalAttributes());
+  orderItem.setBaseRetailPrice(getBaseRetailPrice());
+  orderItem.setBaseSalePrice(getBaseSalePrice());
+  orderItem.setBundleOrderItem(getBundleOrderItem());
+  orderItem.setProduct(getProduct());
+  orderItem.setSku(getSku());
+  return orderItem;
 }

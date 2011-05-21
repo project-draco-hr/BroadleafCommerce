@@ -15,7 +15,6 @@
     dynamicEntityDao.remove(offerInstance);
   }
  catch (  Exception e) {
-    LOG.error("Unable to remove entity for " + entity.getType()[0],e);
-    throw new ServiceException("Unable to remove entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to remove entity for " + entity.getType()[0] + ". It is likely this offer is currently associated with one or more orders. Only unused offers may be deleted.",e);
   }
 }

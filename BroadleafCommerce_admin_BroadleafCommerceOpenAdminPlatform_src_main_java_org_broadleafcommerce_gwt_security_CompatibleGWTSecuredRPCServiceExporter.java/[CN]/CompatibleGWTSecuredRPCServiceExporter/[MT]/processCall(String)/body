@@ -10,18 +10,13 @@
     if (cause1 != null && cause1 instanceof UnexpectedException) {
       final Throwable preciousException=cause1.getCause();
       if (preciousException != null && (preciousException instanceof AccessDeniedException || preciousException instanceof AuthenticationException)) {
-        String failurePayload=null;
-        try {
-          failurePayload=RPC.encodeResponseForFailure(rpcRequest.getMethod(),SecurityExceptionFactory.get(preciousException));
-        }
- catch (        final UnexpectedException ue) {
-          LOGGER.error("You may have forgotten to add a 'throws ApplicationSecurityException' declaration to your service interface.");
-          throw ue;
-        }
-        return failurePayload;
+        return processException(preciousException,rpcRequest);
+      }
+ else       if (preciousException != null && (preciousException instanceof TransactionSystemException)) {
+        return processException(((TransactionSystemException)preciousException).getApplicationException(),rpcRequest);
       }
     }
-    handleOtherException(e);
+    return processException(e,rpcRequest);
   }
   return response;
 }

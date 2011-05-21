@@ -1,3 +1,34 @@
 {
-  throw new RuntimeException();
+  OrderItem orderItem;
+  try {
+    orderItem=(OrderItem)Class.forName(this.getClass().getName()).newInstance();
+    try {
+      checkCloneable(orderItem);
+    }
+ catch (    CloneNotSupportedException e) {
+      LOG.warn("Clone implementation missing in inheritance hierarchy outside of Broadleaf: " + orderItem.getClass().getName(),e);
+    }
+    if (getCandidateItemOffers() != null) {
+      for (      CandidateItemOffer candidate : getCandidateItemOffers()) {
+        CandidateItemOffer clone=candidate.clone();
+        clone.setOrderItem(orderItem);
+        orderItem.getCandidateItemOffers().add(clone);
+      }
+    }
+    orderItem.setCategory(getCategory());
+    orderItem.setGiftWrapOrderItem(getGiftWrapOrderItem());
+    orderItem.setName(getName());
+    orderItem.setOrder(getOrder());
+    orderItem.setOrderItemType(getOrderItemType());
+    orderItem.setPersonalMessage(getPersonalMessage());
+    orderItem.setQuantity(getQuantity());
+    orderItem.setRetailPrice(getRetailPrice());
+    orderItem.setSalePrice(getSalePrice());
+    orderItem.setAdjustmentPrice(getAdjustmentPrice());
+    orderItem.setPrice(getPrice());
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return orderItem;
 }

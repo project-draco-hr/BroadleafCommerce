@@ -4,8 +4,8 @@
     Money itemRetailPrice=discreteOrderItem.getRetailPrice();
     bundleRetailPrice=bundleRetailPrice.add(new Money(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity()));
   }
-  for (  BigDecimal fee : getAdditionalFees().values()) {
-    bundleRetailPrice=bundleRetailPrice.add(new Money(fee));
+  for (  BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
+    bundleRetailPrice=bundleRetailPrice.add(fee.getAmount());
   }
   return bundleRetailPrice;
 }

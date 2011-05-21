@@ -1,3 +1,7 @@
 {
-  return notCombinableOfferApplied;
+  for (  OrderItemAdjustment orderItemAdjustment : orderItemAdjustments) {
+    boolean notCombineableApplied=!orderItemAdjustment.getOffer().isCombinableWithOtherOffers() || (orderItemAdjustment.getOffer().isTotalitarianOffer() != null && orderItemAdjustment.getOffer().isTotalitarianOffer());
+    if (notCombineableApplied)     return true;
+  }
+  return false;
 }

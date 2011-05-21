@@ -1,0 +1,11 @@
+{
+  String failurePayload=null;
+  try {
+    failurePayload=RPC.encodeResponseForFailure(rpcRequest.getMethod(),SecurityExceptionFactory.get(e));
+  }
+ catch (  final UnexpectedException ue) {
+    LOGGER.error("You may have forgotten to add a 'throws ApplicationSecurityException' declaration to your service interface.");
+    throw ue;
+  }
+  return failurePayload;
+}

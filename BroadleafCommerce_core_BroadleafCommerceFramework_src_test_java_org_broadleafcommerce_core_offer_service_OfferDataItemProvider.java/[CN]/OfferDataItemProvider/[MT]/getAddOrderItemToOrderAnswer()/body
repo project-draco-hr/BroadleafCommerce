@@ -1,0 +1,13 @@
+{
+  return new IAnswer<OrderItem>(){
+    public OrderItem answer() throws Throwable {
+      Order order=(Order)EasyMock.getCurrentArguments()[0];
+      order.getOrderItems().add((OrderItem)EasyMock.getCurrentArguments()[1]);
+      if (((OrderItem)EasyMock.getCurrentArguments()[1]).getId() == null) {
+        ((OrderItem)EasyMock.getCurrentArguments()[1]).setId(OfferDataItemProvider.getOrderItemId());
+      }
+      return (OrderItem)EasyMock.getCurrentArguments()[1];
+    }
+  }
+;
+}

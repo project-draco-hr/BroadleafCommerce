@@ -1,0 +1,13 @@
+{
+  return new IAnswer<FulfillmentGroup>(){
+    public FulfillmentGroup answer() throws Throwable {
+      FulfillmentGroup fg=(FulfillmentGroup)EasyMock.getCurrentArguments()[1];
+      FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();
+      fgItem.setOrderItem((OrderItem)EasyMock.getCurrentArguments()[0]);
+      fgItem.setQuantity(((OrderItem)EasyMock.getCurrentArguments()[0]).getQuantity());
+      fg.getFulfillmentGroupItems().add(fgItem);
+      return fg;
+    }
+  }
+;
+}

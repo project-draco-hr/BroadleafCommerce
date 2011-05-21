@@ -4,5 +4,10 @@
     Money currentItemTaxablePrice=discreteOrderItem.getTaxablePrice();
     currentBundleTaxablePrice=currentBundleTaxablePrice.add(new Money(currentItemTaxablePrice.doubleValue() * discreteOrderItem.getQuantity()));
   }
+  for (  BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
+    if (fee.isTaxable()) {
+      currentBundleTaxablePrice=currentBundleTaxablePrice.add(fee.getAmount());
+    }
+  }
   return currentBundleTaxablePrice;
 }

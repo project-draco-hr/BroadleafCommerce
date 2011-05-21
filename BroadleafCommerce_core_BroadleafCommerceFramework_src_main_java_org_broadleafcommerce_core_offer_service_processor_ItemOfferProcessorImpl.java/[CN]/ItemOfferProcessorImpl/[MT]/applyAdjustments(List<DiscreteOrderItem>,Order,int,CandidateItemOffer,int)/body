@@ -1,7 +1,8 @@
 {
   boolean notCombinableOfferApplied=false;
   boolean offerApplied=false;
-  for (  OrderItem targetItem : order.getSplitItems()) {
+  List<OrderItem> allSplitItems=getAllSplitItems(order);
+  for (  OrderItem targetItem : allSplitItems) {
     notCombinableOfferApplied=targetItem.isNotCombinableOfferApplied();
     if (!offerApplied) {
       offerApplied=targetItem.isHasOrderItemAdjustments();
@@ -12,7 +13,8 @@
   }
   if (!notCombinableOfferApplied && (((itemOffer.getOffer().isCombinableWithOtherOffers() || itemOffer.getOffer().isTotalitarianOffer() == null || !itemOffer.getOffer().isTotalitarianOffer())) || !offerApplied)) {
     applyItemQualifiersAndTargets(discreteOrderItems,itemOffer,order);
-    for (    OrderItem splitItem : order.getSplitItems()) {
+    allSplitItems=getAllSplitItems(order);
+    for (    OrderItem splitItem : allSplitItems) {
       for (      PromotionDiscount discount : splitItem.getPromotionDiscounts()) {
         if (discount.getPromotion().equals(itemOffer.getOffer())) {
           applyOrderItemAdjustment(itemOffer,splitItem);
@@ -25,12 +27,12 @@
   if ((!itemOffer.getOffer().isCombinableWithOtherOffers() || (itemOffer.getOffer().isTotalitarianOffer() != null && itemOffer.getOffer().isTotalitarianOffer())) && appliedItemOffersCount > beforeCount) {
     Money adjustmentTotal=new Money(0D);
     Money saleTotal=new Money(0D);
-    for (    OrderItem splitItem : order.getSplitItems()) {
+    for (    OrderItem splitItem : allSplitItems) {
       adjustmentTotal=adjustmentTotal.add(splitItem.getCurrentPrice().multiply(splitItem.getQuantity()));
       saleTotal=saleTotal.add(splitItem.getPriceBeforeAdjustments(true).multiply(splitItem.getQuantity()));
     }
     if (adjustmentTotal.greaterThanOrEqual(saleTotal)) {
-      for (      OrderItem splitItem : order.getSplitItems()) {
+      for (      OrderItem splitItem : allSplitItems) {
         if (splitItem.isHasOrderItemAdjustments()) {
           appliedItemOffersCount--;
         }

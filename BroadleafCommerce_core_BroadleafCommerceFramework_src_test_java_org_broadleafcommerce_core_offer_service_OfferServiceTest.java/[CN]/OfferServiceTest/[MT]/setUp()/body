@@ -6,13 +6,25 @@
   offerService.setCustomerOfferDao(customerOfferDaoMock);
   offerService.setOfferCodeDao(offerCodeDaoMock);
   offerService.setOfferDao(offerDaoMock);
+  cartServiceMock=EasyMock.createMock(CartService.class);
+  orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
+  fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
   OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
   orderProcessor.setOfferDao(offerDaoMock);
+  orderProcessor.setCartService(cartServiceMock);
+  orderProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
+  orderProcessor.setOrderItemService(orderItemServiceMock);
   offerService.setOrderOfferProcessor(orderProcessor);
   ItemOfferProcessor itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
+  itemProcessor.setCartService(cartServiceMock);
+  itemProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
+  itemProcessor.setOrderItemService(orderItemServiceMock);
   offerService.setItemOfferProcessor(itemProcessor);
   FulfillmentGroupOfferProcessor fgProcessor=new FulfillmentGroupOfferProcessorImpl();
   fgProcessor.setOfferDao(offerDaoMock);
+  fgProcessor.setCartService(cartServiceMock);
+  fgProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
+  fgProcessor.setOrderItemService(orderItemServiceMock);
   offerService.setFulfillmentGroupOfferProcessor(fgProcessor);
 }

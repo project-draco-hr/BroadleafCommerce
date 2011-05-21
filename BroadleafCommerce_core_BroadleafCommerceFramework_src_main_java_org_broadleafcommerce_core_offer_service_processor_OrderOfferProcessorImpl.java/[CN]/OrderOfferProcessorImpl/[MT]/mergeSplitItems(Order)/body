@@ -1,17 +1,14 @@
 {
-  Map<String,List<OrderItem>> splitMap=new HashMap<String,List<OrderItem>>();
-  for (  OrderItem splitItem : order.getSplitItems()) {
-    if (!splitMap.containsKey(splitItem.getName())) {
-      List<OrderItem> mySplits=new ArrayList<OrderItem>();
-      splitMap.put(splitItem.getName(),mySplits);
-    }
-    splitMap.get(splitItem.getName()).add(splitItem);
-  }
+  List<OrderItem> itemsToRemove=new ArrayList<OrderItem>();
   Iterator<OrderItem> finalItems=order.getOrderItems().iterator();
   while (finalItems.hasNext()) {
     OrderItem nextItem=finalItems.next();
-    List<OrderItem> mySplits=splitMap.get(nextItem.getName());
-    if (mySplits != null && mySplits.size() > 0) {
+    List<OrderItem> mySplits=order.searchSplitItems(nextItem);
+    if (!CollectionUtils.isEmpty(mySplits)) {
+      if (mySplits.size() == 1 && mySplits.contains(nextItem)) {
+        mySplits.remove(nextItem);
+        continue;
+      }
       OrderItem cloneItem=nextItem.clone();
       cloneItem.clearAllDiscount();
       cloneItem.clearAllQualifiers();
@@ -28,13 +25,42 @@
       if (cloneItem.getQuantity() > 0) {
         mySplits.add(cloneItem);
       }
-      finalItems.remove();
+      if (mySplits.contains(nextItem)) {
+        mySplits.remove(nextItem);
+      }
+ else {
+        itemsToRemove.add(nextItem);
+      }
     }
   }
-  for (  String key : splitMap.keySet()) {
-    List<OrderItem> mySplits=splitMap.get(key);
-    if (mySplits != null && mySplits.size() > 0) {
-      order.getOrderItems().addAll(mySplits);
+  try {
+    for (    OrderItemSplitContainer key : order.getSplitItems()) {
+      List<OrderItem> mySplits=key.getSplitItems();
+      if (!CollectionUtils.isEmpty(mySplits)) {
+        FulfillmentGroup targetGroup=null;
+        checkGroups: {
+          for (          FulfillmentGroup fg : order.getFulfillmentGroups()) {
+            for (            FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
+              if (fgItem.getOrderItem().equals(key.getKey())) {
+                targetGroup=fg;
+                break checkGroups;
+              }
+            }
+          }
+        }
+        for (        OrderItem myItem : mySplits) {
+          Money adjustmentPrice=myItem.getAdjustmentPrice();
+          myItem=cartService.addOrderItemToOrder(order,myItem,false);
+          cartService.addItemToFulfillmentGroup(myItem,targetGroup,false);
+          myItem.setAdjustmentPrice(adjustmentPrice);
+        }
+      }
     }
+    for (    OrderItem orderItem : itemsToRemove) {
+      cartService.removeItemFromOrder(order,orderItem,false);
+    }
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException("Could not propagate the items split by the promotion engine into the order",e);
   }
 }

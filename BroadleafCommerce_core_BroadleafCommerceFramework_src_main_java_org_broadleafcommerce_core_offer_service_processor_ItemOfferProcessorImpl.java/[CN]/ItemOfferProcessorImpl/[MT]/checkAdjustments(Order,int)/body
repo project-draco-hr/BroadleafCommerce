@@ -1,6 +1,7 @@
 {
   if (appliedItemOffersCount > 0) {
-    for (    OrderItem splitItem : order.getSplitItems()) {
+    List<OrderItem> allSplitItems=getAllSplitItems(order);
+    for (    OrderItem splitItem : allSplitItems) {
       if (splitItem.isHasOrderItemAdjustments()) {
         Money itemPrice=splitItem.getRetailPrice();
         if (splitItem.getSalePrice() != null) {

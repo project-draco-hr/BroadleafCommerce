@@ -32,6 +32,16 @@ catch (        PricingException e) {
       }
     }
   }
+  if (currentCartOrder.getOrderItems() != null) {
+    cartSummary.getRows().clear();
+    for (    OrderItem orderItem : currentCartOrder.getOrderItems()) {
+      CartOrderItem cartOrderItem=new CartOrderItem();
+      cartOrderItem.setOrderItem(orderItem);
+      cartOrderItem.setQuantity(orderItem.getQuantity());
+      cartSummary.getRows().add(cartOrderItem);
+    }
+  }
   cartSummary.setOrderDiscounts(currentCartOrder.getTotalAdjustmentsValue().getAmount());
+  model.addAttribute("cartSummary",cartSummary);
   return cartView;
 }

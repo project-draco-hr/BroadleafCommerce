@@ -10,9 +10,11 @@
     setSalePrice(getSku().getSalePrice());
     updated=true;
   }
-  for (  BigDecimal fee : getAdditionalFees().values()) {
-    setSalePrice(getSalePrice().add(new Money(fee)));
-    setRetailPrice(getRetailPrice().add(new Money(fee)));
+  if (getDiscreteOrderItemFeePrices() != null) {
+    for (    DiscreteOrderItemFeePrice fee : getDiscreteOrderItemFeePrices()) {
+      setSalePrice(getSalePrice().add(fee.getAmount()));
+      setRetailPrice(getRetailPrice().add(fee.getAmount()));
+    }
   }
   return updated;
 }
