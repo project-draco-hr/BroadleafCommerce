@@ -1,21 +1,5 @@
 {
-  StringBuffer sb=new StringBuffer();
-  sb.append(ceilingEntityFullyQualifiedClassname);
-  if (foreignField != null) {
-    sb.append(foreignField.getManyToField());
-  }
-  if (additionalNonPersistentProperties != null) {
-    for (    String additionalNonPersistentProperty : additionalNonPersistentProperties) {
-      sb.append(additionalNonPersistentProperty);
-    }
-  }
-  if (additionalForeignFields != null) {
-    for (    ForeignKey foreignKey : additionalForeignFields) {
-      sb.append(foreignKey.getManyToField());
-    }
-  }
   Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
   buildPropertiesFromPolymorphicEntities(entities,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,metadataOverrides,mergedProperties,prefix);
-  mergedPropertyLibrary.put(sb.toString(),mergedProperties);
-  return mergedPropertyLibrary.get(sb.toString());
+  return mergedProperties;
 }
