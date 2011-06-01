@@ -1,4 +1,5 @@
 {
+  Money totalShipping=new Money(0D);
   for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
     if (fulfillmentGroup.getAdjustmentPrice() != null) {
       fulfillmentGroup.setShippingPrice(fulfillmentGroup.getAdjustmentPrice());
@@ -9,5 +10,7 @@
  else {
       fulfillmentGroup.setShippingPrice(fulfillmentGroup.getRetailShippingPrice());
     }
+    totalShipping=totalShipping.add(fulfillmentGroup.getShippingPrice());
   }
+  order.setTotalShipping(totalShipping);
 }
