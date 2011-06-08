@@ -1,0 +1,9 @@
+{
+  HydratedCache hydratedCache=getHydratedCache(cacheRegion,cacheName);
+  HydratedCacheElement element=hydratedCache.getCacheElement(cacheRegion,cacheName,elementKey);
+  if (element == null) {
+    element=new HydratedCacheElement();
+    hydratedCache.addCacheElement(cacheRegion,cacheName,elementKey,element);
+  }
+  element.putCacheElementItem(elementItemName,elementKey,elementValue);
+}

@@ -1,15 +1,17 @@
 {
+  String cacheName=cacheRegion;
   if (key instanceof CacheKey) {
+    cacheName=((CacheKey)key).getEntityOrRoleName();
     key=((CacheKey)key).getKey();
   }
-  if (hydratedCacheContainer.containsKey(cacheName)) {
-    HydratedCache cache=hydratedCacheContainer.get(cacheName);
-    String myKey=cacheName + "_" + key;
+  if (containsCache(cacheRegion,cacheName)) {
+    HydratedCache cache=hydratedCacheContainer.get(cacheRegion + "_" + cacheName);
+    String myKey=cacheRegion + "_" + cacheName+ "_"+ key;
     if (cache.containsKey(myKey)) {
       if (LOG.isInfoEnabled()) {
-        LOG.info("Clearing hydrated cache for cache name: " + cacheName + "_"+ key);
+        LOG.info("Clearing hydrated cache for cache name: " + cacheRegion + "_"+ cacheName+ "_"+ key);
       }
-      cache.removeCacheElement(cacheName,key);
+      cache.removeCacheElement(cacheRegion,cacheName,key);
     }
   }
 }

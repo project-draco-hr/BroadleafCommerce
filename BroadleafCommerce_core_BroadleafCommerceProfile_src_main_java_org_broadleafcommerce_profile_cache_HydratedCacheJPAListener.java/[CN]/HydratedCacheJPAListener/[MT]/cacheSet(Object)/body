@@ -9,7 +9,7 @@
         Object fieldVal=descriptor.getHydratedMutators().get(field).getMutators()[0].invoke(entity,new Object[]{});
         if (fieldVal != null) {
           Serializable entityId=(Serializable)idMutators[0].invoke(entity,new Object[]{});
-          ((HydratedCacheManager)manager).addHydratedCacheElementItem(cacheRegion,entityId,field,fieldVal);
+          ((HydratedCacheManager)manager).addHydratedCacheElementItem(cacheRegion,entity.getClass().getName(),entityId,field,fieldVal);
         }
       }
  catch (      InvocationTargetException e) {
