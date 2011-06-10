@@ -1,0 +1,14 @@
+{
+  this.delegate=sku;
+  try {
+    Field retail=delegate.getClass().getDeclaredField("retailPrice");
+    retail.setAccessible(true);
+    retailPrice=new Money((BigDecimal)retail.get(delegate));
+    Field sale=delegate.getClass().getDeclaredField("salePrice");
+    sale.setAccessible(true);
+    salePrice=new Money((BigDecimal)sale.get(delegate));
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+}

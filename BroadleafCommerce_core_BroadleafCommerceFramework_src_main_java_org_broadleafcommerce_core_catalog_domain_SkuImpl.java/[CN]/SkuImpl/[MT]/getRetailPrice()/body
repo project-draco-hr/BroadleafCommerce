@@ -3,9 +3,10 @@
     return dynamicPrices.getRetailPrice();
   }
   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
-    SkuDecorator skuDecorator=new SkuDecorator(this);
-    dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(skuDecorator,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
-    skuDecorator.reset();
+    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+    Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
+    dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    handler.reset();
     return dynamicPrices.getRetailPrice();
   }
   return retailPrice == null ? null : new Money(retailPrice);
