@@ -1,0 +1,14 @@
+{
+  delegate.updatePrices();
+  Money currentPrice=null;
+  if (adjustmentPrice != null) {
+    currentPrice=new Money(adjustmentPrice);
+  }
+ else   if (delegate.getSalePrice() != null) {
+    currentPrice=delegate.getSalePrice();
+  }
+ else {
+    currentPrice=delegate.getRetailPrice();
+  }
+  return currentPrice;
+}

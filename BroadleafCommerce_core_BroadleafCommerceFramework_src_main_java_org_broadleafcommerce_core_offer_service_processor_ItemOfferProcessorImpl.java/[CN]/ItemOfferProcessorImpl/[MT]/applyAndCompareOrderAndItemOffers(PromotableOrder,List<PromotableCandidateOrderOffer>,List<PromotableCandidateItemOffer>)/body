@@ -1,0 +1,27 @@
+{
+  if (!qualifiedItemOffers.isEmpty()) {
+    Collections.sort(qualifiedItemOffers,ItemOfferComparator.INSTANCE);
+    applyAllItemOffers(qualifiedItemOffers,order);
+  }
+  if (!qualifiedOrderOffers.isEmpty()) {
+    Collections.sort(qualifiedOrderOffers,new BeanComparator("discountedPrice"));
+    Collections.sort(qualifiedOrderOffers,new BeanComparator("priority"));
+    qualifiedOrderOffers=removeTrailingNotCombinableOrderOffers(qualifiedOrderOffers);
+    applyAllOrderOffers(qualifiedOrderOffers,order);
+  }
+  compileOrderTotal(order);
+  if (!qualifiedOrderOffers.isEmpty() && !qualifiedItemOffers.isEmpty()) {
+    List<PromotableCandidateOrderOffer> finalQualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
+    order.removeAllOrderAdjustments();
+    for (    PromotableCandidateOrderOffer condidateOrderOffer : qualifiedOrderOffers) {
+      if (couldOfferApplyToOrder(condidateOrderOffer.getOffer(),order)) {
+        finalQualifiedOrderOffers.add(condidateOrderOffer);
+      }
+    }
+    Collections.sort(finalQualifiedOrderOffers,new BeanComparator("discountedPrice"));
+    Collections.sort(finalQualifiedOrderOffers,new BeanComparator("priority"));
+    if (!finalQualifiedOrderOffers.isEmpty()) {
+      applyAllOrderOffers(finalQualifiedOrderOffers,order);
+    }
+  }
+}

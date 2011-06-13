@@ -1,0 +1,9 @@
+{
+  if (fulfillmentGroups == null) {
+    fulfillmentGroups=new ArrayList<PromotableFulfillmentGroup>();
+    for (    FulfillmentGroup fulfillmentGroup : delegate.getFulfillmentGroups()) {
+      fulfillmentGroups.add(new PromotableFulfillmentGroupImpl(fulfillmentGroup,this));
+    }
+  }
+  return Collections.unmodifiableList(fulfillmentGroups);
+}

@@ -1,0 +1,11 @@
+{
+  CandidateItemOffer candidateOffer=offerDao.createCandidateItemOffer();
+  candidateOffer.setOffer(offer);
+  PromotableCandidateItemOffer promotableCandidateItemOffer=promotableItemFactory.createPromotableCandidateItemOffer(candidateOffer);
+  if (promotableOrderItem != null) {
+    promotableOrderItem.addCandidateItemOffer(promotableCandidateItemOffer);
+  }
+  promotableCandidateItemOffer.setOrderItem(promotableOrderItem);
+  qualifiedItemOffers.add(promotableCandidateItemOffer);
+  return promotableCandidateItemOffer;
+}

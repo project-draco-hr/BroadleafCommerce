@@ -13,39 +13,39 @@
   EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
   EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
   replay();
-  Order order=dataProvider.createBasicOrder();
-  List<CandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<CandidateFulfillmentGroupOffer>();
+  PromotableOrder order=dataProvider.createBasicOrder();
+  List<PromotableCandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
   List<Offer> offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
   offers.addAll(dataProvider.createFGBasedOfferWithItemCriteria("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offers.get(1).setName("secondOffer");
   offers.get(0).setTotalitarianOffer(true);
   offers.addAll(dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
-  offerService.applyOffersToOrder(offers,order);
-  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(0));
-  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(1));
+  offerService.applyOffersToOrder(offers,order.getDelegate());
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
   boolean offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   int fgAdjustmentCount=0;
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    fgAdjustmentCount+=fg.getFulfillmentGroupAdjustments().size();
+  for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
+    fgAdjustmentCount+=fg.getDelegate().getFulfillmentGroupAdjustments().size();
   }
   assertTrue(fgAdjustmentCount == 1);
   order=dataProvider.createBasicOrder();
   offers.get(2).setValue(new BigDecimal("1"));
-  offerService.applyOffersToOrder(offers,order);
-  qualifiedOffers=new ArrayList<CandidateFulfillmentGroupOffer>();
-  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(0));
-  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,order.getDiscountableDiscreteOrderItems(),offers.get(1));
+  offerService.applyOffersToOrder(offers,order.getDelegate());
+  qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
   offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   fgAdjustmentCount=0;
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    fgAdjustmentCount+=fg.getFulfillmentGroupAdjustments().size();
+  for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
+    fgAdjustmentCount+=fg.getDelegate().getFulfillmentGroupAdjustments().size();
   }
   assertTrue(fgAdjustmentCount == 2);
   int itemAdjustmentCount=0;
-  for (  OrderItem item : order.getOrderItems()) {
-    itemAdjustmentCount+=item.getOrderItemAdjustments().size();
+  for (  PromotableOrderItem item : order.getDiscreteOrderItems()) {
+    itemAdjustmentCount+=item.getDelegate().getOrderItemAdjustments().size();
   }
   assertTrue(itemAdjustmentCount == 0);
   verify();

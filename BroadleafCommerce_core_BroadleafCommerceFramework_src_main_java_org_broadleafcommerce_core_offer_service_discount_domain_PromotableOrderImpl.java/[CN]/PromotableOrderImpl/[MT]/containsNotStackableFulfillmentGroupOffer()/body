@@ -1,0 +1,12 @@
+{
+  boolean isContainsNotStackableFulfillmentGroupOffer=false;
+  for (  FulfillmentGroup fg : delegate.getFulfillmentGroups()) {
+    for (    FulfillmentGroupAdjustment fgAdjustment : fg.getFulfillmentGroupAdjustments()) {
+      if (!fgAdjustment.getOffer().isStackable()) {
+        isContainsNotStackableFulfillmentGroupOffer=true;
+        break;
+      }
+    }
+  }
+  return isContainsNotStackableFulfillmentGroupOffer;
+}

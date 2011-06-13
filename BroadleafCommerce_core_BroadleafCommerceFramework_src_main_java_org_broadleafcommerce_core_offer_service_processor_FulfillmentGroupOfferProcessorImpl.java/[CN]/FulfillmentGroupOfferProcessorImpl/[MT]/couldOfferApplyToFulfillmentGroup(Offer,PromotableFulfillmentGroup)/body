@@ -1,0 +1,16 @@
+{
+  boolean appliesToItem=false;
+  OfferRule rule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+  if (rule != null && rule.getMatchRule() != null) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("fulfillmentGroup",fulfillmentGroup.getDelegate());
+    Boolean expressionOutcome=executeExpression(rule.getMatchRule(),vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToItem=true;
+    }
+  }
+ else {
+    appliesToItem=true;
+  }
+  return appliesToItem;
+}

@@ -1,11 +1,11 @@
 {
   replay();
-  Order order=dataProvider.createBasicOrder();
+  PromotableOrder order=dataProvider.createBasicOrder();
   List<Offer> offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF);
-  boolean couldApply=orderProcessor.couldOfferApplyToOrder(offers.get(0),order,order.getOrderItems().get(0),order.getFulfillmentGroups().get(0));
+  boolean couldApply=orderProcessor.couldOfferApplyToOrder(offers.get(0),order,order.getDiscreteOrderItems().get(0),order.getFulfillmentGroups().get(0));
   assertTrue(couldApply);
   offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()==0",OfferDiscountType.PERCENT_OFF);
-  couldApply=orderProcessor.couldOfferApplyToOrder(offers.get(0),order,order.getOrderItems().get(0),order.getFulfillmentGroups().get(0));
+  couldApply=orderProcessor.couldOfferApplyToOrder(offers.get(0),order,order.getDiscreteOrderItems().get(0),order.getFulfillmentGroups().get(0));
   assertFalse(couldApply);
   verify();
 }

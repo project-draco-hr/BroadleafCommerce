@@ -1,18 +1,8 @@
 {
   int removedAdjustmentCount=0;
-  if (orderItemAdjustments != null) {
-    removedAdjustmentCount=orderItemAdjustments.size();
-    orderItemAdjustments.clear();
-  }
-  adjustmentPrice=null;
-  if (getOrder() != null) {
-    getOrder().resetTotalitarianOfferApplied();
-  }
-  if (promotionDiscounts != null) {
-    promotionDiscounts.clear();
-  }
-  if (promotionQualifiers != null) {
-    promotionQualifiers.clear();
+  if (getOrderItemAdjustments() != null) {
+    removedAdjustmentCount=getOrderItemAdjustments().size();
+    getOrderItemAdjustments().clear();
   }
   assignFinalPrice();
   return removedAdjustmentCount;

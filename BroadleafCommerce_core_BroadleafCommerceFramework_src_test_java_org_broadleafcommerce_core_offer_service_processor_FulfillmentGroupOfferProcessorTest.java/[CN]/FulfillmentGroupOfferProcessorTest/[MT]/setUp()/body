@@ -14,17 +14,21 @@
   fgProcessor.setCartService(cartServiceMock);
   fgProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
   fgProcessor.setOrderItemService(orderItemServiceMock);
+  fgProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
   OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
   orderProcessor.setOfferDao(offerDaoMock);
   orderProcessor.setCartService(cartServiceMock);
   orderProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
   orderProcessor.setOrderItemService(orderItemServiceMock);
+  orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
   offerService.setOrderOfferProcessor(orderProcessor);
   ItemOfferProcessor itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
   itemProcessor.setCartService(cartServiceMock);
   itemProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
   itemProcessor.setOrderItemService(orderItemServiceMock);
+  itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
   offerService.setItemOfferProcessor(itemProcessor);
   offerService.setFulfillmentGroupOfferProcessor(fgProcessor);
+  offerService.setPromotableItemFactory(new PromotableItemFactoryImpl());
 }

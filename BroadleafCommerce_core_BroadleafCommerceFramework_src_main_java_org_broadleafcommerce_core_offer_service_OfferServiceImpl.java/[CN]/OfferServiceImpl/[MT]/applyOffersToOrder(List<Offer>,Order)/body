@@ -1,20 +1,21 @@
 {
-  orderOfferProcessor.clearOffersandAdjustments(order);
-  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,order.getCustomer());
+  PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
+  orderOfferProcessor.clearOffersandAdjustments(promotableOrder);
+  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,promotableOrder.getCustomer());
   if ((filteredOffers == null) || (filteredOffers.isEmpty())) {
-    orderOfferProcessor.compileOrderTotal(order);
+    orderOfferProcessor.compileOrderTotal(promotableOrder);
   }
  else {
-    itemOfferProcessor.gatherCart(order);
-    List<CandidateOrderOffer> qualifiedOrderOffers=new ArrayList<CandidateOrderOffer>();
-    List<CandidateItemOffer> qualifiedItemOffers=new ArrayList<CandidateItemOffer>();
-    List<DiscreteOrderItem> discreteOrderItems=itemOfferProcessor.filterOffers(order,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
+    itemOfferProcessor.gatherCart(promotableOrder);
+    List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
+    List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
+    itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
     if ((qualifiedItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
-      orderOfferProcessor.compileOrderTotal(order);
+      orderOfferProcessor.compileOrderTotal(promotableOrder);
     }
  else {
-      itemOfferProcessor.applyAndCompareOrderAndItemOffers(order,qualifiedOrderOffers,qualifiedItemOffers,discreteOrderItems);
-      itemOfferProcessor.gatherCart(order);
+      itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
+      itemOfferProcessor.gatherCart(promotableOrder);
     }
   }
 }

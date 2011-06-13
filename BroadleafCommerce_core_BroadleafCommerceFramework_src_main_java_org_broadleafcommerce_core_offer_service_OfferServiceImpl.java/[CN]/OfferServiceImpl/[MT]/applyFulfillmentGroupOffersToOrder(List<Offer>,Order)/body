@@ -1,20 +1,21 @@
 {
-  order.removeAllCandidateFulfillmentGroupOffers();
-  order.removeAllFulfillmentAdjustments();
+  PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
+  promotableOrder.removeAllCandidateFulfillmentGroupOffers();
+  promotableOrder.removeAllFulfillmentAdjustments();
   List<Offer> possibleFGOffers=new ArrayList<Offer>();
   for (  Offer offer : offers) {
     if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {
       possibleFGOffers.add(offer);
     }
   }
-  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,order.getCustomer());
-  List<CandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<CandidateFulfillmentGroupOffer>();
+  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,promotableOrder.getCustomer());
+  List<PromotableCandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
   for (  Offer offer : filteredOffers) {
-    fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedFGOffers,order.getDiscountableDiscreteOrderItems(),offer);
+    fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(promotableOrder,qualifiedFGOffers,offer);
   }
   if (!qualifiedFGOffers.isEmpty()) {
-    fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,order);
+    fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,promotableOrder);
   }
-  fulfillmentGroupOfferProcessor.gatherCart(order);
-  fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(order);
+  fulfillmentGroupOfferProcessor.gatherCart(promotableOrder);
+  fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(promotableOrder);
 }

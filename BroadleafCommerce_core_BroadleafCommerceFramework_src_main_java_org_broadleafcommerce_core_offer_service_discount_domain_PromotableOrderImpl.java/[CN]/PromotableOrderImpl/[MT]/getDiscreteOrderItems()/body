@@ -1,0 +1,36 @@
+{
+  if (discreteOrderItems == null) {
+    discreteOrderItems=new ArrayList<PromotableOrderItem>();
+    OrderItemVisitor visitor=new OrderItemVisitorAdapter(){
+      @Override public void visit(      BundleOrderItem bundleOrderItem) throws PricingException {
+        for (        DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
+          addDiscreteItem(discreteOrderItem);
+        }
+      }
+      @Override public void visit(      DiscreteOrderItem discreteOrderItem) throws PricingException {
+        addDiscreteItem(discreteOrderItem);
+      }
+      @Override public void visit(      DynamicPriceDiscreteOrderItem dynamicPriceDiscreteOrderItem) throws PricingException {
+        addDiscreteItem(dynamicPriceDiscreteOrderItem);
+      }
+      @Override public void visit(      GiftWrapOrderItem giftWrapOrderItem) throws PricingException {
+        addDiscreteItem(giftWrapOrderItem);
+      }
+      private void addDiscreteItem(      DiscreteOrderItem discreteOrderItem){
+        PromotableOrderItem item=new PromotableOrderItemImpl(discreteOrderItem,PromotableOrderImpl.this);
+        item.computeAdjustmentPrice();
+        discreteOrderItems.add(item);
+      }
+    }
+;
+    try {
+      for (      OrderItem temp : delegate.getOrderItems()) {
+        temp.accept(visitor);
+      }
+    }
+ catch (    PricingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  return discreteOrderItems;
+}

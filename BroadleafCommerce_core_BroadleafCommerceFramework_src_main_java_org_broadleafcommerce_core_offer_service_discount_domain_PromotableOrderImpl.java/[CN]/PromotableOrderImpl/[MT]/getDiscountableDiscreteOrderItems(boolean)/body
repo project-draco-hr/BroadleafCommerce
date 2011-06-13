@@ -1,0 +1,19 @@
+{
+  if (discountableDiscreteOrderItems == null) {
+    discountableDiscreteOrderItems=new ArrayList<PromotableOrderItem>();
+    for (    PromotableOrderItem orderItem : getDiscreteOrderItems()) {
+      if (orderItem.getSku().isDiscountable() == null || orderItem.getSku().isDiscountable()) {
+        discountableDiscreteOrderItems.add((PromotableOrderItem)orderItem);
+      }
+    }
+    OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(applyDiscountToSalePrice);
+    Collections.sort(discountableDiscreteOrderItems,priceComparator);
+    currentSortParam=applyDiscountToSalePrice;
+  }
+  if (currentSortParam != applyDiscountToSalePrice) {
+    OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(applyDiscountToSalePrice);
+    Collections.sort(discountableDiscreteOrderItems,priceComparator);
+    currentSortParam=applyDiscountToSalePrice;
+  }
+  return discountableDiscreteOrderItems;
+}

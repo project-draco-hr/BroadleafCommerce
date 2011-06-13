@@ -1,0 +1,8 @@
+{
+  Money calculatedSubTotal=new Money();
+  for (  PromotableOrderItem orderItem : getDiscountableDiscreteOrderItems()) {
+    Money currentPrice=orderItem.getCurrentPrice();
+    calculatedSubTotal=calculatedSubTotal.add(currentPrice.multiply(orderItem.getQuantity()));
+  }
+  return calculatedSubTotal;
+}

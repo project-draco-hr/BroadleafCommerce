@@ -1,0 +1,8 @@
+{
+  delegate.updatePrices();
+  Money temp=delegate.getRetailPrice();
+  for (  OrderItemAdjustment adjustment : delegate.getOrderItemAdjustments()) {
+    temp=temp.subtract(adjustment.getValue());
+  }
+  adjustmentPrice=temp.lessThan(delegate.getRetailPrice()) ? temp.getAmount() : null;
+}
