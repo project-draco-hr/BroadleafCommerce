@@ -1,10 +1,10 @@
 {
   this.delegate=sku;
   try {
-    Field retail=delegate.getClass().getDeclaredField("retailPrice");
+    Field retail=getSingleField(delegate.getClass(),"retailPrice");
     retail.setAccessible(true);
     retailPrice=new Money((BigDecimal)retail.get(delegate));
-    Field sale=delegate.getClass().getDeclaredField("salePrice");
+    Field sale=getSingleField(delegate.getClass(),"salePrice");
     sale.setAccessible(true);
     salePrice=new Money((BigDecimal)sale.get(delegate));
   }
