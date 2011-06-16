@@ -17,7 +17,7 @@
         buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,metadata,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,propertyName,type,returnedClass,metadataOverrides);
         continue;
       }
-      if (type.isEntityType() && !returnedClass.equals(targetClass) && populateManyToOneFields&& includeField) {
+      if (type.isEntityType() && !returnedClass.isAssignableFrom(targetClass) && populateManyToOneFields&& includeField) {
         buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,propertyName,returnedClass,targetClass,prefix,metadataOverrides);
         continue;
       }
