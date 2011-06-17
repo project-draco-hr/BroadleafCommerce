@@ -6,14 +6,14 @@
       BundleOrderItemImpl bundleOrderItem=(BundleOrderItemImpl)orderItem;
       for (      DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
         if (discreteOrderItem.getSku().isDiscountable()) {
-          discreteOrderItems.add(new PromotableOrderItemImpl(discreteOrderItem,order));
+          discreteOrderItems.add(itemFactory.createPromotableOrderItem(discreteOrderItem,order));
         }
       }
     }
  else {
       DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
       if (discreteOrderItem.getSku().isDiscountable()) {
-        discreteOrderItems.add(new PromotableOrderItemImpl(new DiscreteOrderItemDecorator(discreteOrderItem,fgItem.getQuantity()),order));
+        discreteOrderItems.add(itemFactory.createPromotableOrderItem(new DiscreteOrderItemDecorator(discreteOrderItem,fgItem.getQuantity()),order));
       }
     }
   }

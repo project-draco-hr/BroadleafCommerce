@@ -5,7 +5,7 @@
   discreteOrderItem1.setQuantity(2);
   discreteOrderItem1.setRetailPrice(new Money(19.99D));
   discreteOrderItem1.setPrice(new Money(19.99D));
-  orderItem1=new PromotableOrderItemImpl(discreteOrderItem1,null);
+  orderItem1=new PromotableOrderItemImpl(discreteOrderItem1,null,new PromotableItemFactoryImpl());
   OfferDataItemProvider dataProvider=new OfferDataItemProvider();
   offer=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
 }
