@@ -1,0 +1,23 @@
+{
+  super.preparePersistenceUnitInfos();
+  try {
+    if (BroadleafLoadTimeWeaver.isInstrumentationAvailable()) {
+      if (BroadleafLoadTimeWeaver.getInstrumentation().isRetransformClassesSupported()) {
+        List<Class> filteredClasses=new ArrayList<Class>();
+        Class[] initiatedClasses=BroadleafLoadTimeWeaver.getInstrumentation().getInitiatedClasses(getClass().getClassLoader());
+        for (        Class clazz : initiatedClasses) {
+          if (BroadleafLoadTimeWeaver.getInstrumentation().isModifiableClass(clazz)) {
+            filteredClasses.add(clazz);
+          }
+        }
+        BroadleafLoadTimeWeaver.getInstrumentation().retransformClasses(filteredClasses.toArray(new Class[]{}));
+      }
+ else {
+        LOG.warn("The JVM instrumentation is reporting that retransformation of classes is not supported. This feature is required for dependable class transformation with Broadleaf. Have you made sure to specify the broadleaf-instrument jar as a javaagent parameter for your JVM?");
+      }
+    }
+  }
+ catch (  UnmodifiableClassException e) {
+    throw new RuntimeException(e);
+  }
+}
