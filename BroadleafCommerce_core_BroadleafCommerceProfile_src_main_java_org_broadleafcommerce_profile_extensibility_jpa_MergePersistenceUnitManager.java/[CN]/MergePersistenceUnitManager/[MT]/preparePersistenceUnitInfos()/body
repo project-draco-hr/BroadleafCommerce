@@ -1,11 +1,29 @@
 {
   super.preparePersistenceUnitInfos();
   try {
+    List<Class<?>> managedClassList=new ArrayList<Class<?>>();
+    for (    PersistenceUnitInfo pui : mergedPus.values()) {
+      for (      BroadleafClassTransformer transformer : classTransformers) {
+        try {
+          pui.addTransformer(transformer);
+        }
+ catch (        IllegalStateException e) {
+          LOG.warn("A BroadleafClassTransformer is configured for this persistence unit, but Spring reported a problem (likely that a LoadTimeWeaver is not registered). As a result, the Broadleaf Commerce ClassTransformer (" + transformer.getClass().getName() + ") is not being registered with the persistence unit.",e);
+        }
+      }
+    }
+    for (    PersistenceUnitInfo pui : mergedPus.values()) {
+      for (      String managedClassName : pui.getManagedClassNames()) {
+        Class<?> temp=Class.forName(managedClassName,true,getClass().getClassLoader());
+        if (!managedClassList.contains(temp)) {
+          managedClassList.add(temp);
+        }
+      }
+    }
     if (BroadleafLoadTimeWeaver.isInstrumentationAvailable()) {
       if (BroadleafLoadTimeWeaver.getInstrumentation().isRetransformClassesSupported()) {
-        List<Class> filteredClasses=new ArrayList<Class>();
-        Class[] initiatedClasses=BroadleafLoadTimeWeaver.getInstrumentation().getInitiatedClasses(getClass().getClassLoader());
-        for (        Class clazz : initiatedClasses) {
+        List<Class<?>> filteredClasses=new ArrayList<Class<?>>();
+        for (        Class<?> clazz : managedClassList) {
           if (BroadleafLoadTimeWeaver.getInstrumentation().isModifiableClass(clazz)) {
             filteredClasses.add(clazz);
           }
@@ -17,7 +35,7 @@
       }
     }
   }
- catch (  UnmodifiableClassException e) {
+ catch (  Exception e) {
     throw new RuntimeException(e);
   }
 }
