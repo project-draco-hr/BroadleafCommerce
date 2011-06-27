@@ -1,5 +1,6 @@
 {
   VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setID("categoryLeftVerticalLayout");
   leftVerticalLayout.setHeight100();
   leftVerticalLayout.setWidth("50%");
   leftVerticalLayout.setShowResizeBar(true);
@@ -7,8 +8,10 @@
   listDisplay.setShowResizeBar(true);
   leftVerticalLayout.addMember(listDisplay);
   VLayout abandonedCategoryVerticalLayout=new VLayout();
+  abandonedCategoryVerticalLayout.setID("abandonedCategoryVerticalLayout");
   abandonedCategoryVerticalLayout.setHeight("30%");
   ToolStrip abandonedCategoryTopBar=new ToolStrip();
+  abandonedCategoryTopBar.setID("abandonedCategoryTopBar");
   abandonedCategoryTopBar.setHeight(20);
   abandonedCategoryTopBar.setWidth100();
   abandonedCategoryTopBar.addSpacer(6);
@@ -36,18 +39,22 @@
   abandonedCategoryVerticalLayout.addMember(orphanedCategoryGrid);
   leftVerticalLayout.addMember(abandonedCategoryVerticalLayout);
   TabSet topTabSet=new TabSet();
+  topTabSet.setID("categoryTopTabSet");
   topTabSet.setTabBarPosition(Side.TOP);
   topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
   topTabSet.setWidth("50%");
   topTabSet.setHeight100();
   topTabSet.setPaneMargin(0);
   Tab detailsTab=new Tab("Details");
+  detailsTab.setID("categoryDetailsTab");
   dynamicFormDisplay=new DynamicFormView(AdminModule.ADMINMESSAGES.categoryDetailsTitle(),entityDataSource);
   allCategoriesDisplay=new GridStructureView(AdminModule.ADMINMESSAGES.allChildCategoriesListTitle(),true,false);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(allCategoriesDisplay);
   detailsTab.setPane(dynamicFormDisplay);
   Tab featuredTab=new Tab(AdminModule.ADMINMESSAGES.productsTabTitle());
+  featuredTab.setID("categoryFeaturedTab");
   VLayout featuredLayout=new VLayout();
+  featuredLayout.setID("categoryFeaturedLayout");
   featuredLayout.setHeight100();
   featuredLayout.setWidth100();
   featuredLayout.setBackgroundColor("#eaeaea");
@@ -58,7 +65,9 @@
   featuredLayout.addMember(allProductsDisplay);
   featuredTab.setPane(featuredLayout);
   Tab mediaTab=new Tab(AdminModule.ADMINMESSAGES.mediaTabTitle());
+  mediaTab.setID("categoryMediaTab");
   VLayout mediaLayout=new VLayout();
+  mediaLayout.setID("categoryMediaLayout");
   mediaLayout.setHeight100();
   mediaLayout.setWidth100();
   mediaLayout.setBackgroundColor("#eaeaea");
