@@ -1,0 +1,11 @@
+{
+  Customer customer=readCustomerByUsername(passwordReset.getUsername());
+  String newPassword=PasswordUtils.generateTemporaryPassword(passwordReset.getPasswordLength());
+  customer.setUnencodedPassword(newPassword);
+  customer.setPasswordChangeRequired(passwordReset.getPasswordChangeRequired());
+  customer=saveCustomer(customer);
+  for (  PasswordUpdatedHandler handler : passwordResetHandlers) {
+    handler.passwordChanged(passwordReset,customer,newPassword);
+  }
+  return customer;
+}

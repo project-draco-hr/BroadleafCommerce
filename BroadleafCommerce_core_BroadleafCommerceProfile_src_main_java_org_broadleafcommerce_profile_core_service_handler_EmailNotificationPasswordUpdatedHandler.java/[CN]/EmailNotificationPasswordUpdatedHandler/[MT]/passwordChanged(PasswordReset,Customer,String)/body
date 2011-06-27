@@ -1,0 +1,27 @@
+{
+  Locale localeToUse=null;
+  LocaleType localeType=customer.getCustomerLocale();
+  if (localeType != null) {
+    localeToUse=localeType.getLocale();
+  }
+  if (localeToUse == null) {
+    localeToUse=getPasswordResetEmailDefaultLocale();
+  }
+  String subject=getPasswordResetEmailSubject().get(localeToUse);
+  if (subject == null) {
+    LOG.warn("Unable to find an email subject for customer locale: " + localeToUse.toString() + ". Using default locale instead.");
+    subject=getPasswordResetEmailSubject().get(getPasswordResetEmailDefaultLocale());
+  }
+  String template=getPasswordResetEmailTemplate().get(localeToUse);
+  if (template == null) {
+    LOG.warn("Unable to find an email template for customer locale: " + localeToUse.toString() + ". Using default locale instead.");
+    template=getPasswordResetEmailTemplate().get(getPasswordResetEmailDefaultLocale());
+  }
+  EmailInfo info=new EmailInfo();
+  info.setFromAddress(getPasswordResetEmailFromAddress());
+  info.setSubject(subject);
+  info.setEmailTemplate(template);
+  info.setSendEmailReliableAsync(String.valueOf(passwordReset.isSendResetEmailReliableAsync()));
+  HashMap vars=constructPasswordChangeEmailTemplateVariables(customer,newPassword);
+  emailService.sendTemplateEmail(passwordReset.getEmail(),info,vars);
+}

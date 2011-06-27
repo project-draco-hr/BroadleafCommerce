@@ -3,5 +3,8 @@
   customer.setUnencodedPassword(passwordChange.getNewPassword());
   customer.setPasswordChangeRequired(passwordChange.getPasswordChangeRequired());
   customer=saveCustomer(customer);
+  for (  PasswordUpdatedHandler handler : passwordChangedHandlers) {
+    handler.passwordChanged(passwordChange,customer,passwordChange.getNewPassword());
+  }
   return customer;
 }
