@@ -3,5 +3,10 @@
     throw new IllegalArgumentException("currency cannot be null");
   }
   this.currency=currency;
-  this.amount=BankersRounding.setScale(amount);
+  if (amount.compareTo(new BigDecimal(".01")) > -1) {
+    this.amount=BankersRounding.setScale(amount);
+  }
+ else {
+    this.amount=amount;
+  }
 }
