@@ -6,14 +6,14 @@
       context.addImport("OfferType",OfferType.class);
       context.addImport("FulfillmentGroupType",FulfillmentGroupType.class);
       context.addImport("MVEL",MVEL.class);
-      exp=MVEL.compileExpression(expression.toString(),context);
+      exp=MVEL.compileExpression(expression,context);
     }
     EXPRESSION_CACHE.put(expression,exp);
     Object test=MVEL.executeExpression(exp,vars);
     return (Boolean)test;
   }
  catch (  Exception e) {
-    LOG.error("Unable to parse and/or execute an mvel expression. Reporting to the logs and returning false for the match expression",e);
+    LOG.info("Unable to parse and/or execute an mvel expression. Reporting to the logs and returning false for the match expression",e);
     return false;
   }
 }
