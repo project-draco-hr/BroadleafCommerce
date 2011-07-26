@@ -1,5 +1,5 @@
 {
-  Map<String,FieldPresentationAttributes> presentationAttributes=getFieldPresentationAttributes(targetClass);
+  Map<String,FieldPresentationAttributes> presentationAttributes=getFieldPresentationAttributes(targetClass,presentationOverrides);
   ClassMetadata metadata=sessionFactory.getClassMetadata(targetClass);
   Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
   List<String> propertyNames=new ArrayList<String>();
@@ -23,7 +23,7 @@
     }
   }
   iter=persistentClass.getPropertyIterator();
-  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,iter,metadata,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
+  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,iter,metadata,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides,presentationOverrides);
   FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
   presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
   presentationAttribute.setHidden(true);
