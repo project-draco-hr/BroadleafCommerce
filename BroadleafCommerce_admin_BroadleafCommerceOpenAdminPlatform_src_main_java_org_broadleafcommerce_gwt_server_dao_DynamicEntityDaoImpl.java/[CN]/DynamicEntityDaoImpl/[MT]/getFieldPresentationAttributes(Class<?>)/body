@@ -3,9 +3,6 @@
   Field[] fields=targetClass.getDeclaredFields();
   for (  Field field : fields) {
     AdminPresentation annot=field.getAnnotation(AdminPresentation.class);
-    if (presentationOverrides != null && presentationOverrides.containsKey(field.getName())) {
-      annot=presentationOverrides.get(field.getName()).value();
-    }
     if (annot != null) {
       FieldPresentationAttributes attr=new FieldPresentationAttributes();
       attr.setName(field.getName());

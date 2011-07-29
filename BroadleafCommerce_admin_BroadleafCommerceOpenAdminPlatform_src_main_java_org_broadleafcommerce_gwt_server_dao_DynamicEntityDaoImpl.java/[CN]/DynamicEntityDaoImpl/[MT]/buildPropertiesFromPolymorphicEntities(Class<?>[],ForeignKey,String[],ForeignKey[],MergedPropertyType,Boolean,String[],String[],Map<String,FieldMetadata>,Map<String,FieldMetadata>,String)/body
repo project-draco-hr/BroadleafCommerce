@@ -1,15 +1,6 @@
 {
-  Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
-  for (int i=entities.length - 1; i >= 0; i--) {
-    AdminPresentationOverrides myOverrides=entities[i].getAnnotation(AdminPresentationOverrides.class);
-    if (myOverrides != null) {
-      for (      AdminPresentationOverride myOverride : myOverrides.value()) {
-        presentationOverrides.put(myOverride.name(),myOverride);
-      }
-    }
-  }
   for (  Class<?> clazz : entities) {
-    Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides,presentationOverrides);
+    Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
     for (    Class<?> clazz2 : entities) {
       if (!clazz2.getName().equals(clazz.getName())) {
         for (        String key : props.keySet()) {
