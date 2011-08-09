@@ -101,10 +101,10 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemAdditionalFeesDS",new OrderItemFeesDataSourceFactory(this),null,new Object[]{},new AsyncCallbackAdapter(){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("discreteOrderItemFeePriceDS",new DiscreteOrderItemFeePriceDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
-      feesPresenter=new SimpleMapStructurePresenter(getDisplay().getOrderItemFeeDisplay(),null);
-      feesPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","value"},new Boolean[]{false,false});
+      feesPresenter=new CreateBasedListStructurePresenter(((OrderDisplay)getDisplay()).getOrderItemFeeDisplay(),AdminModule.ADMINMESSAGES.newOrderItemFeeTitle());
+      feesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","amount","reportingCode"},new Boolean[]{false,false,false});
       feesPresenter.setReadOnly(true);
     }
   }
