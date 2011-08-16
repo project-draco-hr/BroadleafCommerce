@@ -1,8 +1,10 @@
 {
+  Component component=null;
   StringTokenizer tokens=new StringTokenizer(fieldName,".");
   Field field=null;
   while (tokens.hasMoreTokens()) {
-    field=getSingleField(clazz,tokens.nextToken());
+    String propertyName=tokens.nextToken();
+    field=getSingleField(clazz,propertyName);
     if (field != null && tokens.hasMoreTokens()) {
       Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
       if (entities.length > 0) {
@@ -20,6 +22,9 @@
  else {
           clazz=field.getType();
         }
+      }
+ else {
+        clazz=field.getType();
       }
     }
  else {
