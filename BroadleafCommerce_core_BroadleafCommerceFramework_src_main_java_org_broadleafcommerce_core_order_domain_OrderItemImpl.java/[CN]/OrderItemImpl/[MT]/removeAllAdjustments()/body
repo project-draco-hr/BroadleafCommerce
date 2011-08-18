@@ -1,6 +1,9 @@
 {
   int removedAdjustmentCount=0;
   if (getOrderItemAdjustments() != null) {
+    for (    OrderItemAdjustment adjustment : getOrderItemAdjustments()) {
+      adjustment.setOrderItem(null);
+    }
     removedAdjustmentCount=getOrderItemAdjustments().size();
     getOrderItemAdjustments().clear();
   }
