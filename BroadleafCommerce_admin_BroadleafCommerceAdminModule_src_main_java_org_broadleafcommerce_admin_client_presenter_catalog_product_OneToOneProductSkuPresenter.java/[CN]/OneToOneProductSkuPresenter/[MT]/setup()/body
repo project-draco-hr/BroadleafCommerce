@@ -1,0 +1,67 @@
+{
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productDS",new OneToOneProductSkuDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource top){
+      setupDisplayItems(top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categorySearch",new CategoryListDataSourceFactory(),new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.JOINSTRUCTURE,OperationType.ENTITY,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ListGridDataSource categorySearchDataSource=(ListGridDataSource)result;
+      categorySearchDataSource.resetPermanentFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
+      EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
+      library.put("categorySearchView",categorySearchView);
+      ((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultCategory",categorySearchView,BLCMain.getMessageManager().getString("categorySearchTitle"),getDisplay().getDynamicFormDisplay());
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("oneToOneProductSearchDS",new ProductListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      final ListGridDataSource productSearchDataSource=(ListGridDataSource)result;
+      productSearchDataSource.resetPermanentFieldVisibility("name","description","model","manufacturer","activeStartDate","activeEndDate");
+      productSearchView=new EntitySearchDialog(productSearchDataSource);
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("crossSaleProductsDS",new CrossSaleProductListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      crossSalePresenter=new EditableJoinStructurePresenter(getDisplay().getCrossSaleDisplay(),productSearchView,BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
+      crossSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("upSaleProductsDS",new UpSaleProductListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      upSalePresenter=new EditableJoinStructurePresenter(getDisplay().getUpSaleDisplay(),productSearchView,BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
+      upSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productMediaMapDS",new ProductMediaMapDataSourceFactory(this),null,new Object[]{getMediaMapKeys()},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      Map<String,Object> initialValues=new HashMap<String,Object>();
+      initialValues.put("name",BLCMain.getMessageManager().getString("mediaNameDefault"));
+      initialValues.put("label",BLCMain.getMessageManager().getString("mediaLabelDefault"));
+      mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"),initialValues);
+      mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productAttributeDS",new ProductAttributeDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      Map<String,Object> initialValues=new HashMap<String,Object>();
+      initialValues.put("name","Untitled");
+      productAttributePresenter=new CreateBasedListStructurePresenter(getDisplay().getAttributesDisplay(),BLCMain.getMessageManager().getString("newAttributeTitle"),initialValues);
+      productAttributePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","value","searchable"},new Boolean[]{true,true,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("parentCategoriesDS",new ParentCategoryListDataSourceFactory(),new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      parentCategoriesPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      parentCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
+    }
+  }
+));
+}

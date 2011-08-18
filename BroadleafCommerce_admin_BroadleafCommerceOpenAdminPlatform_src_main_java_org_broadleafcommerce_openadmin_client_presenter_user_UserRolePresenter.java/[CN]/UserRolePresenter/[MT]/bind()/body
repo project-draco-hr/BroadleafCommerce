@@ -1,0 +1,48 @@
+{
+  display.getAddButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        searchDialog.search(BLCMain.getMessageManager().getString("userRolesTitle"),new SearchItemSelectedEventHandler(){
+          public void onSearchItemSelected(          SearchItemSelectedEvent event){
+            display.getGrid().addData(event.getRecord());
+          }
+        }
+);
+      }
+    }
+  }
+);
+  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        display.getRemoveButton().enable();
+        ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
+      }
+ else {
+        display.getRemoveButton().disable();
+      }
+    }
+  }
+);
+  display.getExpansionGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        ((DynamicEntityDataSource)display.getExpansionGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
+      }
+    }
+  }
+);
+  display.getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            display.getRemoveButton().disable();
+          }
+        }
+);
+      }
+    }
+  }
+);
+}

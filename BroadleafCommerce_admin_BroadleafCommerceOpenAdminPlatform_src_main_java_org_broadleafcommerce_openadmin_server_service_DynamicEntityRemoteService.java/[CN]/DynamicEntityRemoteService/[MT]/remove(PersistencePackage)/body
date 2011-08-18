@@ -1,0 +1,31 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  SandBoxInfo sandBoxInfo=persistencePackage.getSandBoxInfo();
+  for (  Property p : entity.getProperties()) {
+    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
+      break;
+    }
+  }
+  PersistenceManager persistenceManager=null;
+  try {
+    SandBoxContext context=new SandBoxContext();
+    context.setSandBoxName(sandBoxInfo.getSandBox());
+    context.setSandBoxMode(persistencePackage.getSandBoxInfo().isCommitImmediately() ? SandBoxMode.IMMEDIATE_COMMIT : SandBoxMode.SANDBOX_COMMIT);
+    SandBoxContext.setSandBoxContext(context);
+    persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
+    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
+    persistenceManager.remove(persistencePackage);
+  }
+  finally {
+    try {
+      if (persistenceManager != null) {
+        persistenceManager.close();
+      }
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+    }
+    SandBoxContext.setSandBoxContext(null);
+  }
+}

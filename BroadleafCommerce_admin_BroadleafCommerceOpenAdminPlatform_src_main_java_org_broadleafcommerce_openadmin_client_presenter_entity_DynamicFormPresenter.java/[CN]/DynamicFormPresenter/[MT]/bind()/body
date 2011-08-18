@@ -1,0 +1,28 @@
+{
+  saveButtonHandlerRegistration=display.getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DSRequest requestProperties=new DSRequest();
+        requestProperties.setAttribute("dirtyValues",display.getFormOnlyDisplay().getForm().getChangedValues());
+        display.getFormOnlyDisplay().getForm().saveData(null,requestProperties);
+        display.getSaveButton().disable();
+      }
+    }
+  }
+);
+  refreshButtonHandlerRegistration=display.getRefreshButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getFormOnlyDisplay().getForm().reset();
+        display.getSaveButton().disable();
+      }
+    }
+  }
+);
+  display.getFormOnlyDisplay().getForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      display.getSaveButton().enable();
+    }
+  }
+);
+}

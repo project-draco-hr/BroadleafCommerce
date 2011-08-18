@@ -1,0 +1,22 @@
+{
+  String[] customCriteria=persistencePackage.getCustomCriteria();
+  if (customCriteria != null && customCriteria.length > 0) {
+    LOG.warn("custom persistence handlers and custom criteria not supported for remove types other than ENTITY");
+  }
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Entity entity=persistencePackage.getEntity();
+    MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+    Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),Long.valueOf(entity.findProperty("symbolicId").getValue()));
+    FieldManager fieldManager=getFieldManager();
+    Map map=(Map)fieldManager.getFieldValue(instance,mapStructure.getMapProperty());
+    Object value=map.remove(entity.findProperty("priorKey").getValue());
+    if (mapStructure.getDeleteValueEntity()) {
+      persistenceManager.getDynamicEntityDao().remove((Serializable)value);
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Problem editing entity",e);
+    throw new ServiceException("Problem removing entity : " + e.getMessage(),e);
+  }
+}

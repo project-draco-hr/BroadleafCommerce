@@ -1,0 +1,10 @@
+{
+  InjectionMetadata metadata=findPersistenceMetadata(bean.getClass());
+  try {
+    metadata.inject(bean,beanName,pvs);
+  }
+ catch (  Throwable ex) {
+    throw new BeanCreationException(beanName,"Injection of persistence dependencies failed",ex);
+  }
+  return pvs;
+}

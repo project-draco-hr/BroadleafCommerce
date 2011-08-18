@@ -1,0 +1,25 @@
+{
+  if (type.equals("FULFILLMENT_GROUP")) {
+    if (getDisplay().getFgRuleRadio().getValue().equals("FG_RULE")) {
+      if (!presenter.initializer.fgRuleIncompatible) {
+        setData(selectedRecord,"appliesToFulfillmentGroupRules",TRANSLATOR.createMVEL(getDisplay().getFulfillmentGroupFilterBuilder().getCriteria(),FilterType.FULFILLMENT_GROUP,getDisplay().getFulfillmentGroupFilterBuilder().getDataSource()),dirtyValues);
+      }
+ else {
+        setData(selectedRecord,"appliesToFulfillmentGroupRules",getDisplay().getRawFGTextArea().getValue(),dirtyValues);
+      }
+    }
+ else {
+      Object value=null;
+      setData(selectedRecord,"appliesToFulfillmentGroupRules",value,dirtyValues);
+      getDisplay().getFulfillmentGroupFilterBuilder().clearCriteria();
+      getDisplay().getRawFGTextArea().setValue("");
+    }
+    setData(selectedRecord,"combinableWithOtherOffers",getDisplay().getFgCombineRuleRadio().getValue().equals("YES"),dirtyValues);
+  }
+ else {
+    Object value=null;
+    setData(selectedRecord,"appliesToFulfillmentGroupRules",value,dirtyValues);
+    getDisplay().getFulfillmentGroupFilterBuilder().clearCriteria();
+    getDisplay().getRawFGTextArea().setValue("");
+  }
+}

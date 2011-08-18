@@ -1,0 +1,16 @@
+{
+  EntityManagerFactory emf=getEntityManagerFactory();
+  if (emf == null) {
+    throw new IllegalArgumentException("entityManagerFactory is required");
+  }
+  EntityManagerFactory sandBox=getSandBoxEntityManagerFactory();
+  if (sandBox == null) {
+    throw new IllegalArgumentException("sandBoxEntityManagerFactory is required");
+  }
+  Class[] ifcs=new Class[]{HibernateEntityManager.class};
+  EntityManager standardEm=SharedEntityManagerCreator.createSharedEntityManager(emf,getJpaPropertyMap(),ifcs);
+  EntityManager sandBoxEm=SharedEntityManagerCreator.createSharedEntityManager(sandBox,getJpaPropertyMap(),ifcs);
+  BroadleafEntityManagerInvocationHandler handler=new BroadleafEntityManagerInvocationHandler((HibernateEntityManager)standardEm,(HibernateEntityManager)sandBoxEm,cleaner);
+  HibernateEntityManager proxy=(HibernateEntityManager)Proxy.newProxyInstance(getClass().getClassLoader(),new Class[]{HibernateEntityManager.class,DualEntityManager.class},handler);
+  this.shared=proxy;
+}

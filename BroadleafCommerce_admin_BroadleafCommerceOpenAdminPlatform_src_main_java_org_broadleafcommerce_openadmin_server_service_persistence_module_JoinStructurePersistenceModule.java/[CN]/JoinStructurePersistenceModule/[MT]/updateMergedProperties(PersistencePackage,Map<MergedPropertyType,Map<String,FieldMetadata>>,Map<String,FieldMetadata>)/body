@@ -1,0 +1,15 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    JoinStructure joinStructure=(JoinStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+    if (joinStructure != null) {
+      Map<String,FieldMetadata> joinMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(joinStructure.getJoinStructureEntityClassname(),new Class[]{Class.forName(joinStructure.getJoinStructureEntityClassname())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),metadataOverrides,"");
+      allMergedProperties.put(MergedPropertyType.JOINSTRUCTURE,joinMergedProperties);
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

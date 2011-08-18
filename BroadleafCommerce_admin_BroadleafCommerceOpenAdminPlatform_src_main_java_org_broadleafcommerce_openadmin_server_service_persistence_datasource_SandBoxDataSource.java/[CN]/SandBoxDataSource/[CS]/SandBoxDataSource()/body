@@ -1,0 +1,31 @@
+{
+synchronized (this) {
+    if (server == null) {
+      try {
+        Class.forName(DRIVERNAME);
+      }
+ catch (      ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+      try {
+        HsqlProperties p=new HsqlProperties();
+        p.setProperty("server.remote_open",true);
+        server=new Server();
+        server.setAddress(address);
+        server.setPort(port);
+        server.setProperties(p);
+        server.setLogWriter(logWriter == null ? new PrintWriter(System.out) : logWriter);
+        server.setErrWriter(logWriter == null ? new PrintWriter(System.out) : logWriter);
+        server.start();
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+catch (      AclFormatException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  uuid=UUID.randomUUID().toString();
+  sandboxDataBasePool=new GenericObjectPool(new PoolableSandBoxDataBaseFactory());
+}

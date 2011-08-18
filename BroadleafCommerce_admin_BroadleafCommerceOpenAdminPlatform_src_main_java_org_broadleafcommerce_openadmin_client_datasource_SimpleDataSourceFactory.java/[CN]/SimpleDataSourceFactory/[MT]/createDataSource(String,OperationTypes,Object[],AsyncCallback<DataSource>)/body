@@ -1,0 +1,13 @@
+{
+  if (dataSource == null) {
+    PersistencePerspective persistencePerspective=createPersistencePerspective();
+    DataSourceModule[] modules=createDataSourceModules().toArray(new DataSourceModule[0]);
+    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource.buildFields(null,false,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}

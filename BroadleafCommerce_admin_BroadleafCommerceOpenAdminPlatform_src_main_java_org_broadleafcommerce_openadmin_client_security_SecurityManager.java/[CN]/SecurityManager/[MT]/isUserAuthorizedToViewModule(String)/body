@@ -1,0 +1,12 @@
+{
+  Set moduleSections=moduleSectionList.get(moduleKey);
+  if (moduleSections != null) {
+    for (Iterator<String> iterator=moduleSections.iterator(); iterator.hasNext(); ) {
+      String sectionKey=iterator.next();
+      if (isUserAuthorizedToViewSection(sectionKey)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}

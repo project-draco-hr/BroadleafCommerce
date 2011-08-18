@@ -1,0 +1,16 @@
+{
+  EntityManager em=getPersistenceContext(unitName,false);
+  if (em == null) {
+    EntityManagerFactory emf=getPersistenceUnit(unitName);
+    if (emf == null) {
+      emf=findEntityManagerFactory(unitName,requestingBeanName);
+    }
+    if (emf instanceof EntityManagerFactoryInfo && ((EntityManagerFactoryInfo)emf).getEntityManagerInterface() != null) {
+      em=SharedEntityManagerCreator.createSharedEntityManager(emf,this.properties);
+    }
+ else {
+      em=SharedEntityManagerCreator.createSharedEntityManager(emf,this.properties,getResourceType());
+    }
+  }
+  return em;
+}

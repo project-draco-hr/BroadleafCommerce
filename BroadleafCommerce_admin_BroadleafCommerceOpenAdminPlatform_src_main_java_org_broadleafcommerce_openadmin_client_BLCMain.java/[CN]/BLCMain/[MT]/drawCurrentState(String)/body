@@ -1,0 +1,29 @@
+{
+  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    @Override public void onSuccess(    AdminUser result){
+      SecurityManager.USER=result;
+      if (result == null) {
+        SC.say("This page cannot be accessed without first successfully logging in.");
+      }
+ else {
+        String moduleKey=requestedModuleKey;
+        for (Iterator<Module> iterator=modules.values().iterator(); iterator.hasNext(); ) {
+          Module currentModule=iterator.next();
+          if (!SecurityManager.getInstance().isUserAuthorizedToViewModule(currentModule.getModuleKey())) {
+            modules.remove(currentModule.getModuleKey());
+          }
+        }
+        if (moduleKey == null) {
+          moduleKey=modules.keySet().iterator().next();
+        }
+        currentModuleKey=moduleKey;
+        modules.get(currentModuleKey).preDraw();
+        MASTERVIEW=new MasterView(moduleKey,modules);
+        MASTERVIEW.draw();
+        AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(moduleKey).getPages());
+        modules.get(moduleKey).postDraw();
+      }
+    }
+  }
+);
+}

@@ -1,0 +1,14 @@
+{
+  String packageName=classType.getPackage().getName();
+  String simpleName=classType.getSimpleSourceName() + "Wrapper";
+  ClassSourceFileComposerFactory composer=new ClassSourceFileComposerFactory(packageName,simpleName);
+  composer.addImplementedInterface("org.broadleafcommerce.openadmin.client.reflection.Factory");
+  PrintWriter printWriter=context.tryCreate(logger,packageName,simpleName);
+  if (printWriter == null) {
+    return null;
+  }
+ else {
+    SourceWriter sw=composer.createSourceWriter(context,printWriter);
+    return sw;
+  }
+}

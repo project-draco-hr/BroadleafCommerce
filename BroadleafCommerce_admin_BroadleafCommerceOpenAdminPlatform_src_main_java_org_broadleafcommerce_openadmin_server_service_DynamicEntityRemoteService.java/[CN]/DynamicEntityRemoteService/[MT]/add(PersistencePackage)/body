@@ -1,0 +1,26 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  SandBoxInfo sandBoxInfo=persistencePackage.getSandBoxInfo();
+  adminRemoteSecurityService.securityCheck(ceilingEntityFullyQualifiedClassname,EntityOperationType.ADD);
+  PersistenceManager persistenceManager=null;
+  try {
+    SandBoxContext context=new SandBoxContext();
+    context.setSandBoxName(sandBoxInfo.getSandBox());
+    context.setSandBoxMode(persistencePackage.getSandBoxInfo().isCommitImmediately() ? SandBoxMode.IMMEDIATE_COMMIT : SandBoxMode.SANDBOX_COMMIT);
+    SandBoxContext.setSandBoxContext(context);
+    persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
+    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
+    return persistenceManager.add(persistencePackage);
+  }
+  finally {
+    try {
+      if (persistenceManager != null) {
+        persistenceManager.close();
+      }
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+    }
+    SandBoxContext.setSandBoxContext(null);
+  }
+}

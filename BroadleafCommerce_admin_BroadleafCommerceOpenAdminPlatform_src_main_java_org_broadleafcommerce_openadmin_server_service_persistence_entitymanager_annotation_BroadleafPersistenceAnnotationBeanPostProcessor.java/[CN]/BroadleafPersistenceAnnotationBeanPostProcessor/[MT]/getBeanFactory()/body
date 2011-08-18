@@ -1,0 +1,10 @@
+{
+  try {
+    Field field=(Field)getClass().getSuperclass().getDeclaredField("beanFactory");
+    ReflectionUtils.makeAccessible(field);
+    return (BeanFactory)field.get(this);
+  }
+ catch (  Throwable e) {
+    throw new RuntimeException(e);
+  }
+}

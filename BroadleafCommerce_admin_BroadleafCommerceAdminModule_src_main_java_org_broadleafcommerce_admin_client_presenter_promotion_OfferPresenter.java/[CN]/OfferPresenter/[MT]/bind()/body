@@ -1,0 +1,323 @@
+{
+  super.bind();
+  getDisplay().getStepFGForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getStepItemForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getStepBogoForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getOrderCombineForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getOrderItemCombineForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getRawCustomerForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getRawOrderForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getRawFGForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getRestrictForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getCustomerObtainForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getWhichCustomerForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getOrderForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getReceiveFromAnotherPromoForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getQualifyForAnotherPromoForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getReceiveFromAnotherPromoTargetForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getQualifyForAnotherPromoTargetForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getFGCombineForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+    }
+  }
+);
+  getDisplay().getListDisplay().getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        BLCMain.MASTERVIEW.clearStatus();
+        getDisplay().getAdvancedButton().setSelected(false);
+        getDisplay().getAdvancedButton().disable();
+        getDisplay().getDeliveryTypeRadio().disable();
+        getDisplay().getCustomerRuleRadio().disable();
+        getDisplay().getOrderRuleRadio().disable();
+        initializer.disable();
+      }
+    }
+  }
+);
+  getDisplay().getAdvancedButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (((ToolStripButton)event.getSource()).getSelected()) {
+        entityDataSource.resetPermanentFieldVisibilityBasedOnType(getDisplay().getListDisplay().getGrid().getSelectedRecord().getAttributeAsStringArray("_type"));
+        entityDataSource.permanentlyHideFields("deliveryType","offerItemQualifierRuleType","offerItemTargetRuleType","uses","targetItemCriteria.id","targetItemCriteria.quantity","targetItemCriteria.orderItemMatchRule");
+        getDisplay().getAdvancedItemCriteria().setVisible(true);
+        getDisplay().getAdvancedItemCriteriaTarget().setVisible(true);
+        getDisplay().getRestrictionSectionView().setVisible(true);
+      }
+ else {
+        entityDataSource.resetVisibilityOnly("name","description","type","discountType","value","priority","startDate","endDate");
+        getDisplay().getAdvancedItemCriteria().setVisible(false);
+        getDisplay().getAdvancedItemCriteriaTarget().setVisible(false);
+        getDisplay().getRestrictionSectionView().setVisible(false);
+      }
+      @SuppressWarnings("rawtypes") Map values=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getValues();
+      Object[] keys=values.keySet().toArray();
+      for (      Object key : keys) {
+        if (key.toString().equals("__ref")) {
+          values.remove(key);
+        }
+      }
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().buildFields(entityDataSource,true,true,false);
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(getDisplay().getListDisplay().getGrid().getSelectedRecord());
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().setValues(values);
+      rebindFormItems(display.getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  selectionChangedHandlerRegistration.removeHandler();
+  getDisplay().getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState()) {
+        if (!selectedRecord.equals(lastSelectedRecord)) {
+          lastSelectedRecord=selectedRecord;
+          if (selectedRecord.getAttributeAsStringArray("_type") == null) {
+            formPresenter.disable();
+            getDisplay().getListDisplay().getRemoveButton().disable();
+          }
+ else {
+            formPresenter.setStartState();
+            entityDataSource.resetVisibilityOnly("name","description","type","discountType","value","priority","startDate","endDate");
+            getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().buildFields(getDisplay().getListDisplay().getGrid().getDataSource(),true,true,false);
+            getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
+            getDisplay().getListDisplay().getRemoveButton().enable();
+          }
+          changeSelection(selectedRecord);
+        }
+      }
+    }
+  }
+);
+  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        extractor.applyData(getDisplay().getListDisplay().getGrid().getSelectedRecord());
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonType().addMouseMoveHandler(new MouseMoveHandler(){
+    public void onMouseMove(    MouseMoveEvent event){
+      if (currentHelp == null) {
+        currentHelp=createHelpWin(BLCMain.getMessageManager().getString("offerObtainSettingsHelpTitle"),BLCMain.getMessageManager().getString("offerObtainSettingsHelpContent"),true,300,200,getDisplay().getHelpButtonType().getAbsoluteLeft() + 26,getDisplay().getHelpButtonType().getAbsoluteTop());
+        currentHelp.show();
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonType().addMouseOutHandler(new MouseOutHandler(){
+    public void onMouseOut(    MouseOutEvent event){
+      if (currentHelp != null) {
+        currentHelp.destroy();
+        currentHelp=null;
+      }
+    }
+  }
+);
+  getDisplay().getDeliveryTypeRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String deliveryType=event.getValue().toString();
+      initializer.initDeliveryType(deliveryType,getDisplay().getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  getDisplay().getCustomerRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String customerRule=event.getValue().toString();
+      initializer.initCustomerRule(customerRule,getDisplay().getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  getDisplay().getFgRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String fgRule=event.getValue().toString();
+      initializer.initFGRule(fgRule,getDisplay().getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  getDisplay().getItemRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String itemRule=event.getValue().toString();
+      initializer.initItemRule(itemRule);
+    }
+  }
+);
+  getDisplay().getOrderRuleRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String orderRule=event.getValue().toString();
+      initializer.initOrderRule(orderRule,getDisplay().getListDisplay().getGrid().getSelectedRecord());
+    }
+  }
+);
+  getDisplay().getHelpButtonBogo().addMouseMoveHandler(new MouseMoveHandler(){
+    public void onMouseMove(    MouseMoveEvent event){
+      if (currentHelp == null) {
+        currentHelp=createHelpWin(BLCMain.getMessageManager().getString("bogoHelpTitle"),BLCMain.getMessageManager().getString("bogoHelpContent"),true,300,200,getDisplay().getHelpButtonBogo().getAbsoluteLeft() + 26,getDisplay().getHelpButtonBogo().getAbsoluteTop());
+        currentHelp.show();
+      }
+    }
+  }
+);
+  getDisplay().getHelpButtonBogo().addMouseOutHandler(new MouseOutHandler(){
+    public void onMouseOut(    MouseOutEvent event){
+      if (currentHelp != null) {
+        currentHelp.destroy();
+        currentHelp=null;
+      }
+    }
+  }
+);
+  getDisplay().getBogoRadio().addChangedHandler(new ChangedHandler(){
+    public void onChanged(    ChangedEvent event){
+      String bogoRule=event.getValue().toString();
+      initializer.initBogoRule(bogoRule);
+    }
+  }
+);
+  getDisplay().getAddItemButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        final ItemBuilderDisplay display=getDisplay().addItemBuilder(orderItemDataSource);
+        bindItemBuilderEvents(display);
+        display.setDirty(true);
+        getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      }
+    }
+  }
+);
+  for (  final ItemBuilderDisplay display : getDisplay().getItemBuilderViews()) {
+    bindItemBuilderEvents(display);
+  }
+  getDisplay().getCustomerFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getRawCustomerTextArea().setAttribute("dirty",true);
+    }
+  }
+);
+  getDisplay().getOrderFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getRawOrderTextArea().setAttribute("dirty",true);
+    }
+  }
+);
+  getDisplay().getFulfillmentGroupFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getRawFGTextArea().setAttribute("dirty",true);
+    }
+  }
+);
+  getDisplay().getTargetItemBuilder().getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getTargetItemBuilder().setDirty(true);
+    }
+  }
+);
+  getDisplay().getTargetItemBuilder().getItemForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getTargetItemBuilder().setDirty(true);
+    }
+  }
+);
+  getDisplay().getTargetItemBuilder().getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getTargetItemBuilder().setDirty(true);
+    }
+  }
+);
+  getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        initializeDisplay(getDisplay().getListDisplay().getGrid().getSelectedRecord());
+      }
+    }
+  }
+);
+}

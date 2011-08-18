@@ -1,0 +1,54 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
+    Map<String,FieldMetadata> offerProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective,dynamicEntityDao,entityClasses);
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,Offer.class.getName(),offerProperties);
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,Offer.class.getName());
+    List<Serializable> records=dynamicEntityDao.query(queryCriteria,Offer.class);
+    Entity[] entities=helper.getRecords(offerProperties,records,null,null);
+    for (int j=0; j < entities.length; j++) {
+      Offer offer=(Offer)records.get(j);
+      OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
+      if (orderRule != null) {
+        entities[j].findProperty("appliesToOrderRules").setValue(orderRule.getMatchRule());
+      }
+      OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
+      if (customerRule != null) {
+        entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
+      }
+      OfferRule fgRule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+      if (fgRule != null) {
+        Property prop=new Property();
+        prop.setName("appliesToFulfillmentGroupRules");
+        prop.setValue(fgRule.getMatchRule());
+        entities[j].addProperty(prop);
+      }
+    }
+    PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
+    Class<?>[] offerCodeEntityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(OfferCode.class);
+    Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective,dynamicEntityDao,offerCodeEntityClasses);
+    for (    Entity record : entities) {
+      CriteriaTransferObject offerCodeCto=new CriteriaTransferObject();
+      FilterAndSortCriteria filterCriteria=offerCodeCto.get("offer");
+      filterCriteria.setFilterValue(record.findProperty("id").getValue());
+      BaseCtoConverter offerCodeCtoConverter=helper.getCtoConverter(offerCodePersistencePerspective,offerCodeCto,OfferCode.class.getName(),offerCodeMergedProperties);
+      PersistentEntityCriteria offerCodeQueryCriteria=offerCodeCtoConverter.convert(offerCodeCto,OfferCode.class.getName());
+      List<Serializable> offerCodes=dynamicEntityDao.query(offerCodeQueryCriteria,OfferCode.class);
+      Entity[] offerCodeEntities=helper.getRecords(offerCodeMergedProperties,offerCodes,null,null);
+      if (offerCodeEntities.length > 0) {
+        Entity temp=new Entity();
+        temp.setType(offerCodeEntities[0].getType());
+        temp.setProperties(new Property[]{offerCodeEntities[0].findProperty("offerCode"),offerCodeEntities[0].findProperty("id")});
+        record.mergeProperties("offerCode",temp);
+      }
+    }
+    int totalRecords=helper.getTotalRecords(ceilingEntityFullyQualifiedClassname,cto,ctoConverter);
+    DynamicResultSet response=new DynamicResultSet(null,entities,totalRecords);
+    return response;
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

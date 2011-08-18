@@ -1,0 +1,14 @@
+{
+  MissingResourceException backup=null;
+  for (int j=constants.size() - 1; j >= 0; j--) {
+    ConstantsWithLookup constant=constants.get(j);
+    try {
+      String[] temp=constant.getStringArray(methodName);
+      return temp;
+    }
+ catch (    MissingResourceException e) {
+      backup=e;
+    }
+  }
+  throw backup;
+}

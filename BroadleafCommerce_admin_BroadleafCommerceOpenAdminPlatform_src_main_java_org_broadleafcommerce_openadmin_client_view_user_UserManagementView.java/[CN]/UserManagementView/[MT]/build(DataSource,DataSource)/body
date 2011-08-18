@@ -1,0 +1,28 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setID("userLeftVerticalLayout");
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("50%");
+  leftVerticalLayout.setShowResizeBar(true);
+  listDisplay=new DynamicEntityListView(BLCMain.getMessageManager().getString("userListTitle"),entityDataSource,false,false);
+  leftVerticalLayout.addMember(listDisplay);
+  TabSet topTabSet=new TabSet();
+  topTabSet.setID("userTopTabSet");
+  topTabSet.setTabBarPosition(Side.TOP);
+  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
+  topTabSet.setWidth("50%");
+  topTabSet.setHeight100();
+  topTabSet.setPaneMargin(0);
+  Tab detailsTab=new Tab(BLCMain.getMessageManager().getString("userDetailsTitle"));
+  detailsTab.setID("userDetailsTab");
+  dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("userDetailsTitle"),entityDataSource);
+  detailsTab.setPane(dynamicFormDisplay);
+  topTabSet.addTab(detailsTab);
+  Tab userRolesTab=new Tab(BLCMain.getMessageManager().getString("userRolesTitle"));
+  userRolesTab.setID("userUserRolesTab");
+  userRolesDisplay=new UserRoleView(BLCMain.getMessageManager().getString("userRolesTitle"),false,false);
+  userRolesTab.setPane(userRolesDisplay);
+  topTabSet.addTab(userRolesTab);
+  addMember(leftVerticalLayout);
+  addMember(topTabSet);
+}

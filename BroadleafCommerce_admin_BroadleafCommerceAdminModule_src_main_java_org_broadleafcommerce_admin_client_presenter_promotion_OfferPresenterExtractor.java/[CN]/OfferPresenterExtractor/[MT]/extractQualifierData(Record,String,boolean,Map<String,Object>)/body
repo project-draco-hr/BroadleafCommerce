@@ -1,0 +1,56 @@
+{
+  if ((getDisplay().getBogoRadio().getValue().equals("YES") && type.equals("ORDER_ITEM")) || getDisplay().getItemRuleRadio().getValue().equals("ITEM_RULE") && !type.equals("ORDER_ITEM")) {
+    for (    final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
+      if (builder.getDirty()) {
+        String temper=builder.getItemQuantity().getValue().toString();
+        Integer quantity=Integer.parseInt(temper);
+        String mvel;
+        if (builder.getIncompatibleMVEL()) {
+          mvel=builder.getRawItemTextArea().getValueAsString();
+        }
+ else {
+          mvel=TRANSLATOR.createMVEL(builder.getItemFilterBuilder().getCriteria(),FilterType.ORDER_ITEM,builder.getItemFilterBuilder().getDataSource());
+        }
+        if (!isValidation) {
+          if (builder.getRecord() != null) {
+            setData(builder.getRecord(),"quantity",quantity,dirtyValues);
+            setData(builder.getRecord(),"orderItemMatchRule",mvel,dirtyValues);
+            presenter.offerItemCriteriaDataSource.updateData(builder.getRecord(),new DSCallback(){
+              public void execute(              DSResponse response,              Object rawData,              DSRequest request){
+                builder.setDirty(false);
+              }
+            }
+);
+          }
+ else {
+            final Record temp=new Record();
+            temp.setAttribute("quantity",quantity);
+            temp.setAttribute("orderItemMatchRule",mvel);
+            temp.setAttribute("_type",new String[]{((DynamicEntityDataSource)presenter.offerItemCriteriaDataSource).getDefaultNewEntityFullyQualifiedClassname()});
+            temp.setAttribute(OfferItemCriteriaListDataSourceFactory.foreignKeyName,presenter.entityDataSource.getPrimaryKeyValue(selectedRecord));
+            temp.setAttribute("id","");
+            presenter.offerItemCriteriaDataSource.addData(temp,new DSCallback(){
+              public void execute(              DSResponse response,              Object rawData,              DSRequest request){
+                builder.setDirty(false);
+                builder.setRecord(temp);
+              }
+            }
+);
+          }
+        }
+      }
+    }
+  }
+ else {
+    if (!isValidation) {
+      ItemBuilderDisplay[] displays=new ItemBuilderDisplay[]{};
+      displays=getDisplay().getItemBuilderViews().toArray(displays);
+      for (      final ItemBuilderDisplay builder : displays) {
+        removeItemQualifer(builder);
+      }
+    }
+  }
+  if (type.equals("ORDER_ITEM")) {
+    setData(selectedRecord,"combinableWithOtherOffers",getDisplay().getOrderItemCombineRuleRadio().getValue().equals("YES"),dirtyValues);
+  }
+}

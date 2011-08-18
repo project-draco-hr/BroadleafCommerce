@@ -1,0 +1,6 @@
+{
+  Class<?>[] entityClasses=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(ceilingEntityClass);
+  Map<String,FieldMetadata> mergedProperties=getSimpleMergedProperties(ceilingEntityClass.getName(),persistencePerspective,persistenceManager.getDynamicEntityDao(),entityClasses);
+  Entity[] entities=getRecords(mergedProperties,records,null,null);
+  return entities;
+}

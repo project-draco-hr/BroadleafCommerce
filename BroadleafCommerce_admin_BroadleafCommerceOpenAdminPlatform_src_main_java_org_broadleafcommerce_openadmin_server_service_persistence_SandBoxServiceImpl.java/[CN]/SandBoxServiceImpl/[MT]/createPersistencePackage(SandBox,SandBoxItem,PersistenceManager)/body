@@ -1,0 +1,105 @@
+{
+  PersistencePackage pkg=new PersistencePackage();
+  pkg.setCeilingEntityFullyQualifiedClassname(sandBoxItem.getCeilingEntityFullyQualifiedClassname());
+  pkg.setCustomCriteria(getSplitArray(sandBoxItem.getCustomCriteria(),","));
+  org.broadleafcommerce.openadmin.server.domain.Entity persistentEntity=sandBoxItem.getEntity();
+  Entity dtoEntity=new Entity();
+  pkg.setEntity(dtoEntity);
+  dtoEntity.setType(getSplitArray(persistentEntity.getType(),","));
+  SandBoxInfo info=new SandBoxInfo();
+  pkg.setSandBoxInfo(info);
+  info.setSandBox(sandBox.getName());
+  info.setCommitImmediately(false);
+  PersistencePerspective dtoPersistencePerspective=new PersistencePerspective();
+  pkg.setPersistencePerspective(dtoPersistencePerspective);
+  org.broadleafcommerce.openadmin.server.domain.PersistencePerspective persistentPersistencePerspective=sandBoxItem.getPersistencePerspective();
+  List<org.broadleafcommerce.openadmin.server.domain.ForeignKey> persistenceForeignKeyList=persistentPersistencePerspective.getAdditionalForeignKeys();
+  ForeignKey[] dtoForeignKeyList=new ForeignKey[persistenceForeignKeyList.size()];
+  for (int j=0; j < dtoForeignKeyList.length; j++) {
+    ForeignKey dtoForeignKey=new ForeignKey();
+    dtoForeignKey.setCurrentValue(persistenceForeignKeyList.get(j).getCurrentValue());
+    dtoForeignKey.setDataSourceName(persistenceForeignKeyList.get(j).getDataSourceName());
+    dtoForeignKey.setDisplayValueProperty(persistenceForeignKeyList.get(j).getDisplayValueProperty());
+    dtoForeignKey.setForeignKeyClass(persistenceForeignKeyList.get(j).getForeignKeyClass());
+    dtoForeignKey.setManyToField(persistenceForeignKeyList.get(j).getManyToField());
+    dtoForeignKey.setRestrictionType(persistenceForeignKeyList.get(j).getRestrictionType());
+    dtoForeignKeyList[j]=dtoForeignKey;
+  }
+  dtoPersistencePerspective.setAdditionalForeignKeys(dtoForeignKeyList);
+  dtoPersistencePerspective.setAdditionalNonPersistentProperties(getSplitArray(persistentPersistencePerspective.getAdditionalNonPersistentProperties(),","));
+  dtoPersistencePerspective.setExcludeFields(getSplitArray(persistentPersistencePerspective.getExcludeFields(),","));
+  dtoPersistencePerspective.setIncludeFields(getSplitArray(persistentPersistencePerspective.getIncludeFields(),","));
+  OperationTypes dtoOperationTypes=new OperationTypes();
+  dtoPersistencePerspective.setOperationTypes(dtoOperationTypes);
+  dtoOperationTypes.setAddType(persistentPersistencePerspective.getOperationTypes().getAddType());
+  dtoOperationTypes.setFetchType(persistentPersistencePerspective.getOperationTypes().getFetchType());
+  dtoOperationTypes.setInspectType(persistentPersistencePerspective.getOperationTypes().getInspectType());
+  dtoOperationTypes.setRemoveType(persistentPersistencePerspective.getOperationTypes().getRemoveType());
+  dtoOperationTypes.setUpdateType(persistentPersistencePerspective.getOperationTypes().getUpdateType());
+  dtoPersistencePerspective.setPopulateToOneFields(persistentPersistencePerspective.getPopulateToOneFields());
+  final Map<PersistencePerspectiveItemType,PersistencePerspectiveItem> dtoPersistencePerspectiveItemMap=new HashMap<PersistencePerspectiveItemType,PersistencePerspectiveItem>();
+  dtoPersistencePerspective.setPersistencePerspectiveItems(dtoPersistencePerspectiveItemMap);
+  Map<PersistencePerspectiveItemType,org.broadleafcommerce.openadmin.server.domain.PersistencePerspectiveItem> persistentPersistencePerspectiveItemMap=persistentPersistencePerspective.getPersistencePerspectiveItems();
+  for (  final PersistencePerspectiveItemType perspectiveItemType : persistentPersistencePerspectiveItemMap.keySet()) {
+    org.broadleafcommerce.openadmin.server.domain.PersistencePerspectiveItem persistentPersistencePerspectiveItem=persistentPersistencePerspectiveItemMap.get(perspectiveItemType);
+    org.broadleafcommerce.openadmin.server.domain.visitor.PersistencePerspectiveItemVisitor visitor=new org.broadleafcommerce.openadmin.server.domain.visitor.PersistencePerspectiveItemVisitorAdapter(){
+      @Override public void visit(      org.broadleafcommerce.openadmin.server.domain.ForeignKey persistentForeignKey){
+        ForeignKey dtoForeignKey=new ForeignKey();
+        dtoForeignKey.setCurrentValue(persistentForeignKey.getCurrentValue());
+        dtoForeignKey.setDataSourceName(persistentForeignKey.getDataSourceName());
+        dtoForeignKey.setDisplayValueProperty(persistentForeignKey.getDisplayValueProperty());
+        dtoForeignKey.setForeignKeyClass(persistentForeignKey.getForeignKeyClass());
+        dtoForeignKey.setManyToField(persistentForeignKey.getManyToField());
+        dtoForeignKey.setRestrictionType(persistentForeignKey.getRestrictionType());
+        dtoPersistencePerspectiveItemMap.put(perspectiveItemType,dtoForeignKey);
+      }
+      @Override public void visit(      org.broadleafcommerce.openadmin.server.domain.JoinStructure persistentJoinStructure){
+        JoinStructure dtoJoinStructure=new JoinStructure();
+        dtoJoinStructure.setInverse(persistentJoinStructure.getInverse());
+        dtoJoinStructure.setJoinStructureEntityClassname(persistentJoinStructure.getJoinStructureEntityClassname());
+        dtoJoinStructure.setLinkedIdProperty(persistentJoinStructure.getLinkedIdProperty());
+        dtoJoinStructure.setLinkedObjectPath(persistentJoinStructure.getLinkedObjectPath());
+        dtoJoinStructure.setName(persistentJoinStructure.getName());
+        dtoJoinStructure.setSortAscending(persistentJoinStructure.getSortAscending());
+        dtoJoinStructure.setSortField(persistentJoinStructure.getSortField());
+        dtoJoinStructure.setTargetIdProperty(persistentJoinStructure.getTargetIdProperty());
+        dtoJoinStructure.setTargetObjectPath(persistentJoinStructure.getTargetObjectPath());
+        dtoPersistencePerspectiveItemMap.put(perspectiveItemType,dtoJoinStructure);
+      }
+      @Override public void visit(      org.broadleafcommerce.openadmin.server.domain.MapStructure persistentMapStructure){
+        MapStructure dtoMapStructure=new MapStructure();
+        dtoMapStructure.setDeleteValueEntity(persistentMapStructure.getDeleteValueEntity());
+        dtoMapStructure.setKeyClassName(persistentMapStructure.getKeyClassName());
+        dtoMapStructure.setKeyPropertyFriendlyName(persistentMapStructure.getKeyPropertyFriendlyName());
+        dtoMapStructure.setKeyPropertyName(persistentMapStructure.getKeyPropertyName());
+        dtoMapStructure.setMapProperty(persistentMapStructure.getMapProperty());
+        dtoMapStructure.setValueClassName(persistentMapStructure.getValueClassName());
+        dtoPersistencePerspectiveItemMap.put(perspectiveItemType,dtoMapStructure);
+      }
+      @Override public void visit(      org.broadleafcommerce.openadmin.server.domain.SimpleValueMapStructure persistentSimpleValueMapStructure){
+        SimpleValueMapStructure dtoSimpleValueMapStructure=new SimpleValueMapStructure();
+        dtoSimpleValueMapStructure.setValuePropertyFriendlyName(persistentSimpleValueMapStructure.getValuePropertyFriendlyName());
+        dtoSimpleValueMapStructure.setValuePropertyName(persistentSimpleValueMapStructure.getValuePropertyName());
+        dtoSimpleValueMapStructure.setDeleteValueEntity(persistentSimpleValueMapStructure.getDeleteValueEntity());
+        dtoSimpleValueMapStructure.setKeyClassName(persistentSimpleValueMapStructure.getKeyClassName());
+        dtoSimpleValueMapStructure.setKeyPropertyFriendlyName(persistentSimpleValueMapStructure.getKeyPropertyFriendlyName());
+        dtoSimpleValueMapStructure.setKeyPropertyName(persistentSimpleValueMapStructure.getKeyPropertyName());
+        dtoSimpleValueMapStructure.setMapProperty(persistentSimpleValueMapStructure.getMapProperty());
+        dtoSimpleValueMapStructure.setValueClassName(persistentSimpleValueMapStructure.getValueClassName());
+        dtoPersistencePerspectiveItemMap.put(perspectiveItemType,dtoSimpleValueMapStructure);
+      }
+    }
+;
+    persistentPersistencePerspectiveItem.accept(visitor);
+  }
+  Property[] dtoPropertyList=new Property[persistentEntity.getProperties().size()];
+  List<org.broadleafcommerce.openadmin.server.domain.Property> persistentPropertyList=persistentEntity.getProperties();
+  Map idMetadata=getIdMetadata(Class.forName(dtoEntity.getType()[0]));
+  String primaryKeyProperty=(String)idMetadata.get("name");
+  for (int j=0; j < dtoPropertyList.length; j++) {
+    Property dtoProperty=createDtoProperty(persistentPropertyList.get(j),primaryKeyProperty,sandBoxItem.getTemporaryId());
+    dtoPropertyList[j]=dtoProperty;
+  }
+  dtoEntity.setProperties(dtoPropertyList);
+  return pkg;
+}

@@ -1,0 +1,162 @@
+{
+  SandBoxContext context=SandBoxContext.getSandBoxContext();
+  boolean isSandBox=context != null && context.getSandBoxMode() == SandBoxMode.SANDBOX_COMMIT;
+  if (method.getName().equals("merge") || method.getName().equals("persist")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        Object[] converted=new Object[]{cleaner.convertBean(objects[0],method,sandboxManager,sandboxTransactionManager)};
+        return converted[0];
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+ else {
+      return executeInTransaction(new Executable(){
+        @Override public Object execute() throws Throwable {
+          return method.invoke(standardManager,objects);
+        }
+      }
+,standardTransactionManager);
+    }
+  }
+  if (method.getName().equals("remove") || method.getName().equals("flush") || method.getName().equals("lock")) {
+    if (isSandBox) {
+      return executeInTransaction(new Executable(){
+        @Override public Object execute() throws Throwable {
+          logInvocation("Executing",sandboxManager,method.getName());
+          try {
+            return method.invoke(sandboxManager,objects);
+          }
+  finally {
+            logInvocation("Completed",sandboxManager,method.getName());
+          }
+        }
+      }
+,sandboxTransactionManager);
+    }
+ else {
+      return executeInTransaction(new Executable(){
+        @Override public Object execute() throws Throwable {
+          return method.invoke(standardManager,objects);
+        }
+      }
+,standardTransactionManager);
+    }
+  }
+  if (method.getName().equals("setFlushMode") || method.getName().equals("getFlushMode") || method.getName().equals("getLockMode")|| method.getName().equals("joinTransaction")|| method.getName().equals("getTransaction")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        return method.invoke(sandboxManager,objects);
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+ else {
+      return method.invoke(standardManager,objects);
+    }
+  }
+  if (method.getName().equals("find") || method.getName().equals("getReference") || method.getName().equals("unwrap")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        Object response=method.invoke(sandboxManager,objects);
+        if (response != null) {
+          return response;
+        }
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+    LOG.info(method.getName() + " not successful on sandbox, trying standard entity manager instead");
+    return method.invoke(standardManager,objects);
+  }
+  if (method.getName().equals("refresh")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        return method.invoke(sandboxManager,objects);
+      }
+ catch (      Exception e) {
+        e.printStackTrace();
+      }
+ finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+    LOG.info(method.getName() + " not successful on sandbox, trying standard entity manager instead");
+    return method.invoke(standardManager,objects);
+  }
+  if (method.getName().equals("clear") || method.getName().equals("getProperties") || method.getName().equals("setProperty")|| method.getName().equals("close")) {
+    logInvocation("Executing",sandboxManager,method.getName());
+    try {
+      method.invoke(sandboxManager,objects);
+    }
+  finally {
+      logInvocation("Completed",sandboxManager,method.getName());
+    }
+    return method.invoke(standardManager,objects);
+  }
+  if (method.getName().equals("detach")) {
+    if (sandboxManager.contains(objects[0])) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        sandboxManager.detach(objects[0]);
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+    if (standardManager.contains(objects[0])) {
+      standardManager.detach(objects[0]);
+    }
+    return null;
+  }
+  if (method.getName().equals("contains")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        boolean contains=sandboxManager.contains(objects[0]);
+        if (contains) {
+          return true;
+        }
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+    return standardManager.contains(objects[0]);
+  }
+  if (method.getName().equals("isOpen")) {
+    if (isSandBox) {
+      logInvocation("Executing",sandboxManager,method.getName());
+      try {
+        boolean isOpen=sandboxManager.isOpen();
+        if (!isOpen) {
+          return false;
+        }
+      }
+  finally {
+        logInvocation("Completed",sandboxManager,method.getName());
+      }
+    }
+    return standardManager.isOpen();
+  }
+  if (method.getName().equals("getDelegate") || method.getName().equals("getEntityManagerFactory") || method.getName().equals("getMetamodel")|| method.getName().equals("getSession")) {
+    return method.invoke(standardManager,objects);
+  }
+  if (method.getName().equals("createQuery") || method.getName().equals("createNamedQuery") || method.getName().equals("createNativeQuery")|| method.getName().equals("getCriteriaBuilder")) {
+    return method.invoke(standardManager,objects);
+  }
+  if (method.getName().equals("getStandardManager")) {
+    return standardManager;
+  }
+  if (method.getName().equals("getSandboxManager")) {
+    return sandboxManager;
+  }
+  throw new SandBoxException("Unrecognized EntityManager method sent to proxy: " + method.getName());
+}

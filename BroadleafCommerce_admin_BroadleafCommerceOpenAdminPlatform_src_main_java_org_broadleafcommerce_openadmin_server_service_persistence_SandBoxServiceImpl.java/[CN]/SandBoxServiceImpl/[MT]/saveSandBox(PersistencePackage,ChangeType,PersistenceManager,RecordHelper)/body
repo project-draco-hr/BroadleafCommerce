@@ -1,0 +1,78 @@
+{
+  SandBox sandBox=sandBoxDao.readSandBoxByName(persistencePackage.getSandBoxInfo().getSandBox());
+  if (sandBox == null) {
+    sandBox=createSandBox(persistencePackage);
+  }
+  SandBoxItem item;
+switch (changeType) {
+default :
+{
+      item=createSandBoxItemFromDto(sandBox,persistencePackage,changeType,null);
+      sandBox.getSandBoxItems().add(item);
+      sandBoxDao.persist(sandBox);
+      break;
+    }
+case UPDATE:
+{
+    Object primaryKey=null;
+    try {
+      Map idMetadata=getIdMetadata(Class.forName(persistencePackage.getEntity().getType()[0]));
+      primaryKey=getPrimaryKey(idMetadata,persistencePackage.getEntity().findProperty((String)idMetadata.get("name")).getValue());
+    }
+ catch (    Exception e) {
+      throw new SandBoxException(e);
+    }
+    item=sandBoxDao.retrieveSandBoxItemByTemporaryId(primaryKey);
+    if (item == null) {
+      item=createSandBoxItemFromDto(sandBox,persistencePackage,changeType,primaryKey);
+      sandBox.getSandBoxItems().add(item);
+    }
+ else {
+      List<org.broadleafcommerce.openadmin.server.domain.Property> savedProperties=item.getEntity().getProperties();
+      for (      final Property property : persistencePackage.getEntity().getProperties()) {
+        if (property.getIsDirty()) {
+          org.broadleafcommerce.openadmin.server.domain.Property matchedProperty=(org.broadleafcommerce.openadmin.server.domain.Property)org.apache.commons.collections.CollectionUtils.find(savedProperties,new Predicate(){
+            @Override public boolean evaluate(            Object o){
+              return ((org.broadleafcommerce.openadmin.server.domain.Property)o).getName().equals(property.getName());
+            }
+          }
+);
+          if (matchedProperty == null) {
+            throw new SandBoxException("Unable to find the updated dtoProperty (" + property.getName() + ") in the persisted record in the database for "+ persistencePackage.getEntity().getType()[0]+ "("+ primaryKey+ ")");
+          }
+          matchedProperty.setIsDirty(property.getIsDirty());
+          matchedProperty.setValue(property.getValue());
+        }
+      }
+    }
+    sandBoxDao.merge(sandBox);
+    break;
+  }
+case DELETE:
+{
+  Object primaryKey=null;
+  try {
+    Map idMetadata=getIdMetadata(Class.forName(persistencePackage.getEntity().getType()[0]));
+    primaryKey=getPrimaryKey(idMetadata,persistencePackage.getEntity().findProperty((String)idMetadata.get("name")).getValue());
+  }
+ catch (  Exception e) {
+    throw new SandBoxException(e);
+  }
+  item=sandBoxDao.retrieveSandBoxItemByTemporaryId(primaryKey);
+  if (item != null) {
+    sandBox.getSandBoxItems().remove(item);
+    sandBoxDao.deleteItem(item);
+  }
+  item=createSandBoxItemFromDto(sandBox,persistencePackage,changeType,primaryKey);
+  sandBox.getSandBoxItems().add(item);
+  sandBoxDao.merge(sandBox);
+  break;
+}
+}
+try {
+return createPersistencePackage(sandBox,item,persistenceManager);
+}
+ catch (Exception e) {
+throw new SandBoxException(e);
+}
+}

@@ -1,0 +1,70 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> categoryProperties=getMergedProperties(Category.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    Object primaryKey=helper.getPrimaryKey(entity,categoryProperties);
+    Category category=(Category)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+{
+      CriteriaBuilder criteriaBuilder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
+      CriteriaQuery<Category> query=criteriaBuilder.createQuery(Category.class);
+      Root<CategoryImpl> root=query.from(CategoryImpl.class);
+      query.where(criteriaBuilder.equal(root.get("defaultParentCategory"),category));
+      query.select(root);
+      TypedQuery<Category> categoryQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
+      List<Category> categories=categoryQuery.getResultList();
+      if (!categories.isEmpty()) {
+        StringBuffer sb=new StringBuffer();
+        sb.append("Cannot delete category (");
+        sb.append(category.getId());
+        sb.append(",");
+        sb.append(category.getName());
+        sb.append("). There are Categories that reference it as the default parent category. These categories must first be updated to a different default parent category before this category can be deleted. ");
+        sb.append("\nThe categories in question are: ");
+        for (        Category myCategory : categories) {
+          sb.append("\n");
+          sb.append("(");
+          sb.append(myCategory.getId());
+          sb.append(",");
+          sb.append(myCategory.getName());
+          sb.append(")");
+        }
+        throw new ServiceException(sb.toString());
+      }
+    }
+{
+      CriteriaBuilder criteriaBuilder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
+      CriteriaQuery<Product> query=criteriaBuilder.createQuery(Product.class);
+      Root<ProductImpl> root=query.from(ProductImpl.class);
+      query.where(criteriaBuilder.equal(root.get("defaultCategory"),category));
+      query.select(root);
+      TypedQuery<Product> productQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
+      List<Product> products=productQuery.getResultList();
+      if (!products.isEmpty()) {
+        StringBuffer sb=new StringBuffer();
+        sb.append("Cannot delete category (");
+        sb.append(category.getId());
+        sb.append(",");
+        sb.append(category.getName());
+        sb.append("). There are Products that reference it as the default category. These products must first be updated to a different default category before this category can be deleted. ");
+        sb.append("\nThe products in question are: ");
+        for (        Product product : products) {
+          sb.append("\n");
+          sb.append("(");
+          sb.append(product.getId());
+          sb.append(",");
+          sb.append(product.getName());
+          sb.append(")");
+        }
+        throw new ServiceException(sb.toString());
+      }
+    }
+    dynamicEntityDao.remove(category);
+  }
+ catch (  ServiceException e) {
+    throw e;
+  }
+catch (  Exception e) {
+    throw new ServiceException("Unable to remove entity for " + entity.getType()[0],e);
+  }
+}

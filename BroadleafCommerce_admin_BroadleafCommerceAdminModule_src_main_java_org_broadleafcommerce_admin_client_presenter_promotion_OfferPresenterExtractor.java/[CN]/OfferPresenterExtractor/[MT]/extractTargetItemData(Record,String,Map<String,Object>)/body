@@ -1,0 +1,20 @@
+{
+  if (type.equals("ORDER_ITEM")) {
+    String temp=getDisplay().getTargetItemBuilder().getItemQuantity().getValue().toString();
+    Integer quantity=Integer.parseInt(temp);
+    String mvel;
+    if (getDisplay().getTargetItemBuilder().getIncompatibleMVEL()) {
+      mvel=getDisplay().getTargetItemBuilder().getRawItemTextArea().getValueAsString();
+    }
+ else {
+      mvel=TRANSLATOR.createMVEL(getDisplay().getTargetItemBuilder().getItemFilterBuilder().getCriteria(),FilterType.ORDER_ITEM,getDisplay().getTargetItemBuilder().getItemFilterBuilder().getDataSource());
+    }
+    setData(selectedRecord,"targetItemCriteria.quantity",quantity,dirtyValues);
+    setData(selectedRecord,"targetItemCriteria.orderItemMatchRule",mvel,dirtyValues);
+  }
+ else {
+    setData(selectedRecord,"targetItemCriteria.quantity",0,dirtyValues);
+    String attr=null;
+    setData(selectedRecord,"targetItemCriteria.orderItemMatchRule",attr,dirtyValues);
+  }
+}

@@ -1,0 +1,16 @@
+{
+  setHeight(height);
+  if (width != null)   setWidth(height);
+  setVertical(false);
+  timer=new Timer(){
+    public void run(){
+      Double factor=1D / current;
+      current+=.25D;
+      barValue=(int)(100 - (100D * factor));
+      setPercentDone(barValue);
+      if (isActive)       schedule(50);
+    }
+  }
+;
+  setOpacity(50);
+}

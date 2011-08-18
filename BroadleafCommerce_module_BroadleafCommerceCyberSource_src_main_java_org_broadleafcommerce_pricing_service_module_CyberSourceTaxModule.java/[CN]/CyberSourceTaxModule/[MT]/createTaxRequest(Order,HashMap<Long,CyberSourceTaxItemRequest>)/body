@@ -6,10 +6,10 @@
   setCurrency(order,taxRequest);
   CyberSourceBillingRequest billingRequest=createBillingRequest(order.getPaymentInfos().get(0));
   taxRequest.setBillingRequest(billingRequest);
-  String myNexus=StringUtils.join(nexus.toArray(),",");
-  if (StringUtils.isNotEmpty(myNexus))   taxRequest.setNexus(myNexus);
-  String myNoNexus=StringUtils.join(nonexus.toArray(),",");
-  if (StringUtils.isNotEmpty(myNoNexus))   taxRequest.setNoNexus(myNoNexus);
+  String myNexus=StringUtils.join(nexus.toArray(new String[]{}),',');
+  if (!StringUtils.isEmpty(myNexus))   taxRequest.setNexus(myNexus);
+  String myNoNexus=StringUtils.join(nonexus.toArray(new String[]{}),',');
+  if (!StringUtils.isEmpty(myNoNexus))   taxRequest.setNoNexus(myNoNexus);
   taxRequest.setOrderAcceptanceCity(orderAcceptanceCity);
   taxRequest.setOrderAcceptanceCounty(orderAcceptanceCounty);
   taxRequest.setOrderAcceptanceCountry(orderAcceptanceCountry);

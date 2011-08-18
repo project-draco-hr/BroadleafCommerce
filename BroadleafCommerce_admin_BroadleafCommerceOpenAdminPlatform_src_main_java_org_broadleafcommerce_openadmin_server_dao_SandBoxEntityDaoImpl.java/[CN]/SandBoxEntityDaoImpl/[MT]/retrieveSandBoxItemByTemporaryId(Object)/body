@@ -1,0 +1,11 @@
+{
+  Query query=sandBoxEntityManager.createNamedQuery("BC_READ_SANDBOX_ITEM_BY_TEMPORARY_ID");
+  query.setParameter("temporaryId",temporaryId);
+  SandBoxItem response=null;
+  try {
+    response=(SandBoxItem)query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+  }
+  return response;
+}

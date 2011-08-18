@@ -1,0 +1,30 @@
+{
+  try {
+    Entity entity=persistencePackage.getEntity();
+    for (    CustomPersistenceHandler handler : persistenceManager.getCustomPersistenceHandlers()) {
+      if (handler.canHandleUpdate(persistencePackage)) {
+        return handler.update(persistencePackage,persistenceManager.getDynamicEntityDao(),this);
+      }
+    }
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Class<?>[] entities=persistenceManager.getPolymorphicEntities(entity.getType()[0]);
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
+    if (primaryKey == null) {
+      primaryKey=getPrimaryKey(entity,mergedProperties);
+    }
+    Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    instance=createPopulatedInstance(instance,entity,mergedProperties,false);
+    instance=persistenceManager.getDynamicEntityDao().merge(instance);
+    List<Serializable> entityList=new ArrayList<Serializable>();
+    entityList.add(instance);
+    return getRecords(mergedProperties,entityList,null,null)[0];
+  }
+ catch (  ServiceException e) {
+    LOG.error("Problem editing entity",e);
+    throw e;
+  }
+catch (  Exception e) {
+    LOG.error("Problem editing entity",e);
+    throw new ServiceException("Problem updating entity : " + e.getMessage(),e);
+  }
+}

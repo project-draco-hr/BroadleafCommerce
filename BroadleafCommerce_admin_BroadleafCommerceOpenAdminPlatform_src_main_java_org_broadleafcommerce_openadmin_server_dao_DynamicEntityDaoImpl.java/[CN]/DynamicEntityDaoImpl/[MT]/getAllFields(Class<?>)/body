@@ -1,0 +1,16 @@
+{
+  Field[] allFields=new Field[]{};
+  boolean eof=false;
+  Class<?> currentClass=targetClass;
+  while (!eof) {
+    Field[] fields=currentClass.getDeclaredFields();
+    allFields=(Field[])ArrayUtils.addAll(allFields,fields);
+    if (currentClass.getSuperclass() != null) {
+      currentClass=currentClass.getSuperclass();
+    }
+ else {
+      eof=true;
+    }
+  }
+  return allFields;
+}

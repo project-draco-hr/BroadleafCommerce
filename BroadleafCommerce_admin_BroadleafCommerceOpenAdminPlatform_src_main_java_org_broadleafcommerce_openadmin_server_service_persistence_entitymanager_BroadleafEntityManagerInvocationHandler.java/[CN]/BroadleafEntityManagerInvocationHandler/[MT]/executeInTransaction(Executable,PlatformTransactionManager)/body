@@ -1,0 +1,16 @@
+{
+  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
+  def.setName("SandBoxTx");
+  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+  Object response;
+  TransactionStatus status=txManager.getTransaction(def);
+  try {
+    response=executable.execute();
+  }
+ catch (  Throwable ex) {
+    txManager.rollback(status);
+    throw ex;
+  }
+  txManager.commit(status);
+  return response;
+}

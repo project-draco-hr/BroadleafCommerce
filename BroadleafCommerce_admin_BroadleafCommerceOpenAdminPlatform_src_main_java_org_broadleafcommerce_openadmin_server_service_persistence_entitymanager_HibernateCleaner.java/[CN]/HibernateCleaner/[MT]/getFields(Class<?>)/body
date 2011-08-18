@@ -1,0 +1,16 @@
+{
+  Field[] fields=new Field[]{};
+  Class<?> myClass=clazz;
+  boolean eof=false;
+  while (!eof) {
+    Field[] temp=myClass.getDeclaredFields();
+    fields=(Field[])ArrayUtils.addAll(temp,fields);
+    if (myClass.getSuperclass() != null) {
+      myClass=myClass.getSuperclass();
+    }
+ else {
+      eof=true;
+    }
+  }
+  return fields;
+}
