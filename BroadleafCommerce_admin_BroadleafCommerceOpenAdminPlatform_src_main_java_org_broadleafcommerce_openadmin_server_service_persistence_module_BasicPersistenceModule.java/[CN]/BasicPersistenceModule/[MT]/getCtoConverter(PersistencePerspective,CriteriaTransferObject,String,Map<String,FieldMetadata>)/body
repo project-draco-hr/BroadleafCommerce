@@ -8,13 +8,30 @@
       property=propertyName.substring(dotIndex + 1,propertyName.length());
       String prefix=propertyName.substring(0,dotIndex);
       StringTokenizer tokens=new StringTokenizer(prefix,".");
-      AssociationPathElement[] elements=new AssociationPathElement[tokens.countTokens()];
-      int j=0;
+      List<AssociationPathElement> elementList=new ArrayList<AssociationPathElement>();
+      Class clazz=Class.forName(mergedProperties.get(propertyName).getInheritedFromType());
+      StringBuffer sb=new StringBuffer();
       while (tokens.hasMoreElements()) {
-        elements[j]=new AssociationPathElement(tokens.nextToken());
-        j++;
+        String token=tokens.nextToken();
+        sb.append(token);
+        Field field=getFieldManager().getField(clazz,sb.toString());
+        Embedded embedded=field.getAnnotation(Embedded.class);
+        if (embedded != null) {
+          sb.append(".");
+        }
+ else {
+          elementList.add(new AssociationPathElement(sb.toString()));
+          sb=new StringBuffer();
+        }
       }
-      associationPath=new AssociationPath(elements);
+      if (elementList.size() > 0) {
+        AssociationPathElement[] elements=elementList.toArray(new AssociationPathElement[]{});
+        associationPath=new AssociationPath(elements);
+      }
+ else {
+        property=sb.toString() + property;
+        associationPath=AssociationPath.ROOT;
+      }
     }
  else {
       property=propertyName;

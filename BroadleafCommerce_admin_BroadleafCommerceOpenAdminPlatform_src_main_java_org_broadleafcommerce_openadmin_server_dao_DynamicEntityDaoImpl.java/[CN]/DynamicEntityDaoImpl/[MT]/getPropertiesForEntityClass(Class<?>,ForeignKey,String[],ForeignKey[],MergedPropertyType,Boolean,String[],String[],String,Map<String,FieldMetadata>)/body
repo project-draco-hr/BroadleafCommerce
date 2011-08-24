@@ -1,19 +1,12 @@
 {
   Map<String,FieldPresentationAttributes> presentationAttributes=getFieldPresentationAttributes(targetClass);
   Map idMetadata=getIdMetadata(targetClass);
-  ClassMetadata metadata=getSessionFactory().getClassMetadata(targetClass);
   Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
-  List<String> propertyNames=new ArrayList<String>();
   String idProperty=(String)idMetadata.get("name");
-  for (  String propertyName : metadata.getPropertyNames()) {
-    propertyNames.add(propertyName);
-  }
+  List<String> propertyNames=getPropertyNames(targetClass);
   propertyNames.add(idProperty);
-  List<Type> propertyTypes=new ArrayList<Type>();
   Type idType=(Type)idMetadata.get("type");
-  for (  Type propertyType : metadata.getPropertyTypes()) {
-    propertyTypes.add(propertyType);
-  }
+  List<Type> propertyTypes=getPropertyTypes(targetClass);
   propertyTypes.add(idType);
   PersistentClass persistentClass=getPersistentClass(targetClass.getName());
   Iterator<Property> iter=persistentClass.getPropertyIterator();
@@ -24,7 +17,7 @@
     }
   }
   iter=persistentClass.getPropertyIterator();
-  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,iter,metadata,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
+  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,iter,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
   FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
   presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
   presentationAttribute.setHidden(true);
