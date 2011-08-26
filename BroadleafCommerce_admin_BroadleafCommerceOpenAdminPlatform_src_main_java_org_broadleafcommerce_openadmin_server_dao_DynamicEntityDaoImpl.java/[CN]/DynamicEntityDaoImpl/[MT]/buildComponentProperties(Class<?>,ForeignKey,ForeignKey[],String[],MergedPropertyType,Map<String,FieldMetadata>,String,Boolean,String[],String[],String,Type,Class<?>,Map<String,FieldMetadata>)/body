@@ -12,8 +12,12 @@
   Map<String,FieldPresentationAttributes> componentPresentationAttributes=getFieldPresentationAttributes(returnedClass);
   PersistentClass persistentClass=getPersistentClass(targetClass.getName());
   @SuppressWarnings("unchecked") Iterator<Property> componentPropertyIterator=((Component)persistentClass.getProperty(propertyName).getValue()).getPropertyIterator();
+  List<Property> componentPropertyList=new ArrayList<Property>();
+  while (componentPropertyIterator.hasNext()) {
+    componentPropertyList.add(componentPropertyIterator.next());
+  }
   Map<String,FieldMetadata> newFields=new HashMap<String,FieldMetadata>();
-  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,componentPresentationAttributes,componentPropertyIterator,newFields,componentPropertyNames,componentPropertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,propertyName + ".",metadataOverrides);
+  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,componentPresentationAttributes,componentPropertyList,newFields,componentPropertyNames,componentPropertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,propertyName + ".",metadataOverrides);
   Map<String,FieldMetadata> convertedFields=new HashMap<String,FieldMetadata>();
   for (  String key : newFields.keySet()) {
     convertedFields.put(propertyName + "." + key,newFields.get(key));

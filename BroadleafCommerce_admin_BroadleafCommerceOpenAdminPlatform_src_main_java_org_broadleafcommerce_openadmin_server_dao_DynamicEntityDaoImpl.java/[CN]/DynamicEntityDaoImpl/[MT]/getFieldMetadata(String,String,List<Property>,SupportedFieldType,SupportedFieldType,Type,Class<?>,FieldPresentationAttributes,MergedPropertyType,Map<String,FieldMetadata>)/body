@@ -4,8 +4,7 @@
   fieldMetadata.setSecondaryType(secondaryType);
   if (entityType != null && !entityType.isCollectionType()) {
     Column column=null;
-    while (componentProperties.hasNext()) {
-      Property property=(Property)componentProperties.next();
+    for (    Property property : componentProperties) {
       if (property.getName().equals(propertyName)) {
         column=(Column)property.getColumnIterator().next();
         break;

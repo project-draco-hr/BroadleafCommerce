@@ -9,21 +9,22 @@
   List<Type> propertyTypes=getPropertyTypes(targetClass);
   propertyTypes.add(idType);
   PersistentClass persistentClass=getPersistentClass(targetClass.getName());
-  Iterator<Property> iter=persistentClass.getPropertyIterator();
-  while (iter.hasNext()) {
-    Property property=iter.next();
+  Iterator<Property> testIter=persistentClass.getPropertyIterator();
+  List<Property> propertyList=new ArrayList<Property>();
+  while (testIter.hasNext()) {
+    Property property=testIter.next();
     if (property.getName().indexOf(".") >= 0) {
       throw new IllegalArgumentException("Properties from entities that utilize a period character ('.') in their name are incompatible with this system. The property name in question is: (" + property.getName() + ") from the class: ("+ targetClass.getName()+ ")");
     }
+    propertyList.add(property);
   }
-  iter=persistentClass.getPropertyIterator();
-  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,iter,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
+  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,propertyList,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,prefix,metadataOverrides);
   FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
   presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
   presentationAttribute.setHidden(true);
   if (additionalNonPersistentProperties != null) {
     for (    String additionalNonPersistentProperty : additionalNonPersistentProperties) {
-      fields.put(additionalNonPersistentProperty,getFieldMetadata(prefix,additionalNonPersistentProperty,iter,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
+      fields.put(additionalNonPersistentProperty,getFieldMetadata(prefix,additionalNonPersistentProperty,propertyList,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType,metadataOverrides));
     }
   }
   return fields;
