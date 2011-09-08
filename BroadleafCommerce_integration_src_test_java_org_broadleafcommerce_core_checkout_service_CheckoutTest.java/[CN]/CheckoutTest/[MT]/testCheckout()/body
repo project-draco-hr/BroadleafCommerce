@@ -58,6 +58,7 @@
   payment.setType(PaymentInfoType.CREDIT_CARD);
   payment.setOrder(order);
   CreditCardPaymentInfo cc=new CreditCardPaymentInfo(){
+    private String referenceNumber="1234";
     public String getCvvCode(){
       return "123";
     }
@@ -87,17 +88,34 @@
       return encryptionModule;
     }
     public String getReferenceNumber(){
-      return "1234";
+      return referenceNumber;
     }
     public void setEncryptionModule(    EncryptionModule encryptionModule){
     }
     public void setReferenceNumber(    String referenceNumber){
+      this.referenceNumber=referenceNumber;
     }
   }
 ;
   Map<PaymentInfo,Referenced> map=new HashMap<PaymentInfo,Referenced>();
   map.put(payment,cc);
   CheckoutResponse response=checkoutService.performCheckout(order,map);
+  for (  PaymentInfo paymentInfo : response.getInfos().keySet()) {
+    assert(paymentInfo.getReferenceNumber().equals("abc123"));
+    assert(response.getInfos().get(paymentInfo).getReferenceNumber().equals("abc123"));
+  }
+  Referenced referenced=null;
+  try {
+    referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentInfoType.CREDIT_CARD);
+  }
+ catch (  Exception e) {
+  }
+  try {
+    referenced=securePaymentInfoService.findSecurePaymentInfo("1234",PaymentInfoType.CREDIT_CARD);
+  }
+ catch (  Exception e) {
+  }
+  assert(referenced == null);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
   assert(order.getTotalTax().equals(order.getSubTotal().add(order.getTotalShipping()).multiply(0.05D)));
   assert(response.getPaymentResponse().getResponseItems().size() > 0);
