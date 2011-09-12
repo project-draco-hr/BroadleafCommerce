@@ -38,53 +38,51 @@
  catch (      Exception e1) {
         isFieldAccessible=false;
       }
-      if (isFieldAccessible) {
-        Property propertyItem=new Property();
-        propertyItem.setName(originalProperty);
-        if (props.contains(propertyItem)) {
-          continue;
-        }
-        props.add(propertyItem);
-        String strVal;
-        String displayVal=null;
-        if (value == null) {
-          strVal=null;
-        }
- else {
-          if (metadata.getCollection()) {
-            propertyItem.getMetadata().setFieldType(metadata.getFieldType());
-            strVal=null;
+      String strVal;
+      checkField: {
+        if (isFieldAccessible) {
+          Property propertyItem=new Property();
+          propertyItem.setName(originalProperty);
+          if (props.contains(propertyItem)) {
+            continue;
           }
- else           if (Date.class.isAssignableFrom(value.getClass())) {
-            strVal=dateFormat.format((Date)value);
-          }
- else           if (Timestamp.class.isAssignableFrom(value.getClass())) {
-            strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
-          }
- else           if (Calendar.class.isAssignableFrom(value.getClass())) {
-            strVal=dateFormat.format(((Calendar)value).getTime());
-          }
- else           if (Double.class.isAssignableFrom(value.getClass())) {
-            strVal=decimalFormat.format((Double)value);
-          }
- else           if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-            strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
-          }
- else           if (metadata.getForeignKeyClass() != null) {
-            strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
-            Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
-            if (temp != null) {
-              displayVal=temp.toString();
+          props.add(propertyItem);
+          String displayVal=null;
+          if (value != null) {
+            if (metadata.getCollection()) {
+              propertyItem.getMetadata().setFieldType(metadata.getFieldType());
+              strVal=null;
             }
-          }
+ else             if (Date.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format((Date)value);
+            }
+ else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
+            }
+ else             if (Calendar.class.isAssignableFrom(value.getClass())) {
+              strVal=dateFormat.format(((Calendar)value).getTime());
+            }
+ else             if (Double.class.isAssignableFrom(value.getClass())) {
+              strVal=decimalFormat.format((Double)value);
+            }
+ else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+              strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
+            }
+ else             if (metadata.getForeignKeyClass() != null) {
+              strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
+              Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+              if (temp != null) {
+                displayVal=temp.toString();
+              }
+            }
  else {
-            strVal=value.toString();
+              strVal=value.toString();
+            }
+            propertyItem.setValue(strVal);
+            propertyItem.setDisplayValue(displayVal);
+            break checkField;
           }
         }
-        propertyItem.setValue(strVal);
-        propertyItem.setDisplayValue(displayVal);
-      }
- else {
         try {
           Method method;
           try {
@@ -102,7 +100,6 @@
             continue;
           }
           props.add(propertyItem);
-          String strVal;
           if (value == null) {
             strVal=null;
           }
