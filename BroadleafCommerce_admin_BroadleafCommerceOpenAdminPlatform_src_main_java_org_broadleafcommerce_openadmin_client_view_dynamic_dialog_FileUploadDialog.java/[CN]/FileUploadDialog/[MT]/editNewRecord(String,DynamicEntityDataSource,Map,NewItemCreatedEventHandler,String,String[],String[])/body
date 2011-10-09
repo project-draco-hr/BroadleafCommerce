@@ -1,0 +1,30 @@
+{
+  initialValues.put(dataSource.getPrimaryKeyFieldName(),"");
+  this.handler=handler;
+  if (heightOverride != null) {
+    setHeight(heightOverride);
+  }
+  if (fieldNames != null && fieldNames.length > 0) {
+    dataSource.resetVisibilityOnly(fieldNames);
+  }
+ else {
+    dataSource.resetPermanentFieldVisibility();
+  }
+  if (ignoreFields != null) {
+    for (    String fieldName : ignoreFields) {
+      dataSource.getField(fieldName).setHidden(true);
+    }
+  }
+  if (title != null) {
+    this.setTitle(title);
+  }
+ else {
+    this.setTitle("Add new entity: " + dataSource.getPolymorphicEntities().get(dataSource.getDefaultNewEntityFullyQualifiedClassname()));
+  }
+  buildFields(dataSource,dynamicForm);
+  dynamicForm.editNewRecord(initialValues);
+  centerInPage();
+  show();
+  saveButton.enable();
+  cancelButton.enable();
+}

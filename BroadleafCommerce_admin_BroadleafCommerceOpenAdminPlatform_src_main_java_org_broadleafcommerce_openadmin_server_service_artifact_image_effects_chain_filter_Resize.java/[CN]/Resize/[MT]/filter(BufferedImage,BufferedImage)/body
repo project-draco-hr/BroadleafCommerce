@@ -1,0 +1,21 @@
+{
+  if (src == null) {
+    throw new NullPointerException("src image is null");
+  }
+  if (src == dst) {
+    throw new IllegalArgumentException("src image cannot be the " + "same as the dst image");
+  }
+  if (src.getWidth() <= targetWidth && src.getHeight() <= targetHeight && reduceOnly) {
+    return src;
+  }
+  BufferedImage temp=getScaledInstance(src,targetWidth,targetHeight,hint,highQuality,maintainAspectRatio,reduceOnly);
+  if (dst != null) {
+    Graphics g=dst.createGraphics();
+    g.drawImage(temp,0,0,temp.getWidth(),temp.getHeight(),null);
+    g.dispose();
+  }
+ else {
+    dst=temp;
+  }
+  return dst;
+}

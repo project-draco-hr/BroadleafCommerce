@@ -1,0 +1,104 @@
+{
+  this.setIsModal(true);
+  this.setShowModalMask(true);
+  this.setShowMinimizeButton(false);
+  this.setAutoSize(true);
+  this.setCanDragResize(true);
+  this.setOverflow(Overflow.HIDDEN);
+  VStack stack=new VStack();
+  stack.setWidth(630);
+  stack.setHeight(300);
+  dynamicForm=new DynamicForm();
+  dynamicForm.setEncoding(Encoding.MULTIPART);
+  dynamicForm.setTarget("hidden_frame");
+  dynamicForm.setAction("cms.upload.service");
+  dynamicForm.setNumCols(3);
+  dynamicForm.setPadding(10);
+  dynamicForm.setHeight100();
+  stack.addMember(dynamicForm);
+  cancelButton=new IButton("Cancel");
+  cancelButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      hide();
+    }
+  }
+);
+  saveButton=new IButton("Upload");
+  saveButton.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (dynamicForm.validate()) {
+        String callbackName=JavaScriptMethodHelper.registerCallbackFunction(new JavaScriptMethodCallback(){
+          public void execute(          JavaScriptObject obj){
+            try {
+              String jsObj=JSON.encode(obj);
+              JSONObject entityJs=JSONParser.parse(jsObj).isObject();
+              JSONValue errorJs=entityJs.get("error");
+              if (errorJs != null) {
+                SC.warn(errorJs.isString().stringValue());
+              }
+ else {
+                Entity entity=new Entity();
+                String type=entityJs.get("type").isString().stringValue();
+                entity.setType(new String[]{type});
+                JSONArray propArrayJs=entityJs.get("properties").isArray();
+                int length=propArrayJs.size();
+                Property[] props=new Property[length];
+                for (int j=0; j <= length - 1; j++) {
+                  JSONObject propJs=propArrayJs.get(j).isObject();
+                  Property property=new Property();
+                  property.setName(propJs.get("name").isString().stringValue());
+                  property.setValue(propJs.get("value").isString().stringValue());
+                  props[j]=property;
+                }
+                entity.setProperties(props);
+                DataSourceModule module=((DynamicEntityDataSource)dynamicForm.getDataSource()).getCompatibleModule(OperationType.ENTITY);
+                Record record=module.buildRecord(entity,false);
+                if (handler != null) {
+                  AppController.getInstance().getEventBus().addHandler(NewItemCreatedEvent.TYPE,handler);
+                  try {
+                    AppController.getInstance().getEventBus().fireEvent(new NewItemCreatedEvent((ListGridRecord)record,dynamicForm.getDataSource()));
+                  }
+  finally {
+                    AppController.getInstance().getEventBus().removeHandler(NewItemCreatedEvent.TYPE,handler);
+                  }
+                }
+              }
+            }
+  finally {
+              UploadStatusProgress progress=(UploadStatusProgress)((CanvasItem)dynamicForm.getField("__display_file")).getCanvas();
+              progress.stopProgress();
+              Timer timer=new Timer(){
+                public void run(){
+                  hide();
+                }
+              }
+;
+              timer.schedule(500);
+            }
+          }
+        }
+);
+        UploadStatusProgress progress=(UploadStatusProgress)((CanvasItem)dynamicForm.getField("__display_file")).getCanvas();
+        progress.setCallbackName(callbackName);
+        progress.startProgress();
+        dynamicForm.getField("callbackName").setValue(callbackName);
+        dynamicForm.submitForm();
+        saveButton.disable();
+        cancelButton.disable();
+      }
+    }
+  }
+);
+  VLayout vLayout=new VLayout();
+  vLayout.setAlign(VerticalAlignment.BOTTOM);
+  HLayout hLayout=new HLayout(10);
+  hLayout.setAlign(Alignment.CENTER);
+  hLayout.addMember(saveButton);
+  hLayout.addMember(cancelButton);
+  hLayout.setLayoutTopMargin(20);
+  hLayout.setLayoutBottomMargin(20);
+  vLayout.addMember(hLayout);
+  stack.addMember(vLayout);
+  addItem(stack);
+  createFrame();
+}

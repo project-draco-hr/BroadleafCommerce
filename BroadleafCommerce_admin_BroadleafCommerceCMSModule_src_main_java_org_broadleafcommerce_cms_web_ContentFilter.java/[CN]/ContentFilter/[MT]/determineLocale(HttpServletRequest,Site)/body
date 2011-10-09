@@ -1,0 +1,26 @@
+{
+  Locale locale=null;
+  locale=(Locale)request.getAttribute(LOCALE_VAR);
+  if (locale == null && request.getParameter(LOCALE_CODE_PARAM) != null) {
+    String localeCode=request.getParameter(LOCALE_CODE_PARAM);
+    locale=localeService.findLocaleByCode(localeCode);
+  }
+  if (locale == null) {
+    HttpSession session=request.getSession(true);
+    if (session != null) {
+      locale=(Locale)session.getAttribute(LOCALE_VAR);
+    }
+  }
+  if (locale == null) {
+    locale=localeService.findDefaultLocale();
+  }
+  request.setAttribute(LOCALE_VAR,locale);
+  request.getSession().setAttribute(LOCALE_VAR,locale);
+  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap");
+  if (ruleMap == null) {
+    ruleMap=new HashMap<String,Object>();
+    request.setAttribute("blRuleMap",ruleMap);
+  }
+  ruleMap.put("locale",locale);
+  return locale;
+}

@@ -1,0 +1,87 @@
+{
+  super.bind();
+  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  formPresenter.getRefreshButtonHandlerRegistration().removeHandler();
+  refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+        FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).getMember("contentTypeForm");
+        if (legacyForm != null) {
+          legacyForm.getForm().reset();
+        }
+        getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+      }
+    }
+  }
+);
+  saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DSRequest requestProperties=new DSRequest();
+        requestProperties.setAttribute("dirtyValues",getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+              final Record newRecord=response.getData()[0];
+              final String newId=getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(newRecord);
+              FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).getMember("contentTypeForm");
+              final DynamicForm form=legacyForm.getForm();
+              for (              FormItem formItem : form.getFields()) {
+                if (formItem instanceof RichTextCanvasItem) {
+                  form.setValue(formItem.getFieldName(),((RichTextHTMLPane)((RichTextCanvasItem)formItem).getCanvas()).getValue());
+                }
+              }
+              StructuredContentTypeFormListDataSource dataSource=(StructuredContentTypeFormListDataSource)form.getDataSource();
+              dataSource.setCustomCriteria(new String[]{"constructForm",newId});
+              form.saveData(new DSCallback(){
+                @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
+                  if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+                    getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+                  }
+                }
+              }
+);
+              if (!getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(currentStructuredContentRecord).equals(newId)) {
+                display.getListDisplay().getGrid().getRecordList().remove(currentStructuredContentRecord);
+                currentStructuredContentRecord=newRecord;
+              }
+            }
+          }
+        }
+,requestProperties);
+      }
+    }
+  }
+);
+  clearContentFilterButtonHandlerRegistration=getDisplay().getClearButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        getDisplay().getCurrentContentType().clearValue();
+        ((StructuredContentListDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setPermanentCriteria(null);
+        getDisplay().getListDisplay().getGrid().clearCriteria();
+        getDisplay().getListDisplay().getGrid().invalidateCache();
+      }
+    }
+  }
+);
+  getDisplay().getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      isFetched=true;
+    }
+  }
+);
+  contentTypeFilterChangeHandlerRegistration=getDisplay().getCurrentContentType().addChangedHandler(new ChangedHandler(){
+    @Override public void onChanged(    ChangedEvent event){
+      String newContentTypeId=(String)event.getValue();
+      ((StructuredContentListDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setPermanentCriteria(new Criteria("structuredContentType",newContentTypeId));
+      if (isFetched) {
+        getDisplay().getListDisplay().getGrid().invalidateCache();
+      }
+ else {
+        getDisplay().getListDisplay().getGrid().fetchData();
+      }
+    }
+  }
+);
+}

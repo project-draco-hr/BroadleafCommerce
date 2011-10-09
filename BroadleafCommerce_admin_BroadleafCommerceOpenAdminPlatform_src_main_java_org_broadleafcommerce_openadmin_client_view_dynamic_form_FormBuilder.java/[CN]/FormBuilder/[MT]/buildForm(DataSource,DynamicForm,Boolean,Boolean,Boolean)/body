@@ -1,6 +1,8 @@
 {
   form.setDataSource(dataSource);
+  form.setCellPadding(8);
   Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
+  Map<String,Boolean> sectionCollapsed=new HashMap<String,Boolean>();
   Map<String,Integer> sectionNames=new HashMap<String,Integer>();
   DataSourceField[] fields=dataSource.getFields();
   Boolean originalEdit=canEdit;
@@ -8,10 +10,15 @@
     if (field.getAttribute("securityLevel") != null && field.getAttribute("uniqueID") != null && !SecurityManager.getInstance().isUserAuthorizedToEditField(field.getAttribute("uniqueID"))) {
       canEdit=false;
     }
+    String name=field.getName();
     String fieldType=field.getAttribute("fieldType");
-    if (fieldType != null && !field.getHidden()) {
+    FormHiddenEnum enumVal=(FormHiddenEnum)field.getAttributeAsObject("formHidden");
+    if (fieldType != null && (!field.getHidden() || enumVal == FormHiddenEnum.VISIBLE) && enumVal != FormHiddenEnum.HIDDEN) {
       String group=field.getAttribute("formGroup");
       String temp=field.getAttribute("formGroupOrder");
+      if (field.getAttributeAsBoolean("formGroupCollapsed") != null) {
+        sectionCollapsed.put(group,field.getAttributeAsBoolean("formGroupCollapsed"));
+      }
       Integer groupOrder=null;
       if (temp != null) {
         groupOrder=Integer.valueOf(temp);
@@ -29,7 +36,7 @@
         if (largeEntry == null) {
           largeEntry=false;
         }
-        final FormItem formItem=buildField(dataSource,field,fieldType,largeEntry);
+        final FormItem formItem=buildField(dataSource,field,fieldType,largeEntry,form);
         final FormItem displayFormItem=buildDisplayField(field,fieldType);
         if (fieldType.equals(SupportedFieldType.ID.toString())) {
           canEdit=false;
@@ -41,5 +48,5 @@
     }
     canEdit=originalEdit;
   }
-  groupFields(form,sections,sectionNames);
+  groupFields(form,sections,sectionNames,sectionCollapsed);
 }

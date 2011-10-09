@@ -1,0 +1,10 @@
+{
+  content.setSandbox(destinationSandbox);
+  content.setArchivedFlag(false);
+  content.setDeletedFlag(false);
+  StructuredContent sc=structuredContentDao.addOrUpdateContentItem(content,true);
+  if (!isProductionSandBox(destinationSandbox)) {
+    sandBoxItemDao.addSandBoxItem(destinationSandbox,SandBoxOperationType.ADD,SandBoxItemType.STRUCTURED_CONTENT,sc.getContentName(),sc.getId(),null);
+  }
+  return sc;
+}

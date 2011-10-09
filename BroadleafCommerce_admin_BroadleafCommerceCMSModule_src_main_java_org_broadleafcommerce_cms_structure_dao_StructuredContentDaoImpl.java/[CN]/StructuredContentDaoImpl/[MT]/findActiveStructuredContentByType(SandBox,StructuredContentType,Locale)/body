@@ -1,0 +1,19 @@
+{
+  String queryName=null;
+  if (sandBox == null) {
+    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE";
+  }
+ else   if (SandBoxType.PRODUCTION.equals(sandBox)) {
+    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_PRODUCTION_SANDBOX";
+  }
+ else {
+    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_USER_SANDBOX";
+  }
+  Query query=em.createNamedQuery(queryName);
+  query.setParameter("contentType",type);
+  query.setParameter("locale",locale);
+  if (sandBox != null) {
+    query.setParameter("sandbox",sandBox);
+  }
+  return query.getResultList();
+}

@@ -1,0 +1,8 @@
+{
+  Query query=em.createNamedQuery("BC_COUNT_PERMISSIONS_BY_TYPE_AND_CEILING_ENTITY");
+  query.setParameter("type",permissionType.getType());
+  query.setParameter("ceilingEntity",ceilingEntityFullyQualifiedName);
+  query.setHint(queryCacheableKey,true);
+  Long count=(Long)query.getSingleResult();
+  return count > 0;
+}

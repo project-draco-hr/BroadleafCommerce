@@ -2,7 +2,7 @@
   this.associatedRecord=associatedRecord;
   this.associatedDataSource=associatedDataSource;
   String id=associatedDataSource.getPrimaryKeyValue(associatedRecord);
-  ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
+  ((PresentationLayerAssociatedDataSource)categoryPresenter.getPresenterSequenceSetupManager().getDataSource("allChildCategoriesDS")).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
       setStartState();
       if (cb != null) {

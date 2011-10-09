@@ -1,0 +1,62 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    String pageId=persistencePackage.getCustomCriteria()[1];
+    Page page=(Page)pageService.findPageById(Long.valueOf(pageId));
+    List<String> templateFieldNames=new ArrayList<String>();
+    for (    FieldGroup group : page.getPageTemplate().getFieldGroups()) {
+      for (      FieldDefinition definition : group.getFieldDefinitions()) {
+        templateFieldNames.add(definition.getName());
+      }
+    }
+    for (    String key : page.getPageFields().keySet()) {
+      PageField pageField=page.getPageFields().get(key);
+      pageField.getFieldDataList().size();
+    }
+    page=(Page)SerializationUtils.clone(page);
+    Map<String,PageField> pageFieldMap=page.getPageFields();
+    for (    Property property : persistencePackage.getEntity().getProperties()) {
+      if (templateFieldNames.contains(property.getName())) {
+        PageField pageField=pageFieldMap.get(property.getName());
+        if (pageField != null) {
+          if (!CollectionUtils.isEmpty(pageField.getFieldDataList())) {
+            PageFieldData fieldData=pageField.getFieldDataList().get(0);
+            fieldData.setValue(property.getValue());
+          }
+ else {
+            PageFieldData fieldData=new PageFieldDataImpl();
+            pageField.getFieldDataList().add(fieldData);
+            fieldData.setValue(property.getValue());
+          }
+        }
+ else {
+          pageField=new PageFieldImpl();
+          pageFieldMap.put(property.getName(),pageField);
+          pageField.setFieldKey(property.getName());
+          pageField.setPage(page);
+          PageFieldData fieldData=new PageFieldDataImpl();
+          pageField.getFieldDataList().add(fieldData);
+          fieldData.setValue(property.getValue());
+        }
+      }
+    }
+    List<String> removeItems=new ArrayList<String>();
+    for (    String key : pageFieldMap.keySet()) {
+      if (persistencePackage.getEntity().findProperty(key) == null) {
+        removeItems.add(key);
+      }
+    }
+    if (removeItems.size() > 0) {
+      for (      String removeKey : removeItems) {
+        PageField pageField=pageFieldMap.remove(removeKey);
+        pageField.setPage(null);
+      }
+    }
+    pageService.updatePage(page,getSandBox());
+    return fetchEntityBasedOnId(pageId);
+  }
+ catch (  Exception e) {
+    LOG.error(e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

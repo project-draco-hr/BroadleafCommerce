@@ -15,9 +15,18 @@
   for (  DataSourceField field : prominentFields) {
     gridFields[j]=new ListGridField(field.getName(),field.getTitle(),j == 0 ? 200 : 150);
     if (MergedPropertyType.MAPSTRUCTUREKEY.toString().equals(field.getAttribute("mergedPropertyType"))) {
-      SelectItem selectItem=new SelectItem();
-      selectItem.setMultiple(false);
-      selectItem.setValueMap(keyMap);
+      ComboBoxItem selectItem=new ComboBoxItem();
+      if (keyMap == null && optionDataSource == null) {
+        throw new RuntimeException("Must supply either a key map or option data source to support the key values for this map structure.");
+      }
+      if (keyMap != null) {
+        selectItem.setValueMap(keyMap);
+      }
+ else {
+        selectItem.setOptionDataSource(optionDataSource);
+        selectItem.setDisplayField(displayField);
+        selectItem.setValueField(valueField);
+      }
       selectItem.setDefaultToFirstOption(true);
       selectItem.setAutoFetchData(false);
       gridFields[j].setEditorType(selectItem);
@@ -73,12 +82,12 @@
       j++;
     }
   }
-  getAssociatedGrid().setFields(gridFields);
+  ((ListGrid)getAssociatedGrid()).setFields(gridFields);
   if (fieldNames != null && fieldNames.length > 0) {
     int pos=0;
     for (    String fieldName : fieldNames) {
-      int originalPos=getAssociatedGrid().getFieldNum(fieldName);
-      getAssociatedGrid().reorderField(originalPos,pos);
+      int originalPos=((ListGrid)getAssociatedGrid()).getFieldNum(fieldName);
+      ((ListGrid)getAssociatedGrid()).reorderField(originalPos,pos);
       pos++;
     }
   }

@@ -1,0 +1,11 @@
+{
+  try {
+    return clazz.getDeclaredField(fieldName);
+  }
+ catch (  NoSuchFieldException nsf) {
+    if (clazz.getSuperclass() != null) {
+      return getSingleField(clazz.getSuperclass(),fieldName);
+    }
+    return null;
+  }
+}

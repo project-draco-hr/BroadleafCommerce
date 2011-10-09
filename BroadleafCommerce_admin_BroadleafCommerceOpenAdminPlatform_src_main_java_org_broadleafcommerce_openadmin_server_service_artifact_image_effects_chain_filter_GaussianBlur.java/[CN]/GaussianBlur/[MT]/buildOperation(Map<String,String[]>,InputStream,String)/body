@@ -1,0 +1,24 @@
+{
+  String key=FilterTypeEnum.GAUSSIANBLUR.toString().toLowerCase();
+  if (parameterMap.containsKey("filterType") && key.equals(parameterMap.get("filterType")[0])) {
+    Operation operation=new Operation();
+    operation.setName(key);
+    String[] factor=parameterMap.get(key + "-factor");
+    operation.setFactor(factor == null ? null : Double.valueOf(factor[0]));
+    UnmarshalledParameter kernelSize=new UnmarshalledParameter();
+    String[] kernelSizeApplyFactor=parameterMap.get(key + "-kernel-size-apply-factor");
+    kernelSize.setApplyFactor(kernelSizeApplyFactor == null ? false : Boolean.valueOf(kernelSizeApplyFactor[0]));
+    kernelSize.setName("kernel-size");
+    kernelSize.setType(ParameterTypeEnum.INT.toString());
+    kernelSize.setValue(parameterMap.get(key + "-kernel-size-amount")[0]);
+    UnmarshalledParameter numOfPasses=new UnmarshalledParameter();
+    String[] numOfPassesApplyFactor=parameterMap.get(key + "-num-passes-apply-factor");
+    numOfPasses.setApplyFactor(numOfPassesApplyFactor == null ? false : Boolean.valueOf(numOfPassesApplyFactor[0]));
+    numOfPasses.setName("num-passes");
+    numOfPasses.setType(ParameterTypeEnum.FLOAT.toString());
+    numOfPasses.setValue(parameterMap.get(key + "-num-passes-amount")[0]);
+    operation.setParameters(new UnmarshalledParameter[]{kernelSize,numOfPasses});
+    return operation;
+  }
+  return null;
+}

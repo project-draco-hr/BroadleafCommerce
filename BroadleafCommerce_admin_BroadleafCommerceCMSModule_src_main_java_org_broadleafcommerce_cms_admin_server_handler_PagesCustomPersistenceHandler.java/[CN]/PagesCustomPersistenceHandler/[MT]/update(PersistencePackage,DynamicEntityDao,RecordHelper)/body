@@ -1,0 +1,24 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Page.class);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective,entityClasses);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    Serializable persistenceObject=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    if (!Page.class.isAssignableFrom(persistenceObject.getClass())) {
+      throw new ServiceException("Unable to update PageFolder instances.");
+    }
+    Page adminInstance=(Page)persistenceObject;
+    adminInstance.getPageFields().size();
+    adminInstance=(Page)SerializationUtils.clone(adminInstance);
+    adminInstance=(Page)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=pageService.updatePage(adminInstance,getSandBox());
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to update entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
+  }
+}

@@ -1,0 +1,18 @@
+{
+  SandBox destinationSandBox=determineNextSandBox(fromSandBox);
+  SandBoxAction action=createSandBoxAction(SandBoxActionType.PROMOTE,comment);
+  for (  SandBoxItem sandBoxItem : sandBoxItems) {
+    action.addSandBoxItem(sandBoxItem);
+    for (    SandBoxItemListener listener : sandboxItemListeners) {
+      listener.itemPromoted(sandBoxItem,destinationSandBox);
+    }
+    if (destinationSandBox == null || SandBoxType.PRODUCTION.equals(destinationSandBox)) {
+      sandBoxItem.setArchivedFlag(true);
+    }
+    sandBoxItem.setSandBox(destinationSandBox);
+    if (sandBoxItem.getOriginalSandBox() == null) {
+      sandBoxItem.setOriginalSandBox(fromSandBox);
+    }
+    sandBoxItem.addSandBoxAction(action);
+  }
+}

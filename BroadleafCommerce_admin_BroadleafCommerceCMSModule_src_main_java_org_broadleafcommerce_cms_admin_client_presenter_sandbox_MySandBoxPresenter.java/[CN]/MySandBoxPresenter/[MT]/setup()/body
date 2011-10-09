@@ -1,0 +1,13 @@
+{
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("sandBoxItemDS",new SandBoxItemListDataSourceFactory(),null,new Object[]{BLCMain.currentViewKey,"fetch","","","standard"},new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pendingSandBoxItemDS",new SandBoxItemListDataSourceFactory(),null,new Object[]{BLCMain.currentViewKey,"fetch","","","pending"},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
+      CustomCriteriaListGridDataSource sandBoxItemDS=(CustomCriteriaListGridDataSource)getPresenterSequenceSetupManager().getDataSource("sandBoxItemDS");
+      setupDisplayItems(sandBoxItemDS,dataSource);
+      sandBoxItemDS.setupGridFields(new String[]{"auditable.createdBy.name","description","sandBoxItemType","sandboxOperationType","auditable.dateCreated","auditable.dateUpdated"});
+      ((CustomCriteriaListGridDataSource)dataSource).setAssociatedGrid(((MySandBoxDisplay)getDisplay()).getPendingGrid());
+      ((CustomCriteriaListGridDataSource)dataSource).setupGridFields(new String[]{"auditable.createdBy.name","description","sandBoxItemType","sandboxOperationType","auditable.dateCreated","auditable.dateUpdated"});
+    }
+  }
+));
+}

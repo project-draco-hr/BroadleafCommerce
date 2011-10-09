@@ -1,0 +1,31 @@
+{
+  HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
+  Map<String,Object> mvelParameters=buildMvelParameters(request);
+  SandBox currentSandbox=(SandBox)request.getAttribute(ContentFilter.SANDBOX_VAR);
+  List<StructuredContent> contentItems;
+  StructuredContentType structuredContentType=getStructuredContentService(pageContext).findStructuredContentTypeByName(contentType);
+  if (locale == null) {
+    locale=(Locale)request.getAttribute(ContentFilter.LOCALE_VAR);
+  }
+  int cnt=(count == null) ? Integer.MAX_VALUE : count;
+  if (contentName == null || "".equals(contentName)) {
+    contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters);
+  }
+ else {
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters);
+  }
+  pageContext.setAttribute(getNumResultsVar(),contentItems.size());
+  if (contentItems.size() > 0) {
+    List<Map> returnFields=wrapFieldMaps(contentItems);
+    pageContext.setAttribute(contentItemVar,returnFields.get(0));
+    pageContext.setAttribute(contentListVar,returnFields);
+    pageContext.setAttribute("structuredContentList",contentItems);
+  }
+ else {
+    pageContext.setAttribute(contentItemVar,contentItems);
+    pageContext.setAttribute(contentListVar,null);
+    pageContext.setAttribute("structuredContentList",null);
+    pageContext.setAttribute(numResultsVar,0);
+  }
+  return EVAL_BODY_INCLUDE;
+}

@@ -1,0 +1,55 @@
+{
+  if (!persistencePackage.getEntity().isMultiPartAvailableOnThread()) {
+    throw new ServiceException("Could not detect an uploaded file.");
+  }
+  MultipartFile upload=UploadedFile.getUpload().get("file");
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    StaticAsset adminInstance;
+    try {
+      ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(upload.getInputStream());
+      adminInstance=new ImageStaticAssetImpl();
+      ((ImageStaticAsset)adminInstance).setWidth(metadata.getWidth());
+      ((ImageStaticAsset)adminInstance).setHeight(metadata.getHeight());
+    }
+ catch (    Exception e) {
+      adminInstance=new StaticAssetImpl();
+    }
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StaticAssetFolder.class);
+    Map<String,FieldMetadata> entityProperties=getForeignKeyReadyMergedProperties();
+    adminInstance=(StaticAsset)helper.createPopulatedInstance(adminInstance,entity,entityProperties,false);
+    adminInstance.setFileSize(upload.getSize());
+    Collection mimeTypes=MimeUtil.getMimeTypes(upload.getOriginalFilename());
+    if (!mimeTypes.isEmpty()) {
+      MimeType mimeType=(MimeType)mimeTypes.iterator().next();
+      adminInstance.setMimeType(mimeType.toString());
+    }
+ else {
+      mimeTypes=MimeUtil.getMimeTypes(upload.getInputStream());
+      if (!mimeTypes.isEmpty()) {
+        MimeType mimeType=(MimeType)mimeTypes.iterator().next();
+        adminInstance.setMimeType(mimeType.toString());
+      }
+    }
+    String extension=upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf(".") + 1,upload.getOriginalFilename().length()).toLowerCase();
+    adminInstance.setFileExtension(extension);
+    adminInstance=staticAssetService.addStaticAsset(adminInstance,adminInstance.getParentFolder(),getSandBox());
+    Entity adminEntity=helper.getRecord(entityProperties,adminInstance,null,null);
+    try {
+      StaticAssetStorage storage=staticAssetStorageService.create();
+      storage.setStaticAssetId(adminInstance.getId());
+      Blob uploadBlob=staticAssetStorageService.createBlob(upload);
+      storage.setFileData(uploadBlob);
+      storage=staticAssetStorageService.save(storage);
+    }
+ catch (    Exception e) {
+      staticAssetService.deleteStaticAsset(adminInstance,getSandBox());
+      throw e;
+    }
+    return addImageRecords(adminEntity);
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

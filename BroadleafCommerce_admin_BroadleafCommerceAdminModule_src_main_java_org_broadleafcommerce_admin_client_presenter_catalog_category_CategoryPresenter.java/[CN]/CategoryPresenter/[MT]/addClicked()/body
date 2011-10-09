@@ -1,13 +1,13 @@
 {
   Map<String,Object> initialValues=new HashMap<String,Object>();
-  initialValues.put("defaultParentCategory",((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
+  initialValues.put("defaultParentCategory",getPresenterSequenceSetupManager().getDataSource("categoryTreeDS").getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
   initialValues.put("name",BLCMain.getMessageManager().getString("defaultCategoryName"));
-  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
-  BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newCategoryTitle"),(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
+  initialValues.put("_type",new String[]{getPresenterSequenceSetupManager().getDataSource("categoryTreeDS").getDefaultNewEntityFullyQualifiedClassname()});
+  BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newCategoryTitle"),getPresenterSequenceSetupManager().getDataSource("categoryTreeDS"),initialValues,new NewItemCreatedEventHandler(){
     public void onNewItemCreated(    NewItemCreatedEvent event){
       reloadParentTreeNodeRecords(false);
       getDisplay().getAllCategoriesDisplay().getGrid().clearCriteria();
-      allChildCategoriesPresenter.load(display.getListDisplay().getGrid().getSelectedRecord(),(AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource(),null);
+      allChildCategoriesPresenter.load(display.getListDisplay().getGrid().getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("categoryTreeDS"),null);
     }
   }
 ,"90%",null,null);

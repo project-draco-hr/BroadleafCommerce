@@ -22,7 +22,7 @@
           }
  else {
             formPresenter.setStartState();
-            ((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("_type"));
+            getPresenterSequenceSetupManager().getDataSource("orderDS").resetPermanentFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("_type"));
             display.getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),false,false,false);
             display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
             display.getListDisplay().getRemoveButton().enable();
@@ -37,7 +37,7 @@
     public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
-        additionalPaymentAttributesPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getPaymentInfoDisplay().getGrid().getDataSource(),null);
+        additionalPaymentAttributesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("paymentInfoDS"),null);
       }
     }
   }
@@ -46,8 +46,8 @@
     public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
-        orderItemAdjustmentPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getOrderItemsDisplay().getGrid().getDataSource(),null);
-        feesPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getOrderItemsDisplay().getGrid().getDataSource(),null);
+        orderItemAdjustmentPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("orderItemDS"),null);
+        feesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("discreteOrderItemFeePriceDS"),null);
       }
     }
   }
@@ -56,7 +56,7 @@
     public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
-        fulfillmentGroupAdjustmentPresenter.load(selectedRecord,(AbstractDynamicDataSource)getDisplay().getFulfillmentGroupDisplay().getGrid().getDataSource(),null);
+        fulfillmentGroupAdjustmentPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("fulfillmentGroupDS"),null);
       }
     }
   }

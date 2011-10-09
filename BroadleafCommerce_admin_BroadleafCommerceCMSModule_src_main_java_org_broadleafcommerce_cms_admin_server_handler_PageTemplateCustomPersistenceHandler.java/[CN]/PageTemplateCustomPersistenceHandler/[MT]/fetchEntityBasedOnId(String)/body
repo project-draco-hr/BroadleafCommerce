@@ -1,0 +1,33 @@
+{
+  Page page=(Page)pageService.findPageById(Long.valueOf(pageId));
+  Map<String,PageField> pageFieldMap=page.getPageFields();
+  Entity entity=new Entity();
+  entity.setType(new String[]{PageTemplateImpl.class.getName()});
+  List<Property> propertiesList=new ArrayList<Property>();
+  for (  FieldGroup fieldGroup : page.getPageTemplate().getFieldGroups()) {
+    for (    FieldDefinition definition : fieldGroup.getFieldDefinitions()) {
+      Property property=new Property();
+      propertiesList.add(property);
+      property.setName(definition.getName());
+      String value;
+      checkValue: {
+        if (!MapUtils.isEmpty(pageFieldMap)) {
+          PageField pageField=pageFieldMap.get(definition.getName());
+          List<PageFieldData> fieldDataList=pageField.getFieldDataList();
+          if (!CollectionUtils.isEmpty(fieldDataList)) {
+            value=fieldDataList.get(0).getValue();
+            break checkValue;
+          }
+        }
+        value=null;
+      }
+      property.setValue(value);
+    }
+  }
+  Property property=new Property();
+  propertiesList.add(property);
+  property.setName("id");
+  property.setValue(pageId);
+  entity.setProperties(propertiesList.toArray(new Property[]{}));
+  return entity;
+}

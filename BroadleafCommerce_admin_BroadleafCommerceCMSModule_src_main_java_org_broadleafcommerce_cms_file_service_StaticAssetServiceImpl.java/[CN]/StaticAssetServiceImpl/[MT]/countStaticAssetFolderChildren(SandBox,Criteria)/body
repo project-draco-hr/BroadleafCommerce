@@ -1,0 +1,29 @@
+{
+  c.add(Restrictions.eq("archivedFlag",false));
+  c.add(Restrictions.eq("folderFlag",false));
+  c.setProjection(Projections.rowCount());
+  if (sandbox == null) {
+    c.add(Restrictions.isNull("sandbox"));
+    return (Long)c.uniqueResult();
+  }
+ else {
+    Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
+    Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
+    Criterion productionSandboxExpression;
+    if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
+      productionSandboxExpression=Restrictions.isNull("sandbox");
+    }
+ else {
+      if (sandbox.getId().equals(sandbox.getSite().getProductionSandbox().getId())) {
+        return (Long)c.uniqueResult();
+      }
+      productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
+    }
+    c.add(Restrictions.or(Restrictions.or(currentSandboxExpression,productionSandboxExpression),originalSandboxExpression));
+    Long resultCount=(Long)c.list().get(0);
+    Long deletedCount=0L;
+    c.add(Restrictions.and(Restrictions.eq("deletedFlag",true),Restrictions.eq("sandbox",sandbox)));
+    deletedCount=(Long)c.list().get(0);
+    return resultCount - deletedCount;
+  }
+}

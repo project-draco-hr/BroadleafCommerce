@@ -1,0 +1,5 @@
+{
+  ServletRequestAttributes attributes=(ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
+  UploadProgressListener progressListener=(UploadProgressListener)attributes.getRequest().getSession().getAttribute(callbackName);
+  return progressListener == null ? 0D : progressListener.getPercentDone();
+}

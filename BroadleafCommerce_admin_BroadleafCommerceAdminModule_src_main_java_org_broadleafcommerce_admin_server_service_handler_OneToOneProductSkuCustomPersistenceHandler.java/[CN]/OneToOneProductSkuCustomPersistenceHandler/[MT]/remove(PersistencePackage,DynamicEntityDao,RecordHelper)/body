@@ -2,7 +2,7 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Map<String,FieldMetadata> productProperties=getMergedProperties(Product.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    Map<String,FieldMetadata> productProperties=getMergedProperties(Product.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey());
     Object primaryKey=helper.getPrimaryKey(entity,productProperties);
     Product productInstance=(Product)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     Sku skuInstance=productInstance.getAllSkus().get(0);

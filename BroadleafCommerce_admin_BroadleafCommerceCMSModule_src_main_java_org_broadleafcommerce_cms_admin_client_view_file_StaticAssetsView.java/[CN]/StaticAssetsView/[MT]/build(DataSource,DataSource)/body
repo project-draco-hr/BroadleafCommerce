@@ -1,0 +1,22 @@
+{
+  VLayout treeGridLayout=new VLayout();
+  treeGridLayout.setID("staticFolderAssetsGridLayout");
+  treeGridLayout.setHeight100();
+  treeGridLayout.setWidth("40%");
+  treeGridLayout.setShowResizeBar(true);
+  treeDisplay=new DynamicEntityTreeView(BLCMain.getMessageManager().getString("staticAssetFoldersTitle"),entityDataSource,true);
+  treeDisplay.setHeight("80%");
+  treeDisplay.getToolBar().getMember(6).destroy();
+  treeGridLayout.addMember(treeDisplay);
+  VLayout listGridLayout=new VLayout();
+  listGridLayout.setID("staticAssetsGridLayout");
+  listGridLayout.setHeight100();
+  listGridLayout.setWidth("60%");
+  listDisplay=new SubItemView(BLCMain.getMessageManager().getString("staticAssetsTitle"),false,true,true);
+  listDisplay.getSaveButton().setVisible(false);
+  listGridLayout.addMember(listDisplay);
+  assetDescriptionDisplay=new GridStructureView(BLCMain.getMessageManager().getString("assetDescriptionTitle"),false,true);
+  ((FormOnlyView)listDisplay.getFormOnlyDisplay()).addMember(assetDescriptionDisplay);
+  addMember(treeGridLayout);
+  addMember(listGridLayout);
+}

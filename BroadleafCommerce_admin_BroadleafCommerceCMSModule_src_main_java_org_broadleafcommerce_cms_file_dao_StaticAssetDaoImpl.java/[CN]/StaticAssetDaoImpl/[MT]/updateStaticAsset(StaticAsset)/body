@@ -1,0 +1,20 @@
+{
+  StaticAssetFolder parentFolder=asset.getParentFolder();
+  List<String> parentFolders=new ArrayList<String>();
+  while (parentFolder != null) {
+    parentFolders.add(parentFolder.getName());
+    parentFolder=parentFolder.getParentFolder();
+  }
+  Collections.reverse(parentFolders);
+  StringBuffer sb=new StringBuffer();
+  sb.append("/");
+  for (  String folderName : parentFolders) {
+    sb.append(folderName);
+    sb.append("/");
+  }
+  sb.append(asset.getName());
+  sb.append(".");
+  sb.append(asset.getFileExtension());
+  asset.setFullUrl(sb.toString());
+  return em.merge(asset);
+}

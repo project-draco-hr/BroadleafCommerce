@@ -1,4 +1,26 @@
 {
+  for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
+    if (handler.canHandleUpdate(persistencePackage)) {
+      if (!handler.willHandleSecurity(persistencePackage)) {
+        Entity entity=persistencePackage.getEntity();
+        for (        Property p : entity.getProperties()) {
+          if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+            adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.UPDATE);
+            break;
+          }
+        }
+      }
+      Entity response=handler.update(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.ENTITY));
+      return response;
+    }
+  }
+  Entity entity=persistencePackage.getEntity();
+  for (  Property p : entity.getProperties()) {
+    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.UPDATE);
+      break;
+    }
+  }
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getUpdateType());
   Entity mergedEntity=myModule.update(persistencePackage);
   return mergedEntity;

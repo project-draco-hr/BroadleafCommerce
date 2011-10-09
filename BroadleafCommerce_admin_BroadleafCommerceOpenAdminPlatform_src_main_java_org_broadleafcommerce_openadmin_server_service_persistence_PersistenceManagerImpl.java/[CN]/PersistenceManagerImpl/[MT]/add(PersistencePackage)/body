@@ -1,4 +1,14 @@
 {
+  for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
+    if (handler.canHandleAdd(persistencePackage)) {
+      if (!handler.willHandleSecurity(persistencePackage)) {
+        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
+      }
+      Entity response=handler.add(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.ENTITY));
+      return response;
+    }
+  }
+  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
   return myModule.add(persistencePackage);
 }

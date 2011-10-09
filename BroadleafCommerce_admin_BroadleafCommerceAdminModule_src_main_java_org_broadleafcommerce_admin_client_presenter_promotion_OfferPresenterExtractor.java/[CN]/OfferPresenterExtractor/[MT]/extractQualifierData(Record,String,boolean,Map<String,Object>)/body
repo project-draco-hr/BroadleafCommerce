@@ -15,7 +15,7 @@
           if (builder.getRecord() != null) {
             setData(builder.getRecord(),"quantity",quantity,dirtyValues);
             setData(builder.getRecord(),"orderItemMatchRule",mvel,dirtyValues);
-            presenter.offerItemCriteriaDataSource.updateData(builder.getRecord(),new DSCallback(){
+            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
               }
@@ -26,10 +26,10 @@
             final Record temp=new Record();
             temp.setAttribute("quantity",quantity);
             temp.setAttribute("orderItemMatchRule",mvel);
-            temp.setAttribute("_type",new String[]{((DynamicEntityDataSource)presenter.offerItemCriteriaDataSource).getDefaultNewEntityFullyQualifiedClassname()});
-            temp.setAttribute(OfferItemCriteriaListDataSourceFactory.foreignKeyName,presenter.entityDataSource.getPrimaryKeyValue(selectedRecord));
+            temp.setAttribute("_type",new String[]{presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").getDefaultNewEntityFullyQualifiedClassname()});
+            temp.setAttribute(OfferItemCriteriaListDataSourceFactory.foreignKeyName,presenter.getPresenterSequenceSetupManager().getDataSource("offerDS").getPrimaryKeyValue(selectedRecord));
             temp.setAttribute("id","");
-            presenter.offerItemCriteriaDataSource.addData(temp,new DSCallback(){
+            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").addData(temp,new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
                 builder.setRecord(temp);

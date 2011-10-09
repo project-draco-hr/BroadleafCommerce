@@ -3,7 +3,7 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Product productInstance=(Product)Class.forName(entity.getType()[0]).newInstance();
-    Map<String,FieldMetadata> productProperties=getMergedProperties(Product.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    Map<String,FieldMetadata> productProperties=getMergedProperties(Product.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey());
     productInstance=(Product)helper.createPopulatedInstance(productInstance,entity,productProperties,false);
     Sku skuInstance;
     Class<?> configuredEntity=helper.getFieldManager().getEntityConfiguration().lookupEntityClass(Sku.class.getName());
@@ -14,7 +14,7 @@
       Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
       skuInstance=(Sku)entities[0].newInstance();
     }
-    Map<String,FieldMetadata> skuProperties=getMergedProperties(Sku.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    Map<String,FieldMetadata> skuProperties=getMergedProperties(Sku.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey());
     for (    Property property : entity.getProperties()) {
       if (property.getName().startsWith("allSkus.")) {
         property.setName(property.getName().substring("allSkus.".length(),property.getName().length()));

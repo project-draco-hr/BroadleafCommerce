@@ -1,0 +1,22 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    PageFolder adminInstance=(PageFolder)Class.forName(entity.getType()[0]).newInstance();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(PageFolder.class);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageFolder.class.getName(),persistencePerspective,entityClasses);
+    adminInstance=(PageFolder)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    if (PageFolderImpl.class.getName().equals(entity.getType()[0])) {
+      pageService.addPageFolder(adminInstance,adminInstance.getParentFolder());
+    }
+ else {
+      pageService.addPage((Page)adminInstance,adminInstance.getParentFolder(),getSandBox());
+    }
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

@@ -1,0 +1,34 @@
+{
+  BLCMain.NON_MODAL_PROGRESS.startProgress();
+  PageTemplateFormListDataSourceFactory.createDataSource("pageTemplateFormDS",new String[]{"constructForm",selectedRecord.getAttribute("pageTemplate")},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    final DataSource dataSource){
+      destroyTemplateForm();
+      final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);
+      formOnlyView.getForm().addItemChangedHandler(new ItemChangedHandler(){
+        public void onItemChanged(        ItemChangedEvent event){
+          getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+        }
+      }
+);
+      formOnlyView.setID("pageTemplateForm");
+      formOnlyView.setOverflow(Overflow.VISIBLE);
+      ((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).addMember(formOnlyView);
+      ((PageTemplateFormListDataSource)dataSource).setCustomCriteria(new String[]{"constructForm",selectedRecord.getAttribute("id")});
+      BLCMain.NON_MODAL_PROGRESS.startProgress();
+      formOnlyView.getForm().fetchData(new Criteria(),new DSCallback(){
+        @Override public void execute(        DSResponse response,        Object rawData,        DSRequest request){
+          if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
+            formOnlyView.getForm().enable();
+          }
+          for (          FormItem formItem : formOnlyView.getForm().getFields()) {
+            if (formItem instanceof RichTextCanvasItem) {
+              formItem.setValue(formOnlyView.getForm().getValue(formItem.getFieldName()));
+            }
+          }
+        }
+      }
+);
+    }
+  }
+);
+}

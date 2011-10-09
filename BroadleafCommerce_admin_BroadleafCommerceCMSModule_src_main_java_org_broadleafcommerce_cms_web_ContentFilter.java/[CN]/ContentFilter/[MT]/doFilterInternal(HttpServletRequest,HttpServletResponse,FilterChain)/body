@@ -1,0 +1,13 @@
+{
+  Site site=determineSite(request);
+  Locale locale=determineLocale(request,site);
+  SandBox currentSandbox=determineSandbox(request,site);
+  try {
+    if (!checkForContentManagedPage(currentSandbox,locale,request,response)) {
+      filterChain.doFilter(request,response);
+    }
+  }
+  finally {
+    SystemTime.resetLocalTimeSource();
+  }
+}

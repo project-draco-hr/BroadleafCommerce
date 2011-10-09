@@ -1,0 +1,62 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    String structuredContentId=persistencePackage.getCustomCriteria()[1];
+    StructuredContent structuredContent=(StructuredContent)structuredContentService.findStructuredContentById(Long.valueOf(structuredContentId));
+    List<String> templateFieldNames=new ArrayList<String>();
+    for (    FieldGroup group : structuredContent.getStructuredContentType().getFieldGroups()) {
+      for (      FieldDefinition definition : group.getFieldDefinitions()) {
+        templateFieldNames.add(definition.getName());
+      }
+    }
+    for (    String key : structuredContent.getStructuredContentFields().keySet()) {
+      StructuredContentField structuredContentField=structuredContent.getStructuredContentFields().get(key);
+      structuredContentField.getFieldDataList().size();
+    }
+    structuredContent=(StructuredContent)SerializationUtils.clone(structuredContent);
+    Map<String,StructuredContentField> structuredContentFieldMap=structuredContent.getStructuredContentFields();
+    for (    Property property : persistencePackage.getEntity().getProperties()) {
+      if (templateFieldNames.contains(property.getName())) {
+        StructuredContentField structuredContentField=structuredContentFieldMap.get(property.getName());
+        if (structuredContentField != null) {
+          if (!CollectionUtils.isEmpty(structuredContentField.getFieldDataList())) {
+            StructuredContentFieldData fieldData=structuredContentField.getFieldDataList().get(0);
+            fieldData.setValue(property.getValue());
+          }
+ else {
+            StructuredContentFieldData fieldData=new StructuredContentFieldDataImpl();
+            fieldData.setValue(property.getValue());
+            structuredContentField.getFieldDataList().add(fieldData);
+          }
+        }
+ else {
+          structuredContentField=new StructuredContentFieldImpl();
+          structuredContentFieldMap.put(property.getName(),structuredContentField);
+          structuredContentField.setFieldKey(property.getName());
+          structuredContentField.setStructuredContent(structuredContent);
+          StructuredContentFieldData fieldData=new StructuredContentFieldDataImpl();
+          fieldData.setValue(property.getValue());
+          structuredContentField.getFieldDataList().add(fieldData);
+        }
+      }
+    }
+    List<String> removeItems=new ArrayList<String>();
+    for (    String key : structuredContentFieldMap.keySet()) {
+      if (persistencePackage.getEntity().findProperty(key) == null) {
+        removeItems.add(key);
+      }
+    }
+    if (removeItems.size() > 0) {
+      for (      String removeKey : removeItems) {
+        StructuredContentField structuredContentField=structuredContentFieldMap.remove(removeKey);
+        structuredContentField.setStructuredContent(null);
+      }
+    }
+    structuredContentService.updateStructuredContent(structuredContent,getSandBox());
+    return fetchEntityBasedOnId(structuredContentId);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

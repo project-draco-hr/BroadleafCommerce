@@ -1,0 +1,93 @@
+{
+  super.bind();
+  pendingPreviewClickHandlerRegistration=getMySandBoxDisplay().getPendingPreviewButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ListGridRecord[] records=getMySandBoxDisplay().getPendingGrid().getSelection();
+        previewSelection(records);
+      }
+    }
+  }
+);
+  pendingRefreshClickHandlerRegistration=getMySandBoxDisplay().getPendingRefreshButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        invalidateOtherCache();
+      }
+    }
+  }
+);
+  reclaimAllClickHandlerRegistration=getMySandBoxDisplay().getReclaimAllButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CustomCriteriaListGridDataSource)getPresenterSequenceSetupManager().getDataSource("pendingSandBoxItemDS")).setCustomCriteria(new String[]{BLCMain.currentViewKey,"reclaimAll","","","pending"});
+        setPendingStartState();
+        getMySandBoxDisplay().getPendingGrid().invalidateCache();
+        Timer timer=new Timer(){
+          public void run(){
+            invalidateMyCache();
+          }
+        }
+;
+        timer.schedule(1000);
+      }
+    }
+  }
+);
+  reclaimSelectionClickHandlerRegistration=getMySandBoxDisplay().getReclaimSelectionButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CustomCriteriaListGridDataSource)getPresenterSequenceSetupManager().getDataSource("pendingSandBoxItemDS")).setCustomCriteria(new String[]{BLCMain.currentViewKey,"reclaimSelected",getPendingSelectedRecords(),"","pending"});
+        setPendingStartState();
+        getMySandBoxDisplay().getPendingGrid().invalidateCache();
+        Timer timer=new Timer(){
+          public void run(){
+            invalidateMyCache();
+          }
+        }
+;
+        timer.schedule(1000);
+      }
+    }
+  }
+);
+  pendingSelectionChangedHandlerRegistration=getMySandBoxDisplay().getPendingGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      ListGridRecord selectedRecord=event.getSelectedRecord();
+      if (event.getState() && selectedRecord != null) {
+        getMySandBoxDisplay().getReclaimSelectionButton().enable();
+        getMySandBoxDisplay().getReleaseSelectionButton().enable();
+        getMySandBoxDisplay().getPendingPreviewButton().enable();
+      }
+    }
+  }
+);
+  releaseAllClickHandlerRegistration=getMySandBoxDisplay().getReleaseAllButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CustomCriteriaListGridDataSource)getPresenterSequenceSetupManager().getDataSource("pendingSandBoxItemDS")).setCustomCriteria(new String[]{BLCMain.currentViewKey,"releaseAll","","","pending"});
+        setPendingStartState();
+        getMySandBoxDisplay().getPendingGrid().invalidateCache();
+      }
+    }
+  }
+);
+  releaseSelectionClickHandlerRegistration=getMySandBoxDisplay().getReleaseSelectionButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((CustomCriteriaListGridDataSource)getPresenterSequenceSetupManager().getDataSource("pendingSandBoxItemDS")).setCustomCriteria(new String[]{BLCMain.currentViewKey,"releaseSelected",getPendingSelectedRecords(),"","pending"});
+        setPendingStartState();
+        getMySandBoxDisplay().getPendingGrid().invalidateCache();
+      }
+    }
+  }
+);
+  getMySandBoxDisplay().getPendingGrid().addDataArrivedHandler(new DataArrivedHandler(){
+    @Override public void onDataArrived(    DataArrivedEvent event){
+      if (event.getEndRow() > event.getStartRow()) {
+        pendingEnable();
+      }
+    }
+  }
+);
+}

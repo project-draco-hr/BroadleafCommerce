@@ -1,0 +1,15 @@
+{
+  ImageMetadata imageMetadata=new ImageMetadata();
+  ImageInputStream iis=ImageIO.createImageInputStream(artifactStream);
+  Iterator<ImageReader> readers=ImageIO.getImageReaders(iis);
+  if (readers.hasNext()) {
+    ImageReader reader=readers.next();
+    reader.setInput(iis,true);
+    imageMetadata.setWidth(reader.getWidth(0));
+    imageMetadata.setHeight(reader.getHeight(0));
+  }
+ else {
+    throw new Exception("Unable to retrieve image metadata from stream. Are you sure the stream provided is a valid input stream for an image source?");
+  }
+  return imageMetadata;
+}

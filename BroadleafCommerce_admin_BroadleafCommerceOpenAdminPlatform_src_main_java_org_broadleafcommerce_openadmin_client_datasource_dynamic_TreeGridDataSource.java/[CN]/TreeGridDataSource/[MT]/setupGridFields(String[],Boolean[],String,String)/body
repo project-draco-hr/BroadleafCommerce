@@ -1,4 +1,7 @@
 {
+  if (fieldNames.length != canEdit.length) {
+    throw new IllegalArgumentException("The fieldNames and canEdit array parameters must be of equal length");
+  }
   if (fieldNames != null && fieldNames.length > 0) {
     resetProminenceOnly(fieldNames);
   }
@@ -17,6 +20,9 @@
     }
   }
   int availableSlots=fieldNames == null ? 4 : fieldNames.length;
+  if (availableSlots == 0 && prominentFields.size() == 0) {
+    throw new RuntimeException("You have explicitly specified zero length array for fieldsNames and have no fields defined as prominent via AdminPresentation annotation. Cannot proceed with a tree grid without defining at least one column to show.");
+  }
   for (  DataSourceField field : prominentFields) {
     String columnWidth=field.getAttribute("columnWidth");
     gridFields[j]=new TreeGridField(field.getName(),field.getTitle(),j == 0 ? 200 : 150);
@@ -90,11 +96,11 @@
       j++;
     }
   }
-  getAssociatedGrid().setFields(gridFields);
+  ((ListGrid)getAssociatedGrid()).setFields(gridFields);
   if (fieldNames != null && fieldNames.length > 0) {
     int pos=0;
     for (    String fieldName : fieldNames) {
-      getAssociatedGrid().reorderField(getAssociatedGrid().getFieldNum(fieldName),pos);
+      ((ListGrid)getAssociatedGrid()).reorderField(((ListGrid)getAssociatedGrid()).getFieldNum(fieldName),pos);
       pos++;
     }
   }

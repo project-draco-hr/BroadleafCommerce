@@ -1,0 +1,35 @@
+{
+  int j=0;
+  for (  String propertyName : propertyNames) {
+    Type type=propertyTypes.get(j);
+    boolean isPropertyForeignKey=checkForeignProperty(foreignField,prefix,propertyName);
+    int additionalForeignKeyIndexPosition=findAdditionalForeignKeyIndex(additionalForeignFields,prefix,propertyName);
+    j++;
+    if ((!type.isAnyType() && !type.isCollectionType()) || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
+      FieldPresentationAttributes presentationAttribute=presentationAttributes.get(propertyName);
+      Boolean removeItem=!checkPropertyForInclusion(presentationAttribute);
+      if (removeItem) {
+        removeItems.add(propertyName);
+      }
+      Boolean includeField=testFieldInclusion(prefix,propertyName);
+      SupportedFieldType explicitType=null;
+      if (presentationAttribute != null) {
+        explicitType=presentationAttribute.getExplicitFieldType();
+      }
+      Class<?> returnedClass=type.getReturnedClass();
+      checkProp: {
+        if (type.isComponentType() && includeField) {
+          buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,removeItems,ceilingEntityFullyQualifiedClassname,propertyName,type,returnedClass);
+          break checkProp;
+        }
+        if (type.isEntityType() && !returnedClass.isAssignableFrom(targetClass) && populateManyToOneFields&& includeField) {
+          buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,configurationKey,removeItems,ceilingEntityFullyQualifiedClassname,propertyName,returnedClass,targetClass,prefix);
+          break checkProp;
+        }
+      }
+      if (includeField || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0) {
+        buildProperty(targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttribute,explicitType,returnedClass);
+      }
+    }
+  }
+}

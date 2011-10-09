@@ -1,0 +1,19 @@
+{
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetFolderTreeDS",new StaticAssetsFolderTreeDataSourceFactory(),null,new Object[]{},new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTreeDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
+      setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS"),dataSource);
+      leafAssetPresenter=new SubPresenter(getDisplay().getListLeafDisplay(),true,true,false);
+      leafAssetPresenter.setDataSource((ListGridDataSource)dataSource,new String[]{"picture","name","fullUrl","fileSize","mimeType"},new Boolean[]{false,true,false,false,false});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("localeDS",new LocaleListDataSourceFactory(),null,new Object[]{},new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetDescriptionMapDS",new StaticAssetDescriptionMapDataSourceFactory(this),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      staticAssetDescriptionPresenter=new MapStructurePresenter(getDisplay().getAssetDescriptionDisplay(),getStaticAssetDescriptionEntityView(),BLCMain.getMessageManager().getString("newAssetDescriptionTitle"));
+      staticAssetDescriptionPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","description","longDescription"},new Boolean[]{true,true,true});
+    }
+  }
+));
+}

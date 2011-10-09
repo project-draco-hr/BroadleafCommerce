@@ -1,0 +1,11 @@
+{
+  File parentDir=cacheFile.getParentFile();
+  if (parentDir.exists()) {
+    CleanupOperation operation=new CleanupOperation();
+    operation.setAssetName(staticAsset.getName());
+    operation.setCacheFile(cacheFile);
+synchronized (operations) {
+      operations.add(operation);
+    }
+  }
+}

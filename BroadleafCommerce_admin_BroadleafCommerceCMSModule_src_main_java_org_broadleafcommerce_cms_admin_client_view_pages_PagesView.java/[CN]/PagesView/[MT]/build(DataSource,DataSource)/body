@@ -1,0 +1,44 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setID("pagesLeftVerticalLayout");
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("40%");
+  leftVerticalLayout.setShowResizeBar(true);
+  listDisplay=new DynamicEntityTreeView(BLCMain.getMessageManager().getString("pagesTitle"),entityDataSource,true);
+  listDisplay.getGrid().setHoverMoveWithMouse(true);
+  listDisplay.getGrid().setCanHover(true);
+  listDisplay.getGrid().setShowHover(true);
+  listDisplay.getGrid().setHoverOpacity(75);
+  listDisplay.getGrid().setHoverCustomizer(new HoverCustomizer(){
+    @Override public String hoverHTML(    Object value,    ListGridRecord record,    int rowNum,    int colNum){
+      if (record.getAttributeAsBoolean("lockedFlag")) {
+        return "Last Updated By <B>" + record.getAttribute("auditable.updatedBy.name") + "</B> On <B>"+ record.getAttribute("auditable.dateUpdated")+ "</B>.";
+      }
+      return null;
+    }
+  }
+);
+  Canvas[] members=listDisplay.getToolBar().getMembers();
+  currentLocale.setShowTitle(false);
+  currentLocale.setWidth(120);
+  currentLocale.setOptionDataSource(additionalDataSources[0]);
+  currentLocale.setDisplayField("friendlyName");
+  currentLocale.setValueField("localeCode");
+  currentLocale.setDefaultToFirstOption(true);
+  listDisplay.getToolBar().addFormItem(currentLocale,6);
+  listDisplay.getToolBar().getMember(7).destroy();
+  listDisplay.getToolBar().getMember(1).destroy();
+  addPageFolderButton=new ToolStripButton();
+  addPageFolderButton.setDisabled(true);
+  addPageFolderButton.setIcon(GWT.getModuleBaseURL() + "admin/images/button/folder_open.png");
+  listDisplay.getToolBar().addButton(addPageFolderButton,1);
+  addPageButton=new ToolStripButton();
+  addPageButton.setDisabled(true);
+  addPageButton.setIcon(GWT.getModuleBaseURL() + "admin/images/button/file.png");
+  listDisplay.getToolBar().addButton(addPageButton,2);
+  listDisplay.getToolBar().addMember(new ToolStripSeparator(),3);
+  leftVerticalLayout.addMember(listDisplay);
+  dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("detailsTitle"),entityDataSource);
+  addMember(leftVerticalLayout);
+  addMember(dynamicFormDisplay);
+}

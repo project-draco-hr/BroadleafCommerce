@@ -1,0 +1,63 @@
+{
+  if (src == null) {
+    throw new NullPointerException("src image is null");
+  }
+  if (src == dst) {
+    throw new IllegalArgumentException("src image cannot be the " + "same as the dst image");
+  }
+  boolean needToConvert=false;
+  ColorModel srcCM=src.getColorModel();
+  ColorModel dstCM;
+  BufferedImage origDst=dst;
+  if (srcCM instanceof IndexColorModel) {
+    IndexColorModel icm=(IndexColorModel)srcCM;
+    src=icm.convertToIntDiscrete(src.getRaster(),false);
+    srcCM=src.getColorModel();
+  }
+  int neww;
+  int newh;
+  int w=src.getWidth();
+  int h=src.getHeight();
+  if (dst == null) {
+    double sin=Math.abs(Math.sin(Math.toRadians(amount))), cos=Math.abs(Math.cos(Math.toRadians(amount)));
+    neww=(int)Math.floor(w * cos + h * sin);
+    newh=(int)Math.floor(h * cos + w * sin);
+    dst=createCompatibleDestImage(src,null,neww,newh);
+    dstCM=srcCM;
+    origDst=dst;
+  }
+ else {
+    dstCM=dst.getColorModel();
+    if (srcCM.getColorSpace().getType() != dstCM.getColorSpace().getType()) {
+      needToConvert=true;
+      dst=createCompatibleDestImage(src,null);
+      dstCM=dst.getColorModel();
+    }
+ else     if (dstCM instanceof IndexColorModel) {
+      dst=createCompatibleDestImage(src,null);
+      dstCM=dst.getColorModel();
+    }
+    neww=dst.getWidth();
+    newh=dst.getHeight();
+  }
+  Graphics2D g=dst.createGraphics();
+  g.translate((neww - w) / 2,(newh - h) / 2);
+  g.rotate(Math.toRadians(amount),w / 2,h / 2);
+  g.drawRenderedImage(src,null);
+  g.dispose();
+  origDst=dst;
+  if (needToConvert) {
+    ColorConvertOp ccop=new ColorConvertOp(hints);
+    ccop.filter(dst,origDst);
+  }
+ else   if (origDst != dst) {
+    Graphics2D g2=origDst.createGraphics();
+    try {
+      g2.drawImage(dst,0,0,null);
+    }
+  finally {
+      g2.dispose();
+    }
+  }
+  return origDst;
+}

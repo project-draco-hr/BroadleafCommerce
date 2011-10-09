@@ -1,0 +1,21 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    String parentCategoryId=cto.get(StaticAssetsFolderTreeDataSourceFactory.parentFolderForeignKey).getFilterValues().length == 0 ? null : cto.get(StaticAssetsFolderTreeDataSourceFactory.parentFolderForeignKey).getFilterValues()[0];
+    StaticAssetFolder pageOrFolder=null;
+    if (parentCategoryId != null) {
+      pageOrFolder=staticAssetService.findStaticAssetById(Long.valueOf(parentCategoryId));
+    }
+    List<StaticAssetFolder> folders=staticAssetService.findStaticAssetFolderChildFolders(pageOrFolder);
+    List<Serializable> convertedList=new ArrayList<Serializable>();
+    convertedList.addAll(folders);
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> pageProperties=getMergedProperties(StaticAssetFolder.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),persistencePerspective.getAdditionalForeignKeys());
+    Entity[] entities=helper.getRecords(pageProperties,convertedList);
+    DynamicResultSet response=new DynamicResultSet(entities,entities.length);
+    return response;
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

@@ -13,10 +13,10 @@
     PersistentClass persistentClass=persistenceManager.getDynamicEntityDao().getPersistentClass(mapStructure.getValueClassName());
     Map<String,FieldMetadata> valueMergedProperties;
     if (persistentClass == null) {
-      valueMergedProperties=persistenceManager.getDynamicEntityDao().getPropertiesForPrimitiveClass(((SimpleValueMapStructure)mapStructure).getValuePropertyName(),((SimpleValueMapStructure)mapStructure).getValuePropertyFriendlyName(),Class.forName(mapStructure.getValueClassName()),Class.forName(entity.getType()[0]),MergedPropertyType.MAPSTRUCTUREVALUE,null);
+      valueMergedProperties=persistenceManager.getDynamicEntityDao().getPropertiesForPrimitiveClass(((SimpleValueMapStructure)mapStructure).getValuePropertyName(),((SimpleValueMapStructure)mapStructure).getValuePropertyFriendlyName(),Class.forName(mapStructure.getValueClassName()),Class.forName(entity.getType()[0]),MergedPropertyType.MAPSTRUCTUREVALUE);
     }
  else {
-      valueMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
+      valueMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     }
     if (persistentClass != null) {
       Serializable valueInstance=(Serializable)Class.forName(mapStructure.getValueClassName()).newInstance();

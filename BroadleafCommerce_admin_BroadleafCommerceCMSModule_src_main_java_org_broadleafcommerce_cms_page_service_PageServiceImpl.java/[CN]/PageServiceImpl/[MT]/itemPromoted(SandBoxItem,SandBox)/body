@@ -1,0 +1,34 @@
+{
+  if (!SandBoxItemType.PAGE.equals(sandBoxItem.getSandBoxItemType())) {
+    return;
+  }
+  Page page=(Page)pageDao.readPageById(sandBoxItem.getTemporaryItemId());
+  if (page == null) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Page not found " + sandBoxItem.getTemporaryItemId());
+    }
+  }
+ else {
+    boolean productionSandBox=isProductionSandBox(destinationSandBox);
+    if (productionSandBox) {
+      page.setLockedFlag(false);
+    }
+ else {
+      page.setLockedFlag(true);
+    }
+    if (productionSandBox && page.getOriginalPageId() != null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Page promoted to production.  " + page.getId() + ".  Archiving original page "+ page.getOriginalPageId());
+      }
+      Page originalPage=(Page)pageDao.readPageById(page.getOriginalPageId());
+      originalPage.setArchivedFlag(Boolean.TRUE);
+      pageDao.updatePage(originalPage,false);
+      page.setOriginalPageId(null);
+    }
+  }
+  if (page.getOriginalSandBox() == null) {
+    page.setOriginalSandBox(page.getSandbox());
+  }
+  page.setSandbox(destinationSandBox);
+  pageDao.updatePage(page,false);
+}

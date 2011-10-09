@@ -1,0 +1,23 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StaticAsset.class.getName(),getForeignKeyReadyMergedProperties());
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,StaticAsset.class.getName());
+    Criteria criteria=dynamicEntityDao.getCriteria(queryCriteria,StaticAsset.class);
+    List<StaticAsset> items=staticAssetService.findStaticAssetFolderChildren(getSandBox(),criteria);
+    List<Serializable> convertedList=new ArrayList<Serializable>();
+    convertedList.addAll(items);
+    Entity[] pageEntities=helper.getRecords(getForeignKeyReadyMergedProperties(),convertedList);
+    for (    Entity entity : pageEntities) {
+      entity=addImageRecords(entity);
+    }
+    Long count=staticAssetService.countStaticAssetFolderChildren(getSandBox(),criteria);
+    DynamicResultSet response=new DynamicResultSet(pageEntities,count.intValue());
+    return response;
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

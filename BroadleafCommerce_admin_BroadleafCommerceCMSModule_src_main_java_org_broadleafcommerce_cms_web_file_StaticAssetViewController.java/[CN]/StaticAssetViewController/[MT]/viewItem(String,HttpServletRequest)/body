@@ -1,0 +1,75 @@
+{
+  try {
+    String fullUrl=request.getPathInfo();
+    String sandBoxId=(String)request.getSession().getAttribute(SANDBOX_ID_VAR);
+    if (sandBoxId == null) {
+      sandBoxId=(String)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
+    }
+    SandBox sandBox;
+    if (sandBoxId != null) {
+      sandBox=sandBoxService.retrieveSandboxById(Long.valueOf(sandBoxId));
+    }
+ else {
+      sandBox=null;
+    }
+    StaticAsset staticAsset=(StaticAsset)staticAssetService.findStaticAssetByFullUrl(fullUrl,sandBox);
+    if (staticAsset == null && sandBox != null) {
+      staticAsset=(StaticAsset)staticAssetService.findStaticAssetByFullUrl(fullUrl,null);
+    }
+    if (staticAsset == null) {
+      throw new RuntimeException("Unable to find an asset for the url (" + fullUrl + ") using the sandBox id ("+ sandBoxId+ "), or the production sandBox.");
+    }
+    String mimeType=staticAsset.getMimeType();
+    String cacheName=constructCacheFileName(staticAsset,request.getParameterMap());
+    File cacheFile=new File(cacheDirectory != null ? new File(cacheDirectory) : DEFAULTCACHEDIRECTORY,cacheName);
+    if (!cacheFile.exists()) {
+      clearObsoleteCacheFiles(staticAsset,cacheFile);
+      StaticAssetStorage storage=staticAssetStorageService.readStaticAssetStorageByStaticAssetId(staticAsset.getId());
+      if (!request.getParameterMap().isEmpty()) {
+        ByteArrayOutputStream baos=new ByteArrayOutputStream();
+        InputStream is=null;
+        try {
+          is=storage.getFileData().getBinaryStream();
+          boolean eof=false;
+          while (!eof) {
+            int temp=is.read();
+            if (temp < 0) {
+              eof=true;
+            }
+ else {
+              baos.write(temp);
+            }
+          }
+          baos.flush();
+        }
+  finally {
+          if (is != null) {
+            try {
+              is.close();
+            }
+ catch (            Throwable e) {
+            }
+          }
+        }
+        InputStream original=new ByteArrayInputStream(baos.toByteArray());
+        Operation[] operations=artifactService.buildOperations(request.getParameterMap(),original,staticAsset.getMimeType());
+        InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
+        createCacheFile(converted,cacheFile);
+        if (mimeType.equals("image/gif")) {
+          mimeType="image/png";
+        }
+      }
+ else {
+        createCacheFile(storage.getFileData().getBinaryStream(),cacheFile);
+      }
+    }
+    Map<String,String> model=new HashMap<String,String>();
+    model.put("cacheFilePath",cacheFile.getAbsolutePath());
+    model.put("mimeType",mimeType);
+    return new ModelAndView("blStaticAssetView",model);
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+    throw new RuntimeException(e);
+  }
+}

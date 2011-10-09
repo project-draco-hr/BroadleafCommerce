@@ -1,0 +1,14 @@
+{
+  Map<String,Object> initialValues=new HashMap<String,Object>();
+  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
+  initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS").getPrimaryKeyValue(getDisplay().getListDisplay().getGrid().getSelectedRecord()));
+  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
+    public void onNewItemCreated(    NewItemCreatedEvent event){
+      if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentSelectedRecord)) {
+        ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentSelectedRecord);
+      }
+      resetForm();
+    }
+  }
+,"90%",null,null);
+}

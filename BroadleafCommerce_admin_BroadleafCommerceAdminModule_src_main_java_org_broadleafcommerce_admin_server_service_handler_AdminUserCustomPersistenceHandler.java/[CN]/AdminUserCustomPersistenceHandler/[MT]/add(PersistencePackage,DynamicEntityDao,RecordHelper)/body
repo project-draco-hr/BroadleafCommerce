@@ -4,7 +4,7 @@
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     AdminUser adminInstance=(AdminUser)Class.forName(entity.getType()[0]).newInstance();
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(AdminUser.class);
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminUser.class.getName(),persistencePerspective,dynamicEntityDao,entityClasses);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminUser.class.getName(),persistencePerspective,entityClasses);
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance.setUnencodedPassword(adminInstance.getPassword());
     adminInstance.setPassword(null);

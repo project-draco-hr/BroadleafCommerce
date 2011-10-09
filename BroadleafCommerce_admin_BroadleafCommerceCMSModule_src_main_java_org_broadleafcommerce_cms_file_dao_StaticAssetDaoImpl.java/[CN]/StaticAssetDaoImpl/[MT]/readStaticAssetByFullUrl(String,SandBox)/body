@@ -1,0 +1,12 @@
+{
+  Query query2=em.createNamedQuery("BC_READ_STATIC_ASSET_BY_FULL_URL");
+  query2.setParameter("targetSandbox",targetSandBox);
+  query2.setParameter("fullUrl",fullUrl);
+  List<StaticAsset> results=query2.getResultList();
+  if (CollectionUtils.isEmpty(results)) {
+    return null;
+  }
+ else {
+    return results.iterator().next();
+  }
+}

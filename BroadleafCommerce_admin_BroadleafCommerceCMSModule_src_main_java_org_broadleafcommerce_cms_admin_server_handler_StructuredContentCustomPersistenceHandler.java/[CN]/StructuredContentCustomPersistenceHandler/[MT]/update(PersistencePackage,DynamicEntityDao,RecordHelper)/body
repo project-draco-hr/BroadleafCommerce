@@ -1,0 +1,20 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective,entityClasses);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    StructuredContent adminInstance=(StructuredContent)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    adminInstance.getStructuredContentFields().size();
+    adminInstance=(StructuredContent)SerializationUtils.clone(adminInstance);
+    adminInstance=(StructuredContent)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=structuredContentService.updateStructuredContent(adminInstance,getSandBox());
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
+  }
+}

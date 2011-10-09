@@ -1,0 +1,85 @@
+{
+  Map<String,String> model=new HashMap<String,String>();
+  String callbackName=null;
+  try {
+    MutablePropertyValues mpvs=new ServletRequestParameterPropertyValues(request);
+    if (request instanceof MultipartRequest) {
+      MultipartRequest multipartRequest=(MultipartRequest)request;
+      bindMultipart(multipartRequest.getMultiFileMap(),mpvs);
+    }
+    PersistencePackage persistencePackage=new PersistencePackage();
+    persistencePackage.setPersistencePerspective(new PersistencePerspective());
+    String ceilingEntity=(String)mpvs.getPropertyValue("ceilingEntityFullyQualifiedClassname").getValue();
+    callbackName=(String)mpvs.getPropertyValue("callbackName").getValue();
+    String operation=(String)mpvs.getPropertyValue("operation").getValue();
+    String customCriteria=(String)mpvs.getPropertyValue("customCriteria").getValue();
+    mpvs.removePropertyValue("ceilingEntityFullyQualifiedClassname");
+    mpvs.removePropertyValue("sandbox");
+    mpvs.removePropertyValue("callbackName");
+    mpvs.removePropertyValue("operation");
+    mpvs.removePropertyValue("customCriteria");
+    persistencePackage.setCeilingEntityFullyQualifiedClassname(ceilingEntity);
+    persistencePackage.setCustomCriteria(new String[]{customCriteria});
+    Entity entity=new Entity();
+    persistencePackage.setEntity(entity);
+    entity.setType(new String[]{ceilingEntity});
+    List<Property> propertyList=new ArrayList<Property>();
+    for (    PropertyValue propertyValue : mpvs.getPropertyValues()) {
+      if (propertyValue.getValue() instanceof MultipartFile) {
+        MultipartFile file=(MultipartFile)propertyValue.getValue();
+        if (file.getSize() > maximumFileSizeInBytes) {
+          throw new MaxUploadSizeExceededException(maximumFileSizeInBytes);
+        }
+        if (file.getOriginalFilename() == null || file.getOriginalFilename().indexOf(".") < 0) {
+          throw new FileExtensionUnavailableException("Unable to determine file extension for uploaded file. The filename for the uploaded file is: " + file.getOriginalFilename());
+        }
+        Map<String,MultipartFile> fileMap=UploadedFile.getUpload();
+        fileMap.put(propertyValue.getName(),(MultipartFile)propertyValue.getValue());
+        UploadedFile.setUpload(fileMap);
+        entity.setMultiPartAvailableOnThread(true);
+      }
+ else {
+        Property property=new Property();
+        property.setName(propertyValue.getName());
+        property.setValue((String)propertyValue.getValue());
+        propertyList.add(property);
+      }
+    }
+    entity.setProperties(propertyList.toArray(new Property[]{}));
+    Entity result=null;
+    if (operation.equals("add")) {
+      result=dynamicEntityRemoteService.add(persistencePackage);
+    }
+ else     if (operation.equals("update")) {
+      result=dynamicEntityRemoteService.update(persistencePackage);
+    }
+    model.put("callbackName",callbackName);
+    model.put("result",buildJSON(result));
+    return new ModelAndView("blUploadCompletedView",model);
+  }
+ catch (  MaxUploadSizeExceededException e) {
+    if (callbackName != null) {
+      model.put("callbackName",callbackName);
+      model.put("error",buildErrorJSON(e.getMessage()));
+    }
+    return new ModelAndView("blUploadCompletedView",model);
+  }
+catch (  FileExtensionUnavailableException e) {
+    if (callbackName != null) {
+      model.put("callbackName",callbackName);
+      model.put("error",buildErrorJSON(e.getMessage()));
+    }
+    return new ModelAndView("blUploadCompletedView",model);
+  }
+catch (  Exception e) {
+    e.printStackTrace();
+    if (callbackName != null) {
+      model.put("callbackName",callbackName);
+      model.put("error",buildErrorJSON(e.getMessage()));
+    }
+    return new ModelAndView("blUploadCompletedView",model);
+  }
+ finally {
+    UploadedFile.remove();
+  }
+}

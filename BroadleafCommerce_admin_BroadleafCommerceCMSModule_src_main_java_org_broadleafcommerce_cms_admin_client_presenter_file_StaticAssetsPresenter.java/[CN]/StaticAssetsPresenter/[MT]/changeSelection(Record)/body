@@ -1,0 +1,17 @@
+{
+  currentSelectedRecord=(TreeNode)selectedRecord;
+  leafAssetPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS"),new DSCallback(){
+    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+      if (response.getStatus() == RPCResponse.STATUS_FAILURE) {
+        leafAssetPresenter.disable();
+      }
+ else {
+        leafAssetPresenter.enable();
+        leafAssetPresenter.setStartState();
+        display.getListDisplay().getAddButton().enable();
+        resetForm();
+      }
+    }
+  }
+);
+}

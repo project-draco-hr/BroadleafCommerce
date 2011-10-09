@@ -1,0 +1,13 @@
+{
+  if (!SandBoxItemType.STRUCTURED_CONTENT.equals(sandBoxItem.getSandBoxItemType())) {
+    return;
+  }
+  StructuredContent sc=structuredContentDao.findStructuredContentById(sandBoxItem.getTemporaryItemId());
+  if (sc != null) {
+    sc.setArchivedFlag(Boolean.TRUE);
+    structuredContentDao.addOrUpdateContentItem(sc,false);
+    StructuredContent originalSc=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
+    originalSc.setLockedFlag(false);
+    structuredContentDao.addOrUpdateContentItem(originalSc,false);
+  }
+}

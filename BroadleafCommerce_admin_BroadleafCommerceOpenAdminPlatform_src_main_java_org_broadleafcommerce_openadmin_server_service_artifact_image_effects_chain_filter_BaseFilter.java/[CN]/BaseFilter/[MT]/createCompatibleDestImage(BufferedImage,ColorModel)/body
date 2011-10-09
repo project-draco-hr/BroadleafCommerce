@@ -1,0 +1,13 @@
+{
+  BufferedImage image;
+  if (destCM == null) {
+    destCM=src.getColorModel();
+    if (destCM instanceof IndexColorModel) {
+      destCM=ColorModel.getRGBdefault();
+    }
+  }
+  int w=src.getWidth();
+  int h=src.getHeight();
+  image=new BufferedImage(destCM,destCM.createCompatibleWritableRaster(w,h),destCM.isAlphaPremultiplied(),null);
+  return image;
+}

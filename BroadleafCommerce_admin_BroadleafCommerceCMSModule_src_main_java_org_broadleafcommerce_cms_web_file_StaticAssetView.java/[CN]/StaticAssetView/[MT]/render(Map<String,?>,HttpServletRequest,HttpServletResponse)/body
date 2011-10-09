@@ -1,0 +1,37 @@
+{
+  BufferedInputStream bis=null;
+  try {
+    String cacheFilePath=(String)model.get("cacheFilePath");
+    String mimeType=(String)model.get("mimeType");
+    response.setContentType(mimeType);
+    response.setHeader("Cache-Control","no-cache");
+    response.setHeader("Pragma","no-cache");
+    response.setDateHeader("Expires",0);
+    bis=new BufferedInputStream(new FileInputStream(cacheFilePath));
+    OutputStream os=response.getOutputStream();
+    boolean eof=false;
+    while (!eof) {
+      int temp=bis.read();
+      if (temp < 0) {
+        eof=true;
+      }
+ else {
+        os.write(temp);
+      }
+    }
+    os.flush();
+  }
+ catch (  Exception e) {
+    e.printStackTrace();
+    throw e;
+  }
+ finally {
+    if (bis != null) {
+      try {
+        bis.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+}

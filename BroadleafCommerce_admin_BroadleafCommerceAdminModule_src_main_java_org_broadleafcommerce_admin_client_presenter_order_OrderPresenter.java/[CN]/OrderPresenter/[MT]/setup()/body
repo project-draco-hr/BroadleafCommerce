@@ -2,21 +2,15 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderDS",new OrderListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource top){
       setupDisplayItems(top);
-      ((ListGridDataSource)top).setupGridFields(new String[]{"customer.firstName","customer.lastName","name","orderNumber","status"},new Boolean[]{false,false,false,false,false});
-      library.put("orderDS",top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{"customer.firstName","customer.lastName","name","orderNumber","status"});
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemDS",new OrderItemListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
-      library.put("orderItemDS",result);
-    }
-  }
-));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemDS",new OrderItemListDataSourceFactory(),null,new Object[]{},new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("bundleOrderItemDS",new BundledOrderItemListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
       orderItemPresenter=new OrderItemPresenter(((OrderDisplay)getDisplay()).getOrderItemsDisplay());
-      orderItemPresenter.setDataSource((ListGridDataSource)library.get("orderItemDS"),new String[]{"name","quantity","price","retailPrice","salePrice"},new Boolean[]{false,false,false,false,false});
+      orderItemPresenter.setDataSource((ListGridDataSource)getPresenterSequenceSetupManager().getDataSource("orderItemDS"),new String[]{"name","quantity","price","retailPrice","salePrice"},new Boolean[]{false,false,false,false,false});
       ((OrderItemPresenter)orderItemPresenter).setExpansionDataSource((ListGridDataSource)result,new String[]{"name","quantity","price","retailPrice","salePrice"},new Boolean[]{false,false,false,false,false});
       orderItemPresenter.setReadOnly(true);
     }
@@ -26,7 +20,7 @@
     public void onSetupSuccess(    DataSource result){
       ((ListGridDataSource)result).resetPermanentFieldVisibility("abbreviation","name");
       EntitySearchDialog countrySearchView=new EntitySearchDialog((ListGridDataSource)result);
-      ((DynamicEntityDataSource)library.get("orderDS")).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,BLCMain.getMessageManager().getString("countrySearchPrompt"),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+      getPresenterSequenceSetupManager().getDataSource("orderDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.country",countrySearchView,BLCMain.getMessageManager().getString("countrySearchPrompt"),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
       library.put("countrySearchView",countrySearchView);
     }
   }
@@ -35,7 +29,7 @@
     public void onSetupSuccess(    DataSource result){
       ((ListGridDataSource)result).resetPermanentFieldVisibility("abbreviation","name");
       EntitySearchDialog stateSearchView=new EntitySearchDialog((ListGridDataSource)result);
-      ((DynamicEntityDataSource)library.get("orderDS")).getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,BLCMain.getMessageManager().getString("stateSearchPrompt"),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
+      getPresenterSequenceSetupManager().getDataSource("orderDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("address.state",stateSearchView,BLCMain.getMessageManager().getString("stateSearchPrompt"),(DynamicFormDisplay)((OrderDisplay)getDisplay()).getFulfillmentGroupDisplay());
       library.put("stateSearchView",stateSearchView);
     }
   }

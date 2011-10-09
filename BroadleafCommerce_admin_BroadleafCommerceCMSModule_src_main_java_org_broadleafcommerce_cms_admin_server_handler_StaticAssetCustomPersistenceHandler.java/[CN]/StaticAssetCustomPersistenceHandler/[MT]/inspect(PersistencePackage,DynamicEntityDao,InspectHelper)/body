@@ -1,0 +1,17 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StaticAssetFolder.class);
+    createMergedProperties(persistencePackage,dynamicEntityDao,entityClasses);
+    allMergedProperties.put(MergedPropertyType.PRIMARY,getMergedProperties());
+    ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata);
+    return results;
+  }
+ catch (  Exception e) {
+    ServiceException ex=new ServiceException("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+    LOG.error("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),ex);
+    throw ex;
+  }
+}

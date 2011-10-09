@@ -1,0 +1,30 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    String parentCategoryId=cto.get(PagesTreeDataSourceFactory.parentFolderForeignKey).getFilterValues()[0];
+    PageFolder pageOrFolder=null;
+    if (parentCategoryId != null) {
+      pageOrFolder=pageService.findPageById(Long.valueOf(parentCategoryId));
+    }
+    String[] filterValues=cto.get("pageTemplate.locale.defaultFlag").getFilterValues();
+    String localeCode;
+    if (!ArrayUtils.isEmpty(filterValues)) {
+      localeCode=null;
+    }
+ else {
+      localeCode=cto.get("pageTemplate.locale.localeCode").getFilterValues()[0];
+    }
+    List<PageFolder> folders=pageService.findPageFolderChildren(getSandBox(),pageOrFolder,localeCode);
+    List<Serializable> convertedList=new ArrayList<Serializable>();
+    convertedList.addAll(folders);
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> pageProperties=getMergedProperties(PageFolder.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),persistencePerspective.getAdditionalForeignKeys());
+    Entity[] pageEntities=helper.getRecords(pageProperties,convertedList);
+    DynamicResultSet response=new DynamicResultSet(pageEntities,pageEntities.length);
+    return response;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

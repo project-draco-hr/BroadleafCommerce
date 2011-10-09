@@ -1,0 +1,17 @@
+{
+  if (entity.getClass().isAnnotationPresent(Entity.class)) {
+    Field field=getSingleField(entity.getClass(),"auditable");
+    field.setAccessible(true);
+    if (field.isAnnotationPresent(Embedded.class)) {
+      Object auditable=field.get(entity);
+      if (auditable == null) {
+        field.set(entity,new Auditable());
+        auditable=field.get(entity);
+      }
+      Field temporalField=auditable.getClass().getDeclaredField("dateCreated");
+      Field agentField=auditable.getClass().getDeclaredField("createdBy");
+      setAuditValueTemporal(temporalField,auditable);
+      setAuditValueAgent(agentField,auditable);
+    }
+  }
+}

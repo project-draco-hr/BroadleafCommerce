@@ -1,0 +1,20 @@
+{
+  for (  CustomPersistenceHandler handler : customPersistenceHandlers) {
+    if (handler.canHandleInspect(persistencePackage)) {
+      if (!handler.willHandleSecurity(persistencePackage)) {
+        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
+      }
+      DynamicResultSet results=handler.inspect(persistencePackage,dynamicEntityDao,this);
+      return results;
+    }
+  }
+  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
+  Class<?>[] entities=getPolymorphicEntities(persistencePackage.getCeilingEntityFullyQualifiedClassname());
+  Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+  for (  PersistenceModule module : modules) {
+    module.updateMergedProperties(persistencePackage,allMergedProperties);
+  }
+  ClassMetadata mergedMetadata=getMergedClassMetadata(entities,allMergedProperties);
+  DynamicResultSet results=new DynamicResultSet(mergedMetadata);
+  return results;
+}

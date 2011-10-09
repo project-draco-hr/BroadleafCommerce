@@ -46,9 +46,15 @@
       String fieldType=property.getMetadata().getFieldType() == null ? null : property.getMetadata().getFieldType().toString();
       String secondaryFieldType=property.getMetadata().getSecondaryType() == null ? null : property.getMetadata().getSecondaryType().toString();
       Long length=property.getMetadata().getLength() == null ? null : property.getMetadata().getLength().longValue();
-      Boolean required=property.getMetadata().getRequired();
-      if (required == null) {
-        required=false;
+      Boolean required;
+      if (property.getMetadata().getPresentationAttributes().getRequiredOverride() != null) {
+        required=property.getMetadata().getPresentationAttributes().getRequiredOverride();
+      }
+ else {
+        required=property.getMetadata().getRequired();
+        if (required == null) {
+          required=false;
+        }
       }
       Boolean mutable=property.getMetadata().getMutable();
       String inheritedFromType=property.getMetadata().getInheritedFromType();
@@ -56,7 +62,7 @@
       String foreignKeyClass=property.getMetadata().getForeignKeyClass();
       String foreignKeyProperty=property.getMetadata().getForeignKeyProperty();
       String friendlyName=property.getMetadata().getPresentationAttributes().getFriendlyName();
-      if (friendlyName == null) {
+      if (friendlyName == null || friendlyName.equals("")) {
         friendlyName=property.getName();
       }
  else {
@@ -72,8 +78,13 @@
       }
       String securityLevel=property.getMetadata().getPresentationAttributes().getSecurityLevel();
       Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
+      FormHiddenEnum formHidden=property.getMetadata().getPresentationAttributes().getFormHidden();
+      if (formHidden == null) {
+        formHidden=FormHiddenEnum.NOT_SPECIFIED;
+      }
       String group=property.getMetadata().getPresentationAttributes().getGroup();
       Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
+      Boolean groupCollapsed=property.getMetadata().getPresentationAttributes().getGroupCollapsed();
       Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
       Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
       Integer order=property.getMetadata().getPresentationAttributes().getOrder();
@@ -168,8 +179,23 @@ valueMap.put(enumerationValues[j][0],enumerationValues[j][1]);
 }
 field.setValueMap(valueMap);
 break;
+case EXPLICIT_ENUMERATION:
+field=new DataSourceEnumField(propertyName,friendlyName);
+field.setCanEdit(mutable);
+field.setRequired(required);
+LinkedHashMap<String,String> valueMap2=new LinkedHashMap<String,String>();
+for (int j=0; j < enumerationValues.length; j++) {
+valueMap2.put(enumerationValues[j][0],enumerationValues[j][1]);
+}
+field.setValueMap(valueMap2);
+break;
 case PASSWORD:
 field=new DataSourcePasswordField(propertyName,friendlyName);
+field.setCanEdit(mutable);
+field.setRequired(required);
+break;
+case ARTIFACT:
+field=new DataSourceImageField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
 break;
@@ -185,7 +211,8 @@ field.setValidators(ValidationFactoryManager.getInstance().createValidators(prop
 }
 if (fieldType.equals(SupportedFieldType.ID.toString())) {
 field.setHidden(true);
-field.setAttribute("permanentlyHidden",false);
+field.setAttribute("permanentlyHidden",true);
+formHidden=FormHiddenEnum.VISIBLE;
 }
  else if (hidden != null) {
 field.setHidden(hidden);
@@ -201,11 +228,15 @@ SecurityManager.getInstance().registerField(uniqueID,securityLevel);
 field.setAttribute("uniqueID",uniqueID);
 field.setAttribute("securityLevel",securityLevel);
 }
+field.setAttribute("formHidden",formHidden);
 if (group != null) {
 field.setAttribute("formGroup",group);
 }
 if (groupOrder != null) {
 field.setAttribute("formGroupOrder",groupOrder);
+}
+if (groupCollapsed != null) {
+field.setAttribute("formGroupCollapsed",groupCollapsed);
 }
 if (largeEntry != null) {
 field.setAttribute("largeEntry",largeEntry);
@@ -221,6 +252,9 @@ field.setLength(length.intValue());
 }
 if (columnWidth != null) {
 field.setAttribute("columnWidth",columnWidth);
+}
+if (enumerationValues != null) {
+field.setAttribute("enumerationValues",enumerationValues);
 }
 if (enumerationValues != null) {
 field.setAttribute("enumerationValues",enumerationValues);

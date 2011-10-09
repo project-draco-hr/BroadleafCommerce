@@ -1,0 +1,17 @@
+{
+  for (  SandBoxItem item : sandBoxItems) {
+    if (item.getOriginalSandBox() == null) {
+      throw new IllegalArgumentException("Cannot reject a SandBoxItem whose originalSandBox member is null");
+    }
+  }
+  SandBoxAction action=createSandBoxAction(SandBoxActionType.REJECT,comment);
+  for (  SandBoxItem sandBoxItem : sandBoxItems) {
+    action.addSandBoxItem(sandBoxItem);
+    for (    SandBoxItemListener listener : sandboxItemListeners) {
+      listener.itemRejected(sandBoxItem,sandBoxItem.getOriginalSandBox());
+    }
+    sandBoxItem.addSandBoxAction(action);
+    sandBoxItem.setSandBox(sandBoxItem.getOriginalSandBox());
+    sandBoxItem.setOriginalSandBox(null);
+  }
+}

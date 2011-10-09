@@ -1,0 +1,22 @@
+{
+  if (sandboxList == null || sandboxList.size() == 0) {
+    return productionList;
+  }
+  Map<Long,StructuredContent> scMap=new LinkedHashMap<Long,StructuredContent>();
+  for (  StructuredContent sc : productionList) {
+    scMap.put(sc.getId(),sc);
+  }
+  for (  StructuredContent sc : sandboxList) {
+    if (sc.getOriginalItemId() != null) {
+      scMap.remove(sc.getOriginalItemId());
+    }
+    if (!sc.getDeletedFlag() && !sc.getOfflineFlag()) {
+      scMap.put(sc.getId(),sc);
+    }
+  }
+  ArrayList<StructuredContent> returnList=new ArrayList<StructuredContent>(scMap.values());
+  if (returnList.size() > 1) {
+    Collections.sort(returnList,new BeanComparator("priority"));
+  }
+  return returnList;
+}

@@ -1,16 +1,5 @@
 {
-  String[] overrideKeys=null;
-  FieldMetadata[] overrideValues=null;
-  if (metadataOverrides != null) {
-    overrideKeys=new String[metadataOverrides.size()];
-    overrideValues=new FieldMetadata[metadataOverrides.size()];
-    int j=0;
-    for (    String key : metadataOverrides.keySet()) {
-      overrideKeys[j]=key;
-      overrideValues[j]=metadataOverrides.get(key);
-    }
-  }
-  AppServices.DYNAMIC_ENTITY.inspect(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,dataSource.createSandBoxInfo(),customCriteria),overrideKeys,overrideValues,new AbstractCallback<DynamicResultSet>(){
+  AppServices.DYNAMIC_ENTITY.inspect(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria),new AbstractCallback<DynamicResultSet>(){
     public void onSuccess(    DynamicResultSet result){
       super.onSuccess(result);
       ClassMetadata metadata=result.getClassMetaData();

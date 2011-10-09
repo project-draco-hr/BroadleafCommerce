@@ -1,0 +1,10 @@
+{
+  List<StructuredContent> productionContentList=null;
+  List<StructuredContent> sandBoxContentList=null;
+  productionContentList=structuredContentDao.findActiveStructuredContentByType(getProductionSandBox(sandBox),contentType,locale);
+  if (!isProductionSandBox(sandBox)) {
+    sandBoxContentList=structuredContentDao.findActiveStructuredContentByType(sandBox,contentType,locale);
+  }
+  List<StructuredContent> contentList=mergeContent(productionContentList,sandBoxContentList);
+  return evaluateAndPriortizeContent(contentList,count,ruleDTOs);
+}

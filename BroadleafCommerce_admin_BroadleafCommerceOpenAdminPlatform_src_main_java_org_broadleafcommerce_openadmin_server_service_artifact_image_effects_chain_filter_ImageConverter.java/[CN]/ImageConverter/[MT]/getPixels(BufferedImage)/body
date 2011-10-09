@@ -1,0 +1,14 @@
+{
+  int iWidth=image.getWidth();
+  int iHeight=image.getHeight();
+  int numPixels=iWidth * iHeight;
+  int rawPixels[]=new int[numPixels];
+  if (rawPixels == null)   return null;
+  PixelGrabber grabber=new PixelGrabber(image,0,0,iWidth,iHeight,rawPixels,0,iWidth);
+  try {
+    grabber.grabPixels();
+  }
+ catch (  InterruptedException e) {
+  }
+  return rawPixels;
+}

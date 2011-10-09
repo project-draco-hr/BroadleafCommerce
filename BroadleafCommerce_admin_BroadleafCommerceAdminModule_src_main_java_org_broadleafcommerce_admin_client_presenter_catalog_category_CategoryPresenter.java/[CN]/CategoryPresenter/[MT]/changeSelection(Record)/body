@@ -1,17 +1,15 @@
 {
-  final AbstractDynamicDataSource dataSource=(AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource();
-  if (categorySearchDataSource.stripDuplicateAllowSpecialCharacters(dataSource.getPrimaryKeyValue(selectedRecord)).equals(rootId)) {
+  final AbstractDynamicDataSource dataSource=getPresenterSequenceSetupManager().getDataSource("categoryTreeDS");
+  if (getPresenterSequenceSetupManager().getDataSource("categorySearchDS").stripDuplicateAllowSpecialCharacters(dataSource.getPrimaryKeyValue(selectedRecord)).equals(rootId)) {
     formPresenter.disable();
     display.getListDisplay().getRemoveButton().disable();
   }
   allChildCategoriesPresenter.load(selectedRecord,dataSource,new DSCallback(){
     public void execute(    DSResponse response,    Object rawData,    DSRequest request){
-      try {
-        if (response.getErrors().size() > 0) {
-          getDisplay().getInsertOrphanButton().disable();
-        }
+      if (response.getStatus() == RPCResponse.STATUS_FAILURE) {
+        getDisplay().getInsertOrphanButton().disable();
       }
- catch (      Exception e) {
+ else {
         if (getDisplay().getOrphanedCategoryGrid().getSelectedRecord() != null) {
           getDisplay().getInsertOrphanButton().enable();
         }

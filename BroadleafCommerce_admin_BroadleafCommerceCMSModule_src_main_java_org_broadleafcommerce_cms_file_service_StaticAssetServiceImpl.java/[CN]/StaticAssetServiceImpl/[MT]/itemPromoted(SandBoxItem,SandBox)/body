@@ -1,0 +1,34 @@
+{
+  if (!SandBoxItemType.STATIC_ASSET.equals(sandBoxItem.getSandBoxItemType())) {
+    return;
+  }
+  StaticAsset asset=(StaticAsset)staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
+  if (asset == null) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Asset not found " + sandBoxItem.getTemporaryItemId());
+    }
+  }
+ else {
+    boolean productionSandBox=isProductionSandBox(destinationSandBox);
+    if (productionSandBox) {
+      asset.setLockedFlag(false);
+    }
+ else {
+      asset.setLockedFlag(true);
+    }
+    if (productionSandBox && asset.getOriginalAssetId() != null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Asset promoted to production.  " + asset.getId() + ".  Archiving original asset "+ asset.getOriginalAssetId());
+      }
+      StaticAsset originalAsset=(StaticAsset)staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
+      originalAsset.setArchivedFlag(Boolean.TRUE);
+      staticAssetDao.updateStaticAsset(originalAsset);
+      asset.setOriginalAssetId(null);
+    }
+  }
+  if (asset.getOriginalSandBox() == null) {
+    asset.setOriginalSandBox(asset.getSandbox());
+  }
+  asset.setSandbox(destinationSandBox);
+  staticAssetDao.updateStaticAsset(asset);
+}

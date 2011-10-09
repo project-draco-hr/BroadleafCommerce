@@ -1,0 +1,21 @@
+{
+  StaticAssetImpl asset=new StaticAssetImpl();
+  asset.name=name;
+  asset.parentFolder=parentFolder;
+  asset.site=site;
+  asset.archivedFlag=archivedFlag;
+  asset.deletedFlag=deletedFlag;
+  asset.fullUrl=fullUrl;
+  asset.fileSize=fileSize;
+  asset.mimeType=mimeType;
+  asset.sandbox=sandbox;
+  asset.originalSandBox=originalSandBox;
+  asset.originalAssetId=originalAssetId;
+  asset.fileExtension=fileExtension;
+  for (  String key : contentMessageValues.keySet()) {
+    StaticAssetDescription oldAssetDescription=contentMessageValues.get(key);
+    StaticAssetDescription newAssetDescription=oldAssetDescription.cloneEntity();
+    asset.getContentMessageValues().put(key,newAssetDescription);
+  }
+  return asset;
+}

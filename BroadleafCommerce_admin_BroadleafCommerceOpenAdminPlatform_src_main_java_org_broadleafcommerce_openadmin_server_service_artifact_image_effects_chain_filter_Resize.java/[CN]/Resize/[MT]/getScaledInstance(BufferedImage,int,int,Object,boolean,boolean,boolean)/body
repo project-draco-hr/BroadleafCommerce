@@ -1,0 +1,74 @@
+{
+  BufferedImage ret=(BufferedImage)img;
+  int w, h, destW, destH;
+  if (maintainAspectRatio) {
+    int wDiff=Math.abs(img.getWidth() - targetWidth);
+    int hDiff=Math.abs(img.getHeight() - targetHeight);
+    if (wDiff > hDiff) {
+      destH=targetHeight;
+      destW=Double.valueOf((((double)img.getWidth()) * ((double)destH)) / ((double)img.getHeight())).intValue();
+    }
+ else {
+      destW=targetWidth;
+      destH=Double.valueOf((((double)img.getHeight()) * ((double)destW)) / ((double)img.getWidth())).intValue();
+    }
+  }
+ else {
+    destW=targetWidth;
+    destH=targetHeight;
+  }
+  if (higherQuality) {
+    w=img.getWidth();
+    h=img.getHeight();
+  }
+ else {
+    if (!maintainAspectRatio) {
+      w=targetWidth;
+      h=targetHeight;
+    }
+ else {
+      w=destW;
+      h=destH;
+    }
+  }
+  do {
+    if (higherQuality && w > destW) {
+      w/=2;
+      if (w < destW) {
+        w=destW;
+      }
+    }
+ else     if (higherQuality && w < destW) {
+      w*=2;
+      if (w > destW) {
+        w=destW;
+      }
+    }
+    if (higherQuality && h > destH) {
+      h/=2;
+      if (h < destH) {
+        h=destH;
+      }
+    }
+ else     if (higherQuality && h < destH) {
+      h*=2;
+      if (h > destH) {
+        h=destH;
+      }
+    }
+    int type;
+    if (img.getType() != BufferedImage.TYPE_INT_ARGB && img.getType() != BufferedImage.TYPE_INT_RGB) {
+      type=BufferedImage.TYPE_INT_ARGB;
+    }
+ else {
+      type=img.getType();
+    }
+    BufferedImage tmp=new BufferedImage(w,h,type);
+    Graphics2D g2=tmp.createGraphics();
+    g2.drawImage(ret.getScaledInstance(w,h,Image.SCALE_SMOOTH),0,0,w,h,null);
+    g2.dispose();
+    ret=tmp;
+  }
+ while (w != destW || h != destH);
+  return ret;
+}

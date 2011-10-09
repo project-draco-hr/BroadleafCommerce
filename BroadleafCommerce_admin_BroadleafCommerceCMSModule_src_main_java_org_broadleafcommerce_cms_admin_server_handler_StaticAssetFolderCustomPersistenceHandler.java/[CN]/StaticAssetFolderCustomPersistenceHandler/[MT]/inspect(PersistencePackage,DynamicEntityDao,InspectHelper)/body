@@ -1,0 +1,25 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StaticAssetFolder.class);
+    Map<String,FieldMetadata> mergedProperties=dynamicEntityDao.getMergedProperties(StaticAssetFolder.class.getName(),entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+    String[] keys=mergedProperties.keySet().toArray(new String[]{});
+    for (    String key : keys) {
+      FieldMetadata temp=mergedProperties.get(key);
+      if (!temp.getInheritedFromType().equals(StaticAssetFolderImpl.class.getName())) {
+        mergedProperties.remove(key);
+      }
+    }
+    allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
+    ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
+    return results;
+  }
+ catch (  Exception e) {
+    ServiceException ex=new ServiceException("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+    LOG.error("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),ex);
+    throw ex;
+  }
+}

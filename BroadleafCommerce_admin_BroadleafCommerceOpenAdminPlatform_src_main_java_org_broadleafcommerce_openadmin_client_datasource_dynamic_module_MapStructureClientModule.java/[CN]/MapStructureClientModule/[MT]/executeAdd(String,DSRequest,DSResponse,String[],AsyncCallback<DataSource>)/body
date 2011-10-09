@@ -3,7 +3,7 @@
   JavaScriptObject data=request.getData();
   TreeNode record=new TreeNode(data);
   Entity entity=buildEntity(record,request);
-  service.add(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,dataSource.createSandBoxInfo(),customCriteria),new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
+  service.add(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria),new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
     public void onSuccess(    Entity result){
       super.onSuccess(result);
       TreeNode record=(TreeNode)buildRecord(result,false);

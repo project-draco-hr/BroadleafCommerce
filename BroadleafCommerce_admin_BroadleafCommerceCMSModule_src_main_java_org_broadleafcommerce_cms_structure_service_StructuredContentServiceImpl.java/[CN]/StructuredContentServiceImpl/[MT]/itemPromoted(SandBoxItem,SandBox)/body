@@ -1,0 +1,28 @@
+{
+  if (!SandBoxItemType.STRUCTURED_CONTENT.equals(sandBoxItem.getSandBoxItemType())) {
+    return;
+  }
+  StructuredContent sc=structuredContentDao.findStructuredContentById(sandBoxItem.getTemporaryItemId());
+  if (sc == null) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Structured Content Item not found " + sandBoxItem.getTemporaryItemId());
+    }
+  }
+ else {
+    if (isProductionSandBox(destinationSandBox) && sc.getOriginalItemId() != null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Structured content promoted to production.  " + sc.getId() + ".  Archiving original item "+ sc.getOriginalItemId());
+      }
+      StructuredContent originalSC=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
+      originalSC.setArchivedFlag(Boolean.TRUE);
+      structuredContentDao.addOrUpdateContentItem(originalSC,false);
+      sc.setOriginalItemId(null);
+      sc.setLockedFlag(false);
+    }
+ else {
+      sc.setLockedFlag(true);
+    }
+  }
+  sc.setSandbox(destinationSandBox);
+  structuredContentDao.addOrUpdateContentItem(sc,false);
+}

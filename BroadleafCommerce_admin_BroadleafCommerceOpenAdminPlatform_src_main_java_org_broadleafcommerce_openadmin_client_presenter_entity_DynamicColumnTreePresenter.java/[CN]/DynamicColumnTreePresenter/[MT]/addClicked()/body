@@ -1,0 +1,12 @@
+{
+  Map<String,Object> initialValues=new HashMap<String,Object>();
+  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
+  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
+    public void onNewItemCreated(    NewItemCreatedEvent event){
+      if (fetchAfterAddCriteria != null) {
+        display.getListDisplay().getGrid().fetchData(fetchAfterAddCriteria);
+      }
+    }
+  }
+,"90%",null,null);
+}

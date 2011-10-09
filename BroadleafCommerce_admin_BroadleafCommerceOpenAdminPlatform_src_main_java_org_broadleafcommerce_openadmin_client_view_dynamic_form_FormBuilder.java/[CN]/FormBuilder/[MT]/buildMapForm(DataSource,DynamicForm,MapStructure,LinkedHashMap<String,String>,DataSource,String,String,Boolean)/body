@@ -1,0 +1,55 @@
+{
+  if (mapKeys == null && optionDataSource == null) {
+    throw new RuntimeException("Must provide either map keys or and option datasource to control the values for the key field.");
+  }
+  form.setDataSource(dataSource);
+  Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
+  Map<String,Integer> sectionNames=new HashMap<String,Integer>();
+  Map<String,Boolean> sectionCollapsed=new HashMap<String,Boolean>();
+  DataSourceField[] fields=dataSource.getFields();
+  for (  DataSourceField field : fields) {
+    String fieldType=field.getAttribute("fieldType");
+    if (fieldType != null && !field.getHidden()) {
+      String group=field.getAttribute("formGroup");
+      String temp=field.getAttribute("formGroupOrder");
+      if (field.getAttributeAsBoolean("formGroupCollapsed") != null) {
+        sectionCollapsed.put(group,field.getAttributeAsBoolean("formGroupCollapsed"));
+      }
+      Integer groupOrder=null;
+      if (temp != null) {
+        groupOrder=Integer.valueOf(temp);
+      }
+      if (group == null) {
+        group="General";
+      }
+      FormItem formItem;
+      FormItem displayFormItem=null;
+      String fieldName=field.getName();
+      if (mapStructure != null && mapStructure.getKeyPropertyName().equals(fieldName)) {
+        formItem=new ComboBoxItem();
+        if (mapKeys != null) {
+          ((ComboBoxItem)formItem).setValueMap(mapKeys);
+        }
+ else {
+          ((ComboBoxItem)formItem).setOptionDataSource(optionDataSource);
+          ((ComboBoxItem)formItem).setDisplayField(displayField);
+          ((ComboBoxItem)formItem).setValueField(valueField);
+        }
+        ((ComboBoxItem)formItem).setDefaultToFirstOption(true);
+        setupField(null,null,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
+      }
+ else {
+        if (!fieldType.equals(SupportedFieldType.ID.toString()) || (fieldType.equals(SupportedFieldType.ID.toString()) && showId)) {
+          Boolean largeEntry=field.getAttributeAsBoolean("largeEntry");
+          if (largeEntry == null) {
+            largeEntry=false;
+          }
+          formItem=buildField(dataSource,field,fieldType,largeEntry,form);
+          displayFormItem=buildDisplayField(field,fieldType);
+          setupField(null,null,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
+        }
+      }
+    }
+  }
+  groupFields(form,sections,sectionNames,sectionCollapsed);
+}

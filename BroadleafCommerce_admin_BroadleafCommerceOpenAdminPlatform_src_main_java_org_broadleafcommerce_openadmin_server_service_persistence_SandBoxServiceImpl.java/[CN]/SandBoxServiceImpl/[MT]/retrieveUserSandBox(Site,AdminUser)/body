@@ -1,0 +1,21 @@
+{
+  SandBox userSandbox=null;
+  if (adminUser.getCurrentSandbox() != null) {
+    userSandbox=adminUser.getCurrentSandbox();
+  }
+ else {
+    userSandbox=sandBoxDao.retrieveNamedSandBox(site,SandBoxType.USER,adminUser.getLogin());
+    if (userSandbox == null) {
+      SandBox sandBox=new SandBoxImpl();
+      sandBox.setSite(site);
+      sandBox.setName(adminUser.getLogin());
+      sandBox.setSandBoxType(SandBoxType.USER);
+      sandBox.setAuthor(adminUser.getId());
+      sandBox=sandBoxDao.persist(sandBox);
+      adminUser.setCurrentSandbox(sandBox);
+      adminSecurityService.saveAdminUser(adminUser);
+      userSandbox=sandBox;
+    }
+  }
+  return userSandbox;
+}

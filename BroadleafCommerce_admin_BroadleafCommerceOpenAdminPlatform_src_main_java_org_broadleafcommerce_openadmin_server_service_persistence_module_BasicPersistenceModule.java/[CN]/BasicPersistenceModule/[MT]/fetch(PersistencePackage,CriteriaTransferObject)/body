@@ -5,24 +5,14 @@
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   try {
     Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
-    for (    CustomPersistenceHandler handler : persistenceManager.getCustomPersistenceHandlers()) {
-      if (handler.canHandleFetch(persistencePackage)) {
-        DynamicResultSet results=handler.fetch(persistencePackage,cto,persistenceManager.getDynamicEntityDao(),this);
-        return results;
-      }
-    }
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
     List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(ceilingEntityFullyQualifiedClassname));
     payload=getRecords(mergedProperties,records,null,null);
     totalRecords=getTotalRecords(ceilingEntityFullyQualifiedClassname,cto,ctoConverter);
   }
- catch (  ServiceException e) {
-    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
-    throw e;
-  }
-catch (  Exception e) {
+ catch (  Exception e) {
     LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
     throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
   }

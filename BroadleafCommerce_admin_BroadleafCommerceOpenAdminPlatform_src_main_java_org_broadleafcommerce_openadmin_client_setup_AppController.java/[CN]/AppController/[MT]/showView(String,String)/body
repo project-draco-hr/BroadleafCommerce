@@ -1,17 +1,34 @@
 {
   if (SecurityManager.getInstance().isUserAuthorizedToViewSection(viewKey)) {
     uiFactory.clearCurrentView();
-    Display view=uiFactory.getView(viewKey,false,false);
-    EntityPresenter presenter=uiFactory.getPresenter(presenterKey);
-    presenter.setDisplay(view);
-    presenter.setEventBus(eventBus);
-    if (presenter.getPresenterSequenceSetupManager() != null) {
-      presenter.getPresenterSequenceSetupManager().setCanvas(container);
-      presenter.setup();
-      presenter.getPresenterSequenceSetupManager().launch();
-    }
+    uiFactory.getView(viewKey,false,false,new AsyncClient(){
+      @Override public void onSuccess(      Object instance){
+        final Display view=(Display)instance;
+        uiFactory.getPresenter(presenterKey,new AsyncClient(){
+          @Override public void onSuccess(          Object instance){
+            EntityPresenter presenter=(EntityPresenter)instance;
+            presenter.setDisplay(view);
+            presenter.setEventBus(eventBus);
+            BLCMain.currentViewKey=viewKey;
+            if (presenter.getPresenterSequenceSetupManager() != null) {
+              presenter.getPresenterSequenceSetupManager().setCanvas(container);
+              presenter.setup();
+              presenter.getPresenterSequenceSetupManager().launch();
+            }
  else {
-      presenter.setup();
+              presenter.setup();
+            }
+          }
+          @Override public void onUnavailable(){
+            throw new RuntimeException("Unable to show item: " + presenterKey);
+          }
+        }
+);
+      }
+      @Override public void onUnavailable(){
+        throw new RuntimeException("Unable to show item: " + viewKey);
+      }
     }
+);
   }
 }

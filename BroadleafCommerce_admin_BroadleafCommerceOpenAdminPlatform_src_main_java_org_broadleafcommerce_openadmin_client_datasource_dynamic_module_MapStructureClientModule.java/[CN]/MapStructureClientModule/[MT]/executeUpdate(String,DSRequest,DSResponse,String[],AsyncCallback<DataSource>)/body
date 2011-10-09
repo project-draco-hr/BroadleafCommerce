@@ -14,7 +14,7 @@
       entity.setType(type);
     }
   }
-  service.update(new PersistencePackage(null,entity,persistencePerspective,dataSource.createSandBoxInfo(),customCriteria),new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
+  service.update(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria),new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
     public void onSuccess(    Entity result){
       super.onSuccess(result);
       ListGridRecord myRecord=(ListGridRecord)updateRecord(result,(Record)temp,false);

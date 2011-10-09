@@ -1,4 +1,26 @@
 {
+  for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
+    if (handler.canHandleRemove(persistencePackage)) {
+      if (!handler.willHandleSecurity(persistencePackage)) {
+        Entity entity=persistencePackage.getEntity();
+        for (        Property p : entity.getProperties()) {
+          if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+            adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
+            break;
+          }
+        }
+      }
+      handler.remove(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.ENTITY));
+      return;
+    }
+  }
+  Entity entity=persistencePackage.getEntity();
+  for (  Property p : entity.getProperties()) {
+    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
+      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
+      break;
+    }
+  }
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType());
   myModule.remove(persistencePackage);
 }

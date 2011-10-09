@@ -1,0 +1,39 @@
+{
+  c.add(Restrictions.eq("archivedFlag",false));
+  if (sandbox == null) {
+    c.add(Restrictions.isNull("sandbox"));
+    return c.list();
+  }
+ else {
+    Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
+    Criterion productionSandboxExpression=null;
+    if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
+      productionSandboxExpression=Restrictions.isNull("sandbox");
+    }
+ else {
+      if (!SandBoxType.PRODUCTION.equals(sandbox.getSandBoxType())) {
+        productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
+      }
+    }
+    if (productionSandboxExpression != null) {
+      c.add(Restrictions.or(currentSandboxExpression,productionSandboxExpression));
+    }
+ else {
+      c.add(currentSandboxExpression);
+    }
+    List<StructuredContent> resultList=(List<StructuredContent>)c.list();
+    LinkedHashMap returnItems=new LinkedHashMap<Long,StructuredContent>();
+    for (    StructuredContent content : resultList) {
+      returnItems.put(content.getId(),content);
+    }
+    for (    StructuredContent content : resultList) {
+      if (content.getOriginalItemId() != null) {
+        returnItems.remove(content.getOriginalItemId());
+      }
+      if (content.getDeletedFlag()) {
+        returnItems.remove(content.getId());
+      }
+    }
+    return new ArrayList<StructuredContent>(returnItems.values());
+  }
+}

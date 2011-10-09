@@ -1,0 +1,12 @@
+{
+  ListGridRecord[] records=display.getGrid().getSelection();
+  StringBuffer sb=new StringBuffer();
+  for (int j=0; j < records.length; j++) {
+    String id=getPresenterSequenceSetupManager().getDataSource("sandBoxItemDS").getPrimaryKeyValue(records[j]);
+    sb.append(id);
+    if (j < records.length - 1) {
+      sb.append(",");
+    }
+  }
+  return sb.toString();
+}

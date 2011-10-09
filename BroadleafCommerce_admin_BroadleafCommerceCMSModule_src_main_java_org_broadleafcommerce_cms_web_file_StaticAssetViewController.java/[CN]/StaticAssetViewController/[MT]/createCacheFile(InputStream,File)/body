@@ -1,0 +1,30 @@
+{
+  if (!cacheFile.getParentFile().exists()) {
+    cacheFile.getParentFile().mkdirs();
+  }
+  BufferedOutputStream bos=null;
+  try {
+    bos=new BufferedOutputStream(new FileOutputStream(cacheFile));
+    boolean eof=false;
+    int temp=-1;
+    while (!eof) {
+      temp=is.read();
+      if (temp < 0) {
+        eof=true;
+      }
+ else {
+        bos.write(temp);
+      }
+    }
+  }
+  finally {
+    if (bos != null) {
+      try {
+        bos.flush();
+        bos.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+}

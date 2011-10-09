@@ -1,0 +1,15 @@
+{
+  for (int i=0; i < childNodes.getLength(); i++) {
+    Node item=childNodes.getItem(i);
+    if (item instanceof Element && "IFRAME".equals(((Element)item).getTagName())) {
+      return item;
+    }
+ else {
+      Node childIFrame=findIFrame(item.getChildNodes());
+      if (childIFrame != null) {
+        return childIFrame;
+      }
+    }
+  }
+  return null;
+}

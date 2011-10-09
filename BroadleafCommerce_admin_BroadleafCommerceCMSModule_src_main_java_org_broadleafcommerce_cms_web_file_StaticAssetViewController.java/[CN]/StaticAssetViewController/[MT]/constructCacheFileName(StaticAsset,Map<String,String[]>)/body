@@ -1,0 +1,28 @@
+{
+  StringBuffer sb=new StringBuffer();
+  sb.append(staticAsset.getFullUrl().substring(0,staticAsset.getFullUrl().lastIndexOf(".")));
+  sb.append("---");
+  StringBuffer sb2=new StringBuffer();
+  SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+  sb2.append(format.format(staticAsset.getAuditable().getDateUpdated() == null ? staticAsset.getAuditable().getDateCreated() : staticAsset.getAuditable().getDateUpdated()));
+  for (  String key : parameterMap.keySet()) {
+    sb2.append("-");
+    sb2.append(key);
+    sb2.append("-");
+    sb2.append(parameterMap.get(key)[0]);
+  }
+  String digest;
+  try {
+    MessageDigest md=MessageDigest.getInstance("MD5");
+    byte[] messageDigest=md.digest(sb2.toString().getBytes());
+    BigInteger number=new BigInteger(1,messageDigest);
+    digest=number.toString(16);
+  }
+ catch (  NoSuchAlgorithmException e) {
+    throw new RuntimeException(e);
+  }
+  sb.append(pad(digest,32,'0'));
+  sb.append(".");
+  sb.append(staticAsset.getFileExtension());
+  return sb.toString();
+}

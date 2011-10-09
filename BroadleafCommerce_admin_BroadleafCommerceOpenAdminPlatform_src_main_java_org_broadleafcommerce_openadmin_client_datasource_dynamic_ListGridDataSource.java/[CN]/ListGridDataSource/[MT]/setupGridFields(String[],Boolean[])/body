@@ -1,4 +1,7 @@
 {
+  if (fieldNames.length != canEdit.length) {
+    throw new IllegalArgumentException("The fieldNames and canEdit array parameters must be of equal length");
+  }
   if (fieldNames.length > 0) {
     resetProminenceOnly(fieldNames);
   }
@@ -90,19 +93,19 @@
       j++;
     }
   }
-  getAssociatedGrid().setFields(gridFields);
+  ((ListGrid)getAssociatedGrid()).setFields(gridFields);
   if (fieldNames != null && fieldNames.length > 0) {
     int pos;
-    if (getAssociatedGrid().getCanExpandRecords() != null && getAssociatedGrid().getCanExpandRecords()) {
+    if (((ListGrid)getAssociatedGrid()).getCanExpandRecords() != null && ((ListGrid)getAssociatedGrid()).getCanExpandRecords()) {
       pos=1;
     }
  else {
       pos=0;
     }
     for (    String fieldName : fieldNames) {
-      int originalPos=getAssociatedGrid().getFieldNum(fieldName);
+      int originalPos=((ListGrid)getAssociatedGrid()).getFieldNum(fieldName);
       if (pos != originalPos) {
-        getAssociatedGrid().reorderField(originalPos,pos);
+        ((ListGrid)getAssociatedGrid()).reorderField(originalPos,pos);
       }
       pos++;
     }

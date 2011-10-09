@@ -1,0 +1,15 @@
+{
+  String queryPrefix="BC_READ_";
+  if (parentFolder == null) {
+    queryPrefix="BC_READ_NULL_";
+  }
+  Query query=em.createNamedQuery(queryPrefix + "STATIC_ASSET_FOLDER_CHILD_PAGES");
+  if (parentFolder != null) {
+    query.setParameter("parentFolder",parentFolder);
+  }
+  query.setParameter("userSandbox",userSandBox == null ? DUMMY_SANDBOX : userSandBox);
+  query.setParameter("productionSandbox",productionSandBox == null ? DUMMY_SANDBOX : productionSandBox);
+  List<StaticAsset> childAssets=query.getResultList();
+  filterStaticAssetsForSandbox(userSandBox,productionSandBox,childAssets);
+  return childAssets;
+}

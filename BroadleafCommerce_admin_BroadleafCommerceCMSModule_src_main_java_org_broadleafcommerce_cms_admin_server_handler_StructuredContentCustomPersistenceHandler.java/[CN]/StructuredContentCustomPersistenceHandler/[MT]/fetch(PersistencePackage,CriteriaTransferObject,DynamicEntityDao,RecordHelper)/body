@@ -1,0 +1,32 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective,entities);
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StructuredContent.class.getName(),originalProps);
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,StructuredContent.class.getName());
+    PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),StructuredContent.class.getName());
+    Criteria criteria=dynamicEntityDao.getCriteria(queryCriteria,StructuredContent.class);
+    Criteria count=dynamicEntityDao.getCriteria(countCriteria,StructuredContent.class);
+    List<StructuredContent> contents=structuredContentService.findContentItems(getSandBox(),criteria);
+    Long totalRecords=structuredContentService.countContentItems(getSandBox(),count);
+    List<Serializable> convertedList=new ArrayList<Serializable>();
+    convertedList.addAll(contents);
+    Entity[] pageEntities=helper.getRecords(originalProps,convertedList);
+    for (    Entity entity : pageEntities) {
+      if ("true".equals(entity.findProperty("lockedFlag").getValue())) {
+        Property property=new Property();
+        property.setName("locked");
+        property.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
+        entity.addProperty(property);
+      }
+    }
+    DynamicResultSet response=new DynamicResultSet(pageEntities,totalRecords.intValue());
+    return response;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

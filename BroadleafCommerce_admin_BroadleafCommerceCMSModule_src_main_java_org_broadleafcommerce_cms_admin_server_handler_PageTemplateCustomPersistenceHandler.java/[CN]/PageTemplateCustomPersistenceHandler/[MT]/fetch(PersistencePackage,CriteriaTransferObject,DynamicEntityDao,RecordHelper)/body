@@ -1,0 +1,13 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    String pageId=persistencePackage.getCustomCriteria()[1];
+    Entity entity=fetchEntityBasedOnId(pageId);
+    DynamicResultSet results=new DynamicResultSet(new Entity[]{entity},1);
+    return results;
+  }
+ catch (  Exception e) {
+    LOG.error(e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  TimeDTO timeDto=SystemTime.asTimeDTO();
+  RequestDTO requestDto=new RequestDTOImpl(request);
+  Map<String,Object> mvelParameters=new HashMap<String,Object>();
+  mvelParameters.put("time",timeDto);
+  mvelParameters.put("request",requestDto);
+  Map<String,Object> blcRuleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);
+  if (blcRuleMap != null) {
+    for (    String mapKey : blcRuleMap.keySet()) {
+      mvelParameters.put(mapKey,blcRuleMap.get(mapKey));
+    }
+  }
+  return mvelParameters;
+}

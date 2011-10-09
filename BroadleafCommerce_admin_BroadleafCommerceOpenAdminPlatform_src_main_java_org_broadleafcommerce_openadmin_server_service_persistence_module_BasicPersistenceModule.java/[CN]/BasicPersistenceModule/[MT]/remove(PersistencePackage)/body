@@ -1,15 +1,9 @@
 {
   try {
-    for (    CustomPersistenceHandler handler : persistenceManager.getCustomPersistenceHandlers()) {
-      if (handler.canHandleRemove(persistencePackage)) {
-        handler.remove(persistencePackage,persistenceManager.getDynamicEntityDao(),this);
-        return;
-      }
-    }
     Entity entity=persistencePackage.getEntity();
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(entity.getType()[0]);
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),null,"");
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     Object primaryKey=getPrimaryKey(entity,mergedProperties);
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
 switch (persistencePerspective.getOperationTypes().getRemoveType()) {
@@ -36,11 +30,7 @@ case ENTITY:
 break;
 }
 }
- catch (ServiceException e) {
-LOG.error("Problem removing entity",e);
-throw e;
-}
-catch (Exception e) {
+ catch (Exception e) {
 LOG.error("Problem removing entity",e);
 throw new ServiceException("Problem removing entity : " + e.getMessage(),e);
 }

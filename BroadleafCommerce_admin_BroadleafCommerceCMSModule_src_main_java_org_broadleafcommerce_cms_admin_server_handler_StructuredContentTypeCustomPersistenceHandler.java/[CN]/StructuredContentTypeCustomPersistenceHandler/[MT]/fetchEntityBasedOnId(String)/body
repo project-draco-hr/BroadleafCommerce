@@ -1,0 +1,33 @@
+{
+  StructuredContent structuredContent=(StructuredContent)structuredContentService.findStructuredContentById(Long.valueOf(structuredContentId));
+  Map<String,StructuredContentField> structuredContentFieldMap=structuredContent.getStructuredContentFields();
+  Entity entity=new Entity();
+  entity.setType(new String[]{StructuredContentType.class.getName()});
+  List<Property> propertiesList=new ArrayList<Property>();
+  for (  FieldGroup fieldGroup : structuredContent.getStructuredContentType().getFieldGroups()) {
+    for (    FieldDefinition definition : fieldGroup.getFieldDefinitions()) {
+      Property property=new Property();
+      propertiesList.add(property);
+      property.setName(definition.getName());
+      String value;
+      checkValue: {
+        if (!MapUtils.isEmpty(structuredContentFieldMap)) {
+          StructuredContentField structuredContentField=structuredContentFieldMap.get(definition.getName());
+          List<StructuredContentFieldData> fieldDataList=structuredContentField.getFieldDataList();
+          if (!CollectionUtils.isEmpty(fieldDataList)) {
+            value=fieldDataList.get(0).getValue();
+            break checkValue;
+          }
+        }
+        value=null;
+      }
+      property.setValue(value);
+    }
+  }
+  Property property=new Property();
+  propertiesList.add(property);
+  property.setName("id");
+  property.setValue(structuredContentId);
+  entity.setProperties(propertiesList.toArray(new Property[]{}));
+  return entity;
+}

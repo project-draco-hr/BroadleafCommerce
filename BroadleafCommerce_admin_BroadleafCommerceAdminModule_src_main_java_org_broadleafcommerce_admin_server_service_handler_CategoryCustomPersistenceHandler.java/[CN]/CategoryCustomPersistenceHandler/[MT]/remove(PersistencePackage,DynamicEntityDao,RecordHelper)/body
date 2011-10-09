@@ -2,7 +2,7 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Map<String,FieldMetadata> categoryProperties=getMergedProperties(Category.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields());
+    Map<String,FieldMetadata> categoryProperties=getMergedProperties(Category.class,dynamicEntityDao,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey());
     Object primaryKey=helper.getPrimaryKey(entity,categoryProperties);
     Category category=(Category)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
 {

@@ -1,0 +1,10 @@
+{
+  List<Operation> operations=new ArrayList<Operation>();
+  for (  OperationBuilder builder : filters.values()) {
+    Operation operation=builder.buildOperation(parameterMap,artifactStream,mimeType);
+    if (operation != null) {
+      operations.add(operation);
+    }
+  }
+  return operations.toArray(new Operation[]{});
+}

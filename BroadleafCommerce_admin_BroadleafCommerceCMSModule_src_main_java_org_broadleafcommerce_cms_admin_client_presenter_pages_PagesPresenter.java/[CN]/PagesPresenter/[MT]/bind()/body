@@ -1,0 +1,111 @@
+{
+  super.bind();
+  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  formPresenter.getRefreshButtonHandlerRegistration().removeHandler();
+  refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+        FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).getMember("pageTemplateForm");
+        if (legacyForm != null) {
+          legacyForm.getForm().reset();
+        }
+        getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+      }
+    }
+  }
+);
+  saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DSRequest requestProperties=new DSRequest();
+        requestProperties.setAttribute("dirtyValues",getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+              final Record newRecord=response.getData()[0];
+              final String newId=getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(newRecord);
+              FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).getMember("pageTemplateForm");
+              final DynamicForm form=legacyForm.getForm();
+              for (              FormItem formItem : form.getFields()) {
+                if (formItem instanceof RichTextCanvasItem) {
+                  form.setValue(formItem.getFieldName(),((RichTextHTMLPane)((RichTextCanvasItem)formItem).getCanvas()).getValue());
+                }
+              }
+              PageTemplateFormListDataSource dataSource=(PageTemplateFormListDataSource)form.getDataSource();
+              dataSource.setCustomCriteria(new String[]{"constructForm",newId});
+              form.saveData(new DSCallback(){
+                @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
+                  if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+                    getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+                  }
+                }
+              }
+);
+              if (!currentPageId.equals(newId)) {
+                ((TreeGrid)display.getListDisplay().getGrid()).getTree().remove(((TreeGrid)display.getListDisplay().getGrid()).getTree().findById(currentPageId));
+                currentPageRecord=newRecord;
+                currentPageId=newId;
+                currentFolderRecord=(TreeNode)newRecord;
+              }
+            }
+          }
+        }
+,requestProperties);
+      }
+    }
+  }
+);
+  getDisplay().getAddPageButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        getPresenterSequenceSetupManager().getDataSource("pageTreeDS").setDefaultNewEntityFullyQualifiedClassname(EntityImplementations.PAGEIMPL);
+        Map<String,Object> initialValues=new HashMap<String,Object>();
+        initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
+        initialValues.put("name",BLCMain.getMessageManager().getString("defaultPageName"));
+        initialValues.put("_type",new String[]{EntityImplementations.PAGEIMPL});
+        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new NewItemCreatedEventHandler(){
+          public void onNewItemCreated(          NewItemCreatedEvent event){
+            if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentFolderRecord)) {
+              ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentFolderRecord);
+            }
+            reloadAllChildRecordsForId(getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(currentFolderRecord));
+          }
+        }
+,"90%",null,null);
+      }
+    }
+  }
+);
+  getDisplay().getAddPageFolderButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        getPresenterSequenceSetupManager().getDataSource("pageTreeDS").setDefaultNewEntityFullyQualifiedClassname(EntityImplementations.PAGEFOLDERIMPL);
+        Map<String,Object> initialValues=new HashMap<String,Object>();
+        initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
+        initialValues.put("name",BLCMain.getMessageManager().getString("defaultPageName"));
+        initialValues.put("_type",new String[]{EntityImplementations.PAGEFOLDERIMPL});
+        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new NewItemCreatedEventHandler(){
+          public void onNewItemCreated(          NewItemCreatedEvent event){
+            if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentFolderRecord)) {
+              ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentFolderRecord);
+            }
+            reloadAllChildRecordsForId(getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(currentFolderRecord));
+          }
+        }
+,"90%",null,null);
+      }
+    }
+  }
+);
+  getDisplay().getCurrentLocale().addChangedHandler(new ChangedHandler(){
+    @Override public void onChanged(    ChangedEvent event){
+      String newLocaleCode=(String)event.getValue();
+      ((PagesTreeDataSource)getPresenterSequenceSetupManager().getDataSource("pageTreeDS")).setPermanentCriteria(new Criteria("pageTemplate.locale.localeCode",newLocaleCode));
+      getDisplay().getListDisplay().getGrid().invalidateCache();
+      ((PageTemplateSearchListDataSource)getPresenterSequenceSetupManager().getDataSource("pageTemplateSearchDS")).setPermanentCriteria(new Criteria("locale.localeCode",newLocaleCode));
+      ((PageTemplateSearchListDataSource)getPresenterSequenceSetupManager().getDataSource("pageTemplateSearchDS")).getAssociatedGrid().invalidateCache();
+    }
+  }
+);
+}

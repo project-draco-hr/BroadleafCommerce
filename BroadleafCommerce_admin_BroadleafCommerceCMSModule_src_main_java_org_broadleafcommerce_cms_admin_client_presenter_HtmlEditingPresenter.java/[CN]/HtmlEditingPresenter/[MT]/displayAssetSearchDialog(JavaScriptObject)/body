@@ -1,0 +1,18 @@
+{
+  assetSearchDialogView.search("Asset Search",new TileGridItemSelectedEventHandler(){
+    @Override public void onSearchItemSelected(    TileGridItemSelectedEvent event){
+      String staticAssetFullUrl=BLCMain.webAppContext + "/cms/staticasset" + event.getRecord().getAttribute("fullUrl");
+      String name=event.getRecord().getAttribute("name");
+      String fileExtension=event.getRecord().getAttribute("fileExtension");
+      String richContent;
+      if (fileExtension.equals("gif") || fileExtension.equals("jpg") || fileExtension.equals("png")) {
+        richContent="<img title='" + name + "' src='"+ staticAssetFullUrl+ "' alt='"+ name+ "'/>";
+      }
+ else {
+        richContent="<a href='" + staticAssetFullUrl + "'>"+ name+ "</a>";
+      }
+      insertRichTextContent(editor,richContent);
+    }
+  }
+);
+}

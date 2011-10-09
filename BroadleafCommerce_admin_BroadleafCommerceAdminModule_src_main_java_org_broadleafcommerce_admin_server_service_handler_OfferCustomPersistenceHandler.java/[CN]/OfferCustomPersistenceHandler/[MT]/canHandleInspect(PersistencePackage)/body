@@ -1,4 +1,13 @@
 {
   String[] customCriteria=persistencePackage.getCustomCriteria();
-  return customCriteria != null && Arrays.binarySearch(customCriteria,IDENTITYCRITERIA) >= 0;
+  boolean canHandle=false;
+  if (customCriteria != null) {
+    for (    String criteria : customCriteria) {
+      if (criteria != null && criteria.equals(IDENTITYCRITERIA)) {
+        canHandle=true;
+        break;
+      }
+    }
+  }
+  return canHandle;
 }

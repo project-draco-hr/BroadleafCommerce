@@ -1,0 +1,12 @@
+{
+  if (!SandBoxItemType.STATIC_ASSET.equals(sandBoxItem.getSandBoxItemType())) {
+    return;
+  }
+  StaticAsset asset=(StaticAsset)staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
+  if (asset != null) {
+    asset.setSandbox(destinationSandBox);
+    asset.setOriginalSandBox(null);
+    asset.setLockedFlag(false);
+    staticAssetDao.updateStaticAsset(asset);
+  }
+}

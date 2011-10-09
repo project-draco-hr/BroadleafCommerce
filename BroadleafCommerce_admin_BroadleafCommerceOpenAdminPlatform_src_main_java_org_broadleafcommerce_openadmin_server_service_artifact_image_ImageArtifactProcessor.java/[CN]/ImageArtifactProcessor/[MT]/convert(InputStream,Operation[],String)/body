@@ -1,0 +1,39 @@
+{
+  if (operations != null && operations.length > 0) {
+    Iterator<ImageReader> iter=ImageIO.getImageReaders(ImageIO.createImageInputStream(artifactStream));
+    ImageReader reader=iter.next();
+    String formatName=reader.getFormatName();
+    ((ByteArrayInputStream)artifactStream).reset();
+    BufferedImage image=ImageIO.read(ImageIO.createImageInputStream(artifactStream));
+    if (formatName.toLowerCase().equals("jpeg") || formatName.toLowerCase().equals("jpg")) {
+      image=stripAlpha(image);
+    }
+    for (    Operation operation : operations) {
+      image=effectsManager.renderEffect(operation.getName(),operation.getFactor(),operation.getParameters(),image);
+    }
+    if (formatName.toLowerCase().equals("jpeg") || formatName.toLowerCase().equals("jpg")) {
+      image=stripAlpha(image);
+    }
+    ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+    BufferedOutputStream bos=new BufferedOutputStream(byteArrayOutputStream);
+    if (formatName.toLowerCase().equals("gif")) {
+      formatName="png";
+    }
+    Iterator<ImageWriter> writerIter=ImageIO.getImageWritersByFormatName(formatName);
+    ImageWriter writer=writerIter.next();
+    ImageWriteParam iwp=writer.getDefaultWriteParam();
+    if (formatName.toLowerCase().equals("jpeg") || formatName.toLowerCase().equals("jpg")) {
+      iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+      iwp.setCompressionQuality(compressionQuality);
+    }
+    MemoryCacheImageOutputStream output=new MemoryCacheImageOutputStream(bos);
+    writer.setOutput(output);
+    IIOImage iomage=new IIOImage(image,null,null);
+    writer.write(null,iomage,iwp);
+    bos.flush();
+    return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+  }
+ else {
+    return artifactStream;
+  }
+}
