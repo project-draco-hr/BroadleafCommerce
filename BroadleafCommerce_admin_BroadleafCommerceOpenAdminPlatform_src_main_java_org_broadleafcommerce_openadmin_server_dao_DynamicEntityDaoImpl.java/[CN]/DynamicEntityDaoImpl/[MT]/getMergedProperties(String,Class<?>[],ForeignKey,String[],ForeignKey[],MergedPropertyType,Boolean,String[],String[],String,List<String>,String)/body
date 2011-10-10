@@ -173,8 +173,9 @@
   }
   List<String> explicitRemoves=new ArrayList<String>();
   for (  String key : mergedProperties.keySet()) {
+    String testKey=prefix + key;
     for (    String removeKey : removeItems) {
-      if ((key.startsWith(removeKey + ".") || key.equals(removeKey)) && mergedProperties.get(key).getFieldType() != SupportedFieldType.FOREIGN_KEY && mergedProperties.get(key).getFieldType() != SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+      if ((testKey.startsWith(removeKey + ".") || key.equals(removeKey)) && mergedProperties.get(key).getFieldType() != SupportedFieldType.FOREIGN_KEY && mergedProperties.get(key).getFieldType() != SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
         explicitRemoves.add(key);
       }
     }
