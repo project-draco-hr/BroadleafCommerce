@@ -19,6 +19,15 @@
     Menu modulesMenu=new Menu();
     modulesMenu.setCanSelectParentItems(true);
     Collection<Module> allowedModules=modules.values();
+    for (Iterator<Module> iterator=allowedModules.iterator(); iterator.hasNext(); ) {
+      Module testModule=iterator.next();
+      if (!SecurityManager.getInstance().isUserAuthorizedToViewModule(testModule.getModuleKey())) {
+        iterator.remove();
+        if (moduleKey != null && moduleKey.equals(testModule.getModuleKey())) {
+          moduleKey=null;
+        }
+      }
+    }
     if (moduleKey == null && allowedModules.size() > 0) {
       moduleKey=allowedModules.iterator().next().getModuleKey();
     }
