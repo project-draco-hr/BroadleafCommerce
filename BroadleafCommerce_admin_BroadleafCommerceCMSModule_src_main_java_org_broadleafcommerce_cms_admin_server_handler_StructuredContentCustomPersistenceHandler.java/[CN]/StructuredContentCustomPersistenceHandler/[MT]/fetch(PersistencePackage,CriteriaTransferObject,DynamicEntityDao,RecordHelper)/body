@@ -1,6 +1,24 @@
 {
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
+    if (cto.get("structuredContentTypeGrid").getFilterValues().length > 0) {
+      CriteriaTransferObject ctoCopy=new CriteriaTransferObject();
+      for (      String prop : cto.getPropertyIdSet()) {
+        String propertyId;
+        if (prop.equals("structuredContentTypeGrid")) {
+          propertyId="structuredContentType";
+        }
+ else {
+          propertyId=prop;
+        }
+        FilterAndSortCriteria criteria=ctoCopy.get(propertyId);
+        FilterAndSortCriteria oldCriteria=cto.get(prop);
+        criteria.setFilterValue(oldCriteria.getFilterValues()[0]);
+        criteria.setIgnoreCase(oldCriteria.getIgnoreCase());
+        criteria.setSortAscending(oldCriteria.getIgnoreCase());
+      }
+      cto=ctoCopy;
+    }
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective,entities);
@@ -13,16 +31,22 @@
     Long totalRecords=structuredContentService.countContentItems(getSandBox(),count);
     List<Serializable> convertedList=new ArrayList<Serializable>();
     convertedList.addAll(contents);
-    Entity[] pageEntities=helper.getRecords(originalProps,convertedList);
-    for (    Entity entity : pageEntities) {
+    Entity[] structuredContentEntities=helper.getRecords(originalProps,convertedList);
+    for (    Entity entity : structuredContentEntities) {
       if ("true".equals(entity.findProperty("lockedFlag").getValue())) {
         Property property=new Property();
         property.setName("locked");
         property.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
         entity.addProperty(property);
       }
+      if (entity.findProperty("structuredContentType") != null) {
+        Property property=new Property();
+        property.setName("structuredContentTypeGrid");
+        property.setValue(entity.findProperty("structuredContentType").getValue());
+        entity.addProperty(property);
+      }
     }
-    DynamicResultSet response=new DynamicResultSet(pageEntities,totalRecords.intValue());
+    DynamicResultSet response=new DynamicResultSet(structuredContentEntities,totalRecords.intValue());
     return response;
   }
  catch (  Exception e) {

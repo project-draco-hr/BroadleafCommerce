@@ -54,33 +54,9 @@
     }
   }
 );
-  clearContentFilterButtonHandlerRegistration=getDisplay().getClearButton().addClickHandler(new ClickHandler(){
-    @Override public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        getDisplay().getCurrentContentType().clearValue();
-        ((StructuredContentListDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setPermanentCriteria(null);
-        getDisplay().getListDisplay().getGrid().clearCriteria();
-        getDisplay().getListDisplay().getGrid().invalidateCache();
-      }
-    }
-  }
-);
   getDisplay().getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
       isFetched=true;
-    }
-  }
-);
-  contentTypeFilterChangeHandlerRegistration=getDisplay().getCurrentContentType().addChangedHandler(new ChangedHandler(){
-    @Override public void onChanged(    ChangedEvent event){
-      String newContentTypeId=(String)event.getValue();
-      ((StructuredContentListDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setPermanentCriteria(new Criteria("structuredContentType",newContentTypeId));
-      if (isFetched) {
-        getDisplay().getListDisplay().getGrid().invalidateCache();
-      }
- else {
-        getDisplay().getListDisplay().getGrid().fetchData();
-      }
     }
   }
 );
