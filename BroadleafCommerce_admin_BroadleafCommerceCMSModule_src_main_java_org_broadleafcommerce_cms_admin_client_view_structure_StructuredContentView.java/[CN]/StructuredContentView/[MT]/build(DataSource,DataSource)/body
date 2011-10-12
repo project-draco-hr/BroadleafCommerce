@@ -1,4 +1,5 @@
 {
+  DataSource customerDataSource=additionalDataSources[0];
   VLayout leftVerticalLayout=new VLayout();
   leftVerticalLayout.setID("structureLeftVerticalLayout");
   leftVerticalLayout.setHeight100();
@@ -35,6 +36,18 @@
   Tab rulesTab=new Tab(BLCMain.getMessageManager().getString("scRulesTabTitle"));
   rulesTab.setID("scRulesTab");
   VLayout rulesLayout=new VLayout();
+  rulesLayout.setHeight100();
+  rulesLayout.setWidth100();
+  rulesLayout.setBackgroundColor("#eaeaea");
+  rulesLayout.setOverflow(Overflow.AUTO);
+  customerFilterBuilder=new FilterBuilder();
+  customerFilterBuilder.setDataSource(customerDataSource);
+  customerFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(customerDataSource));
+  customerFilterBuilder.setVisible(false);
+  customerFilterBuilder.setLayoutBottomMargin(10);
+  customerFilterBuilder.setAllowEmpty(true);
+  customerFilterBuilder.setValidateOnChange(false);
+  rulesLayout.addMember(customerFilterBuilder);
   rulesTab.setPane(rulesLayout);
   topTabSet.addTab(rulesTab);
   addMember(topTabSet);

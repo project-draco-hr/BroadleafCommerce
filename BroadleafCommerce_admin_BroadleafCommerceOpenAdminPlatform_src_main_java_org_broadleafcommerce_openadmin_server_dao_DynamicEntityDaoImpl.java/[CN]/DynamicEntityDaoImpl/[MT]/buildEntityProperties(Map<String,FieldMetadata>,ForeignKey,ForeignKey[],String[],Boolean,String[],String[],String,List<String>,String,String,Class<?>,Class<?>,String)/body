@@ -8,6 +8,16 @@
   Map<String,FieldMetadata> convertedFields=new HashMap<String,FieldMetadata>();
   for (  String key : newFields.keySet()) {
     convertedFields.put(propertyName + "." + key,newFields.get(key));
+    List<String> newRemoveItems=new ArrayList<String>();
+    Iterator<String> itr=removeItems.iterator();
+    while (itr.hasNext()) {
+      String item=itr.next();
+      if (propertyName.equals(item) || key.equals(item)) {
+        itr.remove();
+        newRemoveItems.add(propertyName + "." + key);
+      }
+    }
+    removeItems.addAll(newRemoveItems);
   }
   fields.putAll(convertedFields);
 }
