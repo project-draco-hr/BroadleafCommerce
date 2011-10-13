@@ -12,7 +12,7 @@
     if (title == null) {
       title=field.getName();
     }
-    if (entered == null || entered.equals("") || (title != null && title.toLowerCase().startsWith(entered.toLowerCase()))) {
+    if (!field.getHidden() && (entered == null || entered.equals("") || (title != null && title.toLowerCase().startsWith(entered.toLowerCase())))) {
       Record record=new Record();
       for (      String attribute : field.getAttributes()) {
         record.setAttribute(attribute,field.getAttribute(attribute));

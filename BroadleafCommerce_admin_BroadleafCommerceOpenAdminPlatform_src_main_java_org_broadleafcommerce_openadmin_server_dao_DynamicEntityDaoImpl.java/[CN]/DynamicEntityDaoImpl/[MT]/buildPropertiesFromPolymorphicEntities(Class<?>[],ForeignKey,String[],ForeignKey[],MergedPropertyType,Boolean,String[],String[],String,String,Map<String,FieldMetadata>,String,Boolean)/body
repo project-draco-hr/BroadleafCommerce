@@ -1,0 +1,24 @@
+{
+  for (  Class<?> clazz : entities) {
+    String cacheKey=getCacheKey(foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,clazz,configurationKey,isParentExcluded);
+    Map<String,FieldMetadata> cacheData=(Map<String,FieldMetadata>)METADATA_CACHE.get(cacheKey);
+    if (cacheData == null) {
+      Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded);
+      for (      Class<?> clazz2 : entities) {
+        if (!clazz2.getName().equals(clazz.getName())) {
+          for (          String key : props.keySet()) {
+            FieldMetadata metadata=props.get(key);
+            if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
+              String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
+              metadata.setAvailableToTypes(both);
+            }
+          }
+        }
+      }
+      METADATA_CACHE.put(cacheKey,props);
+      cacheData=props;
+    }
+    cacheData=(Map<String,FieldMetadata>)SerializationUtils.clone((Serializable)cacheData);
+    mergedProperties.putAll(cacheData);
+  }
+}

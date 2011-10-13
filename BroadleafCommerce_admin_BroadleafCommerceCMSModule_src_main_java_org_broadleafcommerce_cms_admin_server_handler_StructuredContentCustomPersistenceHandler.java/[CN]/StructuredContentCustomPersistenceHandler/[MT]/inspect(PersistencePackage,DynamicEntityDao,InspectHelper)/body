@@ -3,12 +3,12 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
     if (getModifiedProperties() == null) {
-      createModifiedProperties(dynamicEntityDao,helper,persistencePerspective,entityClasses);
+      createModifiedProperties(dynamicEntityDao,helper,persistencePerspective);
     }
     Map<String,FieldMetadata> originalProps=getModifiedProperties();
     allMergedProperties.put(MergedPropertyType.PRIMARY,originalProps);
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
     DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
     return results;

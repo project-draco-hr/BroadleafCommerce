@@ -2,8 +2,7 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Page.class);
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective,entityClasses);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     Serializable persistenceObject=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     if (!Page.class.isAssignableFrom(persistenceObject.getClass())) {

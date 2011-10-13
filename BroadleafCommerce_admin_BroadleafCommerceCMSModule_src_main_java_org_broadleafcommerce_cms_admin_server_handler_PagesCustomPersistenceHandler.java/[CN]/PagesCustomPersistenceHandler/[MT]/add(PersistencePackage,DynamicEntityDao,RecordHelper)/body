@@ -3,8 +3,7 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     PageFolder adminInstance=(PageFolder)Class.forName(entity.getType()[0]).newInstance();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(PageFolder.class);
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageFolder.class.getName(),persistencePerspective,entityClasses);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageFolder.class.getName(),persistencePerspective);
     adminInstance=(PageFolder)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     if (PageFolderImpl.class.getName().equals(entity.getType()[0])) {
       pageService.addPageFolder(adminInstance,adminInstance.getParentFolder());

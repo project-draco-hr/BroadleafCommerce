@@ -1,19 +1,18 @@
 {
   try {
     Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
-    Map<String,FieldMetadata> mergedProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePackage.getPersistencePerspective(),entityClasses);
+    Map<String,FieldMetadata> mergedProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePackage.getPersistencePerspective());
     allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
     mergedProperties.put("appliesToFulfillmentGroupRules",mergedProperties.get("appliesToOrderRules"));
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
-    Class<?>[] offerCodeEntityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(OfferCode.class);
-    Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective,offerCodeEntityClasses);
+    Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
     FieldMetadata metadata=offerCodeMergedProperties.get("offerCode");
     metadata.getPresentationAttributes().setHidden(true);
     mergedProperties.put("offerCode.offerCode",metadata);
     FieldMetadata metadata2=offerCodeMergedProperties.get("id");
     metadata2.getPresentationAttributes().setHidden(true);
     mergedProperties.put("offerCode.id",metadata2);
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
     DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
     return results;

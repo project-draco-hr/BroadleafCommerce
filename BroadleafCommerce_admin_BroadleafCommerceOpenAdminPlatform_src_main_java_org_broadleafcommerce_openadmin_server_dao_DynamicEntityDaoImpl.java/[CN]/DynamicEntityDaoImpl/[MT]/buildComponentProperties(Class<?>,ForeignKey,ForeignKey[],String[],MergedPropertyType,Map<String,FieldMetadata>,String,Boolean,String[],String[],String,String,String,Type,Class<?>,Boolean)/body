@@ -1,0 +1,31 @@
+{
+  String[] componentProperties=((ComponentType)type).getPropertyNames();
+  List<String> componentPropertyNames=new ArrayList<String>();
+  for (  String componentProperty : componentProperties) {
+    componentPropertyNames.add(componentProperty);
+  }
+  Type[] componentTypes=((ComponentType)type).getSubtypes();
+  List<Type> componentPropertyTypes=new ArrayList<Type>();
+  for (  Type componentType : componentTypes) {
+    componentPropertyTypes.add(componentType);
+  }
+  Map<String,FieldPresentationAttributes> componentPresentationAttributes=getFieldPresentationAttributes(returnedClass);
+  if (isParentExcluded) {
+    for (    String key : componentPresentationAttributes.keySet()) {
+      componentPresentationAttributes.get(key).setExcluded(true);
+    }
+  }
+  PersistentClass persistentClass=getPersistentClass(targetClass.getName());
+  @SuppressWarnings("unchecked") Iterator<Property> componentPropertyIterator=((Component)persistentClass.getProperty(propertyName).getValue()).getPropertyIterator();
+  List<Property> componentPropertyList=new ArrayList<Property>();
+  while (componentPropertyIterator.hasNext()) {
+    componentPropertyList.add(componentPropertyIterator.next());
+  }
+  Map<String,FieldMetadata> newFields=new HashMap<String,FieldMetadata>();
+  buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,componentPresentationAttributes,componentPropertyList,newFields,componentPropertyNames,componentPropertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName + ".",isParentExcluded);
+  Map<String,FieldMetadata> convertedFields=new HashMap<String,FieldMetadata>();
+  for (  String key : newFields.keySet()) {
+    convertedFields.put(propertyName + "." + key,newFields.get(key));
+  }
+  fields.putAll(convertedFields);
+}

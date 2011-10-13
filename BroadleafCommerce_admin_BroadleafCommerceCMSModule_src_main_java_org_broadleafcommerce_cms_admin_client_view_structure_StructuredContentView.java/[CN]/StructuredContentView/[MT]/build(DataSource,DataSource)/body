@@ -1,5 +1,8 @@
 {
   DataSource customerDataSource=additionalDataSources[0];
+  DataSource timeDataSource=additionalDataSources[1];
+  DataSource requestDataSource=additionalDataSources[2];
+  DataSource orderItemDataSource=additionalDataSources[3];
   VLayout leftVerticalLayout=new VLayout();
   leftVerticalLayout.setID("structureLeftVerticalLayout");
   leftVerticalLayout.setHeight100();
@@ -13,7 +16,7 @@
   listDisplay.getGrid().setHoverCustomizer(new HoverCustomizer(){
     @Override public String hoverHTML(    Object value,    ListGridRecord record,    int rowNum,    int colNum){
       if (record.getAttribute("lockedFlag") != null && record.getAttributeAsBoolean("lockedFlag")) {
-        return "Last Updated By <B>" + record.getAttribute("auditable.updatedBy.name") + "</B> On <B>"+ record.getAttribute("auditable.dateUpdated")+ "</B>.";
+        return BLCMain.getMessageManager().replaceKeys(BLCMain.getMessageManager().getString("lockedMessage"),new String[]{"userName","date"},new String[]{record.getAttribute("auditable.updatedBy.name"),record.getAttribute("auditable.dateUpdated")});
       }
       return null;
     }
@@ -39,15 +42,48 @@
   rulesLayout.setHeight100();
   rulesLayout.setWidth100();
   rulesLayout.setBackgroundColor("#eaeaea");
+  rulesLayout.setLayoutMargin(20);
   rulesLayout.setOverflow(Overflow.AUTO);
+  Label customerLabel=new Label();
+  customerLabel.setContents(BLCMain.getMessageManager().getString("scCustomerRule"));
+  customerLabel.setHeight(20);
+  rulesLayout.addMember(customerLabel);
   customerFilterBuilder=new FilterBuilder();
   customerFilterBuilder.setDataSource(customerDataSource);
   customerFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(customerDataSource));
-  customerFilterBuilder.setVisible(false);
-  customerFilterBuilder.setLayoutBottomMargin(10);
+  customerFilterBuilder.setLayoutBottomMargin(20);
   customerFilterBuilder.setAllowEmpty(true);
   customerFilterBuilder.setValidateOnChange(false);
   rulesLayout.addMember(customerFilterBuilder);
+  Label timeLabel=new Label();
+  timeLabel.setContents(BLCMain.getMessageManager().getString("scTimeRule"));
+  timeLabel.setHeight(20);
+  rulesLayout.addMember(timeLabel);
+  timeFilterBuilder=new FilterBuilder();
+  timeFilterBuilder.setDataSource(timeDataSource);
+  timeFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(timeDataSource));
+  timeFilterBuilder.setLayoutBottomMargin(20);
+  timeFilterBuilder.setAllowEmpty(true);
+  timeFilterBuilder.setValidateOnChange(false);
+  rulesLayout.addMember(timeFilterBuilder);
+  Label requestLabel=new Label();
+  requestLabel.setContents(BLCMain.getMessageManager().getString("scRequestRule"));
+  requestLabel.setHeight(20);
+  rulesLayout.addMember(requestLabel);
+  requestFilterBuilder=new FilterBuilder();
+  requestFilterBuilder.setDataSource(requestDataSource);
+  requestFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(requestDataSource));
+  requestFilterBuilder.setLayoutBottomMargin(20);
+  requestFilterBuilder.setAllowEmpty(true);
+  requestFilterBuilder.setValidateOnChange(false);
+  rulesLayout.addMember(requestFilterBuilder);
+  Label orderItemLabel=new Label();
+  orderItemLabel.setContents(BLCMain.getMessageManager().getString("scOrderItemRule"));
+  orderItemLabel.setHeight(20);
+  rulesLayout.addMember(orderItemLabel);
+  targetItemBuilder=new ItemBuilderView(orderItemDataSource,false);
+  rulesLayout.addMember((ItemBuilderView)targetItemBuilder);
+  rulesLayout.setLayoutBottomMargin(10);
   rulesTab.setPane(rulesLayout);
   topTabSet.addTab(rulesTab);
   addMember(topTabSet);

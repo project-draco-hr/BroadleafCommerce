@@ -3,8 +3,7 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     StructuredContent adminInstance=(StructuredContent)Class.forName(entity.getType()[0]).newInstance();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective,entityClasses);
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective);
     adminInstance=(StructuredContent)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=structuredContentService.addStructuredContent(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);

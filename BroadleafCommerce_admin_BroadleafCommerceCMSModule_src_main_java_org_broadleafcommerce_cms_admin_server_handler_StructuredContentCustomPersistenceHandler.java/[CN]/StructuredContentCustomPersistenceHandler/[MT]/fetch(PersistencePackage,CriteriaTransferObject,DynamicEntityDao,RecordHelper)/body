@@ -20,8 +20,7 @@
       cto=ctoCopy;
     }
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StructuredContent.class);
-    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective,entities);
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective);
     BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StructuredContent.class.getName(),originalProps);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,StructuredContent.class.getName());
     PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),StructuredContent.class.getName());
