@@ -11,7 +11,7 @@ case OR:
 }
 }
 if (!JSOHelper.isArray(listJS)) {
-buildExpression(criteria,sb,keyWord,operator,dataSource);
+buildExpression(criteria,sb,entityKey,operator,dataSource);
 }
  else {
 boolean includeTopLevelParenthesis=false;
@@ -24,7 +24,7 @@ sb.append("!");
 if (includeTopLevelParenthesis) sb.append("(");
 Criteria[] myCriterias=AdvancedCriteria.convertToCriteriaArray(listJS);
 for (Criteria myCriteria : myCriterias) {
-buildMVEL(myCriteria,sb,keyWord,dataSource,operator);
+buildMVEL(myCriteria,sb,entityKey,dataSource,operator);
 }
 if (includeTopLevelParenthesis) sb.append(")");
 }
