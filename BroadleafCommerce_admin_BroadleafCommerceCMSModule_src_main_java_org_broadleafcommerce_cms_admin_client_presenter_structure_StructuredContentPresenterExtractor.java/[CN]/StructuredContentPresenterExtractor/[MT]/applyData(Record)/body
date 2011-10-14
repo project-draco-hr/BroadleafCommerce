@@ -1,0 +1,27 @@
+{
+  try {
+    final Map<String,Object> dirtyValues=new HashMap<String,Object>();
+    extractData(selectedRecord,dirtyValues,StructuredContentPresenterInitializer.ATTRIBUTEMAP.get(FilterType.CUSTOMER),getDisplay().getCustomerFilterBuilder(),MVELKEYWORDMAP.get(FilterType.CUSTOMER));
+    extractData(selectedRecord,dirtyValues,StructuredContentPresenterInitializer.ATTRIBUTEMAP.get(FilterType.PRODUCT),getDisplay().getProductFilterBuilder(),MVELKEYWORDMAP.get(FilterType.PRODUCT));
+    extractData(selectedRecord,dirtyValues,StructuredContentPresenterInitializer.ATTRIBUTEMAP.get(FilterType.REQUEST),getDisplay().getRequestFilterBuilder(),MVELKEYWORDMAP.get(FilterType.REQUEST));
+    extractData(selectedRecord,dirtyValues,StructuredContentPresenterInitializer.ATTRIBUTEMAP.get(FilterType.TIME),getDisplay().getTimeFilterBuilder(),MVELKEYWORDMAP.get(FilterType.TIME));
+    extractQualifierData(selectedRecord,true,dirtyValues);
+    DSRequest requestProperties=new DSRequest();
+    requestProperties.setAttribute("dirtyValues",dirtyValues);
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getDataSource().updateData(selectedRecord,new DSCallback(){
+      public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        try {
+          extractQualifierData(selectedRecord,false,dirtyValues);
+          getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+        }
+ catch (        IncompatibleMVELTranslationException e) {
+          SC.warn(e.getMessage());
+        }
+      }
+    }
+,requestProperties);
+  }
+ catch (  IncompatibleMVELTranslationException e) {
+    SC.warn(e.getMessage());
+  }
+}

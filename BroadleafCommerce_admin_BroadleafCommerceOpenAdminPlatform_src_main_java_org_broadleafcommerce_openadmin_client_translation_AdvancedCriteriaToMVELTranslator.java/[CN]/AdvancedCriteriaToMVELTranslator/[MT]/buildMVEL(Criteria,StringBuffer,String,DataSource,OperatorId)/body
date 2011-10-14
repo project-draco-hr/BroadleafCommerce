@@ -1,0 +1,31 @@
+{
+  OperatorId operator=EnumUtil.getEnum(OperatorId.values(),criteria.getAttribute("operator"));
+  JavaScriptObject listJS=criteria.getAttributeAsJavaScriptObject("criteria");
+  if (sb.length() != 0 && sb.charAt(sb.length() - 1) != '(' && groupOperator != null) {
+switch (groupOperator) {
+default :
+      sb.append("&&");
+    break;
+case OR:
+  sb.append("||");
+}
+}
+if (!JSOHelper.isArray(listJS)) {
+buildExpression(criteria,sb,keyWord,operator,dataSource);
+}
+ else {
+boolean includeTopLevelParenthesis=false;
+if (sb.length() != 0 || operator.getValue().equals(OperatorId.NOT.getValue())) {
+includeTopLevelParenthesis=true;
+}
+if (operator.getValue().equals(OperatorId.NOT.getValue())) {
+sb.append("!");
+}
+if (includeTopLevelParenthesis) sb.append("(");
+Criteria[] myCriterias=AdvancedCriteria.convertToCriteriaArray(listJS);
+for (Criteria myCriteria : myCriterias) {
+buildMVEL(myCriteria,sb,keyWord,dataSource,operator);
+}
+if (includeTopLevelParenthesis) sb.append(")");
+}
+}

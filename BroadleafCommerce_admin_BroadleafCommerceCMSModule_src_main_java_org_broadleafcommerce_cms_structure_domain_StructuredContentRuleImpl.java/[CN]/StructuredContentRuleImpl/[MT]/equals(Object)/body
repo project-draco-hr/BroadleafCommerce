@@ -1,0 +1,14 @@
+{
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  StructuredContentRuleImpl other=(StructuredContentRuleImpl)obj;
+  if (id != null && other.id != null) {
+    return id.equals(other.id);
+  }
+  if (matchRule == null) {
+    if (other.matchRule != null)     return false;
+  }
+ else   if (!matchRule.equals(other.matchRule))   return false;
+  return true;
+}

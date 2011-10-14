@@ -1,0 +1,13 @@
+{
+  if (builder.getRecord() != null) {
+    presenter.getPresenterSequenceSetupManager().getDataSource("scItemCriteriaDS").removeData(builder.getRecord(),new DSCallback(){
+      public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        getDisplay().removeItemBuilder(builder);
+      }
+    }
+);
+  }
+ else {
+    getDisplay().removeItemBuilder(builder);
+  }
+}

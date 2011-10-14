@@ -7,6 +7,7 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("scProductDS",new ProductListDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("timeDTODS",new TimeDTOListDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("requestDTODS",new RequestDTOListDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("scOrderItemDS",new OrderItemListDataSourceFactory(),new AsyncCallbackAdapter(){
@@ -20,7 +21,7 @@
       ListGridDataSource structuredContentTypeDataSource=(ListGridDataSource)result;
       structuredContentTypeDataSource.resetPermanentFieldVisibility("name","description");
       EntitySearchDialog structuredContentTypeSearchView=new EntitySearchDialog(structuredContentTypeDataSource,true);
-      setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("structuredContentDS"),getPresenterSequenceSetupManager().getDataSource("scCustomerDS"),getPresenterSequenceSetupManager().getDataSource("timeDTODS"),getPresenterSequenceSetupManager().getDataSource("requestDTODS"),getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"));
+      setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("structuredContentDS"),getPresenterSequenceSetupManager().getDataSource("scCustomerDS"),getPresenterSequenceSetupManager().getDataSource("timeDTODS"),getPresenterSequenceSetupManager().getDataSource("requestDTODS"),getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("scProductDS"));
       getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("structuredContentType",structuredContentTypeSearchView,"Structured Content Type Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
           if (currentStructuredContentRecord != null) {
@@ -31,6 +32,13 @@
       }
 );
       ((ListGridDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setupGridFields(new String[]{"locked","structuredContentTypeGrid","contentName","locale","offlineFlag"});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("scItemCriteriaDS",new StructuredContentItemCriteriaListDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      initializer=new StructuredContentPresenterInitializer(StructuredContentPresenter.this,(DynamicEntityDataSource)result,getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"));
+      extractor=new StructuredContentPresenterExtractor(StructuredContentPresenter.this);
     }
   }
 ));

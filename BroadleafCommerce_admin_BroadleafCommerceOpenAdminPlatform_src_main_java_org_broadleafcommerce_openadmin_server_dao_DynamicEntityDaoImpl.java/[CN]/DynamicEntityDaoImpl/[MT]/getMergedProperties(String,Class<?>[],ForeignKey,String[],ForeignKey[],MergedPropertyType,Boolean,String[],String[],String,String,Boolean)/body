@@ -39,7 +39,9 @@
           metadata.setPresentationAttributes(new FieldPresentationAttributes());
           attr=metadata.getPresentationAttributes();
         }
-        attr.setExcluded(false);
+        if (!isParentExcluded) {
+          attr.setExcluded(false);
+        }
       }
       if (key.equals(propertyName)) {
         FieldMetadata metadata=mergedProperties.get(key);
@@ -58,7 +60,7 @@
         attr.setColumnWidth(annot.columnWidth());
         attr.setBroadleafEnumeration(annot.broadleafEnumeration());
         attr.setReadOnly(annot.readOnly());
-        attr.setExcluded(annot.excluded());
+        attr.setExcluded(isParentExcluded ? true : annot.excluded());
         attr.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED ? true : false);
         if (annot.validationConfigurations().length != 0) {
           ValidationConfiguration[] configurations=annot.validationConfigurations();
@@ -104,7 +106,9 @@
                 metadata.setPresentationAttributes(new FieldPresentationAttributes());
                 attr=metadata.getPresentationAttributes();
               }
-              attr.setExcluded(false);
+              if (!isParentExcluded) {
+                attr.setExcluded(false);
+              }
             }
             if (key.equals(propertyName)) {
               FieldMetadata serverMetadata=mergedProperties.get(key);
@@ -153,6 +157,9 @@
               if (localMetadata.getPresentationAttributes().getExcluded() != null) {
                 serverMetadata.getPresentationAttributes().setExcluded(localMetadata.getPresentationAttributes().getExcluded());
               }
+              if (isParentExcluded) {
+                serverMetadata.getPresentationAttributes().setExcluded(true);
+              }
               if (localMetadata.getPresentationAttributes().getRequiredOverride() != null) {
                 serverMetadata.getPresentationAttributes().setRequiredOverride(localMetadata.getPresentationAttributes().getRequiredOverride());
               }
@@ -185,7 +192,9 @@
             metadata.setPresentationAttributes(new FieldPresentationAttributes());
             attr=metadata.getPresentationAttributes();
           }
-          attr.setExcluded(false);
+          if (!isParentExcluded) {
+            attr.setExcluded(false);
+          }
         }
       }
     }
@@ -210,7 +219,9 @@
             metadata.setPresentationAttributes(new FieldPresentationAttributes());
             attr=metadata.getPresentationAttributes();
           }
-          attr.setExcluded(false);
+          if (!isParentExcluded) {
+            attr.setExcluded(false);
+          }
         }
       }
     }
