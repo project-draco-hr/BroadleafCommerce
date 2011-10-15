@@ -1,0 +1,25 @@
+{
+  for (  String key : mergedProperties.keySet()) {
+    boolean isForeign=false;
+    if (foreignField != null) {
+      isForeign=foreignField.getManyToField().equals(key);
+    }
+    if (!isForeign && !ArrayUtils.isEmpty(additionalForeignFields)) {
+      for (      ForeignKey foreignKey : additionalForeignFields) {
+        isForeign=foreignKey.getManyToField().equals(key);
+        if (isForeign) {
+          break;
+        }
+      }
+    }
+    if (isForeign) {
+      FieldMetadata metadata=mergedProperties.get(key);
+      FieldPresentationAttributes attr=metadata.getPresentationAttributes();
+      if (attr == null) {
+        metadata.setPresentationAttributes(new FieldPresentationAttributes());
+        attr=metadata.getPresentationAttributes();
+      }
+      attr.setExcluded(false);
+    }
+  }
+}

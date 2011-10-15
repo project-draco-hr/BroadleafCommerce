@@ -2,13 +2,13 @@
   int j=0;
   for (  String propertyName : propertyNames) {
     Type type=propertyTypes.get(j);
-    boolean isPropertyForeignKey=checkForeignProperty(foreignField,prefix,propertyName);
+    boolean isPropertyForeignKey=testForeignProperty(foreignField,prefix,propertyName);
     int additionalForeignKeyIndexPosition=findAdditionalForeignKeyIndex(additionalForeignFields,prefix,propertyName);
     j++;
     if ((!type.isAnyType() && !type.isCollectionType()) || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
       FieldPresentationAttributes presentationAttribute=presentationAttributes.get(propertyName);
-      Boolean amIExcluded=isParentExcluded || !checkPropertyForInclusion(presentationAttribute);
-      Boolean includeField=testFieldInclusion(prefix,propertyName);
+      Boolean amIExcluded=isParentExcluded || !testPropertyInclusion(presentationAttribute);
+      Boolean includeField=testPropertyRecursion(prefix,propertyName,targetClass,ceilingEntityFullyQualifiedClassname);
       SupportedFieldType explicitType=null;
       if (presentationAttribute != null) {
         explicitType=presentationAttribute.getExplicitFieldType();

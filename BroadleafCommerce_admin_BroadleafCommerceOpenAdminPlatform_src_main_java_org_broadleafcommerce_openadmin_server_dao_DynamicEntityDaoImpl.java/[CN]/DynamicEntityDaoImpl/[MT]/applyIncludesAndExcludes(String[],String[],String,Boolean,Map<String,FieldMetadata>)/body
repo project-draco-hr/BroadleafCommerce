@@ -1,0 +1,56 @@
+{
+  if (!ArrayUtils.isEmpty(includeFields)) {
+    for (    String include : includeFields) {
+      for (      String key : mergedProperties.keySet()) {
+        String testKey=prefix + key;
+        if (!(testKey.startsWith(include + ".") || testKey.equals(include))) {
+          FieldMetadata metadata=mergedProperties.get(key);
+          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
+          if (attr == null) {
+            metadata.setPresentationAttributes(new FieldPresentationAttributes());
+            attr=metadata.getPresentationAttributes();
+          }
+          attr.setExcluded(true);
+        }
+ else {
+          FieldMetadata metadata=mergedProperties.get(key);
+          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
+          if (attr == null) {
+            metadata.setPresentationAttributes(new FieldPresentationAttributes());
+            attr=metadata.getPresentationAttributes();
+          }
+          if (!isParentExcluded) {
+            attr.setExcluded(false);
+          }
+        }
+      }
+    }
+  }
+ else   if (!ArrayUtils.isEmpty(excludeFields)) {
+    for (    String exclude : excludeFields) {
+      for (      String key : mergedProperties.keySet()) {
+        String testKey=prefix + key;
+        if (testKey.startsWith(exclude + ".") || testKey.equals(exclude)) {
+          FieldMetadata metadata=mergedProperties.get(key);
+          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
+          if (attr == null) {
+            metadata.setPresentationAttributes(new FieldPresentationAttributes());
+            attr=metadata.getPresentationAttributes();
+          }
+          attr.setExcluded(true);
+        }
+ else {
+          FieldMetadata metadata=mergedProperties.get(key);
+          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
+          if (attr == null) {
+            metadata.setPresentationAttributes(new FieldPresentationAttributes());
+            attr=metadata.getPresentationAttributes();
+          }
+          if (!isParentExcluded) {
+            attr.setExcluded(false);
+          }
+        }
+      }
+    }
+  }
+}
