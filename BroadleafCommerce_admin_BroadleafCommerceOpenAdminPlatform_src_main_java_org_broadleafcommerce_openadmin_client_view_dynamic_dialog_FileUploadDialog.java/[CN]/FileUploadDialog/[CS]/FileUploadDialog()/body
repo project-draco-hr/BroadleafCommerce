@@ -11,7 +11,6 @@
   dynamicForm=new DynamicForm();
   dynamicForm.setEncoding(Encoding.MULTIPART);
   dynamicForm.setTarget("hidden_frame");
-  dynamicForm.setAction("cms.upload.service");
   dynamicForm.setNumCols(3);
   dynamicForm.setPadding(10);
   dynamicForm.setHeight100();
@@ -81,6 +80,7 @@
         UploadStatusProgress progress=(UploadStatusProgress)((CanvasItem)dynamicForm.getField("__display_file")).getCanvas();
         progress.setCallbackName(callbackName);
         progress.startProgress();
+        dynamicForm.setAction("cms.upload.service?callbackName=" + callbackName);
         dynamicForm.getField("callbackName").setValue(callbackName);
         dynamicForm.submitForm();
         saveButton.disable();
