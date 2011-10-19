@@ -8,6 +8,8 @@
     getDisplay().getListDisplay().getRemoveButton().disable();
   }
   currentStructuredContentRecord=selectedRecord;
+  currentStructuredContentId=getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(currentStructuredContentRecord);
+  currentStructuredContentPos=getDisplay().getListDisplay().getGrid().getRecordIndex(currentStructuredContentRecord);
   loadContentTypeForm(selectedRecord);
   initializer.initSection(selectedRecord);
   enableRules();

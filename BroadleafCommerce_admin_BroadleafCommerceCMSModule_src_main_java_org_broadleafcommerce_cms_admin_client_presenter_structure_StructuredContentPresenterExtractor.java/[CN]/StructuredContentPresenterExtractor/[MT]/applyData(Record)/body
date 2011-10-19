@@ -14,8 +14,7 @@
     getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
       @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
         if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
-          final Record newRecord=response.getData()[0];
-          final String newId=presenter.getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(newRecord);
+          final String newId=response.getAttribute("newId");
           FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("contentTypeForm");
           final DynamicForm form=legacyForm.getForm();
           for (          FormItem formItem : form.getFields()) {
@@ -40,9 +39,15 @@
             }
           }
 );
-          if (!presenter.getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(selectedRecord).equals(newId)) {
-            getDisplay().getListDisplay().getGrid().getRecordList().remove(selectedRecord);
-            presenter.currentStructuredContentRecord=newRecord;
+          if (!presenter.currentStructuredContentId.equals(newId)) {
+            for (            ListGridRecord record : getDisplay().getListDisplay().getGrid().getRecords()) {
+              if (record.getAttribute("id").equals(presenter.currentStructuredContentId)) {
+                record.setAttribute("id",newId);
+                presenter.currentStructuredContentRecord=selectedRecord;
+                break;
+              }
+            }
+            presenter.currentStructuredContentId=newId;
           }
         }
       }
