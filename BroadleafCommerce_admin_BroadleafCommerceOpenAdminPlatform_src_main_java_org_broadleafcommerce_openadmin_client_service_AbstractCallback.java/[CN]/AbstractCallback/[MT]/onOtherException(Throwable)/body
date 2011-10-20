@@ -1,6 +1,27 @@
 {
   final String msg="Service Exception";
-  reportException(msg,exception);
-  String errorMsg=exception.getMessage();
-  SC.warn(errorMsg);
+  if (exception.getClass().getName().equals("com.google.gwt.user.client.rpc.InvocationException")) {
+    AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+      @Override public void onSuccess(      AdminUser result){
+        if (result == null) {
+          reportException(msg,exception);
+          UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
+          builder.setPath(BLCMain.webAppContext + "/admin.html");
+          builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+          com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+        }
+ else {
+          reportException(msg,exception);
+          String errorMsg=exception.getMessage();
+          SC.warn(errorMsg);
+        }
+      }
+    }
+);
+  }
+ else {
+    reportException(msg,exception);
+    String errorMsg=exception.getMessage();
+    SC.warn(errorMsg);
+  }
 }
