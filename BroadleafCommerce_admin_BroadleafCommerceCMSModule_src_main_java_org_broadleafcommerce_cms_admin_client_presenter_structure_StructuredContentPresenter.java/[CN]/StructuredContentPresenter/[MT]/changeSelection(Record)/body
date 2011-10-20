@@ -2,15 +2,17 @@
   if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
     getDisplay().getListDisplay().getRemoveButton().enable();
     getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().enable();
+    enableRules();
+    initializer.initSection(selectedRecord,false);
   }
  else {
     getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
     getDisplay().getListDisplay().getRemoveButton().disable();
+    disableRules();
+    initializer.initSection(selectedRecord,true);
   }
   currentStructuredContentRecord=selectedRecord;
   currentStructuredContentId=getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getPrimaryKeyValue(currentStructuredContentRecord);
   currentStructuredContentPos=getDisplay().getListDisplay().getGrid().getRecordIndex(currentStructuredContentRecord);
   loadContentTypeForm(selectedRecord);
-  initializer.initSection(selectedRecord);
-  enableRules();
 }

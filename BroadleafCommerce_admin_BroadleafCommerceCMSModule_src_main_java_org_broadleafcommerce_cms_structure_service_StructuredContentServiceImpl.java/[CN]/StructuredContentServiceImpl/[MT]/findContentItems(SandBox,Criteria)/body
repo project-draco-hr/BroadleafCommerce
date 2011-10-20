@@ -5,6 +5,7 @@
     return c.list();
   }
  else {
+    Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
     Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
     Criterion productionSandboxExpression=null;
     if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
@@ -16,10 +17,10 @@
       }
     }
     if (productionSandboxExpression != null) {
-      c.add(Restrictions.or(currentSandboxExpression,productionSandboxExpression));
+      c.add(Restrictions.or(Restrictions.or(currentSandboxExpression,productionSandboxExpression),originalSandboxExpression));
     }
  else {
-      c.add(currentSandboxExpression);
+      c.add(Restrictions.or(currentSandboxExpression,originalSandboxExpression));
     }
     List<StructuredContent> resultList=(List<StructuredContent>)c.list();
     LinkedHashMap returnItems=new LinkedHashMap<Long,StructuredContent>();

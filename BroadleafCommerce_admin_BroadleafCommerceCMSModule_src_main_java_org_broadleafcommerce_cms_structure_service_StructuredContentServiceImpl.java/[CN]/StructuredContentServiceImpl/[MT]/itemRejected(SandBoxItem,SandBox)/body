@@ -5,6 +5,8 @@
   StructuredContent sc=structuredContentDao.findStructuredContentById(sandBoxItem.getTemporaryItemId());
   if (sc != null) {
     sc.setSandbox(destinationSandBox);
+    sc.setOriginalSandBox(null);
+    sc.setLockedFlag(false);
     structuredContentDao.addOrUpdateContentItem(sc,false);
   }
 }

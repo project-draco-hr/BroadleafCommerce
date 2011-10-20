@@ -6,6 +6,9 @@
       for (      Record record : response.getData()) {
         if (Integer.parseInt(record.getAttribute("quantity")) > 0) {
           final ItemBuilderDisplay display=getDisplay().addItemBuilder(orderItemDataSource);
+          if (disabled) {
+            display.disable();
+          }
           presenter.bindItemBuilderEvents(display);
           display.getItemFilterBuilder().clearCriteria();
           display.setRecord(record);

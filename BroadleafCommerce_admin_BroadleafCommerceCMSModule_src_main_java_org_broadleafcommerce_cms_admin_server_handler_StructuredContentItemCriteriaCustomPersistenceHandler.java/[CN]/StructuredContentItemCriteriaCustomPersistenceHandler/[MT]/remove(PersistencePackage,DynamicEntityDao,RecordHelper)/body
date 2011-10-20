@@ -1,0 +1,17 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(StructuredContentItemCriteria.class.getName(),persistencePerspective);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    StructuredContentItemCriteria adminInstance=(StructuredContentItemCriteria)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    if (adminInstance.getStructuredContent().getLockedFlag()) {
+      throw new IllegalArgumentException("Unable to update a locked record");
+    }
+    dynamicEntityDao.remove(adminInstance);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to remove entity for " + entity.getType()[0],e);
+  }
+}

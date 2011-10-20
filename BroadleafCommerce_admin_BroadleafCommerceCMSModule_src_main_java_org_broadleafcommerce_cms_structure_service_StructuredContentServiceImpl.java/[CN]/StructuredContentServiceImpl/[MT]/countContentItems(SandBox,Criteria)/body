@@ -6,6 +6,7 @@
     return (Long)c.uniqueResult();
   }
  else {
+    Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
     Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
     Criterion productionSandboxExpression;
     if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
@@ -17,13 +18,13 @@
       }
       productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
     }
-    c.add(Restrictions.or(currentSandboxExpression,productionSandboxExpression));
+    c.add(Restrictions.or(Restrictions.or(currentSandboxExpression,productionSandboxExpression),originalSandboxExpression));
     Long resultCount=(Long)c.list().get(0);
     Long updatedCount=0L;
     Long deletedCount=0L;
-    c.add(Restrictions.and(Restrictions.isNotNull("originalItemId"),Restrictions.eq("sandbox",sandbox)));
+    c.add(Restrictions.and(Restrictions.isNotNull("originalItemId"),Restrictions.or(currentSandboxExpression,originalSandboxExpression)));
     updatedCount=(Long)c.list().get(0);
-    c.add(Restrictions.and(Restrictions.eq("deletedFlag",true),Restrictions.eq("sandbox",sandbox)));
+    c.add(Restrictions.and(Restrictions.eq("deletedFlag",true),Restrictions.or(currentSandboxExpression,originalSandboxExpression)));
     deletedCount=(Long)c.list().get(0);
     return resultCount - updatedCount - deletedCount;
   }
