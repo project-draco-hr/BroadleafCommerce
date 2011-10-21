@@ -67,9 +67,7 @@
   saveButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       Record selectedRecord=tileGrid.getSelection()[0];
-      AppController.getInstance().getEventBus().addHandler(TileGridItemSelectedEvent.TYPE,handler);
-      AppController.getInstance().getEventBus().fireEvent(new TileGridItemSelectedEvent(selectedRecord,tileGrid.getDataSource()));
-      AppController.getInstance().getEventBus().removeHandler(TileGridItemSelectedEvent.TYPE,handler);
+      handler.onSearchItemSelected(new TileGridItemSelected(selectedRecord,tileGrid.getDataSource()));
       hide();
     }
   }

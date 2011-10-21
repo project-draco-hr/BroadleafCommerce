@@ -12,7 +12,7 @@
       categorySearchDataSource.resetProminenceOnly("name","urlKey","activeStartDate","activeEndDate");
       EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
       library.put("categorySearchView",categorySearchView);
-      getPresenterSequenceSetupManager().getDataSource("categoryTreeDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultParentCategory",categorySearchView,"Category Search",((CategoryDisplay)getDisplay()).getDynamicFormDisplay());
+      getPresenterSequenceSetupManager().getDataSource("categoryTreeDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultParentCategory",categorySearchView,"Category Search",getDisplay().getDynamicFormDisplay());
     }
   }
 ));
@@ -25,12 +25,12 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orphanedCategoriesDS",new OrphanedCategoryListDataSourceFactory(),null,new Object[]{rootId},new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
-      ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().setDataSource(result);
-      ((ListGridDataSource)result).setAssociatedGrid(((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid());
+      getDisplay().getOrphanedCategoryGrid().setDataSource(result);
+      ((ListGridDataSource)result).setAssociatedGrid(getDisplay().getOrphanedCategoryGrid());
       ((ListGridDataSource)result).setupGridFields(new String[]{"name","urlKey"});
       Criteria myCriteria=new Criteria();
       myCriteria.addCriteria(OrphanedCategoryListDataSourceFactory.foreignKeyName,"0");
-      ((CategoryDisplay)getDisplay()).getOrphanedCategoryGrid().fetchData(myCriteria);
+      getDisplay().getOrphanedCategoryGrid().fetchData(myCriteria);
     }
   }
 ));
@@ -52,7 +52,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("allChildProductsDS",new AllProductsDataSourceFactory(),new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
-      childProductsPresenter=new SimpleSearchJoinStructurePresenter(((CategoryDisplay)getDisplay()).getAllProductsDisplay(),(EntitySearchDialog)library.get("productSearchView"),BLCMain.getMessageManager().getString("productSearchPrompt"));
+      childProductsPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllProductsDisplay(),(EntitySearchDialog)library.get("productSearchView"),BLCMain.getMessageManager().getString("productSearchPrompt"));
       childProductsPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","model","manufacturer"},new Boolean[]{false,false,false});
     }
   }
@@ -62,8 +62,30 @@
       Map<String,Object> initialValues=new HashMap<String,Object>();
       initialValues.put("name",BLCMain.getMessageManager().getString("mediaNameDefault"));
       initialValues.put("label",BLCMain.getMessageManager().getString("mediaLabelDefault"));
-      mediaPresenter=new MapStructurePresenter(((CategoryDisplay)getDisplay()).getMediaDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"),initialValues);
+      mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"),initialValues);
       mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetFolderTreeDS",new StaticAssetsFolderTreeDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
+      TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
+      PresentationLayerAssociatedDataSource staticAssetFolderTreeDS=(PresentationLayerAssociatedDataSource)getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS");
+      final AssetSearchDialog assetSearchDialogView=new AssetSearchDialog(staticAssetTreeDS,staticAssetFolderTreeDS);
+      getPresenterSequenceSetupManager().getDataSource("mediaMapDS").getFormItemCallbackHandlerManager().addFormItemCallback("url",new FormItemCallback(){
+        @Override public void execute(        final FormItem formItem){
+          assetSearchDialogView.search("Asset Search",new TileGridItemSelectedHandler(){
+            @Override public void onSearchItemSelected(            TileGridItemSelected event){
+              String staticAssetFullUrl=BLCMain.storeFrontWebAppContext + "/cms/staticasset" + event.getRecord().getAttribute("fullUrl");
+              formItem.setValue(staticAssetFullUrl);
+              getMediaEntityView().updateMedia(staticAssetFullUrl);
+            }
+          }
+);
+        }
+      }
+);
     }
   }
 ));

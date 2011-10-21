@@ -11,8 +11,8 @@
         initialValues.put("customCriteria","assetListUi");
         initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
         initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS").getPrimaryKeyValue(getDisplay().getListDisplay().getGrid().getSelectedRecord()));
-        FILE_UPLOAD.editNewRecord("Upload Artifact",getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),initialValues,new NewItemCreatedEventHandler(){
-          public void onNewItemCreated(          NewItemCreatedEvent event){
+        FILE_UPLOAD.editNewRecord("Upload Artifact",getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),initialValues,new ItemEditedHandler(){
+          public void onItemEdited(          ItemEdited event){
             Criteria myCriteria=new Criteria();
             myCriteria.addCriteria("fullUrl",event.getRecord().getAttribute("fullUrl"));
             getDisplay().getListLeafDisplay().getGrid().fetchData(myCriteria,new DSCallback(){
@@ -33,9 +33,9 @@
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().disable();
-        ArtifactItem artifactItem=(ArtifactItem)getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge");
-        artifactItem.setPreviewSrc(getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge").getValue().toString());
-        artifactItem.setDisabled(true);
+        AssetItem assetItem=(AssetItem)getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge");
+        assetItem.setPreviewSrc(getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge").getValue().toString());
+        assetItem.setDisabled(true);
         staticAssetDescriptionPresenter.enable();
         staticAssetDescriptionPresenter.load(event.getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),null);
       }

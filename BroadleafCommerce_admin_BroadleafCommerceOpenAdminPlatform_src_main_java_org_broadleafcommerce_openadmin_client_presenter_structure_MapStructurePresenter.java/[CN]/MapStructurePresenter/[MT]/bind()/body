@@ -1,54 +1,55 @@
 {
-  display.getGrid().addDataArrivedHandler(new DataArrivedHandler(){
-    public void onDataArrived(    DataArrivedEvent event){
-      display.getRemoveButton().disable();
-    }
-  }
-);
-  display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
-    public void onEditComplete(    EditCompleteEvent event){
-      display.getGrid().deselectAllRecords();
-      setStartState();
-    }
-  }
-);
-  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
-      if (event.getState()) {
-        display.getRemoveButton().enable();
-      }
- else {
+  if (display.getCanEdit()) {
+    display.getGrid().addDataArrivedHandler(new DataArrivedHandler(){
+      public void onDataArrived(      DataArrivedEvent event){
         display.getRemoveButton().disable();
       }
     }
-  }
 );
-  display.getRemoveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
-          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            display.getRemoveButton().disable();
+    display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+      public void onSelectionChanged(      SelectionEvent event){
+        if (event.getState()) {
+          display.getRemoveButton().enable();
+        }
+ else {
+          display.getRemoveButton().disable();
+        }
+      }
+    }
+);
+    display.getRemoveButton().addClickHandler(new ClickHandler(){
+      public void onClick(      ClickEvent event){
+        if (event.isLeftButtonDown()) {
+          display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+            public void execute(            DSResponse response,            Object rawData,            DSRequest request){
+              display.getRemoveButton().disable();
+            }
           }
-        }
 );
+        }
       }
     }
-  }
 );
-  display.getAddButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        DynamicEntityDataSource dataSource=(DynamicEntityDataSource)display.getGrid().getDataSource();
-        initialValues.put("symbolicId",dataSource.getCompatibleModule(dataSource.getPersistencePerspective().getOperationTypes().getAddType()).getLinkedValue());
-        String[] type=associatedRecord.getAttributeAsStringArray("_type");
-        if (type == null) {
-          type=new String[]{((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()};
+    display.getAddButton().addClickHandler(new ClickHandler(){
+      public void onClick(      ClickEvent event){
+        if (event.isLeftButtonDown()) {
+          DynamicEntityDataSource dataSource=(DynamicEntityDataSource)display.getGrid().getDataSource();
+          initialValues.put("symbolicId",dataSource.getCompatibleModule(dataSource.getPersistencePerspective().getOperationTypes().getAddType()).getLinkedValue());
+          String[] type=associatedRecord.getAttributeAsStringArray("_type");
+          if (type == null) {
+            type=new String[]{((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()};
+          }
+          initialValues.put("_type",type);
+          entityEditDialog.editNewRecord(entityEditDialogTitle,(DynamicEntityDataSource)display.getGrid().getDataSource(),initialValues,null,null,gridFields,null);
         }
-        initialValues.put("_type",type);
-        entityEditDialog.editNewRecord(entityEditDialogTitle,(DynamicEntityDataSource)display.getGrid().getDataSource(),initialValues,null,null,gridFields,null);
       }
     }
-  }
 );
+    display.getGrid().addCellDoubleClickHandler(new CellDoubleClickHandler(){
+      @Override public void onCellDoubleClick(      CellDoubleClickEvent cellDoubleClickEvent){
+        entityEditDialog.editRecord(entityEditDialogTitle,(DynamicEntityDataSource)display.getGrid().getDataSource(),display.getGrid().getSelectedRecord(),null,null,gridFields,null);
+      }
+    }
+);
+  }
 }

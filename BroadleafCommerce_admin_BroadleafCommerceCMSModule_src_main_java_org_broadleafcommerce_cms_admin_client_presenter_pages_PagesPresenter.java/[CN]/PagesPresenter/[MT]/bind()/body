@@ -64,8 +64,8 @@
         initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
         initialValues.put("name",BLCMain.getMessageManager().getString("defaultPageName"));
         initialValues.put("_type",new String[]{EntityImplementations.PAGEIMPL});
-        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new NewItemCreatedEventHandler(){
-          public void onNewItemCreated(          NewItemCreatedEvent event){
+        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new ItemEditedHandler(){
+          public void onItemEdited(          ItemEdited event){
             if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentFolderRecord)) {
               ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentFolderRecord);
             }
@@ -85,8 +85,8 @@
         initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(display.getListDisplay().getGrid().getSelectedRecord()));
         initialValues.put("name",BLCMain.getMessageManager().getString("defaultPageName"));
         initialValues.put("_type",new String[]{EntityImplementations.PAGEFOLDERIMPL});
-        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new NewItemCreatedEventHandler(){
-          public void onNewItemCreated(          NewItemCreatedEvent event){
+        BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newItemTitle"),getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),initialValues,new ItemEditedHandler(){
+          public void onItemEdited(          ItemEdited event){
             if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentFolderRecord)) {
               ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentFolderRecord);
             }

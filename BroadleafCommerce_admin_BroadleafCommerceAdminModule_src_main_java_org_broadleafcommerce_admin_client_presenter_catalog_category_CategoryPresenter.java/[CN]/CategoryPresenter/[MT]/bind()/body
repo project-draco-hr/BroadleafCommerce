@@ -8,7 +8,7 @@
     public void onDataArrived(    com.smartgwt.client.widgets.tree.events.DataArrivedEvent event){
       Record[] records=event.getParentNode().getAttributeAsRecordArray("children");
       for (      Record record : records) {
-        String hasChildren=((TreeNode)record).getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty);
+        String hasChildren=record.getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty);
         if (hasChildren != null && !Boolean.parseBoolean(hasChildren)) {
           ((TreeGrid)display.getListDisplay().getGrid()).getTree().loadChildren((TreeNode)record);
         }

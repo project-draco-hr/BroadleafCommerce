@@ -13,6 +13,17 @@
   AppServices.UTILITY.getWebAppContext(new AbstractCallback<String>(){
     @Override public void onSuccess(    String result){
       webAppContext=result;
+      AppServices.UTILITY.getStoreFrontWebAppContext(new AbstractCallback<String>(){
+        @Override public void onSuccess(        String result){
+          if (result != null) {
+            storeFrontWebAppContext=result;
+          }
+ else {
+            storeFrontWebAppContext=webAppContext;
+          }
+        }
+      }
+);
     }
   }
 );

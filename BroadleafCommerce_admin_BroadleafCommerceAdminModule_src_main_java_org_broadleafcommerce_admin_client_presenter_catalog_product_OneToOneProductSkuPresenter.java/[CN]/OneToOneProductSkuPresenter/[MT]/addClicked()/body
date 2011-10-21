@@ -2,8 +2,8 @@
   Map<String,Object> initialValues=new HashMap<String,Object>();
   initialValues.put("name",BLCMain.getMessageManager().getString("defaultProductName"));
   initialValues.put("_type",new String[]{getPresenterSequenceSetupManager().getDataSource("productDS").getDefaultNewEntityFullyQualifiedClassname()});
-  BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newProductTitle"),getPresenterSequenceSetupManager().getDataSource("productDS"),initialValues,new NewItemCreatedEventHandler(){
-    public void onNewItemCreated(    NewItemCreatedEvent event){
+  BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newProductTitle"),getPresenterSequenceSetupManager().getDataSource("productDS"),initialValues,new ItemEditedHandler(){
+    public void onItemEdited(    ItemEdited event){
       Criteria myCriteria=new Criteria();
       myCriteria.addCriteria("name",event.getRecord().getAttribute("name"));
       display.getListDisplay().getGrid().fetchData(myCriteria);

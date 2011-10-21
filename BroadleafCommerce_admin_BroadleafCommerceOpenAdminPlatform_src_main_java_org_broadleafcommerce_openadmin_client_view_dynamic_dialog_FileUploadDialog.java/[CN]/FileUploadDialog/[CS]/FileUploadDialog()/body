@@ -53,13 +53,7 @@
                 DataSourceModule module=((DynamicEntityDataSource)dynamicForm.getDataSource()).getCompatibleModule(OperationType.ENTITY);
                 Record record=module.buildRecord(entity,false);
                 if (handler != null) {
-                  AppController.getInstance().getEventBus().addHandler(NewItemCreatedEvent.TYPE,handler);
-                  try {
-                    AppController.getInstance().getEventBus().fireEvent(new NewItemCreatedEvent((ListGridRecord)record,dynamicForm.getDataSource()));
-                  }
-  finally {
-                    AppController.getInstance().getEventBus().removeHandler(NewItemCreatedEvent.TYPE,handler);
-                  }
+                  handler.onItemEdited(new ItemEdited((ListGridRecord)record,dynamicForm.getDataSource()));
                 }
               }
             }

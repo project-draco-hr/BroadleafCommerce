@@ -1,6 +1,6 @@
 {
-  if (explicitType != null && explicitType.equals(SupportedFieldType.BROADLEAF_ENUMERATION)) {
-    fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.BROADLEAF_ENUMERATION,type,targetClass,presentationAttribute,mergedPropertyType));
+  if (explicitType != null && !explicitType.equals(SupportedFieldType.UNKNOWN) && !explicitType.equals(SupportedFieldType.BOOLEAN) && !explicitType.equals(SupportedFieldType.INTEGER) && !explicitType.equals(SupportedFieldType.DATE) && !explicitType.equals(SupportedFieldType.STRING) && !explicitType.equals(SupportedFieldType.MONEY) && !explicitType.equals(SupportedFieldType.DECIMAL) && !explicitType.equals(SupportedFieldType.FOREIGN_KEY) && !explicitType.equals(SupportedFieldType.ADDITIONAL_FOREIGN_KEY)) {
+    fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,explicitType,type,targetClass,presentationAttribute,mergedPropertyType));
   }
  else   if ((explicitType != null && explicitType.equals(SupportedFieldType.BOOLEAN)) || returnedClass.equals(Boolean.class) || returnedClass.equals(Character.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.BOOLEAN,type,targetClass,presentationAttribute,mergedPropertyType));
@@ -15,9 +15,6 @@
   }
  else   if ((explicitType != null && explicitType.equals(SupportedFieldType.DATE)) || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class)|| returnedClass.equals(Timestamp.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType));
-  }
- else   if (explicitType != null && explicitType.equals(SupportedFieldType.PASSWORD)) {
-    fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.PASSWORD,type,targetClass,presentationAttribute,mergedPropertyType));
   }
  else   if ((explicitType != null && explicitType.equals(SupportedFieldType.STRING)) || returnedClass.equals(String.class)) {
     if (propertyName.equals(idProperty)) {

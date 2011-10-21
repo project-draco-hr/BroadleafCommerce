@@ -2,8 +2,8 @@
   display.getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        searchDialog.search(searchDialogTitle,new SearchItemSelectedEventHandler(){
-          @SuppressWarnings({"rawtypes","unchecked"}) public void onSearchItemSelected(          SearchItemSelectedEvent event){
+        searchDialog.search(searchDialogTitle,new SearchItemSelectedHandler(){
+          @SuppressWarnings({"rawtypes","unchecked"}) public void onSearchItemSelected(          SearchItemSelected event){
             Map initialValues=((DynamicEntityDataSource)display.getGrid().getDataSource()).extractRecordValues((TreeNode)event.getRecord());
             initialValues.put("backup_id",((DynamicEntityDataSource)display.getGrid().getDataSource()).getPrimaryKeyValue(event.getRecord()));
             BLCMain.ENTITY_ADD.editNewRecord(joinStructureEditTitle,(DynamicEntityDataSource)display.getGrid().getDataSource(),initialValues,null,"200",joinStructureFields,null);

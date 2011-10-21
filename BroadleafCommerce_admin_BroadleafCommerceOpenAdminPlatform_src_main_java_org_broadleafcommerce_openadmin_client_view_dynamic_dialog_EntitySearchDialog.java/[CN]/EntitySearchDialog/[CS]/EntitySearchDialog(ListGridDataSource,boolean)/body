@@ -33,9 +33,7 @@
   saveButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       Record selectedRecord=searchGrid.getSelectedRecord();
-      AppController.getInstance().getEventBus().addHandler(SearchItemSelectedEvent.TYPE,EntitySearchDialog.this.handler);
-      AppController.getInstance().getEventBus().fireEvent(new SearchItemSelectedEvent((ListGridRecord)selectedRecord,searchGrid.getDataSource()));
-      AppController.getInstance().getEventBus().removeHandler(SearchItemSelectedEvent.TYPE,EntitySearchDialog.this.handler);
+      EntitySearchDialog.this.handler.onSearchItemSelected(new SearchItemSelected((ListGridRecord)selectedRecord,searchGrid.getDataSource()));
       hide();
     }
   }

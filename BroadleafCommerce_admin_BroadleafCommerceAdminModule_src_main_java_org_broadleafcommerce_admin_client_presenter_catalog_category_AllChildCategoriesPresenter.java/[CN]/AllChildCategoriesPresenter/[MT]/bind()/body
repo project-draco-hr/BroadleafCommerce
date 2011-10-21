@@ -2,8 +2,8 @@
   display.getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        searchDialog.search(searchDialogTitle,new SearchItemSelectedEventHandler(){
-          public void onSearchItemSelected(          SearchItemSelectedEvent event){
+        searchDialog.search(searchDialogTitle,new SearchItemSelectedHandler(){
+          public void onSearchItemSelected(          SearchItemSelected event){
             display.getGrid().addData(event.getRecord(),new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 if (response.getStatus() != RPCResponse.STATUS_FAILURE) {

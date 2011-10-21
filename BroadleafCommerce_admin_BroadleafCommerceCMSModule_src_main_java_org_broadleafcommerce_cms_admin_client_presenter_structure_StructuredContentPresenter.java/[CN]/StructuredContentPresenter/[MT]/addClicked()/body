@@ -2,8 +2,8 @@
   Map<String,Object> initialValues=new HashMap<String,Object>();
   initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
   initialValues.put("priority",new Integer(5));
-  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new NewItemCreatedEventHandler(){
-    public void onNewItemCreated(    NewItemCreatedEvent event){
+  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new ItemEditedHandler(){
+    public void onItemEdited(    ItemEdited event){
       ListGridRecord[] recordList=new ListGridRecord[]{event.getRecord()};
       DSResponse updateResponse=new DSResponse();
       updateResponse.setData(recordList);

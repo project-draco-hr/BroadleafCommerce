@@ -7,14 +7,31 @@
   this.setHeight(300);
   this.setCanDragResize(true);
   this.setOverflow(Overflow.VISIBLE);
+  HStack hStack=new HStack();
   VStack stack=new VStack();
-  stack.setWidth100();
+  stack.setWidth("80%");
   stack.setLayoutRightMargin(20);
   dynamicForm=new DynamicForm();
   dynamicForm.setNumCols(3);
   dynamicForm.setPadding(10);
   stack.addMember(dynamicForm);
-  addItem(stack);
+  hStack.addMember(stack);
+  pictureStack=new VStack();
+  pictureStack.setLayoutTopMargin(20);
+  VStack previewContainer=new VStack();
+  previewContainer.setWidth(60);
+  previewContainer.setHeight(60);
+  previewContainer.setBorder("1px solid #a6abb4");
+  previewImg=new Img();
+  previewImg.setImageType(ImageStyle.CENTER);
+  previewImg.setVisible(true);
+  previewImg.setShowDisabled(false);
+  previewImg.setSrc(GWT.getModuleBaseURL() + "admin/images/blank.gif");
+  previewImg.setShowDown(false);
+  previewContainer.addChild(previewImg);
+  pictureStack.addMember(previewContainer);
+  hStack.addMember(pictureStack);
+  addItem(hStack);
   IButton saveButton=new IButton("Save");
   saveButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
@@ -23,13 +40,7 @@
           public void execute(          DSResponse response,          Object rawData,          DSRequest request){
             TreeNode record=new TreeNode(request.getData());
             if (handler != null) {
-              AppController.getInstance().getEventBus().addHandler(NewItemCreatedEvent.TYPE,handler);
-              try {
-                AppController.getInstance().getEventBus().fireEvent(new NewItemCreatedEvent((ListGridRecord)record,dynamicForm.getDataSource()));
-              }
-  finally {
-                AppController.getInstance().getEventBus().removeHandler(NewItemCreatedEvent.TYPE,handler);
-              }
+              handler.onItemEdited(new ItemEdited(record,dynamicForm.getDataSource()));
             }
           }
         }

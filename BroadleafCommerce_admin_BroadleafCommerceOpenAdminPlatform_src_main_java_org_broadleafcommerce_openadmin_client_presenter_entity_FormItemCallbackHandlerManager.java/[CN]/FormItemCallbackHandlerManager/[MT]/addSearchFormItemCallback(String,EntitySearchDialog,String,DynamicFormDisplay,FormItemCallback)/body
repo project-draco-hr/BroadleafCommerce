@@ -1,8 +1,8 @@
 {
   callbacks.put(fieldName,new FormItemCallback(){
     public void execute(    final FormItem formItem){
-      searchView.search(searchDialogTitle,new SearchItemSelectedEventHandler(){
-        public void onSearchItemSelected(        SearchItemSelectedEvent event){
+      searchView.search(searchDialogTitle,new SearchItemSelectedHandler(){
+        public void onSearchItemSelected(        SearchItemSelected event){
           final String myId=((AbstractDynamicDataSource)event.getDataSource()).getPrimaryKeyValue(event.getRecord());
           PersistencePerspective persistencePerspective=((DynamicEntityDataSource)dynamicFormDisplay.getFormOnlyDisplay().getForm().getDataSource()).getPersistencePerspective();
           ForeignKey mainForeignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
