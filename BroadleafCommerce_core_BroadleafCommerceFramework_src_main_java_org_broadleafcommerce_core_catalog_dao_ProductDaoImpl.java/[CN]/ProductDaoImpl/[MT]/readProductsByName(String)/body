@@ -1,6 +1,6 @@
 {
-  Query query=em.createNamedQuery("BC_READ_PRODUCTS_BY_NAME");
-  query.setParameter("name",searchName + "%");
-  query.setHint(getQueryCacheableKey(),true);
+  TypedQuery<Product> query=em.createNamedQuery("BC_READ_PRODUCTS_BY_NAME",Product.class);
+  query.setParameter("name",searchName + '%');
+  query.setHint(queryCacheableKey,true);
   return query.getResultList();
 }

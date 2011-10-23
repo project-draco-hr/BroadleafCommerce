@@ -1,0 +1,16 @@
+{
+  Category myCategory=category;
+  StringBuilder linkBuffer=new StringBuilder(50);
+  while (myCategory != null) {
+    if (!ignoreTopLevel || myCategory.getDefaultParentCategory() != null) {
+      if (linkBuffer.length() == 0) {
+        linkBuffer.append(myCategory.getUrlKey());
+      }
+ else {
+        linkBuffer.insert(0,myCategory.getUrlKey() + '/');
+      }
+    }
+    myCategory=myCategory.getDefaultParentCategory();
+  }
+  return linkBuffer.toString();
+}

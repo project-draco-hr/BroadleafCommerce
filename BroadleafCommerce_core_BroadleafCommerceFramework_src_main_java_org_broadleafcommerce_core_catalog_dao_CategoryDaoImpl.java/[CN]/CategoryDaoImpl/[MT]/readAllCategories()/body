@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("BC_READ_ALL_CATEGORIES");
-  query.setHint(getQueryCacheableKey(),true);
+  TypedQuery<Category> query=em.createNamedQuery("BC_READ_ALL_CATEGORIES",Category.class);
+  query.setHint(queryCacheableKey,true);
   return query.getResultList();
 }
