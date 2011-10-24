@@ -1,0 +1,16 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Customer adminInstance=customerService.createCustomer();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Customer.class.getName(),persistencePerspective);
+    adminInstance=(Customer)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=(Customer)dynamicEntityDao.merge(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}
