@@ -17,7 +17,14 @@
         model.put("currentProducts",productList);
       }
       String url=currentCategory.getGeneratedUrl();
-      List<Category> categoryList=catalogService.getChildCategoryURLMapByCategoryId(rootCategory.getId()).get(url);
+      List<Long> categoryIdList=catalogService.getChildCategoryURLMapByCategoryId(rootCategory.getId()).get(url);
+      List<Category> categoryList=null;
+      if (categoryIdList != null) {
+        categoryList=new ArrayList<Category>(categoryIdList.size());
+        for (        Long id : categoryIdList) {
+          categoryList.add(catalogService.findCategoryById(id));
+        }
+      }
       if (categoryList != null && !addCategoryListToModel(categoryList,rootCategory,url,model)) {
         productPosition=findProductPositionInList(product,productList);
       }

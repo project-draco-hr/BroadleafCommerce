@@ -1,0 +1,32 @@
+{
+  HydratedCacheManagerImpl manager=HydratedCacheManagerImpl.getInstance();
+  HydrationDescriptor descriptor=manager.getHydrationDescriptor(entity);
+  if (descriptor.getHydratedMutators() != null && descriptor.getHydratedMutators().size() > 0) {
+    Method[] idMutators=descriptor.getIdMutators();
+    String cacheRegion=descriptor.getCacheRegion();
+    for (    String field : descriptor.getHydratedMutators().keySet()) {
+      try {
+        Serializable entityId=(Serializable)idMutators[0].invoke(entity,new Object[]{});
+        Object hydratedItem=manager.getHydratedCacheElementItem(cacheRegion,entity.getClass().getName(),entityId,field);
+        if (hydratedItem == null) {
+          Method factoryMethod=entity.getClass().getMethod(descriptor.getHydratedMutators().get(field).getFactoryMethod(),new Class[]{});
+          Object fieldVal=factoryMethod.invoke(entity,new Object[]{});
+          manager.addHydratedCacheElementItem(cacheRegion,entity.getClass().getName(),entityId,field,fieldVal);
+          hydratedItem=fieldVal;
+        }
+        descriptor.getHydratedMutators().get(field).getMutators()[1].invoke(entity,new Object[]{hydratedItem});
+      }
+ catch (      InvocationTargetException e) {
+        if (e.getTargetException() != null && e.getTargetException() instanceof CacheFactoryException) {
+          LOG.warn("Unable to setup the hydrated cache for an entity. " + e.getTargetException().getMessage());
+        }
+ else {
+          throw new RuntimeException("There was a problem while replacing a hydrated cache item - field(" + field + ") : entity("+ entity.getClass().getName()+ ")",e);
+        }
+      }
+catch (      Exception e) {
+        throw new RuntimeException("There was a problem while replacing a hydrated cache item - field(" + field + ") : entity("+ entity.getClass().getName()+ ")",e);
+      }
+    }
+  }
+}
