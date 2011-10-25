@@ -1,0 +1,34 @@
+{
+  Label tmp=new Label(module.getModuleTitle());
+  tmp.setValign(VerticalAlignment.BOTTOM);
+  tmp.setAlign(Alignment.CENTER);
+  tmp.setWrap(false);
+  tmp.setPadding(10);
+  final String style;
+  if (selected) {
+    style="primaryMenuText-selected";
+    selectedPrimaryMenuOption=tmp;
+  }
+ else {
+    style="primaryMenuText";
+  }
+  tmp.setBaseStyle(style);
+  tmp.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    final ClickEvent event){
+      Object o=event.getSource();
+      if (o instanceof Label) {
+        final Label lbl=(Label)o;
+        if (!lbl.getTitle().equals(selectedPrimaryMenuOption.getTitle())) {
+          selectedPrimaryMenuOption.setBaseStyle("primaryMenuText");
+          lbl.setBaseStyle("primaryMenuText-selected");
+          selectedPrimaryMenuOption=lbl;
+          moduleKey=module.getModuleKey();
+          buildSecondaryMenu(null);
+          AppController.getInstance().go(canvas,module.getPages(),true);
+        }
+      }
+    }
+  }
+);
+  return tmp;
+}

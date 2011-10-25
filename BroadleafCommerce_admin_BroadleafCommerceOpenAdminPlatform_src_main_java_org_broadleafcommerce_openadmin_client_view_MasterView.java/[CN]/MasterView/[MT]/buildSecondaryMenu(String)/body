@@ -1,0 +1,33 @@
+{
+  Module currentModule=modules.get(moduleKey);
+  secondaryMenu.removeMembers(secondaryMenu.getMembers());
+  LayoutSpacer sp2=new LayoutSpacer();
+  sp2.setWidth(10);
+  secondaryMenu.addMember(sp2);
+  secondaryMenu.setHeight(35);
+  secondaryMenu.setBackgroundColor("#78a22F");
+  secondaryMenu.addMember(sp2);
+  LinkedHashMap<String,String[]> pages=modules.get(moduleKey).getPages();
+  Collection<String> allowedPages=pages.keySet();
+  for (Iterator<String> iterator=allowedPages.iterator(); iterator.hasNext(); ) {
+    String testPage=(String)iterator.next();
+    if (!SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(testPage)[0])) {
+      iterator.remove();
+      if (selectedPage != null && selectedPage.equals(testPage)) {
+        selectedPage=null;
+      }
+    }
+  }
+  if (selectedPage == null && allowedPages.size() > 0) {
+    selectedPage=(String)allowedPages.iterator().next();
+  }
+  for (  String page : allowedPages) {
+    boolean selected=(page.equals(selectedPage));
+    secondaryMenu.addMember(buildSecondaryMenuOption(page,selected));
+    if (selectedPage == null) {
+      selectedPage=page;
+    }
+    selected=false;
+  }
+  return secondaryMenu;
+}

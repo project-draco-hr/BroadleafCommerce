@@ -1,0 +1,33 @@
+{
+  Label tmp=new Label(title);
+  tmp.setTitle(title);
+  tmp.setWrap(false);
+  tmp.setValign(VerticalAlignment.BOTTOM);
+  tmp.setAlign(Alignment.CENTER);
+  tmp.setPadding(10);
+  String style;
+  if (selected) {
+    style="secondaryMenuText-selected";
+    selectedSecondaryMenuOption=tmp;
+  }
+ else {
+    style="secondaryMenuText";
+  }
+  tmp.setBaseStyle(style);
+  tmp.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      Object o=event.getSource();
+      if (o instanceof Label) {
+        Label lbl=(Label)o;
+        if (!lbl.getTitle().equals(selectedSecondaryMenuOption.getTitle())) {
+          selectedSecondaryMenuOption.setBaseStyle("secondaryMenuText");
+          lbl.setBaseStyle("secondaryMenuText-selected");
+          selectedSecondaryMenuOption=lbl;
+          History.newItem(lbl.getTitle());
+        }
+      }
+    }
+  }
+);
+  return tmp;
+}

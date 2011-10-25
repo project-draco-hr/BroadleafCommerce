@@ -1,0 +1,22 @@
+{
+  HLayout userFields=new HLayout();
+  userFields.setAlign(Alignment.RIGHT);
+  userFields.addMember(buildUserImage());
+  Label userLabel=new Label(SecurityManager.USER.getUserName());
+  userLabel.setBaseStyle("userText");
+  userLabel.setWidth(1);
+  userLabel.setOverflow(Overflow.VISIBLE);
+  userFields.addMember(userLabel);
+  Label logoutLink=new Label("(logout)");
+  logoutLink.setBaseStyle("userLogout");
+  logoutLink.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
+      builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
+      com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+    }
+  }
+);
+  userFields.addMember(logoutLink);
+  return userFields;
+}

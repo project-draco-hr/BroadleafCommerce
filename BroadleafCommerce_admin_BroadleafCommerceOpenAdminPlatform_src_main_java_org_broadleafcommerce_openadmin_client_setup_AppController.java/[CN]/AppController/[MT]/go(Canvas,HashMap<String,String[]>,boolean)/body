@@ -1,0 +1,15 @@
+{
+  this.pages=pages;
+  this.container=container;
+  if ("".equals(History.getToken()) || reset) {
+    for (    String sectionTitle : pages.keySet()) {
+      if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(sectionTitle)[0])) {
+        History.newItem(sectionTitle);
+        break;
+      }
+    }
+  }
+ else {
+    History.fireCurrentHistoryState();
+  }
+}
