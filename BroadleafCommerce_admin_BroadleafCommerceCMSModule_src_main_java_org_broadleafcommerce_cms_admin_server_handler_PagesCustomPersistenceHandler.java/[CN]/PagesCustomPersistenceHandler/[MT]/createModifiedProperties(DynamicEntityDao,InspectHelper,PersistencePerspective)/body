@@ -1,0 +1,40 @@
+{
+  mergedProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
+  FieldMetadata contentTypeFieldMetadata=new FieldMetadata();
+  contentTypeFieldMetadata.setFieldType(SupportedFieldType.EXPLICIT_ENUMERATION);
+  contentTypeFieldMetadata.setMutable(true);
+  contentTypeFieldMetadata.setInheritedFromType(PageTemplateImpl.class.getName());
+  contentTypeFieldMetadata.setAvailableToTypes(new String[]{PageTemplateImpl.class.getName()});
+  contentTypeFieldMetadata.setCollection(false);
+  contentTypeFieldMetadata.setMergedPropertyType(MergedPropertyType.PRIMARY);
+  PersistencePackage pageTemplatePersistencePackage=new PersistencePackage();
+  pageTemplatePersistencePackage.setCeilingEntityFullyQualifiedClassname(PageTemplate.class.getName());
+  PersistencePerspective pageTemplateFetchPerspective=new PersistencePerspective();
+  pageTemplatePersistencePackage.setPersistencePerspective(pageTemplateFetchPerspective);
+  pageTemplateFetchPerspective.setAdditionalForeignKeys(new ForeignKey[]{});
+  pageTemplateFetchPerspective.setOperationTypes(new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY));
+  pageTemplateFetchPerspective.setAdditionalNonPersistentProperties(new String[]{});
+  DynamicResultSet pageTemplateResultSet=((PersistenceManager)helper).fetch(pageTemplatePersistencePackage,new CriteriaTransferObject());
+  String[][] pageTemplateEnums=new String[pageTemplateResultSet.getRecords().length][2];
+  int i=0;
+  for (  Entity entity : pageTemplateResultSet.getRecords()) {
+    pageTemplateEnums[i][0]=entity.findProperty("id").getValue();
+    pageTemplateEnums[i][1]=entity.findProperty("templateName").getValue();
+    i++;
+  }
+  contentTypeFieldMetadata.setEnumerationValues(pageTemplateEnums);
+  FieldPresentationAttributes contentTypeAttributes=new FieldPresentationAttributes();
+  contentTypeFieldMetadata.setPresentationAttributes(contentTypeAttributes);
+  contentTypeAttributes.setName("pageTemplateGrid");
+  contentTypeAttributes.setFriendlyName("Page Template");
+  contentTypeAttributes.setGroup("Description");
+  contentTypeAttributes.setOrder(2);
+  contentTypeAttributes.setExplicitFieldType(SupportedFieldType.UNKNOWN);
+  contentTypeAttributes.setProminent(false);
+  contentTypeAttributes.setBroadleafEnumeration("");
+  contentTypeAttributes.setReadOnly(false);
+  contentTypeAttributes.setHidden(false);
+  contentTypeAttributes.setRequiredOverride(true);
+  contentTypeAttributes.setFormHidden(FormHiddenEnum.HIDDEN);
+  mergedProperties.put("pageTemplateGrid",contentTypeFieldMetadata);
+}

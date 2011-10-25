@@ -1,10 +1,9 @@
 {
   super.setup();
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageTreeDS",new PagesTreeDataSourceFactory(),null,new Object[]{rootId,rootName},new NullAsyncCallbackAdapter()));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("localeDS",new LocaleListDataSourceFactory(),new AsyncCallbackAdapter(){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageDS",new PageDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource top){
-      setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("pageTreeDS"),top);
-      ((TreeGridDataSource)getPresenterSequenceSetupManager().getDataSource("pageTreeDS")).setupGridFields(new String[]{},new Boolean[]{},"250","100");
+      setupDisplayItems(top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{});
     }
   }
 ));
@@ -14,7 +13,7 @@
       pageTemplateDataSource.resetPermanentFieldVisibility("templateName","templatePath");
       EntitySearchDialog pageTemplateSearchView=new EntitySearchDialog(pageTemplateDataSource,true);
       pageTemplateDialogView=pageTemplateSearchView;
-      getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("pageTemplate",pageTemplateSearchView,"Page Template Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
+      getPresenterSequenceSetupManager().getDataSource("pageDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("pageTemplate",pageTemplateSearchView,"Page Template Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
           if (currentPageRecord != null) {
             destroyTemplateForm();

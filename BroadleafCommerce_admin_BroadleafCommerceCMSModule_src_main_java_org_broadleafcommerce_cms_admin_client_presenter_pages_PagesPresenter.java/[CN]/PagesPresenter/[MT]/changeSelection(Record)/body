@@ -1,28 +1,12 @@
 {
-  String pageType=selectedRecord.getAttributeAsStringArray("_type") == null ? null : selectedRecord.getAttributeAsStringArray("_type")[0];
-  if (pageType != null && pageType.equals("org.broadleafcommerce.cms.page.domain.PageImpl")) {
-    getDisplay().getAddPageButton().disable();
-    getDisplay().getAddPageFolderButton().disable();
-    if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
-      getDisplay().getListDisplay().getRemoveButton().enable();
-      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().enable();
-    }
- else {
-      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
-      getDisplay().getListDisplay().getRemoveButton().disable();
-    }
-    currentPageRecord=selectedRecord;
-    currentPageId=getPresenterSequenceSetupManager().getDataSource("pageTreeDS").getPrimaryKeyValue(currentPageRecord);
-    loadTemplateForm(selectedRecord);
-  }
- else {
-    getDisplay().getAddPageButton().enable();
-    getDisplay().getAddPageFolderButton().enable();
+  if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
     getDisplay().getListDisplay().getRemoveButton().enable();
-    destroyTemplateForm();
-    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
-    currentPageRecord=null;
-    currentPageId=null;
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().enable();
   }
-  currentFolderRecord=(TreeNode)selectedRecord;
+ else {
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
+    getDisplay().getListDisplay().getRemoveButton().disable();
+  }
+  currentPageRecord=selectedRecord;
+  loadTemplateForm(selectedRecord);
 }

@@ -2,15 +2,10 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    PageFolder adminInstance=(PageFolder)Class.forName(entity.getType()[0]).newInstance();
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageFolder.class.getName(),persistencePerspective);
-    adminInstance=(PageFolder)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    if (PageFolderImpl.class.getName().equals(entity.getType()[0])) {
-      pageService.addPageFolder(adminInstance,adminInstance.getParentFolder());
-    }
- else {
-      pageService.addPage((Page)adminInstance,adminInstance.getParentFolder(),getSandBox());
-    }
+    Page adminInstance=(Page)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
+    adminInstance=(Page)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    pageService.addPage((Page)adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
   }

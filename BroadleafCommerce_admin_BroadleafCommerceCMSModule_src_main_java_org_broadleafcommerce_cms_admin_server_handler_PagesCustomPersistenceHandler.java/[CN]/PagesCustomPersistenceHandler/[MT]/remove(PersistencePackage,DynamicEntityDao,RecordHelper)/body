@@ -5,14 +5,8 @@
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     Serializable persistenceObject=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
-    if (!Page.class.isAssignableFrom(persistenceObject.getClass())) {
-      PageFolder adminInstance=(PageFolder)persistenceObject;
-      pageService.deletePageFolder(adminInstance);
-    }
- else {
-      Page adminInstance=(Page)persistenceObject;
-      pageService.deletePage(adminInstance,getSandBox());
-    }
+    Page adminInstance=(Page)persistenceObject;
+    pageService.deletePage(adminInstance,getSandBox());
   }
  catch (  Exception e) {
     LOG.error("Unable to remove entity for " + entity.getType()[0],e);

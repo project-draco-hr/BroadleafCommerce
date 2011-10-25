@@ -1,0 +1,8 @@
+{
+  page.setSandbox(destinationSandbox);
+  Page newPage=pageDao.addPage(page);
+  if (!isProductionSandBox(destinationSandbox)) {
+    sandBoxItemDao.addSandBoxItem(destinationSandbox,SandBoxOperationType.ADD,SandBoxItemType.PAGE,newPage.getFullUrl(),newPage.getId(),null);
+  }
+  return newPage;
+}
