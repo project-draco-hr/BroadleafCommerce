@@ -10,6 +10,12 @@
     }
   }
  else {
-    History.fireCurrentHistoryState();
+    String[] vals=pages.get(History.getToken());
+    if (vals == null) {
+      go(container,pages,true);
+    }
+ else {
+      History.fireCurrentHistoryState();
+    }
   }
 }
