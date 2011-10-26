@@ -1,0 +1,31 @@
+{
+  Serializable exp;
+synchronized (expressionCache) {
+    exp=(Serializable)expressionCache.get(expression);
+  }
+  if (exp == null) {
+    ParserContext context=new ParserContext();
+    try {
+      exp=MVEL.compileExpression(expression,context);
+    }
+ catch (    CompileException ce) {
+      LOG.warn("Compile exception processing phrase: " + expression,ce);
+      return Boolean.FALSE;
+    }
+synchronized (expressionCache) {
+      exp=(Serializable)expressionCache.put(expression,exp);
+    }
+  }
+  try {
+    if (expression.contains("product.") && vars.get("product") == null) {
+      return false;
+    }
+ else {
+      return (Boolean)MVEL.executeExpression(exp,vars);
+    }
+  }
+ catch (  Exception e) {
+    LOG.error(e);
+  }
+  return false;
+}

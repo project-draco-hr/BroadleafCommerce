@@ -1,0 +1,30 @@
+{
+  StringBuffer ruleExpression=null;
+  Map<String,StructuredContentRule> ruleMap=sc.getStructuredContentMatchRules();
+  if (ruleMap != null) {
+    for (    String ruleKey : ruleMap.keySet()) {
+      if (ruleExpression == null) {
+        ruleExpression=new StringBuffer(ruleMap.get(ruleKey).getMatchRule());
+      }
+ else {
+        ruleExpression.append(AND);
+        ruleExpression.append(ruleMap.get(ruleKey).getMatchRule());
+      }
+    }
+  }
+  if (ruleExpression != null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Processing content rule for StructuredContent with id " + sc.getId() + ".   Value = "+ ruleExpression.toString());
+    }
+    boolean result=executeExpression(ruleExpression.toString(),vars);
+    if (!result) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Content failed to pass rule and will not be included for StructuredContent with id " + sc.getId() + ".   Value = "+ ruleExpression.toString());
+      }
+    }
+    return result;
+  }
+ else {
+    return true;
+  }
+}

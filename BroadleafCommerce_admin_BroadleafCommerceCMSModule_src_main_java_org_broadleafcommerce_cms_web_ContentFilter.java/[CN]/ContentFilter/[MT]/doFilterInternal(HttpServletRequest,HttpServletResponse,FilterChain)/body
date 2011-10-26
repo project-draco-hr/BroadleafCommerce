@@ -1,4 +1,7 @@
 {
+  if (request.getAttribute(REQUEST_DTO) == null) {
+    request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
+  }
   Site site=determineSite(request);
   Locale locale=determineLocale(request,site);
   SandBox currentSandbox=determineSandbox(request,site);

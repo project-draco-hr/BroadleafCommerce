@@ -18,11 +18,15 @@
         return returnList.subList(0,count);
       }
  else {
-        tmpList.add(sc);
+        if (processContentRules(sc,ruleDTOs)) {
+          tmpList.add(sc);
+        }
       }
     }
  else {
-      tmpList.add(sc);
+      if (processContentRules(sc,ruleDTOs)) {
+        tmpList.add(sc);
+      }
     }
     lastPriority=sc.getPriority();
   }

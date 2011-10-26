@@ -9,6 +9,7 @@
   if (StringUtils.isEmpty(hours)) {
     hours=Integer.toString(SystemTime.asCalendar().get(Calendar.HOUR_OF_DAY));
   }
-  Date parsedDate=CONTENT_DATE_PARSE_FORMAT.parse(date + hours + minutes+ ampm);
+  String dateString=date + " " + hours+ ":"+ minutes+ " "+ ampm;
+  Date parsedDate=CONTENT_DATE_PARSE_FORMAT.parse(dateString);
   return parsedDate;
 }
