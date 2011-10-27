@@ -19,11 +19,7 @@
       dataSource.getField("sku.description").setAttribute("permanentlyHidden",true);
       dataSource.getField("sku.longDescription").setHidden(true);
       dataSource.getField("sku.longDescription").setAttribute("permanentlyHidden",true);
-      for (      PolymorphicEntity polymorphicEntity : metadata.getPolymorphicEntities()) {
-        String name=polymorphicEntity.getName();
-        String type=polymorphicEntity.getType();
-        dataSource.getPolymorphicEntities().put(type,name);
-      }
+      dataSource.setPolymorphicEntityTree(metadata.getPolymorphicEntities());
       dataSource.setDefaultNewEntityFullyQualifiedClassname(dataSource.getPolymorphicEntities().keySet().iterator().next());
       cb.onSuccess(dataSource);
     }

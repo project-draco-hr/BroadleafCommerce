@@ -1,0 +1,40 @@
+{
+  this.associatedRecord=associatedRecord;
+  this.abstractDynamicDataSource=abstractDynamicDataSource;
+  ClassTree classTree=abstractDynamicDataSource.getPolymorphicEntityTree();
+  String[] types=associatedRecord.getAttributeAsStringArray("_type");
+  boolean shouldLoad=availableToTypes == null;
+  if (types != null && types.length > 0) {
+    if (availableToTypes != null) {
+      if (Arrays.binarySearch(availableToTypes,types[0]) >= 0) {
+        shouldLoad=true;
+      }
+ else {
+        ClassTree myTypeResult=classTree.find(types[0]);
+        if (myTypeResult != null) {
+          for (          String availableType : availableToTypes) {
+            ClassTree availableTypeResult=classTree.find(availableType);
+            if (availableTypeResult.getLeft() < myTypeResult.getLeft() && availableTypeResult.getRight() > myTypeResult.getRight()) {
+              shouldLoad=true;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  display.setVisible(shouldLoad);
+  if (shouldLoad) {
+    String id=abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
+    ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
+      public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        setStartState();
+        if (cb != null) {
+          cb.execute(response,rawData,request);
+        }
+      }
+    }
+);
+  }
+  return shouldLoad;
+}

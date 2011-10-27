@@ -5,10 +5,7 @@
     StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeById(Long.valueOf(structuredContentTypeId));
     ClassMetadata metadata=new ClassMetadata();
     metadata.setCeilingType(StructuredContentType.class.getName());
-    PolymorphicEntity entity=new PolymorphicEntity();
-    entity.setName("StructuredContentTypeImpl");
-    entity.setType(StructuredContentTypeImpl.class.getName());
-    PolymorphicEntity[] entities=new PolymorphicEntity[]{entity};
+    ClassTree entities=new ClassTree(StructuredContentTypeImpl.class.getName());
     metadata.setPolymorphicEntities(entities);
     int groupCount=1;
     int fieldCount=0;

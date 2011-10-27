@@ -4,8 +4,8 @@
   mediaPresenter.bind();
   allChildCategoriesPresenter.bind();
   childProductsPresenter.bind();
-  ((TreeGrid)display.getListDisplay().getGrid()).addDataArrivedHandler(new com.smartgwt.client.widgets.tree.events.DataArrivedHandler(){
-    public void onDataArrived(    com.smartgwt.client.widgets.tree.events.DataArrivedEvent event){
+  ((TreeGrid)display.getListDisplay().getGrid()).addDataArrivedHandler(new DataArrivedHandler(){
+    public void onDataArrived(    DataArrivedEvent event){
       Record[] records=event.getParentNode().getAttributeAsRecordArray("children");
       for (      Record record : records) {
         String hasChildren=record.getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty);

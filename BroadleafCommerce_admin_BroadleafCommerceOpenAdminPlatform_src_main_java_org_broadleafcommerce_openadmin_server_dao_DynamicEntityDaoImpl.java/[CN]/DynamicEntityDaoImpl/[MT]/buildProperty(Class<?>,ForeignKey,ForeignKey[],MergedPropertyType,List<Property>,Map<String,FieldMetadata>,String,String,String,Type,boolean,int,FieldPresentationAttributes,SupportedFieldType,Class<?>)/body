@@ -1,11 +1,11 @@
 {
-  if (explicitType != null && !explicitType.equals(SupportedFieldType.UNKNOWN) && !explicitType.equals(SupportedFieldType.BOOLEAN) && !explicitType.equals(SupportedFieldType.INTEGER) && !explicitType.equals(SupportedFieldType.DATE) && !explicitType.equals(SupportedFieldType.STRING) && !explicitType.equals(SupportedFieldType.MONEY) && !explicitType.equals(SupportedFieldType.DECIMAL) && !explicitType.equals(SupportedFieldType.FOREIGN_KEY) && !explicitType.equals(SupportedFieldType.ADDITIONAL_FOREIGN_KEY)) {
+  if (explicitType != null && explicitType != SupportedFieldType.UNKNOWN && explicitType != SupportedFieldType.BOOLEAN && explicitType != SupportedFieldType.INTEGER && explicitType != SupportedFieldType.DATE && explicitType != SupportedFieldType.STRING && explicitType != SupportedFieldType.MONEY && explicitType != SupportedFieldType.DECIMAL && explicitType != SupportedFieldType.FOREIGN_KEY && explicitType != SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,explicitType,type,targetClass,presentationAttribute,mergedPropertyType));
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.BOOLEAN)) || returnedClass.equals(Boolean.class) || returnedClass.equals(Character.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.BOOLEAN || returnedClass.equals(Boolean.class) || returnedClass.equals(Character.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.BOOLEAN,type,targetClass,presentationAttribute,mergedPropertyType));
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.INTEGER)) || returnedClass.equals(Byte.class) || returnedClass.equals(Short.class)|| returnedClass.equals(Integer.class)|| returnedClass.equals(Long.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.INTEGER || returnedClass.equals(Byte.class) || returnedClass.equals(Short.class) || returnedClass.equals(Integer.class) || returnedClass.equals(Long.class)) {
     if (propertyName.equals(idProperty)) {
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType));
     }
@@ -13,10 +13,10 @@
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType));
     }
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.DATE)) || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class)|| returnedClass.equals(Timestamp.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.DATE || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class) || returnedClass.equals(Timestamp.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType));
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.STRING)) || returnedClass.equals(String.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.STRING || returnedClass.equals(String.class)) {
     if (propertyName.equals(idProperty)) {
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType));
     }
@@ -24,13 +24,13 @@
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType));
     }
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.MONEY)) || returnedClass.equals(Money.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.MONEY || returnedClass.equals(Money.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.MONEY,type,targetClass,presentationAttribute,mergedPropertyType));
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.DECIMAL)) || returnedClass.equals(Double.class) || returnedClass.equals(BigDecimal.class)) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.DECIMAL || returnedClass.equals(Double.class) || returnedClass.equals(BigDecimal.class)) {
     fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DECIMAL,type,targetClass,presentationAttribute,mergedPropertyType));
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.FOREIGN_KEY)) || foreignField != null && isPropertyForeignKey) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.FOREIGN_KEY || foreignField != null && isPropertyForeignKey) {
     ClassMetadata foreignMetadata;
     foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
@@ -44,7 +44,7 @@
     fields.get(propertyName).setForeignKeyClass(foreignField.getForeignKeyClass());
     fields.get(propertyName).setForeignKeyDisplayValueProperty(foreignField.getDisplayValueProperty());
   }
- else   if ((explicitType != null && explicitType.equals(SupportedFieldType.ADDITIONAL_FOREIGN_KEY)) || additionalForeignFields != null && additionalForeignKeyIndexPosition >= 0) {
+ else   if (explicitType != null && explicitType == SupportedFieldType.ADDITIONAL_FOREIGN_KEY || additionalForeignFields != null && additionalForeignKeyIndexPosition >= 0) {
     ClassMetadata foreignMetadata;
     foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();

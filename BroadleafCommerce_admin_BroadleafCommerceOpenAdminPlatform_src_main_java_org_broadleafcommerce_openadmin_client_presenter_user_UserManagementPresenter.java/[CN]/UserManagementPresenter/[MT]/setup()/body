@@ -15,7 +15,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("adminPermissionDS",new AdminPermissionListDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
-      userRolePresenter=new UserRolePresenter((UserRoleDisplay)getDisplay().getUserRolesDisplay(),roleSearchView);
+      userRolePresenter=new UserRolePresenter(getDisplay().getUserRolesDisplay(),roleSearchView);
       userRolePresenter.setDataSource((ListGridDataSource)library.get("adminRoleDS"),new String[]{"name","description"},new Boolean[]{false,false});
       userRolePresenter.setExpansionDataSource((ListGridDataSource)result,new String[]{"name","description"},new Boolean[]{false,false});
       userRolePresenter.setReadOnly(false);

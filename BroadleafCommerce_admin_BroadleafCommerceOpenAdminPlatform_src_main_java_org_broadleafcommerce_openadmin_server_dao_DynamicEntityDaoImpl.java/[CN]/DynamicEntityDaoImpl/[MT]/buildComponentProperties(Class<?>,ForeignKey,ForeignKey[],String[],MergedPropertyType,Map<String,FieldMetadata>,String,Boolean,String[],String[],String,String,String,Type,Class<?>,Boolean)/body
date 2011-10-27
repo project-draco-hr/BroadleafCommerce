@@ -1,14 +1,8 @@
 {
   String[] componentProperties=((ComponentType)type).getPropertyNames();
-  List<String> componentPropertyNames=new ArrayList<String>();
-  for (  String componentProperty : componentProperties) {
-    componentPropertyNames.add(componentProperty);
-  }
+  List<String> componentPropertyNames=Arrays.asList(componentProperties);
   Type[] componentTypes=((ComponentType)type).getSubtypes();
-  List<Type> componentPropertyTypes=new ArrayList<Type>();
-  for (  Type componentType : componentTypes) {
-    componentPropertyTypes.add(componentType);
-  }
+  List<Type> componentPropertyTypes=Arrays.asList(componentTypes);
   Map<String,FieldPresentationAttributes> componentPresentationAttributes=getFieldPresentationAttributes(returnedClass);
   if (isParentExcluded) {
     for (    String key : componentPresentationAttributes.keySet()) {

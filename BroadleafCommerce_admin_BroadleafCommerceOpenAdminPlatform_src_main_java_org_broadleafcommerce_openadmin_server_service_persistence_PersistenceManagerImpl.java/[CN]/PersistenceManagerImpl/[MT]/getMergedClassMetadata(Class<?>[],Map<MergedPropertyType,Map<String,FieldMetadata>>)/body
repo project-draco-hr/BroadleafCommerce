@@ -1,14 +1,6 @@
 {
   ClassMetadata classMetadata=new ClassMetadata();
-  PolymorphicEntity[] polyEntities=new PolymorphicEntity[entities.length];
-  int j=0;
-  for (  Class<?> type : entities) {
-    polyEntities[j]=new PolymorphicEntity();
-    polyEntities[j].setType(type.getName());
-    polyEntities[j].setName(type.getSimpleName());
-    j++;
-  }
-  classMetadata.setPolymorphicEntities(polyEntities);
+  classMetadata.setPolymorphicEntities(dynamicEntityDao.getClassTree(entities));
   List<Property> propertiesList=new ArrayList<Property>();
   for (  PersistenceModule module : modules) {
     module.extractProperties(mergedProperties,propertiesList);

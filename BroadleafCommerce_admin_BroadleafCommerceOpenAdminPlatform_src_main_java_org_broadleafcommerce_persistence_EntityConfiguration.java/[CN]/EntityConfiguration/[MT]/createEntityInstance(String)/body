@@ -1,3 +1,7 @@
 {
-  return applicationcontext.getBean(beanId);
+  Object bean=applicationcontext.getBean(beanId);
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Returning instance of class (" + bean.getClass().getName() + ") configured with bean id ("+ beanId+ ')');
+  }
+  return bean;
 }

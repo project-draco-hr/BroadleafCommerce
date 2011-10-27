@@ -21,11 +21,7 @@
       typeField.setHidden(true);
       typeField.setAttribute("permanentlyHidden",true);
       dataSource.addField(typeField);
-      for (      PolymorphicEntity polymorphicEntity : metadata.getPolymorphicEntities()) {
-        String name=polymorphicEntity.getName();
-        String type=polymorphicEntity.getType();
-        dataSource.getPolymorphicEntities().put(type,name);
-      }
+      dataSource.setPolymorphicEntityTree(metadata.getPolymorphicEntities());
       dataSource.setDefaultNewEntityFullyQualifiedClassname(dataSource.getPolymorphicEntities().keySet().iterator().next());
       if (cb != null) {
         cb.onSuccess(dataSource);

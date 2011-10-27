@@ -1,0 +1,21 @@
+{
+  Class<?> testClass;
+  try {
+    testClass=Class.forName(tree.getFullyQualifiedClassname());
+  }
+ catch (  ClassNotFoundException e) {
+    throw new RuntimeException(e);
+  }
+  if (clazz.equals(testClass)) {
+    return;
+  }
+  if (clazz.getSuperclass().equals(testClass)) {
+    ClassTree myTree=new ClassTree(clazz.getName());
+    tree.setChildren((ClassTree[])ArrayUtils.add(tree.getChildren(),myTree));
+  }
+ else {
+    for (    ClassTree child : tree.getChildren()) {
+      addClassToTree(clazz,child);
+    }
+  }
+}

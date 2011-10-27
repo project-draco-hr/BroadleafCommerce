@@ -1,0 +1,11 @@
+{
+  ClassTree classTree=null;
+  if (!ArrayUtils.isEmpty(polymorphicClasses)) {
+    classTree=new ClassTree(polymorphicClasses[polymorphicClasses.length - 1].getName());
+    for (int j=polymorphicClasses.length - 1; j >= 0; j--) {
+      addClassToTree(polymorphicClasses[j],classTree);
+    }
+    classTree.finalizeStructure(1);
+  }
+  return classTree;
+}
