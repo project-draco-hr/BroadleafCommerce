@@ -1,0 +1,47 @@
+{
+  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    @Override public void onSuccess(    AdminUser result){
+      if (result == null) {
+        UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
+        builder.setPath(BLCMain.webAppContext + "/admin.html");
+        builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+        com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+      }
+ else {
+        if (SecurityManager.getInstance().isUserAuthorizedToViewSection(viewKey)) {
+          uiFactory.clearCurrentView();
+          uiFactory.getView(viewKey,false,false,new AsyncClient(){
+            @Override public void onSuccess(            Object instance){
+              final Display view=(Display)instance;
+              uiFactory.getPresenter(presenterKey,new AsyncClient(){
+                @Override public void onSuccess(                Object instance){
+                  EntityPresenter presenter=(EntityPresenter)instance;
+                  presenter.setDisplay(view);
+                  presenter.setEventBus(eventBus);
+                  BLCMain.currentViewKey=viewKey;
+                  if (presenter.getPresenterSequenceSetupManager() != null) {
+                    presenter.getPresenterSequenceSetupManager().setCanvas(container);
+                    presenter.setup();
+                    presenter.getPresenterSequenceSetupManager().launch();
+                  }
+ else {
+                    presenter.setup();
+                  }
+                }
+                @Override public void onUnavailable(){
+                  throw new RuntimeException("Unable to show item: " + presenterKey);
+                }
+              }
+);
+            }
+            @Override public void onUnavailable(){
+              throw new RuntimeException("Unable to show item: " + viewKey);
+            }
+          }
+);
+        }
+      }
+    }
+  }
+);
+}
