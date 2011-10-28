@@ -9,17 +9,10 @@
       Property property=new Property();
       propertiesList.add(property);
       property.setName(definition.getName());
-      String value;
-      checkValue: {
-        if (!MapUtils.isEmpty(pageFieldMap)) {
-          PageField pageField=pageFieldMap.get(definition.getName());
-          List<PageFieldData> fieldDataList=pageField.getFieldDataList();
-          if (!CollectionUtils.isEmpty(fieldDataList)) {
-            value=fieldDataList.get(0).getValue();
-            break checkValue;
-          }
-        }
-        value=null;
+      String value=null;
+      if (!MapUtils.isEmpty(pageFieldMap)) {
+        PageField pageField=pageFieldMap.get(definition.getName());
+        value=pageField.getValue();
       }
       property.setValue(value);
     }

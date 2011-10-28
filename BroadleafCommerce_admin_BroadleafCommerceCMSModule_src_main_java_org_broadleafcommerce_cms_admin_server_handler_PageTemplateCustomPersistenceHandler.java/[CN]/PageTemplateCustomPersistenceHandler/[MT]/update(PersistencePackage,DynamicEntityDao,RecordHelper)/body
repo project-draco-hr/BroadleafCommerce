@@ -11,7 +11,6 @@
     }
     for (    String key : page.getPageFields().keySet()) {
       PageField pageField=page.getPageFields().get(key);
-      pageField.getFieldDataList().size();
     }
     page=(Page)SerializationUtils.clone(page);
     Map<String,PageField> pageFieldMap=page.getPageFields();
@@ -19,24 +18,14 @@
       if (templateFieldNames.contains(property.getName())) {
         PageField pageField=pageFieldMap.get(property.getName());
         if (pageField != null) {
-          if (!CollectionUtils.isEmpty(pageField.getFieldDataList())) {
-            PageFieldData fieldData=pageField.getFieldDataList().get(0);
-            fieldData.setValue(property.getValue());
-          }
- else {
-            PageFieldData fieldData=new PageFieldDataImpl();
-            pageField.getFieldDataList().add(fieldData);
-            fieldData.setValue(property.getValue());
-          }
+          pageField.setValue(property.getValue());
         }
  else {
           pageField=new PageFieldImpl();
           pageFieldMap.put(property.getName(),pageField);
           pageField.setFieldKey(property.getName());
           pageField.setPage(page);
-          PageFieldData fieldData=new PageFieldDataImpl();
-          pageField.getFieldDataList().add(fieldData);
-          fieldData.setValue(property.getValue());
+          pageField.setValue(property.getValue());
         }
       }
     }
