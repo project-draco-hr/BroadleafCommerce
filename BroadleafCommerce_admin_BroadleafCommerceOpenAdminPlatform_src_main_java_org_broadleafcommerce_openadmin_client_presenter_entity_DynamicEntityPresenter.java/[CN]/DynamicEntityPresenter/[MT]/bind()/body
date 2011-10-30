@@ -16,6 +16,13 @@
     }
   }
 );
+  fetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      setStartState();
+      formPresenter.disable();
+    }
+  }
+);
   selectionChangedHandlerRegistration=display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();

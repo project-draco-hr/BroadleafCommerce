@@ -4,10 +4,7 @@
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
-    Serializable persistenceObject=dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
-    Page adminInstance=(Page)persistenceObject;
-    adminInstance.getPageFields().size();
-    adminInstance=(Page)SerializationUtils.clone(adminInstance);
+    Page adminInstance=(Page)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     adminInstance=(Page)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=pageService.updatePage(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);

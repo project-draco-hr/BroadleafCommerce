@@ -1,7 +1,6 @@
 {
   currentSelectedRecord=(TreeNode)selectedRecord;
-  String[] types=selectedRecord.getAttributeAsStringArray("_type");
-  if (types == null) {
+  if (selectedRecord.getAttributeAsStringArray("_type") == null) {
     selectedRecord.setAttribute("_type",new String[]{EntityImplementations.STATICASSETIMPL});
   }
   leafAssetPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS"),new DSCallback(){

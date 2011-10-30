@@ -1,13 +1,4 @@
 {
-  Map<String,Object> initialValues=new HashMap<String,Object>();
   initialValues.put("username",BLCMain.getMessageManager().getString("usernameDefault"));
-  initialValues.put("_type",new String[]{getPresenterSequenceSetupManager().getDataSource("customerDS").getDefaultNewEntityFullyQualifiedClassname()});
-  BLCMain.ENTITY_ADD.editNewRecord(BLCMain.getMessageManager().getString("newCustomerTitle"),getPresenterSequenceSetupManager().getDataSource("customerDS"),initialValues,new ItemEditedHandler(){
-    public void onItemEdited(    ItemEdited event){
-      Criteria myCriteria=new Criteria();
-      myCriteria.addCriteria("username",event.getRecord().getAttribute("username"));
-      display.getListDisplay().getGrid().fetchData(myCriteria);
-    }
-  }
-,"90%",null,null);
+  super.addClicked(BLCMain.getMessageManager().getString("newCustomerTitle"));
 }

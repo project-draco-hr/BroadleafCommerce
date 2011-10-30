@@ -1,0 +1,36 @@
+{
+  if (showMedia && mediaField != null) {
+    updateMedia(record.getAttribute(mediaField));
+  }
+  this.handler=handler;
+  if (fieldNames != null && fieldNames.length > 0) {
+    dataSource.resetVisibilityOnly(fieldNames);
+  }
+ else {
+    dataSource.resetPermanentFieldVisibility();
+  }
+  if (ignoreFields != null) {
+    for (    String fieldName : ignoreFields) {
+      dataSource.getField(fieldName).setHidden(true);
+    }
+  }
+  if (title != null) {
+    this.setTitle(title);
+  }
+ else {
+    this.setTitle("Edit entity: " + dataSource.getPolymorphicEntities().get(dataSource.getDefaultNewEntityFullyQualifiedClassname()));
+  }
+  buildFields(dataSource,dynamicForm);
+  dynamicForm.editRecord(record);
+  centerInPage();
+  setTop(70);
+  show();
+  setHeight(20);
+  int formHeight=hStack.getScrollHeight() + vLayout.getScrollHeight() + 30;
+  if (formHeight > 600) {
+    setHeight(600);
+  }
+ else {
+    setHeight(formHeight);
+  }
+}

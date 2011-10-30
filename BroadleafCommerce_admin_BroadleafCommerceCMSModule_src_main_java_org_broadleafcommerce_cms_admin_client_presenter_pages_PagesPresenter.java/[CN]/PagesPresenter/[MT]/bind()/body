@@ -23,9 +23,8 @@
         getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
           @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
             if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
-              final Record newRecord=response.getData()[0];
-              final String newId=getPresenterSequenceSetupManager().getDataSource("pageDS").getPrimaryKeyValue(newRecord);
-              FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)((DynamicFormView)getDisplay().getDynamicFormDisplay()).getFormOnlyDisplay()).getMember("pageTemplateForm");
+              final String newId=response.getAttribute("newId");
+              FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
               final DynamicForm form=legacyForm.getForm();
               for (              FormItem formItem : form.getFields()) {
                 if (formItem instanceof RichTextCanvasItem) {
@@ -42,9 +41,15 @@
                 }
               }
 );
-              if (getPresenterSequenceSetupManager().getDataSource("pageDS").getPrimaryKeyValue(currentPageRecord).equals(newId)) {
-                display.getListDisplay().getGrid().getRecordList().remove(currentPageRecord);
-                currentPageRecord=newRecord;
+              if (!currentPageId.equals(newId)) {
+                for (                ListGridRecord record : getDisplay().getListDisplay().getGrid().getRecords()) {
+                  if (record.getAttribute("id").equals(currentPageId)) {
+                    record.setAttribute("id",newId);
+                    currentPageRecord=record;
+                    break;
+                  }
+                }
+                currentPageId=newId;
               }
             }
           }
@@ -54,9 +59,9 @@
     }
   }
 );
-  getDisplay().getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+  display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
-      isFetched=true;
+      destroyTemplateForm();
     }
   }
 );

@@ -15,7 +15,7 @@
       pageTemplateDialogView=pageTemplateSearchView;
       getPresenterSequenceSetupManager().getDataSource("pageDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("pageTemplate",pageTemplateSearchView,"Page Template Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
-          if (currentPageRecord != null) {
+          if (currentPageRecord != null && !BLCMain.ENTITY_ADD.isVisible()) {
             destroyTemplateForm();
             loadTemplateForm(currentPageRecord);
           }

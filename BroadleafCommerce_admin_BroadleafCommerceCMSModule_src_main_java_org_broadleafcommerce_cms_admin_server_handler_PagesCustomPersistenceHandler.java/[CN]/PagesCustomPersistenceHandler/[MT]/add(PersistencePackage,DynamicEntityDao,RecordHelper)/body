@@ -5,7 +5,7 @@
     Page adminInstance=(Page)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Page.class.getName(),persistencePerspective);
     adminInstance=(Page)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    pageService.addPage((Page)adminInstance,getSandBox());
+    adminInstance=pageService.addPage(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
   }

@@ -6,22 +6,36 @@
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS").setDefaultNewEntityFullyQualifiedClassname(EntityImplementations.STATICASSETIMPL);
-        Map<String,Object> initialValues=new HashMap<String,Object>();
+        Map<String,Object> initialValues=new HashMap<String,Object>(4);
         initialValues.put("operation","add");
         initialValues.put("customCriteria","assetListUi");
         initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
         initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS").getPrimaryKeyValue(getDisplay().getListDisplay().getGrid().getSelectedRecord()));
         FILE_UPLOAD.editNewRecord("Upload Artifact",getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),initialValues,new ItemEditedHandler(){
           public void onItemEdited(          ItemEdited event){
-            Criteria myCriteria=new Criteria();
-            myCriteria.addCriteria("fullUrl",event.getRecord().getAttribute("fullUrl"));
-            getDisplay().getListLeafDisplay().getGrid().fetchData(myCriteria,new DSCallback(){
-              @Override public void execute(              DSResponse response,              Object rawData,              DSRequest request){
-                getDisplay().getListLeafDisplay().getGrid().selectRecord(0);
+            ListGridRecord[] recordList=new ListGridRecord[]{event.getRecord()};
+            DSResponse updateResponse=new DSResponse();
+            updateResponse.setData(recordList);
+            getDisplay().getListLeafDisplay().getGrid().getDataSource().updateCaches(updateResponse);
+            getDisplay().getListLeafDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(event.getRecord()));
+            String primaryKey=getDisplay().getListLeafDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
+            boolean foundRecord=false;
+            for (            Record record : getDisplay().getListLeafDisplay().getGrid().getRecords()) {
+              if (record.getAttribute(primaryKey).equals(event.getRecord().getAttribute(primaryKey))) {
+                foundRecord=true;
+                break;
               }
             }
+            if (!foundRecord) {
+              ((AbstractDynamicDataSource)getDisplay().getListLeafDisplay().getGrid().getDataSource()).setAddedRecord(event.getRecord());
+              getDisplay().getListLeafDisplay().getGrid().getDataSource().fetchData(new Criteria("blc.fetch.from.cache",event.getRecord().getAttribute(primaryKey)),new DSCallback(){
+                @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
+                  getDisplay().getListLeafDisplay().getGrid().setData(response.getData());
+                  getDisplay().getListLeafDisplay().getGrid().selectRecord(0);
+                }
+              }
 );
-            resetForm();
+            }
           }
         }
 ,null,new String[]{"file","name","callbackName","operation","ceilingEntityFullyQualifiedClassname","parentFolder","customCriteria"},null);

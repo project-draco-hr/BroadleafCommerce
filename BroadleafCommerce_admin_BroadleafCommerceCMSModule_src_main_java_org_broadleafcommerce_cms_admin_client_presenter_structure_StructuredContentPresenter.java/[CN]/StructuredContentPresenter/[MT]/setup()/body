@@ -24,14 +24,14 @@
       setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("structuredContentDS"),getPresenterSequenceSetupManager().getDataSource("scCustomerDS"),getPresenterSequenceSetupManager().getDataSource("timeDTODS"),getPresenterSequenceSetupManager().getDataSource("requestDTODS"),getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("scProductDS"));
       getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("structuredContentType",structuredContentTypeSearchView,"Structured Content Type Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
-          if (currentStructuredContentRecord != null) {
+          if (currentStructuredContentRecord != null && !BLCMain.ENTITY_ADD.isVisible()) {
             destroyContentTypeForm();
             loadContentTypeForm(currentStructuredContentRecord);
           }
         }
       }
 );
-      ((ListGridDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setupGridFields(new String[]{"locked","structuredContentTypeGrid","contentName","locale","offlineFlag"});
+      ((ListGridDataSource)getPresenterSequenceSetupManager().getDataSource("structuredContentDS")).setupGridFields(new String[]{"locked","structuredContentType_Grid","contentName","locale","offlineFlag"});
     }
   }
 ));
