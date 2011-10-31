@@ -31,6 +31,17 @@
                   extractQualifierData(newId,false,dirtyValues);
                   getDisplay().getDynamicFormDisplay().getSaveButton().disable();
                   getDisplay().getStructuredContentSaveButton().disable();
+                  if (!presenter.currentStructuredContentId.equals(newId)) {
+                    for (                    ListGridRecord record : getDisplay().getListDisplay().getGrid().getRecords()) {
+                      if (record.getAttribute("id").equals(presenter.currentStructuredContentId)) {
+                        record.setAttribute("id",newId);
+                        presenter.currentStructuredContentRecord=record;
+                        break;
+                      }
+                    }
+                    presenter.currentStructuredContentId=newId;
+                  }
+                  getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(presenter.currentStructuredContentRecord));
                 }
  catch (                IncompatibleMVELTranslationException e) {
                   SC.warn(e.getMessage());
@@ -39,16 +50,6 @@
             }
           }
 );
-          if (!presenter.currentStructuredContentId.equals(newId)) {
-            for (            ListGridRecord record : getDisplay().getListDisplay().getGrid().getRecords()) {
-              if (record.getAttribute("id").equals(presenter.currentStructuredContentId)) {
-                record.setAttribute("id",newId);
-                presenter.currentStructuredContentRecord=selectedRecord;
-                break;
-              }
-            }
-            presenter.currentStructuredContentId=newId;
-          }
         }
       }
     }
