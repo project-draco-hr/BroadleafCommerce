@@ -1,4 +1,11 @@
 {
+  if (shouldExcludeURL(request)) {
+    filterChain.doFilter(request,response);
+    return;
+  }
+  if (logger.isDebugEnabled()) {
+    logger.debug("CONTENT FILTER BEGIN " + request.getPathInfo());
+  }
   if (request.getAttribute(REQUEST_DTO) == null) {
     request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
   }

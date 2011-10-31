@@ -1,0 +1,16 @@
+{
+  if (requestedModuleKey != null && modules.get(requestedModuleKey) != null) {
+    if (SecurityManager.getInstance().isUserAuthorizedToViewModule(requestedModuleKey)) {
+      currentModuleKey=requestedModuleKey;
+      return;
+    }
+  }
+  currentModuleKey=null;
+  for (Iterator<Module> iterator=modules.values().iterator(); iterator.hasNext(); ) {
+    Module currentModule=iterator.next();
+    if (SecurityManager.getInstance().isUserAuthorizedToViewModule(currentModule.getModuleKey())) {
+      currentModuleKey=currentModule.getModuleKey();
+      return;
+    }
+  }
+}

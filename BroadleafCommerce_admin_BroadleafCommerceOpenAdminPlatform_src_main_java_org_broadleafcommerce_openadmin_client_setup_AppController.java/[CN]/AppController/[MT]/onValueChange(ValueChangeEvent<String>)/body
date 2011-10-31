@@ -1,10 +1,13 @@
 {
   String token=event.getValue();
   if (token != null) {
-    if (!uiFactory.equalsCurrentView(token)) {
-      String[] vals=pages.get(token);
-      if (vals != null) {
-        showView(vals[0],vals[1]);
+    String page=BLCLaunch.getSelectedPage(token);
+    if (page != null) {
+      if (!uiFactory.equalsCurrentView(page)) {
+        String[] vals=pages.get(page);
+        if (vals != null) {
+          showView(vals[0],vals[1]);
+        }
       }
     }
   }

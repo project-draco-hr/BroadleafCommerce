@@ -1,0 +1,26 @@
+{
+  this.pages=pages;
+  this.container=container;
+  if (firstTime) {
+    String token=History.getToken();
+    if (pageKey.equals(BLCLaunch.getSelectedPage(token)) && MasterView.moduleKey.equals(BLCLaunch.getSelectedModule(token))) {
+      showView(pages.get(pageKey)[0],pages.get(pageKey)[1]);
+    }
+ else {
+      History.newItem("moduleKey=" + MasterView.moduleKey + "&pageKey="+ pageKey);
+    }
+    return;
+  }
+  if (pageKey != null && pages.get(pageKey) != null) {
+    if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(pageKey)[0])) {
+      History.newItem("moduleKey=" + MasterView.moduleKey + "&pageKey="+ pageKey);
+      return;
+    }
+  }
+  for (  String sectionTitle : pages.keySet()) {
+    if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(sectionTitle)[0])) {
+      History.newItem("moduleKey=" + MasterView.moduleKey + "&pageKey="+ sectionTitle);
+      break;
+    }
+  }
+}

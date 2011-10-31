@@ -1,0 +1,20 @@
+{
+  Map<String,String[]> pagesMap=modules.get(currentModuleKey).getPages();
+  if (pagesMap.get(requestedPageKey) != null) {
+    String pageView=pagesMap.get(requestedPageKey)[0];
+    if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pageView)) {
+      currentPageKey=requestedPageKey;
+      return;
+    }
+  }
+  currentPageKey=null;
+  if (pagesMap != null) {
+    for (    String pageKey : pagesMap.keySet()) {
+      String view=pagesMap.get(pageKey)[0];
+      if (SecurityManager.getInstance().isUserAuthorizedToViewSection(view)) {
+        currentPageKey=pageKey;
+        return;
+      }
+    }
+  }
+}

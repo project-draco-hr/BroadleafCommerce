@@ -1,0 +1,30 @@
+{
+  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    @Override public void onSuccess(    AdminUser result){
+      SecurityManager.USER=result;
+      if (result == null) {
+        UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
+        builder.setPath(BLCMain.webAppContext + "/admin.html");
+        com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+      }
+ else {
+        setCurrentModuleKey(requestedModuleKey);
+        if (currentModuleKey == null) {
+          SC.say("Your login does not have authorization to view any modules.");
+          return;
+        }
+        setCurrentPageKey(requestedPageKey);
+        if (currentPageKey == null) {
+          SC.say("Your login does not have authorization to view any pages for the passed in module.");
+          return;
+        }
+        modules.get(currentModuleKey).preDraw();
+        MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
+        MASTERVIEW.draw();
+        AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,true);
+        modules.get(currentModuleKey).postDraw();
+      }
+    }
+  }
+);
+}
