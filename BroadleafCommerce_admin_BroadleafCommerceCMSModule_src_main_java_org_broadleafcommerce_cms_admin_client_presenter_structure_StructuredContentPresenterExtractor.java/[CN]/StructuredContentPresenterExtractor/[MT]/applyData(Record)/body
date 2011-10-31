@@ -32,13 +32,9 @@
                   getDisplay().getDynamicFormDisplay().getSaveButton().disable();
                   getDisplay().getStructuredContentSaveButton().disable();
                   if (!presenter.currentStructuredContentId.equals(newId)) {
-                    for (                    ListGridRecord record : getDisplay().getListDisplay().getGrid().getRecords()) {
-                      if (record.getAttribute("id").equals(presenter.currentStructuredContentId)) {
-                        record.setAttribute("id",newId);
-                        presenter.currentStructuredContentRecord=record;
-                        break;
-                      }
-                    }
+                    Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",presenter.currentStructuredContentId);
+                    myRecord.setAttribute("id",newId);
+                    presenter.currentStructuredContentRecord=myRecord;
                     presenter.currentStructuredContentId=newId;
                   }
                   getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(presenter.currentStructuredContentRecord));
