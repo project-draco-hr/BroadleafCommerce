@@ -7,6 +7,12 @@
     adminInstance=(Page)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=pageService.addPage(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    if (adminEntity.findProperty("pageTemplate") != null) {
+      Property property=new Property();
+      property.setName("pageTemplate_Grid");
+      property.setValue(adminEntity.findProperty("pageTemplate").getValue());
+      adminEntity.addProperty(property);
+    }
     return adminEntity;
   }
  catch (  Exception e) {

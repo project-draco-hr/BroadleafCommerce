@@ -24,7 +24,7 @@
       setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("structuredContentDS"),getPresenterSequenceSetupManager().getDataSource("scCustomerDS"),getPresenterSequenceSetupManager().getDataSource("timeDTODS"),getPresenterSequenceSetupManager().getDataSource("requestDTODS"),getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("scProductDS"));
       getPresenterSequenceSetupManager().getDataSource("structuredContentDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("structuredContentType",structuredContentTypeSearchView,"Structured Content Type Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
-          if (currentStructuredContentRecord != null && !BLCMain.ENTITY_ADD.isVisible()) {
+          if (currentStructuredContentRecord != null && BLCMain.ENTITY_ADD.getHidden()) {
             destroyContentTypeForm();
             loadContentTypeForm(currentStructuredContentRecord);
           }

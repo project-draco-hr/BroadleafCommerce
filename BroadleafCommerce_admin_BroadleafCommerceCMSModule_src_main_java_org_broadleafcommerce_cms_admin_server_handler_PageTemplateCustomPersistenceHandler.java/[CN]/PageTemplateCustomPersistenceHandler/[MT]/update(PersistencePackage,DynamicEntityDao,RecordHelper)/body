@@ -2,17 +2,13 @@
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
     String pageId=persistencePackage.getCustomCriteria()[1];
-    Page page=(Page)pageService.findPageById(Long.valueOf(pageId));
-    List<String> templateFieldNames=new ArrayList<String>();
+    Page page=pageService.findPageById(Long.valueOf(pageId));
+    List<String> templateFieldNames=new ArrayList<String>(20);
     for (    FieldGroup group : page.getPageTemplate().getFieldGroups()) {
       for (      FieldDefinition definition : group.getFieldDefinitions()) {
         templateFieldNames.add(definition.getName());
       }
     }
-    for (    String key : page.getPageFields().keySet()) {
-      PageField pageField=page.getPageFields().get(key);
-    }
-    page=(Page)SerializationUtils.clone(page);
     Map<String,PageField> pageFieldMap=page.getPageFields();
     for (    Property property : persistencePackage.getEntity().getProperties()) {
       if (templateFieldNames.contains(property.getName())) {

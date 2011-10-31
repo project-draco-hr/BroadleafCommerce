@@ -3,7 +3,7 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageDS",new PageDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource top){
       setupDisplayItems(top);
-      ((ListGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{});
+      ((ListGridDataSource)top).setupGridFields(new String[]{"locked","fullUrl","description","pageTemplate_Grid"});
     }
   }
 ));
@@ -15,7 +15,7 @@
       pageTemplateDialogView=pageTemplateSearchView;
       getPresenterSequenceSetupManager().getDataSource("pageDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("pageTemplate",pageTemplateSearchView,"Page Template Search",getDisplay().getDynamicFormDisplay(),new FormItemCallback(){
         @Override public void execute(        FormItem formItem){
-          if (currentPageRecord != null && !BLCMain.ENTITY_ADD.isVisible()) {
+          if (currentPageRecord != null && BLCMain.ENTITY_ADD.getHidden()) {
             destroyTemplateForm();
             loadTemplateForm(currentPageRecord);
           }
