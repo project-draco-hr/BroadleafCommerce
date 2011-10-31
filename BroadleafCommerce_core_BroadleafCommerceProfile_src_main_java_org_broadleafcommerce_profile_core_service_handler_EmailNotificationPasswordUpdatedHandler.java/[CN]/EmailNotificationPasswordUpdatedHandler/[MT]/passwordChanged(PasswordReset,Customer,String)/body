@@ -1,8 +1,14 @@
 {
   Locale localeToUse=null;
-  LocaleType localeType=customer.getCustomerLocale();
-  if (localeType != null) {
-    localeToUse=localeType.getLocale();
+  org.broadleafcommerce.common.locale.domain.Locale blLocale=customer.getCustomerLocale();
+  if (blLocale != null) {
+    String[] splitLocale=blLocale.getLocaleCode().split("_");
+    if (splitLocale.length > 1) {
+      localeToUse=new Locale(splitLocale[0],splitLocale[1]);
+    }
+ else {
+      localeToUse=new Locale(splitLocale[0]);
+    }
   }
   if (localeToUse == null) {
     localeToUse=getPasswordResetEmailDefaultLocale();

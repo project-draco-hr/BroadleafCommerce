@@ -9,8 +9,16 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("challengeQuestionDS",new ChallengeQuestionListDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
       ((ListGridDataSource)result).resetPermanentFieldVisibility("question");
-      final EntitySearchDialog challengeQuestionSearchView=new EntitySearchDialog((ListGridDataSource)result);
+      final EntitySearchDialog challengeQuestionSearchView=new EntitySearchDialog((ListGridDataSource)result,true);
       getPresenterSequenceSetupManager().getDataSource("customerDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("challengeQuestion",challengeQuestionSearchView,BLCMain.getMessageManager().getString("challengeQuestionSearchPrompt"),display.getDynamicFormDisplay());
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("localeDS",new LocaleListDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ((ListGridDataSource)result).resetPermanentFieldVisibility("friendlyName");
+      final EntitySearchDialog localeSearchView=new EntitySearchDialog((ListGridDataSource)result,true);
+      getPresenterSequenceSetupManager().getDataSource("customerDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("customerLocale",localeSearchView,BLCMain.getMessageManager().getString("localeSearchPrompt"),display.getDynamicFormDisplay());
     }
   }
 ));
