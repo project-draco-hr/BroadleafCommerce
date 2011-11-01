@@ -11,6 +11,13 @@
   }
   if (clazz.getSuperclass().equals(testClass)) {
     ClassTree myTree=new ClassTree(clazz.getName());
+    AdminPresentationClass classPresentation=clazz.getAnnotation(AdminPresentationClass.class);
+    if (classPresentation != null) {
+      String friendlyName=classPresentation.friendlyName();
+      if (!StringUtils.isEmpty(friendlyName)) {
+        myTree.setFriendlyName(friendlyName);
+      }
+    }
     tree.setChildren((ClassTree[])ArrayUtils.add(tree.getChildren(),myTree));
   }
  else {

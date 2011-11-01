@@ -1,7 +1,15 @@
 {
   ClassTree classTree=null;
   if (!ArrayUtils.isEmpty(polymorphicClasses)) {
-    classTree=new ClassTree(polymorphicClasses[polymorphicClasses.length - 1].getName());
+    Class<?> topClass=polymorphicClasses[polymorphicClasses.length - 1];
+    classTree=new ClassTree(topClass.getName());
+    AdminPresentationClass classPresentation=topClass.getAnnotation(AdminPresentationClass.class);
+    if (classPresentation != null) {
+      String friendlyName=classPresentation.friendlyName();
+      if (!StringUtils.isEmpty(friendlyName)) {
+        classTree.setFriendlyName(friendlyName);
+      }
+    }
     for (int j=polymorphicClasses.length - 1; j >= 0; j--) {
       addClassToTree(polymorphicClasses[j],classTree);
     }
