@@ -1,0 +1,18 @@
+{
+  this.setTitle(title);
+  this.handler=handler;
+  centerInPage();
+  saveButton.disable();
+  searchGrid.deselectAllRecords();
+  ListGridRecord[] records=new ListGridRecord[types.size()];
+  int j=0;
+  for (  Map.Entry<String,String> entry : types.entrySet()) {
+    ListGridRecord record=new ListGridRecord();
+    record.setAttribute("name",entry.getValue());
+    record.setAttribute("fullyQualifiedType",entry.getKey());
+    records[j]=record;
+    j++;
+  }
+  searchGrid.setData(records);
+  show();
+}
