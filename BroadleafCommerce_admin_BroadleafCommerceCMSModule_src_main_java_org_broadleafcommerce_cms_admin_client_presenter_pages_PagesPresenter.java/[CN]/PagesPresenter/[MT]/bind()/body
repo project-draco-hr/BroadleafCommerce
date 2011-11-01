@@ -11,6 +11,7 @@
           legacyForm.getForm().reset();
         }
         getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+        getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
       }
     }
   }
@@ -37,6 +38,7 @@
                 @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
                   if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
                     getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+                    getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
                     if (!currentPageId.equals(newId)) {
                       Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",currentPageId);
                       myRecord.setAttribute("id",newId);

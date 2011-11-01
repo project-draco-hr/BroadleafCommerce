@@ -6,6 +6,7 @@
         requestProperties.setAttribute("dirtyValues",display.getFormOnlyDisplay().getForm().getChangedValues());
         display.getFormOnlyDisplay().getForm().saveData(null,requestProperties);
         display.getSaveButton().disable();
+        display.getRefreshButton().disable();
       }
     }
   }
@@ -15,6 +16,7 @@
       if (event.isLeftButtonDown()) {
         display.getFormOnlyDisplay().getForm().reset();
         display.getSaveButton().disable();
+        display.getRefreshButton().disable();
       }
     }
   }
@@ -22,6 +24,7 @@
   itemChangedHandlerRegistration=display.getFormOnlyDisplay().getForm().addItemChangedHandler(new ItemChangedHandler(){
     public void onItemChanged(    ItemChangedEvent event){
       display.getSaveButton().enable();
+      display.getRefreshButton().enable();
     }
   }
 );
