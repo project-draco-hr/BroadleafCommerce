@@ -1,15 +1,36 @@
 {
+  String ceilingClass=null;
+  for (  Class<?> clazz : polymorphicClasses) {
+    AdminPresentationClass classPresentation=clazz.getAnnotation(AdminPresentationClass.class);
+    if (classPresentation != null) {
+      String ceilingEntity=classPresentation.ceilingDisplayEntity();
+      if (!StringUtils.isEmpty(ceilingEntity)) {
+        ceilingClass=ceilingEntity;
+        break;
+      }
+    }
+  }
+  if (ceilingClass != null) {
+    int pos=-1;
+    int j=0;
+    for (    Class<?> clazz : polymorphicClasses) {
+      if (clazz.getName().equals(ceilingClass)) {
+        pos=j;
+        break;
+      }
+      j++;
+    }
+    if (pos >= 0) {
+      Class<?>[] temp=new Class<?>[pos + 1];
+      System.arraycopy(polymorphicClasses,0,temp,0,j + 1);
+      polymorphicClasses=temp;
+    }
+  }
   ClassTree classTree=null;
   if (!ArrayUtils.isEmpty(polymorphicClasses)) {
     Class<?> topClass=polymorphicClasses[polymorphicClasses.length - 1];
     classTree=new ClassTree(topClass.getName());
-    AdminPresentationClass classPresentation=topClass.getAnnotation(AdminPresentationClass.class);
-    if (classPresentation != null) {
-      String friendlyName=classPresentation.friendlyName();
-      if (!StringUtils.isEmpty(friendlyName)) {
-        classTree.setFriendlyName(friendlyName);
-      }
-    }
+    createClassTreeFromAnnotation(topClass,classTree);
     for (int j=polymorphicClasses.length - 1; j >= 0; j--) {
       addClassToTree(polymorphicClasses[j],classTree);
     }

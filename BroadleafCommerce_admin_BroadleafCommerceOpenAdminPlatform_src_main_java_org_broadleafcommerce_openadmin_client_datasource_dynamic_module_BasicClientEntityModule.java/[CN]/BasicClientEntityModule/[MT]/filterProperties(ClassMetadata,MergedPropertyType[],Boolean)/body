@@ -76,35 +76,47 @@
         }
       }
       String securityLevel=property.getMetadata().getPresentationAttributes().getSecurityLevel();
-      Boolean hidden=property.getMetadata().getPresentationAttributes().isHidden();
-      FormHiddenEnum formHidden=property.getMetadata().getPresentationAttributes().getFormHidden();
-      if (formHidden == null) {
-        formHidden=FormHiddenEnum.NOT_SPECIFIED;
+      VisibilityEnum visibility=property.getMetadata().getPresentationAttributes().getVisibility();
+      if (visibility == null) {
+        visibility=VisibilityEnum.HIDDEN_ALL;
       }
-      String group=property.getMetadata().getPresentationAttributes().getGroup();
-      Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
-      Boolean groupCollapsed=property.getMetadata().getPresentationAttributes().getGroupCollapsed();
-      Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
-      Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
-      Integer order=property.getMetadata().getPresentationAttributes().getOrder();
-      String columnWidth=property.getMetadata().getPresentationAttributes().getColumnWidth();
-      String[][] enumerationValues=property.getMetadata().getEnumerationValues();
-      String enumerationClass=property.getMetadata().getEnumerationClass();
-      if (mutable) {
-        Boolean isReadOnly=property.getMetadata().getPresentationAttributes().getReadOnly();
-        if (isReadOnly != null) {
-          mutable=!isReadOnly;
-        }
-      }
-      DataSourceField field;
+      Boolean hidden=visibility == VisibilityEnum.HIDDEN_ALL || visibility == VisibilityEnum.GRID_HIDDEN;
+      FormHiddenEnum formHidden;
+switch (visibility) {
+case FORM_HIDDEN:
+        formHidden=FormHiddenEnum.HIDDEN;
+      break;
+default :
+    formHidden=FormHiddenEnum.NOT_SPECIFIED;
+  break;
+case GRID_HIDDEN:
+formHidden=FormHiddenEnum.VISIBLE;
+break;
+}
+String group=property.getMetadata().getPresentationAttributes().getGroup();
+Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
+Boolean groupCollapsed=property.getMetadata().getPresentationAttributes().getGroupCollapsed();
+Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
+Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
+Integer order=property.getMetadata().getPresentationAttributes().getOrder();
+String columnWidth=property.getMetadata().getPresentationAttributes().getColumnWidth();
+String[][] enumerationValues=property.getMetadata().getEnumerationValues();
+String enumerationClass=property.getMetadata().getEnumerationClass();
+if (mutable) {
+Boolean isReadOnly=property.getMetadata().getPresentationAttributes().getReadOnly();
+if (isReadOnly != null) {
+mutable=!isReadOnly;
+}
+}
+DataSourceField field;
 switch (SupportedFieldType.valueOf(fieldType)) {
 case ID:
-        field=new DataSourceTextField(propertyName,friendlyName);
-      if (propertyName.indexOf(".") < 0) {
-        field.setPrimaryKey(true);
-      }
-    field.setCanEdit(false);
-  hidden=true;
+field=new DataSourceTextField(propertyName,friendlyName);
+if (propertyName.indexOf(".") < 0) {
+field.setPrimaryKey(true);
+}
+field.setCanEdit(false);
+hidden=true;
 field.setRequired(required);
 break;
 case BOOLEAN:
