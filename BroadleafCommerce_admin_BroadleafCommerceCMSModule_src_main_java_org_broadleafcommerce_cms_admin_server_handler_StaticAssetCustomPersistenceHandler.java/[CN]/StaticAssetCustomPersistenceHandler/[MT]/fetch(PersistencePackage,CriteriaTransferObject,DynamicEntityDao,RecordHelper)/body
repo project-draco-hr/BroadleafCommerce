@@ -2,22 +2,29 @@
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StaticAsset.class.getName(),getForeignKeyReadyMergedProperties());
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StaticAsset.class.getName(),getMergedProperties());
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,StaticAsset.class.getName());
+    PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),StaticAsset.class.getName());
     Criteria criteria=dynamicEntityDao.getCriteria(queryCriteria,StaticAsset.class);
-    List<StaticAsset> items=staticAssetService.findStaticAssetFolderChildren(getSandBox(),criteria);
-    List<Serializable> convertedList=new ArrayList<Serializable>();
+    Criteria count=dynamicEntityDao.getCriteria(countCriteria,StaticAsset.class);
+    List<StaticAsset> items=staticAssetService.findAssets(getSandBox(),criteria);
+    Long totalRecords=staticAssetService.countAssets(getSandBox(),count);
+    List<Serializable> convertedList=new ArrayList<Serializable>(items.size());
     convertedList.addAll(items);
-    Entity[] pageEntities=helper.getRecords(getForeignKeyReadyMergedProperties(),convertedList);
-    for (    Entity entity : pageEntities) {
+    Entity[] assetEntities=helper.getRecords(getMergedProperties(),convertedList);
+    for (    Entity entity : assetEntities) {
       entity=addImageRecords(entity);
+      if ("true".equals(entity.findProperty("lockedFlag").getValue())) {
+        Property property=new Property();
+        property.setName("picture");
+        property.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
+        entity.addProperty(property);
+      }
     }
-    Long count=staticAssetService.countStaticAssetFolderChildren(getSandBox(),criteria);
-    DynamicResultSet response=new DynamicResultSet(pageEntities,count.intValue());
-    return response;
+    return new DynamicResultSet(assetEntities,totalRecords.intValue());
   }
  catch (  Exception e) {
-    e.printStackTrace();
+    LOG.error("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
     throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
   }
 }

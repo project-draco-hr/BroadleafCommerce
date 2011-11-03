@@ -1,15 +1,18 @@
 {
   initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
   compileDefaultValuesFromCurrentFilter(initialValues);
-  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new ItemEditedHandler(){
+  Map<String,String> hints=new HashMap<String,String>();
+  hints.put("name",BLCMain.getMessageManager().getString("assetUploadNameHint"));
+  hints.put("fullUrl",BLCMain.getMessageManager().getString("assetUploadFullUrlHint"));
+  FILE_UPLOAD.editNewRecord("Upload Artifact",getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),initialValues,hints,new ItemEditedHandler(){
     public void onItemEdited(    ItemEdited event){
       ListGridRecord[] recordList=new ListGridRecord[]{event.getRecord()};
       DSResponse updateResponse=new DSResponse();
       updateResponse.setData(recordList);
       getDisplay().getListDisplay().getGrid().getDataSource().updateCaches(updateResponse);
       getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(event.getRecord()));
-      String primaryKey=display.getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
-      ResultSet results=display.getListDisplay().getGrid().getResultSet();
+      String primaryKey=getDisplay().getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
+      ResultSet results=getDisplay().getListDisplay().getGrid().getResultSet();
       boolean foundRecord=false;
       if (results != null) {
         foundRecord=getDisplay().getListDisplay().getGrid().getResultSet().find(primaryKey,event.getRecord().getAttribute(primaryKey)) != null;
@@ -26,5 +29,5 @@
       }
     }
   }
-,null,null);
+,null,new String[]{"file","name","fullUrl","callbackName","operation","ceilingEntityFullyQualifiedClassname","parentFolder","customCriteria"},null);
 }

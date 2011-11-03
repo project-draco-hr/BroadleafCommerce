@@ -64,12 +64,10 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetFolderTreeDS",new StaticAssetsFolderTreeDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
-      PresentationLayerAssociatedDataSource staticAssetFolderTreeDS=(PresentationLayerAssociatedDataSource)getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS");
-      final AssetSearchDialog assetSearchDialogView=new AssetSearchDialog(staticAssetTreeDS,staticAssetFolderTreeDS);
+      final AssetSearchDialog assetSearchDialogView=new AssetSearchDialog(staticAssetTreeDS);
       getPresenterSequenceSetupManager().getDataSource("productMediaMapDS").getFormItemCallbackHandlerManager().addFormItemCallback("url",new FormItemCallback(){
         @Override public void execute(        final FormItem formItem){
           assetSearchDialogView.search("Asset Search",new TileGridItemSelectedHandler(){

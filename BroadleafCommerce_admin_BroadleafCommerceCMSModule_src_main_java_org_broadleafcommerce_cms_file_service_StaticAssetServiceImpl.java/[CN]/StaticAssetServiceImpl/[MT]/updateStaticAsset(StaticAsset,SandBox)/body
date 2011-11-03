@@ -1,15 +1,18 @@
 {
-  String parentUrl=(staticAsset.getParentFolder() == null ? "" : staticAsset.getParentFolder().getFullUrl());
-  if (checkForSandboxMatch(staticAsset.getSandbox(),destSandbox)) {
-    staticAsset.setFullUrl(parentUrl + "/" + staticAsset.getName()+ "."+ staticAsset.getFileExtension());
-    return staticAssetDao.updateStaticAsset(staticAsset);
+  if (staticAsset.getLockedFlag()) {
+    throw new IllegalArgumentException("Unable to update a locked record");
   }
- else   if (checkForProductionSandbox(staticAsset.getSandbox())) {
+  if (checkForSandboxMatch(staticAsset.getSandbox(),destSandbox)) {
+    return staticAssetDao.addOrUpdateStaticAsset(staticAsset,true);
+  }
+ else   if (isProductionSandBox(staticAsset.getSandbox())) {
     StaticAsset clonedAsset=staticAsset.cloneEntity();
     clonedAsset.setOriginalAssetId(staticAsset.getId());
     clonedAsset.setSandbox(destSandbox);
-    clonedAsset.setFullUrl(parentUrl + "/" + clonedAsset.getName()+ "."+ clonedAsset.getFileExtension());
-    StaticAsset returnAsset=staticAssetDao.addStaticAsset(clonedAsset);
+    StaticAsset returnAsset=staticAssetDao.addOrUpdateStaticAsset(clonedAsset,true);
+    StaticAsset prod=findStaticAssetById(staticAsset.getId());
+    prod.setLockedFlag(true);
+    staticAssetDao.addOrUpdateStaticAsset(prod,false);
     sandBoxItemDao.addSandBoxItem(destSandbox,SandBoxOperationType.UPDATE,SandBoxItemType.STATIC_ASSET,returnAsset.getFullUrl(),returnAsset.getId(),returnAsset.getOriginalAssetId());
     return returnAsset;
   }

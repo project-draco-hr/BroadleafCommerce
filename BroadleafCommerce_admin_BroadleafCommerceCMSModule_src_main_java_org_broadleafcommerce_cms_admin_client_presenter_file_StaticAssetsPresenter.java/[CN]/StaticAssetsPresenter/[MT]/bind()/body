@@ -1,65 +1,35 @@
 {
   super.bind();
-  leafAssetPresenter.bind();
   staticAssetDescriptionPresenter.bind();
-  leafAddClickHandlerRegistration=getDisplay().getListLeafDisplay().getAddButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS").setDefaultNewEntityFullyQualifiedClassname(EntityImplementations.STATICASSETIMPL);
-        Map<String,Object> initialValues=new HashMap<String,Object>(4);
-        initialValues.put("operation","add");
-        initialValues.put("customCriteria","assetListUi");
-        initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
-        initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS").getPrimaryKeyValue(getDisplay().getListDisplay().getGrid().getSelectedRecord()));
-        FILE_UPLOAD.editNewRecord("Upload Artifact",getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),initialValues,new ItemEditedHandler(){
-          public void onItemEdited(          ItemEdited event){
-            ListGridRecord[] recordList=new ListGridRecord[]{event.getRecord()};
-            DSResponse updateResponse=new DSResponse();
-            updateResponse.setData(recordList);
-            getDisplay().getListLeafDisplay().getGrid().getDataSource().updateCaches(updateResponse);
-            getDisplay().getListLeafDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(event.getRecord()));
-            String primaryKey=getDisplay().getListLeafDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
-            boolean foundRecord=getDisplay().getListLeafDisplay().getGrid().getResultSet().find(primaryKey,event.getRecord().getAttribute(primaryKey)) != null;
-            if (!foundRecord) {
-              ((AbstractDynamicDataSource)getDisplay().getListLeafDisplay().getGrid().getDataSource()).setAddedRecord(event.getRecord());
-              getDisplay().getListLeafDisplay().getGrid().getDataSource().fetchData(new Criteria("blc.fetch.from.cache",event.getRecord().getAttribute(primaryKey)),new DSCallback(){
-                @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
-                  getDisplay().getListLeafDisplay().getGrid().setData(response.getData());
-                  getDisplay().getListLeafDisplay().getGrid().selectRecord(0);
-                }
-              }
-);
-            }
-          }
-        }
-,null,new String[]{"file","name","callbackName","operation","ceilingEntityFullyQualifiedClassname","parentFolder","customCriteria"},null);
-      }
-    }
-  }
-);
-  getDisplay().getListLeafDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
-      if (event.getState()) {
-        getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().disable();
-        AssetItem assetItem=(AssetItem)getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge");
-        assetItem.setPreviewSrc(getDisplay().getListLeafDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge").getValue().toString());
-        assetItem.setDisabled(true);
-        staticAssetDescriptionPresenter.enable();
-        staticAssetDescriptionPresenter.load(event.getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),null);
-      }
-    }
-  }
-);
-  getDisplay().getListLeafDisplay().getRemoveButton().addClickHandler(new ClickHandler(){
-    @Override public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        resetForm();
-      }
-    }
-  }
-);
   if (!FILE_UPLOAD.isDrawn()) {
     FILE_UPLOAD.draw();
     FILE_UPLOAD.hide();
   }
+  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DSRequest requestProperties=new DSRequest();
+        requestProperties.setAttribute("dirtyValues",getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+              final String newId=response.getAttribute("newId");
+              getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+              getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
+              if (!currentId.equals(newId)) {
+                Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",currentId);
+                myRecord.setAttribute("id",newId);
+                currentSelectedRecord=myRecord;
+                currentId=newId;
+              }
+              getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(currentSelectedRecord));
+            }
+          }
+        }
+,requestProperties);
+      }
+    }
+  }
+);
 }

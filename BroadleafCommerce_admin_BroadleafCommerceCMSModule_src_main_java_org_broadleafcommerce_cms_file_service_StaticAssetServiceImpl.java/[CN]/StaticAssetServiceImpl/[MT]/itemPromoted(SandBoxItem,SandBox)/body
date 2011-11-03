@@ -2,7 +2,7 @@
   if (!SandBoxItemType.STATIC_ASSET.equals(sandBoxItem.getSandBoxItemType())) {
     return;
   }
-  StaticAsset asset=(StaticAsset)staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
+  StaticAsset asset=staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
   if (asset == null) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Asset not found " + sandBoxItem.getTemporaryItemId());
@@ -20,9 +20,9 @@
       if (LOG.isDebugEnabled()) {
         LOG.debug("Asset promoted to production.  " + asset.getId() + ".  Archiving original asset "+ asset.getOriginalAssetId());
       }
-      StaticAsset originalAsset=(StaticAsset)staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
+      StaticAsset originalAsset=staticAssetDao.readStaticAssetById(sandBoxItem.getTemporaryItemId());
       originalAsset.setArchivedFlag(Boolean.TRUE);
-      staticAssetDao.updateStaticAsset(originalAsset);
+      staticAssetDao.addOrUpdateStaticAsset(originalAsset,false);
       asset.setOriginalAssetId(null);
     }
   }
@@ -30,5 +30,5 @@
     asset.setOriginalSandBox(asset.getSandbox());
   }
   asset.setSandbox(destinationSandBox);
-  staticAssetDao.updateStaticAsset(asset);
+  staticAssetDao.addOrUpdateStaticAsset(asset,false);
 }

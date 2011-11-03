@@ -1,0 +1,40 @@
+{
+  criteria.add(Restrictions.eq("archivedFlag",false));
+  if (sandbox == null) {
+    criteria.add(Restrictions.isNull("sandbox"));
+    return (List<StaticAsset>)criteria.list();
+  }
+ else {
+    Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
+    Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
+    Criterion productionSandboxExpression=null;
+    if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
+      productionSandboxExpression=Restrictions.isNull("sandbox");
+    }
+ else {
+      if (!SandBoxType.PRODUCTION.equals(sandbox.getSandBoxType())) {
+        productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
+      }
+    }
+    if (productionSandboxExpression != null) {
+      criteria.add(Restrictions.or(Restrictions.or(currentSandboxExpression,productionSandboxExpression),originalSandboxExpression));
+    }
+ else {
+      criteria.add(Restrictions.or(currentSandboxExpression,originalSandboxExpression));
+    }
+    List<StaticAsset> resultList=(List<StaticAsset>)criteria.list();
+    LinkedHashMap returnItems=new LinkedHashMap<Long,Page>();
+    for (    StaticAsset page : resultList) {
+      returnItems.put(page.getId(),page);
+    }
+    for (    StaticAsset asset : resultList) {
+      if (asset.getOriginalAssetId() != null) {
+        returnItems.remove(asset.getOriginalAssetId());
+      }
+      if (asset.getDeletedFlag()) {
+        returnItems.remove(asset.getId());
+      }
+    }
+    return new ArrayList<StaticAsset>(returnItems.values());
+  }
+}

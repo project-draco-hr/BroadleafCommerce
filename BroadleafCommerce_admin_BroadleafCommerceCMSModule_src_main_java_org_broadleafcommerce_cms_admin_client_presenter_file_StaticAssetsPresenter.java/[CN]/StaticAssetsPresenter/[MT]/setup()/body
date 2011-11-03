@@ -1,10 +1,8 @@
 {
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetFolderTreeDS",new StaticAssetsFolderTreeDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTreeDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
-      setupDisplayItems(getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS"),dataSource);
-      leafAssetPresenter=new SubPresenter(getDisplay().getListLeafDisplay(),new String[]{EntityImplementations.STATICASSETIMPL},true,true,false);
-      leafAssetPresenter.setDataSource((ListGridDataSource)dataSource,new String[]{"picture","name","fullUrl","fileSize","mimeType"},new Boolean[]{false,true,false,false,false});
+      setupDisplayItems(dataSource);
+      ((ListGridDataSource)dataSource).setupGridFields(new String[]{"picture","name","fullUrl","fileSize","mimeType"});
     }
   }
 ));

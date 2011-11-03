@@ -5,7 +5,6 @@
   MultipartFile upload=UploadedFile.getUpload().get("file");
   Entity entity=persistencePackage.getEntity();
   try {
-    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     StaticAsset adminInstance;
     try {
       ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(upload.getInputStream());
@@ -16,8 +15,7 @@
  catch (    Exception e) {
       adminInstance=new StaticAssetImpl();
     }
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StaticAssetFolder.class);
-    Map<String,FieldMetadata> entityProperties=getForeignKeyReadyMergedProperties();
+    Map<String,FieldMetadata> entityProperties=getMergedProperties();
     adminInstance=(StaticAsset)helper.createPopulatedInstance(adminInstance,entity,entityProperties,false);
     adminInstance.setFileSize(upload.getSize());
     Collection mimeTypes=MimeUtil.getMimeTypes(upload.getOriginalFilename());
@@ -32,16 +30,24 @@
         adminInstance.setMimeType(mimeType.toString());
       }
     }
-    String extension=upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf(".") + 1,upload.getOriginalFilename().length()).toLowerCase();
+    String extension=upload.getOriginalFilename().substring(upload.getOriginalFilename().lastIndexOf('.') + 1,upload.getOriginalFilename().length()).toLowerCase();
     adminInstance.setFileExtension(extension);
-    adminInstance=staticAssetService.addStaticAsset(adminInstance,adminInstance.getParentFolder(),getSandBox());
+    String fullUrl=adminInstance.getFullUrl();
+    if (!fullUrl.startsWith("/")) {
+      fullUrl='/' + fullUrl;
+    }
+    if (fullUrl.lastIndexOf('.') < 0) {
+      fullUrl+='.' + extension;
+    }
+    adminInstance.setFullUrl(fullUrl);
+    adminInstance=staticAssetService.addStaticAsset(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(entityProperties,adminInstance,null,null);
     try {
       StaticAssetStorage storage=staticAssetStorageService.create();
       storage.setStaticAssetId(adminInstance.getId());
       Blob uploadBlob=staticAssetStorageService.createBlob(upload);
       storage.setFileData(uploadBlob);
-      storage=staticAssetStorageService.save(storage);
+      staticAssetStorageService.save(storage);
     }
  catch (    Exception e) {
       staticAssetService.deleteStaticAsset(adminInstance,getSandBox());
@@ -50,6 +56,7 @@
     return addImageRecords(adminEntity);
   }
  catch (  Exception e) {
+    LOG.error("Unable to perform add for entity: " + entity.getType()[0],e);
     throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
   }
 }

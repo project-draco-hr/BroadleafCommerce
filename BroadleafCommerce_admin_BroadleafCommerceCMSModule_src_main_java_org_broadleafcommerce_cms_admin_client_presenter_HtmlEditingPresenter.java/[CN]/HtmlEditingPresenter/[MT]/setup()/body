@@ -1,10 +1,8 @@
 {
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetFolderTreeDS",new StaticAssetsFolderTreeDataSourceFactory(),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
-      PresentationLayerAssociatedDataSource staticAssetFolderTreeDS=(PresentationLayerAssociatedDataSource)getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS");
-      assetSearchDialogView=new AssetSearchDialog(staticAssetTreeDS,staticAssetFolderTreeDS);
+      assetSearchDialogView=new AssetSearchDialog(staticAssetTreeDS);
     }
   }
 ));

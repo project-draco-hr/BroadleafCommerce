@@ -1,14 +1,13 @@
 {
   Entity entity=persistencePackage.getEntity();
   try {
-    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(StaticAssetFolder.class);
-    Map<String,FieldMetadata> adminProperties=getForeignKeyReadyMergedProperties();
+    Map<String,FieldMetadata> adminProperties=getMergedProperties();
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     StaticAsset adminInstance=(StaticAsset)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     staticAssetService.deleteStaticAsset(adminInstance,getSandBox());
   }
  catch (  Exception e) {
+    LOG.error("Unable to perform delete for entity: " + entity.getType()[0],e);
     throw new ServiceException("Unable to delete entity for " + entity.getType()[0],e);
   }
 }

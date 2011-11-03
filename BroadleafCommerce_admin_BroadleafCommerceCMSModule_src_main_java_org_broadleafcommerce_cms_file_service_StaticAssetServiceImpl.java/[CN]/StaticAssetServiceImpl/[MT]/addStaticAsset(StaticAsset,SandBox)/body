@@ -1,0 +1,10 @@
+{
+  staticAsset.setSandbox(destinationSandbox);
+  staticAsset.setArchivedFlag(false);
+  staticAsset.setDeletedFlag(false);
+  StaticAsset newAsset=staticAssetDao.addOrUpdateStaticAsset(staticAsset,true);
+  if (!isProductionSandBox(destinationSandbox)) {
+    sandBoxItemDao.addSandBoxItem(destinationSandbox,SandBoxOperationType.ADD,SandBoxItemType.STATIC_ASSET,newAsset.getFullUrl(),newAsset.getId(),null);
+  }
+  return newAsset;
+}

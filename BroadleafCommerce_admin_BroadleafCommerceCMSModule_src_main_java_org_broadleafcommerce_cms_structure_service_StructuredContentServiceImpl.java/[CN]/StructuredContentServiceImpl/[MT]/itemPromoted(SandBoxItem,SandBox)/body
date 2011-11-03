@@ -9,7 +9,14 @@
     }
   }
  else {
-    if (isProductionSandBox(destinationSandBox) && sc.getOriginalItemId() != null) {
+    boolean productionSandBox=isProductionSandBox(destinationSandBox);
+    if (productionSandBox) {
+      sc.setLockedFlag(false);
+    }
+ else {
+      sc.setLockedFlag(true);
+    }
+    if (productionSandBox && sc.getOriginalItemId() != null) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Structured content promoted to production.  " + sc.getId() + ".  Archiving original item "+ sc.getOriginalItemId());
       }
@@ -17,10 +24,6 @@
       originalSC.setArchivedFlag(Boolean.TRUE);
       structuredContentDao.addOrUpdateContentItem(originalSC,false);
       sc.setOriginalItemId(null);
-      sc.setLockedFlag(false);
-    }
- else {
-      sc.setLockedFlag(true);
     }
   }
   if (sc.getOriginalSandBox() == null) {

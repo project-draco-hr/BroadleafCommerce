@@ -1,6 +1,6 @@
 {
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-  HashMap<String,FieldMetadata> originalProps=(HashMap<String,FieldMetadata>)dynamicEntityDao.getMergedProperties(StaticAssetFolder.class.getName(),entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+  HashMap<String,FieldMetadata> originalProps=(HashMap<String,FieldMetadata>)dynamicEntityDao.getMergedProperties(StaticAsset.class.getName(),entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
   mergedProperties=(HashMap<String,FieldMetadata>)SerializationUtils.clone(originalProps);
   FieldMetadata fieldMetadata=new FieldMetadata();
   fieldMetadata.setFieldType(SupportedFieldType.UPLOAD);
@@ -70,6 +70,4 @@
   mergedProperties.put("parentFolder",createHiddenField("parentFolder"));
   mergedProperties.put("idHolder",createHiddenField("idHolder"));
   mergedProperties.put("customCriteria",createHiddenField("customCriteria"));
-  foreignKeyReadyMergedProperties=(HashMap<String,FieldMetadata>)SerializationUtils.clone(mergedProperties);
-  foreignKeyReadyMergedProperties.put("parentFolder",originalProps.get("parentFolder"));
 }

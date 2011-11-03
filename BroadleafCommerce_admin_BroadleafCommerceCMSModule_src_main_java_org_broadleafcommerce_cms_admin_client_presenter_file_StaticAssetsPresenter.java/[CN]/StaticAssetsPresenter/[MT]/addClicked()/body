@@ -1,14 +1,7 @@
 {
-  Map<String,Object> initialValues=new HashMap<String,Object>(2);
-  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
-  initialValues.put("parentFolder",getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS").getPrimaryKeyValue(getDisplay().getListDisplay().getGrid().getSelectedRecord()));
-  BLCMain.ENTITY_ADD.editNewRecord(newItemTitle,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource(),initialValues,new ItemEditedHandler(){
-    public void onItemEdited(    ItemEdited event){
-      if (!((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().isOpen(currentSelectedRecord)) {
-        ((TreeGrid)getDisplay().getListDisplay().getGrid()).getTree().openFolder(currentSelectedRecord);
-      }
-      resetForm();
-    }
-  }
-,null,null);
+  initialValues=new HashMap<String,Object>(10);
+  initialValues.put("operation","add");
+  initialValues.put("customCriteria","assetListUi");
+  initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
+  addNewItem(BLCMain.getMessageManager().getString("newItemTitle"));
 }

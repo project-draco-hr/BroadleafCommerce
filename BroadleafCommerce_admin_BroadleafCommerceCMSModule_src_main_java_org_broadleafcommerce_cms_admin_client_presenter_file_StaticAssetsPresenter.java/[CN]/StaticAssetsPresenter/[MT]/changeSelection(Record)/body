@@ -1,20 +1,18 @@
 {
-  currentSelectedRecord=(TreeNode)selectedRecord;
-  if (selectedRecord.getAttributeAsStringArray("_type") == null) {
-    selectedRecord.setAttribute("_type",new String[]{EntityImplementations.STATICASSETIMPL});
+  if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
+    getDisplay().getListDisplay().getRemoveButton().enable();
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().enable();
   }
-  leafAssetPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("staticAssetFolderTreeDS"),new DSCallback(){
-    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
-      if (response.getStatus() == RPCResponse.STATUS_FAILURE) {
-        leafAssetPresenter.disable();
-      }
  else {
-        leafAssetPresenter.enable();
-        leafAssetPresenter.setStartState();
-        display.getListDisplay().getAddButton().enable();
-        resetForm();
-      }
-    }
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
+    getDisplay().getListDisplay().getRemoveButton().disable();
   }
-);
+  currentSelectedRecord=selectedRecord;
+  currentId=getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS").getPrimaryKeyValue(currentSelectedRecord);
+  getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
+  AssetItem assetItem=(AssetItem)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge");
+  assetItem.setPreviewSrc(getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge").getValue().toString());
+  assetItem.setDisabled(true);
+  staticAssetDescriptionPresenter.enable();
+  staticAssetDescriptionPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("staticAssetTreeDS"),null);
 }
