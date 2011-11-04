@@ -7,8 +7,10 @@
     page.setArchivedFlag(Boolean.TRUE);
     page.setLockedFlag(false);
     pageDao.updatePage(page);
-    Page originalPage=pageDao.readPageById(page.getOriginalPageId());
-    originalPage.setLockedFlag(false);
-    pageDao.updatePage(originalPage);
+    if (page.getOriginalPageId() != null) {
+      Page originalPage=pageDao.readPageById(page.getOriginalPageId());
+      originalPage.setLockedFlag(false);
+      pageDao.updatePage(originalPage);
+    }
   }
 }

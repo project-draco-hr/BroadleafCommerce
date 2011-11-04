@@ -14,7 +14,11 @@
     StructuredContent prod=findStructuredContentById(content.getId());
     prod.setLockedFlag(true);
     prod=structuredContentDao.addOrUpdateContentItem(prod);
-    sandBoxItemDao.addSandBoxItem(destSandbox,SandBoxOperationType.UPDATE,SandBoxItemType.STRUCTURED_CONTENT,returnContent.getContentName(),returnContent.getId(),returnContent.getOriginalItemId());
+    SandBoxOperationType type=SandBoxOperationType.UPDATE;
+    if (clonedContent.getDeletedFlag()) {
+      type=SandBoxOperationType.DELETE;
+    }
+    sandBoxItemDao.addSandBoxItem(destSandbox,type,SandBoxItemType.STRUCTURED_CONTENT,returnContent.getContentName(),returnContent.getId(),returnContent.getOriginalItemId());
     return returnContent;
   }
  else {

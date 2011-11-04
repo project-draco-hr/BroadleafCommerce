@@ -4,10 +4,13 @@
   }
   StructuredContent sc=structuredContentDao.findStructuredContentById(sandBoxItem.getTemporaryItemId());
   if (sc != null) {
-    sc.setArchivedFlag(Boolean.TRUE);
-    structuredContentDao.addOrUpdateContentItem(sc);
-    StructuredContent originalSc=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
-    originalSc.setLockedFlag(false);
-    structuredContentDao.addOrUpdateContentItem(originalSc);
+    if (sandBoxItem.getOriginalItemId() != null) {
+      sc.setArchivedFlag(Boolean.TRUE);
+      sc.setLockedFlag(Boolean.FALSE);
+      structuredContentDao.addOrUpdateContentItem(sc);
+      StructuredContent originalSc=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
+      originalSc.setLockedFlag(false);
+      structuredContentDao.addOrUpdateContentItem(originalSc);
+    }
   }
 }

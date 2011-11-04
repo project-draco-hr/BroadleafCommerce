@@ -14,7 +14,11 @@
     Page prod=findPageById(page.getId());
     prod.setLockedFlag(true);
     pageDao.updatePage(prod);
-    sandBoxItemDao.addSandBoxItem(destSandbox,SandBoxOperationType.UPDATE,SandBoxItemType.PAGE,clonedPage.getFullUrl(),returnPage.getId(),returnPage.getOriginalPageId());
+    SandBoxOperationType type=SandBoxOperationType.UPDATE;
+    if (clonedPage.getDeletedFlag()) {
+      type=SandBoxOperationType.DELETE;
+    }
+    sandBoxItemDao.addSandBoxItem(destSandbox,type,SandBoxItemType.PAGE,clonedPage.getFullUrl(),returnPage.getId(),returnPage.getOriginalPageId());
     return returnPage;
   }
  else {
