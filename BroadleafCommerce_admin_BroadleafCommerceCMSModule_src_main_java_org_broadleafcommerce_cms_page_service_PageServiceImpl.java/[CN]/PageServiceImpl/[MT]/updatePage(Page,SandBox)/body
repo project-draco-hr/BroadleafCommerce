@@ -3,16 +3,17 @@
     throw new IllegalArgumentException("Unable to update a locked record");
   }
   if (checkForSandboxMatch(page.getSandbox(),destSandbox)) {
-    return pageDao.updatePage(page,true);
+    return pageDao.updatePage(page);
   }
  else   if (isProductionSandBox(page.getSandbox())) {
     Page clonedPage=page.cloneEntity();
     clonedPage.setOriginalPageId(page.getId());
     clonedPage.setSandbox(destSandbox);
-    Page returnPage=pageDao.addPage(clonedPage,true);
+    pageDao.detachPage(page);
+    Page returnPage=pageDao.addPage(clonedPage);
     Page prod=findPageById(page.getId());
     prod.setLockedFlag(true);
-    pageDao.updatePage(prod,false);
+    pageDao.updatePage(prod);
     sandBoxItemDao.addSandBoxItem(destSandbox,SandBoxOperationType.UPDATE,SandBoxItemType.PAGE,clonedPage.getFullUrl(),returnPage.getId(),returnPage.getOriginalPageId());
     return returnPage;
   }

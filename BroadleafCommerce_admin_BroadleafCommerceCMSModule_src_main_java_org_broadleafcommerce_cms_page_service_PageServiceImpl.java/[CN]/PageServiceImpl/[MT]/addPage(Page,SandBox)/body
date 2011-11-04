@@ -2,7 +2,7 @@
   page.setSandbox(destinationSandbox);
   page.setArchivedFlag(false);
   page.setDeletedFlag(false);
-  Page newPage=pageDao.addPage(page,true);
+  Page newPage=pageDao.addPage(page);
   if (!isProductionSandBox(destinationSandbox)) {
     sandBoxItemDao.addSandBoxItem(destinationSandbox,SandBoxOperationType.ADD,SandBoxItemType.PAGE,newPage.getFullUrl(),newPage.getId(),null);
   }

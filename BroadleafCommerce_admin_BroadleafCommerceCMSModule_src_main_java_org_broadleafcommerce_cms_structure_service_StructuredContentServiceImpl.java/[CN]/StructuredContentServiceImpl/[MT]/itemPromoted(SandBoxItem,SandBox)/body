@@ -22,7 +22,7 @@
       }
       StructuredContent originalSC=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
       originalSC.setArchivedFlag(Boolean.TRUE);
-      structuredContentDao.addOrUpdateContentItem(originalSC,false);
+      structuredContentDao.addOrUpdateContentItem(originalSC);
       sc.setOriginalItemId(null);
     }
   }
@@ -30,5 +30,5 @@
     sc.setOriginalSandBox(sc.getSandbox());
   }
   sc.setSandbox(destinationSandBox);
-  structuredContentDao.addOrUpdateContentItem(sc,false);
+  structuredContentDao.addOrUpdateContentItem(sc);
 }

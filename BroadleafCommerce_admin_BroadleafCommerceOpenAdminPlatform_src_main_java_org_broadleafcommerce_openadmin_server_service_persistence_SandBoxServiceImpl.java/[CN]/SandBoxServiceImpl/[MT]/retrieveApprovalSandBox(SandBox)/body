@@ -2,11 +2,16 @@
   final String APPROVAL_SANDBOX_NAME="Approval";
   SandBox approvalSandbox=sandBoxDao.retrieveNamedSandBox(sandBox.getSite(),SandBoxType.APPROVAL,APPROVAL_SANDBOX_NAME);
   if (approvalSandbox == null) {
-    approvalSandbox=new SandBoxImpl();
-    approvalSandbox.setSite(sandBox.getSite());
-    approvalSandbox.setName(APPROVAL_SANDBOX_NAME);
-    approvalSandbox.setSandBoxType(SandBoxType.APPROVAL);
-    approvalSandbox=sandBoxDao.persist(approvalSandbox);
+synchronized (CREATE_SANDBOX_LOCK_TOKEN) {
+      approvalSandbox=sandBoxDao.retrieveNamedSandBox(sandBox.getSite(),SandBoxType.APPROVAL,APPROVAL_SANDBOX_NAME);
+      if (approvalSandbox == null) {
+        approvalSandbox=new SandBoxImpl();
+        approvalSandbox.setSite(sandBox.getSite());
+        approvalSandbox.setName(APPROVAL_SANDBOX_NAME);
+        approvalSandbox.setSandBoxType(SandBoxType.APPROVAL);
+        approvalSandbox=sandBoxDao.persist(approvalSandbox);
+      }
+    }
   }
   return approvalSandbox;
 }

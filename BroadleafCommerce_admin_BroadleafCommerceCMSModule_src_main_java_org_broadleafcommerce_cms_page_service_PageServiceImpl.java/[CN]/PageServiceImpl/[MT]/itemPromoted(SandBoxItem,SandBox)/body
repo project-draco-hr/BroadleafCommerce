@@ -22,7 +22,7 @@
       }
       Page originalPage=pageDao.readPageById(page.getOriginalPageId());
       originalPage.setArchivedFlag(Boolean.TRUE);
-      pageDao.updatePage(originalPage,false);
+      pageDao.updatePage(originalPage);
       page.setOriginalPageId(null);
     }
   }
@@ -30,5 +30,5 @@
     page.setOriginalSandBox(page.getSandbox());
   }
   page.setSandbox(destinationSandBox);
-  pageDao.updatePage(page,false);
+  pageDao.updatePage(page);
 }

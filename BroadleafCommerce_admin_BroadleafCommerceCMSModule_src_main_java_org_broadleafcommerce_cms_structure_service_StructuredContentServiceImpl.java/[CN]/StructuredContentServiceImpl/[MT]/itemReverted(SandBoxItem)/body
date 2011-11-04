@@ -5,9 +5,9 @@
   StructuredContent sc=structuredContentDao.findStructuredContentById(sandBoxItem.getTemporaryItemId());
   if (sc != null) {
     sc.setArchivedFlag(Boolean.TRUE);
-    structuredContentDao.addOrUpdateContentItem(sc,false);
+    structuredContentDao.addOrUpdateContentItem(sc);
     StructuredContent originalSc=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
     originalSc.setLockedFlag(false);
-    structuredContentDao.addOrUpdateContentItem(originalSc,false);
+    structuredContentDao.addOrUpdateContentItem(originalSc);
   }
 }
