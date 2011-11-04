@@ -3,6 +3,17 @@
     throw new IllegalArgumentException("Unable to update a locked record");
   }
   if (checkForSandboxMatch(page.getSandbox(),destSandbox)) {
+    if (page.getDeletedFlag()) {
+      SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(page.getSandbox(),SandBoxItemType.PAGE,page.getId());
+      if (page.getOriginalPageId() == null) {
+        item.setArchivedFlag(true);
+        page.setArchivedFlag(true);
+      }
+ else {
+        item.setSandBoxOperationType(SandBoxOperationType.DELETE);
+        sandBoxItemDao.updateSandBoxItem(item);
+      }
+    }
     return pageDao.updatePage(page);
   }
  else   if (isProductionSandBox(page.getSandbox())) {
