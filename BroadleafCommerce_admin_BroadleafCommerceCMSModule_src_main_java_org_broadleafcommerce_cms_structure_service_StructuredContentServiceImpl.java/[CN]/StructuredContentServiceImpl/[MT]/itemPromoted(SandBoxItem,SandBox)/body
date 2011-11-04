@@ -23,6 +23,9 @@
       StructuredContent originalSC=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
       originalSC.setArchivedFlag(Boolean.TRUE);
       structuredContentDao.addOrUpdateContentItem(originalSC);
+      if (sc.getDeletedFlag()) {
+        sc.setArchivedFlag(true);
+      }
       sc.setOriginalItemId(null);
     }
   }

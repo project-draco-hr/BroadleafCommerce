@@ -24,6 +24,9 @@
       originalPage.setArchivedFlag(Boolean.TRUE);
       pageDao.updatePage(originalPage);
       page.setOriginalPageId(null);
+      if (page.getDeletedFlag()) {
+        page.setArchivedFlag(true);
+      }
     }
   }
   if (page.getOriginalSandBox() == null) {
