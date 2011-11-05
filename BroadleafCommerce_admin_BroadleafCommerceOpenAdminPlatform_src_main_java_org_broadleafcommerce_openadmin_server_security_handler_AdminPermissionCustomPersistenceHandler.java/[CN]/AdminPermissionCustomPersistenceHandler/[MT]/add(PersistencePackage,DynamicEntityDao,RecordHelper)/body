@@ -1,0 +1,19 @@
+{
+  if (persistencePackage.getEntity().findProperty("id") != null && !StringUtils.isEmpty(persistencePackage.getEntity().findProperty("id").getValue())) {
+    return update(persistencePackage,dynamicEntityDao,helper);
+  }
+  Entity entity=checkPermissionName(persistencePackage);
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    AdminPermission adminInstance=(AdminPermission)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminPermission.class.getName(),persistencePerspective);
+    adminInstance=(AdminPermission)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=(AdminPermission)dynamicEntityDao.merge(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

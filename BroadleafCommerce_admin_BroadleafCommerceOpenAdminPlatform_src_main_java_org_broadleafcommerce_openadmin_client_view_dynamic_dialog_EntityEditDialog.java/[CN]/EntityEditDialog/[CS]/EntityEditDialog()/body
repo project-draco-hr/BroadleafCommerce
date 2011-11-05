@@ -36,9 +36,11 @@
       if (dynamicForm.validate()) {
         dynamicForm.saveData(new DSCallback(){
           public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            TreeNode record=new TreeNode(request.getData());
-            if (handler != null) {
-              handler.onItemEdited(new ItemEdited(record,dynamicForm.getDataSource()));
+            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+              TreeNode record=new TreeNode(request.getData());
+              if (handler != null) {
+                handler.onItemEdited(new ItemEdited(record,dynamicForm.getDataSource()));
+              }
             }
           }
         }

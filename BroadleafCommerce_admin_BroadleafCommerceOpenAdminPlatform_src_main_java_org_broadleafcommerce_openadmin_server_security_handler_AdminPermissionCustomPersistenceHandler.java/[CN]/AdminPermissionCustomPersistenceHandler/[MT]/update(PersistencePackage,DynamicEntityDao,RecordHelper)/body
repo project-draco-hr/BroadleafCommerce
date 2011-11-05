@@ -1,0 +1,17 @@
+{
+  Entity entity=checkPermissionName(persistencePackage);
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminPermission.class.getName(),persistencePerspective);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    AdminPermission adminInstance=(AdminPermission)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    adminInstance=(AdminPermission)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=(AdminPermission)dynamicEntityDao.merge(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to update entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
+  }
+}

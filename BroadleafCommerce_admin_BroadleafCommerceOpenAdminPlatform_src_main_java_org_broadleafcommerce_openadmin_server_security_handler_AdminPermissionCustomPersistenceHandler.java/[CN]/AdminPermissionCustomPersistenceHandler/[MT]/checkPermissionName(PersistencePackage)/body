@@ -1,0 +1,18 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  Property prop=entity.findProperty("name");
+  String name=prop.getValue();
+  name=name.toUpperCase();
+  if (!name.startsWith("PERMISSION_")) {
+    throw new ServiceException("All Permission names must start with PERMISSION_");
+  }
+  String[] parts=name.split("_");
+  if (parts.length < 3) {
+    throw new ServiceException("All Permission names must adhere to the naming standard: PERMISSION_[Permission Type]_[User Defined Section]. E.g. PERMISSION_READ_CATEGORY");
+  }
+  if (PermissionType.getInstance(parts[1]) == null) {
+    throw new ServiceException("All Permission names must specify a valid permission type as part of the name. The permission name you specified (" + name + ") denotes the permission type of ("+ parts[1]+ "), which is not valid. See org.broadleafcommerce.openadmin.server.security.service.type.PermissionType for valid permission types.");
+  }
+  prop.setValue(name);
+  return entity;
+}

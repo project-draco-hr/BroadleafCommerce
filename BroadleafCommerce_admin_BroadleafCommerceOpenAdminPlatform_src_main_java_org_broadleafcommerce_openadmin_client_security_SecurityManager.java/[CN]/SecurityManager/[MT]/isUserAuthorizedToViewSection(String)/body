@@ -1,8 +1,15 @@
 {
   List<String> authorizedPermissions=permissionSecuredSections.get(sectionViewKey);
   for (  String permission : USER.getPermissions()) {
-    if (authorizedPermissions != null && authorizedPermissions.contains(permission)) {
-      return true;
+    if (authorizedPermissions != null) {
+      if (authorizedPermissions.contains(permission)) {
+        return true;
+      }
+      for (      String authorizedPermission : authorizedPermissions) {
+        if (permission.equals(parseForAllPermission(authorizedPermission))) {
+          return true;
+        }
+      }
     }
   }
   return false;
