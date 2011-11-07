@@ -1,12 +1,13 @@
 {
   if (!cacheFile.getParentFile().exists()) {
-    cacheFile.getParentFile().mkdirs();
+    if (!cacheFile.getParentFile().mkdirs()) {
+      throw new RuntimeException("Unable to create middle directories for file: " + cacheFile.getAbsolutePath());
+    }
   }
-  BufferedOutputStream bos=null;
+  BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(cacheFile));
   try {
-    bos=new BufferedOutputStream(new FileOutputStream(cacheFile));
     boolean eof=false;
-    int temp=-1;
+    int temp;
     while (!eof) {
       temp=is.read();
       if (temp < 0) {
@@ -18,13 +19,11 @@
     }
   }
   finally {
-    if (bos != null) {
-      try {
-        bos.flush();
-        bos.close();
-      }
- catch (      Throwable e) {
-      }
+    try {
+      bos.flush();
+      bos.close();
+    }
+ catch (    Throwable e) {
     }
   }
 }

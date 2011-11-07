@@ -1,20 +1,17 @@
 {
   try {
     String fullUrl=request.getPathInfo();
-    String sandBoxId=(String)request.getSession().getAttribute(SANDBOX_ID_VAR);
+    Long sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ID_VAR);
     if (sandBoxId == null) {
-      sandBoxId=(String)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
+      sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
     }
-    SandBox sandBox;
+    SandBox sandBox=null;
     if (sandBoxId != null) {
-      sandBox=sandBoxService.retrieveSandboxById(Long.valueOf(sandBoxId));
+      sandBox=sandBoxService.retrieveSandboxById(sandBoxId);
     }
- else {
-      sandBox=null;
-    }
-    StaticAsset staticAsset=(StaticAsset)staticAssetService.findStaticAssetByFullUrl(fullUrl,sandBox);
+    StaticAsset staticAsset=staticAssetService.findStaticAssetByFullUrl(fullUrl,sandBox);
     if (staticAsset == null && sandBox != null) {
-      staticAsset=(StaticAsset)staticAssetService.findStaticAssetByFullUrl(fullUrl,null);
+      staticAsset=staticAssetService.findStaticAssetByFullUrl(fullUrl,null);
     }
     if (staticAsset == null) {
       throw new RuntimeException("Unable to find an asset for the url (" + fullUrl + ") using the sandBox id ("+ sandBoxId+ "), or the production sandBox.");
@@ -55,7 +52,7 @@
         Operation[] operations=artifactService.buildOperations(request.getParameterMap(),original,staticAsset.getMimeType());
         InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
         createCacheFile(converted,cacheFile);
-        if (mimeType.equals("image/gif")) {
+        if ("image/gif".equals(mimeType)) {
           mimeType="image/png";
         }
       }
@@ -63,13 +60,13 @@
         createCacheFile(storage.getFileData().getBinaryStream(),cacheFile);
       }
     }
-    Map<String,String> model=new HashMap<String,String>();
+    Map<String,String> model=new HashMap<String,String>(2);
     model.put("cacheFilePath",cacheFile.getAbsolutePath());
     model.put("mimeType",mimeType);
     return new ModelAndView("blStaticAssetView",model);
   }
  catch (  Exception e) {
-    e.printStackTrace();
+    LOG.error("Unable to retrieve static asset",e);
     throw new RuntimeException(e);
   }
 }
