@@ -1,17 +1,16 @@
 {
-  this.setIsModal(true);
-  this.setShowModalMask(true);
-  this.setShowMinimizeButton(false);
-  this.setAutoSize(true);
-  this.setCanDragResize(true);
-  this.setOverflow(Overflow.HIDDEN);
+  setIsModal(true);
+  setShowModalMask(true);
+  setShowMinimizeButton(false);
+  setAutoSize(true);
+  setCanDragResize(true);
+  setOverflow(Overflow.HIDDEN);
   VStack stack=new VStack();
   stack.setWidth(630);
   stack.setHeight(300);
   dynamicForm=new DynamicForm();
   dynamicForm.setEncoding(Encoding.MULTIPART);
   dynamicForm.setTarget("hidden_frame");
-  dynamicForm.setNumCols(3);
   dynamicForm.setPadding(10);
   dynamicForm.setHeight100();
   stack.addMember(dynamicForm);
@@ -27,9 +26,8 @@
     public void onClick(    ClickEvent event){
       if (dynamicForm.validate()) {
         String callbackName=JavaScriptMethodHelper.registerCallbackFunction(new JavaScriptMethodCallback(){
-          public void execute(          JavaScriptObject obj){
+          public void execute(          String jsObj){
             try {
-              String jsObj=JSON.encode(obj);
               JSONObject entityJs=JSONParser.parse(jsObj).isObject();
               JSONValue errorJs=entityJs.get("error");
               if (errorJs != null) {
@@ -57,11 +55,14 @@
                 }
               }
             }
-  finally {
-              UploadStatusProgress progress=(UploadStatusProgress)((CanvasItem)dynamicForm.getField("__display_file")).getCanvas();
-              progress.stopProgress();
+ catch (            Exception e) {
+              SC.warn(e.getMessage());
+            }
+ finally {
+              uploadProgressWindow.stopProgress();
               Timer timer=new Timer(){
                 public void run(){
+                  uploadProgressWindow.finalizeProgress();
                   hide();
                 }
               }
@@ -71,9 +72,8 @@
           }
         }
 );
-        UploadStatusProgress progress=(UploadStatusProgress)((CanvasItem)dynamicForm.getField("__display_file")).getCanvas();
-        progress.setCallbackName(callbackName);
-        progress.startProgress();
+        uploadProgressWindow.getProgressBar().setCallbackName(callbackName);
+        uploadProgressWindow.startProgress();
         dynamicForm.setAction("cms.upload.service?callbackName=" + callbackName);
         dynamicForm.getField("callbackName").setValue(callbackName);
         dynamicForm.submitForm();
@@ -94,5 +94,9 @@
   vLayout.addMember(hLayout);
   stack.addMember(vLayout);
   addItem(stack);
-  createFrame();
+  NamedFrame frame=new NamedFrame("hidden_frame");
+  frame.setWidth("1");
+  frame.setHeight("1");
+  frame.setVisible(false);
+  addItem(frame);
 }

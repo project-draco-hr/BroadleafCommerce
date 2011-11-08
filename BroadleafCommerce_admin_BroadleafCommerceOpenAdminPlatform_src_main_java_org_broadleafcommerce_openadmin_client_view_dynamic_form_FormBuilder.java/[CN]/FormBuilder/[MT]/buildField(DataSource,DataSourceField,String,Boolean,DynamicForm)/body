@@ -3,38 +3,32 @@
 switch (SupportedFieldType.valueOf(fieldType)) {
 case BOOLEAN:
     formItem=new BooleanItem();
-  formItem.setColSpan(2);
-formItem.setValueFormatter(new FormItemValueFormatter(){
-  public String formatValue(  Object value,  Record record,  DynamicForm form,  FormItem item){
-    if (value == null) {
-      item.setValue(false);
-      return "false";
+  formItem.setValueFormatter(new FormItemValueFormatter(){
+    public String formatValue(    Object value,    Record record,    DynamicForm form,    FormItem item){
+      if (value == null) {
+        item.setValue(false);
+        return "false";
+      }
+      return String.valueOf(value);
     }
-    return String.valueOf(value);
   }
-}
 );
 break;
 case DATE:
 formItem=new DateTimeItem();
-formItem.setColSpan(2);
 break;
 case DECIMAL:
 formItem=new FloatItem();
-formItem.setColSpan(2);
 break;
 case EMAIL:
 formItem=new TextItem();
-formItem.setColSpan(2);
 ((TextItem)formItem).setLength(field.getLength());
 break;
 case INTEGER:
 formItem=new IntegerItem();
-formItem.setColSpan(2);
 break;
 case MONEY:
 formItem=new FloatItem();
-formItem.setColSpan(2);
 formItem.setEditorValueFormatter(new FormItemValueFormatter(){
 public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 return value == null ? "" : NumberFormat.getFormat("0.00").format(NumberFormat.getFormat("0.00").parse(String.valueOf(value)));
@@ -44,7 +38,6 @@ return value == null ? "" : NumberFormat.getFormat("0.00").format(NumberFormat.g
 break;
 case FOREIGN_KEY:
 formItem=new SearchFormItem();
-formItem.setColSpan(2);
 formItem.setValueFormatter(new FormItemValueFormatter(){
 public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 String response;
@@ -61,7 +54,6 @@ return response;
 break;
 case ADDITIONAL_FOREIGN_KEY:
 formItem=new SearchFormItem();
-formItem.setColSpan(2);
 formItem.setValueFormatter(new FormItemValueFormatter(){
 public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 String response;
@@ -78,7 +70,6 @@ return response;
 break;
 case BROADLEAF_ENUMERATION:
 formItem=new SelectItem();
-formItem.setColSpan(2);
 LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
 String[][] enumerationValues=(String[][])field.getAttributeAsObject("enumerationValues");
 for (int j=0; j < enumerationValues.length; j++) {
@@ -88,7 +79,6 @@ formItem.setValueMap(valueMap);
 break;
 case EXPLICIT_ENUMERATION:
 formItem=new SelectItem();
-formItem.setColSpan(2);
 LinkedHashMap<String,String> valueMap2=new LinkedHashMap<String,String>();
 String[][] enumerationValues2=(String[][])field.getAttributeAsObject("enumerationValues");
 for (int j=0; j < enumerationValues2.length; j++) {
@@ -98,11 +88,9 @@ formItem.setValueMap(valueMap2);
 break;
 case EMPTY_ENUMERATION:
 formItem=new SelectItem();
-formItem.setColSpan(2);
 break;
 case ID:
 formItem=new TextItem();
-formItem.setColSpan(2);
 ((TextItem)formItem).setLength(field.getLength());
 formItem.setValueFormatter(new FormItemValueFormatter(){
 public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
@@ -113,7 +101,6 @@ return value == null ? "" : ((DynamicEntityDataSource)dataSource).stripDuplicate
 break;
 case PASSWORD:
 formItem=new PasswordItem();
-formItem.setColSpan(2);
 ((PasswordItem)formItem).setLength(field.getLength());
 break;
 case HTML:
@@ -127,7 +114,6 @@ richTextHTMLPane.setHeight(450);
 richTextHTMLPane.setContentsType(ContentsType.PAGE);
 richTextCanvasItem.setCanvas(richTextHTMLPane);
 richTextCanvasItem.setShowTitle(true);
-richTextCanvasItem.setColSpan(2);
 formItem=richTextCanvasItem;
 break;
 case HTML_BASIC:
@@ -141,34 +127,27 @@ basicRichTextHTMLPane.setHeight(175);
 basicRichTextHTMLPane.setContentsType(ContentsType.PAGE);
 basicRichTextCanvasItem.setCanvas(basicRichTextHTMLPane);
 basicRichTextCanvasItem.setShowTitle(true);
-basicRichTextCanvasItem.setColSpan(2);
 formItem=basicRichTextCanvasItem;
 break;
 case UPLOAD:
 formItem=new UploadItem();
-formItem.setColSpan(1);
 break;
 case HIDDEN:
 formItem=new HiddenItem();
-formItem.setColSpan(2);
 break;
 case ASSET:
 formItem=new AssetItem();
-formItem.setColSpan(2);
 break;
 case ASSET_URL:
 formItem=new EditableSearchFormItem();
-formItem.setColSpan(2);
 break;
 default :
 if (!largeEntry) {
 formItem=new TextItem();
-formItem.setColSpan(2);
 ((TextItem)formItem).setLength(field.getLength());
 }
  else {
 formItem=new TextAreaItem();
-formItem.setColSpan(2);
 ((TextAreaItem)formItem).setLength(field.getLength());
 formItem.setHeight(70);
 formItem.setWidth("400");
