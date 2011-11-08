@@ -1,0 +1,32 @@
+{
+  SandBox currentSandbox=null;
+  Long sandboxId=null;
+  if (request.getParameter("blSandboxDateTimeRibbonProduction") == null) {
+    sandboxId=lookupSandboxId(request);
+  }
+ else {
+    request.getSession().removeAttribute(SANDBOX_DATE_TIME_VAR);
+    request.getSession().removeAttribute(SANDBOX_ID_VAR);
+  }
+  if (sandboxId != null) {
+    currentSandbox=sandBoxService.retrieveSandboxById(sandboxId);
+    request.setAttribute(SANDBOX_VAR,currentSandbox);
+    if (currentSandbox != null && !SandBoxType.PRODUCTION.equals(currentSandbox.getSandBoxType())) {
+      setContentTime(request);
+    }
+  }
+  if (currentSandbox == null && site != null) {
+    currentSandbox=site.getProductionSandbox();
+  }
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Serving request using sandbox: " + currentSandbox);
+  }
+  Date currentSystemDateTime=SystemTime.asDate(true);
+  Calendar sandboxDateTimeCalendar=Calendar.getInstance();
+  sandboxDateTimeCalendar.setTime(currentSystemDateTime);
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_DATE_PARAM,CONTENT_DATE_DISPLAY_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_HOURS_PARAM,CONTENT_DATE_DISPLAY_HOURS_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_MINUTES_PARAM,CONTENT_DATE_DISPLAY_MINUTES_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_AMPM_PARAM,sandboxDateTimeCalendar.get(Calendar.AM_PM));
+  return currentSandbox;
+}

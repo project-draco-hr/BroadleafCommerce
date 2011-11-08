@@ -1,0 +1,11 @@
+{
+  for (  URLProcessor processor : getUrlProcessorList()) {
+    if (processor.canProcessURL(requestURI)) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("URLProcessor found for URI " + requestURI + " - "+ processor.getClass().getName());
+      }
+      return processor;
+    }
+  }
+  return NullURLProcessor.getInstance();
+}

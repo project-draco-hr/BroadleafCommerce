@@ -1,0 +1,21 @@
+{
+  if (requestURI.contains(BLC_ADMIN) || requestURI.endsWith(BLC_ADMIN_SERVICE)) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("BroadleafProcessURLFilter ignoring admin request URI " + requestURI);
+    }
+    return false;
+  }
+ else {
+    int pos=requestURI.lastIndexOf(".");
+    if (pos > 0) {
+      String suffix=requestURI.substring(pos);
+      if (getIgnoreSuffixes().contains(suffix)) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("BroadleafProcessURLFilter ignoring request due to suffix " + requestURI);
+        }
+        return false;
+      }
+    }
+  }
+  return true;
+}

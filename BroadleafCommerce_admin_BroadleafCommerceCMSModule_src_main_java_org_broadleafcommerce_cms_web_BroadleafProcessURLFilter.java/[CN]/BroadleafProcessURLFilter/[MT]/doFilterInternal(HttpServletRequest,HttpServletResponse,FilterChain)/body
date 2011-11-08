@@ -1,0 +1,59 @@
+{
+  if (!shouldProcessURL(request,request.getRequestURI())) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Process URL not processing URL " + request.getRequestURI());
+    }
+    filterChain.doFilter(request,response);
+    return;
+  }
+  final String requestURIWithoutContext;
+  if (request.getContextPath() != null) {
+    requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
+  }
+ else {
+    requestURIWithoutContext=request.getRequestURI();
+  }
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Process URL Filter Begin " + requestURIWithoutContext);
+  }
+  if (request.getAttribute(REQUEST_DTO) == null) {
+    request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
+  }
+  Site site=determineSite(request);
+  SandBox currentSandbox=determineSandbox(request,site);
+  BroadleafRequestContext brc=new BroadleafRequestContext();
+  brc.setLocale(determineLocale(request,site));
+  brc.setSandbox(currentSandbox);
+  brc.setRequest(request);
+  brc.setResponse(response);
+  BroadleafRequestContext.setBroadleafRequestContext(brc);
+  try {
+    URLProcessor urlProcessor=null;
+    if (isProduction(currentSandbox)) {
+      try {
+        urlProcessor=lookupProcessorFromCache(requestURIWithoutContext);
+      }
+ catch (      ExecutionException e) {
+        LOG.error(e);
+      }
+    }
+    if (urlProcessor == null) {
+      urlProcessor=determineURLProcessor(requestURIWithoutContext);
+    }
+    if (urlProcessor instanceof NullURLProcessor) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("URL not being processed by a Broadleaf URLProcessor " + requestURIWithoutContext);
+      }
+      filterChain.doFilter(request,response);
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("URL about to be processed by a Broadleaf URLProcessor " + requestURIWithoutContext);
+      }
+      urlProcessor.processURL(requestURIWithoutContext);
+    }
+  }
+  finally {
+    SystemTime.resetLocalTimeSource();
+  }
+}

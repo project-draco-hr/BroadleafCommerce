@@ -1,0 +1,16 @@
+{
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  Page p=(Page)context.getRequest().getAttribute(PAGE_ATTRIBUTE_NAME);
+  if (p == null) {
+    p=pageService.findPageByURI(context.getSandbox(),context.getLocale(),key);
+  }
+  if (p != null) {
+    String templateJSPPath=new StringBuilder(blcPageTemplateDirectory).append(p.getPageTemplate().getTemplatePath()).append(".jsp").toString();
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Forwarding to page: " + templateJSPPath);
+    }
+    context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,p);
+    RequestDispatcher rd=context.getRequest().getRequestDispatcher(templateJSPPath);
+    rd.forward(context.getRequest(),context.getResponse());
+  }
+}

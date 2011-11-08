@@ -1,0 +1,14 @@
+{
+  if (urlCache == null) {
+    urlCache=CacheBuilder.newBuilder().maximumSize(maxCacheElements).concurrencyLevel(maxCacheConcurrency).expireAfterWrite(cacheExpirationSeconds,TimeUnit.SECONDS).build(new CacheLoader<String,URLProcessor>(){
+      public URLProcessor load(      String key) throws IOException, ServletException {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Loading URL processor into Cache");
+        }
+        return determineURLProcessor(key);
+      }
+    }
+);
+  }
+  return urlCache.get(requestURIWithoutContextPath);
+}
