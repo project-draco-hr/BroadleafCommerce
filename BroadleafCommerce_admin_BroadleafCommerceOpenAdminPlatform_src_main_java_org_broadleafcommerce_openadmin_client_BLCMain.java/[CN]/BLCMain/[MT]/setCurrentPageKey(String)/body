@@ -8,13 +8,11 @@
     }
   }
   currentPageKey=null;
-  if (pagesMap != null) {
-    for (    String pageKey : pagesMap.keySet()) {
-      String view=pagesMap.get(pageKey)[0];
-      if (SecurityManager.getInstance().isUserAuthorizedToViewSection(view)) {
-        currentPageKey=pageKey;
-        return;
-      }
+  for (  String pageKey : pagesMap.keySet()) {
+    String view=pagesMap.get(pageKey)[0];
+    if (SecurityManager.getInstance().isUserAuthorizedToViewSection(view)) {
+      currentPageKey=pageKey;
+      return;
     }
   }
 }

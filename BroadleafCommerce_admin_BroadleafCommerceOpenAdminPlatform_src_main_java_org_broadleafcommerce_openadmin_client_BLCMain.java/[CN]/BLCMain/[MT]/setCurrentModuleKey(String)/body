@@ -6,8 +6,8 @@
     }
   }
   currentModuleKey=null;
-  for (Iterator<Module> iterator=modules.values().iterator(); iterator.hasNext(); ) {
-    Module currentModule=iterator.next();
+  for (  Map.Entry<String,Module> entry : modules.entrySet()) {
+    Module currentModule=entry.getValue();
     if (SecurityManager.getInstance().isUserAuthorizedToViewModule(currentModule.getModuleKey())) {
       currentModuleKey=currentModule.getModuleKey();
       return;

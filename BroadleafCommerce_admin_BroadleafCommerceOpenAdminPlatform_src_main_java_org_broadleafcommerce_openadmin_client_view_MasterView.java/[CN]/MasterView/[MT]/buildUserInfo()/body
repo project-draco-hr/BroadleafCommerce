@@ -14,9 +14,10 @@
   logoutLink.setBaseStyle("userLogout");
   logoutLink.addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
-      UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
+      UrlBuilder builder=Window.Location.createUrlBuilder();
       builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
-      com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+      builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+      Window.open(builder.buildString(),"_self",null);
     }
   }
 );

@@ -2,10 +2,10 @@
   AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
     @Override public void onSuccess(    AdminUser result){
       if (result == null) {
-        UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
-        builder.setPath(BLCMain.webAppContext + "/admin.html");
+        UrlBuilder builder=Window.Location.createUrlBuilder();
+        builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
         builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
-        com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+        Window.open(builder.buildString(),"_self",null);
       }
  else {
         if (SecurityManager.getInstance().isUserAuthorizedToViewSection(viewKey)) {

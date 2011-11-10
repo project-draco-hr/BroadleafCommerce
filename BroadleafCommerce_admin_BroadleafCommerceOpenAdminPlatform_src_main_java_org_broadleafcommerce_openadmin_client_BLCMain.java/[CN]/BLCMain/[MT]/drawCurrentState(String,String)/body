@@ -1,30 +1,56 @@
 {
-  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
-    @Override public void onSuccess(    AdminUser result){
-      SecurityManager.USER=result;
-      if (result == null) {
-        UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
-        builder.setPath(BLCMain.webAppContext + "/admin.html");
-        com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
-      }
+  SC.logWarn("Retrieving web app context...");
+  AppServices.UTILITY.getWebAppContext(new AbstractCallback<String>(){
+    @Override public void onSuccess(    String result){
+      webAppContext=result;
+      SC.logWarn("Web app context retrieved (" + result + ")");
+      SC.logWarn("Retrieving storefront web app context...");
+      AppServices.UTILITY.getStoreFrontWebAppContext(new AbstractCallback<String>(){
+        @Override public void onSuccess(        String result){
+          if (result != null) {
+            storeFrontWebAppContext=result;
+          }
  else {
-        setCurrentModuleKey(requestedModuleKey);
-        if (currentModuleKey == null) {
-          SC.say("Your login does not have authorization to view any modules.");
-          return;
+            storeFrontWebAppContext=webAppContext;
+          }
+          SC.logWarn("Web app context retrieved (" + result + ")");
+          SC.logWarn("Retrieving admin user...");
+          AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+            @Override public void onSuccess(            AdminUser result){
+              SecurityManager.USER=result;
+              if (result == null) {
+                SC.logWarn("Admin user not found. Logging out...");
+                UrlBuilder builder=Window.Location.createUrlBuilder();
+                builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
+                builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+                Window.open(builder.buildString(),"_self",null);
+              }
+ else {
+                SC.logWarn("Admin user found. Loading interface...");
+                setCurrentModuleKey(requestedModuleKey);
+                if (currentModuleKey == null) {
+                  SC.say("Your login does not have authorization to view any modules.");
+                  return;
+                }
+                setCurrentPageKey(requestedPageKey);
+                if (currentPageKey == null) {
+                  SC.say("Your login does not have authorization to view any pages for the passed in module.");
+                  return;
+                }
+                modules.get(currentModuleKey).preDraw();
+                MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
+                MASTERVIEW.draw();
+                AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,true);
+                modules.get(currentModuleKey).postDraw();
+              }
+            }
+          }
+);
         }
-        setCurrentPageKey(requestedPageKey);
-        if (currentPageKey == null) {
-          SC.say("Your login does not have authorization to view any pages for the passed in module.");
-          return;
-        }
-        modules.get(currentModuleKey).preDraw();
-        MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
-        MASTERVIEW.draw();
-        AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,true);
-        modules.get(currentModuleKey).postDraw();
       }
+);
     }
   }
 );
+  adminContext=GWT.getModuleBaseURL();
 }

@@ -1,16 +1,19 @@
 {
   final String msg="Service Exception";
   if (exception.getClass().getName().equals("com.google.gwt.user.client.rpc.InvocationException")) {
+    SC.logWarn("Retrieving admin user (AbstractCallback.onOtherException)...");
     AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
       @Override public void onSuccess(      AdminUser result){
         if (result == null) {
+          SC.logWarn("Admin user not found. Logging out (AbstractCallback.onOtherException)...");
           reportException(msg,exception);
-          UrlBuilder builder=com.google.gwt.user.client.Window.Location.createUrlBuilder();
-          builder.setPath(BLCMain.webAppContext + "/admin.html");
+          UrlBuilder builder=Window.Location.createUrlBuilder();
+          builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
           builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
-          com.google.gwt.user.client.Window.open(builder.buildString(),"_self",null);
+          Window.open(builder.buildString(),"_self",null);
         }
  else {
+          SC.logWarn("Admin user found. Reporting calback exception (AbstractCallback.onOtherException)...");
           reportException(msg,exception);
           String errorMsg=exception.getMessage();
           SC.warn(errorMsg);
