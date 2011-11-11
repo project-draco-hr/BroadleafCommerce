@@ -2,8 +2,8 @@
   try {
     Entity entity=persistencePackage.getEntity();
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Class<?>[] entities=persistenceManager.getPolymorphicEntities(entity.getType()[0]);
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+    Class<?>[] entities=persistenceManager.getPolymorphicEntities(persistencePackage.getCeilingEntityFullyQualifiedClassname());
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(persistencePackage.getCeilingEntityFullyQualifiedClassname(),entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     if (primaryKey == null) {
       primaryKey=getPrimaryKey(entity,mergedProperties);
     }
@@ -14,7 +14,7 @@
     }
     instance=createPopulatedInstance(instance,entity,mergedProperties,false);
     instance=persistenceManager.getDynamicEntityDao().merge(instance);
-    List<Serializable> entityList=new ArrayList<Serializable>();
+    List<Serializable> entityList=new ArrayList<Serializable>(1);
     entityList.add(instance);
     return getRecords(mergedProperties,entityList,null,null)[0];
   }

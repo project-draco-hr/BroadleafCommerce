@@ -79,7 +79,7 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-@SuppressWarnings("rawtypes") Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
 }
@@ -107,7 +107,7 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-@SuppressWarnings("rawtypes") Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
 }
@@ -135,7 +135,7 @@ break;
 }
 }
  else {
-if (fieldManager.getFieldValue(instance,property.getName()) != null && (!mergedProperties.get(property.getName()).getFieldType().equals(SupportedFieldType.ID) || setId)) {
+if (fieldManager.getFieldValue(instance,property.getName()) != null && (mergedProperties.get(property.getName()).getFieldType() != SupportedFieldType.ID || setId)) {
 fieldManager.setFieldValue(instance,property.getName(),null);
 }
 }

@@ -2,20 +2,20 @@
   try {
     Entity entity=persistencePackage.getEntity();
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Class<?>[] entities=persistenceManager.getPolymorphicEntities(entity.getType()[0]);
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(entity.getType()[0],entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+    Class<?>[] entities=persistenceManager.getPolymorphicEntities(persistencePackage.getCeilingEntityFullyQualifiedClassname());
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(persistencePackage.getCeilingEntityFullyQualifiedClassname(),entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     Object primaryKey=getPrimaryKey(entity,mergedProperties);
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
 switch (persistencePerspective.getOperationTypes().getRemoveType()) {
 case FOREIGNKEY:
       for (      Property property : entity.getProperties()) {
-        String originalPropertyName=new String(property.getName());
+        String originalPropertyName=property.getName();
         FieldManager fieldManager=getFieldManager();
         if (fieldManager.getField(instance.getClass(),property.getName()) == null) {
           LOG.debug("Unable to find a bean property for the reported property: " + originalPropertyName + ". Ignoring property.");
           continue;
         }
-        if (SupportedFieldType.FOREIGN_KEY.equals(mergedProperties.get(originalPropertyName).getFieldType())) {
+        if (SupportedFieldType.FOREIGN_KEY == mergedProperties.get(originalPropertyName).getFieldType()) {
           String value=property.getValue();
           ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
           Serializable foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(foreignKey.getForeignKeyClass()),Long.valueOf(value));

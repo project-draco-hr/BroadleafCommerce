@@ -1,17 +1,18 @@
 {
   BaseCtoConverter ctoConverter=new BaseCtoConverter();
-  for (  String propertyName : mergedProperties.keySet()) {
+  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+    String propertyName=entry.getKey();
     AssociationPath associationPath;
-    int dotIndex=propertyName.lastIndexOf(".");
-    String property;
+    int dotIndex=propertyName.lastIndexOf('.');
+    StringBuilder property;
     if (dotIndex >= 0) {
-      property=propertyName.substring(dotIndex + 1,propertyName.length());
+      property=new StringBuilder(propertyName.substring(dotIndex + 1,propertyName.length()));
       String prefix=propertyName.substring(0,dotIndex);
       StringTokenizer tokens=new StringTokenizer(prefix,".");
-      List<AssociationPathElement> elementList=new ArrayList<AssociationPathElement>();
+      List<AssociationPathElement> elementList=new ArrayList<AssociationPathElement>(20);
       Class clazz=Class.forName(mergedProperties.get(propertyName).getInheritedFromType());
-      StringBuffer sb=new StringBuffer();
-      StringBuffer pathBuilder=new StringBuffer();
+      StringBuilder sb=new StringBuilder(150);
+      StringBuilder pathBuilder=new StringBuilder(150);
       while (tokens.hasMoreElements()) {
         String token=tokens.nextToken();
         sb.append(token);
@@ -19,48 +20,49 @@
         Field field=getFieldManager().getField(clazz,pathBuilder.toString());
         Embedded embedded=field.getAnnotation(Embedded.class);
         if (embedded != null) {
-          sb.append(".");
+          sb.append('.');
         }
  else {
           elementList.add(new AssociationPathElement(sb.toString()));
-          sb=new StringBuffer();
+          sb=new StringBuilder(150);
         }
-        pathBuilder.append(".");
+        pathBuilder.append('.');
       }
-      if (elementList.size() > 0) {
-        AssociationPathElement[] elements=elementList.toArray(new AssociationPathElement[]{});
+      if (!elementList.isEmpty()) {
+        AssociationPathElement[] elements=elementList.toArray(new AssociationPathElement[elementList.size()]);
         associationPath=new AssociationPath(elements);
       }
  else {
-        property=sb.toString() + property;
+        property=property.insert(0,sb.toString());
         associationPath=AssociationPath.ROOT;
       }
     }
  else {
-      property=propertyName;
+      property=new StringBuilder(propertyName);
       associationPath=AssociationPath.ROOT;
     }
+    String convertedProperty=property.toString();
 switch (mergedProperties.get(propertyName).getFieldType()) {
 case BOOLEAN:
-      ctoConverter.addBooleanMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+      ctoConverter.addBooleanMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
     break;
 case DATE:
-  ctoConverter.addDateMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+  ctoConverter.addDateMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case DECIMAL:
-ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case MONEY:
-ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case INTEGER:
-ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 default :
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case EMAIL:
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case FOREIGN_KEY:
 if (cto.get(propertyName).getFilterValues().length > 0) {
@@ -74,7 +76,7 @@ AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(p
 ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
 }
 }
- else if (cto.get(propertyName).getFilterValues()[0] == null || cto.get(propertyName).getFilterValues()[0].equals("null")) {
+ else if (cto.get(propertyName).getFilterValues()[0] == null || "null".equals(cto.get(propertyName).getFilterValues()[0])) {
 ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,propertyName);
 }
  else {
@@ -85,8 +87,7 @@ ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,
 break;
 case ADDITIONAL_FOREIGN_KEY:
 if (cto.get(propertyName).getFilterValues().length > 0) {
-int additionalForeignKeyIndexPosition=-1;
-additionalForeignKeyIndexPosition=Arrays.binarySearch(persistencePerspective.getAdditionalForeignKeys(),new ForeignKey(propertyName,null,null),new Comparator<ForeignKey>(){
+int additionalForeignKeyIndexPosition=Arrays.binarySearch(persistencePerspective.getAdditionalForeignKeys(),new ForeignKey(propertyName,null,null),new Comparator<ForeignKey>(){
 public int compare(ForeignKey o1,ForeignKey o2){
 return o1.getManyToField().compareTo(o2.getManyToField());
 }
@@ -102,7 +103,7 @@ AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(p
 ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
 }
 }
- else if (cto.get(propertyName).getFilterValues()[0] == null || cto.get(propertyName).getFilterValues()[0].equals("null")) {
+ else if (cto.get(propertyName).getFilterValues()[0] == null || "null".equals(cto.get(propertyName).getFilterValues()[0])) {
 ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,propertyName);
 }
  else {
@@ -114,10 +115,10 @@ break;
 case ID:
 switch (mergedProperties.get(propertyName).getSecondaryType()) {
 case INTEGER:
-ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 case STRING:
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,property);
+ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
 break;
 }
 break;

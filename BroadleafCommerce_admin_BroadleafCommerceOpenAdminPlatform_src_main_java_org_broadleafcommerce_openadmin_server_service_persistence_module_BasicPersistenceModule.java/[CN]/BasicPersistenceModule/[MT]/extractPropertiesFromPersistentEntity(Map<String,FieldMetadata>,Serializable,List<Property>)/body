@@ -1,11 +1,11 @@
 {
   FieldManager fieldManager=getFieldManager();
-  for (  String property : mergedProperties.keySet()) {
+  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+    String property=entry.getKey();
     FieldMetadata metadata=mergedProperties.get(property);
-    String originalProperty=new String(property);
     if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(entity.getClass())) {
       boolean proceed=true;
-      if (property.indexOf(".") >= 0) {
+      if (property.contains(".")) {
         StringTokenizer tokens=new StringTokenizer(property,".");
         Object testObject=entity;
         while (tokens.hasMoreTokens()) {
@@ -14,7 +14,7 @@
             testObject=fieldManager.getFieldValue(testObject,token);
             if (testObject == null) {
               Property propertyItem=new Property();
-              propertyItem.setName(originalProperty);
+              propertyItem.setName(property);
               if (props.contains(propertyItem)) {
                 proceed=false;
                 break;
@@ -42,7 +42,7 @@
       checkField: {
         if (isFieldAccessible) {
           Property propertyItem=new Property();
-          propertyItem.setName(originalProperty);
+          propertyItem.setName(property);
           if (props.contains(propertyItem)) {
             continue;
           }
@@ -63,7 +63,7 @@
               strVal=dateFormat.format(((Calendar)value).getTime());
             }
  else             if (Double.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format((Double)value);
+              strVal=decimalFormat.format(value);
             }
  else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
               strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
@@ -86,16 +86,15 @@
         try {
           Method method;
           try {
-            String temp=new String(originalProperty);
-            temp="get" + originalProperty.substring(0,1).toUpperCase() + originalProperty.substring(1,originalProperty.length());
+            String temp="get" + property.substring(0,1).toUpperCase() + property.substring(1,property.length());
             method=entity.getClass().getMethod(temp,new Class[]{});
           }
  catch (          NoSuchMethodException e) {
-            method=entity.getClass().getMethod(originalProperty,new Class[]{});
+            method=entity.getClass().getMethod(property,new Class[]{});
           }
-          value=method.invoke(entity,new Object[]{});
+          value=method.invoke(entity,new String[]{});
           Property propertyItem=new Property();
-          propertyItem.setName(originalProperty);
+          propertyItem.setName(property);
           if (props.contains(propertyItem)) {
             continue;
           }
@@ -114,7 +113,7 @@
               strVal=dateFormat.format(((Calendar)value).getTime());
             }
  else             if (Double.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format((Double)value);
+              strVal=decimalFormat.format(value);
             }
  else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
               strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
@@ -126,7 +125,7 @@
           propertyItem.setValue(strVal);
         }
  catch (        NoSuchMethodException e) {
-          LOG.debug("Unable to find a specified property in the entity: " + originalProperty);
+          LOG.debug("Unable to find a specified property in the entity: " + property);
         }
       }
     }
