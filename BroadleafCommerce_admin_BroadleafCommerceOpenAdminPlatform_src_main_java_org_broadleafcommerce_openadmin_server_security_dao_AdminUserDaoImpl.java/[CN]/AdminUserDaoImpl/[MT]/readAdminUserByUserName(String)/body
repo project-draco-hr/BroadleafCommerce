@@ -1,5 +1,6 @@
 {
-  Query query=em.createNamedQuery("BC_READ_ADMIN_USER_BY_USERNAME");
+  TypedQuery<AdminUser> query=em.createNamedQuery("BC_READ_ADMIN_USER_BY_USERNAME",AdminUser.class);
+  query.setHint(queryCacheableKey,true);
   query.setParameter("userName",userName);
   List<AdminUser> users=query.getResultList();
   if (users != null && !users.isEmpty()) {

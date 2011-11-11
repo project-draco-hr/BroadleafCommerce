@@ -1,0 +1,15 @@
+{
+  Class<T> clazz;
+  if (entityMap.containsKey(beanId)) {
+    clazz=(Class<T>)entityMap.get(beanId);
+  }
+ else {
+    Object object=applicationcontext.getBean(beanId);
+    clazz=(Class<T>)object.getClass();
+    entityMap.put(beanId,clazz);
+  }
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Returning class (" + clazz.getName() + ") configured with bean id ("+ beanId+ ')');
+  }
+  return clazz;
+}
