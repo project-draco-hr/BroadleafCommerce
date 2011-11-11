@@ -8,8 +8,8 @@ synchronized (this) {
         Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded);
         for (        Class<?> clazz2 : entities) {
           if (!clazz2.getName().equals(clazz.getName())) {
-            for (            String key : props.keySet()) {
-              FieldMetadata metadata=props.get(key);
+            for (            Map.Entry<String,FieldMetadata> entry : props.entrySet()) {
+              FieldMetadata metadata=entry.getValue();
               if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
                 String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
                 metadata.setAvailableToTypes(both);
@@ -21,7 +21,10 @@ synchronized (this) {
         cacheData=props;
       }
     }
-    cacheData=(Map<String,FieldMetadata>)SerializationUtils.clone((Serializable)cacheData);
-    mergedProperties.putAll(cacheData);
+    Map<String,FieldMetadata> clonedCache=new HashMap<String,FieldMetadata>(cacheData.size());
+    for (    Map.Entry<String,FieldMetadata> entry : cacheData.entrySet()) {
+      clonedCache.put(entry.getKey(),entry.getValue().cloneFieldMetadata());
+    }
+    mergedProperties.putAll(clonedCache);
   }
 }
