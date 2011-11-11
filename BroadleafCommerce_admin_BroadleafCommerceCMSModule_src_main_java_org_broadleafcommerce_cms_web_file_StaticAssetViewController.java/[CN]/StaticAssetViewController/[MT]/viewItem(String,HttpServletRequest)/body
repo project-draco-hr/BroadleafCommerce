@@ -9,7 +9,7 @@
     if (sandBoxId != null) {
       sandBox=sandBoxService.retrieveSandboxById(sandBoxId);
     }
-    Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,request.getParameterMap());
+    Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
     return new ModelAndView("blStaticAssetView",model);
   }
  catch (  Exception e) {
