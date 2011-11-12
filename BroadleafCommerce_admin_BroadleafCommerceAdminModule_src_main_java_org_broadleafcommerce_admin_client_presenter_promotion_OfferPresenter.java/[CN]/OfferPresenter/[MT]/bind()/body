@@ -186,7 +186,7 @@
     }
   }
 );
-  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  getSaveButtonHandlerRegistration().removeHandler();
   getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
@@ -341,6 +341,12 @@
       if (event.isLeftButtonDown()) {
         initializeDisplay(lastSelectedRecord);
       }
+    }
+  }
+);
+  getDisplay().getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      initializer.disable();
     }
   }
 );

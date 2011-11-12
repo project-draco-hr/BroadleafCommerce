@@ -5,7 +5,7 @@
     FILE_UPLOAD.draw();
     FILE_UPLOAD.hide();
   }
-  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  getSaveButtonHandlerRegistration().removeHandler();
   saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
@@ -29,6 +29,13 @@
         }
 ,requestProperties);
       }
+    }
+  }
+);
+  display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      AssetItem assetItem=(AssetItem)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("pictureLarge");
+      assetItem.clearImage();
     }
   }
 );

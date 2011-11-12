@@ -1,5 +1,23 @@
 {
   formPresenter.bind();
+  formPresenter.getSaveButtonHandlerRegistration().removeHandler();
+  saveButtonHandlerRegistration=display.getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DSRequest requestProperties=new DSRequest();
+        requestProperties.setAttribute("dirtyValues",display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
+        display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(lastSelectedRecord));
+          }
+        }
+,requestProperties);
+        display.getDynamicFormDisplay().getSaveButton().disable();
+        display.getDynamicFormDisplay().getRefreshButton().disable();
+      }
+    }
+  }
+);
   addClickHandlerRegistration=display.getListDisplay().getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
@@ -18,10 +36,8 @@
 );
   fetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
-      if (display.getListDisplay().getGrid().getSelectedRecord() == null) {
-        setStartState();
-        formPresenter.disable();
-      }
+      setStartState();
+      formPresenter.disable();
     }
   }
 );

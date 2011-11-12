@@ -1,13 +1,14 @@
 {
-  BufferedInputStream bis=null;
+  String cacheFilePath=(String)model.get("cacheFilePath");
+  BufferedInputStream bis=new BufferedInputStream(new FileInputStream(cacheFilePath));
   try {
-    String cacheFilePath=(String)model.get("cacheFilePath");
     String mimeType=(String)model.get("mimeType");
     response.setContentType(mimeType);
-    response.setHeader("Cache-Control","no-cache");
-    response.setHeader("Pragma","no-cache");
-    response.setDateHeader("Expires",0);
-    bis=new BufferedInputStream(new FileInputStream(cacheFilePath));
+    if (!browserAssetCachingEnabled) {
+      response.setHeader("Cache-Control","no-cache");
+      response.setHeader("Pragma","no-cache");
+      response.setDateHeader("Expires",0);
+    }
     OutputStream os=response.getOutputStream();
     boolean eof=false;
     while (!eof) {
@@ -22,16 +23,14 @@
     os.flush();
   }
  catch (  Exception e) {
-    e.printStackTrace();
+    LOG.error("Unable to stream asset",e);
     throw e;
   }
  finally {
-    if (bis != null) {
-      try {
-        bis.close();
-      }
- catch (      Throwable e) {
-      }
+    try {
+      bis.close();
+    }
+ catch (    Throwable e) {
     }
   }
 }
