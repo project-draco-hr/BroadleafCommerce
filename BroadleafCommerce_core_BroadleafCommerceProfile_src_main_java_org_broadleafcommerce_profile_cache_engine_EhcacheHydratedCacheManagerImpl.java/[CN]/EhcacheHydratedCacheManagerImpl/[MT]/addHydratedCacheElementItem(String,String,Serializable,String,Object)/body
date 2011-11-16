@@ -1,0 +1,15 @@
+{
+  String heapKey=cacheRegion + '_' + cacheName+ '_'+ elementItemName+ '_'+ elementKey;
+  String nameKey=cacheRegion + '_' + cacheName+ '_'+ elementKey;
+  Element element=new Element(heapKey,elementValue);
+  if (!cacheMembersByEntity.containsKey(nameKey)) {
+    List<String> myMembers=new ArrayList<String>(50);
+    myMembers.add(elementItemName);
+    cacheMembersByEntity.put(nameKey,myMembers);
+  }
+ else {
+    List<String> myMembers=cacheMembersByEntity.get(nameKey);
+    myMembers.add(elementItemName);
+  }
+  heap.put(element);
+}

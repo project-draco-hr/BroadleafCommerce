@@ -1,0 +1,9 @@
+{
+  Class<?> myClass=entity.getClass();
+  Class<?> superClass=entity.getClass().getSuperclass();
+  while (superClass != null && superClass.getName().startsWith("org.broadleaf")) {
+    myClass=superClass;
+    superClass=superClass.getSuperclass();
+  }
+  return myClass;
+}

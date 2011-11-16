@@ -1,0 +1,17 @@
+{
+  String cacheName=cacheRegion;
+  if (key instanceof CacheKey) {
+    cacheName=((CacheKey)key).getEntityOrRoleName();
+    key=((CacheKey)key).getKey();
+  }
+  String nameKey=cacheRegion + '_' + cacheName+ '_'+ key;
+  if (cacheMemberNamesByEntity.containsKey(nameKey)) {
+    String[] members=new String[cacheMemberNamesByEntity.get(nameKey).size()];
+    members=cacheMemberNamesByEntity.get(nameKey).toArray(members);
+    for (    String myMember : members) {
+      String itemKey=cacheRegion + '_' + myMember+ '_'+ key;
+      removeKeys.add(itemKey);
+    }
+    cacheMemberNamesByEntity.remove(nameKey);
+  }
+}

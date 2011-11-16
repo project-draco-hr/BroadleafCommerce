@@ -1,0 +1,13 @@
+{
+  Element element;
+  String myKey=cacheRegion + '_' + cacheName+ '_'+ elementItemName+ '_'+ elementKey;
+  if (removeKeys.contains(myKey)) {
+    return null;
+  }
+  Object response=null;
+  element=offHeap.get(myKey);
+  if (element != null) {
+    response=element.getObjectValue();
+  }
+  return response;
+}
