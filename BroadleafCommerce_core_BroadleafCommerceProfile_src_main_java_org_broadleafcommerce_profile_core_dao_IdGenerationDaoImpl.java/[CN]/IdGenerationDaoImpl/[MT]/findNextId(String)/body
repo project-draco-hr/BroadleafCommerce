@@ -2,7 +2,6 @@
   IdGeneration response;
   Query query=em.createNamedQuery("BC_FIND_NEXT_ID");
   query.setParameter("idType",idType);
-  query.setHint(getQueryCacheableKey(),false);
   try {
     IdGeneration idGeneration=(IdGeneration)query.getSingleResult();
     response=(IdGeneration)entityConfiguration.createEntityInstance("org.broadleafcommerce.profile.core.domain.IdGeneration");

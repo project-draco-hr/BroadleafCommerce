@@ -7,6 +7,6 @@
     query=em.createNamedQuery("BC_READ_CONTENT_BY_IDS_AND_SANDBOX");
     query.setParameter("sandbox",sandbox);
   }
-  query.setHint(getQueryCacheableKey(),true);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   return batchExecuteReadQuery(query,ids,"idList");
 }

@@ -13,6 +13,6 @@ synchronized (this) {
   TypedQuery<ProductSku> query=em.createNamedQuery("BC_READ_ACTIVE_PRODUCTS_BY_SKU_ONE_TO_ONE",ProductSku.class);
   query.setParameter("skuId",skuId);
   query.setParameter("currentDate",myDate);
-  query.setHint(queryCacheableKey,true);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   return query.getResultList();
 }
