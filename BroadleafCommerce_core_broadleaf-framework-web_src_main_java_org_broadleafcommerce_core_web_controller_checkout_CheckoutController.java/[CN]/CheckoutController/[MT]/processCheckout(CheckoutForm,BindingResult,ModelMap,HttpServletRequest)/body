@@ -45,5 +45,16 @@
  catch (  CheckoutException e) {
     LOG.error("Cannot perform checkout",e);
   }
+  Customer customer=order.getCustomer();
+  if (StringUtils.isEmpty(customer.getFirstName())) {
+    customer.setFirstName(checkoutForm.getBillingAddress().getFirstName());
+  }
+  if (StringUtils.isEmpty(customer.getLastName())) {
+    customer.setLastName(checkoutForm.getBillingAddress().getLastName());
+  }
+  if (StringUtils.isEmpty(customer.getEmailAddress())) {
+    customer.setEmailAddress(order.getEmailAddress());
+  }
+  customerService.saveCustomer(customer,false);
   return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderConfirmation.htm?orderNumber=" + order.getOrderNumber();
 }
