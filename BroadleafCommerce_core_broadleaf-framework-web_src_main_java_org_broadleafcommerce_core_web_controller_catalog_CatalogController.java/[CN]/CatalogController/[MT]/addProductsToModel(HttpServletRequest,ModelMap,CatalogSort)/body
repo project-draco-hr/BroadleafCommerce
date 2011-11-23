@@ -14,7 +14,7 @@
  else {
     Category currentCategory=(Category)model.get("currentCategory");
     List<Product> productList=catalogService.findActiveProductsByCategory(currentCategory,SystemTime.asDate());
-    SearchFilterUtil.filterProducts(productList,request.getParameterMap(),new String[]{"manufacturer","skus[0].salePrice"});
+    SearchFilterUtil.filterProducts(productList,request.getParameterMap(),new String[]{"manufacturer","sku.salePrice"});
     if ((catalogSort != null) && (catalogSort.getSort() != null)) {
       populateProducts(productList,currentCategory);
       model.addAttribute("displayProducts",sortProducts(catalogSort,productList));

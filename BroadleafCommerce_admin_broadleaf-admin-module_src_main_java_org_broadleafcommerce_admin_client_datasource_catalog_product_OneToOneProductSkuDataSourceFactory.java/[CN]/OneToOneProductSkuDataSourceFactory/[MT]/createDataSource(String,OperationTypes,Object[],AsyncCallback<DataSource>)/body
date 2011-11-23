@@ -1,7 +1,7 @@
 {
   if (dataSource == null) {
     operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY);
-    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{new ForeignKey(defaultCategoryForeignKey,EntityImplementations.CATEGORY,null)});
     DataSourceModule[] modules=new DataSourceModule[]{new ProductSkuBasicEntityModule(CeilingEntities.PRODUCT,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
     dataSource.buildFields(null,false,cb);
