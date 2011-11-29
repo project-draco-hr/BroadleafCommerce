@@ -30,27 +30,7 @@
   }
   fieldMetadata.setMergedPropertyType(mergedPropertyType);
   if (SupportedFieldType.BROADLEAF_ENUMERATION.equals(type)) {
-    Map<String,String> enumVals=new TreeMap<String,String>();
-    Class<?> broadleafEnumeration=Class.forName(presentationAttribute.getBroadleafEnumeration());
-    Method typeMethod=broadleafEnumeration.getMethod("getType",new Class<?>[]{});
-    Method friendlyTypeMethod=broadleafEnumeration.getMethod("getFriendlyType",new Class<?>[]{});
-    Field[] fields=broadleafEnumeration.getFields();
-    for (    Field field : fields) {
-      boolean isStatic=Modifier.isStatic(field.getModifiers());
-      boolean isNameEqual=field.getType().getName().equals(broadleafEnumeration.getName());
-      if (isStatic && isNameEqual) {
-        enumVals.put((String)friendlyTypeMethod.invoke(field.get(null),new Object[]{}),(String)typeMethod.invoke(field.get(null),new Object[]{}));
-      }
-    }
-    String[][] enumerationValues=new String[enumVals.size()][2];
-    int j=0;
-    for (    String key : enumVals.keySet()) {
-      enumerationValues[j][0]=enumVals.get(key);
-      enumerationValues[j][1]=key;
-      j++;
-    }
-    fieldMetadata.setEnumerationValues(enumerationValues);
-    fieldMetadata.setEnumerationClass(presentationAttribute.getBroadleafEnumeration());
+    setupBroadleafEnumeration(presentationAttribute.getBroadleafEnumeration(),fieldMetadata);
   }
   return fieldMetadata;
 }

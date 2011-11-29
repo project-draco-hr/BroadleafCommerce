@@ -38,7 +38,10 @@
         attr.setLargeEntry(annot.largeEntry());
         attr.setProminent(annot.prominent());
         attr.setColumnWidth(annot.columnWidth());
-        attr.setBroadleafEnumeration(annot.broadleafEnumeration());
+        if (!StringUtils.isEmpty(annot.broadleafEnumeration()) && !annot.broadleafEnumeration().equals(attr.getBroadleafEnumeration())) {
+          attr.setBroadleafEnumeration(annot.broadleafEnumeration());
+          setupBroadleafEnumeration(annot.broadleafEnumeration(),metadata);
+        }
         attr.setReadOnly(annot.readOnly());
         attr.setExcluded(isParentExcluded ? true : annot.excluded());
         attr.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED ? true : false);
