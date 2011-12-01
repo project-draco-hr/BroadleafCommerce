@@ -14,20 +14,20 @@
       TypedQuery<Category> categoryQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
       List<Category> categories=categoryQuery.getResultList();
       if (!categories.isEmpty()) {
-        StringBuffer sb=new StringBuffer();
+        StringBuilder sb=new StringBuilder(500);
         sb.append("Cannot delete category (");
         sb.append(category.getId());
-        sb.append(",");
+        sb.append(',');
         sb.append(category.getName());
         sb.append("). There are Categories that reference it as the default parent category. These categories must first be updated to a different default parent category before this category can be deleted. ");
         sb.append("\nThe categories in question are: ");
         for (        Category myCategory : categories) {
-          sb.append("\n");
-          sb.append("(");
+          sb.append('\n');
+          sb.append('(');
           sb.append(myCategory.getId());
-          sb.append(",");
+          sb.append(',');
           sb.append(myCategory.getName());
-          sb.append(")");
+          sb.append(')');
         }
         throw new ServiceException(sb.toString());
       }
@@ -41,20 +41,20 @@
       TypedQuery<Product> productQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
       List<Product> products=productQuery.getResultList();
       if (!products.isEmpty()) {
-        StringBuffer sb=new StringBuffer();
+        StringBuilder sb=new StringBuilder(500);
         sb.append("Cannot delete category (");
         sb.append(category.getId());
-        sb.append(",");
+        sb.append(',');
         sb.append(category.getName());
         sb.append("). There are Products that reference it as the default category. These products must first be updated to a different default category before this category can be deleted. ");
         sb.append("\nThe products in question are: ");
         for (        Product product : products) {
-          sb.append("\n");
-          sb.append("(");
+          sb.append('\n');
+          sb.append('(');
           sb.append(product.getId());
-          sb.append(",");
+          sb.append(',');
           sb.append(product.getName());
-          sb.append(")");
+          sb.append(')');
         }
         throw new ServiceException(sb.toString());
       }
@@ -62,6 +62,7 @@
     dynamicEntityDao.remove(category);
   }
  catch (  ServiceException e) {
+    LOG.error("Unable to remove entity",e);
     throw e;
   }
 catch (  Exception e) {

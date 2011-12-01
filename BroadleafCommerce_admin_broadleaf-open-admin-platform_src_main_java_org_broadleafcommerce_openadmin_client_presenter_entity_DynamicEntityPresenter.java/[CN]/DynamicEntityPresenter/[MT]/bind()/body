@@ -4,16 +4,7 @@
   saveButtonHandlerRegistration=display.getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        DSRequest requestProperties=new DSRequest();
-        requestProperties.setAttribute("dirtyValues",display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
-        display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
-          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(lastSelectedRecord));
-          }
-        }
-,requestProperties);
-        display.getDynamicFormDisplay().getSaveButton().disable();
-        display.getDynamicFormDisplay().getRefreshButton().disable();
+        saveClicked();
       }
     }
   }

@@ -1,0 +1,18 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Category adminInstance=(Category)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Category.class.getName(),persistencePerspective);
+    adminInstance=(Category)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    if (adminInstance.getDefaultParentCategory() != null && !adminInstance.getAllParentCategories().contains(adminInstance.getDefaultParentCategory())) {
+      adminInstance.getAllParentCategories().add(adminInstance.getDefaultParentCategory());
+    }
+    adminInstance=(Category)dynamicEntityDao.merge(adminInstance);
+    return helper.getRecord(adminProperties,adminInstance,null,null);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+  }
+}

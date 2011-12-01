@@ -3,7 +3,8 @@
     operationTypes=new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY);
     PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{new ForeignKey(defaultCategoryForeignKey,EntityImplementations.CATEGORY,null)});
     DataSourceModule[] modules=new DataSourceModule[]{new ProductSkuBasicEntityModule(CeilingEntities.PRODUCT,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
-    dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+    dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,false,true,true,false,false);
+    dataSource.setCustomCriteria(new String[]{"productDirectEdit"});
     dataSource.buildFields(null,false,cb);
   }
  else {
