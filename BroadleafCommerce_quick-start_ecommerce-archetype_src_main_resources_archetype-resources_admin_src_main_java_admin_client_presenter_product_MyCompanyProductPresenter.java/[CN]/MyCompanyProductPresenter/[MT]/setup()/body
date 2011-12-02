@@ -1,0 +1,20 @@
+{
+  super.setup();
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("shippingCountrySearchDS",new ShippingCountrySearchDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ListGridDataSource shippingCountrySearchDataSource=(ListGridDataSource)result;
+      shippingCountrySearchDataSource.resetPermanentFieldVisibility("countryIso","currencyCode");
+      EntitySearchDialog shippingCountrySearchView=new EntitySearchDialog(shippingCountrySearchDataSource);
+      ganzCategoryLibrary.put("shippingCountrySearchView",shippingCountrySearchView);
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("shippingCountryDS",new ShippingCountryListDataSourceFactory(),null,new Object[]{},new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ListGridDataSource shippingCountryDataSource=(ListGridDataSource)result;
+      shippingCountryPresenter=new SimpleSearchJoinStructurePresenter(((MyCompanyProductDisplay)getDisplay()).getShippingCountryDisplay(),(EntitySearchDialog)ganzCategoryLibrary.get("shippingCountrySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      shippingCountryPresenter.setDataSource(shippingCountryDataSource,new String[]{"countryIso","currencyCode"},new Boolean[]{false,false});
+    }
+  }
+));
+}
