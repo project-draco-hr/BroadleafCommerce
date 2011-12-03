@@ -1,11 +1,21 @@
 {
+  exploitProtectionService.compareSessionToken(persistencePackage.getSessionToken());
   PersistenceManager persistenceManager=null;
   try {
     persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
     persistenceManager.setTargetMode(TargetModeType.SANDBOX);
     persistenceManager.remove(persistencePackage);
   }
-  finally {
+ catch (  ServiceException e) {
+    String message=exploitProtectionService.cleanString(e.getMessage());
+    if (e.getCause() == null) {
+      throw new ServiceException(message);
+    }
+ else {
+      throw new ServiceException(message,e.getCause());
+    }
+  }
+ finally {
     try {
       if (persistenceManager != null) {
         persistenceManager.close();

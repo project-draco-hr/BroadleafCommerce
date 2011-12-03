@@ -1,4 +1,5 @@
 {
+  exploitProtectionService.compareSessionToken(persistencePackage.getSessionToken());
   cleanEntity(persistencePackage.getEntity());
   PersistenceManager persistenceManager=null;
   try {
@@ -6,7 +7,16 @@
     persistenceManager.setTargetMode(TargetModeType.SANDBOX);
     return persistenceManager.update(persistencePackage);
   }
-  finally {
+ catch (  ServiceException e) {
+    String message=exploitProtectionService.cleanString(e.getMessage());
+    if (e.getCause() == null) {
+      throw new ServiceException(message);
+    }
+ else {
+      throw new ServiceException(message,e.getCause());
+    }
+  }
+ finally {
     try {
       if (persistenceManager != null) {
         persistenceManager.close();

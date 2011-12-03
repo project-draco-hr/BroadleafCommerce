@@ -1,4 +1,5 @@
 {
+  exploitProtectionService.compareSessionToken(persistencePackage.getSessionToken());
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
     PersistenceManager persistenceManager=null;
@@ -14,10 +15,16 @@
     }
   }
  catch (  ServiceException e) {
-    throw e;
+    String message=exploitProtectionService.cleanString(e.getMessage());
+    if (e.getCause() == null) {
+      throw new ServiceException(message);
+    }
+ else {
+      throw new ServiceException(message,e.getCause());
+    }
   }
 catch (  Exception e) {
     LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
-    throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
+    throw new ServiceException(exploitProtectionService.cleanString("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname),e);
   }
 }

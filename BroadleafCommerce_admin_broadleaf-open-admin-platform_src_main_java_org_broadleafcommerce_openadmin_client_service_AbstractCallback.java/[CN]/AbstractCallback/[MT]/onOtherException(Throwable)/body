@@ -2,7 +2,7 @@
   final String msg="Service Exception";
   if (exception.getClass().getName().equals("com.google.gwt.user.client.rpc.InvocationException")) {
     SC.logWarn("Retrieving admin user (AbstractCallback.onOtherException)...");
-    AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    AppServices.SECURITY.getAdminUser(Cookies.getCookie(BLCMain.sessionIdKey),new AbstractCallback<AdminUser>(){
       @Override public void onSuccess(      AdminUser result){
         if (result == null) {
           SC.logWarn("Admin user not found. Logging out (AbstractCallback.onOtherException)...");

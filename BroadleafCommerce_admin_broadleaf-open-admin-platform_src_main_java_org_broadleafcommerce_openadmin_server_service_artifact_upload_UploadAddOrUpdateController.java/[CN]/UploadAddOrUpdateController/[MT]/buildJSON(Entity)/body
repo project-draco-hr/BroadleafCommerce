@@ -1,16 +1,16 @@
 {
-  StringBuffer sb=new StringBuffer();
+  StringBuilder sb=new StringBuilder(200);
   sb.append("{\"type\" : \"");
-  sb.append(entity.getType()[0]);
+  sb.append(exploitProtectionService.cleanString(entity.getType()[0]));
   sb.append("\", \"properties\" : [");
   for (int j=0; j < entity.getProperties().length; j++) {
     sb.append("{\"name\" : \"");
-    sb.append(entity.getProperties()[j].getName());
+    sb.append(exploitProtectionService.cleanString(entity.getProperties()[j].getName()));
     sb.append("\", \"value\" : \"");
-    sb.append(entity.getProperties()[j].getValue());
+    sb.append(exploitProtectionService.cleanString(entity.getProperties()[j].getValue()));
     sb.append("\"}");
     if (j < entity.getProperties().length - 1) {
-      sb.append(",");
+      sb.append(',');
     }
   }
   sb.append("]}");

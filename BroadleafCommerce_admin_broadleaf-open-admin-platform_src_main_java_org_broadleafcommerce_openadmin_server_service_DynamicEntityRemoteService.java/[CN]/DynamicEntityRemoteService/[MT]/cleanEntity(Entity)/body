@@ -1,10 +1,7 @@
 {
   try {
     for (    Property property : entity.getProperties()) {
-      if (property.getValue() != null) {
-        CleanResults results=as.scan(property.getValue(),antiSamyPolicy);
-        property.setValue(results.getCleanHTML());
-      }
+      property.setValue(exploitProtectionService.cleanString(property.getValue()));
     }
   }
  catch (  Exception e) {
