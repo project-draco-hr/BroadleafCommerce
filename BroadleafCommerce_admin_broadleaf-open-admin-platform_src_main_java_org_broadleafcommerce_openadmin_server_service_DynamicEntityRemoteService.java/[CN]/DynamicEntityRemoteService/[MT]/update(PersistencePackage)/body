@@ -1,4 +1,5 @@
 {
+  cleanEntity(persistencePackage.getEntity());
   PersistenceManager persistenceManager=null;
   try {
     persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
@@ -12,7 +13,7 @@
       }
     }
  catch (    Exception e) {
-      e.printStackTrace();
+      LOG.error("Unable to close persistence manager",e);
     }
   }
 }

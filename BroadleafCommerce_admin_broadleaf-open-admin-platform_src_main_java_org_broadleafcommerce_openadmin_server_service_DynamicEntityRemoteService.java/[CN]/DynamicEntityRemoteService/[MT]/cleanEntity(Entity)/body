@@ -1,0 +1,14 @@
+{
+  try {
+    for (    Property property : entity.getProperties()) {
+      if (property.getValue() != null) {
+        CleanResults results=as.scan(property.getValue(),antiSamyPolicy);
+        property.setValue(results.getCleanHTML());
+      }
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to clean the passed in entity values",e);
+    throw new ServiceException("Unable to clean the passed in entity values",e);
+  }
+}
