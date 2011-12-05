@@ -1,18 +1,18 @@
 {
-  display.getGrid().addDataArrivedHandler(new DataArrivedHandler(){
+  dataArrivedHandlerRegistration=display.getGrid().addDataArrivedHandler(new DataArrivedHandler(){
     public void onDataArrived(    DataArrivedEvent event){
       display.getRemoveButton().disable();
     }
   }
 );
-  display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
+  editCompletedHandlerRegistration=display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
     public void onEditComplete(    EditCompleteEvent event){
       display.getGrid().deselectAllRecords();
       setStartState();
     }
   }
 );
-  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+  selectionChangedHandlerRegistration=display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         display.getRemoveButton().enable();
@@ -23,7 +23,7 @@
     }
   }
 );
-  display.getRemoveButton().addClickHandler(new ClickHandler(){
+  removeClickedHandlerRegistration=display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
@@ -36,7 +36,7 @@
     }
   }
 );
-  display.getAddButton().addClickHandler(new ClickHandler(){
+  addClickedHandlerRegistration=display.getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         DynamicEntityDataSource dataSource=(DynamicEntityDataSource)display.getGrid().getDataSource();

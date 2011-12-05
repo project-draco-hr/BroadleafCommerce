@@ -1,5 +1,5 @@
 {
-  display.getAddButton().addClickHandler(new ClickHandler(){
+  addClickedHandlerRegistration=display.getAddButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         searchDialog.search(searchDialogTitle,new SearchItemSelectedHandler(){
@@ -14,14 +14,14 @@
     }
   }
 );
-  display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
+  editCompletedHandlerRegistration=display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
     public void onEditComplete(    EditCompleteEvent event){
       display.getGrid().deselectAllRecords();
       setStartState();
     }
   }
 );
-  display.getGrid().addRecordDropHandler(new RecordDropHandler(){
+  recordDropHandlerRegistration=display.getGrid().addRecordDropHandler(new RecordDropHandler(){
     public void onRecordDrop(    RecordDropEvent event){
       ListGridRecord record=event.getDropRecords()[0];
       int originalIndex=((ListGrid)event.getSource()).getRecordIndex(record);
@@ -35,7 +35,7 @@
     }
   }
 );
-  display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+  selectionChangedHandlerRegistration=display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         display.getRemoveButton().enable();
@@ -46,7 +46,7 @@
     }
   }
 );
-  display.getRemoveButton().addClickHandler(new ClickHandler(){
+  removedClickedHandlerRegistration=display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
@@ -56,6 +56,12 @@
         }
 );
       }
+    }
+  }
+);
+  rowDoubleClickedHandlerRegistration=display.getGrid().addCellDoubleClickHandler(new CellDoubleClickHandler(){
+    @Override public void onCellDoubleClick(    CellDoubleClickEvent cellDoubleClickEvent){
+      BLCMain.ENTITY_ADD.editRecord(joinStructureEditTitle,(DynamicEntityDataSource)display.getGrid().getDataSource(),display.getGrid().getSelectedRecord(),null,joinStructureFields,null);
     }
   }
 );
