@@ -1,6 +1,6 @@
 {
   SC.logWarn("Retrieving web app context...");
-  AppServices.UTILITY.getConfiguredContextsAndPrefixes(Cookies.getCookie(sessionIdKey),new AbstractCallback<String[]>(){
+  AppServices.UTILITY.getAllItems(new AbstractCallback<String[]>(){
     @Override public void onSuccess(    String[] result){
       webAppContext=result[0];
       if (result[1] != null) {
@@ -10,7 +10,8 @@
         storeFrontWebAppPrefix=webAppContext;
       }
       assetServerUrlPrefix=result[2];
-      AppServices.SECURITY.getAdminUser(Cookies.getCookie(sessionIdKey),new AbstractCallback<AdminUser>(){
+      csrfToken=result[3];
+      AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
         @Override public void onSuccess(        AdminUser result){
           SecurityManager.USER=result;
           if (result == null) {

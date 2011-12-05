@@ -1,0 +1,8 @@
+{
+  SC.logWarn("Admin user not found. Logging out (AbstractCallback.onSecurityException)...");
+  reportException(msg,exception);
+  UrlBuilder builder=Window.Location.createUrlBuilder();
+  builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
+  builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+  Window.open(builder.buildString(),"_self",null);
+}

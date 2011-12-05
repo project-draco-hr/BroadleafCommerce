@@ -1,7 +1,7 @@
 {
   CriteriaTransferObject criteriaTransferObject=getCto(request);
   final String parentCategoryId=criteriaTransferObject.get(criteriaTransferObject.getPropertyIdSet().iterator().next()).getFilterValues()[0];
-  service.fetch(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria,Cookies.getCookie(BLCMain.sessionIdKey)),criteriaTransferObject,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response,dataSource){
+  service.fetch(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria,BLCMain.csrfToken),criteriaTransferObject,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response,dataSource){
     public void onSuccess(    DynamicResultSet result){
       super.onSuccess(result);
       TreeNode[] recordList=buildRecords(result,null);
