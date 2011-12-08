@@ -1,38 +1,11 @@
 {
-  Comparator<Node> hashCompare=new Comparator<Node>(){
-    public int compare(    Node arg0,    Node arg1){
-      int response=-1;
-      if (arg0.isSameNode(arg1)) {
-        response=0;
-      }
-      if (response != 0) {
-        boolean eof=false;
-        Node parentNode=arg0;
-        while (!eof) {
-          parentNode=parentNode.getParentNode();
-          if (parentNode == null) {
-            eof=true;
-          }
- else           if (arg1.isSameNode(parentNode)) {
-            response=0;
-            eof=true;
-          }
-        }
-      }
-      return response;
-    }
-  }
-;
-  Node[] tempNodes={};
-  tempNodes=exhaustedNodes.toArray(tempNodes);
-  Arrays.sort(tempNodes,hashCompare);
-  List<Node> usedNodes=new ArrayList<Node>();
+  List<Node> usedNodes=new ArrayList<Node>(20);
   Iterator<Node> itr=list.iterator();
   Node parentNode=primaryNodes[0].getParentNode();
   Document ownerDocument=parentNode.getOwnerDocument();
   while (itr.hasNext()) {
     Node node=itr.next();
-    if (Element.class.isAssignableFrom(node.getClass()) && Arrays.binarySearch(tempNodes,node,hashCompare) < 0) {
+    if (Element.class.isAssignableFrom(node.getClass()) && !exhaustedNodesContains(exhaustedNodes,node)) {
       if (LOG.isDebugEnabled()) {
         StringBuffer sb=new StringBuffer();
         sb.append("matching node for replacement: ");

@@ -1,10 +1,10 @@
 {
   try {
     MergeXmlConfigResource merge=new MergeXmlConfigResource();
-    InputStream[] sources=new InputStream[configLocations.size()];
+    ResourceInputStream[] sources=new ResourceInputStream[configLocations.size()];
     int j=0;
     for (    Resource resource : configLocations) {
-      sources[j]=resource.getInputStream();
+      sources[j]=new ResourceInputStream(resource.getInputStream(),resource.getURL().toString());
       j++;
     }
     setConfigLocation(merge.getMergedConfigResource(sources));

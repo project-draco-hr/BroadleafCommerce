@@ -1,17 +1,17 @@
 {
   super(parent);
-  InputStream[] sources;
-  InputStream[] patches;
+  ResourceInputStream[] sources;
+  ResourceInputStream[] patches;
   try {
-    sources=new InputStream[sourceLocations.length];
+    sources=new ResourceInputStream[sourceLocations.length];
     for (int j=0; j < sourceLocations.length; j++) {
       File temp=new File(sourceLocations[j]);
-      sources[j]=new BufferedInputStream(new FileInputStream(temp));
+      sources[j]=new ResourceInputStream(new BufferedInputStream(new FileInputStream(temp)),sourceLocations[j]);
     }
-    patches=new InputStream[patchLocations.length];
+    patches=new ResourceInputStream[patchLocations.length];
     for (int j=0; j < patches.length; j++) {
       File temp=new File(patchLocations[j]);
-      sources[j]=new BufferedInputStream(new FileInputStream(temp));
+      sources[j]=new ResourceInputStream(new BufferedInputStream(new FileInputStream(temp)),patchLocations[j]);
     }
   }
  catch (  FileNotFoundException e) {

@@ -2,5 +2,10 @@
   Map<String,String> map=new HashMap<String,String>();
   map.put("id",String.valueOf(myId));
   setContentsURLParams(map);
-  setContentsURL(BLCMain.webAppContext + editorPath);
+  if (editorPath.startsWith("http")) {
+    setContentsURL(editorPath);
+  }
+ else {
+    setContentsURL(BLCMain.webAppContext + editorPath);
+  }
 }
