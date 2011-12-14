@@ -2,7 +2,8 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderDS",new OrderListDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource top){
       setupDisplayItems(top);
-      ((ListGridDataSource)top).setupGridFields(new String[]{"customer.firstName","customer.lastName","name","orderNumber","status"});
+      ((ListGridDataSource)top).setupGridFields(new String[]{"customer.firstName","customer.lastName","name","orderNumber","status","submitDate"});
+      getDisplay().getListDisplay().getGrid().sort("submitDate",SortDirection.DESCENDING);
     }
   }
 ));
