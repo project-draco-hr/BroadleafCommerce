@@ -8,7 +8,7 @@
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
       FieldPresentationAttributes presentationAttribute=presentationAttributes.get(propertyName);
       Boolean amIExcluded=isParentExcluded || !testPropertyInclusion(presentationAttribute);
-      Boolean includeField=testPropertyRecursion(prefix,propertyName,targetClass,ceilingEntityFullyQualifiedClassname);
+      Boolean includeField=testPropertyRecursion(prefix,parentClasses,propertyName,targetClass,ceilingEntityFullyQualifiedClassname);
       SupportedFieldType explicitType=null;
       if (presentationAttribute != null) {
         explicitType=presentationAttribute.getExplicitFieldType();
@@ -16,11 +16,11 @@
       Class<?> returnedClass=type.getReturnedClass();
       checkProp: {
         if (type.isComponentType() && includeField) {
-          buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,type,returnedClass,amIExcluded);
+          buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,type,returnedClass,parentClasses,amIExcluded);
           break checkProp;
         }
         if (type.isEntityType() && !returnedClass.isAssignableFrom(targetClass) && populateManyToOneFields&& includeField) {
-          buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,returnedClass,targetClass,prefix,amIExcluded);
+          buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,returnedClass,targetClass,parentClasses,prefix,amIExcluded);
           break checkProp;
         }
       }
