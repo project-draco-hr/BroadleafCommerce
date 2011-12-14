@@ -1,6 +1,11 @@
 {
   Class<?>[] polymorphicEntities=getAllPolymorphicEntitiesFromCeiling(returnedClass);
-  Map<String,FieldMetadata> newFields=getMergedPropertiesRecursively(ceilingEntityFullyQualifiedClassname,polymorphicEntities,foreignField,additionalNonPersistentProperties,additionalForeignFields,MergedPropertyType.PRIMARY,populateManyToOneFields,includeFields,excludeFields,configurationKey,prefix + propertyName + '.',isParentExcluded);
+  List<Class<?>> clonedParentClasses=new ArrayList<Class<?>>();
+  for (  Class<?> parentClass : parentClasses) {
+    clonedParentClasses.add(parentClass);
+  }
+  clonedParentClasses.add(targetClass);
+  Map<String,FieldMetadata> newFields=getMergedPropertiesRecursively(ceilingEntityFullyQualifiedClassname,polymorphicEntities,foreignField,additionalNonPersistentProperties,additionalForeignFields,MergedPropertyType.PRIMARY,populateManyToOneFields,includeFields,excludeFields,configurationKey,clonedParentClasses,prefix + propertyName + '.',isParentExcluded);
   for (  FieldMetadata newMetadata : newFields.values()) {
     newMetadata.setInheritedFromType(targetClass.getName());
     newMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
