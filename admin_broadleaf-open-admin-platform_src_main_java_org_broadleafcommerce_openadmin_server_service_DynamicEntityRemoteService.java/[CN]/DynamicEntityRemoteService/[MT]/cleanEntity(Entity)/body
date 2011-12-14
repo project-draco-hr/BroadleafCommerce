@@ -2,6 +2,7 @@
   try {
     for (    Property property : entity.getProperties()) {
       property.setValue(exploitProtectionService.cleanString(property.getValue()));
+      property.setUnHtmlEncodedValue(StringEscapeUtils.unescapeHtml(property.getValue()));
     }
   }
  catch (  Exception e) {
