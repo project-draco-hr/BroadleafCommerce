@@ -6,20 +6,9 @@
   leftVerticalLayout.setShowResizeBar(true);
   listDisplay=new DynamicEntityListView(BLCMain.getMessageManager().getString("roleListTitle"),entityDataSource,false,false);
   leftVerticalLayout.addMember(listDisplay);
-  TabSet topTabSet=new TabSet();
-  topTabSet.setID("roleTopTabSet");
-  topTabSet.setTabBarPosition(Side.TOP);
-  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
-  topTabSet.setWidth("50%");
-  topTabSet.setHeight100();
-  topTabSet.setPaneMargin(0);
-  Tab detailsTab=new Tab(BLCMain.getMessageManager().getString("roleDetailsTitle"));
-  detailsTab.setID("roleDetailsTab");
   dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("roleDetailsTitle"),entityDataSource);
   permissionsDisplay=new GridStructureView(BLCMain.getMessageManager().getString("permissionListTitle"),false,false);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(permissionsDisplay);
-  detailsTab.setPane(dynamicFormDisplay);
-  topTabSet.addTab(detailsTab);
   addMember(leftVerticalLayout);
-  addMember(topTabSet);
+  addMember(dynamicFormDisplay);
 }

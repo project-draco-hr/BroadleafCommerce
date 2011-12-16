@@ -6,18 +6,7 @@
   leftVerticalLayout.setShowResizeBar(true);
   listDisplay=new DynamicEntityListView(getListTitle(),entityDataSource,false,false);
   leftVerticalLayout.addMember(listDisplay);
-  TabSet topTabSet=new TabSet();
-  topTabSet.setID(getViewPrefix() + "TopTabSet");
-  topTabSet.setTabBarPosition(Side.TOP);
-  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
-  topTabSet.setWidth("50%");
-  topTabSet.setHeight100();
-  topTabSet.setPaneMargin(0);
-  Tab detailsTab=new Tab(getFormTitle());
-  detailsTab.setID(getViewPrefix() + "DetailsTab");
   dynamicFormDisplay=new DynamicFormView(getFormTitle(),entityDataSource);
-  detailsTab.setPane(dynamicFormDisplay);
-  topTabSet.addTab(detailsTab);
   addMember(leftVerticalLayout);
-  addMember(topTabSet);
+  addMember(dynamicFormDisplay);
 }

@@ -8,6 +8,9 @@
         response.getPermissions().add(permission.getName());
       }
     }
+    for (    AdminPermission permission : persistentAdminUser.getAllPermissions()) {
+      response.getPermissions().add(permission.getName());
+    }
     response.setUserName(persistentAdminUser.getLogin());
     response.setCurrentSandBoxId(String.valueOf(SandBoxContext.getSandBoxContext().getSandBoxId()));
     return response;

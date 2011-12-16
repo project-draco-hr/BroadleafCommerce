@@ -1,0 +1,58 @@
+{
+  setHeight100();
+  setWidth100();
+  setBackgroundColor("#eaeaea");
+  setOverflow(Overflow.AUTO);
+  HStack hStack=new HStack(10);
+  hStack.setID("userPermissionHStack");
+  hStack.setHeight("45%");
+  hStack.setWidth100();
+  hStack.setBackgroundColor("#eaeaea");
+  hStack.setAlign(Alignment.CENTER);
+  VLayout stack=new VLayout();
+  stack.setID("userPermissionVerticalLayout");
+  stack.setHeight100();
+  stack.setWidth100();
+  toolBar=new ToolStrip();
+  toolBar.setHeight(30);
+  toolBar.setWidth100();
+  toolBar.setMinWidth(300);
+  toolBar.addSpacer(6);
+  addButton=new ToolStripButton();
+  addButton.setTitle(BLCMain.getMessageManager().getString("addTitle"));
+  addButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/add.png");
+  addButton.setDisabled(true);
+  toolBar.addButton(addButton);
+  removeButton=new ToolStripButton();
+  removeButton.setTitle(BLCMain.getMessageManager().getString("removeTitle"));
+  removeButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/remove.png");
+  removeButton.setDisabled(true);
+  toolBar.addButton(removeButton);
+  toolBar.addSpacer(6);
+  toolBar.setDisabled(false);
+  toolBar.addFill();
+  stack.addMember(toolBar);
+  grid=new ListGrid();
+  grid.setAutoFetchData(false);
+  grid.setShowHeader(true);
+  grid.setShowHeaderContextMenu(false);
+  grid.setPreventDuplicates(true);
+  grid.setCanReorderRecords(canReorder);
+  grid.setDisabled(true);
+  grid.setCanSort(false);
+  grid.setCellPadding(5);
+  grid.setCanEdit(canEdit);
+  grid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
+  grid.setEditByCell(true);
+  grid.setAutoSaveEdits(true);
+  grid.setSaveByCell(true);
+  grid.setAlternateRecordStyles(true);
+  grid.setCanGroupBy(false);
+  if (!canEdit) {
+    grid.setAlternateBodyStyleName("editRowDisabled");
+  }
+  stack.addMember(grid);
+  hStack.addMember(stack);
+  hStack.setOverflow(Overflow.AUTO);
+  addMember(hStack);
+}
