@@ -1,7 +1,10 @@
 {
   Customer loggedInCustomer=customerService.readCustomerByUsername(authResult.getName());
-  Customer anonymousCustomer=customerState.getCustomer(request);
-  Order cart=cartService.findCartForCustomer(anonymousCustomer);
+  Customer anonymousCustomer=(Customer)request.getSession(true).getAttribute(CustomerStateFilter.ANONYMOUS_CUSTOMER_SESSION_ATTRIBUTE_NAME);
+  Order cart=null;
+  if (anonymousCustomer != null) {
+    cart=cartService.findCartForCustomer(anonymousCustomer);
+  }
   MergeCartResponse mergeCartResponse;
   try {
     mergeCartResponse=cartService.mergeCart(loggedInCustomer,cart);

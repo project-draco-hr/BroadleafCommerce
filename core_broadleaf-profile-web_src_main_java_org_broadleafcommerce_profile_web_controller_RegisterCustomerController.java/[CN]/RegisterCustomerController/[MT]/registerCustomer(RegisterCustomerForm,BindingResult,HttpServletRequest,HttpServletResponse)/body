@@ -2,7 +2,8 @@
   registerCustomerValidator.validate(registerCustomerForm,errors);
   if (!errors.hasErrors()) {
     customerService.registerCustomer(registerCustomerForm.getCustomer(),registerCustomerForm.getPassword(),registerCustomerForm.getPasswordConfirm());
-    loginService.loginCustomer(registerCustomerForm.getCustomer());
+    Authentication auth=loginService.loginCustomer(registerCustomerForm.getCustomer());
+    mergeCartProcessor.execute(request,response,auth);
     return new ModelAndView(getRegistrationSuccessView());
   }
  else {
