@@ -1,0 +1,31 @@
+{
+  GenericResponse response=new GenericResponse();
+  AdminUser user=null;
+  if (username != null) {
+    user=adminUserDao.readAdminUserByUserName(username);
+  }
+  checkUser(user,response);
+  if (!response.getHasErrors()) {
+    String token=PasswordUtils.generateTemporaryPassword(PASSWORD_TOKEN_LENGTH);
+    token=token.toLowerCase();
+    ForgotPasswordSecurityToken fpst=new ForgotPasswordSecurityTokenImpl();
+    fpst.setAdminUserId(user.getId());
+    fpst.setToken(passwordEncoder.encodePassword(token,null));
+    fpst.setCreateDate(SystemTime.asDate());
+    forgotPasswordSecurityTokenDao.saveToken(fpst);
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("token",token);
+    String resetPasswordUrl=getResetPasswordURL();
+    if (resetPasswordUrl != null) {
+      if (resetPasswordUrl.contains("?")) {
+        resetPasswordUrl=resetPasswordUrl + "&token=" + token;
+      }
+ else {
+        resetPasswordUrl=resetPasswordUrl + "?token=" + token;
+      }
+    }
+    vars.put("resetPasswordUrl",resetPasswordUrl);
+    emailService.sendTemplateEmail(user.getEmail(),getResetPasswordEmailInfo(),vars);
+  }
+  return response;
+}

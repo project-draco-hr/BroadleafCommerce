@@ -1,0 +1,27 @@
+{
+  GenericResponse response=new GenericResponse();
+  List<AdminUser> users=null;
+  if (emailAddress != null) {
+    users=adminUserDao.readAdminUserByEmail(emailAddress);
+  }
+  if (users == null || users.isEmpty()) {
+    response.addErrorCode("notFound");
+  }
+ else {
+    List<String> activeUsernames=new ArrayList<String>();
+    for (    AdminUser user : users) {
+      if (user.getActiveStatusFlag()) {
+        activeUsernames.add(user.getLogin());
+      }
+    }
+    if (activeUsernames.size() > 0) {
+      HashMap<String,Object> vars=new HashMap<String,Object>();
+      vars.put("accountNames",activeUsernames);
+      emailService.sendTemplateEmail(emailAddress,getSendUsernameEmailInfo(),vars);
+    }
+ else {
+      response.addErrorCode("inactiveUser");
+    }
+  }
+  return response;
+}

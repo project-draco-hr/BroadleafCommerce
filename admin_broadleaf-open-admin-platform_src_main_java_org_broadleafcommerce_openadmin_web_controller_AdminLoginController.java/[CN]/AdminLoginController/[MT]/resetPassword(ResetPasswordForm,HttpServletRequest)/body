@@ -1,0 +1,10 @@
+{
+  GenericResponse errorResponse=adminSecurityService.resetPasswordUsingToken(resetPasswordForm.getUsername(),resetPasswordForm.getToken(),resetPasswordForm.getPassword(),resetPasswordForm.getConfirmPassword());
+  if (errorResponse.getHasErrors()) {
+    setErrors(errorResponse,request);
+    return getResetPasswordView();
+  }
+ else {
+    return redirectToLoginWithMessage("passwordReset");
+  }
+}

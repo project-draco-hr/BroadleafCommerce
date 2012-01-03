@@ -1,0 +1,10 @@
+{
+  GenericResponse errorResponse=adminSecurityService.sendForgotUsernameNotification(email);
+  if (errorResponse.getHasErrors()) {
+    setErrors(errorResponse,request);
+    return getForgotUsernameView();
+  }
+ else {
+    return redirectToLoginWithMessage("usernameSent");
+  }
+}
