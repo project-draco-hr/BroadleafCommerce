@@ -1,0 +1,30 @@
+{
+  String[] broadleafConfigLocations=StandardConfigLocations.retrieveAll(StandardConfigLocations.APPCONTEXTTYPE);
+  ArrayList<ResourceInputStream> sources=new ArrayList<ResourceInputStream>(20);
+  for (  String location : broadleafConfigLocations) {
+    InputStream source=MergeXmlWebApplicationContext.class.getClassLoader().getResourceAsStream(location);
+    if (source != null) {
+      sources.add(new ResourceInputStream(source,location));
+    }
+  }
+  ResourceInputStream[] filteredSources=new ResourceInputStream[]{};
+  filteredSources=sources.toArray(filteredSources);
+  String patchLocation=getPatchLocation();
+  String[] patchLocations=StringUtils.tokenizeToStringArray(patchLocation,ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+  ResourceInputStream[] patches=new ResourceInputStream[patchLocations.length];
+  for (int i=0; i < patchLocations.length; i++) {
+    if (patchLocations[i].startsWith("classpath")) {
+      InputStream is=MergeXmlWebApplicationContext.class.getClassLoader().getResourceAsStream(patchLocations[i].substring("classpath*:".length(),patchLocations[i].length()));
+      patches[i]=new ResourceInputStream(is,patchLocations[i]);
+    }
+ else {
+      Resource resource=getResourceByPath(patchLocations[i]);
+      patches[i]=new ResourceInputStream(resource.getInputStream(),patchLocations[i]);
+    }
+    if (patches[i] == null || patches[i].available() <= 0) {
+      throw new IOException("Unable to open an input stream on specified application context resource: " + patchLocations[i]);
+    }
+  }
+  Resource[] resources=new MergeApplicationContextXmlConfigResource().getConfigResources(filteredSources,patches);
+  reader.loadBeanDefinitions(resources);
+}
