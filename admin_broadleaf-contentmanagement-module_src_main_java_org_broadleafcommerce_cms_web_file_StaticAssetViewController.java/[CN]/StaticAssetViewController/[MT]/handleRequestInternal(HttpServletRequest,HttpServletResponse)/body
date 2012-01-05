@@ -1,6 +1,6 @@
 {
+  String fullUrl=removeAssetPrefix(request.getRequestURI());
   try {
-    String fullUrl="/" + fileName;
     Long sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ID_VAR);
     if (sandBoxId == null) {
       sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
@@ -10,7 +10,7 @@
       sandBox=sandBoxService.retrieveSandboxById(sandBoxId);
     }
     Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
-    return new ModelAndView("blStaticAssetView",model);
+    return new ModelAndView(viewResolverName,model);
   }
  catch (  Exception e) {
     LOG.error("Unable to retrieve static asset",e);

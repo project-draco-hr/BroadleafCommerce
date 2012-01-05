@@ -1,0 +1,11 @@
+{
+  String fileName=requestURI;
+  if (assetServerUrlPrefix != null) {
+    int pos=fileName.indexOf(assetServerUrlPrefix);
+    fileName=fileName.substring(pos + assetServerUrlPrefix.length());
+    if (!fileName.startsWith("/")) {
+      fileName="/" + fileName;
+    }
+  }
+  return fileName;
+}
