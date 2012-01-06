@@ -1,16 +1,3 @@
 {
-  String moduleParam=null;
-  if (currentModulePage != null) {
-    int moduleStart=currentModulePage.indexOf(MODULE_FRAGMENT);
-    int ampLocation=currentModulePage.indexOf("&");
-    if (moduleStart >= 0) {
-      moduleStart=moduleStart + MODULE_FRAGMENT.length();
-      int moduleEnd=currentModulePage.length();
-      if (ampLocation > 0 && ampLocation > moduleStart) {
-        moduleEnd=ampLocation;
-      }
-      moduleParam=currentModulePage.substring(moduleStart,moduleEnd);
-    }
-  }
-  return moduleParam;
+  return getSelectedString(currentModulePage,MODULE_FRAGMENT);
 }

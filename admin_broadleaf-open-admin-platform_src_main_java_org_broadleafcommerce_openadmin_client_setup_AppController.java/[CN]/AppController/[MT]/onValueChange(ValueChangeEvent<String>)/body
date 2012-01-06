@@ -2,11 +2,12 @@
   String token=event.getValue();
   if (token != null) {
     String page=BLCLaunch.getSelectedPage(token);
+    String itemId=BLCLaunch.getDefaultItem(token);
     if (page != null) {
-      if (!uiFactory.equalsCurrentView(page)) {
+      if (!uiFactory.equalsCurrentView(page) || itemId != null) {
         String[] vals=pages.get(page);
         if (vals != null) {
-          showView(vals[0],vals[1]);
+          showView(vals[0],vals[1],itemId);
         }
       }
     }
