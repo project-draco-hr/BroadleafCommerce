@@ -1,0 +1,16 @@
+{
+  DataSource ds=getDisplay().getListDisplay().getGrid().getDataSource();
+  if (ds instanceof DynamicEntityDataSource) {
+    Criteria criteria=new Criteria();
+    criteria.addCriteria(ds.getPrimaryKeyFieldName(),getDefaultItemId());
+    ds.fetchData(criteria,new DSCallback(){
+      @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        if (response != null && response.getData() != null && response.getData().length > 0) {
+          getDisplay().getListDisplay().getGrid().setData(response.getData());
+          getDisplay().getListDisplay().getGrid().selectRecord(0);
+        }
+      }
+    }
+);
+  }
+}
