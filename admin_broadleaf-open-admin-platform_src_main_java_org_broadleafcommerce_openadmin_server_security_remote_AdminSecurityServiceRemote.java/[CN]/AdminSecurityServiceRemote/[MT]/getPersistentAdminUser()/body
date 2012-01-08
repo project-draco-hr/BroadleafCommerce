@@ -4,8 +4,7 @@
     Authentication auth=ctx.getAuthentication();
     if (auth != null && !auth.getName().equals(ANONYMOUS_USER_NAME)) {
       User temp=(User)auth.getPrincipal();
-      AdminUser adminUser=securityService.readAdminUserByUserName(temp.getUsername());
-      return adminUser;
+      return securityService.readAdminUserByUserName(temp.getUsername());
     }
   }
   return null;

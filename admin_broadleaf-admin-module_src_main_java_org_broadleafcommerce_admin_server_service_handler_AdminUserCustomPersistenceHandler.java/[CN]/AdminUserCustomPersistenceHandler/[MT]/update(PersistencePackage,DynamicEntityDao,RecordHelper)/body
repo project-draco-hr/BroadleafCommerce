@@ -8,6 +8,9 @@
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance.setUnencodedPassword(adminInstance.getPassword());
     adminInstance.setPassword(null);
+    if (!adminRemoteSecurityService.getPersistentAdminUser().getId().equals(adminInstance.getId())) {
+      adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+    }
     adminInstance=adminSecurityService.saveAdminUser(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;

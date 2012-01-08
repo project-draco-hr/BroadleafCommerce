@@ -26,7 +26,7 @@ break;
 }
 boolean isQualified=securityService.isUserQualifiedForOperationOnCeilingEntity(persistentAdminUser,permissionType,ceilingEntityFullyQualifiedName);
 if (!isQualified) {
-if (isEntitySecurityExplicit || securityService.doesOperationExistForCeilingEntity(permissionType,ceilingEntityFullyQualifiedName)) {
+if (isEntitySecurityExplicit() || securityService.doesOperationExistForCeilingEntity(permissionType,ceilingEntityFullyQualifiedName)) {
 throw new ServiceException("Security Check Failed for entity operation: " + operationType.toString() + " ("+ ceilingEntityFullyQualifiedName+ ")");
 }
 }
