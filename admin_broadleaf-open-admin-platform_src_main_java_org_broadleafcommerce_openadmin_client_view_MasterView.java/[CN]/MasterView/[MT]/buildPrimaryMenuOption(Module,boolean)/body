@@ -10,7 +10,6 @@
   final String style;
   if (selected) {
     style="primaryMenuText-selected";
-    selectedPrimaryMenuOption=tmp;
   }
  else {
     style="primaryMenuText";
@@ -21,12 +20,11 @@
       Object o=event.getSource();
       if (o instanceof Label) {
         final Label lbl=(Label)o;
-        if (!lbl.getTitle().equals(selectedPrimaryMenuOption.getTitle())) {
-          selectedPrimaryMenuOption.setBaseStyle("primaryMenuText");
+        if (!"primaryMenuText-selected".equals(lbl.getBaseStyle())) {
+          selectPrimaryMenu(module.getModuleKey());
           lbl.setBaseStyle("primaryMenuText-selected");
-          selectedPrimaryMenuOption=lbl;
+          BLCMain.setCurrentModuleKey(module.getModuleKey());
           moduleKey=module.getModuleKey();
-          BLCMain.setCurrentModuleKey(moduleKey);
           buildSecondaryMenu(null);
           AppController.getInstance().go(canvas,module.getPages(),null,false);
         }
