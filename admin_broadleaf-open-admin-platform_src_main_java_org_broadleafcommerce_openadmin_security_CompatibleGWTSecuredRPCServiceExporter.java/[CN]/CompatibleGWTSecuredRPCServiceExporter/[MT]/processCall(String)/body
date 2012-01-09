@@ -1,6 +1,13 @@
 {
   String response=null;
-  final RPCRequest rpcRequest=RPC.decodeRequest(payload,null,this);
+  final RPCRequest rpcRequest;
+  try {
+    rpcRequest=RPC.decodeRequest(payload,null,this);
+  }
+ catch (  RuntimeException e) {
+    LOGGER.error("Could not decode the request",e);
+    throw e;
+  }
   try {
     response=super.processCall(payload);
   }
