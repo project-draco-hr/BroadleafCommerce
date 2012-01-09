@@ -2,10 +2,12 @@
   String token=event.getValue();
   if (token != null) {
     String page=BLCLaunch.getSelectedPage(token);
+    String moduleName=BLCLaunch.getSelectedModule(token);
     String itemId=BLCLaunch.getDefaultItem(token);
-    if (page != null) {
+    if (page != null && moduleName != null) {
       if (!uiFactory.equalsCurrentView(page) || itemId != null) {
-        String[] vals=pages.get(page);
+        Module module=BLCMain.getModule(moduleName);
+        String[] vals=module.getPages().get(page);
         if (vals != null) {
           showView(vals[0],vals[1],itemId);
         }

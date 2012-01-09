@@ -14,7 +14,9 @@
   }
   for (  Module module : allowedModules) {
     boolean selected=module.getModuleKey().equals(moduleKey);
-    menuHolder.addMember(buildPrimaryMenuOption(module,selected));
+    Label primaryMenuLabel=buildPrimaryMenuOption(module,selected);
+    menuHolder.addMember(primaryMenuLabel);
     menuHolder.addMember(buildMenuSpacer());
+    moduleLabelMap.put(module.getModuleKey(),primaryMenuLabel);
   }
 }
