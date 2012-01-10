@@ -2,15 +2,18 @@
   Entity[] payload;
   int totalRecords;
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  if (StringUtils.isEmpty(persistencePackage.getFetchTypeFullyQualifiedClassname())) {
+    persistencePackage.setFetchTypeFullyQualifiedClassname(ceilingEntityFullyQualifiedClassname);
+  }
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   try {
     Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
-    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(ceilingEntityFullyQualifiedClassname));
+    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
     payload=getRecords(mergedProperties,records,null,null);
-    totalRecords=getTotalRecords(ceilingEntityFullyQualifiedClassname,cto,ctoConverter);
+    totalRecords=getTotalRecords(ceilingEntityFullyQualifiedClassname,persistencePackage.getFetchTypeFullyQualifiedClassname(),cto,ctoConverter);
   }
  catch (  Exception e) {
     LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
