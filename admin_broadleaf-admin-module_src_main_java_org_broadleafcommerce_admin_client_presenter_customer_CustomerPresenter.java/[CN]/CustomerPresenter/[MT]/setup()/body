@@ -25,7 +25,7 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("countryDS",new CountryListDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
       ((ListGridDataSource)result).resetPermanentFieldVisibility("abbreviation","name");
-      EntitySearchDialog countrySearchView=new EntitySearchDialog((ListGridDataSource)result);
+      EntitySearchDialog countrySearchView=new EntitySearchDialog((ListGridDataSource)result,true);
       library.put("countrySearchView",countrySearchView);
     }
   }
@@ -33,7 +33,7 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("stateDS",new StateListDataSourceFactory(),new AsyncCallbackAdapter(){
     public void onSetupSuccess(    DataSource result){
       ((ListGridDataSource)result).resetPermanentFieldVisibility("abbreviation","name");
-      EntitySearchDialog stateSearchView=new EntitySearchDialog((ListGridDataSource)result);
+      EntitySearchDialog stateSearchView=new EntitySearchDialog((ListGridDataSource)result,true);
       library.put("stateSearchView",stateSearchView);
     }
   }
