@@ -28,7 +28,7 @@
             public void onItemEdited(            ItemEdited event){
               String currentPage=BLCLaunch.getSelectedPage(History.getToken());
               if ("User Management".equals(currentPage)) {
-                buildHistoryNewItem(currentPage,event.getRecord().getAttribute("id"));
+                buildHistoryNewItem(currentPage,BLCLaunch.getSelectedModule(History.getToken()),event.getRecord().getAttribute("id"));
               }
             }
           }
@@ -60,7 +60,7 @@
               SecurityManager.USER.setEmail(event.getRecord().getAttribute("email"));
               String currentPage=BLCLaunch.getSelectedPage(History.getToken());
               if ("User Management".equals(currentPage)) {
-                buildHistoryNewItem(currentPage,event.getRecord().getAttribute("id"));
+                buildHistoryNewItem(currentPage,BLCLaunch.getSelectedModule(History.getToken()),event.getRecord().getAttribute("id"));
               }
             }
           }
