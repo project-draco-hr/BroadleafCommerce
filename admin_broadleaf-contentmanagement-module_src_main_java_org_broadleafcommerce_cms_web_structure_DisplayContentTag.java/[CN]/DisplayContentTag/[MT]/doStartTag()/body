@@ -2,8 +2,9 @@
   HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
   Map<String,Object> mvelParameters=buildMvelParameters(request);
   SandBox currentSandbox=(SandBox)request.getAttribute(BroadleafProcessURLFilter.SANDBOX_VAR);
+  initServices();
   List<StructuredContent> contentItems;
-  StructuredContentType structuredContentType=getStructuredContentService(pageContext).findStructuredContentTypeByName(contentType);
+  StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
   if (locale == null) {
     locale=(Locale)request.getAttribute(BroadleafProcessURLFilter.LOCALE_VAR);
   }
@@ -16,7 +17,7 @@
   }
   pageContext.setAttribute(getNumResultsVar(),contentItems.size());
   if (contentItems.size() > 0) {
-    List<Map> returnFields=wrapFieldMaps(contentItems);
+    List<Map> returnFields=wrapFieldMaps(contentItems,request,isProductionSandBox(currentSandbox));
     pageContext.setAttribute(contentItemVar,returnFields.get(0));
     pageContext.setAttribute(contentListVar,returnFields);
     pageContext.setAttribute("structuredContentList",contentItems);

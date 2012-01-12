@@ -10,6 +10,8 @@
       LOG.debug("Forwarding to page: " + templateJSPPath);
     }
     context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,p);
+    FieldMapWrapper fm=new FieldMapWrapper(p.getPageFields(),staticAssetService,context.isSecure(),context.isProductionSandbox());
+    context.getRequest().setAttribute(PAGE_DATA_ATTRIBUTE_NAME,fm);
     RequestDispatcher rd=context.getRequest().getRequestDispatcher(templateJSPPath);
     rd.forward(context.getRequest(),context.getResponse());
   }

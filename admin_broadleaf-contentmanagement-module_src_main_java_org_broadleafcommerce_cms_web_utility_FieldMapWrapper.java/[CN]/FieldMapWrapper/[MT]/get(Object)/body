@@ -1,14 +1,21 @@
 {
-  Object obj=wrappedMap.get(o);
-  if (obj != null) {
-    if (obj instanceof StructuredContentField) {
-      StructuredContentField field=(StructuredContentField)obj;
-      return field.getValue();
-    }
- else     if (obj instanceof PageField) {
-      PageField field=(PageField)obj;
-      return field.getValue();
+  Object originalObj=wrappedMap.get(o);
+  if (originalObj != null) {
+    if (originalObj instanceof FieldValueHolder) {
+      FieldValueHolder field=(FieldValueHolder)originalObj;
+      if (field.getProcessedValue() == null) {
+        if (envPrefix != null && field.getValue() != null) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Processing page or structured content field.   Replacing " + cmsPrefix + " with "+ envPrefix+ " and nulling out original value.");
+          }
+          field.setProcessedValue(field.getValue().replace(cmsPrefix,envPrefix),true);
+        }
+ else {
+          field.setProcessedValue(field.getValue(),false);
+        }
+      }
+      return field.getProcessedValue();
     }
   }
-  return obj;
+  return null;
 }

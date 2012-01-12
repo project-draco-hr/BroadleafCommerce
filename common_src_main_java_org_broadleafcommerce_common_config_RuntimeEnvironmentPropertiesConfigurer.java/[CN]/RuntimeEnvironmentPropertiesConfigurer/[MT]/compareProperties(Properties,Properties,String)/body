@@ -1,0 +1,12 @@
+{
+  Set<Object> outerKeys=props1.keySet();
+  boolean missingKeys=false;
+  for (  Object keyObj : outerKeys) {
+    String key=(String)keyObj;
+    if (!props2.containsKey(key)) {
+      missingKeys=true;
+      LOG.info("Property file mismatch: " + key + " missing from environment "+ envInner+ ".   Make sure that the a property placeholder (at least) is defined in each environment (e.g. myproperty=?).");
+    }
+  }
+  return missingKeys;
+}
