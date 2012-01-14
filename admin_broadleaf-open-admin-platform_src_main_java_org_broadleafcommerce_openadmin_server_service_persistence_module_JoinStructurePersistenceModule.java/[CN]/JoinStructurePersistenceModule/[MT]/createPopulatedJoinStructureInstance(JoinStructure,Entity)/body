@@ -1,5 +1,5 @@
 {
-  Serializable instance=(Serializable)Class.forName(joinStructure.getJoinStructureEntityClassname()).newInstance();
+  Serializable instance=(Serializable)Class.forName(StringUtils.isEmpty(joinStructure.getJoinStructureEntityPolymorphicType()) ? joinStructure.getJoinStructureEntityClassname() : joinStructure.getJoinStructureEntityPolymorphicType()).newInstance();
   String targetPath=joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty();
   String linkedPath=joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty();
   getFieldManager().setFieldValue(instance,linkedPath,Long.valueOf(entity.findProperty(linkedPath).getValue()));
