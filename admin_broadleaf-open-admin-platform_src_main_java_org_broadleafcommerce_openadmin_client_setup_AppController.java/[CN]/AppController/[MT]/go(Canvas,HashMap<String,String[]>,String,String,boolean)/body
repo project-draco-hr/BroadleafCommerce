@@ -3,24 +3,24 @@
   this.container=container;
   if (firstTime) {
     String token=History.getToken();
-    if (pageKey.equals(BLCLaunch.getSelectedPage(token)) && MasterView.moduleKey.equals(BLCLaunch.getSelectedModule(token))) {
+    if (pageKey.equals(BLCLaunch.getSelectedPage(token)) && moduleKey.equals(BLCLaunch.getSelectedModule(token))) {
       String itemId=BLCLaunch.getDefaultItem(token);
       showView(pages.get(pageKey)[0],pages.get(pageKey)[1],itemId);
     }
  else {
-      buildHistoryNewItem(pageKey);
+      buildHistoryNewItem(pageKey,moduleKey);
     }
     return;
   }
   if (pageKey != null && pages.get(pageKey) != null) {
     if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(pageKey)[0])) {
-      buildHistoryNewItem(pageKey);
+      buildHistoryNewItem(pageKey,moduleKey);
       return;
     }
   }
   for (  String sectionTitle : pages.keySet()) {
     if (SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(sectionTitle)[0])) {
-      buildHistoryNewItem(sectionTitle);
+      buildHistoryNewItem(sectionTitle,moduleKey);
       break;
     }
   }
