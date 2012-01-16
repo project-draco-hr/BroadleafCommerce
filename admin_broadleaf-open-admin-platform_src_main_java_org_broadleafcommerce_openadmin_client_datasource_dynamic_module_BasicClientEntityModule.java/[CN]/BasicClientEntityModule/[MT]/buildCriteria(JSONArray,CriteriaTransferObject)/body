@@ -25,9 +25,28 @@
  else {
             newItems[j]=value.isObject().get("value").isString().stringValue();
           }
-          filterCriteria.setFilterValues(newItems);
-        }
-      }
-    }
-  }
+          SupportedFieldType fieldType=SupportedFieldType.valueOf(dataSource.getField(val.isString().stringValue()).getAttribute("fieldType"));
+          if (fieldType != null) {
+switch (fieldType) {
+case DECIMAL:
+              processFilterValueClause(filterCriteria,newItems[j]);
+            break;
+case INTEGER:
+          processFilterValueClause(filterCriteria,newItems[j]);
+        break;
+case MONEY:
+      processFilterValueClause(filterCriteria,newItems[j]);
+    break;
+default :
+  filterCriteria.setFilterValues(newItems);
+break;
+}
+}
+ else {
+filterCriteria.setFilterValues(newItems);
+}
+}
+}
+}
+}
 }
