@@ -1,0 +1,45 @@
+{
+  if (classInfo.isEmpty()) {
+    return null;
+  }
+  String convertedClassName=className.replace('/','.');
+  HashSet<String> methodNames=classInfo.get(convertedClassName);
+  if (methodNames != null && !methodNames.isEmpty()) {
+    try {
+      ClassFile classFile=new ClassFile(new DataInputStream(new ByteArrayInputStream(classfileBuffer)));
+      ConstPool constantPool=classFile.getConstPool();
+      AnnotationsAttribute annotationsAttribute=new AnnotationsAttribute(constantPool,AnnotationsAttribute.visibleTag);
+      Annotation transientAnnotation=new Annotation(XmlTransient.class.getName(),constantPool);
+      annotationsAttribute.addAnnotation(transientAnnotation);
+      for (      String methodName : methodNames) {
+        List<?> methodAttributes=classFile.getMethod(methodName).getAttributes();
+        Iterator<?> itr=methodAttributes.iterator();
+        while (itr.hasNext()) {
+          Object object=itr.next();
+          if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+            AnnotationsAttribute attr=(AnnotationsAttribute)object;
+            Annotation[] items=attr.getAnnotations();
+            for (            Annotation annotation : items) {
+              String typeName=annotation.getTypeName();
+              if (!typeName.startsWith("javax.xml.bind.annotation")) {
+                annotationsAttribute.addAnnotation(annotation);
+              }
+            }
+            itr.remove();
+          }
+        }
+        classFile.getMethod(methodName).getAttributes().add(annotationsAttribute);
+      }
+      ByteArrayOutputStream bos=new ByteArrayOutputStream();
+      DataOutputStream os=new DataOutputStream(bos);
+      classFile.write(os);
+      os.close();
+      return bos.toByteArray();
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+      throw new IllegalClassFormatException("Unable to convert " + convertedClassName + ", to add XMLTransient annotations"+ e.getMessage());
+    }
+  }
+  return null;
+}
