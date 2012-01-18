@@ -1,0 +1,39 @@
+{
+  if (inst != null) {
+    return inst;
+  }
+  if (System.getProperty("java.vendor").toUpperCase().contains("IBM")) {
+    isIBM=true;
+  }
+  AccessController.doPrivileged(new PrivilegedAction<Object>(){
+    public Object run(){
+      try {
+        if (!InstrumentationRuntimeFactory.class.getClassLoader().equals(ClassLoader.getSystemClassLoader())) {
+          return null;
+        }
+      }
+ catch (      Throwable t) {
+        return null;
+      }
+      File toolsJar=null;
+      if (!isIBM) {
+        toolsJar=findToolsJar();
+        if (toolsJar == null) {
+          return null;
+        }
+      }
+      Class<?> vmClass=loadVMClass(toolsJar);
+      if (vmClass == null) {
+        return null;
+      }
+      String agentPath=getAgentJar();
+      if (agentPath == null) {
+        return null;
+      }
+      loadAgent(agentPath,vmClass);
+      return null;
+    }
+  }
+);
+  return inst;
+}

@@ -1,0 +1,20 @@
+{
+  try {
+    JarFile jar=new JarFile(agentJarFile);
+    Manifest manifest=jar.getManifest();
+    if (manifest == null) {
+      return false;
+    }
+    Attributes attributes=manifest.getMainAttributes();
+    String ac=attributes.getValue("Agent-Class");
+    if (ac != null && ac.equals(agentClassName)) {
+      return true;
+    }
+  }
+ catch (  Exception e) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Unexpected exception occured.",e);
+    }
+  }
+  return false;
+}

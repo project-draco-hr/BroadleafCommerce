@@ -1,0 +1,19 @@
+{
+  try {
+    ClassLoader loader=Thread.currentThread().getContextClassLoader();
+    String cls=SUN_VM_CLASS;
+    if (isIBM) {
+      cls=IBM_VM_CLASS;
+    }
+ else {
+      loader=new URLClassLoader(new URL[]{toolsJar.toURI().toURL()},loader);
+    }
+    return loader.loadClass(cls);
+  }
+ catch (  Exception e) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Failed to load the virtual machine class",e);
+    }
+  }
+  return null;
+}

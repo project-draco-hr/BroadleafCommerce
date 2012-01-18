@@ -1,0 +1,23 @@
+{
+  String javaHome=System.getProperty("java.home");
+  File javaHomeFile=new File(javaHome);
+  File toolsJarFile=new File(javaHomeFile,"lib" + File.separator + "tools.jar");
+  if (!toolsJarFile.exists()) {
+    if (javaHomeFile.getAbsolutePath().endsWith(File.separator + "jre")) {
+      javaHomeFile=javaHomeFile.getParentFile();
+      toolsJarFile=new File(javaHomeFile,"lib" + File.separator + "tools.jar");
+    }
+ else     if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+      if (javaHomeFile.getAbsolutePath().endsWith(File.separator + "Home")) {
+        javaHomeFile=javaHomeFile.getParentFile();
+        toolsJarFile=new File(javaHomeFile,"Classes" + File.separator + "classes.jar");
+      }
+    }
+  }
+  if (!toolsJarFile.exists()) {
+    return null;
+  }
+ else {
+    return toolsJarFile;
+  }
+}
