@@ -12,7 +12,21 @@
       Annotation transientAnnotation=new Annotation(XmlTransient.class.getName(),constantPool);
       annotationsAttribute.addAnnotation(transientAnnotation);
       for (      String methodName : methodNames) {
-        List<?> methodAttributes=classFile.getMethod(methodName).getAttributes();
+        MethodInfo methodInfo=classFile.getMethod(methodName);
+        if (methodInfo == null) {
+          methodName=Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
+          String tmpMethodName="get" + methodName;
+          methodInfo=classFile.getMethod(tmpMethodName);
+          if (methodInfo == null) {
+            tmpMethodName="is" + methodName;
+            methodInfo=classFile.getMethod(tmpMethodName);
+            if (methodInfo == null) {
+              LOG.error("Error finding property of method associated with name " + methodName + " in class "+ convertedClassName+ ". Ignoring.");
+              continue;
+            }
+          }
+        }
+        List<?> methodAttributes=methodInfo.getAttributes();
         Iterator<?> itr=methodAttributes.iterator();
         while (itr.hasNext()) {
           Object object=itr.next();
@@ -28,7 +42,7 @@
             itr.remove();
           }
         }
-        classFile.getMethod(methodName).getAttributes().add(annotationsAttribute);
+        methodInfo.getAttributes().add(annotationsAttribute);
       }
       ByteArrayOutputStream bos=new ByteArrayOutputStream();
       DataOutputStream os=new DataOutputStream(bos);
