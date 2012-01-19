@@ -1,18 +1,18 @@
 {
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  Page p=(Page)context.getRequest().getAttribute(PAGE_ATTRIBUTE_NAME);
+  PageDTO p=(PageDTO)context.getRequest().getAttribute(PAGE_ATTRIBUTE_NAME);
   if (p == null) {
-    p=pageService.findPageByURI(context.getSandbox(),context.getLocale(),key);
+    p=pageService.findPageByURI(context.getSandbox(),context.getLocale(),key,context.isSecure());
   }
   if (p != null) {
-    String templateJSPPath=new StringBuilder(blcPageTemplateDirectory).append(p.getPageTemplate().getTemplatePath()).append(".jsp").toString();
+    String templateJSPPath=new StringBuilder(blcPageTemplateDirectory).append(p.getTemplatePath()).append(".jsp").toString();
     if (LOG.isDebugEnabled()) {
       LOG.debug("Forwarding to page: " + templateJSPPath);
     }
     context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,p);
-    FieldMapWrapper fm=new FieldMapWrapper(p.getPageFields(),staticAssetService,context.isSecure(),context.isProductionSandbox());
-    context.getRequest().setAttribute(PAGE_DATA_ATTRIBUTE_NAME,fm);
     RequestDispatcher rd=context.getRequest().getRequestDispatcher(templateJSPPath);
     rd.forward(context.getRequest(),context.getResponse());
+    return true;
   }
+  return false;
 }

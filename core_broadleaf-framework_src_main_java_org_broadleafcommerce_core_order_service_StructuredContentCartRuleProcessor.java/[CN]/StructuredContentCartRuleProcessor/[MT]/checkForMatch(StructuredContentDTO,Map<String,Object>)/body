@@ -1,0 +1,15 @@
+{
+  List<ItemCriteriaDTO> itemCriterias=sc.getItemCriteriaDTOList();
+  if (itemCriterias != null && itemCriterias.size() > 0) {
+    Order order=lookupOrderForCustomer((Customer)valueMap.get("customer"));
+    if (order == null || order.getOrderItems() == null || order.getOrderItems().size() < 1) {
+      return false;
+    }
+    for (    ItemCriteriaDTO itemCriteria : itemCriterias) {
+      if (!checkItemCriteria(itemCriteria,order.getOrderItems())) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
