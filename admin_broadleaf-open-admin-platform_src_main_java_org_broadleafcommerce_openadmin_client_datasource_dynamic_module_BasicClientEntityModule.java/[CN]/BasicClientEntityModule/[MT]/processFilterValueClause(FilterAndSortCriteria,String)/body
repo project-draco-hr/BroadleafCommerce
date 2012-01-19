@@ -1,0 +1,12 @@
+{
+  String filterVal=dataSource.stripDuplicateAllowSpecialCharacters(filterString);
+  int pos=filterVal.indexOf("-");
+  if (pos > 0) {
+    String filterValue1=filterVal.substring(0,pos).trim();
+    String filterValue2=filterVal.substring(pos + 1,filterVal.length()).trim();
+    filterCriteria.setFilterValues(filterValue1,filterValue2);
+  }
+ else {
+    filterCriteria.setFilterValue(filterVal);
+  }
+}

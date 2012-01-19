@@ -7,7 +7,8 @@
   Entity entity=persistencePackage.getEntity();
   try {
     JoinStructure joinStructure=(JoinStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(joinStructure.getJoinStructureEntityClassname(),new Class[]{Class.forName(joinStructure.getJoinStructureEntityClassname())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,false,new String[]{},new String[]{},null,"");
+    Class<?>[] entities=persistenceManager.getPolymorphicEntities(joinStructure.getJoinStructureEntityClassname());
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(joinStructure.getJoinStructureEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,false,new String[]{},new String[]{},null,"");
     CriteriaTransferObject ctoInserted=new CriteriaTransferObject();
     FilterAndSortCriteria filterCriteriaInsertedLinked=ctoInserted.get(joinStructure.getName());
     filterCriteriaInsertedLinked.setFilterValue(entity.findProperty(joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty()).getValue());

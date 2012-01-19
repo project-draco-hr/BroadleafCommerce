@@ -31,19 +31,43 @@
         if (filterValue != null) {
           filterString=filterValue.toString();
         }
-        filterCriteria.setFilterValue(dataSource.stripDuplicateAllowSpecialCharacters(filterString));
-      }
+        String fieldTypeVal=null;
+        DataSourceField field=dataSource.getField(fieldName);
+        if (field != null) {
+          fieldTypeVal=field.getAttribute("fieldType");
+        }
+        SupportedFieldType fieldType=fieldTypeVal == null ? SupportedFieldType.STRING : SupportedFieldType.valueOf(fieldTypeVal);
+        if (fieldType != null) {
+switch (fieldType) {
+case DECIMAL:
+            processFilterValueClause(filterCriteria,filterString);
+          break;
+case INTEGER:
+        processFilterValueClause(filterCriteria,filterString);
+      break;
+case MONEY:
+    processFilterValueClause(filterCriteria,filterString);
+  break;
+default :
+filterCriteria.setFilterValue(dataSource.stripDuplicateAllowSpecialCharacters(filterString));
+break;
+}
+}
  else {
-        JSONValue value=JSONParser.parse(jsObj);
-        JSONObject criteriaObj=value.isObject();
-        JSONArray criteriaArray=criteriaObj.get("criteria").isArray();
-        buildCriteria(criteriaArray,cto);
-      }
-    }
-  }
-  if (getCurrentForeignKey() != null) {
-    FilterAndSortCriteria filterCriteria=cto.get(getCurrentForeignKey().getManyToField());
-    filterCriteria.setFilterValue(getCurrentForeignKey().getCurrentValue());
-  }
-  return cto;
+filterCriteria.setFilterValue(dataSource.stripDuplicateAllowSpecialCharacters(filterString));
+}
+}
+ else {
+JSONValue value=JSONParser.parse(jsObj);
+JSONObject criteriaObj=value.isObject();
+JSONArray criteriaArray=criteriaObj.get("criteria").isArray();
+buildCriteria(criteriaArray,cto);
+}
+}
+}
+if (getCurrentForeignKey() != null) {
+FilterAndSortCriteria filterCriteria=cto.get(getCurrentForeignKey().getManyToField());
+filterCriteria.setFilterValue(getCurrentForeignKey().getCurrentValue());
+}
+return cto;
 }
