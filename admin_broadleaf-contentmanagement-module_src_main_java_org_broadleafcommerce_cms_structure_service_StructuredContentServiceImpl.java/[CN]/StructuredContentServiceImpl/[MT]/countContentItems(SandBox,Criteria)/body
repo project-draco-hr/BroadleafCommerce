@@ -5,6 +5,10 @@
     c.add(Restrictions.isNull("sandbox"));
     return (Long)c.uniqueResult();
   }
+ else   if (SandBoxType.PRODUCTION.equals(sandbox.getSandBoxType())) {
+    c.add(Restrictions.eq("sandbox",sandbox));
+    return (Long)c.uniqueResult();
+  }
  else {
     Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
     Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
