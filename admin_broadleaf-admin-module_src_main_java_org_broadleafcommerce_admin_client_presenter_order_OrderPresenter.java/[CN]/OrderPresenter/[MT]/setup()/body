@@ -104,4 +104,20 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("paymentResponseItemDS",new PaymentResponseItemListDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      paymentResponsePresenter=new CreateBasedListStructurePresenter(getDisplay().getPaymentResponseDisplay(),null,BLCMain.getMessageManager().getString("paymentResponseListTitle"));
+      paymentResponsePresenter.setDataSource((ListGridDataSource)result,new String[]{"transactionTimestamp","amountPaid","transactionSuccess","transactionType"},new Boolean[]{false,false,false,false});
+      paymentResponsePresenter.setReadOnly(true);
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("paymentLogDS",new PaymentLogListDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      paymentLogPresenter=new CreateBasedListStructurePresenter(getDisplay().getPaymentLogDisplay(),null,BLCMain.getMessageManager().getString("paymentLogListTitle"));
+      paymentLogPresenter.setDataSource((ListGridDataSource)result,new String[]{"transactionTimestamp","amountPaid","transactionType","transactionSuccess","logType"},new Boolean[]{false,false,false,false,false});
+      paymentLogPresenter.setReadOnly(true);
+    }
+  }
+));
 }
