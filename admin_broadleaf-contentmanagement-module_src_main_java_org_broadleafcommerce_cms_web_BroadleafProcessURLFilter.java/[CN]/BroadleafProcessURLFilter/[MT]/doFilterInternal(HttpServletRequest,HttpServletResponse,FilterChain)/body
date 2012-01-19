@@ -44,7 +44,14 @@
       if (LOG.isTraceEnabled()) {
         LOG.trace("URL not being processed by a Broadleaf URLProcessor " + requestURIWithoutContext);
       }
-      filterChain.doFilter(request,response);
+      StatusExposingServletResponse sesResponse=new StatusExposingServletResponse(response);
+      filterChain.doFilter(request,sesResponse);
+      if (sesResponse.getStatus() == sesResponse.SC_NOT_FOUND) {
+        if (LOG.isWarnEnabled()) {
+          LOG.warn("Page not found.  Unable to render " + requestURIWithoutContext);
+        }
+        urlCache.invalidate(requestURIWithoutContext);
+      }
     }
  else {
       if (LOG.isTraceEnabled()) {

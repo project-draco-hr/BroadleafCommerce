@@ -3,28 +3,27 @@
   Map<String,Object> mvelParameters=buildMvelParameters(request);
   SandBox currentSandbox=(SandBox)request.getAttribute(BroadleafProcessURLFilter.SANDBOX_VAR);
   initServices();
-  List<StructuredContent> contentItems;
+  List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
   if (locale == null) {
     locale=(Locale)request.getAttribute(BroadleafProcessURLFilter.LOCALE_VAR);
   }
   int cnt=(count == null) ? Integer.MAX_VALUE : count;
   if (contentName == null || "".equals(contentName)) {
-    contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters);
+    contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters,isSecure(request));
   }
  else {
-    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters);
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters,isSecure(request));
   }
   pageContext.setAttribute(getNumResultsVar(),contentItems.size());
   if (contentItems.size() > 0) {
-    List<Map> returnFields=wrapFieldMaps(contentItems,request,isProductionSandBox(currentSandbox));
-    pageContext.setAttribute(contentItemVar,returnFields.get(0));
-    pageContext.setAttribute(contentListVar,returnFields);
+    pageContext.setAttribute(contentItemVar,contentItems.get(0));
+    pageContext.setAttribute(contentListVar,contentItems);
     pageContext.setAttribute("structuredContentList",contentItems);
     pageContext.setAttribute(numResultsVar,contentItems.size());
   }
  else {
-    pageContext.setAttribute(contentItemVar,contentItems);
+    pageContext.setAttribute(contentItemVar,null);
     pageContext.setAttribute(contentListVar,null);
     pageContext.setAttribute("structuredContentList",null);
     pageContext.setAttribute(numResultsVar,0);

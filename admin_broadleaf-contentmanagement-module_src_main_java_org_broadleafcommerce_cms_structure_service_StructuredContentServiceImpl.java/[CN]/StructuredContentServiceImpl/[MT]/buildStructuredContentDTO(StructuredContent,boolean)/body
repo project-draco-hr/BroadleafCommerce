@@ -1,0 +1,19 @@
+{
+  StructuredContentDTO scDTO=new StructuredContentDTO();
+  scDTO.setContentName(sc.getContentName());
+  scDTO.setContentType(sc.getStructuredContentType().getName());
+  scDTO.setId(sc.getId());
+  scDTO.setPriority(sc.getPriority());
+  if (sc.getLocale() != null) {
+    scDTO.setLocaleCode(sc.getLocale().getLocaleCode());
+  }
+  if (sc.getSandbox() != null) {
+    scDTO.setSandboxId(sc.getSandbox().getId());
+  }
+  scDTO.setRuleExpression(buildRuleExpression(sc));
+  buildFieldValues(sc,scDTO,secure);
+  if (sc.getQualifyingItemCriteria() != null && sc.getQualifyingItemCriteria().size() > 0) {
+    scDTO.setItemCriteriaDTOList(buildItemCriteriaDTOList(sc));
+  }
+  return scDTO;
+}

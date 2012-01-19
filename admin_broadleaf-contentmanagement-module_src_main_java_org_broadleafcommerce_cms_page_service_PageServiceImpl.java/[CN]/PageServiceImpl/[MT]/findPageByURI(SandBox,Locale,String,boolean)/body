@@ -1,0 +1,61 @@
+{
+  PageDTO productionPageDTO=null;
+  if (uri != null) {
+    SandBox productionSandbox=null;
+    if (currentSandbox != null && currentSandbox.getSite() != null) {
+      productionSandbox=currentSandbox.getSite().getProductionSandbox();
+    }
+    String key=buildKey(productionSandbox,locale,uri);
+    key=key + "-" + secure;
+    productionPageDTO=getPageFromCache(key);
+    if (productionPageDTO == null) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Page not found in cache, searching DB for key: " + key);
+      }
+      Page productionPage=pageDao.findPageByURI(productionSandbox,locale,uri);
+      if (productionPage != null) {
+        productionPageDTO=buildPageDTO(productionPage,secure);
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Page found, adding page to cache with key: " + key);
+        }
+        productionPageDTO=buildPageDTO(productionPage,secure);
+        addPageToCache(productionPageDTO,key);
+      }
+ else {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("No match found for passed in URI, locale, and sandbox.  Key = " + key);
+        }
+        productionPageDTO=null;
+      }
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Production page found in cache.  Key = " + key);
+      }
+    }
+    if (currentSandbox != null && !currentSandbox.getSandBoxType().equals(SandBoxType.PRODUCTION)) {
+      Page sandboxPage=pageDao.findPageByURI(currentSandbox,locale,uri);
+      if (sandboxPage != null) {
+        if (sandboxPage.getDeletedFlag()) {
+          if (LOG.isTraceEnabled()) {
+            LOG.trace("Returning null because user has requested to delete the page in the current SandBox.  Key = " + key);
+          }
+          return null;
+        }
+ else {
+          if (LOG.isTraceEnabled()) {
+            LOG.trace("Found page in SandBox for key = " + key);
+          }
+          PageDTO sandboxDTO=buildPageDTO(sandboxPage,secure);
+          return sandboxDTO;
+        }
+      }
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Production page found in cache for key = " + key);
+      }
+    }
+  }
+  return productionPageDTO;
+}

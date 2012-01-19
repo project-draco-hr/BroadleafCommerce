@@ -1,0 +1,11 @@
+{
+  archiveStructuredContentTemplate.send(archiveStructuredContentDestination,new MessageCreator(){
+    public Message createMessage(    Session session) throws JMSException {
+      HashMap<String,String> objectMap=new HashMap<String,String>(2);
+      objectMap.put("nameKey",baseNameKey);
+      objectMap.put("typeKey",baseTypeKey);
+      return session.createObjectMessage(objectMap);
+    }
+  }
+);
+}

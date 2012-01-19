@@ -1,0 +1,18 @@
+{
+  String ruleExpression=sc.getRuleExpression();
+  if (ruleExpression != null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Processing content rule for StructuredContent with id " + sc.getId() + ".   Value = "+ ruleExpression);
+    }
+    boolean result=executeExpression(ruleExpression,vars);
+    if (!result) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Content failed to pass rule and will not be included for StructuredContent with id " + sc.getId() + ".   Value = "+ ruleExpression);
+      }
+    }
+    return result;
+  }
+ else {
+    return true;
+  }
+}

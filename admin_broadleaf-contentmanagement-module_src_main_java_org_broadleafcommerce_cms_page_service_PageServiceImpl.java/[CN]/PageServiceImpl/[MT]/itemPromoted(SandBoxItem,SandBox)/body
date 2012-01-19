@@ -23,6 +23,7 @@
       Page originalPage=pageDao.readPageById(page.getOriginalPageId());
       originalPage.setArchivedFlag(Boolean.TRUE);
       pageDao.updatePage(originalPage);
+      productionItemArchived(originalPage);
       page.setOriginalPageId(null);
       if (page.getDeletedFlag()) {
         page.setArchivedFlag(true);

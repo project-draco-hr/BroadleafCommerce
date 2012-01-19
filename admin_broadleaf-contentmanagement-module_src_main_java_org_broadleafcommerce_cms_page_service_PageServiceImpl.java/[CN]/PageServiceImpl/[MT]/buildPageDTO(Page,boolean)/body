@@ -1,0 +1,32 @@
+{
+  PageDTO pageDTO=new PageDTO();
+  pageDTO.setId(page.getId());
+  pageDTO.setDescription(page.getDescription());
+  pageDTO.setUrl(page.getFullUrl());
+  if (page.getSandbox() != null) {
+    pageDTO.setSandboxId(page.getSandbox().getId());
+  }
+  if (page.getPageTemplate() != null) {
+    pageDTO.setTemplatePath(page.getPageTemplate().getTemplatePath());
+    if (page.getPageTemplate().getLocale() != null) {
+      pageDTO.setLocaleCode(page.getPageTemplate().getLocale().getLocaleCode());
+    }
+  }
+  String envPrefix=staticAssetService.getStaticAssetEnvironmentUrlPrefix();
+  if (envPrefix != null && secure) {
+    envPrefix=envPrefix.replace("http:","https:");
+  }
+  String cmsPrefix=staticAssetService.getStaticAssetUrlPrefix();
+  for (  String fieldKey : page.getPageFields().keySet()) {
+    PageField pf=page.getPageFields().get(fieldKey);
+    String originalValue=pf.getValue();
+    if (envPrefix != null && pf.getValue() != null && originalValue.contains(cmsPrefix)) {
+      String fldValue=originalValue.replace(cmsPrefix,envPrefix);
+      pageDTO.getValues().put(fieldKey,fldValue);
+    }
+ else {
+      pageDTO.getValues().put(fieldKey,originalValue);
+    }
+  }
+  return pageDTO;
+}
