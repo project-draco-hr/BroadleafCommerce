@@ -1,31 +1,7 @@
 {
-  String returnValue=value;
   initServices();
   HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
-  String cmsPrefix=staticAssetService.getStaticAssetUrlPrefix();
-  String envPrefix=staticAssetService.getStaticAssetEnvironmentUrlPrefix();
-  if (envPrefix != null && isRequestSecure()) {
-    envPrefix=envPrefix.replace("http:","https:");
-  }
-  if (envPrefix != null && !envPrefix.equals(cmsPrefix) && value.contains(cmsPrefix)) {
-    returnValue=returnValue.replace(cmsPrefix,envPrefix);
-  }
- else {
-    if (isRelativePath(value)) {
-      if (!value.startsWith("/")) {
-        returnValue="/" + value;
-      }
-      String contextPath=((HttpServletRequest)pageContext.getRequest()).getContextPath();
-      if (contextPath != null && contextPath.length() > 1) {
-        returnValue=contextPath + returnValue;
-      }
-    }
- else {
-      if (isRequestSecure()) {
-        returnValue=returnValue.replace("http:","https:");
-      }
-    }
-  }
+  String returnValue=staticAssetService.convertAssetPath(value,request.getContextPath(),isRequestSecure());
   if (var != null) {
     pageContext.setAttribute(var,returnValue);
   }

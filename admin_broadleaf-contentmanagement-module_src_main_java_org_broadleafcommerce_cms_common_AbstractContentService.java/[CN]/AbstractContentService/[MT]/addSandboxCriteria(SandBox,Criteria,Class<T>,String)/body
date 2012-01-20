@@ -1,0 +1,25 @@
+{
+  Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
+  Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
+  Criterion userSandboxExpression=Restrictions.or(currentSandboxExpression,originalSandboxExpression);
+  Criterion productionSandboxExpression=null;
+  if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
+    productionSandboxExpression=Restrictions.isNull("sandbox");
+  }
+ else {
+    productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
+  }
+  if (productionSandboxExpression != null) {
+    c.add(Restrictions.or(userSandboxExpression,productionSandboxExpression));
+  }
+ else {
+    c.add(userSandboxExpression);
+  }
+  DetachedCriteria existsInSboxCriteria=DetachedCriteria.forClass(type,"sboxItem");
+  existsInSboxCriteria.add(userSandboxExpression);
+  existsInSboxCriteria.add(Restrictions.eq("archivedFlag",false));
+  String outerAlias=c.getAlias();
+  existsInSboxCriteria.add(Property.forName(outerAlias + ".id").eqProperty("sboxItem." + originalIdProperty));
+  existsInSboxCriteria.setProjection(Projections.id());
+  c.add(Subqueries.notExists(existsInSboxCriteria));
+}

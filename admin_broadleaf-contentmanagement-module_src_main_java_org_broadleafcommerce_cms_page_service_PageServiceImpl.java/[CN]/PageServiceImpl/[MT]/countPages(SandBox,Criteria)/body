@@ -1,31 +1,3 @@
 {
-  criteria.add(Restrictions.eq("archivedFlag",false));
-  criteria.setProjection(Projections.rowCount());
-  if (sandbox == null) {
-    criteria.add(Restrictions.isNull("sandbox"));
-    return (Long)criteria.uniqueResult();
-  }
- else {
-    Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
-    Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
-    Criterion productionSandboxExpression;
-    if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
-      productionSandboxExpression=Restrictions.isNull("sandbox");
-    }
- else {
-      if (sandbox.getId().equals(sandbox.getSite().getProductionSandbox().getId())) {
-        return (Long)criteria.uniqueResult();
-      }
-      productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
-    }
-    criteria.add(Restrictions.or(Restrictions.or(currentSandboxExpression,productionSandboxExpression),originalSandboxExpression));
-    Long resultCount=(Long)criteria.list().get(0);
-    Long updatedCount=0L;
-    Long deletedCount=0L;
-    criteria.add(Restrictions.and(Restrictions.isNotNull("originalPageId"),Restrictions.or(currentSandboxExpression,originalSandboxExpression)));
-    updatedCount=(Long)criteria.list().get(0);
-    criteria.add(Restrictions.and(Restrictions.eq("deletedFlag",true),Restrictions.or(currentSandboxExpression,originalSandboxExpression)));
-    deletedCount=(Long)criteria.list().get(0);
-    return resultCount - updatedCount - deletedCount;
-  }
+  return countItems(sandbox,c,PageImpl.class,"originalPageId");
 }
