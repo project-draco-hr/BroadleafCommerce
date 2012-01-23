@@ -2,6 +2,10 @@
   if (mapKeys == null && optionDataSource == null) {
     throw new RuntimeException("Must provide either map keys or and option datasource to control the values for the key field.");
   }
+  String[] recordAttributes=currentRecord == null ? null : currentRecord.getAttributes();
+  if (recordAttributes != null) {
+    Arrays.sort(recordAttributes);
+  }
   form.setDataSource(dataSource);
   Map<String,List<FormItem>> sections=new HashMap<String,List<FormItem>>();
   Map<String,Integer> sectionNames=new HashMap<String,Integer>();
@@ -28,18 +32,26 @@
       if (mapStructure != null && mapStructure.getKeyPropertyName().equals(fieldName)) {
         formItem=new ComboBoxItem();
         if (mapKeys != null) {
-          ((ComboBoxItem)formItem).setValueMap(mapKeys);
+          formItem.setValueMap(mapKeys);
         }
  else {
-          ((ComboBoxItem)formItem).setOptionDataSource(optionDataSource);
-          ((ComboBoxItem)formItem).setDisplayField(displayField);
-          ((ComboBoxItem)formItem).setValueField(valueField);
+          formItem.setOptionDataSource(optionDataSource);
+          formItem.setDisplayField(displayField);
+          formItem.setValueField(valueField);
         }
         ((ComboBoxItem)formItem).setDefaultToFirstOption(true);
         setupField(null,null,sections,sectionNames,field,group,groupOrder,formItem,displayFormItem);
       }
  else {
-        if (!fieldType.equals(SupportedFieldType.ID.toString()) || (fieldType.equals(SupportedFieldType.ID.toString()) && showId)) {
+        boolean isFieldAvailableForRecord=false;
+        if (currentRecord != null) {
+          int pos=Arrays.binarySearch(recordAttributes,field.getName());
+          isFieldAvailableForRecord=pos >= 0;
+        }
+ else {
+          isFieldAvailableForRecord=true;
+        }
+        if (isFieldAvailableForRecord && (!fieldType.equals(SupportedFieldType.ID.toString()) || (fieldType.equals(SupportedFieldType.ID.toString()) && showId))) {
           Boolean largeEntry=field.getAttributeAsBoolean("largeEntry");
           if (largeEntry == null) {
             largeEntry=false;

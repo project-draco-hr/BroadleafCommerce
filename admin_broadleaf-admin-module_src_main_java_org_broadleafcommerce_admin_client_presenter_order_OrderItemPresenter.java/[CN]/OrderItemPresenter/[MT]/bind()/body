@@ -5,7 +5,7 @@
       if (event.getState()) {
         display.getRemoveButton().enable();
         ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
-        display.getFormOnlyDisplay().buildFields(display.getGrid().getDataSource(),false,false,false);
+        display.getFormOnlyDisplay().buildFields(display.getGrid().getDataSource(),false,false,false,event.getRecord());
         display.getFormOnlyDisplay().getForm().editRecord(event.getRecord());
         display.getFormOnlyDisplay().getForm().enable();
       }
@@ -19,7 +19,7 @@
     public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         ((DynamicEntityDataSource)display.getExpansionGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
-        display.getFormOnlyDisplay().buildFields(display.getExpansionGrid().getDataSource(),false,false,false);
+        display.getFormOnlyDisplay().buildFields(display.getExpansionGrid().getDataSource(),false,false,false,event.getRecord());
         display.getFormOnlyDisplay().getForm().editRecord(event.getRecord());
         display.getFormOnlyDisplay().getForm().enable();
       }

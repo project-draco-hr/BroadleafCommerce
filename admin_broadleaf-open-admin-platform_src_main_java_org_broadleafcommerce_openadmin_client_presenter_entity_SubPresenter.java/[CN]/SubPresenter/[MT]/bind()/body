@@ -5,7 +5,7 @@
       if (event.getState()) {
         display.getRemoveButton().enable();
         ((DynamicEntityDataSource)display.getGrid().getDataSource()).resetPermanentFieldVisibilityBasedOnType(event.getSelectedRecord().getAttributeAsStringArray("_type"));
-        display.getFormOnlyDisplay().buildFields(display.getGrid().getDataSource(),showDisabledState,canEdit,showId);
+        display.getFormOnlyDisplay().buildFields(display.getGrid().getDataSource(),showDisabledState,canEdit,showId,event.getRecord());
         display.getFormOnlyDisplay().getForm().editRecord(event.getRecord());
         display.getFormOnlyDisplay().getForm().enable();
       }
