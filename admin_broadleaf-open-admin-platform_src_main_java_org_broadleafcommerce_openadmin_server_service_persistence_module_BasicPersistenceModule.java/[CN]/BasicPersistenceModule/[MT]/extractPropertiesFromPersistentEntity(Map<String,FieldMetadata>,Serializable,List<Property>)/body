@@ -11,7 +11,12 @@
         while (tokens.hasMoreTokens()) {
           String token=tokens.nextToken();
           if (tokens.hasMoreTokens()) {
-            testObject=fieldManager.getFieldValue(testObject,token);
+            try {
+              testObject=fieldManager.getFieldValue(testObject,token);
+            }
+ catch (            FieldNotAvailableException e) {
+              throw new IllegalArgumentException(e);
+            }
             if (testObject == null) {
               Property propertyItem=new Property();
               propertyItem.setName(property);
@@ -35,7 +40,7 @@
       try {
         value=fieldManager.getFieldValue(entity,property);
       }
- catch (      Exception e1) {
+ catch (      FieldNotAvailableException e) {
         isFieldAccessible=false;
       }
       String strVal;
@@ -69,10 +74,15 @@
               strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
             }
  else             if (metadata.getForeignKeyClass() != null) {
-              strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
-              Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
-              if (temp != null) {
-                displayVal=temp.toString();
+              try {
+                strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
+                Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+                if (temp != null) {
+                  displayVal=temp.toString();
+                }
+              }
+ catch (              FieldNotAvailableException e) {
+                throw new IllegalArgumentException(e);
               }
             }
  else {

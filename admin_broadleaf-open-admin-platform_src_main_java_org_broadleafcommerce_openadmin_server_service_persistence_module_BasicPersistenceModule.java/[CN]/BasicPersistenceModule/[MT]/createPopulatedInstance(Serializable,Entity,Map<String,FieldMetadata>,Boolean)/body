@@ -79,7 +79,13 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+Collection collection=null;
+try {
+collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+}
+ catch (FieldNotAvailableException e) {
+throw new IllegalArgumentException(e);
+}
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
 }
@@ -107,7 +113,13 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+Collection collection=null;
+try {
+collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
+}
+ catch (FieldNotAvailableException e) {
+throw new IllegalArgumentException(e);
+}
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
 }
@@ -135,8 +147,13 @@ break;
 }
 }
  else {
+try {
 if (fieldManager.getFieldValue(instance,property.getName()) != null && (mergedProperties.get(property.getName()).getFieldType() != SupportedFieldType.ID || setId)) {
 fieldManager.setFieldValue(instance,property.getName(),null);
+}
+}
+ catch (FieldNotAvailableException e) {
+throw new IllegalArgumentException(e);
 }
 }
 }

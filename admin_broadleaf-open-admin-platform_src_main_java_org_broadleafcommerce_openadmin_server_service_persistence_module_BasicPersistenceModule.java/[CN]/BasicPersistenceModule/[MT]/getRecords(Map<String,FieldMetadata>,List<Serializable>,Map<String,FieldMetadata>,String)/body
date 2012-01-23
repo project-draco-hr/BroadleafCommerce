@@ -4,7 +4,12 @@
   for (  Serializable recordEntity : records) {
     Serializable entity;
     if (pathToTargetObject != null) {
-      entity=(Serializable)getFieldManager().getFieldValue(recordEntity,pathToTargetObject);
+      try {
+        entity=(Serializable)getFieldManager().getFieldValue(recordEntity,pathToTargetObject);
+      }
+ catch (      FieldNotAvailableException e) {
+        throw new IllegalArgumentException(e);
+      }
     }
  else {
       entity=recordEntity;

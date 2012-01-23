@@ -1,10 +1,11 @@
 {
   StringTokenizer tokens=new StringTokenizer(fieldName,".");
   Class<?> componentClass=bean.getClass();
-  Field field=null;
+  Field field;
   Object value=bean;
   while (tokens.hasMoreTokens()) {
-    field=getSingleField(componentClass,tokens.nextToken());
+    String token=tokens.nextToken();
+    field=getSingleField(componentClass,token);
     if (field != null) {
       field.setAccessible(true);
       value=field.get(value);
@@ -16,7 +17,7 @@
       }
     }
  else {
-      break;
+      throw new FieldNotAvailableException("Unable to find field (" + token + ") on the class ("+ componentClass+ ")");
     }
   }
   return value;

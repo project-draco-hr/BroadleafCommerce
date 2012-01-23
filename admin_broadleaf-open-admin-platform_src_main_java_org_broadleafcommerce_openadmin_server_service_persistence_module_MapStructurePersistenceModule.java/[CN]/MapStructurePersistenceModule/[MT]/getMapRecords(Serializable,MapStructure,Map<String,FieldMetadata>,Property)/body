@@ -1,6 +1,12 @@
 {
   FieldManager fieldManager=getFieldManager();
-  Map map=(Map)fieldManager.getFieldValue(record,mapStructure.getMapProperty());
+  Map map=null;
+  try {
+    map=(Map)fieldManager.getFieldValue(record,mapStructure.getMapProperty());
+  }
+ catch (  FieldNotAvailableException e) {
+    throw new IllegalArgumentException(e);
+  }
   Entity[] entities=new Entity[map.size()];
   int j=0;
   for (  Object key : map.keySet()) {
