@@ -1,5 +1,71 @@
 {
-  super.preparePersistenceUnitInfos();
+  try {
+    Set<String> persistenceUnitInfoNames=null;
+    Map<String,PersistenceUnitInfo> persistenceUnitInfos=null;
+    ResourcePatternResolver resourcePatternResolver=null;
+    Field[] fields=getClass().getSuperclass().getDeclaredFields();
+    for (    Field field : fields) {
+      if ("persistenceUnitInfoNames".equals(field.getName())) {
+        field.setAccessible(true);
+        persistenceUnitInfoNames=(Set<String>)field.get(this);
+      }
+ else       if ("persistenceUnitInfos".equals(field.getName())) {
+        field.setAccessible(true);
+        persistenceUnitInfos=(Map<String,PersistenceUnitInfo>)field.get(this);
+      }
+ else       if ("resourcePatternResolver".equals(field.getName())) {
+        field.setAccessible(true);
+        resourcePatternResolver=(ResourcePatternResolver)field.get(this);
+      }
+    }
+    persistenceUnitInfoNames.clear();
+    persistenceUnitInfos.clear();
+    Method readPersistenceUnitInfos=getClass().getSuperclass().getDeclaredMethod("readPersistenceUnitInfos");
+    readPersistenceUnitInfos.setAccessible(true);
+    Object[] puis=(Object[])readPersistenceUnitInfos.invoke(this);
+    for (    Object pui : puis) {
+      MutablePersistenceUnitInfo mPui=(MutablePersistenceUnitInfo)pui;
+      if (mPui.getPersistenceUnitRootUrl() == null) {
+        Method determineDefaultPersistenceUnitRootUrl=getClass().getSuperclass().getDeclaredMethod("determineDefaultPersistenceUnitRootUrl");
+        determineDefaultPersistenceUnitRootUrl.setAccessible(true);
+        mPui.setPersistenceUnitRootUrl((URL)determineDefaultPersistenceUnitRootUrl.invoke(this));
+      }
+      if (mPui.getNonJtaDataSource() == null) {
+        mPui.setNonJtaDataSource(getDefaultDataSource());
+      }
+      if (super.getLoadTimeWeaver() != null) {
+        Method puiInitMethod=mPui.getClass().getDeclaredMethod("init",LoadTimeWeaver.class);
+        puiInitMethod.setAccessible(true);
+        puiInitMethod.invoke(pui,getLoadTimeWeaver());
+      }
+ else {
+        Method puiInitMethod=mPui.getClass().getDeclaredMethod("init",ClassLoader.class);
+        puiInitMethod.setAccessible(true);
+        puiInitMethod.invoke(pui,resourcePatternResolver.getClassLoader());
+      }
+      postProcessPersistenceUnitInfo((MutablePersistenceUnitInfo)pui);
+      String name=mPui.getPersistenceUnitName();
+      persistenceUnitInfoNames.add(name);
+      PersistenceUnitInfo puiToStore=mPui;
+      if (jpa2ApiPresent) {
+        InvocationHandler jpa2PersistenceUnitInfoDecorator=null;
+        Class<?>[] classes=getClass().getSuperclass().getDeclaredClasses();
+        for (        Class<?> clz : classes) {
+          if ("org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager$Jpa2PersistenceUnitInfoDecorator".equals(clz.getName())) {
+            Constructor<?> constructor=clz.getConstructor(Class.forName("org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo"));
+            constructor.setAccessible(true);
+            jpa2PersistenceUnitInfoDecorator=(InvocationHandler)constructor.newInstance(mPui);
+            break;
+          }
+        }
+        puiToStore=(PersistenceUnitInfo)Proxy.newProxyInstance(SmartPersistenceUnitInfo.class.getClassLoader(),new Class[]{SmartPersistenceUnitInfo.class},jpa2PersistenceUnitInfoDecorator);
+      }
+      persistenceUnitInfos.put(name,puiToStore);
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException("An error occured reflectively invoking methods on " + "class: " + getClass().getSuperclass().getName(),e);
+  }
   try {
     List<Class<?>> managedClassList=new ArrayList<Class<?>>();
     for (    PersistenceUnitInfo pui : mergedPus.values()) {
