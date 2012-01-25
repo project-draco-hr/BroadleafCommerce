@@ -20,7 +20,14 @@
   removeClickHandlerRegistration=display.getListDisplay().getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        removeClicked();
+        SC.confirm("Are your sure you want to delete this entity?",new BooleanCallback(){
+          public void execute(          Boolean value){
+            if (value) {
+              removeClicked();
+            }
+          }
+        }
+);
       }
     }
   }

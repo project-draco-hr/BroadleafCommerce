@@ -1,6 +1,9 @@
 {
+  Record selectedRecord=display.getListDisplay().getGrid().getSelectedRecord();
+  final String primaryKey=display.getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
+  final String id=selectedRecord.getAttribute(primaryKey);
   display.getListDisplay().getGrid().removeSelectedData(new DSCallback(){
-    public void execute(    DSResponse response,    Object rawData,    DSRequest request){
+    @Override public void execute(    DSResponse response,    Object rawData,    DSRequest request){
       getDisplay().getOrphanedCategoryGrid().invalidateCache();
       getDisplay().getRemoveOrphanedButton().disable();
       getDisplay().getInsertOrphanButton().disable();

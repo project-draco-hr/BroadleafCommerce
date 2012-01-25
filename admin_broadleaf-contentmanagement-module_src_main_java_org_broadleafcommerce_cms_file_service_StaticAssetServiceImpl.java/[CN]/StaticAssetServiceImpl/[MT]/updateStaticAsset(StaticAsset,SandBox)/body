@@ -21,6 +21,9 @@
         item.setSandBoxOperationType(SandBoxOperationType.DELETE);
         sandBoxItemDao.updateSandBoxItem(item);
       }
+ else       if (automaticallyApproveAndPromoteStaticAssets) {
+        staticAsset.setArchivedFlag(true);
+      }
     }
     return staticAssetDao.addOrUpdateStaticAsset(staticAsset,true);
   }

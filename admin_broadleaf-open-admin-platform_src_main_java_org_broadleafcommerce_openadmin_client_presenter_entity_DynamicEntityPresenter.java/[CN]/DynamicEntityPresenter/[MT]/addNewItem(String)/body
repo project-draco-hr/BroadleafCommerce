@@ -6,7 +6,9 @@
       ListGridRecord[] recordList=new ListGridRecord[]{(ListGridRecord)event.getRecord()};
       DSResponse updateResponse=new DSResponse();
       updateResponse.setData(recordList);
-      getDisplay().getListDisplay().getGrid().getDataSource().updateCaches(updateResponse);
+      DSRequest updateRequest=new DSRequest();
+      updateRequest.setOperationType(DSOperationType.UPDATE);
+      getDisplay().getListDisplay().getGrid().getDataSource().updateCaches(updateResponse,updateRequest);
       getDisplay().getListDisplay().getGrid().deselectAllRecords();
       getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(event.getRecord()));
       String primaryKey=display.getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
