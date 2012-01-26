@@ -1,138 +1,15 @@
 {
   BaseCtoConverter ctoConverter=new BaseCtoConverter();
-  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
-    String propertyName=entry.getKey();
-    AssociationPath associationPath;
-    int dotIndex=propertyName.lastIndexOf('.');
-    StringBuilder property;
-    Class clazz=Class.forName(mergedProperties.get(propertyName).getInheritedFromType());
-    Field field=getFieldManager().getField(clazz,propertyName);
-    if (dotIndex >= 0) {
-      property=new StringBuilder(propertyName.substring(dotIndex + 1,propertyName.length()));
-      String prefix=propertyName.substring(0,dotIndex);
-      StringTokenizer tokens=new StringTokenizer(prefix,".");
-      List<AssociationPathElement> elementList=new ArrayList<AssociationPathElement>(20);
-      StringBuilder sb=new StringBuilder(150);
-      StringBuilder pathBuilder=new StringBuilder(150);
-      while (tokens.hasMoreElements()) {
-        String token=tokens.nextToken();
-        sb.append(token);
-        pathBuilder.append(token);
-        field=getFieldManager().getField(clazz,pathBuilder.toString());
-        Embedded embedded=field.getAnnotation(Embedded.class);
-        if (embedded != null) {
-          sb.append('.');
-        }
- else {
-          elementList.add(new AssociationPathElement(sb.toString()));
-          sb=new StringBuilder(150);
-        }
-        pathBuilder.append('.');
-      }
-      if (!elementList.isEmpty()) {
-        AssociationPathElement[] elements=elementList.toArray(new AssociationPathElement[elementList.size()]);
-        associationPath=new AssociationPath(elements);
-      }
- else {
-        property=property.insert(0,sb.toString());
-        associationPath=AssociationPath.ROOT;
-      }
+  for (  String propertyId : cto.getPropertyIdSet()) {
+    if (mergedProperties.containsKey(propertyId)) {
+      buildProperty(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId);
     }
  else {
-      property=new StringBuilder(propertyName);
-      associationPath=AssociationPath.ROOT;
+      ctoConverter.addEmptyMapping(ceilingEntityFullyQualifiedClassname,propertyId);
     }
-    String convertedProperty=property.toString();
-switch (mergedProperties.get(propertyName).getFieldType()) {
-case BOOLEAN:
-      Class<?> targetType=null;
-    if (field != null) {
-      targetType=field.getType();
-    }
-  if (targetType == null || targetType.equals(Boolean.class)) {
-    ctoConverter.addBooleanMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
   }
- else {
-    ctoConverter.addCharacterMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
+  if (cto.getPropertyIdSet().isEmpty()) {
+    ctoConverter.addEmptyMapping(ceilingEntityFullyQualifiedClassname,"");
   }
-break;
-case DATE:
-ctoConverter.addDateMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case DECIMAL:
-ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case MONEY:
-ctoConverter.addDecimalMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case INTEGER:
-ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-default :
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case EMAIL:
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case FOREIGN_KEY:
-if (cto.get(propertyName).getFilterValues().length > 0) {
-ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-if (mergedProperties.get(propertyName).getCollection()) {
-if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
-ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
-}
- else {
-AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
-ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
-}
-}
- else if (cto.get(propertyName).getFilterValues()[0] == null || "null".equals(cto.get(propertyName).getFilterValues()[0])) {
-ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,propertyName);
-}
- else {
-AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
-ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
-}
-}
-break;
-case ADDITIONAL_FOREIGN_KEY:
-if (cto.get(propertyName).getFilterValues().length > 0) {
-int additionalForeignKeyIndexPosition=Arrays.binarySearch(persistencePerspective.getAdditionalForeignKeys(),new ForeignKey(propertyName,null,null),new Comparator<ForeignKey>(){
-public int compare(ForeignKey o1,ForeignKey o2){
-return o1.getManyToField().compareTo(o2.getManyToField());
-}
-}
-);
-ForeignKey foreignKey=persistencePerspective.getAdditionalForeignKeys()[additionalForeignKeyIndexPosition];
-if (mergedProperties.get(propertyName).getCollection()) {
-if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
-ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
-}
- else {
-AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
-ctoConverter.addLongMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
-}
-}
- else if (cto.get(propertyName).getFilterValues()[0] == null || "null".equals(cto.get(propertyName).getFilterValues()[0])) {
-ctoConverter.addNullMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,propertyName);
-}
- else {
-AssociationPath foreignCategory=new AssociationPath(new AssociationPathElement(propertyName));
-ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,foreignCategory,mergedProperties.get(propertyName).getForeignKeyProperty());
-}
-}
-break;
-case ID:
-switch (mergedProperties.get(propertyName).getSecondaryType()) {
-case INTEGER:
-ctoConverter.addLongEQMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-case STRING:
-ctoConverter.addStringLikeMapping(ceilingEntityFullyQualifiedClassname,propertyName,associationPath,convertedProperty);
-break;
-}
-break;
-}
-}
-return ctoConverter;
+  return ctoConverter;
 }
