@@ -1,0 +1,14 @@
+{
+  int pos=fullPathName.lastIndexOf("/");
+  checkPath: {
+    if (pos >= 0) {
+      break checkPath;
+    }
+    pos=fullPathName.lastIndexOf("\\");
+    if (pos >= 0) {
+      break checkPath;
+    }
+    return fullPathName;
+  }
+  return fullPathName.substring(pos + 1,fullPathName.length());
+}

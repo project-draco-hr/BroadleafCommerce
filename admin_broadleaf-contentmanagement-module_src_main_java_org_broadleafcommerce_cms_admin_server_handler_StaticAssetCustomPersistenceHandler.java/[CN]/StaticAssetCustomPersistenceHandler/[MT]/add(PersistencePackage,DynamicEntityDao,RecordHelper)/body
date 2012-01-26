@@ -17,6 +17,13 @@
     }
     Map<String,FieldMetadata> entityProperties=getMergedProperties();
     adminInstance=(StaticAsset)helper.createPopulatedInstance(adminInstance,entity,entityProperties,false);
+    String fileName=getFileName(upload.getOriginalFilename());
+    if (StringUtils.isEmpty(adminInstance.getName())) {
+      adminInstance.setName(fileName);
+    }
+    if (StringUtils.isEmpty(adminInstance.getFullUrl())) {
+      adminInstance.setFullUrl("/" + fileName);
+    }
     adminInstance.setFileSize(upload.getSize());
     Collection mimeTypes=MimeUtil.getMimeTypes(upload.getOriginalFilename());
     if (!mimeTypes.isEmpty()) {
