@@ -22,7 +22,14 @@
     persistenceUnitInfos.clear();
     Method readPersistenceUnitInfos=getClass().getSuperclass().getDeclaredMethod("readPersistenceUnitInfos");
     readPersistenceUnitInfos.setAccessible(true);
-    Object[] puis=(Object[])readPersistenceUnitInfos.invoke(this);
+    Object pInfosObject=readPersistenceUnitInfos.invoke(this);
+    Object[] puis;
+    if (pInfosObject.getClass().isArray()) {
+      puis=(Object[])pInfosObject;
+    }
+ else {
+      puis=((Collection)pInfosObject).toArray();
+    }
     for (    Object pui : puis) {
       MutablePersistenceUnitInfo mPui=(MutablePersistenceUnitInfo)pui;
       if (mPui.getPersistenceUnitRootUrl() == null) {
