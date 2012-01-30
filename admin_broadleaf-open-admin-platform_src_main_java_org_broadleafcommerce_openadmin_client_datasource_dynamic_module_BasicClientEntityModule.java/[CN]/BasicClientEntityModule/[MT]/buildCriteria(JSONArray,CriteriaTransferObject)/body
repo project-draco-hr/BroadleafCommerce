@@ -42,8 +42,33 @@ case INTEGER:
 case MONEY:
       processFilterValueClause(filterCriteria,newItems[j]);
     break;
+case DATE:
+  if (newItems.length > 1) {
+    for (int x=0; x < newItems.length; x++) {
+      newItems[x]=updateMinutesFromDateFilter(newItems[x],x);
+    }
+    filterCriteria.setFilterValues(newItems);
+  }
+ else {
+    String[] dateItems=new String[2];
+    JSONValue operator=itemObj.get("operator");
+    String op=operator.isString().stringValue();
+    if (op.startsWith("greater")) {
+      dateItems[0]=newItems[0];
+      dateItems[1]=null;
+    }
+ else {
+      dateItems[0]=null;
+      dateItems[1]=newItems[0];
+    }
+    for (int x=0; x < dateItems.length; x++) {
+      dateItems[x]=updateMinutesFromDateFilter(dateItems[x],x);
+    }
+    filterCriteria.setFilterValues(dateItems);
+  }
+break;
 default :
-  filterCriteria.setFilterValues(newItems);
+filterCriteria.setFilterValues(newItems);
 break;
 }
 }
