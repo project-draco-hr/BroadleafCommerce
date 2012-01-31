@@ -4,19 +4,9 @@
     userSandbox=adminUser.getOverrideSandBox();
   }
  else {
-    userSandbox=sandBoxDao.retrieveNamedSandBox(site,SandBoxType.USER,adminUser.getLogin());
+    userSandbox=retrieveSandBox(site,adminUser.getLogin(),SandBoxType.USER);
     if (userSandbox == null) {
-synchronized (CREATE_SANDBOX_LOCK_TOKEN) {
-        userSandbox=sandBoxDao.retrieveNamedSandBox(site,SandBoxType.USER,adminUser.getLogin());
-        if (userSandbox == null) {
-          SandBox sandBox=new SandBoxImpl();
-          sandBox.setSite(site);
-          sandBox.setName(adminUser.getLogin());
-          sandBox.setSandBoxType(SandBoxType.USER);
-          sandBox.setAuthor(adminUser.getId());
-          userSandbox=sandBoxDao.persist(sandBox);
-        }
-      }
+      userSandbox=createSandBox(site,adminUser.getLogin(),SandBoxType.USER);
     }
   }
   return userSandbox;

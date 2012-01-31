@@ -1,0 +1,22 @@
+{
+  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
+  def.setName("createSandBox");
+  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+  TransactionStatus status=transactionManager.getTransaction(def);
+  try {
+    SandBox approvalSandbox=retrieveNamedSandBox(site,sandBoxType,sandBoxName);
+    if (approvalSandbox == null) {
+      approvalSandbox=new SandBoxImpl();
+      approvalSandbox.setSite(site);
+      approvalSandbox.setName(sandBoxName);
+      approvalSandbox.setSandBoxType(sandBoxType);
+      approvalSandbox=persist(approvalSandbox);
+    }
+    transactionManager.commit(status);
+    return approvalSandbox;
+  }
+ catch (  Exception ex) {
+    transactionManager.rollback(status);
+    throw new RuntimeException(ex);
+  }
+}
