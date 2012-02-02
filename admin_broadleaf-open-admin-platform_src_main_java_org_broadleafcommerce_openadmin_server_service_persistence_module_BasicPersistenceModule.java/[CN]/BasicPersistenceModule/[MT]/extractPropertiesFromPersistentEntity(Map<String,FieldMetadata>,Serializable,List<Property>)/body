@@ -76,7 +76,12 @@
  else             if (metadata.getForeignKeyClass() != null) {
               try {
                 strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
-                Object temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+                Object temp=null;
+                try {
+                  temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+                }
+ catch (                FieldNotAvailableException e) {
+                }
                 if (temp != null) {
                   displayVal=temp.toString();
                 }
