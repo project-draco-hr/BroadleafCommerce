@@ -19,19 +19,21 @@
     extractQualifierData(selectedRecord,type,true,dirtyValues);
     DSRequest requestProperties=new DSRequest();
     requestProperties.setAttribute("dirtyValues",dirtyValues);
-    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getDataSource().updateData(selectedRecord,new DSCallback(){
-      public void execute(      DSResponse response,      Object rawData,      DSRequest request){
-        try {
-          extractQualifierData(selectedRecord,type,false,dirtyValues);
-          getDisplay().getDynamicFormDisplay().getSaveButton().disable();
-          getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
-        }
- catch (        IncompatibleMVELTranslationException e) {
-          SC.warn(e.getMessage());
+    if (getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().validate()) {
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getDataSource().updateData(selectedRecord,new DSCallback(){
+        public void execute(        DSResponse response,        Object rawData,        DSRequest request){
+          try {
+            extractQualifierData(selectedRecord,type,false,dirtyValues);
+            getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+            getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
+          }
+ catch (          IncompatibleMVELTranslationException e) {
+            SC.warn(e.getMessage());
+          }
         }
       }
-    }
 ,requestProperties);
+    }
   }
  catch (  IncompatibleMVELTranslationException e) {
     SC.warn(e.getMessage());
