@@ -1,3 +1,7 @@
 {
-  return delegate.unwrap(iface);
+  Assert.notNull(iface,"Interface argument must not be null");
+  if (!Connection.class.equals(iface)) {
+    throw new SQLException("Connection of type [" + getClass().getName() + "] can only be unwrapped as [java.sql.Connection], not as ["+ iface.getName());
+  }
+  return (T)delegate;
 }
