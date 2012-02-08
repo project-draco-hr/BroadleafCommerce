@@ -10,7 +10,14 @@
     }
   }
   PersistentClass persistentClass=getPersistentClass(targetClass.getName());
-  @SuppressWarnings("unchecked") Iterator<Property> componentPropertyIterator=((Component)persistentClass.getProperty(propertyName).getValue()).getPropertyIterator();
+  Property property;
+  try {
+    property=persistentClass.getProperty(propertyName);
+  }
+ catch (  MappingException e) {
+    property=persistentClass.getProperty(prefix + propertyName);
+  }
+  @SuppressWarnings("unchecked") Iterator<Property> componentPropertyIterator=((Component)property.getValue()).getPropertyIterator();
   List<Property> componentPropertyList=new ArrayList<Property>();
   while (componentPropertyIterator.hasNext()) {
     componentPropertyList.add(componentPropertyIterator.next());
