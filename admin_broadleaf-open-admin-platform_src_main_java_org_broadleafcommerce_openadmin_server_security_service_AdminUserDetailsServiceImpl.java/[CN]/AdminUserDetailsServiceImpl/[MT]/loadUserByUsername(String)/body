@@ -1,0 +1,16 @@
+{
+  AdminUser adminUser=adminSecurityService.readAdminUserByUserName(username);
+  if (adminUser == null) {
+    throw new UsernameNotFoundException("The user was not found");
+  }
+  List<GrantedAuthority> authorities=new ArrayList<GrantedAuthority>();
+  for (  AdminRole role : adminUser.getAllRoles()) {
+    for (    AdminPermission permission : role.getAllPermissions()) {
+      authorities.add(new GrantedAuthorityImpl(permission.getName()));
+    }
+  }
+  for (  AdminPermission permission : adminUser.getAllPermissions()) {
+    authorities.add(new GrantedAuthorityImpl(permission.getName()));
+  }
+  return new User(username,adminUser.getPassword(),true,true,true,true,authorities);
+}
