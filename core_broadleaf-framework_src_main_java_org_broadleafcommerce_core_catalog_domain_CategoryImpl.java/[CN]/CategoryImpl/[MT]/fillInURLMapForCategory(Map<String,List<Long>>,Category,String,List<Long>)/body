@@ -3,7 +3,10 @@
   if (urlKey == null) {
     throw new CacheFactoryException("Cannot create childCategoryURLMap - the urlKey for a category(" + category.getId() + ") was null");
   }
-  String currentPath=startingPath + '/' + category.getUrlKey();
+  String currentPath="";
+  if (!"/".equals(category.getUrlKey())) {
+    currentPath=startingPath + "/" + category.getUrlKey();
+  }
   List<Long> newCategoryList=new ArrayList<Long>(startingCategoryList);
   newCategoryList.add(category.getId());
   categoryUrlMap.put(currentPath,newCategoryList);
