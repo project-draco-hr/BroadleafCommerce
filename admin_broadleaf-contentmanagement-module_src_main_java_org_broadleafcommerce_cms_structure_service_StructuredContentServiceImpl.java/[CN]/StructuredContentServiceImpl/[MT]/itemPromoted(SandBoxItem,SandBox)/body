@@ -20,9 +20,10 @@
       if (LOG.isDebugEnabled()) {
         LOG.debug("Structured content promoted to production.  " + sc.getId() + ".  Archiving original item "+ sc.getOriginalItemId());
       }
-      StructuredContent originalSC=structuredContentDao.findStructuredContentById(sandBoxItem.getOriginalItemId());
+      StructuredContent originalSC=structuredContentDao.findStructuredContentById(sc.getOriginalItemId());
       originalSC.setArchivedFlag(Boolean.TRUE);
       structuredContentDao.addOrUpdateContentItem(originalSC);
+      productionItemArchived(originalSC);
       if (sc.getDeletedFlag()) {
         sc.setArchivedFlag(true);
       }

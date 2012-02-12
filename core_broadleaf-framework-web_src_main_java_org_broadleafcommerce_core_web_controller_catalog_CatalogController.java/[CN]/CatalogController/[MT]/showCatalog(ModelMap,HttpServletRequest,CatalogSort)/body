@@ -1,5 +1,6 @@
 {
-  addCategoryToModel(request,model);
+  Category rootCategory=findRootCategory();
+  addCategoryToModel(request,model,rootCategory);
   boolean productFound=addProductsToModel(request,model,catalogSort);
   String view=defaultCategoryView;
   if (productFound) {
@@ -7,7 +8,7 @@
   }
  else {
     Category currentCategory=(Category)model.get("currentCategory");
-    if (currentCategory.getUrl() != null && !"".equals(currentCategory.getUrl())) {
+    if (shouldRedirectToUrl(currentCategory,rootCategory,request)) {
       return "redirect:" + currentCategory.getUrl();
     }
  else     if (currentCategory.getDisplayTemplate() != null && !"".equals(currentCategory.getUrl())) {
