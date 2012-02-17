@@ -18,9 +18,10 @@
   assertTrue(applied);
   order=dataProvider.createBasicOrder();
   qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
-  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer1);
+  offer1.setApplyDiscountToSalePrice(false);
   order.getDiscreteOrderItems().get(0).getDelegate().setSalePrice(new Money(1D));
   order.getDiscreteOrderItems().get(1).getDelegate().setSalePrice(new Money(1D));
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer1);
   applied=itemProcessor.applyAllItemOffers(qualifiedOffers,order);
   assertFalse(applied);
   verify();

@@ -1,0 +1,30 @@
+{
+  Iterator<OrderItemAdjustment> adjustmentsIterator=delegate.getOrderItemAdjustments().iterator();
+  int removeCount=0;
+  while (adjustmentsIterator.hasNext()) {
+    OrderItemAdjustment currentAdjustment=adjustmentsIterator.next();
+    if (useSaleAdjustments) {
+      if (currentAdjustment.getSalesPriceValue().lessThanOrEqual(BigDecimal.ZERO)) {
+        currentAdjustment.setOrderItem(null);
+        adjustmentsIterator.remove();
+        removeCount++;
+      }
+ else {
+        currentAdjustment.setAppliedToSalePrice(true);
+        currentAdjustment.setValue(currentAdjustment.getSalesPriceValue());
+      }
+    }
+ else {
+      if (currentAdjustment.getRetailPriceValue().lessThanOrEqual(BigDecimal.ZERO)) {
+        currentAdjustment.setOrderItem(null);
+        adjustmentsIterator.remove();
+        removeCount++;
+      }
+ else {
+        currentAdjustment.setAppliedToSalePrice(false);
+        currentAdjustment.setValue(currentAdjustment.getRetailPriceValue());
+      }
+    }
+  }
+  return removeCount;
+}

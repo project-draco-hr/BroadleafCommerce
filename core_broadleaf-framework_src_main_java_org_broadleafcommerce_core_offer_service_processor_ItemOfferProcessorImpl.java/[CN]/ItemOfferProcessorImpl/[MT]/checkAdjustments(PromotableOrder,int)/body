@@ -3,14 +3,28 @@
     List<PromotableOrderItem> allSplitItems=order.getAllSplitItems();
     for (    PromotableOrderItem splitItem : allSplitItems) {
       if (splitItem.isHasOrderItemAdjustments()) {
-        Money itemPrice=splitItem.getRetailPrice();
-        if (splitItem.getSalePrice() != null) {
-          itemPrice=splitItem.getSalePrice();
+        boolean useSaleAdjustments=false;
+        int adjustmentsRemoved=0;
+        Money adjustmentPrice;
+        if (splitItem.getDelegate().getIsOnSale()) {
+          if (splitItem.getSaleAdjustmentPrice().lessThanOrEqual(splitItem.getRetailAdjustmentPrice())) {
+            adjustmentPrice=splitItem.getSaleAdjustmentPrice();
+            useSaleAdjustments=true;
+          }
+ else {
+            adjustmentPrice=splitItem.getRetailAdjustmentPrice();
+          }
+          if (!adjustmentPrice.lessThan(splitItem.getSalePrice())) {
+            adjustmentsRemoved=adjustmentsRemoved + splitItem.removeAllAdjustments();
+          }
         }
-        if (splitItem.getAdjustmentPrice().greaterThanOrEqual(itemPrice)) {
-          int offersRemoved=splitItem.removeAllAdjustments();
-          appliedItemOffersCount-=offersRemoved;
+ else {
+          if (!splitItem.getRetailAdjustmentPrice().lessThan(splitItem.getRetailPrice())) {
+            adjustmentsRemoved=adjustmentsRemoved + splitItem.removeAllAdjustments();
+          }
         }
+        adjustmentsRemoved=adjustmentsRemoved + splitItem.fixAdjustments(useSaleAdjustments);
+        appliedItemOffersCount-=adjustmentsRemoved;
       }
     }
     mergeSplitItems(order);

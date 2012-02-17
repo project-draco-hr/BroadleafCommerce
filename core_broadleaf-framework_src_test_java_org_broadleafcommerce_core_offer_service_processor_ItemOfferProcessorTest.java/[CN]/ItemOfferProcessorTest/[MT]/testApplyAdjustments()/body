@@ -2,7 +2,7 @@
   Answer answer=new Answer();
   Answer2 answer2=new Answer2();
   EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);
-  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(answer2).times(8);
+  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(answer2).times(7);
   replay();
   PromotableOrder order=dataProvider.createBasicOrder();
   Offer offer1=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
@@ -27,6 +27,7 @@
   assertTrue(appliedCount == 2);
   order.removeAllAdjustments();
   offer1.setCombinableWithOtherOffers(false);
+  offer1.setApplyDiscountToSalePrice(false);
   order.getDiscreteOrderItems().get(1).getDelegate().setSalePrice(new Money(10D));
   appliedCount=itemProcessor.applyAdjustments(order,0,qualifiedOffers.get(0),0);
   assertTrue(appliedCount == 0);

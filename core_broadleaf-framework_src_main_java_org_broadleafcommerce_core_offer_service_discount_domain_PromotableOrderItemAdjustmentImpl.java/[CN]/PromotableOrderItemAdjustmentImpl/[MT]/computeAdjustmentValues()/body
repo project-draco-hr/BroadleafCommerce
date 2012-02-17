@@ -1,0 +1,58 @@
+{
+  if (delegate.getOffer() != null && orderItem != null) {
+    Money retailAdjustmentPrice=orderItem.getRetailAdjustmentPrice();
+    Money salesAdjustmentPrice=orderItem.getSaleAdjustmentPrice();
+    if (retailAdjustmentPrice == null) {
+      retailAdjustmentPrice=orderItem.getRetailPrice();
+    }
+    if (delegate.getOrderItem().getIsOnSale() && salesAdjustmentPrice == null) {
+      salesAdjustmentPrice=orderItem.getSalePrice();
+    }
+    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
+      Money amountOff=new Money(delegate.getOffer().getValue());
+      if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
+        if (amountOff.lessThan(salesAdjustmentPrice)) {
+          delegate.setSalesPriceValue(amountOff);
+        }
+ else {
+          delegate.setSalesPriceValue(salesAdjustmentPrice);
+        }
+      }
+ else {
+        delegate.setSalesPriceValue(Money.ZERO);
+      }
+      if (amountOff.lessThan(retailAdjustmentPrice)) {
+        delegate.setRetailPriceValue(amountOff);
+      }
+ else {
+        delegate.setRetailPriceValue(retailAdjustmentPrice);
+      }
+    }
+    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.FIX_PRICE)) {
+      Money fixPriceAmount=new Money(delegate.getOffer().getValue());
+      if (fixPriceAmount.lessThan(retailAdjustmentPrice)) {
+        delegate.setRetailPriceValue(retailAdjustmentPrice.subtract(fixPriceAmount));
+      }
+ else {
+        delegate.setRetailPriceValue(Money.ZERO);
+      }
+      if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
+        if (fixPriceAmount.lessThan(salesAdjustmentPrice)) {
+          delegate.setSalesPriceValue(fixPriceAmount);
+        }
+ else {
+          delegate.setSalesPriceValue(Money.ZERO);
+        }
+      }
+    }
+    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
+      if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
+        delegate.setSalesPriceValue(salesAdjustmentPrice.multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"))));
+      }
+ else {
+        delegate.setSalesPriceValue(Money.ZERO);
+      }
+      delegate.setRetailPriceValue(retailAdjustmentPrice.multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"))));
+    }
+  }
+}
