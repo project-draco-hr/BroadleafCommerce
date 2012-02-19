@@ -1,13 +1,22 @@
 {
   AntClassLoader loader;
-  MergeClassPathXMLApplicationContext mergeContext;
+  MergeFileSystemAndClassPathXMLApplicationContext mergeContext;
   try {
     loader=getProject().createClassLoader(classPath);
     ClassLoader classLoader=this.getClass().getClassLoader();
     loader.setParent(classLoader);
     loader.setThreadContextLoader();
     String[] contexts=StandardConfigLocations.retrieveAll(StandardConfigLocations.TESTCONTEXTTYPE);
-    mergeContext=new MergeClassPathXMLApplicationContext(contexts,new String[]{});
+    String[] otherContexts=new String[classPathApplicationContexts.size()];
+    for (int j=0; j < otherContexts.length; j++) {
+      otherContexts[j]=classPathApplicationContexts.get(j).getPath();
+    }
+    contexts=(String[])ArrayUtils.addAll(contexts,otherContexts);
+    String[] fileSystemItems=new String[fileSystemApplicationContexts.size()];
+    for (int j=0; j < fileSystemItems.length; j++) {
+      fileSystemItems[j]=fileSystemApplicationContexts.get(j).getPath();
+    }
+    mergeContext=new MergeFileSystemAndClassPathXMLApplicationContext(contexts,fileSystemItems);
   }
  catch (  Exception e) {
     throw new BuildException(e,getLocation());

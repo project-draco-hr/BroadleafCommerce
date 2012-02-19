@@ -1,0 +1,21 @@
+{
+  super(parent);
+  ResourceInputStream[] classPathSources;
+  ResourceInputStream[] fileSystemSources;
+  try {
+    classPathSources=new ResourceInputStream[classPathLocations.length];
+    for (int j=0; j < classPathLocations.length; j++) {
+      classPathSources[j]=new ResourceInputStream(MergeClassPathXMLApplicationContext.class.getClassLoader().getResourceAsStream(classPathLocations[j]),classPathLocations[j]);
+    }
+    fileSystemSources=new ResourceInputStream[fileSystemLocations.length];
+    for (int j=0; j < fileSystemSources.length; j++) {
+      File temp=new File(fileSystemLocations[j]);
+      fileSystemSources[j]=new ResourceInputStream(new BufferedInputStream(new FileInputStream(temp)),fileSystemLocations[j]);
+    }
+  }
+ catch (  FileNotFoundException e) {
+    throw new FatalBeanException("Unable to merge context files",e);
+  }
+  this.configResources=new MergeApplicationContextXmlConfigResource().getConfigResources(classPathSources,fileSystemSources);
+  refresh();
+}
