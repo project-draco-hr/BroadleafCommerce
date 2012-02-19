@@ -37,7 +37,8 @@
         determineDefaultPersistenceUnitRootUrl.setAccessible(true);
         mPui.setPersistenceUnitRootUrl((URL)determineDefaultPersistenceUnitRootUrl.invoke(this));
       }
-      if (mPui.getNonJtaDataSource() == null) {
+      ConfigurationOnlyState state=ConfigurationOnlyState.getState();
+      if ((state == null || !state.isConfigurationOnly()) && mPui.getNonJtaDataSource() == null) {
         mPui.setNonJtaDataSource(getDefaultDataSource());
       }
       if (super.getLoadTimeWeaver() != null) {

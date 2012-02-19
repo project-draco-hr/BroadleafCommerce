@@ -1,5 +1,6 @@
 {
   super.postProcessPersistenceUnitInfo(newPU);
+  ConfigurationOnlyState state=ConfigurationOnlyState.getState();
   newPU.addJarFileUrl(newPU.getPersistenceUnitRootUrl());
   String persistenceUnitName=newPU.getPersistenceUnitName();
   MutablePersistenceUnitInfo temp;
@@ -30,8 +31,6 @@
       temp.addJarFileUrl(url);
     }
   }
-  temp.setJtaDataSource(newPU.getJtaDataSource());
-  temp.setNonJtaDataSource(newPU.getNonJtaDataSource());
   if (temp.getProperties() == null) {
     temp.setProperties(newPU.getProperties());
   }
@@ -50,6 +49,14 @@
         }
       }
     }
+  }
+  if (state == null || !state.isConfigurationOnly()) {
+    temp.setJtaDataSource(newPU.getJtaDataSource());
+    temp.setNonJtaDataSource(newPU.getNonJtaDataSource());
+  }
+ else {
+    temp.getProperties().setProperty("hibernate.hbm2ddl.auto","none");
+    temp.getProperties().setProperty("hibernate.temp.use_jdbc_metadata_defaults","false");
   }
   temp.setTransactionType(newPU.getTransactionType());
   if (newPU.getPersistenceProviderClassName() != null) {
