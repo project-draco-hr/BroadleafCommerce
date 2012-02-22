@@ -1,18 +1,19 @@
 {
+  String timezone=DateTimeFormat.getFormat("Z").format(new Date());
   if (originalDateString != null) {
     int pos=originalDateString.indexOf("T06:00:00");
 switch (position) {
 case 0:
       if (pos >= 0) {
-        return originalDateString.substring(0,pos) + "T00:00:00";
+        return originalDateString.substring(0,pos) + "T00:00:00" + " "+ timezone;
       }
     break;
 default :
   if (pos >= 0) {
-    return originalDateString.substring(0,pos) + "T23:59:00";
+    return originalDateString.substring(0,pos) + "T23:59:00" + " "+ timezone;
   }
 break;
 }
 }
-return originalDateString;
+return originalDateString == null ? null : originalDateString + " " + timezone;
 }
