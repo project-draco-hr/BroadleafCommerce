@@ -11,6 +11,11 @@
       if (event.isLeftButtonDown()) {
         searchDialog.search(searchDialogTitle,new SearchItemSelectedHandler(){
           public void onSearchItemSelected(          SearchItemSelected event){
+            DynamicEntityDataSource ds=(DynamicEntityDataSource)display.getGrid().getDataSource();
+            ForeignKey foreignKey=(ForeignKey)ds.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+            if (foreignKey != null) {
+              event.getRecord().setAttribute(foreignKey.getManyToField(),abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord));
+            }
             display.getGrid().addData(event.getRecord());
           }
         }
