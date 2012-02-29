@@ -1,3 +1,10 @@
 {
-  return calendar.getTime() < ((Date)when).getTime();
+  Date test;
+  if (when.getClass().getName().equals(Date.class.getName())) {
+    test=(Date)when;
+  }
+ else {
+    test=((Calendar)when).getTime();
+  }
+  return calendar.getTime() < test.getTime();
 }
