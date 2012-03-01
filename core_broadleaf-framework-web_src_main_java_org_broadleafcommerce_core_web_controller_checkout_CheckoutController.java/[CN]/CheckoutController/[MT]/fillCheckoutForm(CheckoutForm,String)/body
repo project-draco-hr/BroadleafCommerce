@@ -1,0 +1,12 @@
+{
+  String shipToStreet=getResponseValue(resp,"PAYMENTREQUEST_0_SHIPTOSTREET").replaceAll("%20"," ");
+  String shipToCity=getResponseValue(resp,"PAYMENTREQUEST_0_SHIPTOCITY");
+  String shipToState=getResponseValue(resp,"PAYMENTREQUEST_0_SHIPTOSTATE");
+  String shipToCountryCode=getResponseValue(resp,"PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE");
+  String shipToZip=getResponseValue(resp,"PAYMENTREQUEST_0_SHIPTOZIP");
+  checkoutForm.getShippingAddress().setCountry(countryService.findCountryByAbbreviation(shipToCountryCode));
+  checkoutForm.getShippingAddress().setState(stateService.findStateByAbbreviation(shipToState));
+  checkoutForm.getShippingAddress().setAddressLine1(shipToStreet);
+  checkoutForm.getShippingAddress().setCity(shipToCity);
+  checkoutForm.getShippingAddress().setPostalCode(shipToZip);
+}

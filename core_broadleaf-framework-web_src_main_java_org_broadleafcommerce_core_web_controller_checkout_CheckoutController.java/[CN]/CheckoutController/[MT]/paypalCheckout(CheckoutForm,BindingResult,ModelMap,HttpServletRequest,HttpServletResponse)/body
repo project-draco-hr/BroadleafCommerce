@@ -1,0 +1,22 @@
+{
+  try {
+    List<NameValuePair> nvps=new ArrayList<NameValuePair>();
+    Order order=retrieveCartOrder(request,model);
+    String resp=setHttpClient(order,"checkout",nvps);
+    if (resp.contains("ACK=Success") || resp.contains("ACK=SuccessWithWarning")) {
+      String token=getResponseValue(resp,"TOKEN");
+      order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(SystemTime.asDate()));
+      model.addAttribute("order",retrieveCartOrder(request,model));
+      String url="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
+      response.sendRedirect(url);
+      return "";
+    }
+ else {
+      return resp.substring(resp.indexOf("ERRORCODE"));
+    }
+  }
+ catch (  Exception e) {
+    System.out.println(e);
+    return "";
+  }
+}

@@ -1,0 +1,38 @@
+{
+  try {
+    List<NameValuePair> nvps=new ArrayList<NameValuePair>();
+    Order order=retrieveCartOrder(request,model);
+    nvps.add(new NameValuePair("PAYERID",payerID));
+    nvps.add(new NameValuePair("TOKEN",token));
+    String resp=setHttpClient(order,"process",nvps);
+    if (resp.contains("ACK=Success") || resp.contains("ACK=SuccessWithWarning")) {
+      Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+      paypalPayment(checkoutForm,order,payments);
+      try {
+        checkoutService.performCheckout(order,payments);
+      }
+ catch (      CheckoutException e) {
+        LOG.error("Cannot perform checkout",e);
+      }
+      Customer customer=order.getCustomer();
+      if (StringUtils.isEmpty(customer.getFirstName())) {
+        customer.setFirstName(checkoutForm.getBillingAddress().getFirstName());
+      }
+      if (StringUtils.isEmpty(customer.getLastName())) {
+        customer.setLastName(checkoutForm.getBillingAddress().getLastName());
+      }
+      if (StringUtils.isEmpty(customer.getEmailAddress())) {
+        customer.setEmailAddress(order.getEmailAddress());
+      }
+      customerService.saveCustomer(customer,false);
+      return receiptView != null ? "redirect:" + receiptView : "redirect:/orders/viewOrderConfirmation.htm?orderNumber=" + order.getOrderNumber();
+    }
+ else {
+      return resp.substring(resp.indexOf("ERRORCODE"));
+    }
+  }
+ catch (  Exception e) {
+    System.out.println(e);
+    return "";
+  }
+}

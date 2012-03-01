@@ -1,0 +1,12 @@
+{
+  PaymentInfo paymentInfo=paymentInfoService.create();
+  paymentInfo.setAddress(checkoutForm.getShippingAddress());
+  paymentInfo.setOrder(order);
+  paymentInfo.setType(PaymentInfoType.PAYPAL);
+  paymentInfo.setAmount(order.getTotal());
+  List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
+  paymentInfos.add(paymentInfo);
+  order.setPaymentInfos(paymentInfos);
+  order.setStatus(OrderStatus.SUBMITTED);
+  order.setSubmitDate(Calendar.getInstance().getTime());
+}
