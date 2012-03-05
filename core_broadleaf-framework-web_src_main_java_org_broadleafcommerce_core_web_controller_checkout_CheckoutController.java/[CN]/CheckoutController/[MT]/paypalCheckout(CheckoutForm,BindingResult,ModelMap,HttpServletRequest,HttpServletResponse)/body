@@ -1,18 +1,42 @@
 {
   try {
-    List<NameValuePair> nvps=new ArrayList<NameValuePair>();
-    Order order=retrieveCartOrder(request,model);
-    String resp=setHttpClient(order,"checkout",nvps);
-    if (resp.contains("ACK=Success") || resp.contains("ACK=SuccessWithWarning")) {
-      String token=getResponseValue(resp,"TOKEN");
+    final Order order=retrieveCartOrder(request,model);
+    Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+    TotalledPaymentInfoImpl paymentInfo=new TotalledPaymentInfoImpl();
+    paymentInfo.setOrder(order);
+    paymentInfo.setType(PaymentInfoType.PAYPAL);
+    paymentInfo.getAdditionalFields().put("PAYPALMETHODTYPE","CHECKOUT");
+    paymentInfo.setReferenceNumber(String.valueOf(order.getId()));
+    paymentInfo.setAmount(order.getTotal());
+    paymentInfo.setSubTotal(order.getSubTotal());
+    paymentInfo.setTotalShipping(order.getTotalShipping());
+    paymentInfo.setTotalTax(order.getTotalTax());
+    paymentInfo.setShippingDiscount(order.getFulfillmentGroupAdjustmentsValue());
+    for (    OrderItem orderItem : order.getOrderItems()) {
+      AmountItem amountItem=new AmountItemImpl();
+      if (DiscreteOrderItem.class.isAssignableFrom(orderItem.getClass())) {
+        amountItem.setDescription(((DiscreteOrderItem)orderItem).getSku().getDescription());
+        amountItem.setSystemId(String.valueOf(((DiscreteOrderItem)orderItem).getSku().getId()));
+      }
+      amountItem.setShortDescription(orderItem.getName());
+      amountItem.setPaymentInfo(paymentInfo);
+      amountItem.setQuantity((long)orderItem.getQuantity());
+      amountItem.setUnitPrice(orderItem.getPrice().getAmount());
+      paymentInfo.getAmountItems().add(amountItem);
+    }
+    payments.put(paymentInfo,paymentInfo.createEmptyReferenced());
+    List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
+    paymentInfos.add(paymentInfo);
+    order.setPaymentInfos(paymentInfos);
+    CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(order,payments);
+    PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
+    if (responseItem.getTransactionSuccess()) {
       order.setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(SystemTime.asDate()));
       model.addAttribute("order",retrieveCartOrder(request,model));
-      String url="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=" + token;
-      response.sendRedirect(url);
-      return "";
+      return "redirect:" + responseItem.getAdditionalFields().get("REDIRECTURL");
     }
  else {
-      return resp.substring(resp.indexOf("ERRORCODE"));
+      return "";
     }
   }
  catch (  Exception e) {
