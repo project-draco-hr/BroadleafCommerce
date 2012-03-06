@@ -1,3 +1,16 @@
 {
-  return customPersistenceHandlers;
+  List<CustomPersistenceHandler> cloned=new ArrayList<CustomPersistenceHandler>();
+  cloned.addAll(customPersistenceHandlers);
+  if (getCustomPersistenceHandlerFilters() != null) {
+    for (    CustomPersistenceHandlerFilter filter : getCustomPersistenceHandlerFilters()) {
+      Iterator<CustomPersistenceHandler> itr=cloned.iterator();
+      while (itr.hasNext()) {
+        CustomPersistenceHandler handler=itr.next();
+        if (!filter.shouldUseHandler(handler.getClass().getName())) {
+          itr.remove();
+        }
+      }
+    }
+  }
+  return cloned;
 }
