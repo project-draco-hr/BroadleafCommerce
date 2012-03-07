@@ -1,9 +1,6 @@
 {
   final DiscreteOrderItem item=(DiscreteOrderItem)orderItemDao.create(OrderItemType.DISCRETE);
-  item.setSku(itemRequest.getSku());
-  item.setQuantity(itemRequest.getQuantity());
-  item.setCategory(itemRequest.getCategory());
-  item.setProduct(itemRequest.getProduct());
+  populateDiscreteOrderItem(item,itemRequest);
   item.setBaseSalePrice(itemRequest.getSku().getSalePrice());
   item.setBaseRetailPrice(itemRequest.getSku().getRetailPrice());
   item.setDiscreteOrderItemFeePrices(itemRequest.getDiscreteOrderItemFeePrices());

@@ -15,6 +15,13 @@
         orderItem.getCandidateItemOffers().add(clone);
       }
     }
+    if (getOrderItemAttributes() != null) {
+      for (      OrderItemAttribute attribute : getOrderItemAttributes().values()) {
+        OrderItemAttribute clone=attribute.clone();
+        clone.setOrderItem(orderItem);
+        orderItem.getOrderItemAttributes().put(clone.getName(),clone);
+      }
+    }
     orderItem.setCategory(getCategory());
     orderItem.setGiftWrapOrderItem(getGiftWrapOrderItem());
     orderItem.setName(getName());

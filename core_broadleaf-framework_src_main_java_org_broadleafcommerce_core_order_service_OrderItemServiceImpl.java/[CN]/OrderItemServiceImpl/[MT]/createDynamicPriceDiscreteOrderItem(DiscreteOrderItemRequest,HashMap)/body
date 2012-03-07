@@ -1,9 +1,6 @@
 {
   final DiscreteOrderItem item=(DiscreteOrderItem)orderItemDao.create(OrderItemType.EXTERNALLY_PRICED);
-  item.setSku(itemRequest.getSku());
-  item.setQuantity(itemRequest.getQuantity());
-  item.setCategory(itemRequest.getCategory());
-  item.setProduct(itemRequest.getProduct());
+  populateDiscreteOrderItem(item,itemRequest);
   DynamicSkuPrices prices=dynamicSkuPricingService.getSkuPrices(itemRequest.getSku(),skuPricingConsiderations);
   item.setBaseRetailPrice(prices.getRetailPrice());
   item.setBaseSalePrice(prices.getSalePrice());

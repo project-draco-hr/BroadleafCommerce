@@ -1,0 +1,9 @@
+{
+  if (orderId == null || skuId == null || quantity == null) {
+    return null;
+  }
+  Order order=findOrderById(orderId);
+  DiscreteOrderItemRequest itemRequest=createDiscreteOrderItemRequest(skuId,productId,categoryId,quantity);
+  itemRequest.setItemAttributes(itemAttributes);
+  return addDiscreteItemToOrder(order,itemRequest,priceOrder);
+}

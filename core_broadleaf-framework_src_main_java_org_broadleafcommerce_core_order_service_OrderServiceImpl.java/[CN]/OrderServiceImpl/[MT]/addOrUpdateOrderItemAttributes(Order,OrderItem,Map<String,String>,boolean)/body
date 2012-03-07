@@ -1,0 +1,40 @@
+{
+  if (!order.getOrderItems().contains(item)) {
+    throw new ItemNotFoundException("Order Item (" + item.getId() + ") not found in Order ("+ order.getId()+ ")");
+  }
+  OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(item));
+  Map<String,OrderItemAttribute> orderItemAttributes=itemFromOrder.getOrderItemAttributes();
+  if (orderItemAttributes == null) {
+    orderItemAttributes=new HashMap<String,OrderItemAttribute>();
+    itemFromOrder.setOrderItemAttributes(orderItemAttributes);
+  }
+  boolean changeMade=false;
+  for (  String attributeName : attributeValues.keySet()) {
+    String attributeValue=attributeValues.get(attributeName);
+    OrderItemAttribute attribute=orderItemAttributes.get(attributeName);
+    if (attribute != null && attribute.getValue().equals(attributeValue)) {
+      continue;
+    }
+ else {
+      changeMade=true;
+      if (attribute == null) {
+        attribute=new OrderItemAttributeImpl();
+        attribute.setOrderItem(itemFromOrder);
+        attribute.setName(attributeName);
+        attribute.setValue(attributeValue);
+      }
+ else       if (attributeValue == null) {
+        orderItemAttributes.remove(attributeValue);
+      }
+ else {
+        attribute.setValue(attributeValue);
+      }
+    }
+  }
+  if (changeMade) {
+    return updateOrder(order,priceOrder);
+  }
+ else {
+    return order;
+  }
+}

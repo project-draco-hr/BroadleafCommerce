@@ -1,0 +1,20 @@
+{
+  if (!order.getOrderItems().contains(item)) {
+    throw new ItemNotFoundException("Order Item (" + item.getId() + ") not found in Order ("+ order.getId()+ ")");
+  }
+  OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(item));
+  boolean changeMade=false;
+  Map<String,OrderItemAttribute> orderItemAttributes=itemFromOrder.getOrderItemAttributes();
+  if (orderItemAttributes != null) {
+    if (orderItemAttributes.containsKey(attributeName)) {
+      changeMade=true;
+      orderItemAttributes.remove(attributeName);
+    }
+  }
+  if (changeMade) {
+    return updateOrder(order,priceOrder);
+  }
+ else {
+    return order;
+  }
+}

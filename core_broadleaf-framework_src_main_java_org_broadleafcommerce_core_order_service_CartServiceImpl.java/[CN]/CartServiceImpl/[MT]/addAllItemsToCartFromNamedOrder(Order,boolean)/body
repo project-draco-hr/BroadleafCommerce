@@ -6,11 +6,12 @@
   List<OrderItem> items=new ArrayList<OrderItem>(namedOrder.getOrderItems());
   for (int i=0; i < items.size(); i++) {
     OrderItem orderItem=items.get(i);
+    boolean shouldPriceOrder=(priceOrder && (i == items.size() - 1));
     if (moveNamedOrderItems) {
-      moveItemToOrder(namedOrder,cartOrder,orderItem,priceOrder);
+      moveItemToOrder(namedOrder,cartOrder,orderItem,shouldPriceOrder);
     }
  else {
-      addOrderItemToOrder(cartOrder,orderItem,priceOrder);
+      addOrderItemToOrder(cartOrder,orderItem,shouldPriceOrder);
     }
   }
   return cartOrder;
