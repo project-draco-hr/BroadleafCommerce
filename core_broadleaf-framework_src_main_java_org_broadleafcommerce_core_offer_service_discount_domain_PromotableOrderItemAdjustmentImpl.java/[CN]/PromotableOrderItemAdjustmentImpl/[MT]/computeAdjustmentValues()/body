@@ -9,7 +9,7 @@
       salesAdjustmentPrice=orderItem.getSalePrice();
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
-      Money amountOff=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),5);
+      Money amountOff=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),retailAdjustmentPrice.getAmount().scale());
       if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
         if (amountOff.lessThan(salesAdjustmentPrice)) {
           delegate.setSalesPriceValue(amountOff);
@@ -29,10 +29,10 @@
       }
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.FIX_PRICE)) {
-      Money fixPriceAmount=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),5);
+      Money fixPriceAmount=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),retailAdjustmentPrice.getAmount().scale());
       if (fixPriceAmount.lessThan(retailAdjustmentPrice)) {
         BigDecimal offerValue=retailAdjustmentPrice.getAmount().subtract(fixPriceAmount.getAmount());
-        delegate.setRetailPriceValue(new Money(offerValue,retailAdjustmentPrice.getCurrency(),5));
+        delegate.setRetailPriceValue(new Money(offerValue,retailAdjustmentPrice.getCurrency(),retailAdjustmentPrice.getAmount().scale()));
       }
  else {
         delegate.setRetailPriceValue(Money.ZERO);
@@ -48,13 +48,13 @@
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
       if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
-        BigDecimal offerValue=salesAdjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
+        BigDecimal offerValue=salesAdjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),salesAdjustmentPrice.getAmount().scale(),RoundingMode.HALF_EVEN));
         delegate.setSalesPriceValue(new Money(offerValue,salesAdjustmentPrice.getCurrency(),5));
       }
  else {
         delegate.setSalesPriceValue(Money.ZERO);
       }
-      BigDecimal offerValue=retailAdjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
+      BigDecimal offerValue=retailAdjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),retailAdjustmentPrice.getAmount().scale(),RoundingMode.HALF_EVEN));
       delegate.setRetailPriceValue(new Money(offerValue,retailAdjustmentPrice.getCurrency(),5));
     }
   }
