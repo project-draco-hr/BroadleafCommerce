@@ -6,14 +6,16 @@
   service.add(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
     public void onSuccess(    Entity result){
       super.onSuccess(result);
-      TreeNode record=(TreeNode)buildRecord(result,false);
-      TreeNode[] recordList=new TreeNode[]{record};
-      response.setData(recordList);
-      response.setInvalidateCache(true);
-      if (cb != null) {
-        cb.onSuccess(dataSource);
+      if (processResult(result,requestId,response,dataSource)) {
+        TreeNode record=(TreeNode)buildRecord(result,false);
+        TreeNode[] recordList=new TreeNode[]{record};
+        response.setData(recordList);
+        response.setInvalidateCache(true);
+        if (cb != null) {
+          cb.onSuccess(dataSource);
+        }
+        dataSource.processResponse(requestId,response);
       }
-      dataSource.processResponse(requestId,response);
     }
     @Override protected void onSecurityException(    ApplicationSecurityException exception){
       super.onSecurityException(exception);

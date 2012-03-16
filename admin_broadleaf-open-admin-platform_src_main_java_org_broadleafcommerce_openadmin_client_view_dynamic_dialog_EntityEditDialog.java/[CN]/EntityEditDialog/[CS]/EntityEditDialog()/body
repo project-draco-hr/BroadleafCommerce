@@ -24,24 +24,26 @@
   saveButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (dynamicForm.validate()) {
+        saveButton.disable();
+        cancelButton.disable();
         dynamicForm.saveData(new DSCallback(){
           public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+            if (response.getStatus() == RPCResponse.STATUS_SUCCESS) {
               TreeNode record=new TreeNode(request.getData());
               if (handler != null) {
                 handler.onItemEdited(new ItemEdited(record,dynamicForm.getDataSource()));
               }
+              hide();
+              isHidden=true;
             }
           }
         }
 );
-        hide();
-        isHidden=true;
       }
     }
   }
 );
-  IButton cancelButton=new IButton("Cancel");
+  cancelButton=new IButton("Cancel");
   cancelButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       hide();
