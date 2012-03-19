@@ -1,0 +1,11 @@
+{
+  JoinStructure joinStructure=(JoinStructure)persistencePackage.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
+  String targetPath=joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty();
+  String linkedPath=joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty();
+  Category parent=(Category)dynamicEntityDao.retrieve(CategoryImpl.class,Long.parseLong(persistencePackage.getEntity().findProperty(linkedPath).getValue()));
+  Category child=(Category)dynamicEntityDao.retrieve(CategoryImpl.class,Long.parseLong(persistencePackage.getEntity().findProperty(targetPath).getValue()));
+  if (parent.getAllChildCategories().contains(child)) {
+    throw new ServiceException("Add unsuccessful. Cannot add a duplicate child category");
+  }
+  return ((PersistenceModule)helper.getCompatibleModule(OperationType.JOINSTRUCTURE)).add(persistencePackage);
+}
