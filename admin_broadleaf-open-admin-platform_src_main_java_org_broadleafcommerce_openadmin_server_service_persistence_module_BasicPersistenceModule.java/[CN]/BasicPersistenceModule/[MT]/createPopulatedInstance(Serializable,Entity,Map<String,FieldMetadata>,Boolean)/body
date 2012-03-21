@@ -23,7 +23,7 @@ case BOOLEAN:
             }
           break;
 case DATE:
-        fieldManager.setFieldValue(instance,property.getName(),dateFormat.parse(value));
+        fieldManager.setFieldValue(instance,property.getName(),parseDate(value));
       break;
 case DECIMAL:
     if (BigDecimal.class.isAssignableFrom(returnType)) {
@@ -79,7 +79,7 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection=null;
+Collection collection;
 try {
 collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
 }
