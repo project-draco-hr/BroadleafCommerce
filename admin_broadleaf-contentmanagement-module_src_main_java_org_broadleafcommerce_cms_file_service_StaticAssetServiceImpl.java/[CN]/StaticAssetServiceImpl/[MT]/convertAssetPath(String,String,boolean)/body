@@ -12,6 +12,12 @@
       if (returnValue.startsWith("/")) {
         returnValue=returnValue.substring(1);
       }
+      if (returnValue.startsWith(getStaticAssetUrlPrefix())) {
+        returnValue=returnValue.substring(getStaticAssetUrlPrefix().trim().length());
+        if (returnValue.startsWith("/")) {
+          returnValue=returnValue.substring(1);
+        }
+      }
       returnValue=envPrefix + returnValue;
     }
   }
