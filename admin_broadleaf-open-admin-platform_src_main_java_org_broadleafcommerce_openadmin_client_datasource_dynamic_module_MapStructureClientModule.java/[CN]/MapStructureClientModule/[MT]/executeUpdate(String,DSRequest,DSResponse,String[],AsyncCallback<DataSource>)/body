@@ -5,15 +5,17 @@
   service.update(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
     public void onSuccess(    Entity result){
       super.onSuccess(result);
-      ListGridRecord myRecord=(ListGridRecord)updateRecord(result,(Record)temp,false);
-      ListGridRecord[] recordList=new ListGridRecord[]{myRecord};
-      response.setData(recordList);
-      response.setTotalRows(1);
-      response.setInvalidateCache(true);
-      if (cb != null) {
-        cb.onSuccess(dataSource);
+      if (processResult(result,requestId,response,dataSource)) {
+        ListGridRecord myRecord=(ListGridRecord)updateRecord(result,(Record)temp,false);
+        ListGridRecord[] recordList=new ListGridRecord[]{myRecord};
+        response.setData(recordList);
+        response.setTotalRows(1);
+        response.setInvalidateCache(true);
+        if (cb != null) {
+          cb.onSuccess(dataSource);
+        }
+        dataSource.processResponse(requestId,response);
       }
-      dataSource.processResponse(requestId,response);
     }
     @Override protected void onSecurityException(    ApplicationSecurityException exception){
       super.onSecurityException(exception);

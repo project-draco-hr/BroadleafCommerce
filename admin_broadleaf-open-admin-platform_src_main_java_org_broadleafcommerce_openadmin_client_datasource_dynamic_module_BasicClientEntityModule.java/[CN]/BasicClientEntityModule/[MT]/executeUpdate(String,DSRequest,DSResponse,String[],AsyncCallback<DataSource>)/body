@@ -13,13 +13,15 @@
   service.update(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
     public void onSuccess(    Entity result){
       super.onSuccess(null);
-      TreeNode record=(TreeNode)buildRecord(result,false);
-      TreeNode[] recordList=new TreeNode[]{record};
-      response.setData(recordList);
-      if (cb != null) {
-        cb.onSuccess(dataSource);
+      if (processResult(result,requestId,response,dataSource)) {
+        TreeNode record=(TreeNode)buildRecord(result,false);
+        TreeNode[] recordList=new TreeNode[]{record};
+        response.setData(recordList);
+        if (cb != null) {
+          cb.onSuccess(dataSource);
+        }
+        dataSource.processResponse(requestId,response);
       }
-      dataSource.processResponse(requestId,response);
     }
     @Override protected void onSecurityException(    ApplicationSecurityException exception){
       super.onSecurityException(exception);
