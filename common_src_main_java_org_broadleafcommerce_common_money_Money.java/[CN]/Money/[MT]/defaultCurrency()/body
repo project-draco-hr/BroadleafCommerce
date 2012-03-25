@@ -1,4 +1,7 @@
 {
+  if (CurrencyConsiderationContext.getCurrencyConsiderationContext() != null && CurrencyConsiderationContext.getCurrencyConsiderationContext().size() > 0 && CurrencyConsiderationContext.getCurrencyDeterminationService() != null) {
+    return Currency.getInstance(CurrencyConsiderationContext.getCurrencyDeterminationService().getCurrencyCode(CurrencyConsiderationContext.getCurrencyConsiderationContext()));
+  }
   Locale locale=Locale.getDefault();
   if (locale.getCountry() != null && locale.getCountry().length() == 2) {
     return Currency.getInstance(locale);
