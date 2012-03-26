@@ -19,6 +19,7 @@ formItem=new DateTimeItem();
 break;
 case DECIMAL:
 formItem=new FloatItem();
+formItem.setAttribute("type","localDecimal");
 break;
 case EMAIL:
 formItem=new TextItem();
@@ -29,12 +30,7 @@ formItem=new IntegerItem();
 break;
 case MONEY:
 formItem=new FloatItem();
-formItem.setEditorValueFormatter(new FormItemValueFormatter(){
-public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
-return value == null ? "" : NumberFormat.getFormat("0.00").format(NumberFormat.getFormat("0.00").parse(String.valueOf(value)));
-}
-}
-);
+formItem.setAttribute("type","localMoneyDecimal");
 break;
 case FOREIGN_KEY:
 formItem=new SearchFormItem();

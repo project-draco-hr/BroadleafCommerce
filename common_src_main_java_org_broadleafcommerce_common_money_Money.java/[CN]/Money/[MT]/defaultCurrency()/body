@@ -1,7 +1,13 @@
 {
+  if (CurrencyConsiderationContext.getCurrencyConsiderationContext() != null && CurrencyConsiderationContext.getCurrencyConsiderationContext().size() > 0 && CurrencyConsiderationContext.getCurrencyDeterminationService() != null) {
+    return Currency.getInstance(CurrencyConsiderationContext.getCurrencyDeterminationService().getCurrencyCode(CurrencyConsiderationContext.getCurrencyConsiderationContext()));
+  }
+  if (System.getProperty("currency.default") != null) {
+    return Currency.getInstance(System.getProperty("currency.default"));
+  }
   Locale locale=Locale.getDefault();
   if (locale.getCountry() != null && locale.getCountry().length() == 2) {
     return Currency.getInstance(locale);
   }
-  return Currency.getInstance(System.getProperty("currency.default","USD"));
+  return Currency.getInstance("USD");
 }

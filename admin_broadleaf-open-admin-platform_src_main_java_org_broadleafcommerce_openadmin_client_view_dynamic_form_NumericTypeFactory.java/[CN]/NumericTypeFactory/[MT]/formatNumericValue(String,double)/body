@@ -1,0 +1,17 @@
+{
+  String response=formatMap.get(name).format(value);
+  if (fieldTypeMap.get(name).name().equals(SupportedFieldType.MONEY.name())) {
+    String decimalSeparator=LocaleInfo.getCurrentLocale().getNumberConstants().decimalSeparator();
+    int pos=response.indexOf(decimalSeparator);
+    if (pos >= 0) {
+      String decimal=response.substring(pos + 1,response.length());
+      for (int j=decimal.length(); j < 2; j++) {
+        response+="0";
+      }
+    }
+ else {
+      response+=decimalSeparator + "00";
+    }
+  }
+  return response;
+}
