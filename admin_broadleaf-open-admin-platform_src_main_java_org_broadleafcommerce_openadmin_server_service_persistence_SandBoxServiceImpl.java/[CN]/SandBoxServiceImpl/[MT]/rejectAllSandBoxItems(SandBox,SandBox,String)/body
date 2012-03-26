@@ -1,7 +1,8 @@
 {
   List<SandBoxItem> items=new ArrayList<SandBoxItem>();
-  for (  SandBoxItem item : sandBox.getSandBoxItems()) {
-    if (item.getOriginalSandBox().equals(originalSandBox)) {
+  List<SandBoxItem> currentItems=sandBoxItemDao.retrieveSandBoxItemsForSandbox(sandBox);
+  for (  SandBoxItem item : currentItems) {
+    if (item.getOriginalSandBoxId().equals(originalSandBox.getId())) {
       items.add(item);
     }
   }

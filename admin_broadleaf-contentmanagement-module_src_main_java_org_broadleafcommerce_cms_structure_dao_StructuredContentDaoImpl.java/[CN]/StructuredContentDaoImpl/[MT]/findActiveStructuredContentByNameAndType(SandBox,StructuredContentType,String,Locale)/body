@@ -1,20 +1,19 @@
 {
   String queryName=null;
+  final Query query;
   if (sandBox == null) {
-    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME";
+    query=em.createNamedQuery("BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME");
   }
  else   if (SandBoxType.PRODUCTION.equals(sandBox)) {
-    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME_AND_PRODUCTION_SANDBOX";
+    query=em.createNamedQuery("BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME_AND_PRODUCTION_SANDBOX");
+    query.setParameter("sandbox",sandBox);
   }
  else {
-    queryName="BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME_AND_USER_SANDBOX";
+    query=em.createNamedQuery("BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME_AND_USER_SANDBOX");
+    query.setParameter("sandboxId",sandBox.getId());
   }
-  Query query=em.createNamedQuery(queryName);
   query.setParameter("contentType",type);
   query.setParameter("contentName",name);
   query.setParameter("locale",locale);
-  if (sandBox != null) {
-    query.setParameter("sandbox",sandBox);
-  }
   return query.getResultList();
 }

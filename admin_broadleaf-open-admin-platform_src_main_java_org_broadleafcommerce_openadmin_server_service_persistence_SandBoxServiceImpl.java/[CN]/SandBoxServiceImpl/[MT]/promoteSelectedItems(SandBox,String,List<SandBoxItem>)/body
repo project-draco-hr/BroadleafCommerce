@@ -6,9 +6,14 @@
     if (destinationSandBox == null || SandBoxType.PRODUCTION.equals(destinationSandBox)) {
       sandBoxItem.setArchivedFlag(true);
     }
-    sandBoxItem.setSandBox(destinationSandBox);
-    if (sandBoxItem.getOriginalSandBox() == null) {
-      sandBoxItem.setOriginalSandBox(fromSandBox);
+    if (destinationSandBox != null) {
+      sandBoxItem.setSandBoxId(destinationSandBox.getId());
+    }
+ else {
+      sandBoxItem.setSandBoxId(null);
+    }
+    if (sandBoxItem.getOriginalSandBoxId() == null) {
+      sandBoxItem.setOriginalSandBoxId(fromSandBox.getId());
     }
     sandBoxItem.addSandBoxAction(action);
     for (    SandBoxItemListener listener : sandboxItemListeners) {

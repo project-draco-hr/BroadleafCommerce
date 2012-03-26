@@ -1,17 +1,26 @@
 {
   for (  SandBoxItem item : sandBoxItems) {
-    if (item.getOriginalSandBox() == null) {
+    if (item.getOriginalSandBoxId() == null) {
       throw new IllegalArgumentException("Cannot reject a SandBoxItem whose originalSandBox member is null");
     }
   }
   SandBoxAction action=createSandBoxAction(SandBoxActionType.REJECT,comment);
+  SandBox originalSandBox=null;
   for (  SandBoxItem sandBoxItem : sandBoxItems) {
     action.addSandBoxItem(sandBoxItem);
+    if (sandBoxItem.getOriginalSandBoxId() != null) {
+      if (originalSandBox != null && !originalSandBox.getId().equals(sandBoxItem.getOriginalItemId())) {
+        originalSandBox=sandBoxDao.retrieve(sandBoxItem.getOriginalItemId());
+      }
+    }
+ else {
+      originalSandBox=null;
+    }
     for (    SandBoxItemListener listener : sandboxItemListeners) {
-      listener.itemRejected(sandBoxItem,sandBoxItem.getOriginalSandBox());
+      listener.itemRejected(sandBoxItem,originalSandBox);
     }
     sandBoxItem.addSandBoxAction(action);
-    sandBoxItem.setSandBox(sandBoxItem.getOriginalSandBox());
-    sandBoxItem.setOriginalSandBox(null);
+    sandBoxItem.setSandBoxId(sandBoxItem.getOriginalSandBoxId());
+    sandBoxItem.setOriginalSandBoxId(null);
   }
 }

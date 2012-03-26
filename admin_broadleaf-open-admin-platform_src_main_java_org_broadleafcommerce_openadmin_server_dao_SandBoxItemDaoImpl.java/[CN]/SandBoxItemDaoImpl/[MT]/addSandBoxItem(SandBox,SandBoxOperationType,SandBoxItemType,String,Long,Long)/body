@@ -4,7 +4,7 @@
   }
   SandBoxItemImpl sandBoxItem=new SandBoxItemImpl();
   sandBoxItem.setSandBoxOperationType(operationType);
-  sandBoxItem.setSandBox(sbox);
+  sandBoxItem.setSandBoxId(sbox.getId());
   sandBoxItem.setArchivedFlag(false);
   sandBoxItem.setDescription(description);
   sandBoxItem.setOriginalItemId(originalId);
@@ -14,6 +14,5 @@
   action.setActionType(SandBoxActionType.EDIT);
   sandBoxItem.addSandBoxAction(action);
   action.addSandBoxItem(sandBoxItem);
-  sbox.getSandBoxItems().add(sandBoxItem);
-  em.merge(sbox);
+  em.merge(sandBoxItem);
 }
