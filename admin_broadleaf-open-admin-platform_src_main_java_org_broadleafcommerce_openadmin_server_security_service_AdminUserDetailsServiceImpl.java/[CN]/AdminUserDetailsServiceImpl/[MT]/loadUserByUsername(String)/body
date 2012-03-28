@@ -1,6 +1,6 @@
 {
   AdminUser adminUser=adminSecurityService.readAdminUserByUserName(username);
-  if (adminUser == null) {
+  if (adminUser == null || adminUser.getActiveStatusFlag() == null || !adminUser.getActiveStatusFlag()) {
     throw new UsernameNotFoundException("The user was not found");
   }
   List<GrantedAuthority> authorities=new ArrayList<GrantedAuthority>();
