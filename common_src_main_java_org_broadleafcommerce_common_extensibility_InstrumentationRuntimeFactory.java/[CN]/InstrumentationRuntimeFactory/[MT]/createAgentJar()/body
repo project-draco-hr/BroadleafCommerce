@@ -1,0 +1,12 @@
+{
+  File file=File.createTempFile(InstrumentationRuntimeFactory.class.getName(),".jar");
+  file.deleteOnExit();
+  ZipOutputStream zout=new ZipOutputStream(new FileOutputStream(file));
+  zout.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+  PrintWriter writer=new PrintWriter(new OutputStreamWriter(zout));
+  writer.println("Agent-Class: " + InstrumentationRuntimeFactory.class.getName());
+  writer.println("Can-Redefine-Classes: true");
+  writer.println("Can-Retransform-Classes: " + Boolean.toString(!isIBM));
+  writer.close();
+  return file.getAbsolutePath();
+}

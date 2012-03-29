@@ -1,0 +1,95 @@
+{
+  if (omitClassInfo.isEmpty() && addClassInfo.isEmpty()) {
+    return null;
+  }
+  String convertedClassName=className.replace('/','.');
+  try {
+    HashSet<String> omitMethodNames=omitClassInfo.get(convertedClassName);
+    HashSet<String> addMethodNames=omitClassInfo.get(convertedClassName);
+    if ((omitMethodNames == null || omitMethodNames.isEmpty()) && (addMethodNames == null || addMethodNames.isEmpty())) {
+      return null;
+    }
+    ClassFile classFile=new ClassFile(new DataInputStream(new ByteArrayInputStream(classfileBuffer)));
+    ConstPool constantPool=classFile.getConstPool();
+    if (omitMethodNames != null) {
+      for (      String methodName : omitMethodNames) {
+        MethodInfo methodInfo=resolveMethodInfo(classFile,methodName);
+        if (methodInfo == null) {
+          LOG.error("Error finding property of method associated with name " + methodName + " in class "+ convertedClassName+ ". Ignoring.");
+          continue;
+        }
+        AnnotationsAttribute annotationsAttribute=new AnnotationsAttribute(constantPool,AnnotationsAttribute.visibleTag);
+        Annotation transientAnnotation=new Annotation(XmlTransient.class.getName(),constantPool);
+        annotationsAttribute.addAnnotation(transientAnnotation);
+        List<?> methodAttributes=methodInfo.getAttributes();
+        Iterator<?> itr=methodAttributes.iterator();
+        while (itr.hasNext()) {
+          Object object=itr.next();
+          if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+            AnnotationsAttribute attr=(AnnotationsAttribute)object;
+            Annotation[] items=attr.getAnnotations();
+            for (            Annotation annotation : items) {
+              String typeName=annotation.getTypeName();
+              if (!typeName.startsWith("javax.xml.bind.annotation")) {
+                annotationsAttribute.addAnnotation(annotation);
+              }
+            }
+            itr.remove();
+          }
+        }
+        methodInfo.getAttributes().add(annotationsAttribute);
+      }
+    }
+    if (addMethodNames != null) {
+      for (      String methodName : addMethodNames) {
+        MethodInfo methodInfo=resolveMethodInfo(classFile,methodName);
+        if (methodInfo == null) {
+          LOG.error("Error finding property of method associated with name " + methodName + " in class "+ convertedClassName+ ". Ignoring.");
+          continue;
+        }
+        AnnotationsAttribute annotationsAttribute=new AnnotationsAttribute(constantPool,AnnotationsAttribute.visibleTag);
+        List<?> methodAttributes=methodInfo.getAttributes();
+        Iterator<?> itr=methodAttributes.iterator();
+        while (itr.hasNext()) {
+          Object object=itr.next();
+          if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+            AnnotationsAttribute attr=(AnnotationsAttribute)object;
+            Annotation[] items=attr.getAnnotations();
+            boolean foundXmlDescriptors=false;
+            for (            Annotation annotation : items) {
+              String typeName=annotation.getTypeName();
+              if (typeName.startsWith("javax.xml.bind.annotation")) {
+                if (!typeName.equals(XmlTransient.class.getName())) {
+                  foundXmlDescriptors=true;
+                  annotationsAttribute.addAnnotation(annotation);
+                }
+              }
+ else {
+                annotationsAttribute.addAnnotation(annotation);
+              }
+            }
+            itr.remove();
+            if (!foundXmlDescriptors) {
+              if (aClass.getMethod(methodName).getReturnType().isAssignableFrom(Collection.class)) {
+                Annotation elementAnnotation=new Annotation(XmlElementWrapper.class.getName(),constantPool);
+                annotationsAttribute.addAnnotation(elementAnnotation);
+              }
+              Annotation elementAnnotation=new Annotation(XmlElement.class.getName(),constantPool);
+              annotationsAttribute.addAnnotation(elementAnnotation);
+            }
+          }
+        }
+        methodInfo.getAttributes().add(annotationsAttribute);
+      }
+    }
+    ByteArrayOutputStream bos=new ByteArrayOutputStream();
+    DataOutputStream os=new DataOutputStream(bos);
+    classFile.write(os);
+    os.close();
+    return bos.toByteArray();
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to convert class " + convertedClassName + ", to modify JAXB annotations",e);
+    throw new IllegalClassFormatException("Unable to convert " + convertedClassName + ", to modify JAXB annotations"+ e.getMessage());
+  }
+}

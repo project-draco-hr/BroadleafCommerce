@@ -1,0 +1,15 @@
+{
+  try {
+    RuntimeMXBean runtime=ManagementFactory.getRuntimeMXBean();
+    String pid=runtime.getName();
+    if (pid.contains("@"))     pid=pid.substring(0,pid.indexOf("@"));
+    Object vm=vmClass.getMethod("attach",new Class<?>[]{String.class}).invoke(null,pid);
+    vmClass.getMethod("loadAgent",new Class[]{String.class}).invoke(vm,agentJar);
+    vmClass.getMethod("detach",new Class[]{}).invoke(vm);
+  }
+ catch (  Throwable t) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Problem loading the agent",t);
+    }
+  }
+}

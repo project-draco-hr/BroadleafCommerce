@@ -1,0 +1,30 @@
+{
+  File agentJarFile=null;
+  CodeSource cs=InstrumentationRuntimeFactory.class.getProtectionDomain().getCodeSource();
+  if (cs != null) {
+    URL loc=cs.getLocation();
+    if (loc != null) {
+      agentJarFile=new File(loc.getFile());
+    }
+  }
+  boolean createJar=false;
+  if (cs == null || agentJarFile == null || agentJarFile.isDirectory()) {
+    createJar=true;
+  }
+ else   if (!validateAgentJarManifest(agentJarFile,InstrumentationRuntimeFactory.class.getName())) {
+    createJar=true;
+  }
+  String agentJar;
+  if (createJar) {
+    try {
+      agentJar=createAgentJar();
+    }
+ catch (    IOException ioe) {
+      agentJar=null;
+    }
+  }
+ else {
+    agentJar=agentJarFile.getAbsolutePath();
+  }
+  return agentJar;
+}
