@@ -43,5 +43,5 @@ catch (        PricingException e) {
   }
   cartSummary.setOrderDiscounts(currentCartOrder.getTotalAdjustmentsValue().getAmount());
   model.addAttribute("cartSummary",cartSummary);
-  return cartView;
+  return cartViewRedirect ? "redirect:" + cartView : cartView;
 }

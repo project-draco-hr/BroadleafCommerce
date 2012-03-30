@@ -1,0 +1,12 @@
+{
+  Order currentCartOrder=retrieveCartOrder(request,model);
+  try {
+    currentCartOrder=cartService.removeOfferCode(currentCartOrder,offerService.lookupOfferCodeByCode(orderOfferCode),true);
+  }
+ catch (  PricingException e) {
+    model.addAttribute("error","remove");
+    LOG.error("An error occurred while removing a promo from the cart: (" + orderOfferCode + ")",e);
+  }
+  cartSummary.setOrderDiscounts(currentCartOrder.getTotalAdjustmentsValue().getAmount());
+  return "redirect:/basket/viewCart.htm";
+}
