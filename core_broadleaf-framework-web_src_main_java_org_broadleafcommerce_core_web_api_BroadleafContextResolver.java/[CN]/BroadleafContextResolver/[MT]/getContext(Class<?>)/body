@@ -1,0 +1,14 @@
+{
+  if (domainImplementationNames.contains(type.getName())) {
+    return context;
+  }
+  try {
+    if (ec.lookupEntityClass(type.getName()) != null) {
+      return context;
+    }
+    return null;
+  }
+ catch (  BeansException e) {
+    return null;
+  }
+}

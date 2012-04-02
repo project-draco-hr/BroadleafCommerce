@@ -1,0 +1,20 @@
+{
+  String[] entityBeans=ec.getEntityBeanNames();
+  Class<?>[] classes=new Class<?>[entityBeans.length];
+  for (int i=0; i < classes.length; i++) {
+    classes[i]=ec.lookupEntityClass(entityBeans[i]);
+  }
+  ArrayList<Class<?>> xmlClasses=new ArrayList<Class<?>>();
+  for (  Class<?> clazz : classes) {
+    if (clazz.isAnnotationPresent(XmlRootElement.class) || clazz.isAnnotationPresent(XmlType.class)) {
+      xmlClasses.add(clazz);
+      domainImplementationNames.add(clazz.getName());
+    }
+  }
+  try {
+    context=JAXBContext.newInstance(xmlClasses.toArray(new Class<?>[xmlClasses.size()]));
+  }
+ catch (  JAXBException e) {
+    throw new RuntimeException(e);
+  }
+}
