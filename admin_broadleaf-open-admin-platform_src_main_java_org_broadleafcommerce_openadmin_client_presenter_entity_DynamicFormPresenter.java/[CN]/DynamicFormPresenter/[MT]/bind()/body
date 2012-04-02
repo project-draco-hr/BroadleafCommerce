@@ -4,9 +4,17 @@
       if (event.isLeftButtonDown()) {
         DSRequest requestProperties=new DSRequest();
         requestProperties.setAttribute("dirtyValues",display.getFormOnlyDisplay().getForm().getChangedValues());
-        display.getFormOnlyDisplay().getForm().saveData(null,requestProperties);
-        display.getSaveButton().disable();
-        display.getRefreshButton().disable();
+        if (display.getFormOnlyDisplay().getForm().validate()) {
+          display.getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+            public void execute(            DSResponse response,            Object rawData,            DSRequest request){
+              if (response.getStatus() != RPCResponse.STATUS_VALIDATION_ERROR) {
+                display.getSaveButton().disable();
+                display.getRefreshButton().disable();
+              }
+            }
+          }
+,requestProperties);
+        }
       }
     }
   }
