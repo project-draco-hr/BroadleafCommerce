@@ -1,0 +1,12 @@
+{
+  for (  Long offerId : offerIds) {
+    OfferAudit audit=offerAuditDao.create();
+    if (order.getCustomer() != null) {
+      audit.setCustomerId(order.getCustomer().getId());
+    }
+    audit.setOfferId(offerId);
+    audit.setOrderId(order.getId());
+    audit.setRedeemedDate(SystemTime.asDate());
+    offerAuditDao.save(audit);
+  }
+}

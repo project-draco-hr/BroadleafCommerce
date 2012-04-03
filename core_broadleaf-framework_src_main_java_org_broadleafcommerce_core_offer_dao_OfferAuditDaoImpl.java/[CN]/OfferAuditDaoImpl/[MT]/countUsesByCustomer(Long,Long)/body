@@ -1,0 +1,11 @@
+{
+  CriteriaBuilder cb=em.getCriteriaBuilder();
+  CriteriaQuery<Long> cq=cb.createQuery(Long.class);
+  cq.select(cb.count(cq.from(OfferAuditImpl.class)));
+  Root<OfferAuditImpl> from=cq.from(OfferAuditImpl.class);
+  Predicate customerIdClause=cb.equal(from.get("customerId"),customerId);
+  Predicate offerIdClause=cb.equal(from.get("offerId"),offerId);
+  cq.where(cb.and(customerIdClause,offerIdClause));
+  Long result=em.createQuery(cq).getSingleResult();
+  return result;
+}

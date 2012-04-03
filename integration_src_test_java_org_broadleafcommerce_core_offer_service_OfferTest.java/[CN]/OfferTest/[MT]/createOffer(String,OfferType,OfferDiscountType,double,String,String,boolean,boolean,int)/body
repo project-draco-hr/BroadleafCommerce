@@ -1,22 +1,3 @@
 {
-  Offer offer=offerDao.create();
-  offer.setName(offerName);
-  offer.setStartDate(SystemTime.asDate());
-  Calendar calendar=Calendar.getInstance();
-  calendar.add(Calendar.DATE,-1);
-  offer.setStartDate(calendar.getTime());
-  calendar.add(Calendar.DATE,2);
-  offer.setEndDate(calendar.getTime());
-  offer.setType(offerType);
-  offer.setDiscountType(discountType);
-  offer.setValue(BigDecimal.valueOf(value));
-  offer.setDeliveryType(OfferDeliveryType.CODE);
-  offer.setStackable(stackable);
-  offer.setAppliesToOrderRules(orderRule);
-  offer.setAppliesToCustomerRules(customerRule);
-  offer.setCombinableWithOtherOffers(combinable);
-  offer.setPriority(priority);
-  offer=offerService.save(offer);
-  offer.setMaxUses(50);
-  return offer;
+  return createOfferUtility.createOffer(offerName,offerType,discountType,value,customerRule,orderRule,stackable,combinable,priority);
 }
