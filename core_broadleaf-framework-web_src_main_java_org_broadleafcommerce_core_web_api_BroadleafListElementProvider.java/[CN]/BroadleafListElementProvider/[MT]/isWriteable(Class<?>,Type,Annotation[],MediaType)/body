@@ -1,0 +1,24 @@
+{
+  if (Collection.class.isAssignableFrom(type)) {
+    final ParameterizedType pt=(ParameterizedType)genericType;
+    if (pt.getActualTypeArguments().length > 1) {
+      LOG.info("A collection with multiple parameterized types is unsupported");
+      return false;
+    }
+    final Type ta=pt.getActualTypeArguments()[0];
+    try {
+      Class<?> broadleafEntityClass=ec.lookupEntityClass(((Class<?>)ta).getName());
+      if (broadleafEntityClass != null && (broadleafEntityClass.isAnnotationPresent(XmlRootElement.class) || broadleafEntityClass.isAnnotationPresent(XmlType.class))) {
+        return true;
+      }
+ else {
+        LOG.info(broadleafEntityClass.getName() + " is not annotated with JAXB annotations, skipping serialization");
+        return false;
+      }
+    }
+ catch (    NoSuchBeanDefinitionException e) {
+      LOG.debug("Could not find a mapping for " + ((Class<?>)ta).getName());
+    }
+  }
+  return false;
+}
