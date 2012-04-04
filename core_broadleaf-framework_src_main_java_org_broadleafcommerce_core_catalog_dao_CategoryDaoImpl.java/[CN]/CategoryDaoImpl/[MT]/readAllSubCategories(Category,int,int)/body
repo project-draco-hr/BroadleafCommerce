@@ -1,0 +1,7 @@
+{
+  TypedQuery<Category> query=em.createNamedQuery("BC_READ_ALL_SUBCATEGORIES",Category.class);
+  query.setParameter("defaultParentCategory",category);
+  query.setFirstResult(offset);
+  query.setMaxResults(limit);
+  return query.getResultList();
+}

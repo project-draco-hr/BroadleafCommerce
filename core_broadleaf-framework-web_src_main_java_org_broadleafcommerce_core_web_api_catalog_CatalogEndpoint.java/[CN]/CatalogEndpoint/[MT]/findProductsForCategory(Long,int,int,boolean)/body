@@ -1,0 +1,10 @@
+{
+  Category category=catalogService.findCategoryById(id);
+  if (category != null) {
+    if (activeOnly) {
+      return catalogService.findActiveProductsByCategory(category,new Date(),limit,offset);
+    }
+    return catalogService.findProductsForCategory(category,limit,offset);
+  }
+  return null;
+}

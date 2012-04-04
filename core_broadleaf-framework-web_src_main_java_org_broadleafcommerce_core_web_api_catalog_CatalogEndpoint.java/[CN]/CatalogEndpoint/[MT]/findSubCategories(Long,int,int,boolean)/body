@@ -1,0 +1,10 @@
+{
+  Category category=catalogService.findCategoryById(id);
+  if (category != null) {
+    if (active) {
+      return catalogService.findActiveSubCategoriesByCategory(category,limit,offset);
+    }
+    return catalogService.findAllSubCategories(category,limit,offset);
+  }
+  return null;
+}
