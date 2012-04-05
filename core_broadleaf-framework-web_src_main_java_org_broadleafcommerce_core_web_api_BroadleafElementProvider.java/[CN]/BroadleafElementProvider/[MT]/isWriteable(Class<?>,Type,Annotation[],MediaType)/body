@@ -1,4 +1,7 @@
 {
+  if (!mediaType.isCompatible(MediaType.APPLICATION_XML_TYPE) && !mediaType.isCompatible(MediaType.TEXT_XML_TYPE) && !mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE)) {
+    return false;
+  }
   if (Collection.class.isAssignableFrom(type)) {
     final ParameterizedType pt=(ParameterizedType)genericType;
     if (pt.getActualTypeArguments().length > 1) {
@@ -23,6 +26,25 @@
  catch (    NoSuchBeanDefinitionException e) {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Could not find a mapping for " + ((Class<?>)ta).getName());
+      }
+    }
+  }
+ else {
+    try {
+      Class<?> broadleafEntityClass=ec.lookupEntityClass(type.getName());
+      if (broadleafEntityClass != null && (broadleafEntityClass.isAnnotationPresent(XmlRootElement.class) || broadleafEntityClass.isAnnotationPresent(XmlType.class))) {
+        return true;
+      }
+ else {
+        if (LOG.isInfoEnabled()) {
+          LOG.info(broadleafEntityClass.getName() + " is not annotated with JAXB annotations, skipping serialization");
+        }
+        return false;
+      }
+    }
+ catch (    NoSuchBeanDefinitionException e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Could not find a mapping for " + type.getName());
       }
     }
   }
