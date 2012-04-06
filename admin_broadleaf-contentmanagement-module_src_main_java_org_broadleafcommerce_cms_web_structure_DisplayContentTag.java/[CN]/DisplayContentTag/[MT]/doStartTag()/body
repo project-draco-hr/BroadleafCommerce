@@ -5,15 +5,21 @@
   initServices();
   List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
+  assert(contentName != null && !"".equals(contentName) && structuredContentType != null);
   if (locale == null) {
     locale=(Locale)request.getAttribute(BroadleafProcessURLFilter.LOCALE_VAR);
   }
   int cnt=(count == null) ? Integer.MAX_VALUE : count;
-  if (contentName == null || "".equals(contentName)) {
-    contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters,isSecure(request));
+  if (structuredContentType == null) {
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,cnt,mvelParameters,isSecure(request));
   }
  else {
-    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters,isSecure(request));
+    if (contentName == null || "".equals(contentName)) {
+      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters,isSecure(request));
+    }
+ else {
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters,isSecure(request));
+    }
   }
   pageContext.setAttribute(getNumResultsVar(),contentItems.size());
   if (contentItems.size() > 0) {

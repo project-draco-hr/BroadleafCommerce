@@ -1,0 +1,22 @@
+{
+  List<StructuredContent> sandBoxContentList=null;
+  String cacheKey=buildNameKey(getProductionSandBox(sandBox),locale,"any",contentName);
+  cacheKey=cacheKey + "-" + secure;
+  List<StructuredContentDTO> productionContentDTOList=getStructuredContentListFromCache(cacheKey);
+  if (productionContentDTOList == null) {
+    List<StructuredContent> productionContentList=structuredContentDao.findActiveStructuredContentByName(getProductionSandBox(sandBox),contentName,locale);
+    productionContentDTOList=buildStructuredContentDTOList(productionContentList,secure);
+    if (productionContentDTOList != null) {
+      addStructuredContentListToCache(cacheKey,productionContentDTOList);
+    }
+  }
+  final List<StructuredContentDTO> contentList;
+  if (!isProductionSandBox(sandBox)) {
+    sandBoxContentList=structuredContentDao.findActiveStructuredContentByName(sandBox,contentName,locale);
+    contentList=mergeContent(productionContentDTOList,sandBoxContentList,secure);
+  }
+ else {
+    contentList=productionContentDTOList;
+  }
+  return evaluateAndPriortizeContent(contentList,count,ruleDTOs);
+}
