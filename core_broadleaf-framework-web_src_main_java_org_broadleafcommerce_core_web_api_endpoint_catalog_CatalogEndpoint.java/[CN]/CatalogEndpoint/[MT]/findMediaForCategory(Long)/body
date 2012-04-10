@@ -3,12 +3,10 @@
   if (category != null) {
     ArrayList<MediaWrapper> out=new ArrayList<MediaWrapper>();
     Map<String,Media> media=category.getCategoryMedia();
-    if (media != null) {
-      for (      Media med : media.values()) {
-        MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
-        wrapper.wrap(med);
-        out.add(wrapper);
-      }
+    for (    Media med : media.values()) {
+      MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+      wrapper.wrap(med);
+      out.add(wrapper);
     }
     return out;
   }
