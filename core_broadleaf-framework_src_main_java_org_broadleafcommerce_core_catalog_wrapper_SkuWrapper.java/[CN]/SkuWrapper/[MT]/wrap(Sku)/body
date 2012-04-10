@@ -1,0 +1,17 @@
+{
+  this.id=model.getId();
+  this.activeStartDate=model.getActiveStartDate();
+  this.activeEndDate=model.getActiveEndDate();
+  this.name=model.getName();
+  this.description=model.getDescription();
+  this.retailPrice=model.getRetailPrice();
+  this.salePrice=model.getSalePrice();
+  if (model.getSkuMedia() != null && model.getSkuMedia().size() > 0) {
+    media=new ArrayList<MediaWrapper>();
+    for (    Media med : model.getSkuMedia().values()) {
+      MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+      wrapper.wrap(med);
+      media.add(wrapper);
+    }
+  }
+}
