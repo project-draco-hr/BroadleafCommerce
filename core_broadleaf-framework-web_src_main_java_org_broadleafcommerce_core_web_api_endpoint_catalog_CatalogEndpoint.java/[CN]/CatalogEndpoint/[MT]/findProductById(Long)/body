@@ -1,3 +1,9 @@
 {
-  return catalogService.findProductById(id);
+  Product product=catalogService.findProductById(id);
+  if (product != null) {
+    ProductWrapper wrapper=(ProductWrapper)entityConfiguration.createEntityInstance(ProductWrapper.class.getName());
+    wrapper.wrap(product);
+    return wrapper;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }

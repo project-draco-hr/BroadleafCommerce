@@ -1,10 +1,16 @@
 {
   Category category=catalogService.findCategoryById(id);
   if (category != null) {
+    List<Category> categories=null;
+    CategoriesWrapper wrapper=(CategoriesWrapper)entityConfiguration.createEntityInstance(CategoriesWrapper.class.getName());
     if (active) {
-      return catalogService.findActiveSubCategoriesByCategory(category,limit,offset);
+      categories=catalogService.findActiveSubCategoriesByCategory(category,limit,offset);
     }
-    return catalogService.findAllSubCategories(category,limit,offset);
+ else {
+      categories=catalogService.findAllSubCategories(category,limit,offset);
+    }
+    wrapper.wrap(categories);
+    return wrapper;
   }
-  return null;
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }

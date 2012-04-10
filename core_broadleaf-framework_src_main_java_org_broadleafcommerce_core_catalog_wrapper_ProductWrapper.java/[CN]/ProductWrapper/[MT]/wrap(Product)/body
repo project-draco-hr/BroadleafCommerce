@@ -7,16 +7,4 @@
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
-  if (model.getProductMedia() != null && model.getProductMedia().size() > 0) {
-    productMedia=new ArrayList<MediaWrapper>();
-    for (    Media media : model.getProductMedia().values()) {
-      MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
-      wrapper.wrap(media);
-      productMedia.add(wrapper);
-    }
-  }
-  if (model.getDefaultCategory() != null) {
-    defaultCategory=(CategoryWrapper)entityConfiguration.createEntityInstance(CategoryWrapper.class.getName());
-    defaultCategory.wrap(model.getDefaultCategory());
-  }
 }

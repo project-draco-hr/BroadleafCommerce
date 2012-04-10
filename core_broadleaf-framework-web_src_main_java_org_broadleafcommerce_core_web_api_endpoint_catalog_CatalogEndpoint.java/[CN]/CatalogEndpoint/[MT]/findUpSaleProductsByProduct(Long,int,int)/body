@@ -1,7 +1,16 @@
 {
   Product product=catalogService.findProductById(id);
   if (product != null) {
-    return product.getUpSaleProducts();
+    List<RelatedProductWrapper> out=new ArrayList<RelatedProductWrapper>();
+    List<RelatedProduct> relatedProds=product.getUpSaleProducts();
+    if (relatedProds != null) {
+      for (      RelatedProduct prod : relatedProds) {
+        RelatedProductWrapper wrapper=(RelatedProductWrapper)entityConfiguration.createEntityInstance(RelatedProductWrapper.class.getName());
+        wrapper.wrap(prod);
+        out.add(wrapper);
+      }
+    }
+    return out;
   }
-  return null;
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }

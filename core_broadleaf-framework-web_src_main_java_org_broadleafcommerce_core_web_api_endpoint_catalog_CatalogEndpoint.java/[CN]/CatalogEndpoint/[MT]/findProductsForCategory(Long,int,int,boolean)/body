@@ -1,10 +1,22 @@
 {
   Category category=catalogService.findCategoryById(id);
   if (category != null) {
+    List<Product> products=null;
+    ArrayList<ProductWrapper> out=new ArrayList<ProductWrapper>();
     if (activeOnly) {
-      return catalogService.findActiveProductsByCategory(category,new Date(),limit,offset);
+      products=catalogService.findActiveProductsByCategory(category,new Date(),limit,offset);
     }
-    return catalogService.findProductsForCategory(category,limit,offset);
+ else {
+      products=catalogService.findProductsForCategory(category,limit,offset);
+    }
+    if (products != null) {
+      for (      Product product : products) {
+        ProductWrapper wrapper=(ProductWrapper)entityConfiguration.createEntityInstance(ProductWrapper.class.getName());
+        wrapper.wrap(product);
+        out.add(wrapper);
+      }
+    }
+    return out;
   }
-  return null;
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }

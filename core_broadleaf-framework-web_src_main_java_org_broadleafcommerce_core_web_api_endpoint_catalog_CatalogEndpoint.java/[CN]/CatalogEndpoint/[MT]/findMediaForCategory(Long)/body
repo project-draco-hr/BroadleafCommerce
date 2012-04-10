@@ -1,7 +1,16 @@
 {
   Category category=catalogService.findCategoryById(id);
   if (category != null) {
-    return category.getCategoryMedia();
+    ArrayList<MediaWrapper> out=new ArrayList<MediaWrapper>();
+    Map<String,Media> media=category.getCategoryMedia();
+    if (media != null) {
+      for (      Media med : media.values()) {
+        MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+        wrapper.wrap(med);
+        out.add(wrapper);
+      }
+    }
+    return out;
   }
-  return null;
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }

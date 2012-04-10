@@ -4,15 +4,4 @@
   this.description=category.getDescription();
   this.activeStartDate=category.getActiveStartDate();
   this.activeEndDate=category.getActiveEndDate();
-  if (category.getCategoryMedia() != null && category.getCategoryMedia().size() > 0) {
-    media=new ArrayList<MediaWrapper>();
-    Collection<Media> medias=category.getCategoryMedia().values();
-    for (    Media med : medias) {
-      MediaWrapper mediaWrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
-      mediaWrapper.wrap(med);
-      media.add(mediaWrapper);
-    }
-  }
-  parentCategory=(CategoryWrapper)entityConfiguration.createEntityInstance(CategoryWrapper.class.getName());
-  parentCategory.wrap(category.getDefaultParentCategory());
 }

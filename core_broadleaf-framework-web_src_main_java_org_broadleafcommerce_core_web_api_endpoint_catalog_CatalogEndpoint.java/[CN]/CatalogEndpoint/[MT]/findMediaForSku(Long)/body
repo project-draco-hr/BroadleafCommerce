@@ -1,7 +1,15 @@
 {
   Sku sku=catalogService.findSkuById(id);
   if (sku != null) {
-    return sku.getSkuMedia();
+    List<MediaWrapper> medias=new ArrayList<MediaWrapper>();
+    if (sku.getSkuMedia() != null && !sku.getSkuMedia().isEmpty()) {
+      for (      Media media : sku.getSkuMedia().values()) {
+        MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+        wrapper.wrap(media);
+        medias.add(wrapper);
+      }
+    }
+    return medias;
   }
-  return null;
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
 }
