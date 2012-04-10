@@ -1,6 +1,6 @@
 {
   T bean=(T)applicationcontext.getBean(beanId);
-  if (bean.getClass().isAssignableFrom(ApplicationContextAware.class)) {
+  if (ApplicationContextAware.class.isAssignableFrom(bean.getClass())) {
     ((ApplicationContextAware)bean).setApplicationContext(parentApplicationContext);
   }
   if (LOG.isDebugEnabled()) {
