@@ -1,5 +1,8 @@
 {
   T bean=(T)applicationcontext.getBean(beanId);
+  if (bean.getClass().isAssignableFrom(ApplicationContextAware.class)) {
+    ((ApplicationContextAware)bean).setApplicationContext(parentApplicationContext);
+  }
   if (LOG.isDebugEnabled()) {
     LOG.debug("Returning instance of class (" + bean.getClass().getName() + ") configured with bean id ("+ beanId+ ')');
   }
