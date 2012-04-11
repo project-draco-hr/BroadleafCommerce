@@ -1,15 +1,11 @@
 {
-  String[] entityBeans=ec.getEntityBeanNames();
-  Class<?>[] classes=new Class<?>[entityBeans.length];
-  for (int i=0; i < classes.length; i++) {
-    classes[i]=ec.lookupEntityClass(entityBeans[i]);
+  apiWrappers=applicationContext.getBeansWithAnnotation(XmlRootElement.class);
+  Set<String> keySet=apiWrappers.keySet();
+  Class<?>[] classes=new Class<?>[keySet.size()];
+  int count=0;
+  for (  String key : keySet) {
+    classes[count]=apiWrappers.get(key).getClass();
+    count++;
   }
-  ArrayList<Class<?>> xmlClasses=new ArrayList<Class<?>>();
-  for (  Class<?> clazz : classes) {
-    if (clazz.isAnnotationPresent(XmlRootElement.class) || clazz.isAnnotationPresent(XmlType.class)) {
-      xmlClasses.add(clazz);
-      entityImplementationNames.add(clazz.getName());
-    }
-  }
-  context=JAXBContext.newInstance(xmlClasses.toArray(new Class<?>[xmlClasses.size()]));
+  context=JAXBContext.newInstance(classes);
 }
