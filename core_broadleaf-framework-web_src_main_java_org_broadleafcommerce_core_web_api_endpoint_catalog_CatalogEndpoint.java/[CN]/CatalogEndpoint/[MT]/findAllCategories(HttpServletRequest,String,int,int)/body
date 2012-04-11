@@ -1,0 +1,12 @@
+{
+  List<Category> categories;
+  if (name != null) {
+    categories=catalogService.findCategoriesByName(name,limit,offset);
+  }
+ else {
+    categories=catalogService.findAllCategories(limit,offset);
+  }
+  CategoriesWrapper wrapper=(CategoriesWrapper)entityConfiguration.createEntityInstance(CategoriesWrapper.class.getName());
+  wrapper.wrap(categories,request);
+  return wrapper;
+}

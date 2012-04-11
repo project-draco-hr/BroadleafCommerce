@@ -5,7 +5,7 @@
     if (sku.getSkuMedia() != null && !sku.getSkuMedia().isEmpty()) {
       for (      Media media : sku.getSkuMedia().values()) {
         MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
-        wrapper.wrap(media);
+        wrapper.wrap(media,request);
         if (wrapper.isAllowOverrideUrl()) {
           wrapper.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
         }

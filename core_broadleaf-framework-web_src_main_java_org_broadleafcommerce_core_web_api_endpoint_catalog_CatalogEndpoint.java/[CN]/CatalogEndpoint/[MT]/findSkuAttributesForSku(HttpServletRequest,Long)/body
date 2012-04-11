@@ -1,0 +1,15 @@
+{
+  Sku sku=catalogService.findSkuById(id);
+  if (sku != null) {
+    ArrayList<SkuAttributeWrapper> out=new ArrayList<SkuAttributeWrapper>();
+    if (sku.getSkuAttributes() != null) {
+      for (      SkuAttribute attribute : sku.getSkuAttributes()) {
+        SkuAttributeWrapper wrapper=(SkuAttributeWrapper)entityConfiguration.createEntityInstance(SkuAttributeWrapper.class.getName());
+        wrapper.wrap(attribute,request);
+        out.add(wrapper);
+      }
+    }
+    return out;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
+}

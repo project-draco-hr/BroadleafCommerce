@@ -1,0 +1,9 @@
+{
+  Category cat=catalogService.findCategoryById(id);
+  if (cat != null) {
+    CategoryWrapper wrapper=(CategoryWrapper)entityConfiguration.createEntityInstance(CategoryWrapper.class.getName());
+    wrapper.wrap(cat,request);
+    return wrapper;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
+}

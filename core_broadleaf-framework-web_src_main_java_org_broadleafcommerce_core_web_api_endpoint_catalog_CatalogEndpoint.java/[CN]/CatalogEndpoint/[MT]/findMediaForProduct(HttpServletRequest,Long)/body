@@ -6,7 +6,7 @@
     if (media != null) {
       for (      Media med : media.values()) {
         MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
-        wrapper.wrap(med);
+        wrapper.wrap(med,request);
         if (wrapper.isAllowOverrideUrl()) {
           wrapper.setUrl(staticAssetService.convertAssetPath(med.getUrl(),request.getContextPath(),request.isSecure()));
         }
