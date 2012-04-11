@@ -1,7 +1,7 @@
 {
   Category cat=catalogService.findCategoryById(id);
   if (cat != null) {
-    CategoryWrapper wrapper=(CategoryWrapper)entityConfiguration.createEntityInstance(CategoryWrapper.class.getName());
+    CategoryWrapper wrapper=(CategoryWrapper)context.getBean(CategoryWrapper.class.getName());
     wrapper.wrap(cat,request);
     return wrapper;
   }

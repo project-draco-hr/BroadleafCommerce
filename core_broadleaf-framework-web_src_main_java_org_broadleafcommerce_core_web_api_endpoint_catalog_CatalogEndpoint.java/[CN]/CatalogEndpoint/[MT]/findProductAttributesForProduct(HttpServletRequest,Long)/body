@@ -4,7 +4,7 @@
     ArrayList<ProductAttributeWrapper> out=new ArrayList<ProductAttributeWrapper>();
     if (product.getProductAttributes() != null) {
       for (      ProductAttribute attribute : product.getProductAttributes()) {
-        ProductAttributeWrapper wrapper=(ProductAttributeWrapper)entityConfiguration.createEntityInstance(ProductAttributeWrapper.class.getName());
+        ProductAttributeWrapper wrapper=(ProductAttributeWrapper)context.getBean(ProductAttributeWrapper.class.getName());
         wrapper.wrap(attribute,request);
         out.add(wrapper);
       }

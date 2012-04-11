@@ -5,7 +5,7 @@
     List<RelatedProduct> relatedProds=product.getUpSaleProducts();
     if (relatedProds != null) {
       for (      RelatedProduct prod : relatedProds) {
-        RelatedProductWrapper wrapper=(RelatedProductWrapper)entityConfiguration.createEntityInstance(RelatedProductWrapper.class.getName());
+        RelatedProductWrapper wrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
         wrapper.wrap(prod,request);
         out.add(wrapper);
       }

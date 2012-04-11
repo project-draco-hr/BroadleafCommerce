@@ -5,7 +5,7 @@
     List<RelatedProduct> xSellProds=product.getCrossSaleProducts();
     if (xSellProds != null) {
       for (      RelatedProduct prod : xSellProds) {
-        RelatedProductWrapper wrapper=(RelatedProductWrapper)entityConfiguration.createEntityInstance(RelatedProductWrapper.class.getName());
+        RelatedProductWrapper wrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
         wrapper.wrap(prod,request);
         out.add(wrapper);
       }

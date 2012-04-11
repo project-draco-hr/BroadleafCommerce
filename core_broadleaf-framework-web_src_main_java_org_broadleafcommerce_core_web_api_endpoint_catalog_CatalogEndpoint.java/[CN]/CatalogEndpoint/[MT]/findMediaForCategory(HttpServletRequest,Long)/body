@@ -4,7 +4,7 @@
     ArrayList<MediaWrapper> out=new ArrayList<MediaWrapper>();
     Map<String,Media> media=category.getCategoryMedia();
     for (    Media med : media.values()) {
-      MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+      MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
       wrapper.wrap(med,request);
       out.add(wrapper);
     }

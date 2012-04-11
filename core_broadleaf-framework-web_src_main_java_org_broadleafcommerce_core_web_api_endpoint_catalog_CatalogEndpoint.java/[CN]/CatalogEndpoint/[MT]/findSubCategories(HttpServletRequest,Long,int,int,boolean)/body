@@ -2,7 +2,7 @@
   Category category=catalogService.findCategoryById(id);
   if (category != null) {
     List<Category> categories;
-    CategoriesWrapper wrapper=(CategoriesWrapper)entityConfiguration.createEntityInstance(CategoriesWrapper.class.getName());
+    CategoriesWrapper wrapper=(CategoriesWrapper)context.getBean(CategoriesWrapper.class.getName());
     if (active) {
       categories=catalogService.findActiveSubCategoriesByCategory(category,limit,offset);
     }

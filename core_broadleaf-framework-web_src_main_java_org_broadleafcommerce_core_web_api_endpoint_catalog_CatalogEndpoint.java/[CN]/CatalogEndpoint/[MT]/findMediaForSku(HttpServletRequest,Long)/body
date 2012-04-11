@@ -4,7 +4,7 @@
     List<MediaWrapper> medias=new ArrayList<MediaWrapper>();
     if (sku.getSkuMedia() != null && !sku.getSkuMedia().isEmpty()) {
       for (      Media media : sku.getSkuMedia().values()) {
-        MediaWrapper wrapper=(MediaWrapper)entityConfiguration.createEntityInstance(MediaWrapper.class.getName());
+        MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
         wrapper.wrap(media,request);
         if (wrapper.isAllowOverrideUrl()) {
           wrapper.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
