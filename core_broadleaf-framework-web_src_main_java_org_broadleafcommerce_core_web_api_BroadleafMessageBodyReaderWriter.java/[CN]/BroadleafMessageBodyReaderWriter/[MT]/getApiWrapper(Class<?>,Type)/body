@@ -1,0 +1,16 @@
+{
+  Map<String,Object> apiWrappers=applicationContext.getBeansWithAnnotation(XmlRootElement.class);
+  Set<String> keySet=apiWrappers.keySet();
+  for (  String key : keySet) {
+    if (key.equals(((Class)lookupType).getName())) {
+      if (Collection.class.isAssignableFrom(type)) {
+        Type[] paramType={apiWrappers.get(key).getClass()};
+        return ParameterizedTypeImpl.make(type,paramType,null);
+      }
+ else {
+        return apiWrappers.get(key).getClass();
+      }
+    }
+  }
+  return null;
+}
