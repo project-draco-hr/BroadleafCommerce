@@ -7,6 +7,9 @@
         Type[] paramType={apiWrappers.get(key).getClass()};
         return ParameterizedTypeImpl.make(type,paramType,null);
       }
+ else       if (type.isArray()) {
+        return Array.newInstance(apiWrappers.get(key).getClass(),0).getClass();
+      }
  else {
         return apiWrappers.get(key).getClass();
       }

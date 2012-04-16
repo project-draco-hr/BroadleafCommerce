@@ -8,6 +8,9 @@
     if (Collection.class.isAssignableFrom(type)) {
       jsonListProvider.writeTo(t,type,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
+ else     if (type.isArray()) {
+      jsonListProvider.writeTo(t,(Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
+    }
  else {
       jsonRootElementProvider.writeTo(t,type,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
@@ -15,6 +18,9 @@
  else   if (mediaType.isCompatible(MediaType.APPLICATION_XML_TYPE) || mediaType.isCompatible(MediaType.TEXT_XML_TYPE)) {
     if (Collection.class.isAssignableFrom(type)) {
       xmlListProvider.writeTo(t,type,genericType,annotations,mediaType,httpHeaders,entityStream);
+    }
+ else     if (type.isArray()) {
+      xmlListProvider.writeTo(t,(Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
  else {
       xmlRootElementProvider.writeTo(t,type,genericType,annotations,mediaType,httpHeaders,entityStream);

@@ -8,6 +8,9 @@
     if (Collection.class.isAssignableFrom(type)) {
       return jsonListProvider.readFrom(type,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
+ else     if (type.isArray()) {
+      return jsonListProvider.readFrom((Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
+    }
  else {
       return jsonRootElementProvider.readFrom((Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
@@ -15,6 +18,9 @@
  else   if (mediaType.isCompatible(MediaType.APPLICATION_XML_TYPE) || mediaType.isCompatible(MediaType.TEXT_XML_TYPE)) {
     if (Collection.class.isAssignableFrom(type)) {
       return xmlListProvider.readFrom(type,genericType,annotations,mediaType,httpHeaders,entityStream);
+    }
+ else     if (type.isArray()) {
+      return xmlListProvider.readFrom((Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
     }
  else {
       return xmlRootElementProvider.readFrom((Class)genericType,genericType,annotations,mediaType,httpHeaders,entityStream);
