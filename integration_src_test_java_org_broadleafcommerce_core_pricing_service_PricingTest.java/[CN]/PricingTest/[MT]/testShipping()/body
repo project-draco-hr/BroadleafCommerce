@@ -25,7 +25,6 @@
   address.setCountry(country);
   group1.setAddress(address);
   group1.setOrder(order);
-  group1.setIsShippingPriceTaxable(true);
   group2.setMethod("truck");
   group2.setService(ShippingServiceType.BANDED_SHIPPING.getType());
   group2.setOrder(order);
@@ -55,12 +54,13 @@
   for (  OrderItem orderItem : items) {
     FulfillmentGroupItem fgi=new FulfillmentGroupItemImpl();
     fgi.setOrderItem(orderItem);
+    fgi.setQuantity(orderItem.getQuantity());
     fgi.setFulfillmentGroup(group1);
     group1.addFulfillmentGroupItem(fgi);
   }
   order.setTotalShipping(new Money(0D));
   cartService.save(order,true);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
-  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D).add(group1.getShippingPrice().multiply(0.05D))));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
   assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax().add(order.getTotalShipping()))));
 }

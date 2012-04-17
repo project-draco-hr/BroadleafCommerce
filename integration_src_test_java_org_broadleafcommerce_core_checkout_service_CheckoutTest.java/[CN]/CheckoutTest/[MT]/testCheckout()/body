@@ -19,7 +19,6 @@
   state.setCountry(country);
   address.setCountry(country);
   FulfillmentGroup group=new FulfillmentGroupImpl();
-  group.setIsShippingPriceTaxable(true);
   group.setOrder(order);
   group.setAddress(address);
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
@@ -117,6 +116,6 @@
   }
   assert(referenced == null);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
-  assert(order.getTotalTax().equals(order.getSubTotal().add(order.getTotalShipping()).multiply(0.05D)));
+  assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
   assert(response.getPaymentResponse().getResponseItems().size() > 0);
 }
