@@ -296,6 +296,14 @@
     }
   }
 );
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getCustomerFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      getDisplay().getRawCustomerTextArea().setAttribute("dirty",true);
+    }
+  }
+);
   getDisplay().getOrderFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
       getDisplay().getDynamicFormDisplay().getSaveButton().enable();
@@ -304,8 +312,24 @@
     }
   }
 );
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getOrderFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      getDisplay().getRawOrderTextArea().setAttribute("dirty",true);
+    }
+  }
+);
   getDisplay().getFulfillmentGroupFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      getDisplay().getRawFGTextArea().setAttribute("dirty",true);
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getFulfillmentGroupFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
       getDisplay().getDynamicFormDisplay().getSaveButton().enable();
       getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
       getDisplay().getRawFGTextArea().setAttribute("dirty",true);
@@ -336,10 +360,23 @@
     }
   }
 );
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getTargetItemBuilder().getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      getDisplay().getTargetItemBuilder().setDirty(true);
+    }
+  }
+);
   getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        initializeDisplay(lastSelectedRecord);
+        additionalFilterEventManager.resetFilterState(new FilterStateRunnable(){
+          @Override public void run(          FilterRestartCallback cb){
+            initializeDisplay(lastSelectedRecord,cb);
+          }
+        }
+);
       }
     }
   }

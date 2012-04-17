@@ -13,6 +13,7 @@
   ruleRefreshButtonHandlerRegistration=getDisplay().getStructuredContentRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
+        extractor.getRemovedItemQualifiers().clear();
         changeSelection(currentStructuredContentRecord);
       }
     }
@@ -74,6 +75,30 @@
 );
   getDisplay().getTimeFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getCustomerFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getProductFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getRequestFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getTimeFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
       resetButtons();
     }
   }

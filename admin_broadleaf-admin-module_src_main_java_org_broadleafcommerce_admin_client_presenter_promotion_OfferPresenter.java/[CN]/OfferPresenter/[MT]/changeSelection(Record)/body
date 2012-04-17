@@ -1,4 +1,9 @@
 {
-  rebindFormItems(selectedRecord);
-  initializeDisplay(selectedRecord);
+  additionalFilterEventManager.resetFilterState(new FilterStateRunnable(){
+    @Override public void run(    FilterRestartCallback cb){
+      rebindFormItems(selectedRecord);
+      initializeDisplay(selectedRecord,cb);
+    }
+  }
+);
 }

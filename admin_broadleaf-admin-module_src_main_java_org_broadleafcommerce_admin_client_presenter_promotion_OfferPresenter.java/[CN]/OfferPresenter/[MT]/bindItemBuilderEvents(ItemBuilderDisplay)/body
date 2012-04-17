@@ -2,6 +2,7 @@
   display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (getDisplay().getItemBuilderViews().size() > 1) {
+        additionalFilterEventManager.removeFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder());
         extractor.removeItemQualifer(display);
       }
     }
@@ -25,6 +26,14 @@
 );
   display.getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      display.setDirty(true);
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
       getDisplay().getDynamicFormDisplay().getSaveButton().enable();
       getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
       display.setDirty(true);
