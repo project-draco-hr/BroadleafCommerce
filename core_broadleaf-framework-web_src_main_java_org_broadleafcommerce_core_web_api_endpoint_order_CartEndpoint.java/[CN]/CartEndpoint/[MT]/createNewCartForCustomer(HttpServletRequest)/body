@@ -1,0 +1,10 @@
+{
+  Customer customer=customerState.getCustomer(request);
+  if (customer != null) {
+    Order cart=cartService.createNewCartForCustomer(customer);
+    OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+    wrapper.wrap(cart,request);
+    return wrapper;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
+}
