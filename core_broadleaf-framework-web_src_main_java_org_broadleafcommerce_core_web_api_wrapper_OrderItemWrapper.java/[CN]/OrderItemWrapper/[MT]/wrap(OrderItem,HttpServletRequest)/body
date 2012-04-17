@@ -1,0 +1,26 @@
+{
+  this.id=model.getId();
+  this.name=model.getName();
+  this.quantity=model.getQuantity();
+  MoneyWrapper retailPriceWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
+  retailPriceWrapper.wrap(model.getRetailPrice(),request);
+  this.retailPrice=retailPriceWrapper;
+  MoneyWrapper salePriceWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
+  salePriceWrapper.wrap(model.getSalePrice(),request);
+  this.salePrice=salePriceWrapper;
+  CategoryWrapper categoryWrapper=(CategoryWrapper)context.getBean(CategoryWrapper.class.getName());
+  categoryWrapper.wrap(model.getCategory(),request);
+  this.category=categoryWrapper;
+  OrderWrapper orderWrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+  orderWrapper.wrap(model.getOrder(),request);
+  this.order=orderWrapper;
+  if (model instanceof DiscreteOrderItem) {
+    DiscreteOrderItem doi=(DiscreteOrderItem)model;
+    SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
+    skuWrapper.wrap(doi.getSku(),request);
+    this.sku=skuWrapper;
+    ProductWrapper productWrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
+    productWrapper.wrap(doi.getProduct(),request);
+    this.product=productWrapper;
+  }
+}
