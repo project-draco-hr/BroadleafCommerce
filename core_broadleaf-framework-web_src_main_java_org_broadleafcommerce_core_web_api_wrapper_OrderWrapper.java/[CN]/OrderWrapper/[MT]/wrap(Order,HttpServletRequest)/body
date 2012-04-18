@@ -1,16 +1,19 @@
 {
   this.id=model.getId();
   this.status=model.getStatus().getType();
-  MoneyWrapper totalTaxWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
-  totalTaxWrapper.wrap(model.getTotalTax(),request);
-  this.totalTax=totalTaxWrapper;
-  MoneyWrapper totalShippingWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
-  totalShippingWrapper.wrap(model.getTotalShipping(),request);
-  this.totalShipping=totalShippingWrapper;
-  MoneyWrapper subTotalWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
-  subTotalWrapper.wrap(model.getSubTotal(),request);
-  this.subTotal=subTotalWrapper;
-  MoneyWrapper totalWrapper=(MoneyWrapper)context.getBean(MoneyWrapper.class.getName());
-  totalWrapper.wrap(model.getTotal(),request);
-  this.total=totalWrapper;
+  this.totalTax=model.getTotalTax();
+  this.totalShipping=model.getTotalShipping();
+  this.subTotal=model.getSubTotal();
+  this.total=model.getTotal();
+  if (model.getOrderItems() != null && !model.getOrderItems().isEmpty()) {
+    this.orderItems=new ArrayList<OrderItemWrapper>();
+    for (    OrderItem orderItem : model.getOrderItems()) {
+      OrderItemWrapper orderItemWrapper=(OrderItemWrapper)context.getBean(OrderItemWrapper.class.getName());
+      orderItemWrapper.wrap(orderItem,request);
+      this.orderItems.add(orderItemWrapper);
+    }
+  }
+  CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
+  customerWrapper.wrap(model.getCustomer(),request);
+  this.customer=customerWrapper;
 }
