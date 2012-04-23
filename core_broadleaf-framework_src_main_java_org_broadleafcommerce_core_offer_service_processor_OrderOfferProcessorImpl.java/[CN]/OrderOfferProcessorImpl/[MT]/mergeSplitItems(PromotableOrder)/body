@@ -1,15 +1,12 @@
 {
   List<PromotableOrderItem> itemsToRemove=new ArrayList<PromotableOrderItem>();
   Iterator<PromotableOrderItem> finalItems=order.getDiscountableDiscreteOrderItems().iterator();
+  Map<String,PromotableOrderItem> allItems=new HashMap<String,PromotableOrderItem>();
   while (finalItems.hasNext()) {
     PromotableOrderItem nextItem=finalItems.next();
     List<PromotableOrderItem> mySplits=order.searchSplitItems(nextItem);
     if (!CollectionUtils.isEmpty(mySplits)) {
-      if (mySplits.size() == 1 && mySplits.contains(nextItem)) {
-        mySplits.remove(nextItem);
-        continue;
-      }
-      PromotableOrderItem cloneItem=(PromotableOrderItem)nextItem.clone();
+      PromotableOrderItem cloneItem=nextItem.clone();
       cloneItem.clearAllDiscount();
       cloneItem.clearAllQualifiers();
       cloneItem.removeAllAdjustments();
@@ -23,7 +20,15 @@
         }
       }
       if (cloneItem.getQuantity() > 0) {
-        mySplits.add(cloneItem);
+        String identifier=String.valueOf(cloneItem.getSku().getId());
+        if (allItems.containsKey(identifier)) {
+          PromotableOrderItem savedItem=allItems.get(identifier);
+          savedItem.setQuantity(savedItem.getQuantity() + cloneItem.getQuantity());
+        }
+ else {
+          allItems.put(identifier,cloneItem);
+          mySplits.add(cloneItem);
+        }
       }
       if (mySplits.contains(nextItem)) {
         mySplits.remove(nextItem);
@@ -49,19 +54,30 @@
           }
         }
         for (        PromotableOrderItem myItem : mySplits) {
-          DiscreteOrderItem delegateItem=(DiscreteOrderItem)myItem.getDelegate();
+          myItem.assignFinalPrice();
+          DiscreteOrderItem delegateItem=myItem.getDelegate();
           if (delegateItem.getBundleOrderItem() == null) {
             delegateItem=(DiscreteOrderItem)cartService.addOrderItemToOrder(order.getDelegate(),delegateItem,false);
-            cartService.addItemToFulfillmentGroup(delegateItem,targetGroup.getDelegate(),false);
+            if (targetGroup != null) {
+              cartService.addItemToFulfillmentGroup(delegateItem,targetGroup.getDelegate(),false);
+            }
           }
  else {
             delegateItem=(DiscreteOrderItem)cartService.addOrderItemToBundle(order.getDelegate(),delegateItem.getBundleOrderItem(),delegateItem,false);
+          }
+          if (myItem.isHasOrderItemAdjustments()) {
+            for (            OrderItemAdjustment adjustment : delegateItem.getOrderItemAdjustments()) {
+              PromotableOrderItemAdjustment promotableOrderItemAdjustment=promotableItemFactory.createPromotableOrderItemAdjustment(adjustment,myItem);
+              myItem.resetAdjustmentPrice();
+              promotableOrderItemAdjustment.computeAdjustmentValues();
+              myItem.computeAdjustmentPrice();
+            }
           }
         }
       }
     }
     for (    PromotableOrderItem orderItem : itemsToRemove) {
-      DiscreteOrderItem delegateItem=(DiscreteOrderItem)orderItem.getDelegate();
+      DiscreteOrderItem delegateItem=orderItem.getDelegate();
       if (delegateItem.getBundleOrderItem() == null) {
         cartService.removeItemFromOrder(order.getDelegate(),orderItem.getDelegate(),false);
       }
