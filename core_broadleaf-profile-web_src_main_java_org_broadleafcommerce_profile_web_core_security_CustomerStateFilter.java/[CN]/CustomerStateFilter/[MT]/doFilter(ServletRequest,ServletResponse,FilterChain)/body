@@ -3,7 +3,7 @@
   HttpServletResponse response=(HttpServletResponse)baseResponse;
   Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
   Customer customer=null;
-  if (authentication != null) {
+  if ((authentication != null) && !(authentication instanceof AnonymousAuthenticationToken)) {
     String userName=request.getUserPrincipal().getName();
     customer=(Customer)request.getAttribute(customerRequestAttributeName);
     if (userName != null && (customer == null || !userName.equals(customer.getUsername()))) {
