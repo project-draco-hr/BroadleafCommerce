@@ -1,13 +1,12 @@
 {
   for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
     for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
-      List<TaxDetail> taxes=new ArrayList<TaxDetail>();
+      fgItem.getTaxes().clear();
       TaxDetail tax=new TaxDetailImpl();
       tax.setRate(new BigDecimal(factor));
       tax.setType(TaxType.STATE);
       tax.setAmount(fgItem.getPrice().multiply(fgItem.getQuantity()).multiply(factor));
-      taxes.add(tax);
-      fgItem.setTaxes(taxes);
+      fgItem.getTaxes().add(tax);
     }
   }
   return order;
