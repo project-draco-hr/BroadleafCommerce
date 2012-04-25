@@ -1,0 +1,22 @@
+{
+  FulfillmentGroupRequest fulfillmentGroupRequest=new FulfillmentGroupRequest();
+  fulfillmentGroupRequest.setMethod(this.method);
+  fulfillmentGroupRequest.setService(this.service);
+  List<FulfillmentGroupItemRequest> fulfillmentGroupItemRequests=new ArrayList<FulfillmentGroupItemRequest>();
+  for (  FulfillmentGroupItemWrapper wrapper : this.fulfillmentGroupItems) {
+    fulfillmentGroupItemRequests.add(wrapper.unwrap(request,appContext));
+  }
+  fulfillmentGroupRequest.setFulfillmentGroupItemRequests(fulfillmentGroupItemRequests);
+  OrderService orderService=(OrderService)appContext.getBean("blCartService");
+  Order order=orderService.findOrderById(this.orderId);
+  if (order != null) {
+    fulfillmentGroupRequest.setOrder(order);
+  }
+  if (this.address != null) {
+    fulfillmentGroupRequest.setAddress(this.address.unwrap(request,appContext));
+  }
+  if (this.phone != null) {
+    fulfillmentGroupRequest.setPhone(this.phone.unwrap(request,appContext));
+  }
+  return fulfillmentGroupRequest;
+}

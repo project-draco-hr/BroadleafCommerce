@@ -1,0 +1,23 @@
+{
+  Customer customer=customerState.getCustomer(request);
+  if (customer != null) {
+    Order cart=cartService.findCartForCustomer(customer);
+    if (cart != null) {
+      FulfillmentGroupRequest fulfillmentGroupRequest=wrapper.unwrap(request,context);
+      if (fulfillmentGroupRequest.getOrder() != null && fulfillmentGroupRequest.getOrder().getId().equals(cart.getId())) {
+        try {
+          fulfillmentGroupRequest.setOrder(cart);
+          FulfillmentGroup fulfillmentGroup=cartService.addFulfillmentGroupToOrder(fulfillmentGroupRequest,priceOrder);
+          FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
+          fulfillmentGroupWrapper.wrap(fulfillmentGroup,request);
+          return fulfillmentGroupWrapper;
+        }
+ catch (        PricingException e) {
+          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+      }
+    }
+    throw new WebApplicationException(Response.Status.NOT_FOUND);
+  }
+  throw new WebApplicationException(Response.Status.BAD_REQUEST);
+}

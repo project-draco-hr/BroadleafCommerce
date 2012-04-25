@@ -1,0 +1,18 @@
+{
+  Customer customer=customerState.getCustomer(request);
+  if (customer != null) {
+    Order cart=cartService.findCartForCustomer(customer);
+    if (cart != null && cart.getFulfillmentGroups() != null && !cart.getFulfillmentGroups().isEmpty()) {
+      List<FulfillmentGroup> fulfillmentGroups=cart.getFulfillmentGroups();
+      List<FulfillmentGroupWrapper> fulfillmentGroupWrappers=new ArrayList<FulfillmentGroupWrapper>();
+      for (      FulfillmentGroup fulfillmentGroup : fulfillmentGroups) {
+        FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
+        fulfillmentGroupWrapper.wrap(fulfillmentGroup,request);
+        fulfillmentGroupWrappers.add(fulfillmentGroupWrapper);
+      }
+      return fulfillmentGroupWrappers;
+    }
+    throw new WebApplicationException(Response.Status.NOT_FOUND);
+  }
+  throw new WebApplicationException(Response.Status.BAD_REQUEST);
+}

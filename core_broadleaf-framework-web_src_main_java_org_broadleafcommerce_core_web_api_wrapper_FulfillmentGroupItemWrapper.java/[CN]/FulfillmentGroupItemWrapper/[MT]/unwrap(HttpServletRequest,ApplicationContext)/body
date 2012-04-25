@@ -1,0 +1,11 @@
+{
+  OrderItemService orderItemService=(OrderItemService)appContext.getBean("blOrderItemService");
+  OrderItem orderItem=orderItemService.readOrderItemById(this.orderItemId);
+  if (orderItem != null) {
+    FulfillmentGroupItemRequest fulfillmentGroupItemRequest=new FulfillmentGroupItemRequest();
+    fulfillmentGroupItemRequest.setOrderItem(orderItem);
+    fulfillmentGroupItemRequest.setQuantity(this.quantity);
+    return fulfillmentGroupItemRequest;
+  }
+  return null;
+}

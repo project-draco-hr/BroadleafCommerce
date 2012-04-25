@@ -3,9 +3,9 @@
   if (model.getFulfillmentGroup() != null) {
     this.fulfillmentGroupId=model.getFulfillmentGroup().getId();
   }
-  OrderItemWrapper orderItemWrapper=(OrderItemWrapper)context.getBean(OrderItemWrapper.class.getName());
-  orderItemWrapper.wrap(model.getOrderItem(),request);
-  this.orderItem=orderItemWrapper;
+  if (model.getOrderItem() != null) {
+    this.orderItemId=model.getOrderItem().getId();
+  }
   this.retailPrice=model.getRetailPrice();
   this.salePrice=model.getSalePrice();
   this.totalTax=model.getTotalTax();
