@@ -1,0 +1,36 @@
+{
+  SecurePaymentInfoService securePaymentInfoService=(SecurePaymentInfoService)context.getBean("blSecurePaymentInfoService");
+  if (CreditCardPaymentInfo.class.getName().equals(this.type)) {
+    CreditCardPaymentInfo paymentInfo=(CreditCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.CREDIT_CARD);
+    paymentInfo.setId(this.id);
+    paymentInfo.setReferenceNumber(this.referenceNumber);
+    paymentInfo.setPan(this.pan);
+    paymentInfo.setCvvCode(this.cvvCode);
+    paymentInfo.setExpirationMonth(this.expirationMonth);
+    paymentInfo.setExpirationYear(this.expirationYear);
+    return paymentInfo;
+  }
+  if (BankAccountPaymentInfo.class.getName().equals(this.type)) {
+    BankAccountPaymentInfo paymentInfo=(BankAccountPaymentInfo)securePaymentInfoService.create(PaymentInfoType.BANK_ACCOUNT);
+    paymentInfo.setId(this.id);
+    paymentInfo.setReferenceNumber(this.referenceNumber);
+    paymentInfo.setAccountNumber(this.accountNumber);
+    paymentInfo.setRoutingNumber(this.routingNumber);
+    return paymentInfo;
+  }
+  if (GiftCardPaymentInfo.class.getName().equals(this.type)) {
+    GiftCardPaymentInfo paymentInfo=(GiftCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.GIFT_CARD);
+    paymentInfo.setId(this.id);
+    paymentInfo.setReferenceNumber(this.referenceNumber);
+    paymentInfo.setPan(this.pan);
+    paymentInfo.setPin(this.pin);
+    return paymentInfo;
+  }
+  if (EmptyReferenced.class.getName().equals(this.type)) {
+    EmptyReferenced emptyReferenced=new EmptyReferenced();
+    emptyReferenced.setId(this.id);
+    emptyReferenced.setReferenceNumber(this.referenceNumber);
+    return emptyReferenced;
+  }
+  return null;
+}

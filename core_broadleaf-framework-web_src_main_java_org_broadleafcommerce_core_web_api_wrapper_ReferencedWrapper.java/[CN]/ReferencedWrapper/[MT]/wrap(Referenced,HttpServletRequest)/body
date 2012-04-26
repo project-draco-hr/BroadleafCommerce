@@ -1,0 +1,27 @@
+{
+  this.id=model.getId();
+  this.referenceNumber=model.getReferenceNumber();
+  if (model instanceof CreditCardPaymentInfo) {
+    CreditCardPaymentInfo referenced=(CreditCardPaymentInfo)model;
+    this.type=CreditCardPaymentInfo.class.getName();
+    this.pan=referenced.getPan();
+    this.cvvCode=referenced.getCvvCode();
+    this.expirationMonth=referenced.getExpirationMonth();
+    this.expirationYear=referenced.getExpirationYear();
+  }
+  if (model instanceof BankAccountPaymentInfo) {
+    BankAccountPaymentInfo referenced=(BankAccountPaymentInfo)model;
+    this.type=BankAccountPaymentInfo.class.getName();
+    this.accountNumber=referenced.getAccountNumber();
+    this.routingNumber=referenced.getRoutingNumber();
+  }
+  if (model instanceof GiftCardPaymentInfo) {
+    GiftCardPaymentInfo referenced=(GiftCardPaymentInfo)model;
+    this.type=GiftCardPaymentInfo.class.getName();
+    this.pan=referenced.getPan();
+    this.pin=referenced.getPin();
+  }
+  if (model instanceof EmptyReferenced) {
+    this.type=EmptyReferenced.class.getName();
+  }
+}

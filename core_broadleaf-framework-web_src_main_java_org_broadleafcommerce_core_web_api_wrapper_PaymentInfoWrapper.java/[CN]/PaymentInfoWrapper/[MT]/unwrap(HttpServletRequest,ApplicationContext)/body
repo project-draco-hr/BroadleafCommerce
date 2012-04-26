@@ -1,0 +1,25 @@
+{
+  PaymentInfoService paymentInfoService=(PaymentInfoService)context.getBean("blPaymentInfoService");
+  PaymentInfo paymentInfo=paymentInfoService.create();
+  CartService cartService=(CartService)context.getBean("blCartService");
+  Order order=cartService.findOrderById(this.orderId);
+  paymentInfo.setOrder(order);
+  paymentInfo.setType(PaymentInfoType.getInstance(this.type));
+  if (this.address != null) {
+    paymentInfo.setAddress(this.address.unwrap(request,context));
+  }
+  if (this.phone != null) {
+    paymentInfo.setPhone(this.phone.unwrap(request,context));
+  }
+  if (this.additionalFields != null && !this.additionalFields.isEmpty()) {
+    Map<String,String> fields=new HashMap<String,String>();
+    for (    MapElementWrapper mapElementWrapper : this.additionalFields) {
+      fields.put(mapElementWrapper.getKey(),mapElementWrapper.getValue().toString());
+    }
+    paymentInfo.setAdditionalFields(fields);
+  }
+  paymentInfo.setAmount(this.amount);
+  paymentInfo.setCustomerIpAddress(this.customerIpAddress);
+  paymentInfo.setReferenceNumber(this.referenceNumber);
+  return paymentInfo;
+}
