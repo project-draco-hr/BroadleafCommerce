@@ -1,8 +1,14 @@
 {
-  for (  PromotableOrderItem orderItem : getDiscountableDiscreteOrderItems()) {
+  for (  OrderItem orderItem : getDelegate().getOrderItems()) {
     orderItem.removeAllAdjustments();
     adjustmentPrice=null;
     resetTotalitarianOfferApplied();
+    if (orderItem instanceof BundleOrderItem) {
+      for (      DiscreteOrderItem discreteOrderItem : ((BundleOrderItem)orderItem).getDiscreteOrderItems()) {
+        discreteOrderItem.setPrice(null);
+      }
+    }
+    orderItem.setPrice(null);
     orderItem.assignFinalPrice();
   }
   splitItems.clear();

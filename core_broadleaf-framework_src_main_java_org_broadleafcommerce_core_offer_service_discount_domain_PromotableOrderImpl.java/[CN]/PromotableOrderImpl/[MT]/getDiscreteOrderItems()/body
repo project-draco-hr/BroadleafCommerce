@@ -23,8 +23,20 @@
       }
     }
 ;
+    List<OrderItem> basicOrderItems=new ArrayList<OrderItem>();
+    basicOrderItems.addAll(delegate.getOrderItems());
+    Iterator<OrderItem> itr=basicOrderItems.iterator();
+    while (itr.hasNext()) {
+      OrderItem temp=itr.next();
+      if (temp instanceof BundleOrderItem) {
+        itr.remove();
+      }
+    }
+    for (    BundleOrderItemSplitContainer container : bundleSplitItems) {
+      basicOrderItems.addAll(container.getSplitItems());
+    }
     try {
-      for (      OrderItem temp : delegate.getOrderItems()) {
+      for (      OrderItem temp : basicOrderItems) {
         temp.accept(visitor);
       }
     }

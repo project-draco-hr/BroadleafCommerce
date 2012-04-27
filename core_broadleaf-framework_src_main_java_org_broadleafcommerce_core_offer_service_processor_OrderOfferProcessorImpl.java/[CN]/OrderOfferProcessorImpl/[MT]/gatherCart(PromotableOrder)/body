@@ -1,59 +1,13 @@
 {
   Order order=promotableOrder.getDelegate();
-  List<OrderItem> itemsToRemove=new ArrayList<OrderItem>();
-  Map<Long,Map<String,Object[]>> gatherMap=new HashMap<Long,Map<String,Object[]>>();
   try {
     if (!CollectionUtils.isEmpty(order.getFulfillmentGroups())) {
-      for (      FulfillmentGroup group : order.getFulfillmentGroups()) {
-        Map<String,Object[]> gatheredItem=gatherMap.get(group.getId());
-        if (gatheredItem == null) {
-          gatheredItem=new HashMap<String,Object[]>();
-          gatherMap.put(group.getId(),gatheredItem);
-        }
-        for (        FulfillmentGroupItem fgItem : group.getFulfillmentGroupItems()) {
-          OrderItem orderItem=fgItem.getOrderItem();
-          if (CollectionUtils.isEmpty(orderItem.getOrderItemAdjustments())) {
-            String identifier=(orderItem instanceof DiscreteOrderItem) ? String.valueOf(((DiscreteOrderItem)orderItem).getSku().getId()) : orderItem.getName();
-            identifier+='_' + orderItem.getPrice().stringValue();
-            Object[] gatheredOrderItem=gatheredItem.get(identifier);
-            if (gatheredOrderItem == null) {
-              gatheredItem.put(identifier,new Object[]{orderItem,fgItem});
-              continue;
-            }
-            ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + orderItem.getQuantity());
-            ((FulfillmentGroupItem)gatheredOrderItem[1]).setQuantity(((FulfillmentGroupItem)gatheredOrderItem[1]).getQuantity() + fgItem.getQuantity());
-            itemsToRemove.add(orderItem);
-          }
-        }
-      }
-      for (      Map<String,Object[]> values : gatherMap.values()) {
-        for (        Object[] item : values.values()) {
-          orderItemService.saveOrderItem((OrderItem)item[0]);
-          fulfillmentGroupItemDao.save((FulfillmentGroupItem)item[1]);
-        }
-      }
+      gatherFulfillmentGroupLinkedDiscreteOrderItems(order);
+      gatherFulfillmentGroupLinkedBundleOrderItems(order);
     }
  else {
-      Map<String,OrderItem> gatheredItem=new HashMap<String,OrderItem>();
-      for (      OrderItem orderItem : order.getOrderItems()) {
-        if (CollectionUtils.isEmpty(orderItem.getOrderItemAdjustments())) {
-          String identifier=(orderItem instanceof DiscreteOrderItem) ? String.valueOf(((DiscreteOrderItem)orderItem).getSku().getId()) : orderItem.getName();
-          identifier+='_' + orderItem.getPrice().stringValue();
-          OrderItem gatheredOrderItem=gatheredItem.get(identifier);
-          if (gatheredOrderItem == null) {
-            gatheredItem.put(identifier,orderItem);
-            continue;
-          }
-          gatheredOrderItem.setQuantity(gatheredOrderItem.getQuantity() + orderItem.getQuantity());
-          itemsToRemove.add(orderItem);
-        }
-      }
-      for (      OrderItem orderItem : gatheredItem.values()) {
-        orderItemService.saveOrderItem(orderItem);
-      }
-    }
-    for (    OrderItem orderItem : itemsToRemove) {
-      cartService.removeItemFromOrder(order,orderItem,false);
+      gatherOrderLinkedDiscreteOrderItems(order);
+      gatherOrderLinkedBundleOrderItems(order);
     }
   }
  catch (  PricingException e) {
