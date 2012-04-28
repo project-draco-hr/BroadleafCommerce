@@ -13,6 +13,22 @@
       this.orderItems.add(orderItemWrapper);
     }
   }
+  if (model.getFulfillmentGroups() != null && !model.getFulfillmentGroups().isEmpty()) {
+    this.fulfillmentGroups=new ArrayList<FulfillmentGroupWrapper>();
+    for (    FulfillmentGroup fulfillmentGroup : model.getFulfillmentGroups()) {
+      FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
+      fulfillmentGroupWrapper.wrap(fulfillmentGroup,request);
+      this.fulfillmentGroups.add(fulfillmentGroupWrapper);
+    }
+  }
+  if (model.getPaymentInfos() != null && !model.getPaymentInfos().isEmpty()) {
+    this.paymentInfos=new ArrayList<PaymentInfoWrapper>();
+    for (    PaymentInfo paymentInfo : model.getPaymentInfos()) {
+      PaymentInfoWrapper paymentInfoWrapper=(PaymentInfoWrapper)context.getBean(PaymentInfoWrapper.class.getName());
+      paymentInfoWrapper.wrap(paymentInfo,request);
+      this.paymentInfos.add(paymentInfoWrapper);
+    }
+  }
   CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
   customerWrapper.wrap(model.getCustomer(),request);
   this.customer=customerWrapper;

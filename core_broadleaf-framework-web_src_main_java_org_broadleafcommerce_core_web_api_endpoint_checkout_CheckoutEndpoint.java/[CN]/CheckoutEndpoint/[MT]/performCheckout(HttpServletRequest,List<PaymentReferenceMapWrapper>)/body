@@ -6,11 +6,16 @@
       try {
         if (mapWrappers != null && !mapWrappers.isEmpty()) {
           Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+          List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
           for (          PaymentReferenceMapWrapper mapWrapper : mapWrappers) {
             PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
             Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
             payments.put(paymentInfo,referenced);
+            paymentInfos.add(paymentInfo);
           }
+          cart.setPaymentInfos(paymentInfos);
+          cart.setStatus(OrderStatus.SUBMITTED);
+          cart.setSubmitDate(Calendar.getInstance().getTime());
           CheckoutResponse response=checkoutService.performCheckout(cart,payments);
           Order order=response.getOrder();
           OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
@@ -19,6 +24,13 @@
         }
       }
  catch (      CheckoutException e) {
+        cart.setStatus(OrderStatus.IN_PROCESS);
+        try {
+          cartService.save(cart,false);
+        }
+ catch (        PricingException e1) {
+          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     }
