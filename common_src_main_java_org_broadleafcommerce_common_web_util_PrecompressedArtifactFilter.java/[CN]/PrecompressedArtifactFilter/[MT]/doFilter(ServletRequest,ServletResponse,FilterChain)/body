@@ -1,0 +1,14 @@
+{
+  HttpServletRequest request=(HttpServletRequest)servletRequest;
+  HttpServletResponse response=(HttpServletResponse)servletResponse;
+  if (!configurer.determineEnvironment().equals(configurer.getDefaultEnvironment()) || useWhileInDefaultEnvironment) {
+    String path=getResourcePath(request);
+    String gzipPath=path + ".gz";
+    if (useGzipCompression(request,response,path,gzipPath)) {
+      response.addHeader("Content-Encoding","gzip");
+      request=new PrecompressedHttpServletRequest(request,path,gzipPath);
+      response=new PrecompressedHttpServletResponse(response,path);
+    }
+  }
+  chain.doFilter(request,response);
+}

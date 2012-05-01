@@ -1,0 +1,12 @@
+{
+  super(response);
+  this.originalPath=originalPath;
+  Collection mimeTypes=MimeUtil.getMimeTypes(originalPath);
+  if (!mimeTypes.isEmpty()) {
+    MimeType mimeType=(MimeType)mimeTypes.iterator().next();
+    contentType=mimeType.toString();
+  }
+ else {
+    contentType=null;
+  }
+}

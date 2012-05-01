@@ -1,9 +1,7 @@
 {
   removeAllCandidateOrderOffers();
-  if (getDiscountableDiscreteOrderItems() != null) {
-    for (    PromotableOrderItem item : getDiscountableDiscreteOrderItems()) {
-      item.getDelegate().removeAllCandidateItemOffers();
-    }
+  for (  OrderItem orderItem : getDelegate().getOrderItems()) {
+    orderItem.removeAllCandidateItemOffers();
   }
   removeAllCandidateFulfillmentGroupOffers();
 }

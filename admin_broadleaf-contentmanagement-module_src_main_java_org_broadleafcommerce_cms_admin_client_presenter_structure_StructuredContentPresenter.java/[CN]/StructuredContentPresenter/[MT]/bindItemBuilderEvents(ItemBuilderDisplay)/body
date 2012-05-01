@@ -1,38 +1,37 @@
 {
   display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
-      if (getDisplay().getItemBuilderViews().size() > 1) {
-        extractor.removeItemQualifer(display);
-      }
+      extractor.getRemovedItemQualifiers().add(display);
+      additionalFilterEventManager.removeFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder());
+      resetButtons();
+      display.setDirty(true);
     }
   }
 );
   display.getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
     public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getStructuredContentSaveButton().enable();
-      getDisplay().getStructuredContentRefreshButton().enable();
+      resetButtons();
       display.setDirty(true);
     }
   }
 );
   display.getItemForm().addItemChangedHandler(new ItemChangedHandler(){
     public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getStructuredContentSaveButton().enable();
-      getDisplay().getStructuredContentRefreshButton().enable();
+      resetButtons();
       display.setDirty(true);
     }
   }
 );
   display.getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getStructuredContentSaveButton().enable();
-      getDisplay().getStructuredContentRefreshButton().enable();
+      resetButtons();
+      display.setDirty(true);
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
       display.setDirty(true);
     }
   }

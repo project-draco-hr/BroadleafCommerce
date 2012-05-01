@@ -1,0 +1,32 @@
+{
+  List<OrderItem> basicOrderItems=order.getDelegate().getOrderItems();
+  for (  OrderItem basicOrderItem : basicOrderItems) {
+    if (basicOrderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleOrderItem=(BundleOrderItem)basicOrderItem;
+      List<BundleOrderItem> searchHit=order.searchBundleSplitItems(bundleOrderItem);
+      if (searchHit == null) {
+        searchHit=new ArrayList<BundleOrderItem>();
+        BundleOrderItemSplitContainer container=new BundleOrderItemSplitContainer();
+        container.setKey(bundleOrderItem);
+        container.setSplitItems(searchHit);
+        order.getBundleSplitItems().add(container);
+      }
+      long count=0L;
+      if (bundleOrderItem.getQuantity() > 1) {
+        for (int j=1; j <= bundleOrderItem.getQuantity(); j++) {
+          count++;
+          BundleOrderItem temp=(BundleOrderItem)bundleOrderItem.clone();
+          temp.setQuantity(1);
+          temp.setId(count);
+          searchHit.add(temp);
+        }
+      }
+ else {
+        count++;
+        BundleOrderItem temp=(BundleOrderItem)bundleOrderItem.clone();
+        temp.setId(count);
+        searchHit.add(temp);
+      }
+    }
+  }
+}

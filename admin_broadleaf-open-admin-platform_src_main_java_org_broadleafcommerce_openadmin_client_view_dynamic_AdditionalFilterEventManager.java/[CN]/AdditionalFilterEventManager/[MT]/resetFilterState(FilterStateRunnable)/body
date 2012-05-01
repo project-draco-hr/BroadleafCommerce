@@ -1,0 +1,12 @@
+{
+  filterBuilderEventTimer.cancel();
+  for (  Map.Entry<FilterBuilder,FilterBuilderCharacteristics> entry : handlerMap.entrySet()) {
+    entry.getValue().setCriteriaCharacteristics(null);
+  }
+  runnable.run(new FilterRestartCallback(){
+    @Override public void processComplete(){
+      filterBuilderEventTimer.schedule(pollingInterval);
+    }
+  }
+);
+}

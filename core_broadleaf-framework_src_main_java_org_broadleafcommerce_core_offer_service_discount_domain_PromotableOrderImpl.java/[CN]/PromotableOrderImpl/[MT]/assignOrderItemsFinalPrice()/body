@@ -2,4 +2,9 @@
   for (  PromotableOrderItem orderItem : getDiscountableDiscreteOrderItems()) {
     orderItem.assignFinalPrice();
   }
+  for (  OrderItem orderItem : getDelegate().getOrderItems()) {
+    if (orderItem instanceof BundleOrderItem) {
+      orderItem.assignFinalPrice();
+    }
+  }
 }

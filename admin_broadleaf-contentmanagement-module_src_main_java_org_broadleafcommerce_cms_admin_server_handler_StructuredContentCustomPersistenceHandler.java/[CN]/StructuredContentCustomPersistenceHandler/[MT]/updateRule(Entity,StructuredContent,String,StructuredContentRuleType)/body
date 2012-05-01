@@ -1,7 +1,7 @@
 {
   Property ruleProperty=entity.findProperty(propertyName);
   if (ruleProperty != null && !StringUtils.isEmpty(ruleProperty.getValue())) {
-    ruleProperty.setValue(ruleProperty.getUnHtmlEncodedValue());
+    ruleProperty.setValue(ruleProperty.getRawValue());
     StructuredContentRule rule=structuredContentInstance.getStructuredContentMatchRules().get(type.getType());
     if (rule == null) {
       rule=(StructuredContentRule)entityConfiguration.createEntityInstance(StructuredContentRule.class.getName());

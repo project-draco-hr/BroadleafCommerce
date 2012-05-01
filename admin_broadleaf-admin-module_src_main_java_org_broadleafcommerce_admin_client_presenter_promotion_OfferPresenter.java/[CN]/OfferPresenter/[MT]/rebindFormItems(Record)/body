@@ -1,8 +1,13 @@
 {
   getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").addChangedHandler(new ChangedHandler(){
-    public void onChanged(    ChangedEvent event){
-      String eventValue=event.getValue().toString();
-      initializer.initSectionBasedOnType(eventValue,selectedRecord);
+    public void onChanged(    final ChangedEvent event){
+      additionalFilterEventManager.resetFilterState(new FilterStateRunnable(){
+        @Override public void run(        FilterRestartCallback cb){
+          String eventValue=event.getValue().toString();
+          initializer.initSectionBasedOnType(eventValue,selectedRecord,cb);
+        }
+      }
+);
     }
   }
 );
@@ -34,9 +39,6 @@
       @SuppressWarnings("deprecation") public void onChanged(      ChangedEvent event){
         Date myDate=(Date)event.getValue();
         if (myDate != null) {
-          myDate.setHours(23);
-          myDate.setMinutes(59);
-          myDate.setSeconds(59);
           event.getItem().setValue(myDate);
         }
       }

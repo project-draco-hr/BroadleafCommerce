@@ -1,39 +1,17 @@
 {
   Order order=promotableOrder.getDelegate();
-  List<OrderItem> itemsToRemove=new ArrayList<OrderItem>();
-  Map<Long,Map<String,Object[]>> gatherMap=new HashMap<Long,Map<String,Object[]>>();
-  for (  FulfillmentGroup group : order.getFulfillmentGroups()) {
-    Map<String,Object[]> gatheredItem=gatherMap.get(group);
-    if (gatheredItem == null) {
-      gatheredItem=new HashMap<String,Object[]>();
-      gatherMap.put(group.getId(),gatheredItem);
-    }
-    for (    FulfillmentGroupItem fgItem : group.getFulfillmentGroupItems()) {
-      OrderItem orderItem=fgItem.getOrderItem();
-      if (!CollectionUtils.isEmpty(orderItem.getOrderItemAdjustments())) {
-        Object[] gatheredOrderItem=gatheredItem.get(orderItem.getName());
-        if (gatheredOrderItem == null) {
-          gatheredItem.put(orderItem.getName(),new Object[]{orderItem,fgItem});
-          continue;
-        }
-        ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + orderItem.getQuantity());
-        ((FulfillmentGroupItem)gatheredOrderItem[1]).setQuantity(((FulfillmentGroupItem)gatheredOrderItem[1]).getQuantity() + fgItem.getQuantity());
-        itemsToRemove.add(orderItem);
-      }
-    }
-  }
   try {
-    for (    Map<String,Object[]> values : gatherMap.values()) {
-      for (      Object[] item : values.values()) {
-        orderItemService.saveOrderItem((OrderItem)item[0]);
-        fulfillmentGroupItemDao.save((FulfillmentGroupItem)item[1]);
-      }
+    if (!CollectionUtils.isEmpty(order.getFulfillmentGroups())) {
+      gatherFulfillmentGroupLinkedDiscreteOrderItems(order);
+      gatherFulfillmentGroupLinkedBundleOrderItems(order);
     }
-    for (    OrderItem orderItem : itemsToRemove) {
-      cartService.removeItemFromOrder(order,orderItem,false);
+ else {
+      gatherOrderLinkedDiscreteOrderItems(order);
+      gatherOrderLinkedBundleOrderItems(order);
     }
   }
  catch (  PricingException e) {
     throw new RuntimeException("Could not gather the cart",e);
   }
+  promotableOrder.resetDiscreteOrderItems();
 }
