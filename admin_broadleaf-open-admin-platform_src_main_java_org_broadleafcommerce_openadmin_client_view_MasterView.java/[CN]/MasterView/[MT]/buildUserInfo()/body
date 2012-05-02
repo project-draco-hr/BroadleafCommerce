@@ -18,6 +18,7 @@
       final DynamicEntityDataSource userDS=new DynamicEntityDataSource(CeilingEntities.ADMIN_USER);
       userDS.buildFields(null,false,new AsyncCallbackAdapter(){
         public void onSetupSuccess(        DataSource ds){
+          userDS.getField("password").setValidators();
           AdminUser currentUser=SecurityManager.USER;
           Record userRecord=new Record();
           userRecord.setAttribute("id",currentUser.getId());

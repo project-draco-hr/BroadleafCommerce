@@ -5,6 +5,7 @@
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminUser.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     AdminUser adminInstance=(AdminUser)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    dynamicEntityDao.detach(adminInstance);
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance.setUnencodedPassword(adminInstance.getPassword());
     adminInstance.setPassword(null);
@@ -16,6 +17,7 @@
     return adminEntity;
   }
  catch (  Exception e) {
-    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+    LOG.error("Unable to update entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
   }
 }
