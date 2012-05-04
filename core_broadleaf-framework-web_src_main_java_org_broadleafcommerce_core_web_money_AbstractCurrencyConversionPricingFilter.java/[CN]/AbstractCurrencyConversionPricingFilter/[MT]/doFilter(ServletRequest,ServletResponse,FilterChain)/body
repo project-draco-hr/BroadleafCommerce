@@ -1,0 +1,11 @@
+{
+  CurrencyConversionContext.setCurrencyConversionContext(getCurrencyConversionContext(request));
+  CurrencyConversionContext.setCurrencyConversionService(getCurrencyConversionService(request));
+  try {
+    filterChain.doFilter(request,response);
+  }
+  finally {
+    CurrencyConversionContext.setCurrencyConversionContext(null);
+    CurrencyConversionContext.setCurrencyConversionService(null);
+  }
+}
