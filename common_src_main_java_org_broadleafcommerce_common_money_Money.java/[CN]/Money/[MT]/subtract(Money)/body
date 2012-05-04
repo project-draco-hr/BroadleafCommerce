@@ -1,3 +1,11 @@
 {
+  if (!other.getCurrency().equals(getCurrency())) {
+    if (CurrencyConversionContext.getCurrencyConversionContext() != null && CurrencyConversionContext.getCurrencyConversionContext().size() > 0 && CurrencyConversionContext.getCurrencyConversionService() != null) {
+      other=CurrencyConversionContext.getCurrencyConversionService().convertCurrency(other,getCurrency(),amount.scale());
+    }
+ else {
+      return null;
+    }
+  }
   return new Money(amount.subtract(other.amount),currency,amount.scale() == 0 ? BankersRounding.DEFAULT_SCALE : amount.scale());
 }
