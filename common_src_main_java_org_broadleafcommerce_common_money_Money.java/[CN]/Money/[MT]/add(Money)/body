@@ -4,7 +4,7 @@
       other=CurrencyConversionContext.getCurrencyConversionService().convertCurrency(other,getCurrency(),amount.scale());
     }
  else {
-      return null;
+      throw new UnsupportedOperationException("No currency conversion service is registered, cannot add different currency " + "types together (" + getCurrency().getCurrencyCode() + " "+ other.getCurrency().getCurrencyCode()+ ")");
     }
   }
   return new Money(amount.add(other.amount),currency,amount.scale() == 0 ? BankersRounding.DEFAULT_SCALE : amount.scale());
