@@ -1,0 +1,14 @@
+{
+  if (stateTaxRateMap != null && state != null && state.getAbbreviation() != null) {
+    String stateAbbr=state.getAbbreviation().toUpperCase();
+    Double rate=stateTaxRateMap.get(stateAbbr);
+    if (rate == null && state.getName() != null) {
+      String stateName=state.getName().toUpperCase();
+      return stateTaxRateMap.get(stateName);
+    }
+ else {
+      return rate;
+    }
+  }
+  return null;
+}

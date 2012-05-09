@@ -1,0 +1,26 @@
+{
+  if (address != null) {
+    Double postalCodeRate=lookupPostalCodeRate(itemPostalCodeTaxRateMap,address.getPostalCode());
+    if (postalCodeRate != null) {
+      return postalCodeRate;
+    }
+    Double cityCodeRate=lookupCityRate(itemCityTaxRateMap,address.getCity());
+    if (cityCodeRate != null) {
+      return cityCodeRate;
+    }
+    Double stateCodeRate=lookupStateRate(itemStateTaxRateMap,address.getState());
+    if (stateCodeRate != null) {
+      return stateCodeRate;
+    }
+    Double countryCodeRate=lookupCountryRate(itemCountryTaxRateMap,address.getCountry());
+    if (countryCodeRate != null) {
+      return countryCodeRate;
+    }
+  }
+  if (defaultItemTaxRate != null) {
+    return defaultItemTaxRate;
+  }
+ else {
+    return 0d;
+  }
+}

@@ -2,11 +2,38 @@
   for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
     for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
       fgItem.getTaxes().clear();
+      if (isItemTaxable(fgItem)) {
+        Double factor=determineItemTaxRate(fulfillmentGroup.getAddress());
+        if (factor != null && factor.compareTo(0d) != 0) {
+          TaxDetail tax=new TaxDetailImpl();
+          tax.setRate(new BigDecimal(factor));
+          tax.setType(TaxType.COMBINED);
+          tax.setAmount(fgItem.getPrice().multiply(fgItem.getQuantity()).multiply(factor));
+          fgItem.getTaxes().add(tax);
+        }
+      }
+    }
+    for (    FulfillmentGroupFee fgFee : fulfillmentGroup.getFulfillmentGroupFees()) {
+      fgFee.getTaxes().clear();
+      if (isFeeTaxable(fgFee)) {
+        Double factor=determineItemTaxRate(fulfillmentGroup.getAddress());
+        if (factor != null && factor.compareTo(0d) != 0) {
+          TaxDetail tax=new TaxDetailImpl();
+          tax.setRate(new BigDecimal(factor));
+          tax.setType(TaxType.COMBINED);
+          tax.setAmount(fgFee.getAmount().multiply(factor));
+          fgFee.getTaxes().add(tax);
+        }
+      }
+    }
+    Double factor=determineTaxRateForFulfillmentGroup(fulfillmentGroup);
+    fulfillmentGroup.getTaxes().clear();
+    if (factor != null && factor.compareTo(0d) != 0) {
       TaxDetail tax=new TaxDetailImpl();
       tax.setRate(new BigDecimal(factor));
-      tax.setType(TaxType.STATE);
-      tax.setAmount(fgItem.getPrice().multiply(fgItem.getQuantity()).multiply(factor));
-      fgItem.getTaxes().add(tax);
+      tax.setType(TaxType.COMBINED);
+      tax.setAmount(fulfillmentGroup.getShippingPrice().multiply(factor));
+      fulfillmentGroup.getTaxes().add(tax);
     }
   }
   return order;
