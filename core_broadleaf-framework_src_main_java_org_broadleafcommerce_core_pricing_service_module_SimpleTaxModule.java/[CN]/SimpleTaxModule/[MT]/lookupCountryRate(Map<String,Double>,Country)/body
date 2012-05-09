@@ -1,0 +1,14 @@
+{
+  if (countryTaxRateMap != null && country != null && country.getAbbreviation() != null) {
+    String cntryAbbr=country.getAbbreviation().toUpperCase();
+    Double rate=countryTaxRateMap.get(cntryAbbr);
+    if (rate == null && country.getName() != null) {
+      String countryName=country.getName().toUpperCase();
+      return countryTaxRateMap.get(countryName);
+    }
+ else {
+      return rate;
+    }
+  }
+  return null;
+}

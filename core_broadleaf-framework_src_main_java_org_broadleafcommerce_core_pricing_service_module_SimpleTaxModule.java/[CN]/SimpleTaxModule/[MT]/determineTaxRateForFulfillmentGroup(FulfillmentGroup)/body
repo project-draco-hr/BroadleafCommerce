@@ -1,0 +1,31 @@
+{
+  boolean isTaxable=true;
+  if (fulfillmentGroup.isShippingPriceTaxable() != null) {
+    isTaxable=fulfillmentGroup.isShippingPriceTaxable();
+  }
+  if (isTaxable) {
+    Address address=fulfillmentGroup.getAddress();
+    if (address != null) {
+      Double postalCodeRate=lookupPostalCodeRate(fulfillmentGroupPostalCodeTaxRateMap,address.getPostalCode());
+      if (postalCodeRate != null) {
+        return postalCodeRate;
+      }
+      Double cityCodeRate=lookupCityRate(fulfillmentGroupCityTaxRateMap,address.getCity());
+      if (cityCodeRate != null) {
+        return cityCodeRate;
+      }
+      Double stateCodeRate=lookupStateRate(fulfillmentGroupStateTaxRateMap,address.getState());
+      if (stateCodeRate != null) {
+        return stateCodeRate;
+      }
+      Double countryCodeRate=lookupCountryRate(fulfillmentGroupCountryTaxRateMap,address.getCountry());
+      if (countryCodeRate != null) {
+        return countryCodeRate;
+      }
+    }
+    if (defaultFulfillmentGroupTaxRate != null) {
+      return defaultFulfillmentGroupTaxRate;
+    }
+  }
+  return 0d;
+}
