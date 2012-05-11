@@ -1,14 +1,18 @@
 {
   if (persistenceUnitProperties != null) {
+    String puName=pui.getPersistenceUnitName() + ".";
     Set<String> keys=persistenceUnitProperties.keySet();
     Properties props=pui.getProperties();
     for (    String key : keys) {
-      String value=persistenceUnitProperties.get(key);
-      if ("null".equalsIgnoreCase(value)) {
-        props.remove(key);
-      }
- else       if (value != null && !"".equals(value)) {
-        props.put(key,value);
+      if (key.startsWith(puName)) {
+        String value=persistenceUnitProperties.get(key);
+        String newKey=key.substring(puName.length());
+        if ("null".equalsIgnoreCase(value)) {
+          props.remove(newKey);
+        }
+ else         if (value != null && !"".equals(value)) {
+          props.put(newKey,value);
+        }
       }
     }
     pui.setProperties(props);
