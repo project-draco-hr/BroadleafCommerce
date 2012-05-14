@@ -7,11 +7,11 @@
     for (    String field : descriptor.getHydratedMutators().keySet()) {
       try {
         Serializable entityId=(Serializable)idMutators[0].invoke(entity);
-        Object hydratedItem=manager.getHydratedCacheElementItem(cacheRegion,entity.getClass().getName(),entityId,field);
+        Object hydratedItem=manager.getHydratedCacheElementItem(cacheRegion,getInheritanceHierarchyRoot(entity.getClass()),entityId,field);
         if (hydratedItem == null) {
           Method factoryMethod=entity.getClass().getMethod(descriptor.getHydratedMutators().get(field).getFactoryMethod(),new Class[]{});
           Object fieldVal=factoryMethod.invoke(entity);
-          manager.addHydratedCacheElementItem(cacheRegion,entity.getClass().getName(),entityId,field,fieldVal);
+          manager.addHydratedCacheElementItem(cacheRegion,getInheritanceHierarchyRoot(entity.getClass()),entityId,field,fieldVal);
           hydratedItem=fieldVal;
         }
         descriptor.getHydratedMutators().get(field).getMutators()[1].invoke(entity,hydratedItem);

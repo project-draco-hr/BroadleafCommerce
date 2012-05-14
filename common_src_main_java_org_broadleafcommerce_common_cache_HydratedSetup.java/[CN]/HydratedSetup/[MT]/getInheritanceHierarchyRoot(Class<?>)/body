@@ -1,0 +1,22 @@
+{
+  String myEntityName=myEntityClass.getName();
+  if (inheritanceHierarchyRoots.containsKey(myEntityName)) {
+    return inheritanceHierarchyRoots.get(myEntityName);
+  }
+  Class<?> currentClass=myEntityClass;
+  boolean eof=false;
+  while (!eof) {
+    Class<?> superclass=currentClass.getSuperclass();
+    if (superclass.equals(Object.class) || !superclass.isAnnotationPresent(Entity.class)) {
+      eof=true;
+    }
+ else {
+      currentClass=superclass;
+    }
+  }
+  if (!currentClass.isAnnotationPresent(Cache.class)) {
+    currentClass=myEntityClass;
+  }
+  inheritanceHierarchyRoots.put(myEntityName,currentClass.getName());
+  return inheritanceHierarchyRoots.get(myEntityName);
+}
