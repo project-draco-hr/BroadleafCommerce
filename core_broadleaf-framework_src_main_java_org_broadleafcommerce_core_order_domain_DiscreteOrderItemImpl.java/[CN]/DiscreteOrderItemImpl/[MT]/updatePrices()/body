@@ -1,13 +1,19 @@
 {
+  Money skuRetailPrice=getSku().getRetailPrice();
+  Money skuSalePrice=(getSku().getSalePrice() == null ? null : getSku().getSalePrice());
+  if (SkuBundleItem != null && ProductBundle.PRICING_MODEL_ITEM_SUM.equals(SkuBundleItem.getBundle().getPricingModel())) {
+    skuSalePrice=SkuBundleItem.getSalePrice();
+    skuRetailPrice=SkuBundleItem.getRetailPrice();
+  }
   boolean updated=false;
-  if (!getSku().getRetailPrice().equals(getRetailPrice())) {
-    setBaseRetailPrice(getSku().getRetailPrice());
-    setRetailPrice(getSku().getRetailPrice());
+  if (!skuRetailPrice.equals(getRetailPrice())) {
+    setBaseRetailPrice(skuRetailPrice);
+    setRetailPrice(skuRetailPrice);
     updated=true;
   }
-  if (getSku().getSalePrice() != null && !getSku().getSalePrice().equals(getSalePrice())) {
-    setBaseSalePrice(getSku().getSalePrice());
-    setSalePrice(getSku().getSalePrice());
+  if (skuSalePrice != null && !skuSalePrice.equals(getSalePrice())) {
+    setBaseSalePrice(skuSalePrice);
+    setSalePrice(skuSalePrice);
     updated=true;
   }
   if (getDiscreteOrderItemFeePrices() != null) {

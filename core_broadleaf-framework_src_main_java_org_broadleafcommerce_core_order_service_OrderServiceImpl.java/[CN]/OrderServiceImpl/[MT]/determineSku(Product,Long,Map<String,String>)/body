@@ -1,0 +1,10 @@
+{
+  Sku sku=findSkuThatMatchesProductOptions(product,attributeValues);
+  if (sku == null && skuId != null) {
+    sku=skuDao.readSkuById(skuId);
+  }
+  if (sku == null && product != null) {
+    sku=product.getDefaultSku();
+  }
+  return sku;
+}

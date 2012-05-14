@@ -1,0 +1,10 @@
+{
+  Category category=null;
+  if (categoryId != null) {
+    category=categoryDao.readCategoryById(categoryId);
+  }
+  if (category == null && product != null) {
+    category=product.getDefaultCategory();
+  }
+  return category;
+}

@@ -1,0 +1,10 @@
+{
+  if (productId != null) {
+    Product product=productDao.readProductById(productId);
+    if (product == null) {
+      throw new IllegalArgumentException("No product found matching passed in productId " + productId + " while trying to addItemToOrder.");
+    }
+    return product;
+  }
+  return null;
+}

@@ -1,7 +1,21 @@
 {
   boolean updated=false;
-  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-    if (discreteOrderItem.updatePrices()) {
+  if (shouldSumItems()) {
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      if (discreteOrderItem.updatePrices()) {
+        updated=true;
+      }
+    }
+  }
+ else {
+    if (getSku() != null && !getSku().getRetailPrice().equals(getRetailPrice())) {
+      setBaseRetailPrice(getSku().getRetailPrice());
+      setRetailPrice(getSku().getRetailPrice());
+      updated=true;
+    }
+    if (getSku() != null && getSku().getSalePrice() != null && !getSku().getSalePrice().equals(getSalePrice())) {
+      setBaseSalePrice(getSku().getSalePrice());
+      setSalePrice(getSku().getSalePrice());
       updated=true;
     }
   }

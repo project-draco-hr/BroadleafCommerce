@@ -1,20 +1,25 @@
 {
-  Money bundleSalePrice=null;
-  if (hasSaleItems()) {
-    bundleSalePrice=new Money();
-    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-      Money itemSalePrice=null;
-      if (discreteOrderItem.getSalePrice() != null) {
-        itemSalePrice=discreteOrderItem.getSalePrice();
-      }
+  if (shouldSumItems()) {
+    Money bundleSalePrice=null;
+    if (hasSaleItems()) {
+      bundleSalePrice=new Money();
+      for (      DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+        Money itemSalePrice=null;
+        if (discreteOrderItem.getSalePrice() != null) {
+          itemSalePrice=discreteOrderItem.getSalePrice();
+        }
  else {
-        itemSalePrice=discreteOrderItem.getRetailPrice();
+          itemSalePrice=discreteOrderItem.getRetailPrice();
+        }
+        bundleSalePrice=bundleSalePrice.add(new Money(itemSalePrice.doubleValue() * discreteOrderItem.getQuantity()));
       }
-      bundleSalePrice=bundleSalePrice.add(new Money(itemSalePrice.doubleValue() * discreteOrderItem.getQuantity()));
+      for (      BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
+        bundleSalePrice=bundleSalePrice.add(fee.getAmount());
+      }
     }
-    for (    BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
-      bundleSalePrice=bundleSalePrice.add(fee.getAmount());
-    }
+    return bundleSalePrice;
   }
-  return bundleSalePrice;
+ else {
+    return super.getSalePrice();
+  }
 }

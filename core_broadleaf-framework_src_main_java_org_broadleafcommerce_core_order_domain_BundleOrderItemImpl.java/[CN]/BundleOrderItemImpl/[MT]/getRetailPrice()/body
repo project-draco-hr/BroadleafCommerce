@@ -1,11 +1,16 @@
 {
-  Money bundleRetailPrice=new Money();
-  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-    Money itemRetailPrice=discreteOrderItem.getRetailPrice();
-    bundleRetailPrice=bundleRetailPrice.add(new Money(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity()));
+  if (shouldSumItems()) {
+    Money bundleRetailPrice=new Money();
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      Money itemRetailPrice=discreteOrderItem.getRetailPrice();
+      bundleRetailPrice=bundleRetailPrice.add(new Money(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity()));
+    }
+    for (    BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
+      bundleRetailPrice=bundleRetailPrice.add(fee.getAmount());
+    }
+    return bundleRetailPrice;
   }
-  for (  BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
-    bundleRetailPrice=bundleRetailPrice.add(fee.getAmount());
+ else {
+    return super.getRetailPrice();
   }
-  return bundleRetailPrice;
 }

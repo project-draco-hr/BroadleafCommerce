@@ -1,8 +1,13 @@
 {
-  Money currentBundlePrice=new Money();
-  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-    Money currentItemPrice=discreteOrderItem.getCurrentPrice();
-    currentBundlePrice=currentBundlePrice.add(new Money(currentItemPrice.doubleValue() * discreteOrderItem.getQuantity()));
+  if (shouldSumItems()) {
+    Money currentBundlePrice=new Money();
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      Money currentItemPrice=discreteOrderItem.getCurrentPrice();
+      currentBundlePrice=currentBundlePrice.add(new Money(currentItemPrice.doubleValue() * discreteOrderItem.getQuantity()));
+    }
+    return currentBundlePrice;
   }
-  return currentBundlePrice;
+ else {
+    return super.getCurrentPrice();
+  }
 }

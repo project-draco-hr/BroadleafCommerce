@@ -1,7 +1,12 @@
 {
-  int removedAdjustmentCount=0;
-  for (  DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-    removedAdjustmentCount=removedAdjustmentCount + discreteOrderItem.removeAllAdjustments();
+  if (shouldSumItems()) {
+    int removedAdjustmentCount=0;
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      removedAdjustmentCount=removedAdjustmentCount + discreteOrderItem.removeAllAdjustments();
+    }
+    return removedAdjustmentCount;
   }
-  return removedAdjustmentCount;
+ else {
+    return removeAllAdjustments();
+  }
 }
