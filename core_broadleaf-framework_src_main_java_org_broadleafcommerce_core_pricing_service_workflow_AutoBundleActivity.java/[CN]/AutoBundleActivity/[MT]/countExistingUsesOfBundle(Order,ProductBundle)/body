@@ -1,0 +1,14 @@
+{
+  int existingUses=0;
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
+      if (bundleOrderItem.getProductBundle() != null) {
+        if (bundleOrderItem.getProductBundle().getId().equals(bundle.getId())) {
+          existingUses=existingUses + 1;
+        }
+      }
+    }
+  }
+  return existingUses;
+}

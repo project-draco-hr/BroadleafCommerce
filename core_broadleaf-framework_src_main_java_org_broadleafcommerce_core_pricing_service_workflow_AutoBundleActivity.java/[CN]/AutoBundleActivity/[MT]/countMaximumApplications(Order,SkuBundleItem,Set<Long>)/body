@@ -1,0 +1,25 @@
+{
+  int skuMatches=0;
+  Long skuId=skuBundleItem.getSku().getId();
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    if (orderItem instanceof DiscreteOrderItem) {
+      DiscreteOrderItem item=(DiscreteOrderItem)orderItem;
+      if (skuId.equals(item.getSku().getId())) {
+        skuMatches=skuMatches + item.getQuantity();
+      }
+    }
+ else     if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleItem=(BundleOrderItem)orderItem;
+      if (bundleItem.getProductBundle() != null && bundleItem.getProductBundle().getAutoBundle()) {
+        if (!processedBundles.contains(bundleItem.getId())) {
+          for (          DiscreteOrderItem discreteItem : bundleItem.getDiscreteOrderItems()) {
+            if (skuId.equals(discreteItem.getSku().getId())) {
+              skuMatches=skuMatches + (discreteItem.getQuantity() * bundleItem.getQuantity());
+            }
+          }
+        }
+      }
+    }
+  }
+  return skuMatches / skuBundleItem.getQuantity();
+}

@@ -1,0 +1,26 @@
+{
+  boolean itemsHaveBeenUnbundled=false;
+  List<DiscreteOrderItem> unbundledItems=null;
+  List<ProductBundle> productBundles=catalogService.findAutomaticProductBundles();
+  Set<Long> processedBundleIds=new HashSet<Long>();
+  for (  ProductBundle productBundle : productBundles) {
+    int existingUses=countExistingUsesOfBundle(order,productBundle);
+    Integer maxApplications=null;
+    for (    SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
+      int maxSkuApplications=countMaximumApplications(order,skuBundleItem,processedBundleIds);
+      if (maxApplications == null || maxApplications > maxSkuApplications) {
+        maxApplications=maxSkuApplications;
+      }
+    }
+    processedBundleIds.add(productBundle.getId());
+    if (maxApplications != existingUses) {
+      if (!itemsHaveBeenUnbundled) {
+        unbundledItems=unBundleItems(order);
+        order=removeAutomaticBundles(order);
+        itemsHaveBeenUnbundled=true;
+      }
+      order=bundleItems(order,productBundle,maxApplications,unbundledItems);
+    }
+  }
+  return order;
+}

@@ -1,0 +1,27 @@
+{
+  if (skuBundleItems != null) {
+    Money totalNormalPrice=new Money();
+    Money totalBundlePrice=new Money();
+    for (    SkuBundleItem skuBundleItem : skuBundleItems) {
+      totalNormalPrice.add(skuBundleItem.getSku().getRetailPrice().multiply(skuBundleItem.getQuantity()));
+      if (ProductBundle.PRICING_MODEL_ITEM_SUM.equals(pricingModel)) {
+        if (skuBundleItem.getSalePrice() != null) {
+          totalBundlePrice.add(skuBundleItem.getSalePrice().multiply(skuBundleItem.getQuantity()));
+        }
+ else {
+          totalBundlePrice.add(skuBundleItem.getRetailPrice().multiply(skuBundleItem.getQuantity()));
+        }
+      }
+    }
+    if (ProductBundle.PRICING_MODEL_BUNDLE.equals(pricingModel)) {
+      if (getSalePrice() != null) {
+        totalBundlePrice=getSalePrice();
+      }
+ else {
+        totalBundlePrice=getRetailPrice();
+      }
+    }
+    return totalNormalPrice.subtract(totalBundlePrice).getAmount();
+  }
+  return BigDecimal.ZERO;
+}

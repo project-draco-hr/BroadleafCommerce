@@ -1,9 +1,13 @@
 {
   Money skuRetailPrice=getSku().getRetailPrice();
   Money skuSalePrice=(getSku().getSalePrice() == null ? null : getSku().getSalePrice());
-  if (SkuBundleItem != null && ProductBundle.PRICING_MODEL_ITEM_SUM.equals(SkuBundleItem.getBundle().getPricingModel())) {
-    skuSalePrice=SkuBundleItem.getSalePrice();
-    skuRetailPrice=SkuBundleItem.getRetailPrice();
+  if (skuBundleItem != null) {
+    if (skuBundleItem.getSalePrice() != null) {
+      skuSalePrice=skuBundleItem.getSalePrice();
+    }
+    if (skuBundleItem.getRetailPrice() != null) {
+      skuRetailPrice=skuBundleItem.getRetailPrice();
+    }
   }
   boolean updated=false;
   if (!skuRetailPrice.equals(getRetailPrice())) {
