@@ -21,8 +21,9 @@
       }
       if (cloneItem.getQuantity() > 0) {
         String identifier=String.valueOf(cloneItem.getSku().getId());
-        if (cloneItem.getDelegate().getBundleOrderItem() != null) {
-          identifier+=cloneItem.getDelegate().getBundleOrderItem().getId();
+        Long bundleItemId=getBundleId(cloneItem.getDelegate());
+        if (bundleItemId != null) {
+          identifier+=bundleItemId;
         }
         if (allItems.containsKey(identifier)) {
           PromotableOrderItem savedItem=allItems.get(identifier);
@@ -33,7 +34,8 @@
           mySplits.add(cloneItem);
         }
       }
-      if (nextItem.getDelegate().getBundleOrderItem() == null) {
+      Long nextItemBundleItemId=getBundleId(nextItem.getDelegate());
+      if (nextItemBundleItemId != null) {
         if (mySplits.contains(nextItem)) {
           mySplits.remove(nextItem);
         }
@@ -52,26 +54,28 @@
       PromotableFulfillmentGroup targetGroup=getTargetFulfillmentGroup(order,key.getKey());
       for (      PromotableOrderItem myItem : mySplits) {
         myItem.assignFinalPrice();
-        DiscreteOrderItem delegateItem=myItem.getDelegate();
-        if (delegateItem.getBundleOrderItem() == null) {
+        OrderItem delegateItem=myItem.getDelegate();
+        Long delegateItemBundleItemId=getBundleId(delegateItem);
+        if (delegateItemBundleItemId == null) {
           delegateItem=(DiscreteOrderItem)cartService.addOrderItemToOrder(order.getDelegate(),delegateItem,false);
           if (targetGroup != null) {
             cartService.addItemToFulfillmentGroup(delegateItem,targetGroup.getDelegate(),false);
           }
         }
  else {
-          delegateItem.getBundleOrderItem().getDiscreteOrderItems().add(delegateItem);
+          ((DiscreteOrderItem)delegateItem).getBundleOrderItem().getDiscreteOrderItems().add((DiscreteOrderItem)delegateItem);
         }
       }
     }
   }
   for (  PromotableOrderItem orderItem : itemsToRemove) {
-    DiscreteOrderItem delegateItem=orderItem.getDelegate();
-    if (delegateItem.getBundleOrderItem() == null) {
+    OrderItem delegateItem=orderItem.getDelegate();
+    Long delegateItemBundleItemId=getBundleId(delegateItem);
+    if (delegateItemBundleItemId == null) {
       cartService.removeItemFromOrder(order.getDelegate(),orderItem.getDelegate(),false);
     }
  else {
-      delegateItem.getBundleOrderItem().getDiscreteOrderItems().remove(orderItem.getDelegate());
+      ((DiscreteOrderItem)delegateItem).getBundleOrderItem().getDiscreteOrderItems().remove(orderItem.getDelegate());
     }
   }
 }

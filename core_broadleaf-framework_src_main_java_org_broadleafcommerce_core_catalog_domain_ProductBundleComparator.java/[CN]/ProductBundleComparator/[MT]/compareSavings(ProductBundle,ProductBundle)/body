@@ -1,0 +1,14 @@
+{
+  BigDecimal savings1=productBundle.getPotentialSavings();
+  BigDecimal savings2=productBundle1.getPotentialSavings();
+  if (savings1 == null && savings2 == null) {
+    return 0;
+  }
+  if (savings1 == null) {
+    return savings2.compareTo(BigDecimal.ZERO) * -1;
+  }
+  if (savings2 == null) {
+    return savings1.compareTo(BigDecimal.ZERO);
+  }
+  return savings1.compareTo(savings2);
+}

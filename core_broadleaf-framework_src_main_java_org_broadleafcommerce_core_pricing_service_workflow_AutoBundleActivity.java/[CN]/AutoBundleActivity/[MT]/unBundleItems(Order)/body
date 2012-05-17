@@ -1,0 +1,24 @@
+{
+  List<DiscreteOrderItem> unbundledItems=null;
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
+      if (bundleOrderItem.getProductBundle() != null && bundleOrderItem.getProductBundle().getAutoBundle()) {
+        if (unbundledItems == null) {
+          unbundledItems=new ArrayList<DiscreteOrderItem>();
+        }
+        for (        DiscreteOrderItem item : bundleOrderItem.getDiscreteOrderItems()) {
+          DiscreteOrderItem newOrderItem=(DiscreteOrderItem)item.clone();
+          newOrderItem.setQuantity(item.getQuantity() * bundleOrderItem.getQuantity());
+          newOrderItem.setSkuBundleItem(null);
+          newOrderItem.setBundleOrderItem(null);
+          newOrderItem.updatePrices();
+          newOrderItem.assignFinalPrice();
+          newOrderItem.setOrder(order);
+          unbundledItems.add(newOrderItem);
+        }
+      }
+    }
+  }
+  return unbundledItems;
+}

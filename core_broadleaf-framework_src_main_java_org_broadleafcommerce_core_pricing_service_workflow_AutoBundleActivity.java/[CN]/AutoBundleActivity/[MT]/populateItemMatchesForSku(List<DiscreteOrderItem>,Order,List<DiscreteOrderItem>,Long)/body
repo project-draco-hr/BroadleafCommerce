@@ -1,0 +1,20 @@
+{
+  int skuMatches=0;
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    if (orderItem instanceof DiscreteOrderItem) {
+      DiscreteOrderItem item=(DiscreteOrderItem)orderItem;
+      if (skuId.equals(item.getSku().getId())) {
+        matchingItems.add(item);
+        skuMatches=skuMatches + item.getQuantity();
+      }
+    }
+  }
+  if (unbundledItems != null) {
+    for (    DiscreteOrderItem discreteOrderItem : unbundledItems) {
+      if (skuId.equals(discreteOrderItem.getSku().getId())) {
+        skuMatches=skuMatches + discreteOrderItem.getQuantity();
+      }
+    }
+  }
+  return skuMatches;
+}

@@ -1,0 +1,52 @@
+{
+  BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
+  bundleOrderItem.setQuantity(numApplications);
+  bundleOrderItem.setCategory(productBundle.getDefaultCategory());
+  bundleOrderItem.setSku(productBundle.getDefaultSku());
+  bundleOrderItem.setName(productBundle.getDefaultSku().getName());
+  bundleOrderItem.setProductBundle(productBundle);
+  bundleOrderItem.setOrder(order);
+  for (  SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
+    List<DiscreteOrderItem> itemMatches=new ArrayList<DiscreteOrderItem>();
+    int skuMatches=populateItemMatchesForSku(itemMatches,order,unbundledItems,skuBundleItem.getSku().getId());
+    int skusRequired=skuBundleItem.getQuantity() * numApplications;
+    if (skuMatches < skusRequired) {
+      throw new IllegalArgumentException("Something went wrong creating automatic bundles.  Not enough skus to fulfill bundle requirements for sku id: " + skuBundleItem.getSku().getId());
+    }
+    for (    DiscreteOrderItem item : itemMatches) {
+      order=cartService.removeItemFromOrder(order,item,false);
+    }
+    DiscreteOrderItem baseItem=null;
+    if (itemMatches.size() > 0) {
+      baseItem=itemMatches.get(0);
+    }
+ else {
+      for (      DiscreteOrderItem discreteOrderItem : unbundledItems) {
+        if (discreteOrderItem.getSku().getId().equals(skuBundleItem.getSku().getId())) {
+          baseItem=discreteOrderItem;
+        }
+      }
+    }
+    DiscreteOrderItem newSkuBundleItem=(DiscreteOrderItem)baseItem.clone();
+    newSkuBundleItem.setSkuBundleItem(skuBundleItem);
+    newSkuBundleItem.setBundleOrderItem(bundleOrderItem);
+    newSkuBundleItem.setQuantity(skuBundleItem.getQuantity());
+    newSkuBundleItem.setOrder(null);
+    bundleOrderItem.getDiscreteOrderItems().add(newSkuBundleItem);
+    if (skuMatches > skusRequired) {
+      DiscreteOrderItem newOrderItem=(DiscreteOrderItem)baseItem.clone();
+      newOrderItem.setBundleOrderItem(null);
+      newOrderItem.setSkuBundleItem(null);
+      newOrderItem.setQuantity(skuMatches - skusRequired);
+      newOrderItem=(DiscreteOrderItem)orderItemDao.save(newOrderItem);
+      newOrderItem.setOrder(order);
+      newOrderItem.updatePrices();
+      newOrderItem.assignFinalPrice();
+      order.getOrderItems().add(newOrderItem);
+    }
+  }
+  bundleOrderItem.updatePrices();
+  bundleOrderItem.assignFinalPrice();
+  order.getOrderItems().add(bundleOrderItem);
+  return cartService.save(order,false);
+}

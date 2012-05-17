@@ -16,10 +16,11 @@
     BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
     bundleOrderItem.setQuantity(orderItemRequestDTO.getQuantity());
     bundleOrderItem.setCategory(category);
+    bundleOrderItem.setSku(sku);
     bundleOrderItem.setName(sku.getName());
     bundleOrderItem.setProductBundle(bundle);
     for (    SkuBundleItem skuBundleItem : bundle.getSkuBundleItems()) {
-      Product bundleProduct=skuBundleItem.getProduct();
+      Product bundleProduct=skuBundleItem.getBundle();
       Sku bundleSku=skuBundleItem.getSku();
       Category bundleCategory=determineCategory(bundleProduct,orderItemRequestDTO.getCategoryId());
       DiscreteOrderItem bundleDiscreteItem=createDiscreteOrderItem(bundleSku,bundleProduct,bundleCategory,skuBundleItem.getQuantity(),orderItemRequestDTO.getItemAttributes());
@@ -28,6 +29,7 @@
       bundleOrderItem.getDiscreteOrderItems().add(bundleDiscreteItem);
     }
     bundleOrderItem.updatePrices();
+    bundleOrderItem.assignFinalPrice();
     return addOrderItemToOrder(order,bundleOrderItem,priceOrder);
   }
 }
