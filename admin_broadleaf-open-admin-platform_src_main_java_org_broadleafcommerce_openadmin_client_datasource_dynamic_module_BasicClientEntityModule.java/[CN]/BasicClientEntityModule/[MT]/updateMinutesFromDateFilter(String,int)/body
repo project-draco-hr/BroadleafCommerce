@@ -2,6 +2,10 @@
   String timezone=DateTimeFormat.getFormat("Z").format(new Date());
   if (originalDateString != null) {
     int pos=originalDateString.indexOf("T");
+    Date date=DateTimeFormat.getFormat("yyyy-MM-dd").parse(originalDateString.substring(0,pos));
+    if (date != null) {
+      timezone=DateTimeFormat.getFormat("Z").format(date);
+    }
 switch (position) {
 case 0:
       if (pos >= 0) {
