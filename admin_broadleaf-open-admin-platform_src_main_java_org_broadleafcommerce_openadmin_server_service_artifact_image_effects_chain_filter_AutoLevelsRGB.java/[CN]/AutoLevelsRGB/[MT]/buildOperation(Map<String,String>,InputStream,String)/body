@@ -1,11 +1,9 @@
 {
   String key=FilterTypeEnum.AUTOLEVELSRGB.toString().toLowerCase();
-  if (parameterMap.containsKey("filterType") && key.equals(parameterMap.get("filterType"))) {
-    Operation operation=new Operation();
-    operation.setName(key);
-    String factor=parameterMap.get(key + "-factor");
-    operation.setFactor(factor == null ? null : Double.valueOf(factor));
-    return operation;
+  if (!containsMyFilterParams(key,parameterMap)) {
+    return null;
   }
-  return null;
+  Operation operation=new Operation();
+  operation.setName(key);
+  return operation;
 }

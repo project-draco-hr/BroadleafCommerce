@@ -1,0 +1,13 @@
+{
+  for (  Map.Entry<String,String> entry : originalParameters.entrySet()) {
+    if (namedOperations.containsKey(entry.getKey())) {
+      expandFulfilledMap(namedOperations.get(entry.getKey()),derivedParameters,utilizedNames);
+      if (!utilizedNames.contains(entry.getKey())) {
+        utilizedNames.add(entry.getKey());
+      }
+    }
+ else {
+      derivedParameters.put(entry.getKey(),entry.getValue());
+    }
+  }
+}

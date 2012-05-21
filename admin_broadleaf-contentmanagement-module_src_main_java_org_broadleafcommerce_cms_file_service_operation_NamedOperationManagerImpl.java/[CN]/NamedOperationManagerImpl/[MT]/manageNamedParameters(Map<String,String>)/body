@@ -1,0 +1,12 @@
+{
+  List<String> utilizedNames=new ArrayList<String>();
+  Map<String,String> derivedMap=new LinkedHashMap<String,String>();
+  for (  NamedOperationComponent namedOperationComponent : namedOperationComponents) {
+    utilizedNames.addAll(namedOperationComponent.setOperationValues(parameterMap,derivedMap));
+  }
+  for (  String utilizedName : utilizedNames) {
+    parameterMap.remove(utilizedName);
+  }
+  derivedMap.putAll(parameterMap);
+  return derivedMap;
+}
