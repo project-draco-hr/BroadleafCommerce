@@ -32,6 +32,8 @@
               JSONValue errorJs=entityJs.get("error");
               if (errorJs != null) {
                 SC.warn(errorJs.isString().stringValue());
+                java.util.logging.Logger.getLogger(getClass().toString()).warning(errorJs.isString().stringValue());
+                ;
               }
  else {
                 Entity entity=new Entity();
@@ -57,6 +59,7 @@
             }
  catch (            Exception e) {
               SC.warn(e.getMessage());
+              java.util.logging.Logger.getLogger(getClass().toString()).log(Level.SEVERE,e.getMessage(),e);
             }
  finally {
               uploadProgressWindow.stopProgress();

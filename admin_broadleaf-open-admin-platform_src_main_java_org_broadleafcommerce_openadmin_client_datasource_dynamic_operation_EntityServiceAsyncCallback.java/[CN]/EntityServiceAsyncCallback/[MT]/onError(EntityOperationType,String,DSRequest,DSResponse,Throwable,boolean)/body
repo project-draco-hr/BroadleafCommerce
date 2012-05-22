@@ -1,6 +1,7 @@
 {
   response.setStatus(RPCResponse.STATUS_FAILURE);
   dataSource.processResponse(requestId,response);
+  java.util.logging.Logger.getLogger(getClass().toString()).log(Level.SEVERE,opType.name() + " Error while processing RPC request",caught);
   if (showWarning) {
     SC.warn("<b>" + opType.name() + "</b><br/><br/>Error while processing RPC request:<br/><br/>"+ caught.getMessage(),null);
   }

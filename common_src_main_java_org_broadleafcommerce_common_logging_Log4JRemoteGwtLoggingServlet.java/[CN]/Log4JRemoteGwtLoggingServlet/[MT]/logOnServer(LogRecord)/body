@@ -1,0 +1,21 @@
+{
+  Level level=record.getLevel();
+  String message;
+  message=getThreadLocalRequest().getRemoteAddr() + ":" + record.getMessage();
+  if (Level.INFO.equals(level)) {
+    LOG.info(message);
+  }
+ else   if (Level.SEVERE.equals(level)) {
+    LOG.error(message);
+  }
+ else   if (Level.WARNING.equals(level)) {
+    LOG.warn(message);
+  }
+ else   if (Level.FINE.equals(level)) {
+    LOG.debug(message);
+  }
+ else {
+    LOG.error(message);
+  }
+  return null;
+}
