@@ -64,6 +64,15 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productOptionsDS",new ProductOptionDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      productOptionsPresenter=new CreateBasedListStructurePresenter(getDisplay().getProductOptionsDisplay(),new String[]{EntityImplementations.PRODUCT},BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      productOptionsPresenter.setDataSource((ListGridDataSource)result,new String[]{"optionLabel","value","required"},new Boolean[]{true,true,true});
+      productOptionsPresenter.setReadOnly(false);
+      getDisplay().getProductOptionsDisplay().getGrid().groupBy("type");
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;

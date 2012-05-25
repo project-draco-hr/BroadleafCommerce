@@ -23,8 +23,15 @@
     os.flush();
   }
  catch (  Exception e) {
-    LOG.error("Unable to stream asset",e);
-    throw e;
+    if (e.getCause() instanceof SocketException) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Unable to stream asset",e);
+      }
+    }
+ else {
+      LOG.error("Unable to stream asset",e);
+      throw e;
+    }
   }
  finally {
     try {
