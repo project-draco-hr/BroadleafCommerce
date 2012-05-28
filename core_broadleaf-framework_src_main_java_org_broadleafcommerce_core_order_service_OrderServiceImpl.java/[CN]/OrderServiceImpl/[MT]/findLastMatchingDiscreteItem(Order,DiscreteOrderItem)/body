@@ -1,0 +1,19 @@
+{
+  for (int i=(order.getOrderItems().size() - 1); i >= 0; i--) {
+    OrderItem currentItem=(order.getOrderItems().get(i));
+    if (currentItem instanceof DiscreteOrderItem) {
+      DiscreteOrderItem discreteItem=(DiscreteOrderItem)currentItem;
+      if (itemMatches(discreteItem,itemToFind)) {
+        return discreteItem;
+      }
+    }
+ else     if (currentItem instanceof BundleOrderItem) {
+      for (      DiscreteOrderItem discreteItem : (((BundleOrderItem)currentItem).getDiscreteOrderItems())) {
+        if (itemMatches(discreteItem,itemToFind)) {
+          return discreteItem;
+        }
+      }
+    }
+  }
+  return null;
+}

@@ -8,5 +8,6 @@
   requestDTO.setSkuId(skuId);
   requestDTO.setQuantity(quantity);
   requestDTO.setItemAttributes(itemAttributes);
-  return addItemToOrder(orderId,requestDTO,priceOrder);
+  Order order=addItemToOrder(orderId,requestDTO,priceOrder);
+  return findLastMatchingItem(order,skuId,productId);
 }

@@ -1,0 +1,35 @@
+{
+  if (item1.getSku() != null && item2.getSku() != null) {
+    return item1.getSku().getId().equals(item1.getSku().getId());
+  }
+  HashMap<Long,Integer> skuMap=new HashMap<Long,Integer>();
+  for (  DiscreteOrderItem item : item1.getDiscreteOrderItems()) {
+    if (skuMap.get(item.getSku().getId()) == null) {
+      skuMap.put(item.getSku().getId(),Integer.valueOf(item.getQuantity()));
+    }
+ else {
+      Integer qty=skuMap.get(item.getSku().getId());
+      skuMap.put(item.getSku().getId(),Integer.valueOf(qty + item.getQuantity()));
+    }
+  }
+  for (  DiscreteOrderItem item : item2.getDiscreteOrderItems()) {
+    if (skuMap.containsKey(item.getSku().getId())) {
+      Integer qty=skuMap.get(item.getSku().getId());
+      Integer newQty=Integer.valueOf(qty - item.getQuantity());
+      if (newQty.intValue() == 0) {
+        skuMap.remove(item.getSku().getId());
+      }
+ else       if (newQty.intValue() > 0) {
+        skuMap.put(item.getSku().getId(),newQty);
+      }
+ else {
+        return false;
+      }
+    }
+ else {
+      return false;
+    }
+    return skuMap.isEmpty();
+  }
+  return false;
+}

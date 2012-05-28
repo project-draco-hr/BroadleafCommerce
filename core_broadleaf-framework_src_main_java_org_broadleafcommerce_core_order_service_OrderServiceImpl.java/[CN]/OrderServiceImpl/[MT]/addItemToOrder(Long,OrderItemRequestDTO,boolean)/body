@@ -1,5 +1,5 @@
 {
-  if (orderItemRequestDTO.getQuantity() == 0) {
+  if (orderItemRequestDTO.getQuantity() == null || orderItemRequestDTO.getQuantity() == 0) {
     LOG.debug("Not adding item to order because quantity is zero.");
     return null;
   }
@@ -7,9 +7,12 @@
   Product product=validateProduct(orderItemRequestDTO.getProductId());
   Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes());
   Category category=determineCategory(product,orderItemRequestDTO.getCategoryId());
-  if (!(product instanceof ProductBundle)) {
+  if (product == null || !(product instanceof ProductBundle)) {
     DiscreteOrderItem item=createDiscreteOrderItem(sku,product,category,orderItemRequestDTO.getQuantity(),orderItemRequestDTO.getItemAttributes());
-    return addOrderItemToOrder(order,item,priceOrder);
+    List<OrderItem> orderItems=order.getOrderItems();
+    orderItems.add(item);
+    item.setOrder(order);
+    return updateOrder(order,priceOrder);
   }
  else {
     ProductBundle bundle=(ProductBundle)product;
@@ -30,6 +33,9 @@
     }
     bundleOrderItem.updatePrices();
     bundleOrderItem.assignFinalPrice();
-    return addOrderItemToOrder(order,bundleOrderItem,priceOrder);
+    List<OrderItem> orderItems=order.getOrderItems();
+    orderItems.add(bundleOrderItem);
+    bundleOrderItem.setOrder(order);
+    return updateOrder(order,priceOrder);
   }
 }

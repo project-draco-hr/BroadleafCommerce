@@ -5,8 +5,10 @@
   fg.setPhone(fulfillmentGroupRequest.getPhone());
   fg.setMethod(fulfillmentGroupRequest.getMethod());
   fg.setService(fulfillmentGroupRequest.getService());
-  for (  FulfillmentGroupItemRequest request : fulfillmentGroupRequest.getFulfillmentGroupItemRequests()) {
-    fg=addItemToFulfillmentGroup(request.getOrderItem(),fg,request.getQuantity(),priceOrder);
+  for (int i=0; i < fulfillmentGroupRequest.getFulfillmentGroupItemRequests().size(); i++) {
+    FulfillmentGroupItemRequest request=fulfillmentGroupRequest.getFulfillmentGroupItemRequests().get(i);
+    boolean shouldPriceOrder=(priceOrder && (i == (fulfillmentGroupRequest.getFulfillmentGroupItemRequests().size() - 1)));
+    fg=addItemToFulfillmentGroup(request.getOrderItem(),fg,request.getQuantity(),shouldPriceOrder);
   }
   return fg;
 }
