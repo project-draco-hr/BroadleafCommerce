@@ -1,6 +1,9 @@
 {
+  if (salePrice == null && hasDefaultSku()) {
+    return lookupDefaultSku().getSalePrice();
+  }
   if (dynamicPrices != null) {
-    return dynamicPrices.getSalePrice();
+    dynamicPrices.getSalePrice();
   }
   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
     DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
