@@ -21,7 +21,8 @@
           DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
           if (discreteOrderItem.getSku().getActiveStartDate() != null) {
             if (discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-              addOrderItemToOrder(customerCart,discreteOrderItem.clone(),priceOrder);
+              DiscreteOrderItemRequest itemRequest=createDiscreteOrderItemRequest(discreteOrderItem);
+              addDiscreteItemToOrder(customerCart,itemRequest,priceOrder);
               mergeCartResponse.getAddedItems().add(orderItem);
             }
  else {
@@ -30,7 +31,8 @@
           }
  else {
             if (discreteOrderItem.getProduct().isActive() && orderItem.getCategory().isActive()) {
-              addOrderItemToOrder(customerCart,discreteOrderItem.clone(),priceOrder);
+              DiscreteOrderItemRequest itemRequest=createDiscreteOrderItemRequest(discreteOrderItem);
+              addDiscreteItemToOrder(customerCart,itemRequest,priceOrder);
               mergeCartResponse.getAddedItems().add(orderItem);
             }
  else {
@@ -43,9 +45,12 @@
           orderItem.removeAllAdjustments();
           orderItem.removeAllCandidateItemOffers();
           boolean removeBundle=false;
+          List<DiscreteOrderItemRequest> discreteOrderItemRequests=new ArrayList<DiscreteOrderItemRequest>();
           for (          DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
             discreteOrderItem.removeAllAdjustments();
             discreteOrderItem.removeAllCandidateItemOffers();
+            DiscreteOrderItemRequest itemRequest=createDiscreteOrderItemRequest(discreteOrderItem);
+            discreteOrderItemRequests.add(itemRequest);
             if (discreteOrderItem.getSku().getActiveStartDate() != null) {
               if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
                 removeBundle=true;
@@ -57,8 +62,9 @@
               }
             }
           }
+          BundleOrderItemRequest bundleOrderItemRequest=createBundleOrderItemRequest(bundleOrderItem,discreteOrderItemRequests);
           if (!removeBundle) {
-            addOrderItemToOrder(customerCart,bundleOrderItem.clone(),priceOrder);
+            addBundleItemToOrder(customerCart,bundleOrderItemRequest,priceOrder);
             mergeCartResponse.getAddedItems().add(orderItem);
           }
  else {
