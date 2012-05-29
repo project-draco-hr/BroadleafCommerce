@@ -1,17 +1,5 @@
 {
   Map<String,String> attributeValuesForSku=new HashMap<String,String>();
-  if (product.getProductOptions() != null) {
-    for (    ProductOption productOption : product.getProductOptions()) {
-      if (productOption.getRequired()) {
-        if (attributeValues.get(productOption.getAttributeName()) == null) {
-          throw new IllegalArgumentException("Unable to add to cart.   Not all required options were provided.");
-        }
- else {
-          attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
-        }
-      }
-    }
-  }
   if (product.getSkus() != null) {
     for (    Sku sku : product.getSkus()) {
       if (checkSkuForMatch(sku,attributeValuesForSku)) {
