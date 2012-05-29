@@ -3,7 +3,7 @@
   List<BundleOrderItem> bundlesToRemove=new ArrayList<BundleOrderItem>();
   for (  OrderItem orderItem : order.getOrderItems()) {
     if (orderItem instanceof BundleOrderItem) {
-      String identifier=getBundleOrderItemIdentifier((BundleOrderItem)orderItem);
+      String identifier=buildIdentifier(orderItem,null);
       BundleOrderItem retrieved=gatherBundle.get(identifier);
       if (retrieved == null) {
         gatherBundle.put(identifier,(BundleOrderItem)orderItem);

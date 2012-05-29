@@ -1,4 +1,9 @@
 {
-  if (discountable == null)   return null;
+  if (discountable == null) {
+    if (hasDefaultSku()) {
+      return lookupDefaultSku().isDiscountable();
+    }
+    return null;
+  }
   return discountable == 'Y' ? Boolean.TRUE : Boolean.FALSE;
 }

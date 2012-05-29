@@ -1,3 +1,11 @@
 {
+  Map<String,String> attributeValuesForSku=new HashMap<String,String>();
+  if (product.getSkus() != null) {
+    for (    Sku sku : product.getSkus()) {
+      if (checkSkuForMatch(sku,attributeValuesForSku)) {
+        return sku;
+      }
+    }
+  }
   return null;
 }

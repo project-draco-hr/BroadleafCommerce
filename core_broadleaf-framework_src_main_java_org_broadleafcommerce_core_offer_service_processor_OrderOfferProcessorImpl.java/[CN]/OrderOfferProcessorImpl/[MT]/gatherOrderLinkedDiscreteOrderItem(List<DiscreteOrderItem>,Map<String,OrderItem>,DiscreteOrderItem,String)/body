@@ -1,10 +1,6 @@
 {
   if (CollectionUtils.isEmpty(orderItem.getOrderItemAdjustments())) {
-    String identifier=String.valueOf(orderItem.getSku().getId());
-    identifier+='_' + orderItem.getPrice().stringValue();
-    if (extraIdentifier != null) {
-      identifier+='_' + extraIdentifier;
-    }
+    String identifier=buildIdentifier(orderItem,extraIdentifier);
     OrderItem gatheredOrderItem=gatheredItem.get(identifier);
     if (gatheredOrderItem == null) {
       gatheredItem.put(identifier,orderItem);

@@ -1,9 +1,7 @@
 {
-  int bundleIndex=order.getOrderItems().indexOf(bundle);
   List<DiscreteOrderItem> orderItems=bundle.getDiscreteOrderItems();
   orderItems.add(newOrderItem);
-  int orderItemIndex=orderItems.size() - 1;
   newOrderItem.setBundleOrderItem(bundle);
   order=updateOrder(order,priceOrder);
-  return ((BundleOrderItem)order.getOrderItems().get(bundleIndex)).getDiscreteOrderItems().get(orderItemIndex);
+  return findLastMatchingItem(order,bundle);
 }

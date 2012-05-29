@@ -1,0 +1,19 @@
+{
+  for (  String attributeName : attributeValuesForSku.keySet()) {
+    String attributeValue=attributeValuesForSku.get(attributeName);
+    if (sku.getSkuAttributes() == null || sku.getSkuAttributes().size() == 0) {
+      boolean attributeMatchFound=false;
+      for (      SkuAttribute skuAttribute : sku.getSkuAttributes()) {
+        if (attributeName.equals(skuAttribute.getName()) && attributeValue.equals(skuAttribute.getValue())) {
+          attributeMatchFound=true;
+          break;
+        }
+      }
+      if (attributeMatchFound) {
+        continue;
+      }
+      return false;
+    }
+  }
+  return true;
+}

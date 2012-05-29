@@ -10,7 +10,7 @@
     for (    FulfillmentGroupItem fgItem : group.getFulfillmentGroupItems()) {
       OrderItem orderItem=fgItem.getOrderItem();
       if (orderItem instanceof BundleOrderItem) {
-        String identifier=getBundleOrderItemIdentifier((BundleOrderItem)orderItem);
+        String identifier=buildIdentifier(orderItem,null);
         Object[] gatheredOrderItem=gatheredItem.get(identifier);
         if (gatheredOrderItem == null) {
           gatheredItem.put(identifier,new Object[]{orderItem,fgItem});

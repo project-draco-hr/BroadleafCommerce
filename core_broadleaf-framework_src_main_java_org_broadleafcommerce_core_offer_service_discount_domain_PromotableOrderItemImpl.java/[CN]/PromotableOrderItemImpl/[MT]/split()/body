@@ -6,6 +6,10 @@
       splitItems=new ArrayList<PromotableOrderItem>();
       PromotableOrderItem firstItem=(PromotableOrderItem)clone();
       PromotableOrderItem secondItem=(PromotableOrderItem)clone();
+      if (getSplitParentItemId() == null) {
+        firstItem.setSplitParentItemId(delegate.getId());
+        secondItem.setSplitParentItemId(delegate.getId());
+      }
       splitItems.add(firstItem);
       splitItems.add(secondItem);
       int firstItemQty=discountQty;

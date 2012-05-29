@@ -1,0 +1,13 @@
+{
+  if (orderItem.getOrderItemAttributes() != null && orderItem.getOrderItemAttributes().size() > 0) {
+    List<String> valueList=new ArrayList<String>();
+    for (    OrderItemAttribute itemAttribute : orderItem.getOrderItemAttributes().values()) {
+      valueList.add(itemAttribute.getName() + "_" + itemAttribute.getValue());
+    }
+    Collections.sort(valueList);
+    identifier.append('_');
+    for (    String value : valueList) {
+      identifier.append(value);
+    }
+  }
+}

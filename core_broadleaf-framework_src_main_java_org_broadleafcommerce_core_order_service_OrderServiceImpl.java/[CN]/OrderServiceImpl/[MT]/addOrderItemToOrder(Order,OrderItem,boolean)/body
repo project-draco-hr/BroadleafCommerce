@@ -1,9 +1,7 @@
 {
-  int orderItemIndex;
   List<OrderItem> orderItems=order.getOrderItems();
   orderItems.add(newOrderItem);
   newOrderItem.setOrder(order);
-  orderItemIndex=orderItems.size() - 1;
   order=updateOrder(order,priceOrder);
-  return order.getOrderItems().get(orderItemIndex);
+  return findLastMatchingItem(order,newOrderItem);
 }
