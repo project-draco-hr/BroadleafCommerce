@@ -1,4 +1,9 @@
 {
-  if (available == null)   return null;
+  if (available == null) {
+    if (hasDefaultSku()) {
+      return lookupDefaultSku().isAvailable();
+    }
+    return null;
+  }
   return available == 'Y' ? Boolean.TRUE : Boolean.FALSE;
 }

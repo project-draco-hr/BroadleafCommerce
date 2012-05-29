@@ -1,4 +1,9 @@
 {
-  if (taxable == null)   return null;
+  if (taxable == null) {
+    if (hasDefaultSku()) {
+      return lookupDefaultSku().isTaxable();
+    }
+    return null;
+  }
   return taxable == 'Y' ? Boolean.TRUE : Boolean.FALSE;
 }
