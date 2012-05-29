@@ -1,44 +1,45 @@
 {
-  String identifier=null;
+  StringBuffer identifier=new StringBuffer();
   if (orderItem.getSplitParentItemId() != null || cartService.getAutomaticallyMergeLikeItems()) {
     if (!cartService.getAutomaticallyMergeLikeItems()) {
-      identifier=String.valueOf(orderItem.getSplitParentItemId());
+      identifier.append(orderItem.getSplitParentItemId());
     }
  else {
       if (orderItem instanceof BundleOrderItem) {
         BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
         if (bundleOrderItem.getSku() != null) {
-          identifier=String.valueOf(bundleOrderItem.getSku().getId());
+          identifier.append(bundleOrderItem.getSku().getId());
         }
  else {
           if (orderItem.getSplitParentItemId() != null) {
-            identifier=String.valueOf(orderItem.getSplitParentItemId());
+            identifier.append(orderItem.getSplitParentItemId());
           }
  else {
-            identifier=String.valueOf(orderItem.getId());
+            identifier.append(orderItem.getId());
           }
         }
       }
  else       if (orderItem instanceof DiscreteOrderItem) {
         DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
-        identifier=String.valueOf(discreteOrderItem.getSku().getId());
+        identifier.append(discreteOrderItem.getSku().getId());
       }
  else {
         if (orderItem.getSplitParentItemId() != null) {
-          identifier=String.valueOf(orderItem.getSplitParentItemId());
+          identifier.append(orderItem.getSplitParentItemId());
         }
  else {
-          identifier=String.valueOf(orderItem.getId());
+          identifier.append(orderItem.getId());
         }
       }
     }
-    identifier+='_' + orderItem.getPrice().stringValue();
+    identifier.append('_').append(orderItem.getPrice().stringValue());
     if (extraIdentifier != null) {
-      identifier+='_' + extraIdentifier;
+      identifier.append('_').append(extraIdentifier);
     }
+    addOptionAttributesToIdentifier(identifier,orderItem);
   }
  else {
-    identifier=orderItem.getId().toString();
+    identifier.append(orderItem.getId());
   }
-  return identifier;
+  return identifier.toString();
 }
