@@ -1,9 +1,15 @@
 {
   CatalogService catalogService=ProcessorUtils.getCatalogService(arguments);
-  String resultVar=element.getAttributeValueFromNormalizedName("resultvar");
-  String parentCategory=element.getAttributeValueFromNormalizedName("parentcategory");
+  String resultVar=element.getAttributeValue("resultVar");
+  String parentCategory=element.getAttributeValue("parentCategory");
+  String unparsedMaxResults=element.getAttributeValue("maxResults");
   List<Category> categories=catalogService.findCategoriesByName(parentCategory);
   if (categories != null && categories.size() > 0) {
-    addToModel(resultVar,catalogService.findAllSubCategories(categories.get(0)));
+    List<Category> subcategories=catalogService.findAllSubCategories(categories.get(0));
+    if (StringUtils.isNotEmpty(unparsedMaxResults)) {
+      int maxResults=Integer.parseInt(unparsedMaxResults);
+      subcategories=subcategories.subList(0,maxResults);
+    }
+    addToModel(resultVar,subcategories);
   }
 }
