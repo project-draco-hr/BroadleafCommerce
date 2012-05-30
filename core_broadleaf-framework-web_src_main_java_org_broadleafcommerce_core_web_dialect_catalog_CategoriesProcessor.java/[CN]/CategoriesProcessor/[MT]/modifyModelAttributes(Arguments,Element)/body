@@ -1,0 +1,9 @@
+{
+  CatalogService catalogService=ProcessorUtils.getCatalogService(arguments);
+  String resultVar=element.getAttributeValueFromNormalizedName("resultvar");
+  String parentCategory=element.getAttributeValueFromNormalizedName("parentcategory");
+  List<Category> categories=catalogService.findCategoriesByName(parentCategory);
+  if (categories != null && categories.size() > 0) {
+    addToModel(resultVar,catalogService.findAllSubCategories(categories.get(0)));
+  }
+}
