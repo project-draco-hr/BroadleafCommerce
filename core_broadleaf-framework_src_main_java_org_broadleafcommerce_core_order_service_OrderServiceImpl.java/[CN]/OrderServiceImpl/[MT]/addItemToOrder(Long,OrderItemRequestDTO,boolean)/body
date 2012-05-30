@@ -6,6 +6,9 @@
   Order order=validateOrder(orderId);
   Product product=validateProduct(orderItemRequestDTO.getProductId());
   Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes());
+  if (sku == null) {
+    return null;
+  }
   Category category=determineCategory(product,orderItemRequestDTO.getCategoryId());
   if (product == null || !(product instanceof ProductBundle)) {
     DiscreteOrderItem item=createDiscreteOrderItem(sku,product,category,orderItemRequestDTO.getQuantity(),orderItemRequestDTO.getItemAttributes());
