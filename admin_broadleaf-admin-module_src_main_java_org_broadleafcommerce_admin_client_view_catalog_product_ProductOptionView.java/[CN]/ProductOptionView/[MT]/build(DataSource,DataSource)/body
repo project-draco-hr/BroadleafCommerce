@@ -1,0 +1,19 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setID("productOptionLeftVerticalLayout");
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("50%");
+  leftVerticalLayout.setShowResizeBar(true);
+  listDisplay=new DynamicEntityListView(BLCMain.getMessageManager().getString("productOptionListTitle"),entityDataSource);
+  leftVerticalLayout.addMember(listDisplay);
+  VLayout rightVerticalLayout=new VLayout();
+  rightVerticalLayout.setID("productOptionVerticalLayout");
+  rightVerticalLayout.setHeight100();
+  rightVerticalLayout.setWidth("50%");
+  dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("productOptionDetailsTitle"),entityDataSource);
+  productOptionValuesDisplay=new GridStructureView(BLCMain.getMessageManager().getString("productOptionValuesTitle"),false,true);
+  ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(productOptionValuesDisplay);
+  rightVerticalLayout.addMember(dynamicFormDisplay);
+  addMember(leftVerticalLayout);
+  addMember(rightVerticalLayout);
+}
