@@ -1,0 +1,22 @@
+{
+  FulfillmentGroupItem clonedFulfillmentGroupItem;
+  try {
+    clonedFulfillmentGroupItem=(FulfillmentGroupItem)Class.forName(this.getClass().getName()).newInstance();
+    try {
+      checkCloneable(clonedFulfillmentGroupItem);
+    }
+ catch (    CloneNotSupportedException e) {
+      LOG.warn("Clone implementation missing in inheritance hierarchy outside of Broadleaf: " + clonedFulfillmentGroupItem.getClass().getName(),e);
+    }
+    clonedFulfillmentGroupItem.setFulfillmentGroup(getFulfillmentGroup());
+    clonedFulfillmentGroupItem.setOrderItem(getOrderItem());
+    clonedFulfillmentGroupItem.setQuantity(getQuantity());
+    clonedFulfillmentGroupItem.setStatus(getStatus());
+    clonedFulfillmentGroupItem.setTaxes(getTaxes());
+    clonedFulfillmentGroupItem.setTotalTax(getTotalTax());
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return clonedFulfillmentGroupItem;
+}
