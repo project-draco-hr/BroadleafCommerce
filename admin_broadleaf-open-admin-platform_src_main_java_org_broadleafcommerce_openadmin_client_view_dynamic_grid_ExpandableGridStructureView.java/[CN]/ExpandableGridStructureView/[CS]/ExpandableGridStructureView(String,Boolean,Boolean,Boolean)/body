@@ -1,0 +1,84 @@
+{
+  super(10);
+  this.canEdit=canEdit;
+  setHeight(300);
+  setWidth100();
+  setBackgroundColor("#eaeaea");
+  setAlign(Alignment.CENTER);
+  VStack stack=new VStack();
+  stack.setHeight(250);
+  stack.setWidth100();
+  stack.setLayoutMargin(12);
+  Label header=new Label(title);
+  header.setBaseStyle("blcHeader");
+  header.setHeight(15);
+  stack.addMember(header);
+  toolBar=new ToolStrip();
+  toolBar.setHeight(30);
+  toolBar.setWidth100();
+  toolBar.setMinWidth(300);
+  toolBar.addSpacer(6);
+  addButton=new ToolStripButton();
+  addButton.setTitle(BLCMain.getMessageManager().getString("addTitle"));
+  addButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/add.png");
+  addButton.setDisabled(true);
+  toolBar.addButton(addButton);
+  toolBar.addSpacer(6);
+  removeButton=new ToolStripButton();
+  removeButton.setTitle(BLCMain.getMessageManager().getString("removeTitle"));
+  removeButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/remove.png");
+  removeButton.setDisabled(true);
+  toolBar.addButton(removeButton);
+  toolBar.setDisabled(false);
+  toolBar.addFill();
+  stack.addMember(toolBar);
+  expansionGrid=new ListGrid();
+  expansionGrid.setShowHeader(true);
+  expansionGrid.setShowHeaderContextMenu(false);
+  expansionGrid.setCanReorderRecords(canReorder);
+  expansionGrid.setCanEdit(canEdit);
+  expansionGrid.setEditEvent(ListGridEditEvent.DOUBLECLICK);
+  expansionGrid.setEditByCell(true);
+  expansionGrid.setAutoSaveEdits(true);
+  expansionGrid.setSaveByCell(true);
+  expansionGrid.setAlternateRecordStyles(true);
+  expansionGrid.setCanGroupBy(false);
+  if (!canEdit) {
+    expansionGrid.setAlternateBodyStyleName("editRowDisabled");
+  }
+  expansionGrid.setVisibility(Visibility.HIDDEN);
+  expansionGrid.setHeight(100);
+  expansionGrid.draw();
+  grid=new ListGrid(){
+    @Override protected Canvas getExpansionComponent(    final ListGridRecord record){
+      VLayout layout=new VLayout(5);
+      layout.setPadding(5);
+      layout.addMember(expansionGrid);
+      expansionGrid.setVisibility(Visibility.INHERIT);
+      String id=((AbstractDynamicDataSource)grid.getDataSource()).getPrimaryKeyValue(record);
+      ((PresentationLayerAssociatedDataSource)expansionGrid.getDataSource()).loadAssociatedGridBasedOnRelationship(id,null);
+      return layout;
+    }
+  }
+;
+  grid.setAutoFetchData(autoFetchData);
+  grid.setShowHeader(true);
+  grid.setShowHeaderContextMenu(false);
+  grid.setPreventDuplicates(true);
+  grid.setCanReorderRecords(canReorder);
+  grid.setHeight100();
+  grid.setDisabled(true);
+  grid.setCanSort(false);
+  grid.setCellPadding(5);
+  grid.setCanEdit(false);
+  grid.setAlternateRecordStyles(true);
+  grid.setCanExpandMultipleRecords(false);
+  grid.setCanExpandRecords(true);
+  grid.setCanGroupBy(false);
+  if (!canEdit) {
+    grid.setAlternateBodyStyleName("editRowDisabled");
+  }
+  stack.addMember(grid);
+  addMember(stack);
+  setOverflow(Overflow.VISIBLE);
+}
