@@ -1,0 +1,15 @@
+{
+  List<List<ProductOptionValue>> result=new ArrayList<List<ProductOptionValue>>();
+  if (currentTypeIndex == options.size()) {
+    result.add(currentPermutation);
+    return result;
+  }
+  ProductOption currentOption=options.get(currentTypeIndex);
+  for (  ProductOptionValue option : currentOption.getAllowedValues()) {
+    List<ProductOptionValue> permutation=new ArrayList<ProductOptionValue>();
+    permutation.addAll(currentPermutation);
+    permutation.add(option);
+    result.addAll(generatePermutations(currentTypeIndex + 1,permutation,options));
+  }
+  return result;
+}
