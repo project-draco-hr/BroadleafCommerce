@@ -45,6 +45,13 @@
  else {
     model.addAttribute("productError",true);
   }
+  AddToCartItem addItemRequest=new AddToCartItem();
+  addItemRequest.setCategoryId(currentCategory.getId());
+  addItemRequest.setProductId(product.getId());
+  if (product.getDefaultSku() != null) {
+    addItemRequest.setSkuId(product.getDefaultSku().getId());
+  }
+  addItemRequest.setQuantity(1);
   WishlistRequest wishlistRequest=new WishlistRequest();
   wishlistRequest.setAddCategoryId(currentCategory.getId());
   wishlistRequest.setAddProductId(product.getId());

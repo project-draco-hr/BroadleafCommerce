@@ -3,23 +3,21 @@
     ajax=false;
   }
   Order currentCartOrder=retrieveCartOrder(request,model);
-  List<OrderItem> orderItemsAdded=new ArrayList<OrderItem>();
   if (addToCartItem.getQuantity() != null && addToCartItem.getQuantity() > 0) {
     try {
-      OrderItem orderItem;
+      Order order;
       if (addToCartItem.getOrderId() != null) {
-        orderItem=cartService.addSkuToOrder(addToCartItem.getOrderId(),addToCartItem.getSkuId(),addToCartItem.getProductId(),addToCartItem.getCategoryId(),addToCartItem.getQuantity(),addToCartItem.getAdditionalAttributes());
+        order=cartService.addItemToOrder(addToCartItem.getOrderId(),addToCartItem,true);
       }
  else {
-        orderItem=cartService.addSkuToOrder(currentCartOrder.getId(),addToCartItem.getSkuId(),addToCartItem.getProductId(),addToCartItem.getCategoryId(),addToCartItem.getQuantity(),addToCartItem.getAdditionalAttributes());
+        order=cartService.addItemToOrder(currentCartOrder.getId(),addToCartItem,true);
       }
-      orderItemsAdded.add(orderItem);
+      model.addAttribute("order",order);
     }
  catch (    PricingException e) {
       LOG.error("Unable to price the order: (" + currentCartOrder.getId() + ")",e);
     }
   }
-  model.addAttribute("orderItemsAdded",orderItemsAdded);
   if (!ajax) {
     return addItemViewRedirect ? "redirect:" + addItemView : addItemView;
   }
