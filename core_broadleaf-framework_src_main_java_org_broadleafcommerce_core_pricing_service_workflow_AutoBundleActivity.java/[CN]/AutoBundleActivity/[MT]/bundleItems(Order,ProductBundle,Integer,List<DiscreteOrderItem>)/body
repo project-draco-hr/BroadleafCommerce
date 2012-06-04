@@ -41,15 +41,7 @@
     newSkuBundleItem.setSkuBundleItem(skuBundleItem);
     newSkuBundleItem.setBundleOrderItem(bundleOrderItem);
     newSkuBundleItem.setQuantity(skuBundleItem.getQuantity());
-    newSkuBundleItem=(DiscreteOrderItem)orderItemDao.save(newSkuBundleItem);
     newSkuBundleItem.setOrder(null);
-    FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
-    if (fulfillmentGroupItem != null) {
-      FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
-      newFulfillmentGroupItem.setOrderItem(newSkuBundleItem);
-      newFulfillmentGroupItem.setQuantity(newSkuBundleItem.getQuantity());
-      fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
-    }
     bundleOrderItem.getDiscreteOrderItems().add(newSkuBundleItem);
     if (skuMatches > skusRequired) {
       DiscreteOrderItem newOrderItem=(DiscreteOrderItem)baseItem.clone();
@@ -60,6 +52,7 @@
       newOrderItem.setOrder(order);
       newOrderItem.updatePrices();
       newOrderItem.assignFinalPrice();
+      FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
       if (fulfillmentGroupItem != null) {
         FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
         newFulfillmentGroupItem.setOrderItem(newOrderItem);
@@ -72,5 +65,20 @@
   bundleOrderItem.updatePrices();
   bundleOrderItem.assignFinalPrice();
   order.getOrderItems().add(bundleOrderItem);
-  return cartService.save(order,false);
+  order=cartService.save(order,false);
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleItem=(BundleOrderItem)orderItem;
+      for (      DiscreteOrderItem discreteOrderItem : bundleItem.getDiscreteOrderItems()) {
+        FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(discreteOrderItem.getSku().getId());
+        if (fulfillmentGroupItem != null) {
+          FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
+          newFulfillmentGroupItem.setOrderItem(discreteOrderItem);
+          newFulfillmentGroupItem.setQuantity(discreteOrderItem.getQuantity());
+          fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
+        }
+      }
+    }
+  }
+  return order;
 }
