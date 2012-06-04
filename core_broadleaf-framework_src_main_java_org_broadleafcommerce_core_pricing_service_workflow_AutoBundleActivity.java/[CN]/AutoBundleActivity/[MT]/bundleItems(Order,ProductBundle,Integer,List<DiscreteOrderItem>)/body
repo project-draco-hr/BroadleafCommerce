@@ -41,6 +41,7 @@
     newSkuBundleItem.setSkuBundleItem(skuBundleItem);
     newSkuBundleItem.setBundleOrderItem(bundleOrderItem);
     newSkuBundleItem.setQuantity(skuBundleItem.getQuantity());
+    newSkuBundleItem=(DiscreteOrderItem)orderItemDao.save(newSkuBundleItem);
     newSkuBundleItem.setOrder(null);
     FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
     if (fulfillmentGroupItem != null) {
