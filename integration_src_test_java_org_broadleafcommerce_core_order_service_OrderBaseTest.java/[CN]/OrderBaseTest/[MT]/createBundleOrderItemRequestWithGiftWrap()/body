@@ -1,0 +1,16 @@
+{
+  Sku newSku=addTestSku("Small Plastic Crate","Plastic Crate","Crates");
+  Sku newActiveSku=addTestSku("Small Red Plastic Crate","Plastic Crate","Crates");
+  Sku giftWrapSku=addTestSku("Gift Box","Gift Box","Gift Wraps");
+  Category category=newSku.getAllParentProducts().get(0).getDefaultCategory();
+  List<DiscreteOrderItemRequest> discreteOrderItems=new ArrayList<DiscreteOrderItemRequest>();
+  discreteOrderItems.add(createDiscreteOrderItemRequest(newSku,1));
+  discreteOrderItems.add(createDiscreteOrderItemRequest(newActiveSku,1));
+  discreteOrderItems.add(createGiftWrapOrderItemRequest(giftWrapSku,1,new ArrayList<OrderItem>()));
+  BundleOrderItemRequest itemRequest=new BundleOrderItemRequest();
+  itemRequest.setCategory(category);
+  itemRequest.setName("test bundle " + bundleCount++);
+  itemRequest.setQuantity(1);
+  itemRequest.setDiscreteOrderItems(discreteOrderItems);
+  return itemRequest;
+}

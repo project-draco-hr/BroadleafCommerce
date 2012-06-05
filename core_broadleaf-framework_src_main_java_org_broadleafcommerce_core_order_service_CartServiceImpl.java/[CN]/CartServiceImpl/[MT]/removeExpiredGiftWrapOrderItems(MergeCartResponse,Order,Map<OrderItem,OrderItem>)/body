@@ -1,0 +1,31 @@
+{
+  Iterator<OrderItem> addedItems=mergeCartResponse.getAddedItems().iterator();
+  while (addedItems.hasNext()) {
+    OrderItem addedItem=addedItems.next();
+    if (addedItem instanceof GiftWrapOrderItem) {
+      GiftWrapOrderItem giftWrapOrderItem=(GiftWrapOrderItem)addedItem;
+      boolean removeItem=false;
+      for (      OrderItem wrappedItem : giftWrapOrderItem.getWrappedItems()) {
+        if (mergeCartResponse.getRemovedItems().contains(wrappedItem)) {
+          removeItem=true;
+          break;
+        }
+      }
+      if (removeItem) {
+        for (        OrderItem wrappedItem : giftWrapOrderItem.getWrappedItems()) {
+          wrappedItem.setGiftWrapOrderItem(null);
+        }
+        giftWrapOrderItem.getWrappedItems().clear();
+        for (        OrderItem cartItem : customerCart.getOrderItems()) {
+          if (cartItem.getGiftWrapOrderItem() != null && oldNewItemMap.containsKey(cartItem.getGiftWrapOrderItem())) {
+            cartItem.setGiftWrapOrderItem(null);
+          }
+        }
+        customerCart=removeItemFromOrder(customerCart,giftWrapOrderItem,false);
+        addedItems.remove();
+        mergeCartResponse.getRemovedItems().add(giftWrapOrderItem);
+      }
+    }
+  }
+  return customerCart;
+}

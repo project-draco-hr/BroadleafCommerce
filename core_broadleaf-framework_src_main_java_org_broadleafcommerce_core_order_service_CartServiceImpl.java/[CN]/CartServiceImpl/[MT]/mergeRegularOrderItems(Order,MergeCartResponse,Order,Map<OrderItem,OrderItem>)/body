@@ -1,0 +1,58 @@
+{
+  for (  OrderItem orderItem : anonymousCart.getOrderItems()) {
+    if (orderItem instanceof DiscreteOrderItem) {
+      orderItem.removeAllAdjustments();
+      orderItem.removeAllCandidateItemOffers();
+      DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
+      if (discreteOrderItem.getSku().getActiveStartDate() != null) {
+        if (discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
+          OrderItem newItem=addOrderItemToOrder(customerCart,discreteOrderItem.clone(),false);
+          mergeCartResponse.getAddedItems().add(newItem);
+          oldNewItemMap.put(orderItem,newItem);
+        }
+ else {
+          mergeCartResponse.getRemovedItems().add(orderItem);
+        }
+      }
+ else {
+        if (discreteOrderItem.getProduct().isActive() && orderItem.getCategory().isActive()) {
+          OrderItem newItem=addOrderItemToOrder(customerCart,discreteOrderItem.clone(),false);
+          mergeCartResponse.getAddedItems().add(newItem);
+          oldNewItemMap.put(orderItem,newItem);
+        }
+ else {
+          mergeCartResponse.getRemovedItems().add(orderItem);
+        }
+      }
+    }
+ else     if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
+      orderItem.removeAllAdjustments();
+      orderItem.removeAllCandidateItemOffers();
+      boolean removeBundle=false;
+      for (      DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
+        discreteOrderItem.removeAllAdjustments();
+        discreteOrderItem.removeAllCandidateItemOffers();
+        if (discreteOrderItem.getSku().getActiveStartDate() != null) {
+          if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
+            removeBundle=true;
+          }
+        }
+ else {
+          if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
+            removeBundle=true;
+          }
+        }
+      }
+      if (!removeBundle) {
+        OrderItem newItem=addOrderItemToOrder(customerCart,bundleOrderItem.clone(),false);
+        mergeCartResponse.getAddedItems().add(newItem);
+        oldNewItemMap.put(orderItem,newItem);
+      }
+ else {
+        mergeCartResponse.getRemovedItems().add(orderItem);
+      }
+    }
+  }
+  return customerCart;
+}

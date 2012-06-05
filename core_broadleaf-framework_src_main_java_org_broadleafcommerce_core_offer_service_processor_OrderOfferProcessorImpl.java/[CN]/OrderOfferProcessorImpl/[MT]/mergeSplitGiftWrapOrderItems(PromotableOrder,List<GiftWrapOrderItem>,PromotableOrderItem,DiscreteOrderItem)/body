@@ -1,0 +1,26 @@
+{
+  for (  GiftWrapOrderItem giftWrapOrderItem : giftWrapItems) {
+    List<OrderItem> newItems=new ArrayList<OrderItem>();
+    Iterator<OrderItem> wrappedItems=giftWrapOrderItem.getWrappedItems().iterator();
+    boolean foundItems=false;
+    while (wrappedItems.hasNext()) {
+      OrderItem wrappedItem=wrappedItems.next();
+      if (wrappedItem.equals(delegateItem)) {
+        foundItems=true;
+        List<PromotableOrderItem> searchHits=order.searchSplitItems(itemToRemove);
+        if (!CollectionUtils.isEmpty(searchHits)) {
+          for (          PromotableOrderItem searchHit : searchHits) {
+            newItems.add(searchHit.getDelegate());
+            searchHit.getDelegate().setGiftWrapOrderItem(giftWrapOrderItem);
+          }
+        }
+        delegateItem.setGiftWrapOrderItem(null);
+        wrappedItems.remove();
+      }
+    }
+    if (foundItems) {
+      giftWrapOrderItem.getWrappedItems().addAll(newItems);
+      orderItemService.saveOrderItem(giftWrapOrderItem);
+    }
+  }
+}

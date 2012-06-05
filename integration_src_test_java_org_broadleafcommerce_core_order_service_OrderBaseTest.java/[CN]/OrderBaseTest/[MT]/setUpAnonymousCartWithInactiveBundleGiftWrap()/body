@@ -1,0 +1,34 @@
+{
+  Customer customer=customerService.saveCustomer(createNamedCustomer());
+  Order order=cartService.createNewCartForCustomer(customer);
+  Sku newSku=addTestSku("Small Plastic Crate","Plastic Crate","Crates");
+  Sku newInactiveSku=addTestSku("Small Red Plastic Crate","Plastic Crate","Crates",false);
+  Sku giftWrapSku=addTestSku("Gift Box","Gift Box","Gift Wraps");
+  Category category=newSku.getAllParentProducts().get(0).getDefaultCategory();
+  List<DiscreteOrderItemRequest> discreteOrderItems=new ArrayList<DiscreteOrderItemRequest>();
+  discreteOrderItems.add(createDiscreteOrderItemRequest(newSku,1));
+  discreteOrderItems.add(createDiscreteOrderItemRequest(newInactiveSku,1));
+  discreteOrderItems.add(createGiftWrapOrderItemRequest(giftWrapSku,1,new ArrayList<OrderItem>()));
+  BundleOrderItemRequest itemRequest=new BundleOrderItemRequest();
+  itemRequest.setCategory(category);
+  itemRequest.setName("test bundle " + bundleCount++);
+  itemRequest.setQuantity(1);
+  itemRequest.setDiscreteOrderItems(discreteOrderItems);
+  BundleOrderItem newBundle=(BundleOrderItem)orderService.addBundleItemToOrder(order,itemRequest);
+  List<OrderItem> addedItems=new ArrayList<OrderItem>();
+  GiftWrapOrderItem giftItem=null;
+  for (  DiscreteOrderItem addedItem : newBundle.getDiscreteOrderItems()) {
+    if (addedItem instanceof GiftWrapOrderItem) {
+      giftItem=(GiftWrapOrderItem)addedItem;
+    }
+ else {
+      addedItems.add(addedItem);
+    }
+  }
+  for (  OrderItem addedItem : addedItems) {
+    addedItem.setGiftWrapOrderItem(giftItem);
+  }
+  giftItem.getWrappedItems().addAll(addedItems);
+  order=orderService.save(order,false);
+  return order;
+}

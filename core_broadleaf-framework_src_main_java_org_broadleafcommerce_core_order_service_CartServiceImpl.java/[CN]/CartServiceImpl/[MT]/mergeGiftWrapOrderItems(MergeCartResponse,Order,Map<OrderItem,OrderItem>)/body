@@ -1,0 +1,90 @@
+{
+  Iterator<OrderItem> addedItems=mergeCartResponse.getAddedItems().iterator();
+  while (addedItems.hasNext()) {
+    OrderItem addedItem=addedItems.next();
+    if (addedItem instanceof GiftWrapOrderItem) {
+      GiftWrapOrderItem giftItem=(GiftWrapOrderItem)addedItem;
+      List<OrderItem> itemsToAdd=new ArrayList<OrderItem>();
+      Iterator<OrderItem> wrappedItems=giftItem.getWrappedItems().iterator();
+      while (wrappedItems.hasNext()) {
+        OrderItem wrappedItem=wrappedItems.next();
+        if (oldNewItemMap.containsKey(wrappedItem)) {
+          OrderItem newItem=oldNewItemMap.get(wrappedItem);
+          newItem.setGiftWrapOrderItem(giftItem);
+          itemsToAdd.add(newItem);
+          wrappedItem.setGiftWrapOrderItem(null);
+          wrappedItems.remove();
+        }
+      }
+      giftItem.getWrappedItems().addAll(itemsToAdd);
+    }
+ else     if (addedItem instanceof BundleOrderItem) {
+      boolean isValidBundle=true;
+      Map<String,DiscreteOrderItem> newItemsMap=new HashMap<String,DiscreteOrderItem>();
+      for (      DiscreteOrderItem newItem : ((BundleOrderItem)addedItem).getDiscreteOrderItems()) {
+        newItemsMap.put(newItem.getSku().getId() + "_" + newItem.getPrice(),newItem);
+      }
+      checkBundle: {
+        for (        DiscreteOrderItem itemFromBundle : ((BundleOrderItem)addedItem).getDiscreteOrderItems()) {
+          if (itemFromBundle instanceof GiftWrapOrderItem) {
+            GiftWrapOrderItem giftItem=(GiftWrapOrderItem)itemFromBundle;
+            List<OrderItem> itemsToAdd=new ArrayList<OrderItem>();
+            Iterator<OrderItem> wrappedItems=giftItem.getWrappedItems().iterator();
+            while (wrappedItems.hasNext()) {
+              OrderItem wrappedItem=wrappedItems.next();
+              if (oldNewItemMap.containsKey(wrappedItem)) {
+                OrderItem newItem=oldNewItemMap.get(wrappedItem);
+                newItem.setGiftWrapOrderItem(giftItem);
+                itemsToAdd.add(newItem);
+                wrappedItem.setGiftWrapOrderItem(null);
+                wrappedItems.remove();
+              }
+ else               if (wrappedItem instanceof DiscreteOrderItem) {
+                DiscreteOrderItem discreteWrappedItem=(DiscreteOrderItem)wrappedItem;
+                String itemKey=discreteWrappedItem.getSku().getId() + "_" + discreteWrappedItem.getPrice();
+                if (newItemsMap.containsKey(itemKey)) {
+                  OrderItem newItem=newItemsMap.get(itemKey);
+                  newItem.setGiftWrapOrderItem(giftItem);
+                  itemsToAdd.add(newItem);
+                  discreteWrappedItem.setGiftWrapOrderItem(null);
+                  wrappedItems.remove();
+                }
+ else {
+                  isValidBundle=false;
+                  break checkBundle;
+                }
+              }
+ else {
+                isValidBundle=false;
+                break checkBundle;
+              }
+            }
+            giftItem.getWrappedItems().addAll(itemsToAdd);
+          }
+        }
+      }
+      if (!isValidBundle) {
+        customerCart=removeItemFromOrder(customerCart,addedItem,false);
+        addedItems.remove();
+        mergeCartResponse.getRemovedItems().add(addedItem);
+      }
+    }
+  }
+  for (  OrderItem addedItem : mergeCartResponse.getAddedItems()) {
+    if (addedItem instanceof BundleOrderItem) {
+      boolean containsGiftWrap=false;
+      for (      DiscreteOrderItem discreteOrderItem : ((BundleOrderItem)addedItem).getDiscreteOrderItems()) {
+        if (discreteOrderItem instanceof GiftWrapOrderItem) {
+          containsGiftWrap=true;
+          break;
+        }
+      }
+      if (!containsGiftWrap) {
+        for (        DiscreteOrderItem discreteOrderItem : ((BundleOrderItem)addedItem).getDiscreteOrderItems()) {
+          discreteOrderItem.setGiftWrapOrderItem(null);
+        }
+      }
+    }
+  }
+  return customerCart;
+}
