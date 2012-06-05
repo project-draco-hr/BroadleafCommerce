@@ -1,7 +1,7 @@
 {
   Product product=catalogService.findProductById(productId);
   if (product.getProductOptions() == null || product.getProductOptions().size() == 0) {
-    return false;
+    return -1;
   }
   List<List<ProductOptionValue>> allPermutations=generatePermutations(0,new ArrayList<ProductOptionValue>(),product.getProductOptions());
   LOG.info("Total number of permutations: " + allPermutations.size());
@@ -13,5 +13,5 @@
     permutatedSku.setProductOptionValues(permutation);
     catalogService.saveSku(permutatedSku);
   }
-  return true;
+  return allPermutations.size();
 }
