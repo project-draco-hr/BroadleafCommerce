@@ -3,15 +3,22 @@
   if (product.getProductOptions() == null || product.getProductOptions().size() == 0) {
     return -1;
   }
+  if (product.getAllSkus().size() > 0) {
+    for (    Sku sku : product.getAllSkus()) {
+      skuDao.delete(sku);
+    }
+    product.getAllSkus().clear();
+  }
   List<List<ProductOptionValue>> allPermutations=generatePermutations(0,new ArrayList<ProductOptionValue>(),product.getProductOptions());
   LOG.info("Total number of permutations: " + allPermutations.size());
   LOG.info(allPermutations);
   for (  List<ProductOptionValue> permutation : allPermutations) {
     Sku permutatedSku=catalogService.createSku();
     permutatedSku.setDefaultProduct(product);
-    product.getSkus().add(permutatedSku);
     permutatedSku.setProductOptionValues(permutation);
-    catalogService.saveSku(permutatedSku);
+    Sku savedSku=catalogService.saveSku(permutatedSku);
+    product.getAllSkus().add(savedSku);
   }
+  catalogService.saveProduct(product);
   return allPermutations.size();
 }
