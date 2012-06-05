@@ -1,0 +1,28 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
+    List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
+    Entity[] payload=helper.getRecords(originalProps,records);
+    int totalRecords=helper.getTotalRecords(ceilingEntityFullyQualifiedClassname,persistencePackage.getFetchTypeFullyQualifiedClassname(),cto,ctoConverter);
+    for (int i=0; i < records.size(); i++) {
+      Sku sku=(Sku)records.get(i);
+      Entity entity=payload[i];
+      List<ProductOptionValue> optionValues=sku.getProductOptionValues();
+      for (      ProductOptionValue value : optionValues) {
+        Property optionProperty=new Property();
+        optionProperty.setName(PRODUCT_OPTION_FIELD_PREFIX + value.getProductOption().getId());
+        optionProperty.setValue(value.getValue());
+        entity.addProperty(optionProperty);
+      }
+    }
+    return new DynamicResultSet(null,payload,totalRecords);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}
