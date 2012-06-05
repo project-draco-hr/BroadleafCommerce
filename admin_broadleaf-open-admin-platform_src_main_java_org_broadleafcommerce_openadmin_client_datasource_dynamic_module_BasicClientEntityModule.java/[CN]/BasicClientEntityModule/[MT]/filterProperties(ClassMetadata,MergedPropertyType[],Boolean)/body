@@ -106,6 +106,17 @@ group=val;
 }
 Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
 Boolean groupCollapsed=property.getMetadata().getPresentationAttributes().getGroupCollapsed();
+String tooltip=property.getMetadata().getPresentationAttributes().getTooltip();
+if (tooltip != null && !group.equals("")) {
+try {
+String val=BLCMain.getMessageManager().getString(tooltip);
+if (val != null) {
+tooltip=val;
+}
+}
+ catch (MissingResourceException e) {
+}
+}
 Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
 Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
 Integer order=property.getMetadata().getPresentationAttributes().getOrder();
@@ -256,6 +267,9 @@ field.setAttribute("formGroupOrder",groupOrder);
 }
 if (groupCollapsed != null) {
 field.setAttribute("formGroupCollapsed",groupCollapsed);
+}
+if (tooltip != null) {
+field.setPrompt(tooltip);
 }
 if (largeEntry != null) {
 field.setAttribute("largeEntry",largeEntry);
