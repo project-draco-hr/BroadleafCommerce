@@ -80,6 +80,13 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skusDS",new ProductSkusDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      skusPresenter=new SubPresenter(getDisplay().getSkusDisplay());
+      skusPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
