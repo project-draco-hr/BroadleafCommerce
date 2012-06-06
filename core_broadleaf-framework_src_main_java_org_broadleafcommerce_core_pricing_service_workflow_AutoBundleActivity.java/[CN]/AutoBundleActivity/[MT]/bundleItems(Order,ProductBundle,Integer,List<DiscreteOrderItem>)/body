@@ -57,7 +57,12 @@
         FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
         newFulfillmentGroupItem.setOrderItem(newOrderItem);
         newFulfillmentGroupItem.setQuantity(newOrderItem.getQuantity());
-        fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
+        newFulfillmentGroupItem=fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
+        for (        FulfillmentGroup fg : order.getFulfillmentGroups()) {
+          if (newFulfillmentGroupItem.getFulfillmentGroup() != null && fg.getId().equals(newFulfillmentGroupItem.getFulfillmentGroup().getId())) {
+            fg.addFulfillmentGroupItem(newFulfillmentGroupItem);
+          }
+        }
       }
       order.getOrderItems().add(newOrderItem);
     }
@@ -75,7 +80,12 @@
           FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
           newFulfillmentGroupItem.setOrderItem(discreteOrderItem);
           newFulfillmentGroupItem.setQuantity(discreteOrderItem.getQuantity());
-          fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
+          newFulfillmentGroupItem=fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
+          for (          FulfillmentGroup fg : order.getFulfillmentGroups()) {
+            if (newFulfillmentGroupItem.getFulfillmentGroup() != null && fg.getId().equals(newFulfillmentGroupItem.getFulfillmentGroup().getId())) {
+              fg.addFulfillmentGroupItem(newFulfillmentGroupItem);
+            }
+          }
         }
       }
     }
