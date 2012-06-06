@@ -95,27 +95,21 @@ break;
 }
 String group=property.getMetadata().getPresentationAttributes().getGroup();
 if (group != null && !group.equals("")) {
-try {
-String val=BLCMain.getMessageManager().getString(group);
-if (val != null) {
-group=val;
-}
-}
- catch (MissingResourceException e) {
-}
+group=getLocalizedString(group);
 }
 Integer groupOrder=property.getMetadata().getPresentationAttributes().getGroupOrder();
 Boolean groupCollapsed=property.getMetadata().getPresentationAttributes().getGroupCollapsed();
 String tooltip=property.getMetadata().getPresentationAttributes().getTooltip();
-if (tooltip != null && !group.equals("")) {
-try {
-String val=BLCMain.getMessageManager().getString(tooltip);
-if (val != null) {
-tooltip=val;
+if (tooltip != null && !tooltip.equals("")) {
+tooltip=getLocalizedString(tooltip);
 }
+String helpText=property.getMetadata().getPresentationAttributes().getHelpText();
+if (helpText != null && !helpText.equals("")) {
+helpText=getLocalizedString(helpText);
 }
- catch (MissingResourceException e) {
-}
+String hint=property.getMetadata().getPresentationAttributes().getHint();
+if (hint != null && !hint.equals("")) {
+hint=getLocalizedString(hint);
 }
 Boolean largeEntry=property.getMetadata().getPresentationAttributes().isLargeEntry();
 Boolean prominent=property.getMetadata().getPresentationAttributes().isProminent();
@@ -270,6 +264,12 @@ field.setAttribute("formGroupCollapsed",groupCollapsed);
 }
 if (tooltip != null) {
 field.setPrompt(tooltip);
+}
+if (helpText != null) {
+field.setAttribute("helpText",helpText);
+}
+if (hint != null) {
+field.setAttribute("hint",hint);
 }
 if (largeEntry != null) {
 field.setAttribute("largeEntry",largeEntry);
