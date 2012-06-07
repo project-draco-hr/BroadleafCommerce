@@ -5,7 +5,13 @@
   item.setName(itemRequest.getName());
   item.setBundleOrderItemFeePrices(itemRequest.getBundleOrderItemFeePrices());
   for (  DiscreteOrderItemRequest discreteItemRequest : itemRequest.getDiscreteOrderItems()) {
-    final DiscreteOrderItem discreteOrderItem=createDiscreteOrderItem(discreteItemRequest);
+    DiscreteOrderItem discreteOrderItem;
+    if (discreteItemRequest instanceof GiftWrapOrderItemRequest) {
+      discreteOrderItem=createGiftWrapOrderItem((GiftWrapOrderItemRequest)discreteItemRequest);
+    }
+ else {
+      discreteOrderItem=createDiscreteOrderItem(discreteItemRequest);
+    }
     discreteOrderItem.setBundleOrderItem(item);
     item.getDiscreteOrderItems().add(discreteOrderItem);
     item.assignFinalPrice();

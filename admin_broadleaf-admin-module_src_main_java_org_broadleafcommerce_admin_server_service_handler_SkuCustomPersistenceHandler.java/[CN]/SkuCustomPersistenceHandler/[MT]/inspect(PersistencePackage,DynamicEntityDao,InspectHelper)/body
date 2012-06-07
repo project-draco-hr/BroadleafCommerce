@@ -1,0 +1,41 @@
+{
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    Map<String,FieldMetadata> properties=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
+    List<ProductOption> options=catalogService.readAllProductOptions();
+    int order=0;
+    for (    ProductOption option : options) {
+      FieldMetadata metadata=new FieldMetadata();
+      metadata.setFieldType(SupportedFieldType.STRING);
+      metadata.setMutable(false);
+      metadata.setInheritedFromType(SkuImpl.class.getName());
+      metadata.setAvailableToTypes(new String[]{SkuImpl.class.getName()});
+      metadata.setCollection(false);
+      metadata.setMergedPropertyType(MergedPropertyType.PRIMARY);
+      FieldPresentationAttributes attributes=new FieldPresentationAttributes();
+      metadata.setPresentationAttributes(attributes);
+      attributes.setName(PRODUCT_OPTION_FIELD_PREFIX + option.getId());
+      attributes.setFriendlyName(option.getLabel());
+      attributes.setGroup("");
+      attributes.setOrder(order);
+      attributes.setExplicitFieldType(SupportedFieldType.UNKNOWN);
+      attributes.setProminent(true);
+      attributes.setBroadleafEnumeration("");
+      attributes.setReadOnly(true);
+      attributes.setVisibility(VisibilityEnum.FORM_HIDDEN);
+      attributes.setRequiredOverride(true);
+      properties.put("productOption" + option.getId(),metadata);
+    }
+    allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
+    ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
+    DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
+    return results;
+  }
+ catch (  Exception e) {
+    ServiceException ex=new ServiceException("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+    LOG.error("Unable to retrieve inspection results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),ex);
+    throw ex;
+  }
+}

@@ -18,31 +18,34 @@
         }
       }
  else       if (orderItem instanceof BundleOrderItem) {
-        boolean removeBundle=false;
         BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
-        if (bundleOrderItem.getSku() != null) {
-          if (!bundleOrderItem.getSku().isActive()) {
-            removeBundle=true;
-          }
-        }
-        if (removeBundle == false) {
-          for (          DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
-            if (discreteOrderItem.getSku().getActiveStartDate() != null) {
-              if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-                removeBundle=true;
-                break;
-              }
+        boolean removeBundle=false;
+        for (        DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
+          if (discreteOrderItem.getSku().getActiveStartDate() != null) {
+            if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
+              removeBundle=true;
+              break;
             }
+          }
  else {
-              if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
-                removeBundle=true;
-                break;
-              }
+            if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
+              removeBundle=true;
+              break;
             }
           }
         }
         if (removeBundle) {
           itemsToRemove.add(orderItem);
+        }
+      }
+    }
+    for (    OrderItem orderItem : customerCart.getOrderItems()) {
+      if (orderItem instanceof GiftWrapOrderItem) {
+        for (        OrderItem wrappedItem : ((GiftWrapOrderItem)orderItem).getWrappedItems()) {
+          if (itemsToRemove.contains(wrappedItem)) {
+            itemsToRemove.add(orderItem);
+            break;
+          }
         }
       }
     }

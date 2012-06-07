@@ -1,9 +1,9 @@
 {
-  Map<String,BundleOrderItem> gatheredBundleItems=new HashMap<String,BundleOrderItem>();
   List<BundleOrderItemSplitContainer> bundleContainers=order.getBundleSplitItems();
   for (  BundleOrderItemSplitContainer bundleContainer : bundleContainers) {
     PromotableFulfillmentGroup targetGroup=getTargetFulfillmentGroup(order,bundleContainer.getKey());
     List<BundleOrderItem> bundleOrderItems=bundleContainer.getSplitItems();
+    Map<String,BundleOrderItem> gatheredBundleItems=new HashMap<String,BundleOrderItem>();
     for (    BundleOrderItem bundleOrderItem : bundleOrderItems) {
       bundleOrderItem.assignFinalPrice();
       String hash=bundleOrderItem.getPrice().stringValue();

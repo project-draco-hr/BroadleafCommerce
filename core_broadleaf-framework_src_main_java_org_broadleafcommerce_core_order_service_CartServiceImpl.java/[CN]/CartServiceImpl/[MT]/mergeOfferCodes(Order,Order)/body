@@ -1,0 +1,19 @@
+{
+  Map<String,OfferCode> customerOffersMap=new HashMap<String,OfferCode>();
+  for (  OfferCode customerOffer : customerCart.getAddedOfferCodes()) {
+    customerOffersMap.put(customerOffer.getOfferCode(),customerOffer);
+  }
+  for (  OfferCode anonymousOffer : anonymousCart.getAddedOfferCodes()) {
+    if (!customerOffersMap.containsKey(anonymousOffer.getOfferCode())) {
+      OfferCode transferredCode=offerService.lookupOfferCodeByCode(anonymousOffer.getOfferCode());
+      OfferInfo info=anonymousCart.getAdditionalOfferInformation().get(anonymousOffer.getOffer());
+      OfferInfo offerInfo=offerDao.createOfferInfo();
+      for (      String key : info.getFieldValues().keySet()) {
+        offerInfo.getFieldValues().put(key,info.getFieldValues().get(key));
+      }
+      customerCart.getAdditionalOfferInformation().put(transferredCode.getOffer(),offerInfo);
+      customerCart.addOfferCode(transferredCode);
+    }
+  }
+  return customerCart;
+}

@@ -6,14 +6,27 @@
   productAttributePresenter.bind();
   parentCategoriesPresenter.bind();
   productOptionsPresenter.bind();
+  skusPresenter.bind();
   getDisplay().getGenerateSkusButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
-      Long productId=Long.parseLong(getDisplay().getListDisplay().getGrid().getSelectedRecord().getAttribute("id"));
-      AppServices.CATALOG.generateSkusFromProduct(productId,new AsyncCallback<Boolean>(){
-        @Override public void onSuccess(        Boolean result){
-          SC.say("Success!");
-        }
-        @Override public void onFailure(        Throwable caught){
+      SC.confirm(BLCMain.getMessageManager().getString("generateSkusConfirm"),new BooleanCallback(){
+        @Override public void execute(        Boolean value){
+          if (value) {
+            Long productId=Long.parseLong(getDisplay().getListDisplay().getGrid().getSelectedRecord().getAttribute("id"));
+            AppServices.CATALOG.generateSkusFromProduct(productId,new AsyncCallback<Integer>(){
+              @Override public void onSuccess(              Integer result){
+                getDisplay().getSkusDisplay().getGrid().invalidateCache();
+                SC.say(result + " " + BLCMain.getMessageManager().getString("skuGenerationSuccess"));
+              }
+              @Override public void onFailure(              Throwable caught){
+                SC.say(BLCMain.getMessageManager().getString("skuGenerationFail"));
+              }
+            }
+);
+          }
+ else {
+            SC.say(BLCMain.getMessageManager().getString("noSkusGenerated"));
+          }
         }
       }
 );

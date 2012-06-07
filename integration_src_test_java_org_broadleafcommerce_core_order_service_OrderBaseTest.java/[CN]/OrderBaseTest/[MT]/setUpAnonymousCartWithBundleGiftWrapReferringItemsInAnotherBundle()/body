@@ -1,0 +1,18 @@
+{
+  Customer customer=customerService.saveCustomer(createNamedCustomer());
+  Order order=cartService.createNewCartForCustomer(customer);
+  BundleOrderItem newBundle=(BundleOrderItem)orderService.addBundleItemToOrder(order,createBundleOrderItemRequest());
+  BundleOrderItem newBundle2=(BundleOrderItem)orderService.addBundleItemToOrder(order,createBundleOrderItemRequestWithGiftWrap());
+  GiftWrapOrderItem giftItem=null;
+  for (  DiscreteOrderItem addedItem : newBundle2.getDiscreteOrderItems()) {
+    if (addedItem instanceof GiftWrapOrderItem) {
+      giftItem=(GiftWrapOrderItem)addedItem;
+    }
+  }
+  for (  DiscreteOrderItem addedItem : newBundle.getDiscreteOrderItems()) {
+    addedItem.setGiftWrapOrderItem(giftItem);
+  }
+  giftItem.getWrappedItems().addAll(newBundle.getDiscreteOrderItems());
+  order=orderService.save(order,false);
+  return order;
+}

@@ -3,6 +3,22 @@
   formItem.setTitle(field.getTitle());
   formItem.setWrapTitle(false);
   formItem.setRequired(field.getRequired());
+  formItem.setPrompt(field.getPrompt());
+  String helpText=field.getAttribute("helpText");
+  if (helpText != null && helpText.length() > 0) {
+    final String text=helpText;
+    FormItemIcon icon=new FormItemIcon();
+    icon.setSrc(GWT.getModuleBaseURL() + "admin/images/button/help.png");
+    formItem.setIcons(icon);
+    formItem.addIconClickHandler(new IconClickHandler(){
+      @Override public void onIconClick(      IconClickEvent event){
+        SC.say(text);
+      }
+    }
+);
+  }
+  String hint=field.getAttributeAsString("hint");
+  formItem.setHint(hint);
   if (!sections.containsKey(group)) {
     List<FormItem> temp=new ArrayList<FormItem>();
     sections.put(group,temp);

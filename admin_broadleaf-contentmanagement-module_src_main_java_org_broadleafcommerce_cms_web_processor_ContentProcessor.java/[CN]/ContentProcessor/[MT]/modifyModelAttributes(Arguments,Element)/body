@@ -1,0 +1,49 @@
+{
+  String contentType=element.getAttributeValue("contentType");
+  String contentName=element.getAttributeValue("contentName");
+  String maxResultsStr=element.getAttributeValue("maxResults");
+  Integer maxResults=null;
+  if (maxResultsStr != null) {
+    maxResults=Ints.tryParse(maxResultsStr);
+  }
+  if (maxResults == null) {
+    maxResults=Integer.MAX_VALUE;
+  }
+  String contentListVar=getAttributeValue(element,"contentListVar","contentList");
+  String contentItemVar=getAttributeValue(element,"contentItemVar","contentItem");
+  String numResultsVar=getAttributeValue(element,"numResultsVar","numResults");
+  initServices(arguments);
+  IWebContext context=(IWebContext)arguments.getContext();
+  HttpServletRequest request=context.getHttpServletRequest();
+  Map<String,Object> mvelParameters=buildMvelParameters(request);
+  SandBox currentSandbox=(SandBox)request.getAttribute(BroadleafProcessURLFilter.SANDBOX_VAR);
+  List<StructuredContentDTO> contentItems;
+  StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
+  assert(contentName != null && !"".equals(contentName) && structuredContentType != null);
+  Locale locale=(Locale)request.getAttribute(BroadleafProcessURLFilter.LOCALE_VAR);
+  if (structuredContentType == null) {
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
+  }
+ else {
+    if (contentName == null || "".equals(contentName)) {
+      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,maxResults,mvelParameters,isSecure(request));
+    }
+ else {
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
+    }
+  }
+  if (contentItems.size() > 0) {
+    List<Map<String,String>> contentItemFields=new ArrayList<Map<String,String>>();
+    for (    StructuredContentDTO item : contentItems) {
+      contentItemFields.add(item.getValues());
+    }
+    addToModel(contentItemVar,contentItemFields.get(0));
+    addToModel(contentListVar,contentItemFields);
+    addToModel(numResultsVar,contentItems.size());
+  }
+ else {
+    addToModel(contentItemVar,null);
+    addToModel(contentListVar,null);
+    addToModel(numResultsVar,0);
+  }
+}

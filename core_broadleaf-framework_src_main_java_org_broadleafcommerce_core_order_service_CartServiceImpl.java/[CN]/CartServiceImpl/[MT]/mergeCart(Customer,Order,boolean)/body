@@ -1,6 +1,6 @@
 {
   MergeCartResponse mergeCartResponse=new MergeCartResponse();
-  ReconstructCartResponse reconstructCartResponse=reconstructCart(customer,priceOrder);
+  ReconstructCartResponse reconstructCartResponse=reconstructCart(customer,false);
   mergeCartResponse.setRemovedItems(reconstructCartResponse.getRemovedItems());
   Order customerCart=reconstructCartResponse.getOrder();
   if (anonymousCart != null && customerCart != null && anonymousCart.getId().equals(customerCart.getId())) {
@@ -14,80 +14,12 @@
       if (customerCart == null) {
         customerCart=createNewCartForCustomer(customer);
       }
-      for (      OrderItem orderItem : anonymousCart.getOrderItems()) {
-        if (orderItem instanceof DiscreteOrderItem) {
-          DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
-          if (discreteOrderItem.getSku().getActiveStartDate() != null) {
-            if (discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-              DiscreteOrderItem newItem=(DiscreteOrderItem)discreteOrderItem.clone();
-              addOrderItemToOrder(customerCart,newItem,false);
-              mergeCartResponse.getAddedItems().add(orderItem);
-            }
- else {
-              mergeCartResponse.getRemovedItems().add(orderItem);
-            }
-          }
- else {
-            if (discreteOrderItem.getProduct().isActive() && orderItem.getCategory().isActive()) {
-              DiscreteOrderItem newItem=(DiscreteOrderItem)discreteOrderItem.clone();
-              addOrderItemToOrder(customerCart,newItem,false);
-              mergeCartResponse.getAddedItems().add(orderItem);
-            }
- else {
-              mergeCartResponse.getRemovedItems().add(orderItem);
-            }
-          }
-        }
- else         if (orderItem instanceof BundleOrderItem) {
-          BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
-          boolean removeBundle=false;
-          if (bundleOrderItem.getSku() != null && (!bundleOrderItem.getSku().isActive())) {
-            removeBundle=true;
-          }
- else {
-            List<DiscreteOrderItem> discreteOrderItems=new ArrayList<DiscreteOrderItem>();
-            for (            DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
-              DiscreteOrderItem newItem=(DiscreteOrderItem)discreteOrderItem.clone();
-              discreteOrderItems.add(newItem);
-              if (discreteOrderItem.getSku().getActiveStartDate() != null) {
-                if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-                  removeBundle=true;
-                }
-              }
- else {
-                if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
-                  removeBundle=true;
-                }
-              }
-            }
-          }
-          if (!removeBundle) {
-            BundleOrderItem newBundleOrderItem=(BundleOrderItem)bundleOrderItem.clone();
-            addOrderItemToOrder(customerCart,newBundleOrderItem,false);
-            mergeCartResponse.getAddedItems().add(orderItem);
-          }
- else {
-            mergeCartResponse.getRemovedItems().add(orderItem);
-          }
-        }
-      }
-      Map<String,OfferCode> customerOffersMap=new HashMap<String,OfferCode>();
-      for (      OfferCode customerOffer : customerCart.getAddedOfferCodes()) {
-        customerOffersMap.put(customerOffer.getOfferCode(),customerOffer);
-      }
-      for (      OfferCode anonymousOffer : anonymousCart.getAddedOfferCodes()) {
-        if (!customerOffersMap.containsKey(anonymousOffer.getOfferCode())) {
-          OfferCode transferredCode=offerService.lookupOfferCodeByCode(anonymousOffer.getOfferCode());
-          OfferInfo info=anonymousCart.getAdditionalOfferInformation().get(anonymousOffer.getOffer());
-          OfferInfo offerInfo=offerDao.createOfferInfo();
-          for (          String key : info.getFieldValues().keySet()) {
-            offerInfo.getFieldValues().put(key,info.getFieldValues().get(key));
-          }
-          customerCart.getAdditionalOfferInformation().put(transferredCode.getOffer(),offerInfo);
-          customerCart.addOfferCode(transferredCode);
-        }
-      }
-      customerCart=save(customerCart,true);
+      Map<OrderItem,OrderItem> oldNewItemMap=new HashMap<OrderItem,OrderItem>();
+      customerCart=mergeRegularOrderItems(anonymousCart,mergeCartResponse,customerCart,oldNewItemMap);
+      customerCart=mergeOfferCodes(anonymousCart,customerCart);
+      customerCart=removeExpiredGiftWrapOrderItems(mergeCartResponse,customerCart,oldNewItemMap);
+      customerCart=mergeGiftWrapOrderItems(mergeCartResponse,customerCart,oldNewItemMap);
+      customerCart=save(customerCart,priceOrder);
       cancelOrder(anonymousCart);
     }
   }
