@@ -1,0 +1,23 @@
+{
+  ServletContext servletContext=req.getSession().getServletContext();
+  RequestDispatcher rd=servletContext.getNamedDispatcher("default");
+  if (rd == null) {
+    throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet");
+  }
+  URLHandler url=urlHandlerDao.findPageByURI(req.getServletPath());
+  LogFactory.getLog(this.getClass()).debug("new request for " + req.getServletPath() + this);
+  if (url != null && req.getServletPath().equals(url.getIncomingURL())) {
+    if (url.getUrlRedirectType() == url.getUrlRedirectType().FORWARD) {
+      RequestDispatcher rd2=req.getRequestDispatcher(url.getNewURL());
+      rd2.forward(req,res);
+    }
+ else     if (url.getUrlRedirectType() == url.getUrlRedirectType().REDIRECT_PERM) {
+      res.setStatus(res.SC_MOVED_PERMANENTLY);
+      res.setHeader("Location",url.getNewURL());
+    }
+ else     if (url.getUrlRedirectType() == url.getUrlRedirectType().REDIRECT_TEMP) {
+      res.sendRedirect(url.getNewURL());
+    }
+  }
+ else   chain.doFilter(req,res);
+}
