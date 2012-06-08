@@ -1,29 +1,6 @@
 {
   StaticAsset staticAsset=findStaticAsset(fullUrl,sandBox);
   if (staticAsset == null) {
-    staticAsset=findStaticAsset(fullUrl.toUpperCase(),sandBox);
-    if (staticAsset == null) {
-      staticAsset=findStaticAsset(fullUrl.toLowerCase(),sandBox);
-      if (staticAsset == null) {
-        int extPos=fullUrl.lastIndexOf('.');
-        if (extPos >= 0) {
-          String prefix=fullUrl.substring(0,extPos);
-          String extension=fullUrl.substring(extPos,fullUrl.length());
-          staticAsset=findStaticAsset(prefix.toUpperCase() + extension,sandBox);
-          if (staticAsset == null) {
-            staticAsset=findStaticAsset(prefix.toLowerCase() + extension,sandBox);
-            if (staticAsset == null) {
-              staticAsset=findStaticAsset(prefix + extension.toUpperCase(),sandBox);
-              if (staticAsset == null) {
-                staticAsset=findStaticAsset(prefix + extension.toLowerCase(),sandBox);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  if (staticAsset == null) {
     if (sandBox == null) {
       throw new RuntimeException("Unable to find an asset for the url (" + fullUrl + ") using the production sandBox.");
     }
