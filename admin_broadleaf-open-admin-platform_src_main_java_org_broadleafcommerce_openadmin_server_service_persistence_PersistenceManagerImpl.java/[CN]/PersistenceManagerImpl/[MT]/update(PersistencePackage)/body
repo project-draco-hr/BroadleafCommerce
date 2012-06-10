@@ -11,7 +11,7 @@
         }
       }
       Entity response=handler.update(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.ENTITY));
-      return response;
+      return postUpdate(response);
     }
   }
   Entity entity=persistencePackage.getEntity();
@@ -22,5 +22,6 @@
     }
   }
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getUpdateType());
-  return executeModuleUpdateOperation(myModule,persistencePackage);
+  Entity response=myModule.update(persistencePackage);
+  return postUpdate(response);
 }
