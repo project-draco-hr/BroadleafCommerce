@@ -26,24 +26,32 @@
             Window.open(builder.buildString(),"_self",null);
           }
  else {
-            SC.logWarn("Admin user found. Loading interface...");
-            java.util.logging.Logger.getLogger(getClass().toString()).warning("Admin user found. Loading interface...");
-            ;
-            setCurrentModuleKey(requestedModuleKey);
-            if (currentModuleKey == null) {
-              SC.say(getMessageManager().getString("noModulesAuthorized"));
-              return;
+            AppServices.UTILITY.getWorkflowEnabled(new AbstractCallback<Boolean>(){
+              @Override public void onSuccess(              Boolean result){
+                if (!result) {
+                  modules.remove("BLCSandBox");
+                }
+                SC.logWarn("Admin user found. Loading interface...");
+                java.util.logging.Logger.getLogger(getClass().toString()).warning("Admin user found. Loading interface...");
+                ;
+                setCurrentModuleKey(requestedModuleKey);
+                if (currentModuleKey == null) {
+                  SC.say(getMessageManager().getString("noModulesAuthorized"));
+                  return;
+                }
+                setCurrentPageKey(requestedPageKey);
+                if (currentPageKey == null) {
+                  SC.say(getMessageManager().getString("noAuthorizedPages"));
+                  return;
+                }
+                modules.get(currentModuleKey).preDraw();
+                MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
+                MASTERVIEW.draw();
+                AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,currentModuleKey,true);
+                modules.get(currentModuleKey).postDraw();
+              }
             }
-            setCurrentPageKey(requestedPageKey);
-            if (currentPageKey == null) {
-              SC.say(getMessageManager().getString("noAuthorizedPages"));
-              return;
-            }
-            modules.get(currentModuleKey).preDraw();
-            MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
-            MASTERVIEW.draw();
-            AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,currentModuleKey,true);
-            modules.get(currentModuleKey).postDraw();
+);
           }
           if (postLaunch != null) {
             postLaunch.onLaunched();

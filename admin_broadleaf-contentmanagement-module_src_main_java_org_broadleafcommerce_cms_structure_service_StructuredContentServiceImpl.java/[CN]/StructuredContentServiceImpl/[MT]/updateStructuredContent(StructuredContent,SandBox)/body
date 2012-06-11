@@ -2,16 +2,27 @@
   if (content.getLockedFlag()) {
     throw new IllegalArgumentException("Unable to update a locked record");
   }
+  if (automaticallyApproveAndPromoteStructuredContent) {
+    if (destSandbox != null && destSandbox.getSite() != null) {
+      destSandbox=destSandbox.getSite().getProductionSandbox();
+    }
+ else {
+      destSandbox=null;
+    }
+  }
   if (checkForSandboxMatch(content.getSandbox(),destSandbox)) {
     if (content.getDeletedFlag()) {
       SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(content.getSandbox(),SandBoxItemType.STRUCTURED_CONTENT,content.getId());
-      if (content.getOriginalItemId() == null) {
+      if (content.getOriginalItemId() == null && item != null) {
         content.setArchivedFlag(true);
         item.setArchivedFlag(true);
       }
- else {
+ else       if (item != null) {
         item.setSandBoxOperationType(SandBoxOperationType.DELETE);
         sandBoxItemDao.updateSandBoxItem(item);
+      }
+ else       if (automaticallyApproveAndPromoteStructuredContent) {
+        content.setArchivedFlag(true);
       }
     }
     return structuredContentDao.addOrUpdateContentItem(content);

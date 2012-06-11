@@ -1,0 +1,18 @@
+{
+  addConstants(GWT.<ConstantsWithLookup>create(ContentManagementMessages.class));
+  addConstants(GWT.<ConstantsWithLookup>create(SandBoxMessages.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCommon.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityFramework.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityProfile.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityOpenAdmin.class));
+  addConstants(GWT.<ConstantsWithLookup>create(OpenAdminMessages.class));
+  setModuleTitle(BLCMain.getMessageManager().getString("sandBoxModuleTitle"));
+  setModuleKey("BLCSandBox");
+  List<String> userSandBoxPermissions=new ArrayList<String>();
+  userSandBoxPermissions.add("PERMISSION_ALL_USER_SANDBOX");
+  setSection(BLCMain.getMessageManager().getString("userSandBoxTitle"),"userSandBox","org.broadleafcommerce.cms.admin.client.view.sandbox.MySandBoxView","userSandBoxPresenter","org.broadleafcommerce.cms.admin.client.presenter.sandbox.MySandBoxPresenter",userSandBoxPermissions);
+  List<String> approverSandBoxPermissions=new ArrayList<String>();
+  approverSandBoxPermissions.add("PERMISSION_ALL_APPROVER_SANDBOX");
+  setSection(BLCMain.getMessageManager().getString("approverSandBoxTitle"),"approverSandBox","org.broadleafcommerce.cms.admin.client.view.sandbox.SandBoxView","approverSandBoxPresenter","org.broadleafcommerce.cms.admin.client.presenter.sandbox.SandBoxPresenter",approverSandBoxPermissions);
+  registerModule();
+}

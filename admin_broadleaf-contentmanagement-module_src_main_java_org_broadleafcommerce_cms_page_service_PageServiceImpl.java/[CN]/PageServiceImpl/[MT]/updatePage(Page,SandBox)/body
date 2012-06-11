@@ -2,16 +2,27 @@
   if (page.getLockedFlag()) {
     throw new IllegalArgumentException("Unable to update a locked record");
   }
+  if (automaticallyApproveAndPromotePages) {
+    if (destSandbox != null && destSandbox.getSite() != null) {
+      destSandbox=destSandbox.getSite().getProductionSandbox();
+    }
+ else {
+      destSandbox=null;
+    }
+  }
   if (checkForSandboxMatch(page.getSandbox(),destSandbox)) {
     if (page.getDeletedFlag()) {
       SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(page.getSandbox(),SandBoxItemType.PAGE,page.getId());
-      if (page.getOriginalPageId() == null) {
+      if (page.getOriginalPageId() == null && item != null) {
         item.setArchivedFlag(true);
         page.setArchivedFlag(true);
       }
- else {
+ else       if (item != null) {
         item.setSandBoxOperationType(SandBoxOperationType.DELETE);
         sandBoxItemDao.updateSandBoxItem(item);
+      }
+ else       if (automaticallyApproveAndPromotePages) {
+        page.setArchivedFlag(true);
       }
     }
     return pageDao.updatePage(page);
