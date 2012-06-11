@@ -7,7 +7,7 @@
   for (  String fieldKey : sc.getStructuredContentFields().keySet()) {
     StructuredContentField scf=sc.getStructuredContentFields().get(fieldKey);
     String originalValue=scf.getValue();
-    if (envPrefix != null && originalValue != null && originalValue.contains(cmsPrefix)) {
+    if (StringUtils.isNotBlank(envPrefix) && StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix)&& originalValue.contains(cmsPrefix)) {
       if (originalValue.startsWith("/")) {
         originalValue=originalValue.substring(1);
       }
