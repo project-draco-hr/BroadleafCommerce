@@ -8,8 +8,8 @@
         em.detach(attribute);
         attribute.setId(null);
       }
-      ProductSku derivedProduct=(ProductSku)product;
-      Sku sku=derivedProduct.getSku();
+      Product derivedProduct=(Product)product;
+      Sku sku=derivedProduct.getDefaultSku();
       em.detach(sku);
       sku.setId(null);
       String skuName=sku.getName();
@@ -19,7 +19,7 @@
       }
       sku.setName(skuName + '_' + j);
       sku=catalogService.saveSku(sku);
-      derivedProduct.setSku(sku);
+      derivedProduct.setDefaultSku(sku);
       product.getAllSkus().clear();
       product.getAllSkus().add(sku);
       product.getAllParentCategories().size();
