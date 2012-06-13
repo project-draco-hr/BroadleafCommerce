@@ -1,0 +1,25 @@
+{
+  SimpleProgress progress=new SimpleProgress(24);
+  progressWindow.setProgressBar(progress);
+  progressWindow.setTitleKey("userSecurityPreProcessTitle");
+  progressWindow.startProgress();
+  java.util.logging.Logger.getLogger(UserSecurityPreProcessor.class.getName()).info("Retrieving user security...");
+  AppServices.SECURITY.getAdminUser(new AbstractCallback<AdminUser>(){
+    @Override public void onSuccess(    AdminUser result){
+      org.broadleafcommerce.openadmin.client.security.SecurityManager.USER=result;
+      if (result == null) {
+        java.util.logging.Logger.getLogger(UserSecurityPreProcessor.class.getName()).info("Admin user not found. Logging out...");
+        UrlBuilder builder=Window.Location.createUrlBuilder();
+        builder.setPath(BLCMain.webAppContext + "/adminLogout.htm");
+        builder.setParameter("time",String.valueOf(System.currentTimeMillis()));
+        Window.open(builder.buildString(),"_self",null);
+      }
+ else {
+        progressWindow.stopProgress();
+        progressWindow.finalizeProgress();
+        cb.complete();
+      }
+    }
+  }
+);
+}

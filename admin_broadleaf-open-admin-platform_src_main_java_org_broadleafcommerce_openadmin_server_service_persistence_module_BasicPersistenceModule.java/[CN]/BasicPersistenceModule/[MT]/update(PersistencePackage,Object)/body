@@ -8,10 +8,6 @@
       primaryKey=getPrimaryKey(entity,mergedProperties);
     }
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
-    SandBoxContext context=SandBoxContext.getSandBoxContext();
-    if (context != null && context.getSandBoxMode() != SandBoxMode.IMMEDIATE_COMMIT) {
-      instance=(Serializable)SerializationUtils.clone(instance);
-    }
     instance=createPopulatedInstance(instance,entity,mergedProperties,false);
     instance=persistenceManager.getDynamicEntityDao().merge(instance);
     List<Serializable> entityList=new ArrayList<Serializable>(1);

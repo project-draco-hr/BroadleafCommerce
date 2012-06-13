@@ -1,0 +1,18 @@
+{
+  PreProcessor preProcessor=preProcessors.get(count);
+  preProcessor.preProcess(progressWindow,new PreProcessStatus(){
+    @Override public void complete(){
+      int temp=count + 1;
+      if (temp < preProcessors.size()) {
+        executePreProcessors(temp,requestedModuleKey,requestedPageKey);
+      }
+ else {
+        if (postLaunch != null) {
+          postLaunch.onLaunched();
+        }
+        finalizeCurrentState(requestedModuleKey,requestedPageKey);
+      }
+    }
+  }
+);
+}

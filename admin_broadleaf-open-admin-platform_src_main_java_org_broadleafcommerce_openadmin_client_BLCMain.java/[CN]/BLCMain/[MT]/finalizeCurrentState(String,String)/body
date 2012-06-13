@@ -1,0 +1,18 @@
+{
+  java.util.logging.Logger.getLogger(BLCMain.class.getName()).info("Admin user found. Loading interface...");
+  setCurrentModuleKey(requestedModuleKey);
+  if (currentModuleKey == null) {
+    SC.say(getMessageManager().getString("noModulesAuthorized"));
+    return;
+  }
+  setCurrentPageKey(requestedPageKey);
+  if (currentPageKey == null) {
+    SC.say(getMessageManager().getString("noAuthorizedPages"));
+    return;
+  }
+  modules.get(currentModuleKey).preDraw();
+  MASTERVIEW=new MasterView(currentModuleKey,currentPageKey,modules);
+  MASTERVIEW.draw();
+  AppController.getInstance().go(MASTERVIEW.getContainer(),modules.get(currentModuleKey).getPages(),currentPageKey,currentModuleKey,true);
+  modules.get(currentModuleKey).postDraw();
+}

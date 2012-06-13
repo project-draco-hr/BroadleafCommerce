@@ -10,5 +10,6 @@
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
-  return myModule.add(persistencePackage);
+  Entity response=myModule.add(persistencePackage);
+  return postAdd(response);
 }
