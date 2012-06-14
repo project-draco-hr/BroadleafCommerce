@@ -1,0 +1,30 @@
+{
+  SearchQuery input=new SearchQuery(queryString);
+  SearchIntercept intercept=searchService.getInterceptForTerm(queryString);
+  if (intercept != null) {
+    return "redirect:" + intercept.getRedirect();
+  }
+  List<Product> products=null;
+  products=searchService.performSearch(input.getQueryString());
+  SearchFilterUtil.filterProducts(products,request.getParameterMap(),new String[]{"manufacturer","defaultCategory.id","sku.salePrice"});
+  model.addAttribute("queryString",input.getQueryString());
+  model.addAttribute("products",products);
+  List<Category> categories=new ArrayList<Category>();
+  Map<Long,List<Product>> categoryGroups=new HashMap<Long,List<Product>>();
+  for (  Product product : products) {
+    Category cat=product.getDefaultCategory();
+    if (!categoryGroups.containsKey(cat.getId())) {
+      categories.add(cat);
+      categoryGroups.put(cat.getId(),new ArrayList<Product>());
+    }
+    categoryGroups.get(cat.getId()).add(product);
+  }
+  model.addAttribute("categories",categories);
+  model.addAttribute("categoryGroups",categoryGroups);
+  if (isAjaxRequest(request) && StringUtils.equals(queryString,originalQueryString)) {
+    return ajaxRender("search",request,model);
+  }
+ else {
+    return "search";
+  }
+}
