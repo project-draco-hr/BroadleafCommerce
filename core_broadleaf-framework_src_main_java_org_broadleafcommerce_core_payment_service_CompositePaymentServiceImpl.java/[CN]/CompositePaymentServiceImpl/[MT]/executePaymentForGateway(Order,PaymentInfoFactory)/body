@@ -1,0 +1,7 @@
+{
+  Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+  PaymentInfo paymentInfo=paymentInfoFactory.constructPaymentInfo(order);
+  payments.put(paymentInfo,paymentInfo.createEmptyReferenced());
+  order.getPaymentInfos().add(paymentInfo);
+  return executePayment(order,payments);
+}
