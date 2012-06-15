@@ -1,0 +1,30 @@
+{
+  Collection<GrantedAuthority> newAuthorities=new HashSet<GrantedAuthority>();
+  if (roleNameSubstitutions != null && !roleNameSubstitutions.isEmpty()) {
+    for (    GrantedAuthority authority : authorities) {
+      if (roleNameSubstitutions.containsKey(authority.getAuthority())) {
+        String[] roles=roleNameSubstitutions.get(authority.getAuthority());
+        for (        String role : roles) {
+          newAuthorities.add(new SimpleGrantedAuthority(role.trim()));
+        }
+        if (additiveRoleNameSubstitutions) {
+          newAuthorities.add(authority);
+        }
+      }
+ else {
+        newAuthorities.add(authority);
+      }
+    }
+  }
+ else {
+    newAuthorities.addAll(authorities);
+  }
+  String email=(String)ctx.getObjectAttribute("mail");
+  UserDetails userDetails;
+  if (useEmailAddressAsUsername && email != null) {
+    userDetails=super.mapUserFromContext(ctx,email,newAuthorities);
+  }
+  userDetails=super.mapUserFromContext(ctx,username,newAuthorities);
+  provisionUser(ctx,userDetails);
+  return userDetails;
+}
