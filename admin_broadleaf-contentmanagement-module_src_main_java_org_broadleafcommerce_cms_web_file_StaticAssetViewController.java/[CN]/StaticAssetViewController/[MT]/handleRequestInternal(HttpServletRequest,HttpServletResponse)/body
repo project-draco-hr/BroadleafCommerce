@@ -7,7 +7,7 @@
     }
     SandBox sandBox=null;
     if (sandBoxId != null) {
-      sandBox=sandBoxService.retrieveSandboxById(sandBoxId);
+      sandBox=sandBoxDao.retrieve(sandBoxId);
     }
     Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
     return new ModelAndView(viewResolverName,model);
