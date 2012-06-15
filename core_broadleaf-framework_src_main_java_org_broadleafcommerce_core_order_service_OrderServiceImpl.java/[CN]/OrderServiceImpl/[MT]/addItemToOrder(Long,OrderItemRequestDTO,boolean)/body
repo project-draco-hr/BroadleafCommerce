@@ -3,6 +3,9 @@
     LOG.debug("Not adding item to order because quantity is zero.");
     return null;
   }
+  if (orderItemRequestDTO.getQuantity() < 0) {
+    throw new IllegalArgumentException("Quantity cannot be negative");
+  }
   Order order=validateOrder(orderId);
   Product product=validateProduct(orderItemRequestDTO.getProductId());
   Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes());

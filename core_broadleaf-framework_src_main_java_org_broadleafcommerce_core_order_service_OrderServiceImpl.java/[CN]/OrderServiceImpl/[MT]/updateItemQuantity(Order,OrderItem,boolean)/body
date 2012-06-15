@@ -2,7 +2,15 @@
   if (!order.getOrderItems().contains(item)) {
     throw new ItemNotFoundException("Order Item (" + item.getId() + ") not found in Order ("+ order.getId()+ ")");
   }
-  OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(item));
-  itemFromOrder.setQuantity(item.getQuantity());
-  order=updateOrder(order,priceOrder);
+  if (item.getQuantity() == 0) {
+    removeItemFromOrder(order,item);
+  }
+ else   if (item.getQuantity() < 0) {
+    throw new IllegalArgumentException("Quantity cannot be negative");
+  }
+ else {
+    OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(item));
+    itemFromOrder.setQuantity(item.getQuantity());
+    order=updateOrder(order,priceOrder);
+  }
 }

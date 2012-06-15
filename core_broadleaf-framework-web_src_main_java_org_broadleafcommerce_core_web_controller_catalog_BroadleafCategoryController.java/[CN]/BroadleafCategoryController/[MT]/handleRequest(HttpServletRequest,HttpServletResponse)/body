@@ -1,0 +1,15 @@
+{
+  ModelAndView model=new ModelAndView();
+  Category category=(Category)request.getAttribute(CategoryHandlerMapping.CURRENT_CATEGORY_ATTRIBUTE_NAME);
+  assert(category != null);
+  model.addObject(CATEGORY_ATTRIBUTE_NAME,category);
+  List<Product> productList=catalogService.findActiveProductsByCategory(category,SystemTime.asDate());
+  model.addObject(PRODUCTS_ATTRIBUTE_NAME,productList);
+  if (StringUtils.isNotEmpty(category.getDisplayTemplate())) {
+    model.setViewName(category.getDisplayTemplate());
+  }
+ else {
+    model.setViewName(defaultCategoryTemplateName);
+  }
+  return model;
+}

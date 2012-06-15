@@ -1,0 +1,13 @@
+{
+  ModelAndView model=new ModelAndView();
+  Product product=(Product)request.getAttribute(ProductHandlerMapping.CURRENT_PRODUCT_ATTRIBUTE_NAME);
+  assert(product != null);
+  model.addObject(MODEL_ATTRIBUTE_NAME,product);
+  if (StringUtils.isNotEmpty(product.getDisplayTemplate())) {
+    model.setViewName(product.getDisplayTemplate());
+  }
+ else {
+    model.setViewName(defaultProductTemplateName);
+  }
+  return model;
+}
