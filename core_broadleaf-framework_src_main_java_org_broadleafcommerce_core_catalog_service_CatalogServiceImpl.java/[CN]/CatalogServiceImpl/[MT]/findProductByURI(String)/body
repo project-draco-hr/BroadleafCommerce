@@ -1,0 +1,22 @@
+{
+  List<Product> products=productDao.findProductByURI(uri);
+  if (products == null || products.size() == 0) {
+    return null;
+  }
+ else   if (products.size() == 1) {
+    return products.get(0);
+  }
+ else {
+    for (    Product product : products) {
+      if (uri.equals(product.getUrl())) {
+        return product;
+      }
+    }
+    for (    Product product : products) {
+      if (uri.equals(product.getGeneratedUrl())) {
+        return product;
+      }
+    }
+    return products.get(0);
+  }
+}

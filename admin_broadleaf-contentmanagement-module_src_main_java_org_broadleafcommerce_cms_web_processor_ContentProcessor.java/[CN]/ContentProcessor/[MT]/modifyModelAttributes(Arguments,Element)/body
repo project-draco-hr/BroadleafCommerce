@@ -15,12 +15,12 @@
   initServices(arguments);
   IWebContext context=(IWebContext)arguments.getContext();
   HttpServletRequest request=context.getHttpServletRequest();
+  BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
   Map<String,Object> mvelParameters=buildMvelParameters(request);
-  SandBox currentSandbox=(SandBox)request.getAttribute(BroadleafProcessURLFilter.SANDBOX_VAR);
+  SandBox currentSandbox=blcContext.getSandbox();
   List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
-  assert(contentName != null && !"".equals(contentName) && structuredContentType != null);
-  Locale locale=(Locale)request.getAttribute(BroadleafProcessURLFilter.LOCALE_VAR);
+  Locale locale=blcContext.getLocale();
   if (structuredContentType == null) {
     contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
   }

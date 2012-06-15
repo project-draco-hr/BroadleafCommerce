@@ -1,23 +1,29 @@
 {
-  ServletContext servletContext=req.getSession().getServletContext();
-  RequestDispatcher rd=servletContext.getNamedDispatcher("default");
-  if (rd == null) {
-    throw new IllegalStateException("A RequestDispatcher could not be located for the default servlet");
+  String contextPath=request.getContextPath();
+  String requestURIWithoutContext;
+  if (request.getContextPath() != null) {
+    requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
   }
-  URLHandler url=urlHandlerDao.findPageByURI(req.getServletPath());
-  LogFactory.getLog(this.getClass()).debug("new request for " + req.getServletPath() + this);
-  if (url != null && req.getServletPath().equals(url.getIncomingURL())) {
-    if (url.getUrlRedirectType() == url.getUrlRedirectType().FORWARD) {
-      RequestDispatcher rd2=req.getRequestDispatcher(url.getNewURL());
-      rd2.forward(req,res);
+ else {
+    requestURIWithoutContext=request.getRequestURI();
+  }
+  URLHandler handler=urlHandlerService.findURLHandlerByURI(requestURIWithoutContext);
+  if (handler != null) {
+    if (URLRedirectType.FORWARD == handler.getUrlRedirectType()) {
+      request.getRequestDispatcher(handler.getNewURL()).forward(request,response);
     }
- else     if (url.getUrlRedirectType() == url.getUrlRedirectType().REDIRECT_PERM) {
-      res.setStatus(res.SC_MOVED_PERMANENTLY);
-      res.setHeader("Location",url.getNewURL());
+ else     if (URLRedirectType.REDIRECT_PERM == handler.getUrlRedirectType()) {
+      String url=fixRedirectUrl(contextPath,handler.getNewURL());
+      response.setStatus(Response.SC_MOVED_PERMANENTLY);
+      response.setHeader("Location",url);
+      response.setHeader("Connection","close");
     }
- else     if (url.getUrlRedirectType() == url.getUrlRedirectType().REDIRECT_TEMP) {
-      res.sendRedirect(url.getNewURL());
+ else     if (URLRedirectType.REDIRECT_TEMP == handler.getUrlRedirectType()) {
+      String url=fixRedirectUrl(contextPath,handler.getNewURL());
+      response.sendRedirect(url);
     }
   }
- else   chain.doFilter(req,res);
+ else {
+    filterChain.doFilter(request,response);
+  }
 }

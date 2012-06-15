@@ -1,0 +1,20 @@
+{
+  Customer customer=(Customer)request.getAttribute(CustomerStateFilter.getCustomerRequestAttributeName());
+  if (customer != null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Looking up cart for customer " + customer.getId());
+    }
+    Order cart=cartService.findCartForCustomer(customer);
+    if (cart == null) {
+      cart=cartService.createNewCartForCustomer(customer);
+    }
+    request.setAttribute(cartRequestAttributeName,cart);
+    Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);
+    if (ruleMap == null) {
+      ruleMap=new HashMap<String,Object>();
+    }
+    ruleMap.put("cart",cart);
+    request.setAttribute(BLC_RULE_MAP_PARAM,ruleMap);
+  }
+  chain.doFilter(request,response);
+}

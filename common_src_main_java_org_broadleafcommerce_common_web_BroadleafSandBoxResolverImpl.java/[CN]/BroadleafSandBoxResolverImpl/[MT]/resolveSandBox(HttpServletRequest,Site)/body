@@ -1,0 +1,48 @@
+{
+  SandBox currentSandbox=null;
+  if (!sandBoxPreviewEnabled) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Sandbox preview disabled. Setting sandbox to production");
+    }
+    request.setAttribute(SANDBOX_VAR,currentSandbox);
+  }
+ else {
+    Long sandboxId=null;
+    if ((request.getParameter("blClearSandBox") == null) || (request.getParameter("blSandboxDateTimeRibbonProduction") == null)) {
+      sandboxId=lookupSandboxId(request);
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Removing sandbox from session.");
+      }
+      request.getSession().removeAttribute(SANDBOX_DATE_TIME_VAR);
+      request.getSession().removeAttribute(SANDBOX_ID_VAR);
+    }
+    if (sandboxId != null) {
+      currentSandbox=sandBoxDao.retrieve(sandboxId);
+      request.setAttribute(SANDBOX_VAR,currentSandbox);
+      if (currentSandbox != null && !SandBoxType.PRODUCTION.equals(currentSandbox.getSandBoxType())) {
+        setContentTime(request);
+      }
+    }
+    if (currentSandbox == null && site != null) {
+      currentSandbox=site.getProductionSandbox();
+    }
+  }
+  if (LOG.isTraceEnabled()) {
+    if (currentSandbox != null) {
+      LOG.trace("Serving request using sandbox: " + currentSandbox);
+    }
+ else {
+      LOG.trace("Serving request without a sandbox.");
+    }
+  }
+  Date currentSystemDateTime=SystemTime.asDate(true);
+  Calendar sandboxDateTimeCalendar=Calendar.getInstance();
+  sandboxDateTimeCalendar.setTime(currentSystemDateTime);
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_DATE_PARAM,CONTENT_DATE_DISPLAY_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_HOURS_PARAM,CONTENT_DATE_DISPLAY_HOURS_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_MINUTES_PARAM,CONTENT_DATE_DISPLAY_MINUTES_FORMATTER.format(currentSystemDateTime));
+  request.setAttribute(SANDBOX_DISPLAY_DATE_TIME_AMPM_PARAM,sandboxDateTimeCalendar.get(Calendar.AM_PM));
+  return currentSandbox;
+}
