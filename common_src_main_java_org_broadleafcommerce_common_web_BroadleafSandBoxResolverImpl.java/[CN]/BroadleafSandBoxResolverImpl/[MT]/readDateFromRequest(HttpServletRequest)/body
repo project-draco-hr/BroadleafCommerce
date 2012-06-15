@@ -1,0 +1,18 @@
+{
+  String date=request.getParameter(SANDBOX_DISPLAY_DATE_TIME_DATE_PARAM);
+  String minutes=request.getParameter(SANDBOX_DISPLAY_DATE_TIME_MINUTES_PARAM);
+  String hours=request.getParameter(SANDBOX_DISPLAY_DATE_TIME_HOURS_PARAM);
+  String ampm=request.getParameter(SANDBOX_DISPLAY_DATE_TIME_AMPM_PARAM);
+  if (StringUtils.isEmpty(minutes)) {
+    minutes=Integer.toString(SystemTime.asCalendar().get(Calendar.MINUTE));
+  }
+  if (StringUtils.isEmpty(hours)) {
+    hours=Integer.toString(SystemTime.asCalendar().get(Calendar.HOUR_OF_DAY));
+  }
+  String dateString=date + " " + hours+ ":"+ minutes+ " "+ ampm;
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Setting date/time using " + dateString);
+  }
+  Date parsedDate=CONTENT_DATE_PARSE_FORMAT.parse(dateString);
+  return parsedDate;
+}

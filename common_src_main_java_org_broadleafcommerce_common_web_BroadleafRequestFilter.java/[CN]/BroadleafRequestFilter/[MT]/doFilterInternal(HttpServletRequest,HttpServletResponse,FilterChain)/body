@@ -1,0 +1,43 @@
+{
+  if (!shouldProcessURL(request,request.getRequestURI())) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Process URL not processing URL " + request.getRequestURI());
+    }
+    filterChain.doFilter(request,response);
+    return;
+  }
+  final String requestURIWithoutContext;
+  if (request.getContextPath() != null) {
+    requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
+  }
+ else {
+    requestURIWithoutContext=request.getRequestURI();
+  }
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Process URL Filter Begin " + requestURIWithoutContext);
+  }
+  if (request.getAttribute(REQUEST_DTO) == null) {
+    request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
+  }
+  Site site=siteResolver.resolveSite(request);
+  Locale locale=localeResolver.resolveLocale(request);
+  SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
+  BroadleafRequestContext brc=new BroadleafRequestContext();
+  brc.setSite(site);
+  brc.setLocale(locale);
+  brc.setRequest(request);
+  brc.setSandbox(currentSandbox);
+  brc.setResponse(response);
+  BroadleafRequestContext.setBroadleafRequestContext(brc);
+  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap");
+  if (ruleMap == null) {
+    LOG.trace("Creating ruleMap and adding in Locale.");
+    ruleMap=new HashMap<String,Object>();
+    request.setAttribute("blRuleMap",ruleMap);
+  }
+ else {
+    LOG.trace("Using pre-existing ruleMap - added by non standard BLC process.");
+  }
+  ruleMap.put("locale",locale);
+  filterChain.doFilter(request,response);
+}

@@ -25,12 +25,21 @@
         if (LOG.isTraceEnabled()) {
           LOG.trace("No match found for passed in URI, locale, and sandbox.  Key = " + key);
         }
+        addPageToCache(NULL_PAGE,key);
         productionPageDTO=null;
       }
     }
  else {
-      if (LOG.isTraceEnabled()) {
-        LOG.trace("Production page found in cache.  Key = " + key);
+      if (productionPageDTO instanceof NullPageDTO) {
+        productionPageDTO=null;
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Null production page found in cache for key = " + key);
+        }
+      }
+ else {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Production page found in cache for key = " + key);
+        }
       }
     }
     if (currentSandbox != null && !currentSandbox.getSandBoxType().equals(SandBoxType.PRODUCTION)) {

@@ -1,0 +1,11 @@
+{
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  PageDTO p=pageService.findPageByURI(context.getSandbox(),context.getLocale(),context.getRequestURIWithoutContext(),context.isSecure());
+  if (p != null) {
+    context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,p);
+    return controllerName;
+  }
+ else {
+    return null;
+  }
+}

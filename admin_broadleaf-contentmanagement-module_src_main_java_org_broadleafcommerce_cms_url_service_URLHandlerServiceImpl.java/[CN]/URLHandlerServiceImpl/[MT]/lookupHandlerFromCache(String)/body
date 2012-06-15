@@ -1,0 +1,14 @@
+{
+  String key=buildKey(requestURI);
+  URLHandler handler=getUrlHandlerFromCache(key);
+  if (handler == null) {
+    handler=findURLHandlerByURIInternal(requestURI);
+    getUrlHandlerCache().put(new Element(key,handler));
+  }
+  if (handler == null || handler instanceof NullURLHandler) {
+    return null;
+  }
+ else {
+    return handler;
+  }
+}

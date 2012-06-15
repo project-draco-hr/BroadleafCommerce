@@ -1,0 +1,41 @@
+{
+  String sandboxDateTimeParam=request.getParameter(SANDBOX_DATE_TIME_VAR);
+  if (sandBoxPreviewEnabled) {
+    sandboxDateTimeParam=null;
+  }
+  Date overrideTime=null;
+  try {
+    if (request.getParameter(SANDBOX_DATE_TIME_RIBBON_OVERRIDE_PARAM) != null) {
+      overrideTime=readDateFromRequest(request);
+    }
+ else     if (sandboxDateTimeParam != null) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Setting date/time using " + sandboxDateTimeParam);
+      }
+      overrideTime=CONTENT_DATE_FORMATTER.parse(sandboxDateTimeParam);
+    }
+  }
+ catch (  ParseException e) {
+    LOG.debug(e);
+  }
+  if (overrideTime == null) {
+    HttpSession session=request.getSession(false);
+    if (session != null) {
+      overrideTime=(Date)session.getAttribute(SANDBOX_DATE_TIME_VAR);
+    }
+  }
+ else {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Setting date-time for sandbox mode to " + overrideTime + " for sandboxDateTimeParam = "+ sandboxDateTimeParam);
+    }
+    HttpSession session=request.getSession();
+    session.setAttribute(SANDBOX_DATE_TIME_VAR,overrideTime);
+  }
+  if (overrideTime != null) {
+    FixedTimeSource ft=new FixedTimeSource(overrideTime.getTime());
+    SystemTime.setLocalTimeSource(ft);
+  }
+ else {
+    SystemTime.resetLocalTimeSource();
+  }
+}
