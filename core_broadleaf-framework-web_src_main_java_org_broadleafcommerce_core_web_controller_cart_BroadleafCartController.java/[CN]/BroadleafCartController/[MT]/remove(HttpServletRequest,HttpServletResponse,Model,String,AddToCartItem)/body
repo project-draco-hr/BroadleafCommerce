@@ -1,0 +1,15 @@
+{
+  Order cart=CartState.getCart(request);
+  cart=cartService.removeItemFromOrder(cart.getId(),itemRequest.getOrderItemId());
+  cart=cartService.save(cart,true);
+  Map<String,Object> responseMap=new HashMap<String,Object>();
+  responseMap.put("cartItemCount",cart.getItemCount());
+  responseMap.put("productId",itemRequest.getProductId());
+  if (isAjaxRequest(request)) {
+    return responseMap;
+  }
+ else {
+    sendRedirect(request,response,"/cart");
+  }
+  return null;
+}
