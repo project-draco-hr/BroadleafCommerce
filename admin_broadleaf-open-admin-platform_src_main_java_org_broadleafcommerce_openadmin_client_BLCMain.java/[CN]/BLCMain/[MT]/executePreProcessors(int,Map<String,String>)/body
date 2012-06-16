@@ -1,16 +1,16 @@
 {
   PreProcessor preProcessor=preProcessors.get(count);
-  preProcessor.preProcess(progressWindow,new PreProcessStatus(){
+  preProcessor.preProcess(progressWindow,pipelineSeed,new PreProcessStatus(){
     @Override public void complete(){
       int temp=count + 1;
       if (temp < preProcessors.size()) {
-        executePreProcessors(temp,requestedModuleKey,requestedPageKey);
+        executePreProcessors(temp,pipelineSeed);
       }
  else {
         if (postLaunch != null) {
           postLaunch.onLaunched();
         }
-        finalizeCurrentState(requestedModuleKey,requestedPageKey);
+        finalizeCurrentState(pipelineSeed.get("requestedModuleKey"),pipelineSeed.get("requestedPageKey"));
       }
     }
   }
