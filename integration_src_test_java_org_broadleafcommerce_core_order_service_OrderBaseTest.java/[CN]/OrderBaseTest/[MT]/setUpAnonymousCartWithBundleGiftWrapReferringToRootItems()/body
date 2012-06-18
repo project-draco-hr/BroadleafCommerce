@@ -1,13 +1,12 @@
 {
   Customer customer=customerService.saveCustomer(createNamedCustomer());
   Order order=cartService.createNewCartForCustomer(customer);
-  Sku newSku=addTestSku("Small Plastic Bowl","Plastic Bowl","Bowls");
-  Sku newActiveSku=addTestSku("Small Red Plastic Bowl","Plastic Bowl","Bowls");
-  Product newProduct=newSku.getAllParentProducts().get(0);
+  Product newProduct=addTestProduct("Plastic Bowl","Bowls");
+  Product newActiveProduct=addTestProduct("Plastic Bowl","Bowls");
   Category newCategory=newProduct.getDefaultCategory();
   List<OrderItem> addedItems=new ArrayList<OrderItem>();
-  addedItems.add(orderService.addSkuToOrder(order.getId(),newSku.getId(),newProduct.getId(),newCategory.getId(),2));
-  addedItems.add(orderService.addSkuToOrder(order.getId(),newActiveSku.getId(),newProduct.getId(),newCategory.getId(),2));
+  addedItems.add(orderService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  addedItems.add(orderService.addSkuToOrder(order.getId(),newActiveProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
   BundleOrderItem newBundle=(BundleOrderItem)orderService.addBundleItemToOrder(order,createBundleOrderItemRequestWithGiftWrap());
   GiftWrapOrderItem giftItem=null;
   for (  DiscreteOrderItem addedItem : newBundle.getDiscreteOrderItems()) {

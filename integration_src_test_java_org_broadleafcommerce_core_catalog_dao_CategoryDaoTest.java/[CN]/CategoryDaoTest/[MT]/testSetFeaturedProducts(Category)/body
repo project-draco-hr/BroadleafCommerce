@@ -1,9 +1,12 @@
 {
   category=catalogService.saveCategory(category);
+  Sku sku=new SkuImpl();
+  sku.setDescription("This thing will change your life");
+  sku.setName("Test Product");
+  catalogService.saveSku(sku);
   Product product=new ProductImpl();
   product.setModel("KGX200");
-  product.setDescription("This thing will change your life");
-  product.setName("Test Product");
+  product.setDefaultSku(sku);
   product=catalogService.saveProduct(product);
   FeaturedProduct featuredProduct=new FeaturedProductImpl();
   featuredProduct.setCategory(category);

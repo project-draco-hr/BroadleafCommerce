@@ -1,21 +1,14 @@
 {
   Calendar activeStartCal=Calendar.getInstance();
   activeStartCal.add(Calendar.DAY_OF_YEAR,-2);
+  Calendar activeEndCal=Calendar.getInstance();
+  activeEndCal.add(Calendar.DAY_OF_YEAR,-1);
   Category category=new CategoryImpl();
   category.setName(categoryName);
   category.setActiveStartDate(activeStartCal.getTime());
   category=catalogService.saveCategory(category);
-  Product newProduct=new ProductImpl();
-  Calendar activeEndCal=Calendar.getInstance();
-  activeEndCal.add(Calendar.DAY_OF_YEAR,-1);
-  newProduct.setActiveStartDate(activeStartCal.getTime());
-  newProduct.setDefaultCategory(category);
-  newProduct.setName(productName);
-  newProduct=catalogService.saveProduct(newProduct);
-  List<Product> products=new ArrayList<Product>();
-  products.add(newProduct);
   Sku newSku=new SkuImpl();
-  newSku.setName(skuName);
+  newSku.setName(productName);
   newSku.setRetailPrice(new Money(44.99));
   newSku.setActiveStartDate(activeStartCal.getTime());
   if (!active) {
@@ -23,10 +16,9 @@
   }
   newSku.setDiscountable(true);
   newSku=catalogService.saveSku(newSku);
-  newSku.setAllParentProducts(products);
-  List<Sku> allSkus=new ArrayList<Sku>();
-  allSkus.add(newSku);
-  newProduct.setAllSkus(allSkus);
+  Product newProduct=new ProductImpl();
+  newProduct.setDefaultCategory(category);
+  newProduct.setDefaultSku(newSku);
   newProduct=catalogService.saveProduct(newProduct);
-  return newSku;
+  return newProduct;
 }
