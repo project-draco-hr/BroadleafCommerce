@@ -1,11 +1,14 @@
 {
+  Product product=new ProductImpl();
+  Sku defaultSku=new SkuImpl();
+  defaultSku.setRetailPrice(new Money(BigDecimal.valueOf(15.0)));
+  defaultSku.setSalePrice(new Money(BigDecimal.valueOf(10.0)));
+  product.setDefaultSku(defaultSku);
   if (id == null) {
-    Product product=new ProductImpl();
-    product.setName("productNameTest");
+    defaultSku.setName("productNameTest");
     return product;
   }
-  Product p=new ProductImpl();
-  p.setId(id);
-  p.setName(id.toString());
-  return p;
+  product.setId(id);
+  defaultSku.setName(id.toString());
+  return product;
 }

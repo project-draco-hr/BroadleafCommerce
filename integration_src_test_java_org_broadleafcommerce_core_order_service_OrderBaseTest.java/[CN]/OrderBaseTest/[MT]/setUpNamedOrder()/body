@@ -1,9 +1,8 @@
 {
   Customer customer=customerService.saveCustomer(createNamedCustomer());
-  Sku newSku=addTestSku("Small Cube Box","Cube Box","Boxes");
   Order order=orderService.createNamedOrderForCustomer("Boxes Named Order",customer);
-  Product newProduct=newSku.getAllParentProducts().get(0);
+  Product newProduct=addTestProduct("Cube Box","Boxes");
   Category newCategory=newProduct.getDefaultCategory();
-  orderService.addSkuToOrder(order.getId(),newSku.getId(),newProduct.getId(),newCategory.getId(),2);
+  orderService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2);
   return order;
 }

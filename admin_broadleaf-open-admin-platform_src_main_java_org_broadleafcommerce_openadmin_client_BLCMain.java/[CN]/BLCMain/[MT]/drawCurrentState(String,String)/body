@@ -1,7 +1,10 @@
 {
   adminContext=GWT.getModuleBaseURL();
   if (!preProcessors.isEmpty()) {
-    executePreProcessors(0,requestedModuleKey,requestedPageKey);
+    Map<String,String> pipelineSeed=new HashMap<String,String>();
+    pipelineSeed.put("requestedModuleKey",requestedModuleKey);
+    pipelineSeed.put("requestedPageKey",requestedPageKey);
+    executePreProcessors(0,pipelineSeed);
   }
  else {
     if (postLaunch != null) {

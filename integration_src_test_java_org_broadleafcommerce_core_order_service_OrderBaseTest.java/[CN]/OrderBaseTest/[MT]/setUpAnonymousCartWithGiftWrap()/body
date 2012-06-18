@@ -1,14 +1,13 @@
 {
   Customer customer=customerService.saveCustomer(createNamedCustomer());
   Order order=cartService.createNewCartForCustomer(customer);
-  Sku newSku=addTestSku("Small Plastic Crate","Plastic Crate","Crates");
-  Sku newInactiveSku=addTestSku("Small Red Plastic Crate","Plastic Crate","Crates");
-  Sku giftWrapSku=addTestSku("Gift Box","Gift Box","Gift Wraps");
-  Product newProduct=newSku.getAllParentProducts().get(0);
+  Product newProduct=addTestProduct("Plastic Crate","Crates");
+  Product newInactiveProduct=addTestProduct("Plastic Crate","Crates");
+  Product giftWrapProduct=addTestProduct("Gift Box","Gift Wraps");
   Category newCategory=newProduct.getDefaultCategory();
   List<OrderItem> addedItems=new ArrayList<OrderItem>();
-  addedItems.add(orderService.addSkuToOrder(order.getId(),newSku.getId(),newProduct.getId(),newCategory.getId(),2));
-  addedItems.add(orderService.addSkuToOrder(order.getId(),newInactiveSku.getId(),newProduct.getId(),newCategory.getId(),2));
-  orderService.addGiftWrapItemToOrder(order,createGiftWrapOrderItemRequest(giftWrapSku,1,addedItems));
+  addedItems.add(orderService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  addedItems.add(orderService.addSkuToOrder(order.getId(),newInactiveProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  orderService.addGiftWrapItemToOrder(order,createGiftWrapOrderItemRequest(giftWrapProduct,giftWrapProduct.getDefaultSku(),1,addedItems));
   return order;
 }

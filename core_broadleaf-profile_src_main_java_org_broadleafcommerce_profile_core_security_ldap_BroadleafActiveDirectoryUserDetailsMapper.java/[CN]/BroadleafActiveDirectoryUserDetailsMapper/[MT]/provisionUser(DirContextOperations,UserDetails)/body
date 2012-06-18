@@ -1,0 +1,22 @@
+{
+  if ("ADMIN".equals(provisionType)) {
+    User user=userService.readUserByUsername(userDetails.getUsername());
+    if (user == null) {
+      user=(User)entityConfiguration.createEntityInstance(User.class.getName());
+      user.setUsername(userDetails.getUsername());
+      user.setPassword(userDetails.getPassword());
+      if (user.getPassword() == null) {
+        user.setPassword("LDAP_PROVIDED");
+      }
+      userService.saveUser(user);
+    }
+  }
+ else {
+    Customer cust=customerService.readCustomerByUsername(userDetails.getUsername());
+    if (cust == null) {
+      cust=customerService.createCustomer();
+      cust.setUsername(userDetails.getUsername());
+      customerService.saveCustomer(cust,true);
+    }
+  }
+}
