@@ -1,6 +1,10 @@
 {
   List<Sku> allSkus=new ArrayList<Sku>();
   allSkus.add(getDefaultSku());
-  allSkus.addAll(additionalSkus);
+  for (  Sku additionalSku : additionalSkus) {
+    if (additionalSku.getId() != getDefaultSku().getId()) {
+      allSkus.add(additionalSku);
+    }
+  }
   return allSkus;
 }
