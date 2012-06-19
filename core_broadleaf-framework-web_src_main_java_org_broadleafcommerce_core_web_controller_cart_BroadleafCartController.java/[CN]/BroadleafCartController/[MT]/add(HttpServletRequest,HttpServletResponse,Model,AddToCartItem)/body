@@ -6,5 +6,5 @@
   cartService.addItemToOrder(cart.getId(),itemRequest,false);
   cart=cartService.save(cart,true);
   CartState.setCart(request,cart);
-  return ajaxRender("cart",request,model);
+  return isAjaxRequest(request) ? "ajax/cart" : "redirect:/cart";
 }
