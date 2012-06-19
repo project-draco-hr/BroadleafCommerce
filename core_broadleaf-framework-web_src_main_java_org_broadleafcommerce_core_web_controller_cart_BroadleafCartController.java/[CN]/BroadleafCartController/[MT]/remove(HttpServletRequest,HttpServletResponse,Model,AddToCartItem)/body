@@ -1,0 +1,11 @@
+{
+  Order cart=CartState.getCart(request);
+  cart=cartService.removeItemFromOrder(cart.getId(),itemRequest.getOrderItemId());
+  cart=cartService.save(cart,true);
+  CartState.setCart(request,cart);
+  Map<String,Object> extraData=new HashMap<String,Object>();
+  extraData.put("cartItemCount",cart.getItemCount());
+  extraData.put("productId",itemRequest.getProductId());
+  model.addAttribute("blcextradata",new ObjectMapper().writeValueAsString(extraData));
+  return ajaxRender("cart",request,model);
+}
