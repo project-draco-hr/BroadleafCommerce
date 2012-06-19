@@ -19,9 +19,9 @@
  else {
     newAuthorities.addAll(authorities);
   }
+  String email=(String)ctx.getObjectAttribute("mail");
   UserDetails userDetails=null;
   if (useEmailAddressAsUsername) {
-    String email=(String)ctx.getObjectAttribute("mail");
     if (email != null) {
       userDetails=super.mapUserFromContext(ctx,email,newAuthorities);
     }
@@ -29,6 +29,13 @@
   if (userDetails == null) {
     userDetails=super.mapUserFromContext(ctx,username,newAuthorities);
   }
-  provisionUser(ctx,userDetails);
-  return userDetails;
+  String password=userDetails.getPassword();
+  if (password == null) {
+    password=userDetails.getUsername();
+  }
+  BroadleafExternalAuthenticationUserDetails broadleafUser=new BroadleafExternalAuthenticationUserDetails(userDetails.getUsername(),password,userDetails.getAuthorities());
+  broadleafUser.setFirstName((String)ctx.getObjectAttribute("givenName"));
+  broadleafUser.setLastName((String)ctx.getObjectAttribute("sn"));
+  broadleafUser.setEmail(email);
+  return broadleafUser;
 }

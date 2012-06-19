@@ -1,0 +1,23 @@
+{
+  HttpServletRequest request=(HttpServletRequest)servletRequest;
+  if (request.getSession(true).getAttribute(BLC_ADMIN_PROVISION_USER_CHECK) == null) {
+    Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.isAuthenticated()) {
+      if (authentication.getPrincipal() instanceof UserDetails) {
+        UserDetails userDetails=(UserDetails)authentication.getPrincipal();
+        if (userDetails != null && userDetails.getUsername() != null) {
+          AdminUser user=adminSecurityService.readAdminUserByUserName(userDetails.getUsername());
+          if (userDetails instanceof BroadleafExternalAuthenticationUserDetails) {
+            BroadleafExternalAuthenticationUserDetails broadleafUser=(BroadleafExternalAuthenticationUserDetails)userDetails;
+            if (user == null) {
+              user=(AdminUser)entityConfiguration.createEntityInstance(AdminUser.class.getName());
+            }
+            saveAdminUser(broadleafUser,user);
+            request.getSession().setAttribute(BLC_ADMIN_PROVISION_USER_CHECK,Boolean.TRUE);
+          }
+        }
+      }
+    }
+  }
+  filterChain.doFilter(servletRequest,servletResponse);
+}

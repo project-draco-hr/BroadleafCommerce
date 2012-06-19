@@ -1,0 +1,38 @@
+{
+  user.setLogin(broadleafUser.getUsername());
+  user.setUnencodedPassword(broadleafUser.getPassword());
+  if (user.getUnencodedPassword() == null) {
+    user.setUnencodedPassword(user.getLogin());
+  }
+  StringBuffer name=new StringBuffer();
+  if (broadleafUser.getFirstName() != null && broadleafUser.getFirstName().trim().length() > 0) {
+    name.append(broadleafUser.getFirstName().trim());
+    name.append(" ");
+  }
+  if (broadleafUser.getLastName() != null && broadleafUser.getLastName().trim().length() > 0) {
+    name.append(broadleafUser.getLastName().trim());
+  }
+  user.setName(name.toString());
+  user.setEmail(broadleafUser.getEmail());
+  Set<AdminRole> roleSet=user.getAllRoles();
+  if (roleSet != null && !roleSet.isEmpty()) {
+    roleSet.clear();
+  }
+ else {
+    roleSet=new HashSet<AdminRole>();
+    user.setAllRoles(roleSet);
+  }
+  List<AdminRole> availableRoles=adminSecurityService.readAllAdminRoles();
+  if (availableRoles != null) {
+    Collection<GrantedAuthority> authorities=broadleafUser.getAuthorities();
+    for (    GrantedAuthority authority : authorities) {
+      for (      AdminRole role : availableRoles) {
+        if (role.getName().equals(authority.getAuthority())) {
+          roleSet.add(role);
+          break;
+        }
+      }
+    }
+  }
+  adminSecurityService.saveAdminUser(user);
+}
