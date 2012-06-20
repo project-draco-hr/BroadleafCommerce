@@ -52,7 +52,7 @@
   if (customer == null) {
     customer=(Customer)request.getSession(true).getAttribute(ANONYMOUS_CUSTOMER_SESSION_ATTRIBUTE_NAME);
     if (customer == null) {
-      customer=customerService.createCustomerFromId(null);
+      customer=customerService.createNewCustomer();
       customer.setAnonymous(true);
       request.getSession().setAttribute(ANONYMOUS_CUSTOMER_SESSION_ATTRIBUTE_NAME,customer);
     }
