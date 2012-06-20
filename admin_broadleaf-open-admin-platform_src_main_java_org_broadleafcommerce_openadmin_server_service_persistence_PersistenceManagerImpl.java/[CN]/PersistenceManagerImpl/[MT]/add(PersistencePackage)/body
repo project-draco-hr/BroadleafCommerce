@@ -5,11 +5,11 @@
         adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
       }
       Entity response=handler.add(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.ENTITY));
-      return response;
+      return postAdd(response,persistencePackage);
     }
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
   Entity response=myModule.add(persistencePackage);
-  return postAdd(response);
+  return postAdd(response,persistencePackage);
 }

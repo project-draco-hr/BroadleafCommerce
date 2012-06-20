@@ -87,6 +87,21 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuSearchDS",new BundleSkuSearchDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      ListGridDataSource skuSearchDataSource=(ListGridDataSource)result;
+      skuSearchDataSource.resetPermanentFieldVisibility("name","retailPrice","salePrice");
+      skuSearchView=new EntitySearchDialog(skuSearchDataSource,true);
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("bundleSkusDS",new SkuBundleItemsDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource result){
+      bundleItemsPresenter=new EditableJoinStructurePresenter(getDisplay().getBundleItemsDisplay(),skuSearchView,new String[]{EntityImplementations.PRODUCT_BUNDLE},BLCMain.getMessageManager().getString("skuSelect"),BLCMain.getMessageManager().getString("editBundleItem"),new String[]{"quantity","salePrice"});
+      bundleItemsPresenter.setDataSource((ListGridDataSource)result,new String[]{"sku.name","quantity"},new Boolean[]{false,true});
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTreeDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
