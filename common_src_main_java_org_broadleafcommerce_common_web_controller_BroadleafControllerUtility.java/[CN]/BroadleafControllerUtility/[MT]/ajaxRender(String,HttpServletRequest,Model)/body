@@ -1,0 +1,14 @@
+{
+  if (isAjaxRequest(request)) {
+    if (nonModalPath.startsWith("redirect:")) {
+      nonModalPath=nonModalPath.substring(nonModalPath.indexOf("redirect:"));
+      return buildAjaxRedirect(request,nonModalPath);
+    }
+ else {
+      return BLC_AJAX_PREFIX + nonModalPath;
+    }
+  }
+ else {
+    return nonModalPath;
+  }
+}
