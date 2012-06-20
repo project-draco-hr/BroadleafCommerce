@@ -15,7 +15,7 @@
   user.setName(name.toString());
   user.setEmail(broadleafUser.getEmail());
   Set<AdminRole> roleSet=user.getAllRoles();
-  if (roleSet != null && !roleSet.isEmpty()) {
+  if (roleSet != null) {
     roleSet.clear();
   }
  else {
@@ -24,13 +24,14 @@
   }
   List<AdminRole> availableRoles=adminSecurityService.readAllAdminRoles();
   if (availableRoles != null) {
+    HashMap<String,AdminRole> roleMap=new HashMap<String,AdminRole>();
+    for (    AdminRole role : availableRoles) {
+      roleMap.put(role.getName(),role);
+    }
     Collection<GrantedAuthority> authorities=broadleafUser.getAuthorities();
     for (    GrantedAuthority authority : authorities) {
-      for (      AdminRole role : availableRoles) {
-        if (role.getName().equals(authority.getAuthority())) {
-          roleSet.add(role);
-          break;
-        }
+      if (roleMap.get(authority.getAuthority()) != null) {
+        roleSet.add(roleMap.get(authority.getAuthority()));
       }
     }
   }
