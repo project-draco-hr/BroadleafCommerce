@@ -1,0 +1,33 @@
+{
+  GenericResponse response=new GenericResponse();
+  Customer customer=null;
+  if (username != null) {
+    customer=customerDao.readCustomerByUsername(username);
+  }
+  checkCustomer(customer,response);
+  checkPassword(password,confirmPassword,response);
+  if (token == null || "".equals(token)) {
+    response.addErrorCode("invalidToken");
+  }
+  CustomerForgotPasswordSecurityToken fpst=null;
+  if (!response.getHasErrors()) {
+    token=token.toLowerCase();
+    fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(token,null));
+    if (fpst == null) {
+      response.addErrorCode("invalidToken");
+    }
+ else     if (fpst.isTokenUsedFlag()) {
+      response.addErrorCode("tokenUsed");
+    }
+ else     if (isTokenExpired(fpst)) {
+      response.addErrorCode("tokenExpired");
+    }
+  }
+  if (!response.getHasErrors()) {
+    customer.setUnencodedPassword(password);
+    saveCustomer(customer);
+    fpst.setTokenUsedFlag(true);
+    customerForgotPasswordSecurityTokenDao.saveToken(fpst);
+  }
+  return response;
+}

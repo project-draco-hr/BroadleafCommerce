@@ -1,0 +1,27 @@
+{
+  GenericResponse response=new GenericResponse();
+  List<Customer> customers=null;
+  if (emailAddress != null) {
+    customers=customerDao.readCustomersByEmail(emailAddress);
+  }
+  if (customers == null || customers.isEmpty()) {
+    response.addErrorCode("notFound");
+  }
+ else {
+    List<String> activeUsernames=new ArrayList<String>();
+    for (    Customer customer : customers) {
+      if (!customer.isDeactivated()) {
+        activeUsernames.add(customer.getUsername());
+      }
+    }
+    if (activeUsernames.size() > 0) {
+      HashMap<String,Object> vars=new HashMap<String,Object>();
+      vars.put("userNames",activeUsernames);
+      emailService.sendTemplateEmail(emailAddress,getForgotUsernameEmailInfo(),vars);
+    }
+ else {
+      response.addErrorCode("inactiveUser");
+    }
+  }
+  return response;
+}
