@@ -1,6 +1,9 @@
 {
+  Customer customer=CustomerState.getCustomer();
+  if (customer == null || !customer.isAnonymous()) {
+    customer=customerService.createCustomerFromId(null);
+  }
   RegisterCustomerForm customerRegistrationForm=new RegisterCustomerForm();
-  Customer customer=customerService.createNewCustomer();
   customerRegistrationForm.setCustomer(customer);
   return customerRegistrationForm;
 }

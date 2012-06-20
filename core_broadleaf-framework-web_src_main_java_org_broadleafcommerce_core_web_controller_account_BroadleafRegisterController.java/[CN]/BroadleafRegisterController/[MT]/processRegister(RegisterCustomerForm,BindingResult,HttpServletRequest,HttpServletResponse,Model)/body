@@ -1,0 +1,17 @@
+{
+  if (useEmailForLogin) {
+    Customer customer=registerCustomerForm.getCustomer();
+    customer.setUsername(customer.getEmailAddress());
+  }
+  registerCustomerValidator.validate(registerCustomerForm,errors,useEmailForLogin);
+  if (!errors.hasErrors()) {
+    Customer newCustomer=customerService.registerCustomer(registerCustomerForm.getCustomer(),registerCustomerForm.getPassword(),registerCustomerForm.getPasswordConfirm());
+    assert(newCustomer != null);
+    Authentication auth=loginService.loginCustomer(registerCustomerForm.getCustomer());
+    mergeCartProcessor.execute(request,response,auth);
+    return ajaxRender(getRegisterSuccessView(),request,model);
+  }
+ else {
+    return ajaxRender(getRegisterView(),request,model);
+  }
+}
