@@ -4,7 +4,7 @@
     for (    ProductOption productOption : product.getProductOptions()) {
       if (productOption.getRequired()) {
         if (attributeValues.get(productOption.getAttributeName()) == null) {
-          throw new IllegalArgumentException("Unable to add to cart.   Not all required options were provided.");
+          throw new RequiredAttributeNotProvidedException("Unable to add to cart. Required attribute was not provided: " + productOption.getAttributeName());
         }
  else {
           attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
