@@ -20,7 +20,7 @@
   for (  String fieldKey : page.getPageFields().keySet()) {
     PageField pf=page.getPageFields().get(fieldKey);
     String originalValue=pf.getValue();
-    if (envPrefix != null && originalValue != null && originalValue.contains(cmsPrefix)) {
+    if (StringUtils.isNotBlank(envPrefix) && StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix)&& originalValue.contains(cmsPrefix)) {
       String fldValue=originalValue.replaceAll(cmsPrefix,envPrefix + cmsPrefix);
       pageDTO.getPageFields().put(fieldKey,fldValue);
     }
