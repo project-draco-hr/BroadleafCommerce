@@ -1,0 +1,11 @@
+{
+  Product newProduct=addTestProduct("Plastic Crate","Crates");
+  Product newInactiveProduct=addTestProduct("Plastic Crate","Crates",false);
+  Category newCategory=newProduct.getDefaultCategory();
+  Order order=cartService.createNewCartForCustomer(customer);
+  cartService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2);
+  cartService.addSkuToOrder(order.getId(),newInactiveProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2);
+  cartService.addBundleItemToOrder(order,createBundleOrderItemRequest());
+  cartService.addBundleItemToOrder(order,createBundleOrderItemRequestWithInactiveSku());
+  return order;
+}
