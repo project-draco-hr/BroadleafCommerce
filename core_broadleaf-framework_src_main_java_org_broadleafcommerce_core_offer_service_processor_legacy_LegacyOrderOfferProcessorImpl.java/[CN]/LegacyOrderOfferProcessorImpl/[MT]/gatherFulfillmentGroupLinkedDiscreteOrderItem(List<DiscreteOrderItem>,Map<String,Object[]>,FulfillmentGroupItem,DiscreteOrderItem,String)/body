@@ -1,0 +1,13 @@
+{
+  if (CollectionUtils.isEmpty(orderItem.getOrderItemAdjustments())) {
+    String identifier=buildIdentifier(orderItem,extraIdentifier);
+    Object[] gatheredOrderItem=gatheredItem.get(identifier);
+    if (gatheredOrderItem == null) {
+      gatheredItem.put(identifier,new Object[]{orderItem,fgItem});
+      return;
+    }
+    ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + orderItem.getQuantity());
+    ((FulfillmentGroupItem)gatheredOrderItem[1]).setQuantity(((FulfillmentGroupItem)gatheredOrderItem[1]).getQuantity() + fgItem.getQuantity());
+    itemsToRemove.add(orderItem);
+  }
+}

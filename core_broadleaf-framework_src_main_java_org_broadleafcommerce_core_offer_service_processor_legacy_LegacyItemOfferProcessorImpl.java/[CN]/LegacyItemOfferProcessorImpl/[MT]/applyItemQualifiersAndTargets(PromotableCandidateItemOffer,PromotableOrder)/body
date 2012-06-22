@@ -1,0 +1,86 @@
+{
+  Offer promotion=itemOffer.getOffer();
+  OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(promotion.getApplyDiscountToSalePrice());
+  boolean matchFound=false;
+  do {
+    matchFound=false;
+    int totalQualifiersNeeded=0;
+    for (    OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
+      totalQualifiersNeeded+=itemCriteria.getQuantity();
+    }
+    int receiveQtyNeeded=promotion.getTargetItemCriteria().getQuantity();
+    checkAll: {
+      for (      OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
+        List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateQualifiersMap().get(itemCriteria);
+        Collections.sort(chargeableItems,priceComparator);
+        int qualifierQtyNeeded=itemCriteria.getQuantity();
+        for (        PromotableOrderItem chargeableItem : chargeableItems) {
+          if (qualifierQtyNeeded > 0) {
+            int itemQtyAvailableToBeUsedAsQualifier=chargeableItem.getQuantityAvailableToBeUsedAsQualifier(promotion);
+            if (itemQtyAvailableToBeUsedAsQualifier > 0) {
+              int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
+              qualifierQtyNeeded-=qtyToMarkAsQualifier;
+              chargeableItem.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
+            }
+          }
+          if (qualifierQtyNeeded == 0) {
+            totalQualifiersNeeded-=itemCriteria.getQuantity();
+            break;
+          }
+        }
+        if (qualifierQtyNeeded != 0) {
+          break checkAll;
+        }
+      }
+      checkTargets: {
+        List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateTargets();
+        Collections.sort(chargeableItems,priceComparator);
+        for (        PromotableOrderItem chargeableItem : chargeableItems) {
+          if (receiveQtyNeeded > 0) {
+            int itemQtyAvailableToBeUsedAsTarget=chargeableItem.getQuantityAvailableToBeUsedAsTarget(promotion);
+            if (itemQtyAvailableToBeUsedAsTarget > 0) {
+              if (promotion.getMaxUses() == 0 || itemOffer.getUses() < promotion.getMaxUses()) {
+                int qtyToMarkAsTarget=Math.min(receiveQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
+                receiveQtyNeeded-=qtyToMarkAsTarget;
+                chargeableItem.addPromotionDiscount(itemOffer,itemOffer.getOffer().getTargetItemCriteria(),qtyToMarkAsTarget);
+              }
+            }
+          }
+          if (receiveQtyNeeded == 0) {
+            break checkTargets;
+          }
+        }
+      }
+    }
+    boolean criteriaMatched=true;
+    if (receiveQtyNeeded != 0 || totalQualifiersNeeded != 0) {
+      for (      OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
+        List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateQualifiersMap().get(itemCriteria);
+        clearAllNonFinalizedQuantities(chargeableItems);
+      }
+      clearAllNonFinalizedQuantities(itemOffer.getCandidateTargets());
+      criteriaMatched=false;
+    }
+    if (criteriaMatched) {
+      matchFound=true;
+      finalizeQuantities(order.getDiscountableDiscreteOrderItems());
+    }
+  }
+ while (matchFound);
+  if (order.getSplitItems().size() == 0) {
+    initializeSplitItems(order);
+  }
+  List<PromotableOrderItem> allSplitItems=order.getAllSplitItems();
+  for (  PromotableOrderItem chargeableItem : allSplitItems) {
+    if (itemOffer.getCandidateTargets().contains(chargeableItem)) {
+      List<PromotableOrderItem> splitItems=chargeableItem.split();
+      if (splitItems != null && splitItems.size() > 0) {
+        List<PromotableOrderItem> temp=order.searchSplitItems(chargeableItem);
+        if (!CollectionUtils.isEmpty(temp)) {
+          temp.remove(chargeableItem);
+          temp.addAll(splitItems);
+        }
+      }
+    }
+  }
+}

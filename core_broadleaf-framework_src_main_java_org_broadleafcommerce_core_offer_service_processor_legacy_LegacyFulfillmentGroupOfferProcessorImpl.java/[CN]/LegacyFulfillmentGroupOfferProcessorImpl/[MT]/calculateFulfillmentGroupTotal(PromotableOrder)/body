@@ -1,0 +1,17 @@
+{
+  Money totalShipping=new Money(0D);
+  for (  PromotableFulfillmentGroup fulfillmentGroupMember : order.getFulfillmentGroups()) {
+    PromotableFulfillmentGroup fulfillmentGroup=(PromotableFulfillmentGroup)fulfillmentGroupMember;
+    if (fulfillmentGroup.getAdjustmentPrice() != null) {
+      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getAdjustmentPrice());
+    }
+ else     if (fulfillmentGroup.getSaleShippingPrice() != null) {
+      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getSaleShippingPrice());
+    }
+ else {
+      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getRetailShippingPrice());
+    }
+    totalShipping=totalShipping.add(fulfillmentGroup.getShippingPrice());
+  }
+  order.setTotalShipping(totalShipping);
+}

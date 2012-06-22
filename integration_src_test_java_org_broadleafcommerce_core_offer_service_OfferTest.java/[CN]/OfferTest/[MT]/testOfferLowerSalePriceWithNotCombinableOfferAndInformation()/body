@@ -1,5 +1,5 @@
 {
-  Order order=cartService.createNewCartForCustomer(createCustomer());
+  Order order=orderService.createNewCartForCustomer(createCustomer());
   order.addOrderItem(createDiscreteOrderItem(sku1,100D,50D,true,2,order));
   order.addOrderItem(createDiscreteOrderItem(sku2,100D,null,true,2,order));
   OfferCode offerCode1=createOfferUtility.createOfferCode("20 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,20,null,null,true,true,1);
@@ -12,8 +12,8 @@
   OfferInfo info2=offerDao.createOfferInfo();
   info2.getFieldValues().put("key2","value2");
   order.getAdditionalOfferInformation().put(offerCode2.getOffer(),info2);
-  order=cartService.save(order,true);
+  order=orderService.save(order,true);
   assert(order.getSubTotal().equals(new Money(240D)));
-  order=cartService.findOrderById(order.getId());
+  order=orderService.findOrderById(order.getId());
   assert(order.getAdditionalOfferInformation().get(offerCode1.getOffer()).equals(info1));
 }

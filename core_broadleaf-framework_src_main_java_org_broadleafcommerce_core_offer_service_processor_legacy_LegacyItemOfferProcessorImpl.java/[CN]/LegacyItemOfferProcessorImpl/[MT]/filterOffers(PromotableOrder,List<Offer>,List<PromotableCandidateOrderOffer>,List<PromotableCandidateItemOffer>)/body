@@ -1,0 +1,11 @@
+{
+  order.setSubTotal(order.calculateOrderItemsFinalPrice(true));
+  for (  Offer offer : filteredOffers) {
+    if (offer.getType().equals(OfferType.ORDER)) {
+      filterOrderLevelOffer(order,qualifiedOrderOffers,offer);
+    }
+ else     if (offer.getType().equals(OfferType.ORDER_ITEM)) {
+      filterItemLevelOffer(order,qualifiedItemOffers,offer);
+    }
+  }
+}

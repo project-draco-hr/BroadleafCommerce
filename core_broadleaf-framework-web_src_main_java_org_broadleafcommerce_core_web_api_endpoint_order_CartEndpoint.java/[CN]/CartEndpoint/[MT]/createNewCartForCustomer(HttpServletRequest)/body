@@ -1,9 +1,9 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer == null) {
     customer=customerService.createCustomerFromId(null);
   }
-  Order cart=cartService.createNewCartForCustomer(customer);
+  Order cart=orderService.createNewCartForCustomer(customer);
   OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
   wrapper.wrap(cart,request);
   return wrapper;

@@ -1,0 +1,10 @@
+{
+  if (order.getFulfillmentGroups() != null) {
+    for (Iterator<FulfillmentGroup> iterator=order.getFulfillmentGroups().iterator(); iterator.hasNext(); ) {
+      FulfillmentGroup fulfillmentGroup=iterator.next();
+      iterator.remove();
+      fulfillmentGroupDao.delete(fulfillmentGroup);
+    }
+    orderService.save(order,priceOrder);
+  }
+}

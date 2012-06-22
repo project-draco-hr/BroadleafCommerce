@@ -3,11 +3,11 @@
   Customer anonymousCustomer=(Customer)request.getSession(true).getAttribute(CustomerStateFilter.ANONYMOUS_CUSTOMER_SESSION_ATTRIBUTE_NAME);
   Order cart=null;
   if (anonymousCustomer != null) {
-    cart=cartService.findCartForCustomer(anonymousCustomer);
+    cart=orderService.findCartForCustomer(anonymousCustomer);
   }
   MergeCartResponse mergeCartResponse;
   try {
-    mergeCartResponse=cartService.mergeCart(loggedInCustomer,cart);
+    mergeCartResponse=orderService.mergeCart(loggedInCustomer,cart);
   }
  catch (  PricingException e) {
     throw new RuntimeException(e);

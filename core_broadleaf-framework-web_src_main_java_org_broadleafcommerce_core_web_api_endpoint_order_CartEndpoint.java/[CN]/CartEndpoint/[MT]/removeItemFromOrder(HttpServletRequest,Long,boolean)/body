@@ -1,16 +1,22 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       try {
-        Order order=cartService.removeItemFromOrder(cart.getId(),itemId,priceOrder);
+        OrderItemRequest orderItemRequest=new OrderItemRequest();
+        orderItemRequest.setOrderItemId(itemId);
+        Order order=orderService.removeItem(cart,orderItemRequest,priceOrder);
+        order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(order,request);
         return wrapper;
       }
  catch (      PricingException e) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+catch (      ItemNotFoundException e) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
       }
     }
     throw new WebApplicationException(Response.Status.NOT_FOUND);

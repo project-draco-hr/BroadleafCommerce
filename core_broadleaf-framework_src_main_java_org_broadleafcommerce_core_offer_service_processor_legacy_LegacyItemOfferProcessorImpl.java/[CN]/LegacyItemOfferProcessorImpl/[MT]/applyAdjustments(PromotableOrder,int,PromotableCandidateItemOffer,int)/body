@@ -1,0 +1,44 @@
+{
+  boolean notCombinableOfferApplied=false;
+  boolean offerApplied=false;
+  List<PromotableOrderItem> allSplitItems=order.getAllSplitItems();
+  for (  PromotableOrderItem targetItem : allSplitItems) {
+    notCombinableOfferApplied=targetItem.isNotCombinableOfferApplied();
+    if (!offerApplied) {
+      offerApplied=targetItem.isHasOrderItemAdjustments();
+    }
+    if (notCombinableOfferApplied) {
+      break;
+    }
+  }
+  if (!notCombinableOfferApplied && (((itemOffer.getOffer().isCombinableWithOtherOffers() || itemOffer.getOffer().isTotalitarianOffer() == null || !itemOffer.getOffer().isTotalitarianOffer())) || !offerApplied)) {
+    applyItemQualifiersAndTargets(itemOffer,order);
+    allSplitItems=order.getAllSplitItems();
+    for (    PromotableOrderItem splitItem : allSplitItems) {
+      for (      PromotionDiscount discount : splitItem.getPromotionDiscounts()) {
+        if (discount.getPromotion().equals(itemOffer.getOffer())) {
+          applyOrderItemAdjustment(itemOffer,splitItem);
+          appliedItemOffersCount++;
+          break;
+        }
+      }
+    }
+  }
+  if ((!itemOffer.getOffer().isCombinableWithOtherOffers() || (itemOffer.getOffer().isTotalitarianOffer() != null && itemOffer.getOffer().isTotalitarianOffer())) && appliedItemOffersCount > beforeCount) {
+    Money adjustmentTotal=new Money(0D);
+    Money saleTotal=new Money(0D);
+    for (    PromotableOrderItem splitItem : allSplitItems) {
+      adjustmentTotal=adjustmentTotal.add(splitItem.getCurrentPrice().multiply(splitItem.getQuantity()));
+      saleTotal=saleTotal.add(splitItem.getPriceBeforeAdjustments(true).multiply(splitItem.getQuantity()));
+    }
+    if (adjustmentTotal.greaterThanOrEqual(saleTotal)) {
+      for (      PromotableOrderItem splitItem : allSplitItems) {
+        if (splitItem.isHasOrderItemAdjustments()) {
+          appliedItemOffersCount--;
+        }
+      }
+      order.getSplitItems().clear();
+    }
+  }
+  return appliedItemOffersCount;
+}

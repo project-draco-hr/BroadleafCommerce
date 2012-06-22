@@ -1,0 +1,20 @@
+{
+  List<PromotableCandidateOrderOffer> remainingCandidateOffers=new ArrayList<PromotableCandidateOrderOffer>();
+  int offerCount=0;
+  for (  PromotableCandidateOrderOffer candidateOffer : candidateOffers) {
+    if (offerCount == 0) {
+      remainingCandidateOffers.add(candidateOffer);
+    }
+ else {
+      boolean treatAsNewFormat=false;
+      if (candidateOffer.getOffer().getTreatAsNewFormat() != null && candidateOffer.getOffer().getTreatAsNewFormat()) {
+        treatAsNewFormat=true;
+      }
+      if ((!treatAsNewFormat && candidateOffer.getOffer().isCombinableWithOtherOffers()) || (treatAsNewFormat && (candidateOffer.getOffer().isTotalitarianOffer() == null || !candidateOffer.getOffer().isTotalitarianOffer()))) {
+        remainingCandidateOffers.add(candidateOffer);
+      }
+    }
+    offerCount++;
+  }
+  return remainingCandidateOffers;
+}

@@ -4,9 +4,9 @@
     if (LOG.isTraceEnabled()) {
       LOG.trace("Looking up cart for customer " + customer.getId());
     }
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart == null) {
-      cart=cartService.getNullOrder();
+      cart=orderService.getNullOrder();
     }
     request.setAttribute(cartRequestAttributeName,cart);
     Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);

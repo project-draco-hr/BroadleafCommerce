@@ -1,0 +1,25 @@
+{
+  boolean appliesToCustomer=false;
+  String rule=null;
+  if (!StringUtils.isEmpty(offer.getAppliesToCustomerRules())) {
+    rule=offer.getAppliesToCustomerRules();
+  }
+ else {
+    OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
+    if (customerRule != null) {
+      rule=customerRule.getMatchRule();
+    }
+  }
+  if (rule != null) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("customer",customer);
+    Boolean expressionOutcome=executeExpression(rule,vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToCustomer=true;
+    }
+  }
+ else {
+    appliesToCustomer=true;
+  }
+  return appliesToCustomer;
+}

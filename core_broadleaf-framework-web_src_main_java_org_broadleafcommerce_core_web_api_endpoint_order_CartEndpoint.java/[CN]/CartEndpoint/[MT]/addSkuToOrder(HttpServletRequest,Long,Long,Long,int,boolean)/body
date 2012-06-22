@@ -1,12 +1,19 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null && skuId != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       try {
-        OrderItem orderItem=cartService.addSkuToOrder(cart.getId(),skuId,productId,categoryId,quantity,priceOrder);
+        OrderItemRequest orderItemRequest=new OrderItemRequest();
+        orderItemRequest.setCategoryId(categoryId);
+        orderItemRequest.setProductId(productId);
+        orderItemRequest.setSkuId(skuId);
+        orderItemRequest.setCategoryId(categoryId);
+        orderItemRequest.setQuantity(quantity);
+        Order order=orderService.addItem(cart,orderItemRequest,priceOrder);
+        order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-        wrapper.wrap(orderItem.getOrder(),request);
+        wrapper.wrap(order,request);
         return wrapper;
       }
  catch (      PricingException e) {

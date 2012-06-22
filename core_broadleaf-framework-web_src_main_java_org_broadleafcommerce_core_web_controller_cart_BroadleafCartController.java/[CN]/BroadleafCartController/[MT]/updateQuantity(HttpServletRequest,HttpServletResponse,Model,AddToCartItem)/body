@@ -1,7 +1,7 @@
 {
   Order cart=CartState.getCart(request);
-  cartService.updateItemQuantity(cart,itemRequest);
-  cart=cartService.save(cart,true);
+  cart=orderService.updateItem(cart,itemRequest,false);
+  cart=orderService.save(cart,true);
   CartState.setCart(request,cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();

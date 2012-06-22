@@ -1,0 +1,43 @@
+{
+  boolean orderOffersApplied=false;
+  Iterator<PromotableCandidateOrderOffer> orderOfferIterator=orderOffers.iterator();
+  while (orderOfferIterator.hasNext()) {
+    PromotableCandidateOrderOffer orderOffer=orderOfferIterator.next();
+    if (orderOffer.getOffer().getTreatAsNewFormat() == null || !orderOffer.getOffer().getTreatAsNewFormat()) {
+      if ((orderOffer.getOffer().isStackable()) || !order.isHasOrderAdjustments()) {
+        boolean alreadyContainsNotCombinableOfferAtAnyLevel=order.isNotCombinableOfferAppliedAtAnyLevel();
+        applyOrderOffer(order,orderOffer);
+        orderOffersApplied=true;
+        if (!orderOffer.getOffer().isCombinableWithOtherOffers() || alreadyContainsNotCombinableOfferAtAnyLevel) {
+          orderOffersApplied=compareAndAdjustOrderAndItemOffers(order,orderOffersApplied);
+          if (orderOffersApplied) {
+            break;
+          }
+ else {
+            orderOfferIterator.remove();
+          }
+        }
+      }
+    }
+ else {
+      if (!order.containsNotStackableOrderOffer() || !order.isHasOrderAdjustments()) {
+        boolean alreadyContainsTotalitarianOffer=order.isTotalitarianOfferApplied();
+        applyOrderOffer(order,orderOffer);
+        orderOffersApplied=true;
+        if ((orderOffer.getOffer().isTotalitarianOffer() != null && orderOffer.getOffer().isTotalitarianOffer()) || alreadyContainsTotalitarianOffer) {
+          orderOffersApplied=compareAndAdjustOrderAndItemOffers(order,orderOffersApplied);
+          if (orderOffersApplied) {
+            break;
+          }
+ else {
+            orderOfferIterator.remove();
+          }
+        }
+ else         if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
+          break;
+        }
+      }
+    }
+  }
+  return orderOffersApplied;
+}

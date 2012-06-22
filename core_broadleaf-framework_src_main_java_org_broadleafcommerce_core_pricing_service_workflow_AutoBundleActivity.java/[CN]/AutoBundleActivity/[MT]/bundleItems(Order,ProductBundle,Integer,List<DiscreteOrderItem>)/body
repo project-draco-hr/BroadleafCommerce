@@ -24,7 +24,9 @@
       throw new IllegalArgumentException("Something went wrong creating automatic bundles.  Not enough skus to fulfill bundle requirements for sku id: " + skuBundleItem.getSku().getId());
     }
     for (    DiscreteOrderItem item : itemMatches) {
-      order=cartService.removeItemFromOrder(order,item,false);
+      OrderItemRequest orderItemRequest=new OrderItemRequest();
+      orderItemRequest.setOrderItemId(bundleOrderItem.getId());
+      order=orderService.removeItem(order,orderItemRequest,false);
     }
     DiscreteOrderItem baseItem=null;
     if (itemMatches.size() > 0) {
@@ -70,7 +72,7 @@
   bundleOrderItem.updatePrices();
   bundleOrderItem.assignFinalPrice();
   order.getOrderItems().add(bundleOrderItem);
-  order=cartService.save(order,false);
+  order=orderService.save(order,false);
   for (  OrderItem orderItem : order.getOrderItems()) {
     if (orderItem instanceof BundleOrderItem) {
       BundleOrderItem bundleItem=(BundleOrderItem)orderItem;
@@ -90,6 +92,6 @@
       }
     }
   }
-  order=cartService.save(order,false);
+  order=orderService.save(order,false);
   return order;
 }
