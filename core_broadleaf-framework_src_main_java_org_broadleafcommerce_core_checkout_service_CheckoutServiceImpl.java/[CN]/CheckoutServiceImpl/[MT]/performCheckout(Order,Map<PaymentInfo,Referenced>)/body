@@ -14,7 +14,7 @@
   CheckoutSeed seed=null;
   try {
     order.setSubmitDate(SystemTime.asDate());
-    order=cartService.save(order,false);
+    order=orderService.save(order,false);
     seed=new CheckoutSeed(order,payments,new HashMap<String,Object>());
     checkoutWorkflow.doActivities(seed);
     return seed;

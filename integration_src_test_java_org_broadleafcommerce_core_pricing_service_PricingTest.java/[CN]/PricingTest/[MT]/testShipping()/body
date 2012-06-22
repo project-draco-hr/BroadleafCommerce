@@ -1,5 +1,5 @@
 {
-  Order order=cartService.createNewCartForCustomer(createCustomer());
+  Order order=orderService.createNewCartForCustomer(createCustomer());
   customerService.saveCustomer(order.getCustomer());
   FulfillmentGroup group1=new FulfillmentGroupImpl();
   FulfillmentGroup group2=new FulfillmentGroupImpl();
@@ -59,7 +59,7 @@
     group1.addFulfillmentGroupItem(fgi);
   }
   order.setTotalShipping(new Money(0D));
-  cartService.save(order,true);
+  orderService.save(order,true);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
   assert(order.getTotalTax().equals(order.getSubTotal().multiply(0.05D)));
   assert(order.getTotal().equals(order.getSubTotal().add(order.getTotalTax().add(order.getTotalShipping()))));
