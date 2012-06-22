@@ -2,17 +2,9 @@
   exploitProtectionService.compareToken(persistencePackage.getCsrfToken());
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
-    PersistenceManager persistenceManager=null;
-    try {
-      persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
-      persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-      return persistenceManager.inspect(persistencePackage);
-    }
-  finally {
-      if (persistenceManager != null) {
-        persistenceManager.close();
-      }
-    }
+    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
+    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
+    return persistenceManager.inspect(persistencePackage);
   }
  catch (  ServiceException e) {
     String message=exploitProtectionService.cleanString(e.getMessage());
