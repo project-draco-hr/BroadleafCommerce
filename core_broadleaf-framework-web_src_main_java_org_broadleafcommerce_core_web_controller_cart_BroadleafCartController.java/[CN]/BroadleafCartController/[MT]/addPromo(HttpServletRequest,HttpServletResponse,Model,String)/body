@@ -1,14 +1,16 @@
 {
   Order cart=CartState.getCart(request);
+  Boolean promoAdded=false;
   OfferCode offerCode=offerService.lookupOfferCodeByCode(customerOffer);
   if (offerCode != null && offerService.verifyMaxCustomerUsageThreshold(cart.getCustomer(),offerCode.getOffer())) {
     cartService.addOfferCode(cart,offerCode,false);
+    promoAdded=true;
   }
   cartService.save(cart,true);
   CartState.setCart(request,cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
-    extraData.put("offerCode",customerOffer);
+    extraData.put("promoAdded",promoAdded);
     model.addAttribute("blcextradata",new ObjectMapper().writeValueAsString(extraData));
     return "ajax/cart";
   }
