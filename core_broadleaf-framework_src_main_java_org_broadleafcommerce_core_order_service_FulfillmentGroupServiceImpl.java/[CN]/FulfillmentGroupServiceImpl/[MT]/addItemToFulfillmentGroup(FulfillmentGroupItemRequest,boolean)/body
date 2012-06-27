@@ -3,7 +3,12 @@
   OrderItem item=fulfillmentGroupItemRequest.getOrderItem();
   FulfillmentGroup fulfillmentGroup=fulfillmentGroupItemRequest.getFulfillmentGroup();
   if (order == null) {
-    throw new IllegalArgumentException("Order must not be null");
+    if (item.getOrder() != null) {
+      order=item.getOrder();
+    }
+ else {
+      throw new IllegalArgumentException("Order must not be null");
+    }
   }
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
     Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();

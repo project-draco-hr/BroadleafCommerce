@@ -59,13 +59,13 @@
         DiscreteOrderItem delegateItem=myItem.getDelegate();
         Long delegateItemBundleItemId=getBundleId(delegateItem);
         if (delegateItemBundleItemId == null) {
-          OrderItemRequest orderItemRequest=new OrderItemRequest();
-          orderItemRequest.setOrderItemId(delegateItem.getId());
-          delegateItem=(DiscreteOrderItem)orderService.addItem(order.getDelegate(),orderItemRequest,false);
+          delegateItem=(DiscreteOrderItem)addOrderItemToOrder(order.getDelegate(),delegateItem,false);
           if (targetGroup != null) {
             FulfillmentGroupItemRequest fgItemRequest=new FulfillmentGroupItemRequest();
             fgItemRequest.setFulfillmentGroup(targetGroup.getDelegate());
             fgItemRequest.setOrderItem(delegateItem);
+            fgItemRequest.setOrder(order.getDelegate());
+            fgItemRequest.setQuantity(delegateItem.getQuantity());
             fulfillmentGroupService.addItemToFulfillmentGroup(fgItemRequest,false);
           }
         }
