@@ -6,11 +6,16 @@
     return dynamicPrices.getRetailPrice();
   }
   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
-    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this,getProductOptionValueAdjustments());
     Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
     dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
     handler.reset();
     return dynamicPrices.getRetailPrice();
   }
-  return retailPrice == null ? null : new Money(retailPrice);
+  if (getProductOptionValueAdjustments() == null) {
+    return retailPrice == null ? null : new Money(retailPrice);
+  }
+ else {
+    return retailPrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(new Money(retailPrice));
+  }
 }
