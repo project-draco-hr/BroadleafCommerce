@@ -12,7 +12,7 @@
   }
   if (checkForSandboxMatch(content.getSandbox(),destSandbox)) {
     if (content.getDeletedFlag()) {
-      SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(content.getSandbox(),SandBoxItemType.STRUCTURED_CONTENT,content.getId());
+      SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(content.getSandbox().getId(),SandBoxItemType.STRUCTURED_CONTENT,content.getId());
       if (content.getOriginalItemId() == null && item != null) {
         content.setArchivedFlag(true);
         item.setArchivedFlag(true);

@@ -1,0 +1,25 @@
+{
+  CriteriaTransferObject cto=new CriteriaTransferObject();
+  FilterAndSortCriteria filterCriteria=cto.get(joinStructure.getName());
+  filterCriteria.setFilterValue(entity.findProperty(joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty()).getValue());
+  if (joinStructure.getSortField() != null) {
+    FilterAndSortCriteria sortCriteria=cto.get(joinStructure.getSortField());
+    sortCriteria.setSortAscending(joinStructure.getSortAscending());
+  }
+  Class<?>[] entities2=persistenceManager.getPolymorphicEntities(joinStructure.getJoinStructureEntityClassname());
+  mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(joinStructure.getJoinStructureEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+  BaseCtoConverter ctoConverter=getJoinStructureCtoConverter(persistencePerspective,cto,mergedProperties,joinStructure);
+  PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,joinStructure.getJoinStructureEntityClassname());
+  records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(joinStructure.getJoinStructureEntityClassname()));
+  index=0;
+  Long myEntityId=Long.valueOf(entity.findProperty(joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty()).getValue());
+  FieldManager fieldManager=getFieldManager();
+  for (  Serializable record : records) {
+    Long targetId=(Long)fieldManager.getFieldValue(record,joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty());
+    if (myEntityId.equals(targetId)) {
+      break;
+    }
+    index++;
+  }
+  return this;
+}
