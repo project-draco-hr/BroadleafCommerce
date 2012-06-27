@@ -1,0 +1,13 @@
+{
+  Order cart=CartState.getCart(request);
+  OfferCode offerCode=offerService.findOfferCodeById(offerCodeId);
+  cartService.removeOfferCode(cart,offerCode,false);
+  cart=cartService.save(cart,true);
+  CartState.setCart(request,cart);
+  if (isAjaxRequest(request)) {
+    return "ajax/cart";
+  }
+ else {
+    return "redirect:/cart";
+  }
+}

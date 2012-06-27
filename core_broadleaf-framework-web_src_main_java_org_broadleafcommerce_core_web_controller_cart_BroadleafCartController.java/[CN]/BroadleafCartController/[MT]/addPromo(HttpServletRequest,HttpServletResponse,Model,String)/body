@@ -1,0 +1,30 @@
+{
+  Order cart=CartState.getCart(request);
+  Boolean promoAdded=false;
+  String exception="";
+  OfferCode offerCode=offerService.lookupOfferCodeByCode(customerOffer);
+  if (offerCode != null) {
+    try {
+      cartService.addOfferCode(cart,offerCode,false);
+      promoAdded=true;
+      cart=cartService.save(cart,true);
+    }
+ catch (    OfferMaxUseExceededException e) {
+      exception="Use Limit Exceeded";
+    }
+  }
+ else {
+    exception="Invalid Code";
+  }
+  CartState.setCart(request,cart);
+  if (isAjaxRequest(request)) {
+    Map<String,Object> extraData=new HashMap<String,Object>();
+    extraData.put("promoAdded",promoAdded);
+    extraData.put("exception",exception);
+    model.addAttribute("blcextradata",new ObjectMapper().writeValueAsString(extraData));
+    return "ajax/cart";
+  }
+ else {
+    return "redirect:/cart";
+  }
+}
