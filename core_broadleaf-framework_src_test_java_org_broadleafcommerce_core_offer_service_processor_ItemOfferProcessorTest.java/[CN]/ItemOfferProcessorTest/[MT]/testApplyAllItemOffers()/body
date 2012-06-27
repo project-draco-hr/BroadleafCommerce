@@ -1,0 +1,29 @@
+{
+  Answer answer=new Answer();
+  Answer2 answer2=new Answer2();
+  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);
+  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(answer2).times(4);
+  EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
+  EasyMock.expect(itemProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Order.class),EasyMock.isA(OrderItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.getAutomaticallyMergeLikeItems()).andReturn(true).anyTimes();
+  EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
+  replay();
+  PromotableOrder order=dataProvider.createBasicOrder();
+  Offer offer1=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
+  offer1.setId(1L);
+  List<PromotableCandidateItemOffer> qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  itemProcessorMock.filterItemLevelOffer(order,qualifiedOffers,offer1);
+  boolean applied=itemProcessorMock.applyAllItemOffers(qualifiedOffers,order);
+  assertTrue(applied);
+  order=dataProvider.createBasicOrder();
+  qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  offer1.setApplyDiscountToSalePrice(false);
+  order.getDiscreteOrderItems().get(0).getDelegate().setSalePrice(new Money(1D));
+  order.getDiscreteOrderItems().get(1).getDelegate().setSalePrice(new Money(1D));
+  itemProcessorMock.filterItemLevelOffer(order,qualifiedOffers,offer1);
+  applied=itemProcessorMock.applyAllItemOffers(qualifiedOffers,order);
+  assertFalse(applied);
+  verify();
+}

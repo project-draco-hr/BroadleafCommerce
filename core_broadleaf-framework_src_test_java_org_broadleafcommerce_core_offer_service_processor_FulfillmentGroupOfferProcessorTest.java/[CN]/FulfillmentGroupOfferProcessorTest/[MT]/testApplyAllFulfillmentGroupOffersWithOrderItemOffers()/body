@@ -1,0 +1,55 @@
+{
+  CandidateFulfillmentGroupOfferAnswer candidateFGOfferAnswer=new CandidateFulfillmentGroupOfferAnswer();
+  EasyMock.expect(offerDaoMock.createCandidateFulfillmentGroupOffer()).andAnswer(candidateFGOfferAnswer).times(6);
+  FulfillmentGroupAdjustmentAnswer fgAdjustmentAnswer=new FulfillmentGroupAdjustmentAnswer();
+  EasyMock.expect(offerDaoMock.createFulfillmentGroupAdjustment()).andAnswer(fgAdjustmentAnswer).times(5);
+  CandidateItemOfferAnswer candidateItemOfferAnswer=new CandidateItemOfferAnswer();
+  OrderItemAdjustmentAnswer orderItemAdjustmentAnswer=new OrderItemAdjustmentAnswer();
+  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(candidateItemOfferAnswer).times(2);
+  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(orderItemAdjustmentAnswer).times(4);
+  EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
+  EasyMock.expect(orderProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(itemProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(fgProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Order.class),EasyMock.isA(OrderItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.getAutomaticallyMergeLikeItems()).andReturn(true).anyTimes();
+  EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
+  replay();
+  PromotableOrder order=dataProvider.createBasicOrder();
+  List<PromotableCandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
+  List<Offer> offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
+  offers.addAll(dataProvider.createFGBasedOfferWithItemCriteria("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
+  offers.get(1).setName("secondOffer");
+  offers.get(0).setTotalitarianOffer(true);
+  offers.addAll(dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
+  offerService.applyOffersToOrder(offers,order.getDelegate());
+  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
+  boolean offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  assertTrue(offerApplied);
+  int fgAdjustmentCount=0;
+  for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
+    fgAdjustmentCount+=fg.getDelegate().getFulfillmentGroupAdjustments().size();
+  }
+  assertTrue(fgAdjustmentCount == 1);
+  order=dataProvider.createBasicOrder();
+  offers.get(2).setValue(new BigDecimal("1"));
+  offerService.applyOffersToOrder(offers,order.getDelegate());
+  qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
+  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
+  offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  assertTrue(offerApplied);
+  fgAdjustmentCount=0;
+  for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
+    fgAdjustmentCount+=fg.getDelegate().getFulfillmentGroupAdjustments().size();
+  }
+  assertTrue(fgAdjustmentCount == 2);
+  int itemAdjustmentCount=0;
+  for (  PromotableOrderItem item : order.getDiscreteOrderItems()) {
+    itemAdjustmentCount+=item.getDelegate().getOrderItemAdjustments().size();
+  }
+  assertTrue(itemAdjustmentCount == 0);
+  verify();
+}

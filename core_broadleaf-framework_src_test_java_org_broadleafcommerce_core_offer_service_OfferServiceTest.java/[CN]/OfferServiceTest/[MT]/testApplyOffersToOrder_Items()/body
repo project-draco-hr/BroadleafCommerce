@@ -1,0 +1,36 @@
+{
+  CandidateItemOfferAnswer answer=new CandidateItemOfferAnswer();
+  OrderItemAdjustmentAnswer answer2=new OrderItemAdjustmentAnswer();
+  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);
+  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(answer2).times(2);
+  EasyMock.expect(orderServiceMock.getAutomaticallyMergeLikeItems()).andReturn(true).anyTimes();
+  EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
+  EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
+  EasyMock.expect(orderProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(itemProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(fgProcessorMock.addOrderItemToOrder(EasyMock.isA(Order.class),EasyMock.isA(OrderItem.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddOrderItemToOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Order.class),EasyMock.isA(OrderItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
+  replay();
+  Order order=dataProvider.createBasicOrder().getDelegate();
+  List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  offerService.applyOffersToOrder(offers,order);
+  int adjustmentCount=0;
+  for (  OrderItem item : order.getOrderItems()) {
+    if (item.getOrderItemAdjustments() != null) {
+      adjustmentCount+=item.getOrderItemAdjustments().size();
+    }
+  }
+  assertTrue(adjustmentCount == 2);
+  order=dataProvider.createBasicOrder().getDelegate();
+  offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  offerService.applyOffersToOrder(offers,order);
+  adjustmentCount=0;
+  for (  OrderItem item : order.getOrderItems()) {
+    if (item.getOrderItemAdjustments() != null) {
+      adjustmentCount+=item.getOrderItemAdjustments().size();
+    }
+  }
+  assertTrue(adjustmentCount == 0);
+  verify();
+}
