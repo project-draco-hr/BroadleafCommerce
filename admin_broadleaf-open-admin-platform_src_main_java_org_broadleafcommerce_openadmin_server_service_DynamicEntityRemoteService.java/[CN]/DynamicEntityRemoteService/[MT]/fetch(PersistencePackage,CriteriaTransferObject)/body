@@ -1,9 +1,8 @@
 {
   exploitProtectionService.compareToken(persistencePackage.getCsrfToken());
   com.anasoft.os.daofusion.cto.client.CriteriaTransferObject targetCto=translateCto(cto);
-  PersistenceManager persistenceManager=null;
   try {
-    persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
+    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
     persistenceManager.setTargetMode(TargetModeType.SANDBOX);
     return persistenceManager.fetch(persistencePackage,targetCto);
   }
@@ -14,16 +13,6 @@
     }
  else {
       throw new ServiceException(message,e.getCause());
-    }
-  }
- finally {
-    try {
-      if (persistenceManager != null) {
-        persistenceManager.close();
-      }
-    }
- catch (    Exception e) {
-      LOG.error("Unable to close persistence manager",e);
     }
   }
 }

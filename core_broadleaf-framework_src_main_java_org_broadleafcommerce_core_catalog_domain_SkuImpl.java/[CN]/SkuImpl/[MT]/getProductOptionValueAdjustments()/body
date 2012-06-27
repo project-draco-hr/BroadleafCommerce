@@ -1,0 +1,14 @@
+{
+  Money optionValuePriceAdjustments=null;
+  if (getProductOptionValues() != null) {
+    for (    ProductOptionValue value : getProductOptionValues()) {
+      if (value.getPriceAdjustment() != null) {
+        if (optionValuePriceAdjustments == null) {
+          optionValuePriceAdjustments=Money.ZERO;
+        }
+        optionValuePriceAdjustments=optionValuePriceAdjustments.add(value.getPriceAdjustment());
+      }
+    }
+  }
+  return optionValuePriceAdjustments;
+}

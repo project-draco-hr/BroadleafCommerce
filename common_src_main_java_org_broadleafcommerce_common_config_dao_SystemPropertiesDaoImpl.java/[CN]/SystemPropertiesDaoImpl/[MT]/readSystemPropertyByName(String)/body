@@ -1,0 +1,10 @@
+{
+  Query query=em.createNamedQuery("BC_READ_SYSTEM_PROPERTIES_BY_NAME");
+  query.setParameter("propertyName",name);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  List<SystemProperty> props=query.getResultList();
+  if (props != null && !props.isEmpty()) {
+    return props.get(0);
+  }
+  return null;
+}
