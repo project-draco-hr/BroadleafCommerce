@@ -18,8 +18,8 @@
           FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("contentTypeForm");
           final DynamicForm form=legacyForm.getForm();
           for (          FormItem formItem : form.getFields()) {
-            if (formItem instanceof RichTextCanvasItem) {
-              form.setValue(formItem.getFieldName(),((RichTextHTMLPane)((RichTextCanvasItem)formItem).getCanvas()).getValue());
+            if (formItem instanceof HTMLTextItem) {
+              form.setValue(formItem.getFieldName(),((HTMLTextItem)formItem).getHTMLValue());
             }
           }
           StructuredContentTypeFormListDataSource dataSource=(StructuredContentTypeFormListDataSource)form.getDataSource();
