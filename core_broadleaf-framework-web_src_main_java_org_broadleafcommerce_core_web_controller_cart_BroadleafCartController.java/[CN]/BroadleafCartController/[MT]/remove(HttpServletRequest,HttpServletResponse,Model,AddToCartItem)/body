@@ -1,6 +1,6 @@
 {
   Order cart=CartState.getCart(request);
-  cart=orderService.removeItem(cart,itemRequest,false);
+  cart=orderService.removeItem(cart.getId(),itemRequest.getOrderItemId(),false);
   cart=orderService.save(cart,true);
   CartState.setCart(request,cart);
   if (isAjaxRequest(request)) {

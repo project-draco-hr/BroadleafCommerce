@@ -3,7 +3,7 @@
   if (cart == null || cart.equals(orderService.getNullOrder())) {
     cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
   }
-  cart=orderService.addItem(cart,itemRequest,false);
+  cart=orderService.addItem(cart.getId(),itemRequest,false);
   cart=orderService.save(cart,true);
   CartState.setCart(request,cart);
   return isAjaxRequest(request) ? "ajax/cart" : "redirect:/cart";

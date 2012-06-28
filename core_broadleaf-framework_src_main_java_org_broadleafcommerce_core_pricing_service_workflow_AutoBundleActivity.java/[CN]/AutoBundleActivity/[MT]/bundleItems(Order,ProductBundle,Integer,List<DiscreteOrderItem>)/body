@@ -24,9 +24,7 @@
       throw new IllegalArgumentException("Something went wrong creating automatic bundles.  Not enough skus to fulfill bundle requirements for sku id: " + skuBundleItem.getSku().getId());
     }
     for (    DiscreteOrderItem item : itemMatches) {
-      OrderItemRequest orderItemRequest=new OrderItemRequest();
-      orderItemRequest.setOrderItemId(bundleOrderItem.getId());
-      order=orderService.removeItem(order,orderItemRequest,false);
+      order=orderService.removeItem(order.getId(),bundleOrderItem.getId(),false);
     }
     DiscreteOrderItem baseItem=null;
     if (itemMatches.size() > 0) {

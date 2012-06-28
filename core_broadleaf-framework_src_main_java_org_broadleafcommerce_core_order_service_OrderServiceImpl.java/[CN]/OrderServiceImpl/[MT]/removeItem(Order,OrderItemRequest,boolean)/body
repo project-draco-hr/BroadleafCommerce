@@ -1,9 +1,0 @@
-{
-  OrderItem orderItem=orderItemService.readOrderItemById(orderItemRequest.getOrderItemId());
-  fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
-  OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(orderItem));
-  itemFromOrder.setOrder(null);
-  orderItemService.delete(itemFromOrder);
-  order=save(order,priceOrder);
-  return order;
-}

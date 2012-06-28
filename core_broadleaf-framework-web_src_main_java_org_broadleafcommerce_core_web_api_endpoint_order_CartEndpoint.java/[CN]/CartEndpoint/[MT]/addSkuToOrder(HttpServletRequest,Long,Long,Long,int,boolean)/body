@@ -10,7 +10,7 @@
         orderItemRequest.setSkuId(skuId);
         orderItemRequest.setCategoryId(categoryId);
         orderItemRequest.setQuantity(quantity);
-        Order order=orderService.addItem(cart,orderItemRequest,priceOrder);
+        Order order=orderService.addItem(cart.getId(),orderItemRequest,priceOrder);
         order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(order,request);

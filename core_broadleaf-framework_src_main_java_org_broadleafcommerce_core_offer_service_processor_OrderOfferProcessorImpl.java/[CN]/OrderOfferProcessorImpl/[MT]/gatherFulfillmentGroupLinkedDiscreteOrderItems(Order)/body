@@ -27,10 +27,8 @@
   }
   for (  DiscreteOrderItem orderItem : itemsToRemove) {
     if (orderItem.getBundleOrderItem() == null) {
-      OrderItemRequest orderItemRequest=new OrderItemRequest();
-      orderItemRequest.setOrderItemId(orderItem.getId());
       try {
-        orderService.removeItem(order,orderItemRequest,false);
+        orderService.removeItem(order.getId(),orderItem.getId(),false);
       }
  catch (      ItemNotFoundException e) {
         throw new PricingException("Could not remove item",e);

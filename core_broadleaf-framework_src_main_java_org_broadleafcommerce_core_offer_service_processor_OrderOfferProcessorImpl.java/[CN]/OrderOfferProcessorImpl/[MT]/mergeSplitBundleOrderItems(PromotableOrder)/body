@@ -15,19 +15,15 @@
         temp.setQuantity(temp.getQuantity() + 1);
       }
     }
-    OrderItemRequest orderItemRequest=new OrderItemRequest();
-    orderItemRequest.setOrderItemId(bundleContainer.getKey().getId());
     try {
-      orderService.removeItem(order.getDelegate(),orderItemRequest,false);
+      orderService.removeItem(order.getDelegate().getId(),bundleContainer.getKey().getId(),false);
     }
  catch (    ItemNotFoundException e) {
       throw new PricingException("Could not remove item",e);
     }
     for (    BundleOrderItem vals : gatheredBundleItems.values()) {
       vals.setId(null);
-      DirectOrderItemRequest directOrderItemRequest=new DirectOrderItemRequest();
-      directOrderItemRequest.setOrderItem(vals);
-      BundleOrderItem temp=(BundleOrderItem)orderService.addItem(order.getDelegate(),directOrderItemRequest,false);
+      BundleOrderItem temp=(BundleOrderItem)addOrderItemToOrder(order.getDelegate(),vals,false);
       if (targetGroup != null) {
         FulfillmentGroupItemRequest fgItemRequest=new FulfillmentGroupItemRequest();
         fgItemRequest.setFulfillmentGroup(targetGroup.getDelegate());

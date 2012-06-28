@@ -7,7 +7,7 @@
         OrderItemRequest orderItemRequest=new OrderItemRequest();
         orderItemRequest.setOrderItemId(itemId);
         orderItemRequest.setQuantity(quantity);
-        Order order=orderService.updateItem(cart,orderItemRequest,priceOrder);
+        Order order=orderService.updateItem(cart.getId(),orderItemRequest,priceOrder);
         order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(order,request);

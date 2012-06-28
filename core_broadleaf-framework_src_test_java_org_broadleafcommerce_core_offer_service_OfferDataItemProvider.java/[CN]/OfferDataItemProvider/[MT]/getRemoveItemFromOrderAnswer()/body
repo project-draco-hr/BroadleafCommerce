@@ -1,18 +1,19 @@
 {
   return new IAnswer<Order>(){
     public Order answer() throws Throwable {
-      Order order=(Order)EasyMock.getCurrentArguments()[0];
+      Long orderId=(Long)EasyMock.getCurrentArguments()[0];
+      Order order=orders.get(orderId);
       Iterator<OrderItem> orderItemItr=order.getOrderItems().listIterator();
       while (orderItemItr.hasNext()) {
         OrderItem item=orderItemItr.next();
-        if (item.getId().equals(((OrderItemRequest)EasyMock.getCurrentArguments()[1]).getOrderItemId())) {
+        if (item.getId().equals((Long)EasyMock.getCurrentArguments()[1])) {
           orderItemItr.remove();
         }
       }
       for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
         Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();
         while (itr.hasNext()) {
-          if (itr.next().getOrderItem().getId().equals(((OrderItemRequest)EasyMock.getCurrentArguments()[1]).getOrderItemId())) {
+          if (itr.next().getOrderItem().getId().equals((Long)EasyMock.getCurrentArguments()[1])) {
             itr.remove();
           }
         }

@@ -1,5 +1,6 @@
 {
   Order order=new OrderImpl();
+  order.setId(getOrderId());
   Category category1=new CategoryImpl();
   category1.setName("test1");
   category1.setId(1L);
@@ -117,6 +118,7 @@
   fg2.getFulfillmentGroupItems().add(fgItem2);
   order.getFulfillmentGroups().add(fg2);
   order.setSubTotal(new Money((2 * 19.99D) + (3 * 29.99D)));
+  orders.put(order.getId(),order);
   PromotableOrder promotableOrder=new PromotableOrderImpl(order,new PromotableItemFactoryImpl());
   return promotableOrder;
 }

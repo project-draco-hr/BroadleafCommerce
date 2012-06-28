@@ -96,10 +96,8 @@
     DiscreteOrderItem delegateItem=itemToRemove.getDelegate();
     mergeSplitGiftWrapOrderItems(order,giftWrapItems,itemToRemove,delegateItem);
     if (delegateItem.getBundleOrderItem() == null) {
-      OrderItemRequest orderItemRequest=new OrderItemRequest();
-      orderItemRequest.setOrderItemId(itemToRemove.getDelegate().getId());
       try {
-        orderService.removeItem(order.getDelegate(),orderItemRequest,false);
+        orderService.removeItem(order.getDelegate().getId(),itemToRemove.getDelegate().getId(),false);
       }
  catch (      ItemNotFoundException e) {
         throw new PricingException("Could not remove item",e);

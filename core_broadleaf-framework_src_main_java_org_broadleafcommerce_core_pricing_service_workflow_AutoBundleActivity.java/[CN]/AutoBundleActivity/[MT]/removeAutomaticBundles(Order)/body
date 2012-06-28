@@ -9,10 +9,8 @@
     }
   }
   for (  BundleOrderItem bundleOrderItem : bundlesToRemove) {
-    OrderItemRequest orderItemRequest=new OrderItemRequest();
-    orderItemRequest.setOrderItemId(bundleOrderItem.getId());
     try {
-      order=orderService.removeItem(order,orderItemRequest,false);
+      order=orderService.removeItem(order.getId(),bundleOrderItem.getId(),false);
     }
  catch (    ItemNotFoundException e) {
       throw new PricingException("Could not remove item",e);
