@@ -12,7 +12,7 @@
   content.setDeletedFlag(false);
   StructuredContent sc=structuredContentDao.addOrUpdateContentItem(content);
   if (!isProductionSandBox(destinationSandbox)) {
-    sandBoxItemDao.addSandBoxItem(destinationSandbox,SandBoxOperationType.ADD,SandBoxItemType.STRUCTURED_CONTENT,sc.getContentName(),sc.getId(),null);
+    sandBoxItemDao.addSandBoxItem(destinationSandbox.getId(),SandBoxOperationType.ADD,SandBoxItemType.STRUCTURED_CONTENT,sc.getContentName(),sc.getId(),null);
   }
   return sc;
 }
