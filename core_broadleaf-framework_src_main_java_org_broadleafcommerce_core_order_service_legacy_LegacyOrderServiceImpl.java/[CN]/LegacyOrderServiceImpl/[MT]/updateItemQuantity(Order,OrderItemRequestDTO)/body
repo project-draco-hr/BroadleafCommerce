@@ -1,0 +1,10 @@
+{
+  OrderItem orderItem=null;
+  for (  DiscreteOrderItem doi : order.getDiscreteOrderItems()) {
+    if (doi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
+      orderItem=doi;
+    }
+  }
+  orderItem.setQuantity(orderItemRequestDTO.getQuantity());
+  updateItemQuantity(order,orderItem,true);
+}

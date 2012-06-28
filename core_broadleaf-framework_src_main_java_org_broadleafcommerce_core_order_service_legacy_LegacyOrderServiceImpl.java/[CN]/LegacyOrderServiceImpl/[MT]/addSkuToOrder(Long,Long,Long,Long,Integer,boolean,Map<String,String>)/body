@@ -2,13 +2,13 @@
   if (orderId == null || (productId == null && skuId == null) || quantity == null) {
     return null;
   }
-  OrderItemRequest requestDTO=new OrderItemRequest();
-  requestDTO.setCategoryId(categoryId);
-  requestDTO.setProductId(productId);
-  requestDTO.setSkuId(skuId);
-  requestDTO.setQuantity(quantity);
-  requestDTO.setItemAttributes(itemAttributes);
-  Order order=addItemToOrder(orderId,requestDTO,priceOrder);
+  OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+  orderItemRequestDTO.setCategoryId(categoryId);
+  orderItemRequestDTO.setProductId(productId);
+  orderItemRequestDTO.setSkuId(skuId);
+  orderItemRequestDTO.setQuantity(quantity);
+  orderItemRequestDTO.setItemAttributes(itemAttributes);
+  Order order=addItemToOrder(orderId,orderItemRequestDTO,priceOrder);
   if (order == null) {
     return null;
   }

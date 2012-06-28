@@ -5,11 +5,11 @@
   Product newInactiveProduct=addTestProduct("Plastic Crate","Crates",false);
   Product giftWrapProduct=addTestProduct("Gift Box","Gift Wraps");
   Category category=newProduct.getDefaultCategory();
-  List<LegacyDiscreteOrderItemRequest> discreteOrderItems=new ArrayList<LegacyDiscreteOrderItemRequest>();
+  List<DiscreteOrderItemRequest> discreteOrderItems=new ArrayList<DiscreteOrderItemRequest>();
   discreteOrderItems.add(createDiscreteOrderItemRequest(newProduct,newProduct.getDefaultSku(),1));
   discreteOrderItems.add(createDiscreteOrderItemRequest(newInactiveProduct,newInactiveProduct.getDefaultSku(),1));
   discreteOrderItems.add(createGiftWrapOrderItemRequest(giftWrapProduct,giftWrapProduct.getDefaultSku(),1,new ArrayList<OrderItem>()));
-  LegacyBundleOrderItemRequest itemRequest=new LegacyBundleOrderItemRequest();
+  BundleOrderItemRequest itemRequest=new BundleOrderItemRequest();
   itemRequest.setCategory(category);
   itemRequest.setName("test bundle " + bundleCount++);
   itemRequest.setQuantity(1);

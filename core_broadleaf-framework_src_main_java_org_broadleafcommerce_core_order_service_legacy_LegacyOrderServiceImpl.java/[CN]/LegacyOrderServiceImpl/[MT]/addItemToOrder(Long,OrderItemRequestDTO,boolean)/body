@@ -1,0 +1,47 @@
+{
+  if (orderItemRequestDTO.getQuantity() == null || orderItemRequestDTO.getQuantity() == 0) {
+    LOG.debug("Not adding item to order because quantity is zero.");
+    return null;
+  }
+  if (orderItemRequestDTO.getQuantity() < 0) {
+    throw new IllegalArgumentException("Quantity cannot be negative");
+  }
+  Order order=validateOrder(orderId);
+  Product product=validateProduct(orderItemRequestDTO.getProductId());
+  Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes());
+  if (sku == null) {
+    return null;
+  }
+  Category category=determineCategory(product,orderItemRequestDTO.getCategoryId());
+  if (product == null || !(product instanceof ProductBundle)) {
+    DiscreteOrderItem item=orderItemService.createDiscreteOrderItem(createDiscreteOrderItemRequest(sku,product,category,orderItemRequestDTO.getQuantity(),orderItemRequestDTO.getItemAttributes()));
+    List<OrderItem> orderItems=order.getOrderItems();
+    orderItems.add(item);
+    item.setOrder(order);
+    return updateOrder(order,priceOrder);
+  }
+ else {
+    ProductBundle bundle=(ProductBundle)product;
+    BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
+    bundleOrderItem.setQuantity(orderItemRequestDTO.getQuantity());
+    bundleOrderItem.setCategory(category);
+    bundleOrderItem.setSku(sku);
+    bundleOrderItem.setName(product.getName());
+    bundleOrderItem.setProductBundle(bundle);
+    for (    SkuBundleItem skuBundleItem : bundle.getSkuBundleItems()) {
+      Product bundleProduct=skuBundleItem.getBundle();
+      Sku bundleSku=skuBundleItem.getSku();
+      Category bundleCategory=determineCategory(bundleProduct,orderItemRequestDTO.getCategoryId());
+      DiscreteOrderItem bundleDiscreteItem=orderItemService.createDiscreteOrderItem(createDiscreteOrderItemRequest(bundleSku,bundleProduct,bundleCategory,skuBundleItem.getQuantity(),orderItemRequestDTO.getItemAttributes()));
+      bundleDiscreteItem.setSkuBundleItem(skuBundleItem);
+      bundleDiscreteItem.setBundleOrderItem(bundleOrderItem);
+      bundleOrderItem.getDiscreteOrderItems().add(bundleDiscreteItem);
+    }
+    bundleOrderItem.updatePrices();
+    bundleOrderItem.assignFinalPrice();
+    List<OrderItem> orderItems=order.getOrderItems();
+    orderItems.add(bundleOrderItem);
+    bundleOrderItem.setOrder(order);
+    return updateOrder(order,priceOrder);
+  }
+}

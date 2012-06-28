@@ -4,10 +4,10 @@
     Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       try {
-        OrderItemRequest orderItemRequest=new OrderItemRequest();
-        orderItemRequest.setOrderItemId(itemId);
-        orderItemRequest.setQuantity(quantity);
-        Order order=orderService.updateItem(cart.getId(),orderItemRequest,priceOrder);
+        OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+        orderItemRequestDTO.setOrderItemId(itemId);
+        orderItemRequestDTO.setQuantity(quantity);
+        Order order=orderService.updateItem(cart.getId(),orderItemRequestDTO,priceOrder);
         order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(order,request);
