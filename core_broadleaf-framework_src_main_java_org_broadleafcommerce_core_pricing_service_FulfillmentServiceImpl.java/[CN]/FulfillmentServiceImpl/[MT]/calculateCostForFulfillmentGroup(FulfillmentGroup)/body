@@ -1,11 +1,11 @@
 {
-  if (fulfillmentGroup.getFulfillmentOption() == null) {
-    throw new ShippingPriceException("FulfillmentGroups must have a FulfillmentOption associated with them in order to price the FulfillmentGroup");
-  }
   for (  FulfillmentProcessor processor : fulfillmentProcessors) {
     if (processor.canCalculateCostForFulfillmentGroup(fulfillmentGroup)) {
       return processor.calculateCostForFulfillmentGroup(fulfillmentGroup);
     }
   }
-  throw new ShippingPriceException("No valid processor was found to calculate the FulfillmentGroup cost with " + "FulfillmentOption id: " + fulfillmentGroup.getFulfillmentOption().getId() + " and name: "+ fulfillmentGroup.getFulfillmentOption().getName());
+  fulfillmentGroup.setShippingPrice(new Money(0));
+  fulfillmentGroup.setSaleShippingPrice(new Money(0));
+  fulfillmentGroup.setRetailShippingPrice(new Money(0));
+  return fulfillmentGroup;
 }
