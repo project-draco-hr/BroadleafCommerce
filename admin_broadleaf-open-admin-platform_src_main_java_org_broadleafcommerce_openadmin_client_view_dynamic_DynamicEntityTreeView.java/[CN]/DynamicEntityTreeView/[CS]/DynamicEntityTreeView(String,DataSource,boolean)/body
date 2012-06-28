@@ -26,5 +26,18 @@
   grid.setCanSort(false);
   grid.setCanResizeFields(true);
   grid.setShowRoot(showRoot);
+  grid.setHoverMoveWithMouse(true);
+  grid.setCanHover(true);
+  grid.setShowHover(true);
+  grid.setHoverOpacity(75);
+  grid.setHoverCustomizer(new HoverCustomizer(){
+    @Override public String hoverHTML(    Object value,    ListGridRecord record,    int rowNum,    int colNum){
+      if (record != null && record.getAttribute("__locked") != null && record.getAttributeAsBoolean("__locked")) {
+        return BLCMain.getMessageManager().replaceKeys(BLCMain.getMessageManager().getString("lockedMessage"),new String[]{"userName","date"},new String[]{record.getAttribute("__lockedUserName"),record.getAttribute("__lockedDate")});
+      }
+      return null;
+    }
+  }
+);
   addMember(grid);
 }
