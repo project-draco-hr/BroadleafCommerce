@@ -5,8 +5,8 @@
     legacyForm.getForm().reset();
   }
   for (  FormItem formItem : legacyForm.getForm().getFields()) {
-    if (formItem instanceof RichTextCanvasItem) {
-      formItem.setValue(legacyForm.getForm().getValue(formItem.getFieldName()));
+    if (formItem instanceof CanvasItem) {
+      ((HTMLTextItem)formItem).setHTMLValue((legacyForm.getForm().getValue(formItem.getFieldName())) != null ? legacyForm.getForm().getValue(formItem.getFieldName()).toString() : "");
     }
   }
   resetButtons();

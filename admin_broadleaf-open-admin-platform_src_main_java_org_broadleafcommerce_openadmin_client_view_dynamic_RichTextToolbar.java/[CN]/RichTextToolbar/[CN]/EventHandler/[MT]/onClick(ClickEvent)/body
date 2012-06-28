@@ -1,0 +1,192 @@
+{
+  if (event.getSource().equals(bold)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_BOLD,HTML_STYLE_CLOSE_SPAN);
+    }
+ else {
+      styleTextFormatter.toggleBold();
+    }
+  }
+ else   if (event.getSource().equals(italic)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_ITALIC,HTML_STYLE_CLOSE_SPAN);
+    }
+ else {
+      styleTextFormatter.toggleItalic();
+    }
+  }
+ else   if (event.getSource().equals(underline)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_UNDERLINE,HTML_STYLE_CLOSE_SPAN);
+    }
+ else {
+      styleTextFormatter.toggleUnderline();
+    }
+  }
+ else   if (event.getSource().equals(stroke)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_LINETHROUGH,HTML_STYLE_CLOSE_SPAN);
+    }
+ else {
+      styleTextFormatter.toggleStrikethrough();
+    }
+  }
+ else   if (event.getSource().equals(subscript)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_SUBSCRIPT,HTML_STYLE_CLOSE_SUBSCRIPT);
+    }
+ else {
+      styleTextFormatter.toggleSubscript();
+    }
+  }
+ else   if (event.getSource().equals(superscript)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_SUPERSCRIPT,HTML_STYLE_CLOSE_SUPERSCRIPT);
+    }
+ else {
+      styleTextFormatter.toggleSuperscript();
+    }
+  }
+ else   if (event.getSource().equals(alignleft)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_ALIGNLEFT,HTML_STYLE_CLOSE_DIV);
+    }
+ else {
+      styleTextFormatter.setJustification(RichTextArea.Justification.LEFT);
+    }
+  }
+ else   if (event.getSource().equals(alignmiddle)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_ALIGNCENTER,HTML_STYLE_CLOSE_DIV);
+    }
+ else {
+      styleTextFormatter.setJustification(RichTextArea.Justification.CENTER);
+    }
+  }
+ else   if (event.getSource().equals(alignright)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_ALIGNRIGHT,HTML_STYLE_CLOSE_DIV);
+    }
+ else {
+      styleTextFormatter.setJustification(RichTextArea.Justification.RIGHT);
+    }
+  }
+ else   if (event.getSource().equals(orderlist)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_ORDERLIST,HTML_STYLE_CLOSE_ORDERLIST);
+    }
+ else {
+      styleTextFormatter.insertOrderedList();
+    }
+  }
+ else   if (event.getSource().equals(unorderlist)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_UNORDERLIST,HTML_STYLE_CLOSE_UNORDERLIST);
+    }
+ else {
+      styleTextFormatter.insertUnorderedList();
+    }
+  }
+ else   if (event.getSource().equals(indentright)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_OPEN_INDENTRIGHT,HTML_STYLE_CLOSE_DIV);
+    }
+ else {
+      styleTextFormatter.rightIndent();
+    }
+  }
+ else   if (event.getSource().equals(indentleft)) {
+    if (isHTMLMode()) {
+    }
+ else {
+      styleTextFormatter.leftIndent();
+    }
+  }
+ else   if (event.getSource().equals(generatelink)) {
+    String url=Window.prompt(GUI_DIALOG_INSERTURL,"http://");
+    if (url != null) {
+      if (isHTMLMode()) {
+        changeHtmlStyle("<a href=\"" + url + "\">","</a>");
+      }
+ else {
+        styleTextFormatter.createLink(url);
+      }
+    }
+  }
+ else   if (event.getSource().equals(assetslink)) {
+  }
+ else   if (event.getSource().equals(breaklink)) {
+    if (isHTMLMode()) {
+    }
+ else {
+      styleTextFormatter.removeLink();
+    }
+  }
+ else   if (event.getSource().equals(insertimage)) {
+    String url=Window.prompt(GUI_DIALOG_IMAGEURL,"http://");
+    if (url != null) {
+      if (isHTMLMode()) {
+        changeHtmlStyle("<img src=\"" + url + "\">","");
+      }
+ else {
+        styleTextFormatter.insertImage(url);
+      }
+    }
+  }
+ else   if (event.getSource().equals(insertline)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle(HTML_STYLE_HLINE,"");
+    }
+ else {
+      styleTextFormatter.insertHorizontalRule();
+    }
+  }
+ else   if (event.getSource().equals(removeformatting)) {
+    if (isHTMLMode()) {
+    }
+ else {
+      styleTextFormatter.removeFormat();
+    }
+  }
+ else   if (event.getSource().equals(htmlPreview)) {
+    final com.smartgwt.client.widgets.Window winModal=new com.smartgwt.client.widgets.Window();
+    winModal.setWidth(560);
+    winModal.setHeight(515);
+    winModal.setTitle("HTML Preview");
+    winModal.setShowMinimizeButton(false);
+    winModal.setIsModal(true);
+    winModal.setShowModalMask(true);
+    winModal.centerInPage();
+    winModal.addCloseClickHandler(new CloseClickHandler(){
+      public void onCloseClick(      CloseClickEvent event){
+        winModal.destroy();
+      }
+    }
+);
+    FlowLayout layout=new FlowLayout();
+    final Canvas htmlCanvas=new Canvas();
+    htmlCanvas.setHeight(130);
+    htmlCanvas.setPadding(2);
+    htmlCanvas.setOverflow(Overflow.HIDDEN);
+    htmlCanvas.setCanDragResize(true);
+    htmlCanvas.setShowEdges(true);
+    winModal.setCanDragResize(true);
+    htmlCanvas.setContents(styleText.getHTML());
+    layout.addChild(htmlCanvas);
+    HTMLFlow flow=new HTMLFlow();
+    flow.setContents(styleText.getHTML());
+    winModal.addItem(flow);
+    winModal.show();
+  }
+ else   if (event.getSource().equals(texthtml)) {
+    if (texthtml.isDown()) {
+      styleText.setText(styleText.getHTML());
+    }
+ else {
+      styleText.setHTML(styleText.getText());
+    }
+  }
+ else   if (event.getSource().equals(styleText)) {
+  }
+  updateStatus();
+}

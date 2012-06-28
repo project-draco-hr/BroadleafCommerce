@@ -1,0 +1,21 @@
+{
+  String richContent;
+  if (fileExtension.equals("gif") || fileExtension.equals("jpg") || fileExtension.equals("png")) {
+    richContent=staticAssetFullUrl;
+    if (isHTMLMode()) {
+      changeHtmlStyle("<img title='" + name + "' src='"+ staticAssetFullUrl+ "' alt='"+ name,"</img>");
+    }
+ else {
+      styleTextFormatter.insertImage(richContent);
+    }
+  }
+ else {
+    richContent="<a href='" + staticAssetFullUrl + "'>"+ name+ "</a>";
+    if (isHTMLMode()) {
+      changeHtmlStyle("<a href=\"" + staticAssetFullUrl + "\">","</a>");
+    }
+ else {
+      styleTextFormatter.createLink(richContent);
+    }
+  }
+}

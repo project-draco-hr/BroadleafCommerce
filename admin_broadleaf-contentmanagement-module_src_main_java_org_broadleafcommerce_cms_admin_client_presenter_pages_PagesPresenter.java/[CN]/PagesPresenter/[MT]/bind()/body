@@ -4,20 +4,18 @@
   formPresenter.getRefreshButtonHandlerRegistration().removeHandler();
   refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
-        FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
-        if (legacyForm != null) {
-          legacyForm.getForm().reset();
-        }
-        for (        FormItem formItem : legacyForm.getForm().getFields()) {
-          if (formItem instanceof RichTextCanvasItem) {
-            formItem.setValue(legacyForm.getForm().getValue(formItem.getFieldName()));
-          }
-        }
-        getDisplay().getDynamicFormDisplay().getSaveButton().disable();
-        getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+      FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
+      if (legacyForm != null) {
+        legacyForm.getForm().reset();
       }
+      for (      FormItem formItem : legacyForm.getForm().getFields()) {
+        if (formItem instanceof CanvasItem) {
+          ((HTMLTextItem)formItem).setHTMLValue((legacyForm.getForm().getValue(formItem.getFieldName())) != null ? legacyForm.getForm().getValue(formItem.getFieldName()).toString() : "");
+        }
+      }
+      getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
     }
   }
 );
@@ -33,8 +31,8 @@
               FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
               final DynamicForm form=legacyForm.getForm();
               for (              FormItem formItem : form.getFields()) {
-                if (formItem instanceof RichTextCanvasItem) {
-                  form.setValue(formItem.getFieldName(),((RichTextHTMLPane)((RichTextCanvasItem)formItem).getCanvas()).getValue());
+                if (formItem instanceof HTMLTextItem) {
+                  form.setValue(formItem.getFieldName(),((HTMLTextItem)formItem).getHTMLValue());
                 }
               }
               PageTemplateFormListDataSource dataSource=(PageTemplateFormListDataSource)form.getDataSource();
