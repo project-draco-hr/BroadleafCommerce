@@ -7,17 +7,17 @@
   PromotableOrder order=dataProvider.createBasicOrder();
   List<PromotableCandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
   List<Offer> offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
-  boolean offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  boolean offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   order=dataProvider.createBasicOrder();
   qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
   offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
   offers.addAll(dataProvider.createFGBasedOfferWithItemCriteria("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offers.get(1).setName("secondOffer");
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
-  offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
+  offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   int fgAdjustmentCount=0;
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {

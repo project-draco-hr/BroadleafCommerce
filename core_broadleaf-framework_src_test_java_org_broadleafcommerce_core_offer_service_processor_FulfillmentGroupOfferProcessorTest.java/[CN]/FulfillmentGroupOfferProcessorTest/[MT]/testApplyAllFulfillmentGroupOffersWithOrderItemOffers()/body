@@ -22,9 +22,9 @@
   offers.get(0).setTotalitarianOffer(true);
   offers.addAll(dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offerService.applyOffersToOrder(offers,order.getDelegate());
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
-  boolean offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
+  boolean offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   int fgAdjustmentCount=0;
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
@@ -35,9 +35,9 @@
   offers.get(2).setValue(new BigDecimal("1"));
   offerService.applyOffersToOrder(offers,order.getDelegate());
   qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
-  fgProcessorMock.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
-  offerApplied=fgProcessorMock.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(0));
+  fgProcessor.filterFulfillmentGroupLevelOffer(order,qualifiedOffers,offers.get(1));
+  offerApplied=fgProcessor.applyAllFulfillmentGroupOffers(qualifiedOffers,order);
   assertTrue(offerApplied);
   fgAdjustmentCount=0;
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
