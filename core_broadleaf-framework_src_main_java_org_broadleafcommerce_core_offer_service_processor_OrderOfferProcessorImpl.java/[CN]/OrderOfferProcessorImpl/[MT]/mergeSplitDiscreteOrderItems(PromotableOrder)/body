@@ -70,7 +70,7 @@
           }
         }
  else {
-          delegateItem=(DiscreteOrderItem)orderService.addOrderItemToBundle(order.getDelegate(),delegateItem.getBundleOrderItem(),delegateItem,false);
+          delegateItem=addOrderItemToBundle(order.getDelegate(),delegateItem.getBundleOrderItem(),delegateItem,false);
         }
         myItem.setDelegate(delegateItem);
       }
@@ -97,7 +97,7 @@
     mergeSplitGiftWrapOrderItems(order,giftWrapItems,itemToRemove,delegateItem);
     if (delegateItem.getBundleOrderItem() == null) {
       try {
-        orderService.removeItem(order.getDelegate().getId(),itemToRemove.getDelegate().getId(),false);
+        orderService.removeItem(order.getDelegate().getId(),delegateItem.getId(),false);
       }
  catch (      ItemNotFoundException e) {
         throw new PricingException("Could not remove item",e);

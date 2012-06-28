@@ -1,7 +1,11 @@
 {
   return new IAnswer<OrderItem>(){
     public OrderItem answer() throws Throwable {
-      return (OrderItem)EasyMock.getCurrentArguments()[0];
+      OrderItem orderItem=(OrderItem)EasyMock.getCurrentArguments()[0];
+      if (orderItem.getId() == null) {
+        orderItem.setId(getOrderItemId());
+      }
+      return orderItem;
     }
   }
 ;

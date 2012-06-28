@@ -12,13 +12,13 @@
   offer2.getQualifyingItemCriteria().clear();
   offer2.setOfferItemTargetRuleType(OfferItemRestrictionRuleType.TARGET);
   Offer offer3=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
-  itemProcessorMock.filterItemLevelOffer(order,qualifiedOffers,offer1);
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer1);
   assertTrue(qualifiedOffers.size() == 1 && qualifiedOffers.get(0).getOffer().equals(offer1) && qualifiedOffers.get(0).getCandidateQualifiersMap().size() == 1);
-  itemProcessorMock.filterItemLevelOffer(order,qualifiedOffers,offer2);
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer2);
   assertTrue(qualifiedOffers.size() == 2 && qualifiedOffers.get(1).getOffer().equals(offer2) && qualifiedOffers.get(1).getCandidateQualifiersMap().size() == 0);
-  itemProcessorMock.filterItemLevelOffer(order,qualifiedOffers,offer3);
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer3);
   assertTrue(qualifiedOffers.size() == 3 && qualifiedOffers.get(2).getOffer().equals(offer3) && qualifiedOffers.get(2).getCandidateQualifiersMap().size() == 1);
-  itemProcessorMock.applyItemQualifiersAndTargets(qualifiedOffers.get(1),order);
+  itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(1),order);
   List<PromotableOrderItem> orderItems=new ArrayList<PromotableOrderItem>();
   for (  PromotableOrderItem orderItem : order.getDiscountableDiscreteOrderItems()) {
     orderItems.add(orderItem);
@@ -35,7 +35,7 @@
   }
   assertTrue(qualCount == 0 && targetCount == 4);
   assertTrue(order.getAllSplitItems().size() == 3);
-  itemProcessorMock.applyItemQualifiersAndTargets(qualifiedOffers.get(0),order);
+  itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(0),order);
   qualCount=0;
   targetCount=0;
   for (  PromotableOrderItem orderItem : orderItems) {
@@ -48,7 +48,7 @@
   }
   assertTrue(qualCount == 1 && targetCount == 5);
   assertTrue(order.getSplitItems().size() == 2 && order.getSplitItems().get(0).getSplitItems().size() == 2 && order.getSplitItems().get(1).getSplitItems().size() == 2);
-  itemProcessorMock.applyItemQualifiersAndTargets(qualifiedOffers.get(2),order);
+  itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(2),order);
   qualCount=0;
   targetCount=0;
   for (  PromotableOrderItem orderItem : orderItems) {

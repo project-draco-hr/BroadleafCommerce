@@ -2,6 +2,6 @@
   DiscreteOrderItem itemFromBundle=bundle.getDiscreteOrderItems().remove(bundle.getDiscreteOrderItems().indexOf(item));
   orderItemService.delete(itemFromBundle);
   itemFromBundle.setBundleOrderItem(null);
-  order=updateOrder(order,priceOrder);
+  order=orderService.save(order,priceOrder);
   return order;
 }
