@@ -3,6 +3,9 @@
     if (!DateUtil.isActive(getActiveStartDate(),getActiveEndDate(),true)) {
       LOG.debug("product, " + id + ", inactive due to date");
     }
+    if ('Y' == getArchived()) {
+      LOG.debug("product, " + id + ", inactive due to archived status");
+    }
   }
-  return DateUtil.isActive(getActiveStartDate(),getActiveEndDate(),true);
+  return DateUtil.isActive(getActiveStartDate(),getActiveEndDate(),true) && 'Y' != getArchived();
 }

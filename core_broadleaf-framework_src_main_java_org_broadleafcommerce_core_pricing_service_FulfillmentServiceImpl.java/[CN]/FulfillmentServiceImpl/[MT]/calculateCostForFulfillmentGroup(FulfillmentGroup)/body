@@ -1,0 +1,11 @@
+{
+  for (  FulfillmentProcessor processor : fulfillmentProcessors) {
+    if (processor.canCalculateCostForFulfillmentGroup(fulfillmentGroup)) {
+      return processor.calculateCostForFulfillmentGroup(fulfillmentGroup);
+    }
+  }
+  fulfillmentGroup.setShippingPrice(new Money(0));
+  fulfillmentGroup.setSaleShippingPrice(new Money(0));
+  fulfillmentGroup.setRetailShippingPrice(new Money(0));
+  return fulfillmentGroup;
+}
