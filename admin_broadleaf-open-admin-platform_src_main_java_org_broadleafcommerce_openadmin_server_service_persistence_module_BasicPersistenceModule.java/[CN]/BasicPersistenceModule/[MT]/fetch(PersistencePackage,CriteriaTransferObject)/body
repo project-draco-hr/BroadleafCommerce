@@ -13,7 +13,7 @@
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
     boolean isArchivable=false;
     for (    Class<?> entity : entities) {
-      if (Archivable.class.isAssignableFrom(entity)) {
+      if (Status.class.isAssignableFrom(entity)) {
         isArchivable=true;
         break;
       }
@@ -21,7 +21,7 @@
     if (isArchivable) {
       SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
         public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
-          return Restrictions.or(Restrictions.eq(targetPropertyName,false),Restrictions.isNull(targetPropertyName));
+          return Restrictions.or(Restrictions.eq(targetPropertyName,'N'),Restrictions.isNull(targetPropertyName));
         }
       }
 ;

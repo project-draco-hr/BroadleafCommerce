@@ -27,7 +27,14 @@
     String id=abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
     ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
       public void execute(      DSResponse response,      Object rawData,      DSRequest request){
-        setStartState();
+        String locked=associatedRecord.getAttribute("__locked");
+        if (!(locked != null && locked.equals("true"))) {
+          setReadOnly(false);
+          setStartState();
+        }
+ else {
+          setReadOnly(true);
+        }
         if (cb != null) {
           cb.execute(response,rawData,request);
         }
