@@ -1,3 +1,13 @@
 {
-  throw new UnsupportedOperationException();
+  CartOperationRequest cartOpRequest=new CartOperationRequest();
+  cartOpRequest.setItemRequest(orderItemRequestDTO);
+  cartOpRequest.setOrder(findOrderById(orderId));
+  try {
+    CartOperationContext context=(CartOperationContext)addItemWorkflow.doActivities(cartOpRequest);
+    return context.getSeedData().getOrder();
+  }
+ catch (  WorkflowException e) {
+    e.printStackTrace();
+  }
+  throw new PricingException("fjkdlsjfdls");
 }
