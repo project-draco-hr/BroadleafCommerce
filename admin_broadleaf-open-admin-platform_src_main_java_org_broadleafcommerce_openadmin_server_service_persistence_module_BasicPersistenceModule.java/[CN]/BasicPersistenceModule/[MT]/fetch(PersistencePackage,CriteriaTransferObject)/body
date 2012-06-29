@@ -11,6 +11,23 @@
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
+    boolean isArchivable=false;
+    for (    Class<?> entity : entities) {
+      if (Archivable.class.isAssignableFrom(entity)) {
+        isArchivable=true;
+        break;
+      }
+    }
+    if (isArchivable) {
+      SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
+        public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
+          return Restrictions.or(Restrictions.eq(targetPropertyName,false),Restrictions.isNull(targetPropertyName));
+        }
+      }
+;
+      FilterCriterion filterCriterion=new FilterCriterion(AssociationPath.ROOT,"archiveStatus.archived",criterionProvider);
+      ((NestedPropertyCriteria)queryCriteria).add(filterCriterion);
+    }
     List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
     payload=getRecords(mergedProperties,records,null,null);
     totalRecords=getTotalRecords(ceilingEntityFullyQualifiedClassname,persistencePackage.getFetchTypeFullyQualifiedClassname(),cto,ctoConverter);
