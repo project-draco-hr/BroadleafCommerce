@@ -1,3 +1,13 @@
 {
-  return upSaleProducts;
+  if (filteredUpSales == null && upSaleProducts != null) {
+    filteredUpSales=new ArrayList<RelatedProduct>(upSaleProducts.size());
+    filteredUpSales.addAll(upSaleProducts);
+    CollectionUtils.filter(upSaleProducts,new Predicate(){
+      @Override public boolean evaluate(      Object arg){
+        return 'Y' != ((Status)((UpSaleProductImpl)arg).getRelatedProduct()).getArchived();
+      }
+    }
+);
+  }
+  return filteredUpSales;
 }
