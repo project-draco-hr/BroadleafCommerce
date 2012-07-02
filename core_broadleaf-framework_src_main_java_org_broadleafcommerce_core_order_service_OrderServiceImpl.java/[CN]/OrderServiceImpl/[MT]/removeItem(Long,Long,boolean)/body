@@ -1,10 +1,12 @@
 {
-  Order order=findOrderById(orderId);
-  OrderItem orderItem=orderItemService.readOrderItemById(orderItemId);
-  fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
-  OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(orderItem));
-  itemFromOrder.setOrder(null);
-  orderItemService.delete(itemFromOrder);
-  order=save(order,priceOrder);
-  return order;
+  try {
+    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+    orderItemRequestDTO.setOrderItemId(orderItemId);
+    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    CartOperationContext context=(CartOperationContext)removeItemWorkflow.doActivities(cartOpRequest);
+    return context.getSeedData().getOrder();
+  }
+ catch (  WorkflowException e) {
+    throw new RemoveFromCartException("Could not remove from cart",e.getCause());
+  }
 }

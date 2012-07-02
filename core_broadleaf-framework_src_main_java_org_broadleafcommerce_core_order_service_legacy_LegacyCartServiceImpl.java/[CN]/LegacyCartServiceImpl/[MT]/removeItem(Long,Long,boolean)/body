@@ -1,3 +1,8 @@
 {
-  return removeItemFromOrder(orderId,orderItemId,priceOrder);
+  try {
+    return removeItemFromOrder(orderId,orderItemId,priceOrder);
+  }
+ catch (  PricingException e) {
+    throw new RemoveFromCartException("Could not remove item",e);
+  }
 }

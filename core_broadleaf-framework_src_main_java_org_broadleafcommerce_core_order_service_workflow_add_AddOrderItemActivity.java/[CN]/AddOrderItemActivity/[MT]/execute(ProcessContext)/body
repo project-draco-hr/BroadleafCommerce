@@ -34,10 +34,9 @@
     bundleItemRequest.setName(product.getName());
     item=orderItemService.createBundleOrderItem(bundleItemRequest);
   }
-  List<OrderItem> orderItems=order.getOrderItems();
-  orderItems.add(item);
   item.setOrder(order);
   item=orderItemService.saveOrderItem(item);
+  order.getOrderItems().add(item);
   order=orderService.save(order,request.isPriceOrder());
   request.setCreatedItemResponse(item);
   request.setOrder(order);

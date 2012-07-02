@@ -1,0 +1,23 @@
+{
+  CartOperationRequest request=((CartOperationContext)context).getSeedData();
+  OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
+  Order order=request.getOrder();
+  if (orderItemRequestDTO.getQuantity() < 0) {
+    throw new IllegalArgumentException("Quantity cannot be negative");
+  }
+  OrderItem orderItem=null;
+  for (  DiscreteOrderItem doi : order.getDiscreteOrderItems()) {
+    if (doi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
+      orderItem=doi;
+    }
+  }
+  if (orderItem == null || !order.getOrderItems().contains(orderItem)) {
+    throw new ItemNotFoundException("Order Item (" + orderItem.getId() + ") not found in Order ("+ order.getId()+ ")");
+  }
+  OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(orderItem));
+  itemFromOrder.setQuantity(orderItemRequestDTO.getQuantity());
+  order=orderService.save(order,request.isPriceOrder());
+  request.setOrder(order);
+  ((CartOperationContext)context).setSeedData(request);
+  return context;
+}
