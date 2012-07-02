@@ -1,6 +1,45 @@
 {
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
-  Order order=lcs.addItemToOrder(request.getOrder().getId(),request.getItemRequest(),true);
+  OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
+  Order order=request.getOrder();
+  Sku sku=catalogService.findSkuById(orderItemRequestDTO.getSkuId());
+  Product product=null;
+  if (orderItemRequestDTO.getProductId() != null) {
+    product=catalogService.findProductById(orderItemRequestDTO.getProductId());
+  }
+  Category category=null;
+  if (orderItemRequestDTO.getCategoryId() != null) {
+    category=catalogService.findCategoryById(orderItemRequestDTO.getCategoryId());
+  }
+  if (category == null && product != null) {
+    category=product.getDefaultCategory();
+  }
+  OrderItem item;
+  if (product == null || !(product instanceof ProductBundle)) {
+    DiscreteOrderItemRequest itemRequest=new DiscreteOrderItemRequest();
+    itemRequest.setCategory(category);
+    itemRequest.setProduct(product);
+    itemRequest.setSku(sku);
+    itemRequest.setQuantity(orderItemRequestDTO.getQuantity());
+    itemRequest.setItemAttributes(orderItemRequestDTO.getItemAttributes());
+    item=orderItemService.createDiscreteOrderItem(itemRequest);
+  }
+ else {
+    ProductBundleOrderItemRequest bundleItemRequest=new ProductBundleOrderItemRequest();
+    bundleItemRequest.setCategory(category);
+    bundleItemRequest.setProductBundle((ProductBundle)product);
+    bundleItemRequest.setSku(sku);
+    bundleItemRequest.setQuantity(orderItemRequestDTO.getQuantity());
+    bundleItemRequest.setItemAttributes(orderItemRequestDTO.getItemAttributes());
+    bundleItemRequest.setName(product.getName());
+    item=orderItemService.createBundleOrderItem(bundleItemRequest);
+  }
+  List<OrderItem> orderItems=order.getOrderItems();
+  orderItems.add(item);
+  item.setOrder(order);
+  item=orderItemService.saveOrderItem(item);
+  order=orderService.save(order,request.isPriceOrder());
+  request.setCreatedItemResponse(item);
   request.setOrder(order);
   ((CartOperationContext)context).setSeedData(request);
   return context;

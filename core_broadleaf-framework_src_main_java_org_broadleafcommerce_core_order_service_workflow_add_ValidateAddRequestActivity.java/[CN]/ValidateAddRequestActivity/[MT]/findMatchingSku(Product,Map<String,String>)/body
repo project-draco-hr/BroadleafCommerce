@@ -1,0 +1,23 @@
+{
+  Map<String,String> attributeValuesForSku=new HashMap<String,String>();
+  if (product != null && product.getProductOptions() != null && product.getProductOptions().size() > 0) {
+    for (    ProductOption productOption : product.getProductOptions()) {
+      if (productOption.getRequired()) {
+        if (attributeValues.get(productOption.getAttributeName()) == null) {
+          throw new RequiredAttributeNotProvidedException("Unable to add to cart. Required attribute was not provided: " + productOption.getAttributeName());
+        }
+ else {
+          attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
+        }
+      }
+    }
+    if (product != null && product.getSkus() != null) {
+      for (      Sku sku : product.getSkus()) {
+        if (checkSkuForMatch(sku,attributeValuesForSku)) {
+          return sku;
+        }
+      }
+    }
+  }
+  return null;
+}
