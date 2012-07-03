@@ -1,0 +1,23 @@
+{
+  DiscreteOrderItem item=new DiscreteOrderItemImpl();
+  item.setOrder(order);
+  item.setPrice(new Money(14.99D));
+  item.setRetailPrice(new Money(14.99D));
+  item.setQuantity(1);
+  Sku newSku=new SkuImpl();
+  newSku.setName("Under Armor T-Shirt -- Red");
+  newSku.setRetailPrice(new Money(14.99));
+  newSku.setActiveStartDate(SystemTime.asDate());
+  newSku.setDiscountable(false);
+  newSku=catalogService.saveSku(newSku);
+  item.setSku(newSku);
+  item=(DiscreteOrderItem)orderItemService.saveOrderItem(item);
+  List<OrderItem> items=new ArrayList<OrderItem>();
+  items.add(item);
+  order.setOrderItems(items);
+  FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();
+  fgItem.setFulfillmentGroup(group);
+  fgItem.setOrderItem(item);
+  fgItem.setQuantity(1);
+  group.addFulfillmentGroupItem(fgItem);
+}

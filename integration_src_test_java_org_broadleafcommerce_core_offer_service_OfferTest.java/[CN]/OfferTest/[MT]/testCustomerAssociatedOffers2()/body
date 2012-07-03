@@ -1,0 +1,23 @@
+{
+  Order order=orderService.createNewCartForCustomer(createCustomer());
+  order.addOrderItem(createDiscreteOrderItem(sku1,20D,null,true,1,order));
+  order.addOrderItem(createDiscreteOrderItem(sku2,20D,null,true,1,order));
+  order.addOfferCode(createOfferUtility.createOfferCode("15%OFF","15 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,15,null,null,false,true,0));
+  Offer offer1=createOfferUtility.createOffer("20 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,20,null,"discreteOrderItem.sku.id == " + sku1,false,true,0);
+  offer1.setDeliveryType(OfferDeliveryType.MANUAL);
+  offerDao.save(offer1);
+  CustomerOffer customerOffer1=new CustomerOfferImpl();
+  customerOffer1.setCustomer(order.getCustomer());
+  customerOffer1.setOffer(offer1);
+  customerOfferDao.save(customerOffer1);
+  Offer offer2=createOfferUtility.createOffer("10 Percent Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.PERCENT_OFF,10,null,"discreteOrderItem.sku.id == " + sku2,false,true,0);
+  offer2.setDeliveryType(OfferDeliveryType.MANUAL);
+  offerDao.save(offer2);
+  CustomerOffer customerOffer2=new CustomerOfferImpl();
+  customerOffer2.setCustomer(order.getCustomer());
+  customerOffer2.setOffer(offer2);
+  customerOfferDao.save(customerOffer2);
+  List<Offer> offers=offerService.buildOfferListForOrder(order);
+  offerService.applyOffersToOrder(offers,order);
+  assert(order.getSubTotal().equals(new Money(33D)));
+}

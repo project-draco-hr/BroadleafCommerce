@@ -1,0 +1,30 @@
+{
+  System.out.println("running test checkout");
+  String userName="customer1";
+  Customer customer=customerService.readCustomerByUsername(userName);
+  Order order=orderService.createNewCartForCustomer(customer);
+  Address address=buildAddress();
+  FulfillmentGroup group=buildFulfillmentGroup(order,address);
+  addSampleItemToOrder(order,group);
+  order.setTotalShipping(new Money(0D));
+  Map<PaymentInfo,Referenced> map=addPaymentToOrder(order,address);
+  CheckoutResponse response=checkoutService.performCheckout(order,map);
+  for (  PaymentInfo paymentInfo : response.getInfos().keySet()) {
+    assert(paymentInfo.getReferenceNumber().equals("abc123"));
+    assert(response.getInfos().get(paymentInfo).getReferenceNumber().equals("abc123"));
+  }
+  Referenced referenced=null;
+  try {
+    referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentInfoType.CREDIT_CARD);
+  }
+ catch (  Exception e) {
+  }
+  try {
+    referenced=securePaymentInfoService.findSecurePaymentInfo("1234",PaymentInfoType.CREDIT_CARD);
+  }
+ catch (  Exception e) {
+  }
+  assert(referenced == null);
+  assert(order.getTotal().greaterThan(order.getSubTotal()));
+  assert(response.getPaymentResponse().getResponseItems().size() > 0);
+}

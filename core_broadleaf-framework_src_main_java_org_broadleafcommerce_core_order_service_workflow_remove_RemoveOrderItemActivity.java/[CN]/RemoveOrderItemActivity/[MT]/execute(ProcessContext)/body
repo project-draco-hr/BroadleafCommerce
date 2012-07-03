@@ -3,6 +3,7 @@
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
   OrderItem orderItem=orderItemService.readOrderItemById(orderItemRequestDTO.getOrderItemId());
+  fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
   OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(orderItem));
   itemFromOrder.setOrder(null);
   orderItemService.delete(itemFromOrder);
