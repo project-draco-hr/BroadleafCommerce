@@ -1,0 +1,22 @@
+{
+  Product p=addTestProduct("bundleproduct1","bundlecat1");
+  Sku bundleSku=catalogService.createSku();
+  bundleSku.setName(p.getName());
+  bundleSku.setRetailPrice(new Money(44.99));
+  bundleSku.setActiveStartDate(p.getActiveStartDate());
+  bundleSku.setActiveEndDate(p.getActiveEndDate());
+  bundleSku.setDiscountable(true);
+  ProductBundle bundle=(ProductBundle)catalogService.createProduct(ProductType.BUNDLE);
+  bundle.setDefaultCategory(p.getDefaultCategory());
+  bundle.setDefaultSku(bundleSku);
+  bundle=(ProductBundle)catalogService.saveProduct(bundle);
+  bundleSku.setDefaultProduct(bundle);
+  catalogService.saveSku(bundleSku);
+  SkuBundleItem skuBundleItem=new SkuBundleItemImpl();
+  skuBundleItem.setBundle(bundle);
+  skuBundleItem.setQuantity(1);
+  skuBundleItem.setSku(p.getDefaultSku());
+  bundle.getSkuBundleItems().add(skuBundleItem);
+  bundle=(ProductBundle)catalogService.saveProduct(bundle);
+  return bundle;
+}
