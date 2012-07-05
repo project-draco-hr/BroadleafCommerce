@@ -1,0 +1,27 @@
+{
+  String themePath=null;
+  Theme theme=BroadleafRequestContext.getBroadleafRequestContext().getTheme();
+  if (theme != null && theme.getPath() != null) {
+    themePath=theme.getPath();
+  }
+  checkInitialized();
+  final String templateName=templateProcessingParameters.getTemplateName();
+  Validate.notNull(templateName,"Template name cannot be null");
+  String unaliasedName=this.getTemplateAliases().get(templateName);
+  if (unaliasedName == null) {
+    unaliasedName=templateName;
+  }
+  final StringBuilder resourceName=new StringBuilder();
+  String prefix=this.getPrefix();
+  if (prefix != null && !prefix.trim().equals("")) {
+    if (themePath != null) {
+      resourceName.append(prefix).append(themePath);
+    }
+  }
+  resourceName.append(unaliasedName);
+  String suffix=this.getSuffix();
+  if (suffix != null && !suffix.trim().equals("")) {
+    resourceName.append(suffix);
+  }
+  return resourceName.toString();
+}

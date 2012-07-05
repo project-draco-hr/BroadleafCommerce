@@ -25,10 +25,17 @@
   }
   display.setVisible(shouldLoad);
   if (shouldLoad) {
-    String id=abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
+    String id=getRelationshipValue(associatedRecord,abstractDynamicDataSource);
     ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
-      public void execute(      DSResponse response,      Object rawData,      DSRequest request){
-        setStartState();
+      @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        String locked=associatedRecord.getAttribute("__locked");
+        if (!(locked != null && locked.equals("true"))) {
+          setReadOnly(false);
+          setStartState();
+        }
+ else {
+          setReadOnly(true);
+        }
         if (cb != null) {
           cb.execute(response,rawData,request);
         }
