@@ -13,7 +13,7 @@
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,joinStructure.getJoinStructureEntityClassname());
     List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(joinStructure.getJoinStructureEntityClassname()));
     payload=getRecords(mergedPropertiesTarget,records,mergedProperties,joinStructure.getTargetObjectPath());
-    totalRecords=getTotalRecords(joinStructure.getJoinStructureEntityClassname(),cto,ctoConverter);
+    totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
   }
  catch (  Exception e) {
     LOG.error("Problem fetching results for " + joinStructure.getJoinStructureEntityClassname(),e);

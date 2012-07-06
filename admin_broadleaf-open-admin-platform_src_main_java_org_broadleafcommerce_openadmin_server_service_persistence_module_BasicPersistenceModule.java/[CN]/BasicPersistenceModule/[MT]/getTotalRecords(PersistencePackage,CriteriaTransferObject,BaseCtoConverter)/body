@@ -1,6 +1,6 @@
 {
-  PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),ceilingEntityFullyQualifiedClassname);
-  Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
+  PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),persistencePackage.getCeilingEntityFullyQualifiedClassname());
+  Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
   boolean isArchivable=false;
   for (  Class<?> entity : entities) {
     if (Status.class.isAssignableFrom(entity)) {
@@ -8,7 +8,7 @@
       break;
     }
   }
-  if (isArchivable) {
+  if (isArchivable && !persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
     SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
       public Criterion getCriterion(      String targetPropertyName,      Object[] filterObjectValues,      Object[] directValues){
         return Restrictions.or(Restrictions.eq(targetPropertyName,'N'),Restrictions.isNull(targetPropertyName));
@@ -18,5 +18,5 @@
     FilterCriterion filterCriterion=new FilterCriterion(AssociationPath.ROOT,"archiveStatus.archived",criterionProvider);
     ((NestedPropertyCriteria)countCriteria).add(filterCriterion);
   }
-  return persistenceManager.getDynamicEntityDao().count(countCriteria,Class.forName(StringUtils.isEmpty(fetchTypeFullyQualifiedClassname) ? ceilingEntityFullyQualifiedClassname : fetchTypeFullyQualifiedClassname));
+  return persistenceManager.getDynamicEntityDao().count(countCriteria,Class.forName(StringUtils.isEmpty(persistencePackage.getFetchTypeFullyQualifiedClassname()) ? persistencePackage.getCeilingEntityFullyQualifiedClassname() : persistencePackage.getFetchTypeFullyQualifiedClassname()));
 }
