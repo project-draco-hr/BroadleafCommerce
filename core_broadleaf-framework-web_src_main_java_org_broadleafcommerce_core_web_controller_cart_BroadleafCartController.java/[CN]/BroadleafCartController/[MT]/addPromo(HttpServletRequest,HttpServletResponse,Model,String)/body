@@ -1,5 +1,5 @@
 {
-  Order cart=CartState.getCart(request);
+  Order cart=CartState.getCart();
   Boolean promoAdded=false;
   String exception="";
   OfferCode offerCode=offerService.lookupOfferCodeByCode(customerOffer);
@@ -16,7 +16,7 @@
  else {
     exception="Invalid Code";
   }
-  CartState.setCart(request,cart);
+  CartState.setCart(cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
     extraData.put("promoAdded",promoAdded);
