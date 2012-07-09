@@ -11,6 +11,12 @@
   if (getDefaultItemId() != null) {
     loadInitialItem();
   }
+  if (display.getListDisplay().getGrid().getDataSource().getField("archiveStatus.archived") != null) {
+    display.getListDisplay().getShowArchivedButton().setVisibility(Visibility.VISIBLE);
+  }
+ else {
+    display.getListDisplay().getShowArchivedButton().setVisibility(Visibility.HIDDEN);
+  }
   if (BLCMain.MODAL_PROGRESS.isActive()) {
     BLCMain.MODAL_PROGRESS.stopProgress();
   }

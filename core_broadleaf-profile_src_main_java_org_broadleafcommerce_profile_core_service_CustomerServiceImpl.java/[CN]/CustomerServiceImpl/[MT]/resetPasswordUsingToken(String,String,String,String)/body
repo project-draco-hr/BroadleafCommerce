@@ -6,21 +6,13 @@
   }
   checkCustomer(customer,response);
   checkPassword(password,confirmPassword,response);
-  if (token == null || "".equals(token)) {
-    response.addErrorCode("invalidToken");
-  }
-  CustomerForgotPasswordSecurityToken fpst=null;
+  CustomerForgotPasswordSecurityToken fpst=checkPasswordResetToken(token,response);
   if (!response.getHasErrors()) {
-    token=token.toLowerCase();
-    fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(token,null));
-    if (fpst == null) {
+    if (!customer.getId().equals(fpst.getCustomerId())) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Password reset attempt tried with mismatched customer and token " + customer.getId() + ", "+ token);
+      }
       response.addErrorCode("invalidToken");
-    }
- else     if (fpst.isTokenUsedFlag()) {
-      response.addErrorCode("tokenUsed");
-    }
- else     if (isTokenExpired(fpst)) {
-      response.addErrorCode("tokenExpired");
     }
   }
   if (!response.getHasErrors()) {
