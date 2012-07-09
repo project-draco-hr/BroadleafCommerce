@@ -1,0 +1,7 @@
+{
+  UserDetails principal=userDetailsService.loadUserByUsername(username);
+  UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(principal,clearTextPassword,principal.getAuthorities());
+  Authentication authentication=authenticationManager.authenticate(token);
+  SecurityContextHolder.getContext().setAuthentication(authentication);
+  return authentication;
+}
