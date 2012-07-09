@@ -14,18 +14,10 @@
         message.setCc(emailUser.getCCAddresses());
       }
       String messageBody=info.getMessageBody();
-      String text;
       if (messageBody == null) {
-        HashMap copy=(HashMap)props.clone();
-        if (additionalConfigItems != null) {
-          copy.putAll(additionalConfigItems);
-        }
-        text=VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,info.getEmailTemplate(),copy);
+        messageBody=buildMessageBody(info,props);
       }
- else {
-        text=messageBody;
-      }
-      message.setText(text,true);
+      message.setText(messageBody,true);
       for (      Attachment attachment : info.getAttachments()) {
         ByteArrayDataSource dataSource=new ByteArrayDataSource(attachment.getData(),attachment.getMimeType());
         message.addAttachment(attachment.getFilename(),dataSource);
@@ -33,5 +25,5 @@
     }
   }
 ;
-  this.mailSender.send(preparator);
+  return preparator;
 }
