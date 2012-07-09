@@ -78,4 +78,16 @@
     }
   }
 );
+  showArchivedButtonHandlerRegistration=display.getListDisplay().getShowArchivedButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        ((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).setShowArchived(!((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).isShowArchived());
+        String title=((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).isShowArchived() ? BLCMain.getMessageManager().getString("hideArchivedRecords") : BLCMain.getMessageManager().getString("showArchivedRecords");
+        display.getListDisplay().getShowArchivedButton().setTitle(title);
+        ((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).getPersistencePerspective().setShowArchivedFields(((AbstractDynamicDataSource)display.getListDisplay().getGrid().getDataSource()).isShowArchived());
+        display.getListDisplay().getGrid().invalidateCache();
+      }
+    }
+  }
+);
 }
