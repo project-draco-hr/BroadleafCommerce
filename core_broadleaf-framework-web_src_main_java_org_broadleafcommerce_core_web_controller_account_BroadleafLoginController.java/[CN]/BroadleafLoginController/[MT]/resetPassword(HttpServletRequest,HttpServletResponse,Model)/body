@@ -1,4 +1,13 @@
 {
-  model.addAttribute("resetPasswordForm",initResetPasswordForm(request));
-  return ajaxRender(getForgotUsernameView(),request,model);
+  ResetPasswordForm resetPasswordForm=initResetPasswordForm(request);
+  model.addAttribute("resetPasswordForm",resetPasswordForm);
+  GenericResponse errorResponse=customerService.checkPasswordResetToken(resetPasswordForm.getToken());
+  if (errorResponse.getHasErrors()) {
+    String errorCode=errorResponse.getErrorCodesList().get(0);
+    request.setAttribute("errorCode",errorCode);
+    return ajaxRender(getResetPasswordErrorView(),request,model);
+  }
+ else {
+    return ajaxRender(getResetPasswordView(),request,model);
+  }
 }

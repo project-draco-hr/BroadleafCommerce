@@ -10,6 +10,9 @@
   customerRole.setRole(role);
   customerRole.setCustomer(retCustomer);
   roleDao.addRoleToCustomer(customerRole);
+  HashMap<String,Object> vars=new HashMap<String,Object>();
+  vars.put("customer",retCustomer);
+  emailService.sendTemplateEmail(customer.getEmailAddress(),getRegistrationEmailInfo(),vars);
   notifyPostRegisterListeners(retCustomer);
   return retCustomer;
 }

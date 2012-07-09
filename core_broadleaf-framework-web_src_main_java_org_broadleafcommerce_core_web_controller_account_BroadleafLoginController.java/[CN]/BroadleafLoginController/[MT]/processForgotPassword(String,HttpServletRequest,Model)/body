@@ -1,5 +1,5 @@
 {
-  GenericResponse errorResponse=customerService.sendResetPasswordNotification(username,getResetPasswordUrl(request));
+  GenericResponse errorResponse=customerService.sendForgotPasswordNotification(username,getResetPasswordUrl(request));
   if (errorResponse.getHasErrors()) {
     String errorCode=errorResponse.getErrorCodesList().get(0);
     model.addAttribute("errorCode",errorCode);
@@ -7,7 +7,6 @@
   }
  else {
     request.getSession(true).setAttribute("forgot_password_username",username);
-    String url=buildRedirectToResetPasswordWithMessage("passwordTokenSent");
-    return ajaxRender(url,request,model);
+    return ajaxRender(getForgotPasswordSuccessView(),request,model);
   }
 }
