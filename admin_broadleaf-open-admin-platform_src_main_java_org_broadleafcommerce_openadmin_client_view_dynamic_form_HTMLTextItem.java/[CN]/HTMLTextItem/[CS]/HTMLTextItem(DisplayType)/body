@@ -1,0 +1,32 @@
+{
+  super();
+  textArea=new RichTextArea();
+  toolBar=new RichTextToolbar(getTextArea(),displayType);
+  VerticalPanel vp=new VerticalPanel();
+  if (displayType == displayType.DETAILED) {
+    getTextArea().setWidth("100%");
+    getTextArea().setHeight("100%");
+    toolBar.setWidth("100%");
+    toolBar.setHeight("100%");
+  }
+ else {
+    getTextArea().setWidth("100%");
+    getTextArea().setHeight("60px");
+    toolBar.setWidth("100%");
+    toolBar.setHeight("40px");
+  }
+  vp.setBorderWidth(2);
+  vp.add(getToolBar());
+  vp.add(getTextArea());
+  WidgetCanvas wc=new WidgetCanvas(vp);
+  wc.setCanDragResize(true);
+  setCanvas(wc);
+  final HTMLTextItem item=this;
+  Command saveCommand=new Command(){
+    @Override public void execute(){
+      item.storeValue(getHTMLValue());
+    }
+  }
+;
+  toolBar.setSaveCommand(saveCommand);
+}

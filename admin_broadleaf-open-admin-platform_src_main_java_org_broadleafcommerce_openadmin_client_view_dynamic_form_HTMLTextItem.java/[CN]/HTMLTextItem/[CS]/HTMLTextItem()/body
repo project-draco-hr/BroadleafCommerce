@@ -1,21 +1,3 @@
 {
-  super();
-  textArea=new RichTextArea();
-  toolBar=new RichTextToolbar(getTextArea());
-  VerticalPanel vp=new VerticalPanel();
-  getTextArea().setWidth("100%");
-  getTextArea().setHeight("100%");
-  vp.add(getToolBar());
-  vp.add(getTextArea());
-  WidgetCanvas wc=new WidgetCanvas(vp);
-  wc.setCanDragResize(true);
-  setCanvas(wc);
-  final HTMLTextItem item=this;
-  Command saveCommand=new Command(){
-    @Override public void execute(){
-      item.storeValue(getHTMLValue());
-    }
-  }
-;
-  toolBar.setSaveCommand(saveCommand);
+  this(DisplayType.DETAILED);
 }
