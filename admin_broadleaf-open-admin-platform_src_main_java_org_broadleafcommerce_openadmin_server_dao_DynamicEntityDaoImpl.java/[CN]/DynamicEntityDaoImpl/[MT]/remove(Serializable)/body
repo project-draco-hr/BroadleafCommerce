@@ -1,4 +1,11 @@
 {
-  standardEntityManager.remove(entity);
-  standardEntityManager.flush();
+  boolean isArchivable=Status.class.isAssignableFrom(entity.getClass());
+  if (isArchivable) {
+    ((Status)entity).setArchived('Y');
+    merge(entity);
+  }
+ else {
+    standardEntityManager.remove(entity);
+    standardEntityManager.flush();
+  }
 }

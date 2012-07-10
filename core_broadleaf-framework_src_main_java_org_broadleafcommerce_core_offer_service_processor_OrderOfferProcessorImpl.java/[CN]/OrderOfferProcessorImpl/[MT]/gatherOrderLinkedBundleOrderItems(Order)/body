@@ -17,6 +17,11 @@
     orderItemService.saveOrderItem(bundleOrderItem);
   }
   for (  BundleOrderItem orderItem : bundlesToRemove) {
-    cartService.removeItemFromOrder(order,orderItem,false);
+    try {
+      orderService.removeItem(order.getId(),orderItem.getId(),false);
+    }
+ catch (    RemoveFromCartException e) {
+      throw new PricingException("Item could not be removed",e);
+    }
   }
 }

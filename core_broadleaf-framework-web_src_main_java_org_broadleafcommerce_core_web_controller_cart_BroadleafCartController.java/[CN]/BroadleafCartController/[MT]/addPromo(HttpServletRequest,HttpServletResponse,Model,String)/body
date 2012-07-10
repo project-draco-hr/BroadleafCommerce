@@ -1,13 +1,13 @@
 {
-  Order cart=CartState.getCart(request);
+  Order cart=CartState.getCart();
   Boolean promoAdded=false;
   String exception="";
   OfferCode offerCode=offerService.lookupOfferCodeByCode(customerOffer);
   if (offerCode != null) {
     try {
-      cartService.addOfferCode(cart,offerCode,false);
+      orderService.addOfferCode(cart,offerCode,false);
       promoAdded=true;
-      cart=cartService.save(cart,true);
+      cart=orderService.save(cart,true);
     }
  catch (    OfferMaxUseExceededException e) {
       exception="Use Limit Exceeded";
@@ -16,7 +16,7 @@
  else {
     exception="Invalid Code";
   }
-  CartState.setCart(request,cart);
+  CartState.setCart(cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
     extraData.put("promoAdded",promoAdded);

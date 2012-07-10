@@ -1,11 +1,11 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     OfferCode offerCode=offerService.lookupOfferCodeByCode(promoCode);
     if (cart != null && offerCode != null) {
       try {
-        cart=cartService.addOfferCode(cart,offerCode,priceOrder);
+        cart=orderService.addOfferCode(cart,offerCode,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(cart,request);
         return wrapper;

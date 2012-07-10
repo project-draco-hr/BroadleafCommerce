@@ -21,8 +21,14 @@
   }
   Site site=siteResolver.resolveSite(request);
   Locale locale=localeResolver.resolveLocale(request);
-  SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   Theme theme=themeResolver.resolveTheme(request,site);
+  SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
+  if (currentSandbox != null) {
+    SandBoxContext previewSandBoxContext=new SandBoxContext();
+    previewSandBoxContext.setSandBoxId(currentSandbox.getId());
+    previewSandBoxContext.setPreviewMode(true);
+    SandBoxContext.setSandBoxContext(previewSandBoxContext);
+  }
   BroadleafRequestContext brc=new BroadleafRequestContext();
   brc.setSite(site);
   brc.setLocale(locale);
@@ -41,5 +47,10 @@
     LOG.trace("Using pre-existing ruleMap - added by non standard BLC process.");
   }
   ruleMap.put("locale",locale);
-  filterChain.doFilter(request,response);
+  try {
+    filterChain.doFilter(request,response);
+  }
+  finally {
+    SandBoxContext.setSandBoxContext(null);
+  }
 }

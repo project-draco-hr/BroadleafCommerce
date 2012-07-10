@@ -7,7 +7,7 @@
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
     Entity[] payload=helper.getRecords(originalProps,records);
-    int totalRecords=helper.getTotalRecords(ceilingEntityFullyQualifiedClassname,persistencePackage.getFetchTypeFullyQualifiedClassname(),cto,ctoConverter);
+    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
     for (int i=0; i < records.size(); i++) {
       Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];

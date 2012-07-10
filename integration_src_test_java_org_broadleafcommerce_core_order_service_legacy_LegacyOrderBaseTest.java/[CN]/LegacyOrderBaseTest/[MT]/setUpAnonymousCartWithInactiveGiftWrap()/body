@@ -1,0 +1,13 @@
+{
+  Customer customer=customerService.saveCustomer(createNamedCustomer());
+  Order order=cartService.createNewCartForCustomer(customer);
+  Product newProduct=addTestProduct("Plastic Crate","Crates");
+  Product newInactiveProduct=addTestProduct("Plastic Crate","Crates",false);
+  Product giftWrapProduct=addTestProduct("Gift Box","Gift Wraps");
+  Category newCategory=newProduct.getDefaultCategory();
+  List<OrderItem> addedItems=new ArrayList<OrderItem>();
+  addedItems.add(cartService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  addedItems.add(cartService.addSkuToOrder(order.getId(),newInactiveProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  cartService.addGiftWrapItemToOrder(order,createGiftWrapOrderItemRequest(giftWrapProduct,giftWrapProduct.getDefaultSku(),1,addedItems));
+  return order;
+}

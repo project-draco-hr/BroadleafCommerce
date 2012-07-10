@@ -1,0 +1,12 @@
+{
+  try {
+    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+    orderItemRequestDTO.setOrderItemId(orderItemId);
+    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    CartOperationContext context=(CartOperationContext)removeItemWorkflow.doActivities(cartOpRequest);
+    return context.getSeedData().getOrder();
+  }
+ catch (  WorkflowException e) {
+    throw new RemoveFromCartException("Could not remove from cart",e.getCause());
+  }
+}

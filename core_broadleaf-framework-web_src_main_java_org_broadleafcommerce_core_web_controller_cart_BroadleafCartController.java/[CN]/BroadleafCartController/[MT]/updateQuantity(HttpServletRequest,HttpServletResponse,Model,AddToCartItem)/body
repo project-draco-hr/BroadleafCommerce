@@ -1,8 +1,8 @@
 {
-  Order cart=CartState.getCart(request);
-  cartService.updateItemQuantity(cart,itemRequest);
-  cart=cartService.save(cart,true);
-  CartState.setCart(request,cart);
+  Order cart=CartState.getCart();
+  cart=orderService.updateItemQuantity(cart.getId(),itemRequest,false);
+  cart=orderService.save(cart,true);
+  CartState.setCart(cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
     extraData.put("productId",itemRequest.getProductId());

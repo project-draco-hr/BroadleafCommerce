@@ -1,8 +1,8 @@
 {
   PaymentInfoService paymentInfoService=(PaymentInfoService)context.getBean("blPaymentInfoService");
   PaymentInfo paymentInfo=paymentInfoService.create();
-  CartService cartService=(CartService)context.getBean("blCartService");
-  Order order=cartService.findOrderById(this.orderId);
+  OrderService orderService=(OrderService)context.getBean("blOrderService");
+  Order order=orderService.findOrderById(this.orderId);
   paymentInfo.setOrder(order);
   paymentInfo.setType(PaymentInfoType.getInstance(this.type));
   if (this.address != null) {

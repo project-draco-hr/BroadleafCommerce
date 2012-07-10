@@ -1,10 +1,10 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       try {
-        cart=cartService.removeAllOfferCodes(cart,priceOrder);
+        cart=orderService.removeAllOfferCodes(cart,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(cart,request);
         return wrapper;

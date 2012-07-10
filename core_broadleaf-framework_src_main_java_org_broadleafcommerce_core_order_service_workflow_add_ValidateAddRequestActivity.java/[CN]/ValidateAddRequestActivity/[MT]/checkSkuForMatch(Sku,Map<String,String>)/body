@@ -1,0 +1,26 @@
+{
+  if (attributeValues == null || attributeValues.size() == 0) {
+    return false;
+  }
+  for (  String attributeName : attributeValues.keySet()) {
+    boolean optionValueMatchFound=false;
+    for (    ProductOptionValue productOptionValue : sku.getProductOptionValues()) {
+      if (productOptionValue.getProductOption().getAttributeName().equals(attributeName)) {
+        if (productOptionValue.getAttributeValue().equals(attributeValues.get(attributeName))) {
+          optionValueMatchFound=true;
+          break;
+        }
+ else {
+          return false;
+        }
+      }
+    }
+    if (optionValueMatchFound) {
+      continue;
+    }
+ else {
+      return false;
+    }
+  }
+  return true;
+}

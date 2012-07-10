@@ -1,7 +1,7 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       FulfillmentGroupItemRequest fulfillmentGroupItemRequest=wrapper.unwrap(request,context);
       if (fulfillmentGroupItemRequest.getOrderItem() != null) {
@@ -12,14 +12,16 @@
             fulfillmentGroup=fg;
           }
         }
+        fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
         for (        OrderItem oi : cart.getOrderItems()) {
           if (oi.getId().equals(fulfillmentGroupItemRequest.getOrderItem().getId())) {
             orderItem=oi;
           }
         }
+        fulfillmentGroupItemRequest.setOrderItem(orderItem);
         if (fulfillmentGroup != null && orderItem != null) {
           try {
-            FulfillmentGroup fg=cartService.addItemToFulfillmentGroup(orderItem,fulfillmentGroup,fulfillmentGroupItemRequest.getQuantity(),priceOrder);
+            FulfillmentGroup fg=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,priceOrder);
             FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
             fulfillmentGroupWrapper.wrap(fg,request);
             return fulfillmentGroupWrapper;

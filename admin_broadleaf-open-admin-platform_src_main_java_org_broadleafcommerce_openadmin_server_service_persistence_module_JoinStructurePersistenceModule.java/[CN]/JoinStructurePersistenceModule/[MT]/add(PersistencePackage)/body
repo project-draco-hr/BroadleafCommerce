@@ -49,7 +49,7 @@
         FilterAndSortCriteria sortCriteria=cto.get(joinStructure.getSortField());
         sortCriteria.setSortAscending(joinStructure.getSortAscending());
         BaseCtoConverter ctoConverter=getJoinStructureCtoConverter(persistencePerspective,cto,mergedProperties,joinStructure);
-        int totalRecords=getTotalRecords(joinStructure.getJoinStructureEntityClassname(),cto,ctoConverter);
+        int totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
         fieldManager.setFieldValue(instance,joinStructure.getSortField(),Long.valueOf(totalRecords + 1));
       }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);

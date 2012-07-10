@@ -1,15 +1,25 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null && skuId != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
       try {
-        OrderItem orderItem=cartService.addSkuToOrder(cart.getId(),skuId,productId,categoryId,quantity,priceOrder);
+        OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+        orderItemRequestDTO.setCategoryId(categoryId);
+        orderItemRequestDTO.setProductId(productId);
+        orderItemRequestDTO.setSkuId(skuId);
+        orderItemRequestDTO.setCategoryId(categoryId);
+        orderItemRequestDTO.setQuantity(quantity);
+        Order order=orderService.addItem(cart.getId(),orderItemRequestDTO,priceOrder);
+        order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-        wrapper.wrap(orderItem.getOrder(),request);
+        wrapper.wrap(order,request);
         return wrapper;
       }
  catch (      PricingException e) {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+catch (      AddToCartException e) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
       }
     }

@@ -1,0 +1,23 @@
+{
+  Customer customer=customerService.saveCustomer(createNamedCustomer());
+  Order order=cartService.createNewCartForCustomer(customer);
+  Product newProduct=addTestProduct("Plastic Bowl","Bowls");
+  Product newActiveProduct=addTestProduct("Plastic Bowl","Bowls");
+  Category newCategory=newProduct.getDefaultCategory();
+  List<OrderItem> addedItems=new ArrayList<OrderItem>();
+  addedItems.add(cartService.addSkuToOrder(order.getId(),newProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  addedItems.add(cartService.addSkuToOrder(order.getId(),newActiveProduct.getDefaultSku().getId(),newProduct.getId(),newCategory.getId(),2));
+  BundleOrderItem newBundle=(BundleOrderItem)cartService.addBundleItemToOrder(order,createBundleOrderItemRequestWithGiftWrap());
+  GiftWrapOrderItem giftItem=null;
+  for (  DiscreteOrderItem addedItem : newBundle.getDiscreteOrderItems()) {
+    if (addedItem instanceof GiftWrapOrderItem) {
+      giftItem=(GiftWrapOrderItem)addedItem;
+    }
+  }
+  for (  OrderItem addedItem : addedItems) {
+    addedItem.setGiftWrapOrderItem(giftItem);
+  }
+  giftItem.getWrappedItems().addAll(addedItems);
+  order=cartService.save(order,false);
+  return order;
+}

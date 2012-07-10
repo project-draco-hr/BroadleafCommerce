@@ -15,6 +15,13 @@
   removeButton.setDisabled(true);
   toolBar.addButton(removeButton);
   toolBar.addFill();
+  showArchivedButton=new ToolStripButton();
+  String archivedButtonTitle=((AbstractDynamicDataSource)dataSource).isShowArchived() ? BLCMain.getMessageManager().getString("hideArchivedRecords") : BLCMain.getMessageManager().getString("showArchivedRecords");
+  showArchivedButton.setTitle(archivedButtonTitle);
+  showArchivedButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/headerIcons/find.png");
+  showArchivedButton.setVisibility(Visibility.HIDDEN);
+  toolBar.addButton(showArchivedButton);
+  toolBar.addSpacer(6);
   addMember(toolBar);
   grid=new ListGrid();
   grid.setCanReorderRecords(canReorder);
@@ -47,8 +54,8 @@
  else       if (record != null && record.getAttribute("_hilite") != null && record.getAttribute("_hilite").equals("listGridDirtyPropertyHilite")) {
         return BLCMain.getMessageManager().getString("dirtyMessage");
       }
- else       if (record != null && record.getAttribute("_hilite") != null && record.getAttribute("_hilite").equals("listGridActivePropertyHilite")) {
-        return BLCMain.getMessageManager().getString("activeMessage");
+ else       if (record != null && record.getAttribute("_hilite") != null && record.getAttribute("_hilite").equals("listGridInActivePropertyHilite")) {
+        return BLCMain.getMessageManager().getString("inActiveMessage");
       }
  else       if (record != null && record.getAttribute("_hilite") != null && record.getAttribute("_hilite").equals("listGridDeletedPropertyHilite")) {
         return BLCMain.getMessageManager().getString("deletedMessage");

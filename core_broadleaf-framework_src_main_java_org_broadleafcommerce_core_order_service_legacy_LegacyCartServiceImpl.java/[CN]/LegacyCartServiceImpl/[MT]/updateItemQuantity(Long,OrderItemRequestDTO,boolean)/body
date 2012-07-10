@@ -1,0 +1,13 @@
+{
+  try {
+    Order order=findOrderById(orderId);
+    updateItemQuantity(order,orderItemRequestDTO);
+    return order;
+  }
+ catch (  PricingException e) {
+    throw new UpdateCartException("Could not update cart",e);
+  }
+catch (  ItemNotFoundException e) {
+    throw new UpdateCartException("Could not update cart",e);
+  }
+}

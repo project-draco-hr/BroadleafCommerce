@@ -1,0 +1,23 @@
+{
+  Order order=request.getOrder();
+  OrderItem orderItem=request.getAddedOrderItem();
+  FulfillmentGroup fulfillmentGroup=null;
+  if (order.getFulfillmentGroups().size() == 0) {
+    fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
+    fulfillmentGroup.setOrder(order);
+    fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
+    order.getFulfillmentGroups().add(fulfillmentGroup);
+  }
+ else {
+    fulfillmentGroup=order.getFulfillmentGroups().get(0);
+  }
+  FulfillmentGroupItemRequest fulfillmentGroupItemRequest=new FulfillmentGroupItemRequest();
+  fulfillmentGroupItemRequest.setOrder(order);
+  fulfillmentGroupItemRequest.setOrderItem(orderItem);
+  fulfillmentGroupItemRequest.setQuantity(orderItem.getQuantity());
+  fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
+  fulfillmentGroup=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,request.isPriceOrder());
+  order=fulfillmentGroup.getOrder();
+  request.setOrder(order);
+  return request;
+}

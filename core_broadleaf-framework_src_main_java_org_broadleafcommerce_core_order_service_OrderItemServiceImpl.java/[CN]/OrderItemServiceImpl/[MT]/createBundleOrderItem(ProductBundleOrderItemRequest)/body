@@ -1,0 +1,34 @@
+{
+  ProductBundle productBundle=itemRequest.getProductBundle();
+  BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
+  bundleOrderItem.setQuantity(itemRequest.getQuantity());
+  bundleOrderItem.setCategory(itemRequest.getCategory());
+  bundleOrderItem.setSku(itemRequest.getSku());
+  bundleOrderItem.setName(itemRequest.getName());
+  bundleOrderItem.setProductBundle(productBundle);
+  for (  SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
+    Product bundleProduct=skuBundleItem.getBundle();
+    Sku bundleSku=skuBundleItem.getSku();
+    Category bundleCategory=null;
+    if (itemRequest.getCategory() != null) {
+      bundleCategory=itemRequest.getCategory();
+    }
+    if (bundleCategory == null && bundleProduct != null) {
+      bundleCategory=bundleProduct.getDefaultCategory();
+    }
+    DiscreteOrderItemRequest bundleItemRequest=new DiscreteOrderItemRequest();
+    bundleItemRequest.setCategory(bundleCategory);
+    bundleItemRequest.setProduct(bundleProduct);
+    bundleItemRequest.setQuantity(skuBundleItem.getQuantity());
+    bundleItemRequest.setSku(bundleSku);
+    bundleItemRequest.setItemAttributes(itemRequest.getItemAttributes());
+    DiscreteOrderItem bundleDiscreteItem=createDiscreteOrderItem(bundleItemRequest);
+    bundleDiscreteItem.setSkuBundleItem(skuBundleItem);
+    bundleDiscreteItem.setBundleOrderItem(bundleOrderItem);
+    bundleOrderItem.getDiscreteOrderItems().add(bundleDiscreteItem);
+  }
+  bundleOrderItem.updatePrices();
+  bundleOrderItem.assignFinalPrice();
+  bundleOrderItem=(BundleOrderItem)saveOrderItem(bundleOrderItem);
+  return bundleOrderItem;
+}

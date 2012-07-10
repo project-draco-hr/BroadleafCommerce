@@ -1,19 +1,33 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null) {
-      OrderItem item=(OrderItem)CollectionUtils.find(cart.getOrderItems(),new BeanPropertyValueEqualsPredicate("id",itemId));
-      item.setQuantity(quantity);
       try {
-        cartService.updateItemQuantity(cart,item,priceOrder);
-        Order order=cartService.save(cart,priceOrder);
+        OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+        orderItemRequestDTO.setOrderItemId(itemId);
+        orderItemRequestDTO.setQuantity(quantity);
+        Order order=orderService.updateItemQuantity(cart.getId(),orderItemRequestDTO,priceOrder);
+        order=orderService.save(order,priceOrder);
         OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
         wrapper.wrap(order,request);
         return wrapper;
       }
- catch (      ItemNotFoundException e) {
-        throw new WebApplicationException(Response.Status.NOT_FOUND);
+ catch (      UpdateCartException e) {
+        if (e.getCause() instanceof ItemNotFoundException) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+ else {
+          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+      }
+catch (      RemoveFromCartException e) {
+        if (e.getCause() instanceof ItemNotFoundException) {
+          throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+ else {
+          throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
       }
 catch (      PricingException pe) {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);

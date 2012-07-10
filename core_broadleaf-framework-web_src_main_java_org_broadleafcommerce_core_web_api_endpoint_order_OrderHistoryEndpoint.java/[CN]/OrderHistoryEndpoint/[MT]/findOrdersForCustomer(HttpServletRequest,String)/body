@@ -1,8 +1,8 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   OrderStatus status=OrderStatus.getInstance(orderStatus);
   if (customer != null && status != null) {
-    List<Order> orders=cartService.findOrdersForCustomer(customer,status);
+    List<Order> orders=orderService.findOrdersForCustomer(customer,status);
     if (orders != null && !orders.isEmpty()) {
       List<OrderWrapper> wrappers=new ArrayList<OrderWrapper>();
       for (      Order order : orders) {

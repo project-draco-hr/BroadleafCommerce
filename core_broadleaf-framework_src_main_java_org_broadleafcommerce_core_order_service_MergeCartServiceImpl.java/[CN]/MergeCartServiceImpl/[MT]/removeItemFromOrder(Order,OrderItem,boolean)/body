@@ -1,0 +1,8 @@
+{
+  fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,item);
+  OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(item));
+  itemFromOrder.setOrder(null);
+  orderItemService.delete(itemFromOrder);
+  order=orderService.save(order,priceOrder);
+  return order;
+}

@@ -1,7 +1,7 @@
 {
-  Customer customer=customerState.getCustomer(request);
+  Customer customer=CustomerState.getCustomer(request);
   if (customer != null) {
-    Order cart=cartService.findCartForCustomer(customer);
+    Order cart=orderService.findCartForCustomer(customer);
     if (cart != null && cart.getFulfillmentGroups() != null && !cart.getFulfillmentGroups().isEmpty()) {
       List<FulfillmentGroup> fulfillmentGroups=cart.getFulfillmentGroups();
       List<FulfillmentGroupWrapper> fulfillmentGroupWrappers=new ArrayList<FulfillmentGroupWrapper>();

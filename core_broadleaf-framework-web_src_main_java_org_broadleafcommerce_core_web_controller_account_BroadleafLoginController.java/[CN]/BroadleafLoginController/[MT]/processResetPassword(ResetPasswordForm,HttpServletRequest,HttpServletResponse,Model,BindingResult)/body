@@ -1,0 +1,18 @@
+{
+  GenericResponse errorResponse=new GenericResponse();
+  resetPasswordValidator.validate(resetPasswordForm.getUsername(),resetPasswordForm.getPassword(),resetPasswordForm.getPasswordConfirm(),errors);
+  if (errorResponse.getHasErrors()) {
+    return ajaxRender(getResetPasswordView(),request,model);
+  }
+  errorResponse=customerService.resetPasswordUsingToken(resetPasswordForm.getUsername(),resetPasswordForm.getToken(),resetPasswordForm.getPassword(),resetPasswordForm.getPasswordConfirm());
+  if (errorResponse.getHasErrors()) {
+    String errorCode=errorResponse.getErrorCodesList().get(0);
+    request.setAttribute("errorCode",errorCode);
+    return ajaxRender(getResetPasswordView(),request,model);
+  }
+ else {
+    Authentication auth=loginService.loginCustomer(resetPasswordForm.getUsername(),resetPasswordForm.getPassword());
+    mergeCartProcessor.execute(request,response,auth);
+    return ajaxRender(getResetPasswordSuccessView(),request,model);
+  }
+}

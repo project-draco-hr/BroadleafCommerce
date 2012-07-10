@@ -1,12 +1,14 @@
 {
   offerDaoMock=EasyMock.createMock(OfferDao.class);
-  cartServiceMock=EasyMock.createMock(CartService.class);
+  orderServiceMock=EasyMock.createMock(OrderService.class);
   orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
   fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
+  fgServiceMock=EasyMock.createMock(FulfillmentGroupService.class);
   itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
-  itemProcessor.setCartService(cartServiceMock);
+  itemProcessor.setOrderService(orderServiceMock);
   itemProcessor.setFulfillmentGroupItemDao(fgItemDaoMock);
   itemProcessor.setOrderItemService(orderItemServiceMock);
   itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  itemProcessor.setFulfillmentGroupService(fgServiceMock);
 }

@@ -9,7 +9,12 @@
     }
   }
   for (  BundleOrderItem bundleOrderItem : bundlesToRemove) {
-    order=cartService.removeItemFromOrder(order,bundleOrderItem,false);
+    try {
+      order=orderService.removeItem(order.getId(),bundleOrderItem.getId(),false);
+    }
+ catch (    RemoveFromCartException e) {
+      throw new PricingException("Could not remove item",e);
+    }
   }
   return order;
 }

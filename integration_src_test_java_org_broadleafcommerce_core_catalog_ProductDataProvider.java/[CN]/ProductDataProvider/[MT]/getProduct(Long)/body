@@ -1,8 +1,11 @@
 {
+  Calendar activeStartCal=Calendar.getInstance();
+  activeStartCal.add(Calendar.DAY_OF_YEAR,-2);
   Product product=new ProductImpl();
   Sku defaultSku=new SkuImpl();
   defaultSku.setRetailPrice(new Money(BigDecimal.valueOf(15.0)));
   defaultSku.setSalePrice(new Money(BigDecimal.valueOf(10.0)));
+  defaultSku.setActiveStartDate(activeStartCal.getTime());
   product.setDefaultSku(defaultSku);
   if (id == null) {
     defaultSku.setName("productNameTest");

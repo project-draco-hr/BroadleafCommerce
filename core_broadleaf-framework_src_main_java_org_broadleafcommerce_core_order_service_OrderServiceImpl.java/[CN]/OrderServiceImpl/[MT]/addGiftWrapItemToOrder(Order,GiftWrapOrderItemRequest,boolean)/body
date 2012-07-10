@@ -1,4 +1,8 @@
 {
   GiftWrapOrderItem item=orderItemService.createGiftWrapOrderItem(itemRequest);
-  return addOrderItemToOrder(order,item,priceOrder);
+  item.setOrder(order);
+  item=(GiftWrapOrderItem)orderItemService.saveOrderItem(item);
+  order.getOrderItems().add(item);
+  order=save(order,priceOrder);
+  return item;
 }

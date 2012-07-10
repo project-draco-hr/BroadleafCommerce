@@ -1,9 +1,9 @@
 {
-  Order cart=CartState.getCart(request);
+  Order cart=CartState.getCart();
   OfferCode offerCode=offerService.findOfferCodeById(offerCodeId);
-  cartService.removeOfferCode(cart,offerCode,false);
-  cart=cartService.save(cart,true);
-  CartState.setCart(request,cart);
+  orderService.removeOfferCode(cart,offerCode,false);
+  cart=orderService.save(cart,true);
+  CartState.setCart(cart);
   if (isAjaxRequest(request)) {
     return "ajax/cart";
   }

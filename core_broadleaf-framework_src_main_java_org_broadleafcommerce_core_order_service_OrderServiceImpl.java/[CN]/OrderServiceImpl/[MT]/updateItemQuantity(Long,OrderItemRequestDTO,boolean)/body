@@ -1,0 +1,13 @@
+{
+  if (orderItemRequestDTO.getQuantity() == 0) {
+    return removeItem(orderId,orderItemRequestDTO.getOrderItemId(),priceOrder);
+  }
+  try {
+    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    CartOperationContext context=(CartOperationContext)updateItemWorkflow.doActivities(cartOpRequest);
+    return context.getSeedData().getOrder();
+  }
+ catch (  WorkflowException e) {
+    throw new UpdateCartException("Could not update cart quantity",e.getCause());
+  }
+}
