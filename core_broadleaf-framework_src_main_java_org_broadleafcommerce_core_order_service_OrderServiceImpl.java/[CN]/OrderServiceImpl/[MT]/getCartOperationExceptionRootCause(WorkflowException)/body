@@ -1,0 +1,14 @@
+{
+  Throwable cause=e.getCause();
+  if (cause == null) {
+    return e;
+  }
+  Throwable currentCause=cause;
+  while (currentCause.getCause() != null) {
+    currentCause=currentCause.getCause();
+    if (currentCause instanceof WorkflowException) {
+      cause=currentCause.getCause();
+    }
+  }
+  return cause;
+}
