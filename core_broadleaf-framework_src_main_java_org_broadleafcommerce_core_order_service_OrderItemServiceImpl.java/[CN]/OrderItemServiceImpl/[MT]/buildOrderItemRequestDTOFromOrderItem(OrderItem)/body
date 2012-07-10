@@ -1,0 +1,10 @@
+{
+  OrderItemRequestDTO orderItemRequest=new OrderItemRequestDTO().setQuantity(item.getQuantity()).setSkuId(((DiscreteOrderItem)item).getSku().getId());
+  if (item.getCategory() != null) {
+    orderItemRequest.setCategoryId(item.getCategory().getId());
+  }
+  if (((DiscreteOrderItem)item).getProduct() != null) {
+    orderItemRequest.setProductId(((DiscreteOrderItem)item).getProduct().getId());
+  }
+  return orderItemRequest;
+}

@@ -1,0 +1,18 @@
+{
+  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer());
+  if (cartOrder == null) {
+    cartOrder=createNewCartForCustomer(namedOrder.getCustomer());
+  }
+  List<OrderItem> items=new ArrayList<OrderItem>(namedOrder.getOrderItems());
+  for (  OrderItem item : items) {
+    if (moveNamedOrderItems) {
+      removeItem(namedOrder.getId(),item.getId(),false);
+    }
+    OrderItemRequestDTO orderItemRequest=orderItemService.buildOrderItemRequestDTOFromOrderItem(item);
+    cartOrder=addItem(cartOrder.getId(),orderItemRequest,priceOrder);
+  }
+  if (deleteEmptyNamedOrders) {
+    cancelOrder(namedOrder);
+  }
+  return cartOrder;
+}
