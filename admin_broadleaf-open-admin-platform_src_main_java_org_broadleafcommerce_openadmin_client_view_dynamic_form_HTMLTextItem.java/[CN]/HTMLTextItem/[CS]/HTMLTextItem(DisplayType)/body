@@ -1,6 +1,16 @@
 {
   super();
   textArea=new RichTextArea();
+  textArea.addInitializeHandler(new InitializeHandler(){
+    public void onInitialize(    InitializeEvent ie){
+      IFrameElement fe=(IFrameElement)textArea.getElement().cast();
+      if (fe == null)       return;
+      Style s=fe.getContentDocument().getBody().getStyle();
+      s.setProperty("fontFamily","helvetica, sans-serif");
+      s.setProperty("fontSize","12");
+    }
+  }
+);
   toolBar=new RichTextToolbar(getTextArea(),displayType);
   VerticalPanel vp=new VerticalPanel();
   if (displayType == displayType.DETAILED) {
