@@ -1,0 +1,14 @@
+{
+  List<OrderItem> cartOrderItems=new ArrayList<OrderItem>(cart.getOrderItems());
+  for (  OrderItem item : orderItems) {
+    ListIterator<OrderItem> it=cartOrderItems.listIterator();
+    while (it.hasNext()) {
+      OrderItem otherItem=it.next();
+      if (orderItemsSemanticallyEqual((DiscreteOrderItem)item,(DiscreteOrderItem)otherItem)) {
+        it.remove();
+        break;
+      }
+    }
+  }
+  return cartOrderItems.size() == 0;
+}
