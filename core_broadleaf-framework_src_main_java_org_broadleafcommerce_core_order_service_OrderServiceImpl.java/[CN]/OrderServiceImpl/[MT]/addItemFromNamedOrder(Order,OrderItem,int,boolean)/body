@@ -1,0 +1,22 @@
+{
+  if (quantity < 1 || quantity > item.getQuantity()) {
+    throw new IllegalArgumentException("Cannot move 0 or less quantity");
+  }
+ else   if (quantity == item.getQuantity()) {
+    return addItemFromNamedOrder(namedOrder,item,priceOrder);
+  }
+  Order cartOrder=orderDao.readCartForCustomer(namedOrder.getCustomer());
+  if (cartOrder == null) {
+    cartOrder=createNewCartForCustomer(namedOrder.getCustomer());
+  }
+  if (moveNamedOrderItems) {
+    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+    orderItemRequestDTO.setOrderItemId(item.getId());
+    orderItemRequestDTO.setQuantity(item.getQuantity() - quantity);
+    updateItemQuantity(namedOrder.getId(),orderItemRequestDTO,false);
+  }
+  OrderItemRequestDTO orderItemRequest=orderItemService.buildOrderItemRequestDTOFromOrderItem(item);
+  orderItemRequest.setQuantity(quantity);
+  cartOrder=addItem(cartOrder.getId(),orderItemRequest,priceOrder);
+  return cartOrder;
+}
