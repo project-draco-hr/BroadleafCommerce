@@ -1,7 +1,10 @@
 {
-  Money price=((FixedPriceFulfillmentOption)fulfillmentGroup.getFulfillmentOption()).getPrice();
-  fulfillmentGroup.setRetailShippingPrice(price);
-  fulfillmentGroup.setSaleShippingPrice(price);
-  fulfillmentGroup.setShippingPrice(price);
-  return fulfillmentGroup;
+  if (canCalculateCostForFulfillmentGroup(fulfillmentGroup,fulfillmentGroup.getFulfillmentOption())) {
+    Money price=((FixedPriceFulfillmentOption)fulfillmentGroup.getFulfillmentOption()).getPrice();
+    fulfillmentGroup.setRetailShippingPrice(price);
+    fulfillmentGroup.setSaleShippingPrice(price);
+    fulfillmentGroup.setShippingPrice(price);
+    return fulfillmentGroup;
+  }
+  throw new IllegalArgumentException("Cannot estimate shipping cost for the fulfillment option: " + fulfillmentGroup.getFulfillmentOption().getClass().getName());
 }
