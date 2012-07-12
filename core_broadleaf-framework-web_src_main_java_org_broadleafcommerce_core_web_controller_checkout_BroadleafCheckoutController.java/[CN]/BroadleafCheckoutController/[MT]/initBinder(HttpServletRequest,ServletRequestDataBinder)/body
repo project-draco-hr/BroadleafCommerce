@@ -1,0 +1,9 @@
+{
+  binder.registerCustomEditor(State.class,"address.state",new PropertyEditorSupport(){
+    @Override public void setAsText(    String text){
+      State state=stateService.findStateByAbbreviation(text);
+      setValue(state);
+    }
+  }
+);
+}
