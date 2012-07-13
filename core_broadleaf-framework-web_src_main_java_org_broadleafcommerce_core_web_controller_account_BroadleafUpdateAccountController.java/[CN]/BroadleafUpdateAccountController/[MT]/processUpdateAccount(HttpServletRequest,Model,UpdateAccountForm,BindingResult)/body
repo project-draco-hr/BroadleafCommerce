@@ -1,0 +1,12 @@
+{
+  updateAccountValidator.validate(form,result);
+  if (result.hasErrors()) {
+    return ajaxRender(getUpdateAccountView(),request,model);
+  }
+  Customer customer=CustomerState.getCustomer();
+  customer.setEmailAddress(form.getEmailAddress());
+  customer.setFirstName(form.getFirstName());
+  customer.setLastName(form.getLastName());
+  customerService.saveCustomer(customer);
+  return ajaxRender(getUpdateAccountView(),request,model);
+}

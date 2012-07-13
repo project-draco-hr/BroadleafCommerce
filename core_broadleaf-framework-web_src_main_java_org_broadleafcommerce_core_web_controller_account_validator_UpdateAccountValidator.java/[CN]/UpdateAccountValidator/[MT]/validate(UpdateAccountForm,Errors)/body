@@ -1,0 +1,17 @@
+{
+  String emailAddress=form.getEmailAddress();
+  String firstName=form.getFirstName();
+  String lastName=form.getLastName();
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"emailAddress","emailAddress.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"firstName","firstName.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"lastName","lastName.required");
+  if (!errors.hasErrors()) {
+    if (!GenericValidator.isEmail(form.getEmailAddress())) {
+      errors.rejectValue("emailAddress","emailAddress.invalid");
+    }
+    Customer customerMatchingNewEmail=customerService.readCustomerByEmail(form.getEmailAddress());
+    if (customerMatchingNewEmail != null && CustomerState.getCustomer().getId() != customerMatchingNewEmail.getId()) {
+      errors.rejectValue("emailAddress","emailAddress.used");
+    }
+  }
+}
