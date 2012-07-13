@@ -79,7 +79,7 @@
     }
   }
 );
-  IButton addAssetButton=new IButton("Upload Asset");
+  final IButton addAssetButton=new IButton("Upload Asset");
   addAssetButton.addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       addNewItem("Add a New Asset",staticAssetDataSource);
@@ -94,4 +94,14 @@
   mainLayout.addMember(tileGrid);
   mainLayout.addMember(buttonsLayout);
   addItem(mainLayout);
+  addAssetButton.hide();
+  SecurityManager.getInstance().doSecure("PERMISSION_CREATE_ASSET",new SecureCallbackAdapter(){
+    public void succeed(){
+      addAssetButton.show();
+    }
+    @Override public void fail(){
+      addAssetButton.hide();
+    }
+  }
+);
 }
