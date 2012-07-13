@@ -6,11 +6,14 @@
     fulfillmentGroup.setRetailShippingPrice(new Money(0D));
     return fulfillmentGroup;
   }
-  HashSet<FulfillmentOption> options=new HashSet<FulfillmentOption>();
-  options.add(fulfillmentGroup.getFulfillmentOption());
-  FulfillmentEstimationResponse response=estimateCostForFulfillmentGroup(fulfillmentGroup,options);
-  fulfillmentGroup.setSaleShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
-  fulfillmentGroup.setRetailShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
-  fulfillmentGroup.setShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
-  return fulfillmentGroup;
+  if (canCalculateCostForFulfillmentGroup(fulfillmentGroup,fulfillmentGroup.getFulfillmentOption())) {
+    HashSet<FulfillmentOption> options=new HashSet<FulfillmentOption>();
+    options.add(fulfillmentGroup.getFulfillmentOption());
+    FulfillmentEstimationResponse response=estimateCostForFulfillmentGroup(fulfillmentGroup,options);
+    fulfillmentGroup.setSaleShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
+    fulfillmentGroup.setRetailShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
+    fulfillmentGroup.setShippingPrice(response.getFulfillmentOptionPrices().get(fulfillmentGroup.getFulfillmentOption()));
+    return fulfillmentGroup;
+  }
+  throw new ShippingPriceException("An unsupported FulfillmentOption was passed to the calculateCostForFulfillmentGroup method");
 }
