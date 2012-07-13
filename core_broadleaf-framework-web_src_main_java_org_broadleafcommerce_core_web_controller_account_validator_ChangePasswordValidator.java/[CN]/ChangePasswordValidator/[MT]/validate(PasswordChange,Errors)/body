@@ -1,0 +1,19 @@
+{
+  String currentPassword=passwordChange.getCurrentPassword();
+  String password=passwordChange.getNewPassword();
+  String passwordConfirm=passwordChange.getNewPasswordConfirm();
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"currentPassword","currentPassword.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"newPassword","newPassword.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"newPasswordConfirm","newPasswordConfirm.required");
+  if (!errors.hasErrors()) {
+    if (!currentPassword.equals(CustomerState.getCustomer().getPassword())) {
+      errors.rejectValue("currentPassword","currentPassword.invalid");
+    }
+    if (!passwordConfirm.equals(password)) {
+      errors.rejectValue("newPasswordConfirm","newPasswordConfirm.invalid");
+    }
+    if (!password.matches(validPasswordRegex)) {
+      errors.rejectValue("newPassword","newPassword.invalid");
+    }
+  }
+}

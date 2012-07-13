@@ -1,0 +1,12 @@
+{
+  PasswordChange passwordChange=new PasswordChange(CustomerState.getCustomer().getUsername());
+  passwordChange.setCurrentPassword(form.getCurrentPassword());
+  passwordChange.setNewPassword(form.getNewPassword());
+  passwordChange.setNewPasswordConfirm(form.getNewPasswordConfirm());
+  changePasswordValidator.validate(passwordChange,result);
+  if (result.hasErrors()) {
+    return ajaxRender(getChangePasswordView(),request,model);
+  }
+  customerService.changePassword(passwordChange);
+  return ajaxRender(getChangePasswordView(),request,model);
+}
