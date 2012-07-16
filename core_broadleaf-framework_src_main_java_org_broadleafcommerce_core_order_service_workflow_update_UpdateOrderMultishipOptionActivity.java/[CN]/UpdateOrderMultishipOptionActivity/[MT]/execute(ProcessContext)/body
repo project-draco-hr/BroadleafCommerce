@@ -1,0 +1,10 @@
+{
+  CartOperationRequest request=((CartOperationContext)context).getSeedData();
+  Long orderItemId=request.getItemRequest().getOrderItemId();
+  Integer orderItemQuantityDelta=request.getOrderItemQuantityDelta();
+  if (orderItemQuantityDelta < 0) {
+    int numToDelete=-1 * orderItemQuantityDelta;
+    orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(orderItemId,numToDelete);
+  }
+  return context;
+}

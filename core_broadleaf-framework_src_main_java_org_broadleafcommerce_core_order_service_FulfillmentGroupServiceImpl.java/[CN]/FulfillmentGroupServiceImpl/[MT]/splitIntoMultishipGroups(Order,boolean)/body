@@ -1,0 +1,37 @@
+{
+  order=removeAllFulfillmentGroupsFromOrder(order,false);
+  List<OrderMultishipOption> multishipOptions=orderMultishipOptionService.findOrderMultishipOptions(order.getId());
+  Map<String,FulfillmentGroup> multishipGroups=new HashMap<String,FulfillmentGroup>();
+  for (  OrderMultishipOption option : multishipOptions) {
+    String key=option.getAddress().getId() + ":" + option.getFulfillmentOption().getId();
+    FulfillmentGroup fg=multishipGroups.get(key);
+    if (fg == null) {
+      FulfillmentGroupRequest fgr=new FulfillmentGroupRequest();
+      fgr.setOrder(order);
+      fgr.setAddress(option.getAddress());
+      fgr.setFulfillmentOption(option.getFulfillmentOption());
+      fg=addFulfillmentGroupToOrder(fgr,false);
+      fg=save(fg);
+      order.getFulfillmentGroups().add(fg);
+    }
+    FulfillmentGroupItem fulfillmentGroupItem=null;
+    for (    FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
+      if (fgi.getOrderItem().getId() == option.getOrderItem().getId()) {
+        fulfillmentGroupItem=fgi;
+      }
+    }
+    if (fulfillmentGroupItem == null) {
+      fulfillmentGroupItem=fulfillmentGroupItemDao.create();
+      fulfillmentGroupItem.setFulfillmentGroup(fg);
+      fulfillmentGroupItem.setOrderItem(option.getOrderItem());
+      fulfillmentGroupItem.setQuantity(1);
+      fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
+      fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
+    }
+ else {
+      fulfillmentGroupItem.setQuantity(fulfillmentGroupItem.getQuantity() + 1);
+    }
+    multishipGroups.put(key,fg);
+  }
+  return orderService.save(order,priceOrder);
+}

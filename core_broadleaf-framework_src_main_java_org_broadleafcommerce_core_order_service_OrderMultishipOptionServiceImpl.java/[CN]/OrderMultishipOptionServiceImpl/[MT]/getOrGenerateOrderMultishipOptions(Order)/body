@@ -22,6 +22,7 @@
     DiscreteOrderItem item=(DiscreteOrderItem)orderItemService.readOrderItemById(entry.getKey());
     orderMultishipOptions.addAll(createPopulatedOrderMultishipOption(order,item,entry.getValue()));
   }
+  orderMultishipOptions.removeAll(optionsToRemove);
   orderMultishipOptionDao.deleteAll(optionsToRemove);
   return orderMultishipOptions;
 }

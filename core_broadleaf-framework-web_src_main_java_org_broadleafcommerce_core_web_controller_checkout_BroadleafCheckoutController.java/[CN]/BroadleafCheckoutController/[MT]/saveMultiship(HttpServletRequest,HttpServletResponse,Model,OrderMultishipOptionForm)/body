@@ -1,5 +1,7 @@
 {
-  orderMultishipOptionService.saveOrderMultishipOptions(CartState.getCart(),orderMultishipOptionForm.getOptions());
+  Order cart=CartState.getCart();
+  orderMultishipOptionService.saveOrderMultishipOptions(cart,orderMultishipOptionForm.getOptions());
+  cart=fulfillmentGroupService.splitIntoMultishipGroups(cart,true);
   if (isAjaxRequest(request)) {
     return buildAjaxRedirect(request,"/checkout",model);
   }

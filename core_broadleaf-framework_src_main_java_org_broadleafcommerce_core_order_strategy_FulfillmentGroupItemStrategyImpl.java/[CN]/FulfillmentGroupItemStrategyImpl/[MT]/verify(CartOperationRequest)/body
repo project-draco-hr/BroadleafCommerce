@@ -1,0 +1,41 @@
+{
+  Order order=request.getOrder();
+  if (isRemoveEmptyFulfillmentGroups() && order.getFulfillmentGroups() != null) {
+    ListIterator<FulfillmentGroup> fgIter=order.getFulfillmentGroups().listIterator();
+    while (fgIter.hasNext()) {
+      FulfillmentGroup fg=fgIter.next();
+      if (fg.getFulfillmentGroupItems() == null || fg.getFulfillmentGroupItems().size() == 0) {
+        fgIter.remove();
+        fulfillmentGroupService.delete(fg);
+      }
+    }
+  }
+  Map<Long,Integer> doiQuantityMap=new HashMap<Long,Integer>();
+  for (  DiscreteOrderItem doi : order.getDiscreteOrderItems()) {
+    Integer doiQuantity=doiQuantityMap.get(doi.getId());
+    if (doiQuantity == null) {
+      doiQuantity=0;
+    }
+    doiQuantity+=doi.getQuantity();
+    doiQuantityMap.put(doi.getId(),doiQuantity);
+  }
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
+      if (fgi.getOrderItem() instanceof DiscreteOrderItem) {
+        Long doiId=fgi.getOrderItem().getId();
+        Integer doiQuantity=doiQuantityMap.get(doiId);
+        if (doiQuantity == null) {
+          throw new IllegalStateException("Fulfillment group items and discrete order items are not in sync. DiscreteOrderItem id: " + doiId);
+        }
+        doiQuantity-=fgi.getQuantity();
+        doiQuantityMap.put(doiId,doiQuantity);
+      }
+    }
+  }
+  for (  Entry<Long,Integer> entry : doiQuantityMap.entrySet()) {
+    if (entry.getValue() != 0) {
+      throw new IllegalStateException("Not enough fulfillment group items found for DiscreteOrderItem id: " + entry.getKey());
+    }
+  }
+  return request;
+}

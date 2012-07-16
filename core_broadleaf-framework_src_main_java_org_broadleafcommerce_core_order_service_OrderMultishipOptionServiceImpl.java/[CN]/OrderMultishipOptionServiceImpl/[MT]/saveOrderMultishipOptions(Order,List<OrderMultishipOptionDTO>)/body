@@ -1,8 +1,14 @@
 {
-  deleteAllOrderMultishipOptions(order);
+  Map<Long,OrderMultishipOption> currentOptions=new HashMap<Long,OrderMultishipOption>();
+  for (  OrderMultishipOption option : findOrderMultishipOptions(order.getId())) {
+    currentOptions.put(option.getId(),option);
+  }
   List<OrderMultishipOption> orderMultishipOptions=new ArrayList<OrderMultishipOption>();
   for (  OrderMultishipOptionDTO dto : optionDTOs) {
-    OrderMultishipOption option=orderMultishipOptionDao.create();
+    OrderMultishipOption option=currentOptions.get(dto.getId());
+    if (option == null) {
+      option=orderMultishipOptionDao.create();
+    }
     option.setOrder(order);
     option.setOrderItem(orderItemService.readOrderItemById(dto.getOrderItemId()));
     option.setAddress(addressService.readAddressById(dto.getAddressId()));
