@@ -1,0 +1,15 @@
+{
+  Order cart=CartState.getCart();
+  shippingInfoFormValidator.validate(shippingForm,result);
+  if (result.hasErrors()) {
+    checkout(request,response,model);
+    return isAjaxRequest(request) ? "ajax/checkout" : "/checkout";
+  }
+  FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
+  fulfillmentGroup.setAddress(shippingForm.getAddress());
+  FulfillmentOption fulfillmentOption=fulfillmentOptionService.readFulfillmentOptionById(shippingForm.getFulfillmentOptionId());
+  fulfillmentGroup.setFulfillmentOption(fulfillmentOption);
+  cart=orderService.save(cart,true);
+  CartState.setCart(cart);
+  return isAjaxRequest(request) ? "ajax/checkout" : "redirect:/checkout";
+}
