@@ -19,8 +19,10 @@
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
   group.setMethod("standard");
   group.setService(ShippingServiceType.BANDED_SHIPPING.getType());
+  group.setShippingPrice(new Money("0"));
   group.setOrder(order);
   groups.add(group);
+  group.setTotal(new Money(0));
   order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
   group.setRetailShippingPrice(total);

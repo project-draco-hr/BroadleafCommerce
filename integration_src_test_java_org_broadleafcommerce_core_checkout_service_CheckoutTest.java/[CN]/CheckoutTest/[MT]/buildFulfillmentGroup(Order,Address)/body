@@ -8,7 +8,8 @@
   order.setFulfillmentGroups(groups);
   Money total=new Money(5D);
   group.setShippingPrice(total);
-  group.setMethod("standard");
-  group.setService(ShippingServiceType.BANDED_SHIPPING.getType());
+  FixedPriceFulfillmentOption option=new FixedPriceFulfillmentOptionImpl();
+  option.setPrice(new Money(0));
+  group.setFulfillmentOption(option);
   return group;
 }
