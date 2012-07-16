@@ -1,0 +1,27 @@
+{
+  List<OrderMultishipOption> orderMultishipOptions=findOrderMultishipOptions(order.getId());
+  if (orderMultishipOptions == null || orderMultishipOptions.size() == 0) {
+    orderMultishipOptions=generateOrderMultishipOptions(order);
+  }
+  Map<Long,Integer> orderDiscreteOrderItemCounts=new HashMap<Long,Integer>();
+  for (  DiscreteOrderItem item : order.getDiscreteOrderItems()) {
+    orderDiscreteOrderItemCounts.put(item.getId(),item.getQuantity());
+  }
+  List<OrderMultishipOption> optionsToRemove=new ArrayList<OrderMultishipOption>();
+  for (  OrderMultishipOption option : orderMultishipOptions) {
+    Integer count=orderDiscreteOrderItemCounts.get(option.getOrderItem().getId());
+    if (count == null || count == 0) {
+      optionsToRemove.add(option);
+    }
+ else {
+      count--;
+      orderDiscreteOrderItemCounts.put(option.getOrderItem().getId(),count);
+    }
+  }
+  for (  Entry<Long,Integer> entry : orderDiscreteOrderItemCounts.entrySet()) {
+    DiscreteOrderItem item=(DiscreteOrderItem)orderItemService.readOrderItemById(entry.getKey());
+    orderMultishipOptions.addAll(createPopulatedOrderMultishipOption(order,item,entry.getValue()));
+  }
+  orderMultishipOptionDao.deleteAll(optionsToRemove);
+  return orderMultishipOptions;
+}

@@ -1,7 +1,7 @@
 {
   Customer customer=CustomerState.getCustomer();
   Order cart=CartState.getCart();
-  model.addAttribute("orderMultishipOptions",orderMultishipOptionService.generateMultishipOptions(cart));
+  model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
   model.addAttribute("customerAddresses",customerAddressService.readActiveCustomerAddressesByCustomerId(customer.getId()));
   model.addAttribute("fulfillmentOptions",fulfillmentOptionService.readAllFulfillmentOptions());
   return ajaxRender("multiship",request,model);

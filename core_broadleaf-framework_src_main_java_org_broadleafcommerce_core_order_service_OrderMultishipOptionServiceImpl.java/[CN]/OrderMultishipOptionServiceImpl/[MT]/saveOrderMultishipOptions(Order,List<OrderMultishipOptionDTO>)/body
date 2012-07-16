@@ -1,0 +1,15 @@
+{
+  deleteAllOrderMultishipOptions(order);
+  List<OrderMultishipOption> orderMultishipOptions=new ArrayList<OrderMultishipOption>();
+  for (  OrderMultishipOptionDTO dto : optionDTOs) {
+    OrderMultishipOption option=orderMultishipOptionDao.create();
+    option.setOrder(order);
+    option.setOrderItem(orderItemService.readOrderItemById(dto.getOrderItemId()));
+    option.setAddress(addressService.readAddressById(dto.getAddressId()));
+    option.setFulfillmentOption(fulfillmentOptionService.readFulfillmentOptionById(dto.getFulfillmentOptionId()));
+    orderMultishipOptions.add(option);
+  }
+  for (  OrderMultishipOption option : orderMultishipOptions) {
+    save(option);
+  }
+}
