@@ -1,0 +1,6 @@
+{
+  BandedPriceFulfillmentOption option=createBands(new String[]{"100"},new String[]{"30"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE});
+  assertTrue(calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),3,new String[]{"10","15","20"},option)).equals(new Money("45")));
+  assertTrue(calculationResponse(option,createCandidateOrder(new BigDecimal("80.00"),1,new String[]{"5"},option)).equals(new Money("5")));
+  assertTrue(calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),2,new String[]{"8","2"},option)).equals(new Money("10")));
+}

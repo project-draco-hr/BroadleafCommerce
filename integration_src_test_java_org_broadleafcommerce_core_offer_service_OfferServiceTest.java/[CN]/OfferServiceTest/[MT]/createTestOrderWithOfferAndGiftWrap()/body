@@ -17,8 +17,10 @@
   group.setAddress(address);
   group.setIsShippingPriceTaxable(true);
   List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
-  group.setMethod("standard");
-  group.setService(ShippingServiceType.BANDED_SHIPPING.getType());
+  FixedPriceFulfillmentOption option=new FixedPriceFulfillmentOptionImpl();
+  option.setPrice(new Money("8.50"));
+  group.setFulfillmentOption(option);
+  group.setFulfillmentOption(option);
   group.setOrder(order);
   groups.add(group);
   order.setFulfillmentGroups(groups);
