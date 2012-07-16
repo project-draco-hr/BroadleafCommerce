@@ -1,0 +1,16 @@
+{
+  if ((minimumAmounts.length != resultAmounts.length) || (resultAmounts.length != resultAmountTypes.length)) {
+    throw new IllegalStateException("All lists should be the same length");
+  }
+  List<FulfillmentPriceBand> bands=new ArrayList<FulfillmentPriceBand>();
+  for (int i=0; i < minimumAmounts.length; i++) {
+    FulfillmentPriceBand band=new FulfillmentPriceBandImpl();
+    band.setRetailPriceMinimumAmount(new BigDecimal(minimumAmounts[i]));
+    band.setResultAmount(new BigDecimal(resultAmounts[i]));
+    band.setResultAmountType(resultAmountTypes[i]);
+    bands.add(band);
+  }
+  BandedPriceFulfillmentOption option=new BandedPriceFulfillmentOptionImpl();
+  option.setBands(bands);
+  return option;
+}
