@@ -1,0 +1,11 @@
+{
+  Customer customer=CustomerState.getCustomer();
+  if (customer != null) {
+    Order order=orderService.findOrderByOrderNumber(orderNumber);
+    if (order != null && customer.equals(order.getCustomer())) {
+      model.addAttribute("order",order);
+      return ajaxRender("confirmation",request,model);
+    }
+  }
+  return null;
+}

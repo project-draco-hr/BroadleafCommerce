@@ -3,7 +3,7 @@
   shippingInfoFormValidator.validate(shippingForm,result);
   if (result.hasErrors()) {
     checkout(request,response,model);
-    return isAjaxRequest(request) ? "ajax/checkout" : "/checkout";
+    return ajaxRender("checkout",request,model);
   }
   FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
   fulfillmentGroup.setAddress(shippingForm.getAddress());
