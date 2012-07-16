@@ -10,12 +10,32 @@
         throw new IllegalStateException("There were no Fulfillment Price Bands configred for a BandedPriceFulfillmentOption with ID: " + bandedPriceFulfillmentOption.getId());
       }
       BigDecimal retailTotal=new BigDecimal(0D);
+      BigDecimal flatTotal=new BigDecimal(0D);
       for (      FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
-        BigDecimal price=(fulfillmentGroupItem.getRetailPrice() != null) ? fulfillmentGroupItem.getRetailPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity())) : null;
-        if (price == null) {
-          price=fulfillmentGroupItem.getOrderItem().getRetailPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity()));
+        boolean addToRetailTotal=true;
+        if (option.getUseFlatRates()) {
+          Sku sku=null;
+          if (fulfillmentGroupItem.getOrderItem() instanceof DiscreteOrderItem) {
+            sku=((DiscreteOrderItem)fulfillmentGroupItem.getOrderItem()).getSku();
+          }
+ else           if (fulfillmentGroupItem.getOrderItem() instanceof BundleOrderItem) {
+            sku=((BundleOrderItem)fulfillmentGroupItem.getOrderItem()).getSku();
+          }
+          if (sku != null) {
+            BigDecimal rate=sku.getFulfillmentFlatRates().get(option);
+            if (rate != null) {
+              addToRetailTotal=false;
+              flatTotal=flatTotal.add(rate);
+            }
+          }
         }
-        retailTotal=retailTotal.add(price);
+        if (addToRetailTotal) {
+          BigDecimal price=(fulfillmentGroupItem.getRetailPrice() != null) ? fulfillmentGroupItem.getRetailPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity())) : null;
+          if (price == null) {
+            price=fulfillmentGroupItem.getOrderItem().getRetailPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity()));
+          }
+          retailTotal=retailTotal.add(price);
+        }
       }
       BigDecimal fulfillmentAmount=new BigDecimal(0D);
       for (      FulfillmentPriceBand band : bands) {
@@ -38,6 +58,7 @@
           }
         }
       }
+      fulfillmentAmount=fulfillmentAmount.add(flatTotal);
       shippingPrices.put(bandedPriceFulfillmentOption,new Money(fulfillmentAmount));
     }
   }
