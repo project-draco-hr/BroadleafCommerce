@@ -1,4 +1,13 @@
 {
+  PaymentInfo paymentInfo=null;
+  for (  PaymentInfo pi : paymentContext.getPaymentInfo().getOrder().getPaymentInfos()) {
+    if (PaymentInfoType.CREDIT_CARD == pi.getType()) {
+      paymentInfo=pi;
+    }
+  }
+  if (paymentInfo == null) {
+    throw new PaymentException("PaymentInfo of type CREDIT_CARD must be on the order");
+  }
   CreditCardPaymentInfo ccInfo=(CreditCardPaymentInfo)paymentContext.getReferencedPaymentInfo();
   String nameOnCard=ccInfo.getNameOnCard();
   String ccNumber=ccInfo.getPan().replaceAll("[\\s-]+","");
@@ -33,7 +42,7 @@
   PaymentResponseItem responseItem=new PaymentResponseItemImpl();
   responseItem.setTransactionTimestamp(SystemTime.asDate());
   responseItem.setTransactionSuccess(validDate && validCard && validCVV);
-  responseItem.setAmountPaid(paymentContext.getPaymentInfo().getAmount());
+  responseItem.setAmountPaid(paymentInfo.getAmount());
   if (responseItem.getTransactionSuccess()) {
     Map<String,String> additionalFields=new HashMap<String,String>();
     additionalFields.put("NAME_ON_CARD",nameOnCard);
@@ -41,7 +50,7 @@
     additionalFields.put("EXP_MONTH",expMonth + "");
     additionalFields.put("EXP_YEAR",expYear + "");
     additionalFields.put("LAST_FOUR",StringUtils.right(ccNumber,4));
-    paymentContext.getPaymentInfo().setAdditionalFields(additionalFields);
+    paymentInfo.setAdditionalFields(additionalFields);
   }
   return responseItem;
 }

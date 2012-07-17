@@ -1,6 +1,7 @@
 {
   Order cart=CartState.getCart();
   Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+  orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
   billingInfoFormValidator.validate(billingForm,result);
   if (result.hasErrors()) {
     checkout(request,response,model);
