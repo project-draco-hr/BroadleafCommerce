@@ -23,8 +23,9 @@
   cart.setSubmitDate(Calendar.getInstance().getTime());
   CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
   if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
+    processFailedOrderCheckout(cart);
     checkout(request,response,model);
-    model.addAttribute("paymentException",true);
+    result.rejectValue("creditCardNumber","payment.exception",null,null);
     return getCheckoutView();
   }
   return getConfirmationView(cart.getOrderNumber());
