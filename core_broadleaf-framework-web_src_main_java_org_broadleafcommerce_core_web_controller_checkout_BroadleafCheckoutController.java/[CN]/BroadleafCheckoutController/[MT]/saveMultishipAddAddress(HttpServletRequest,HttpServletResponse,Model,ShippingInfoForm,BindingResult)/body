@@ -1,9 +1,13 @@
 {
+  multishipAddAddressFormValidator.validate(addressForm,result);
+  if (result.hasErrors()) {
+    return showMultishipAddAddress(request,response,model);
+  }
   Address address=addressService.saveAddress(addressForm.getAddress());
   CustomerAddress customerAddress=customerAddressService.create();
   customerAddress.setAddressName(addressForm.getAddressName());
   customerAddress.setAddress(address);
   customerAddress.setCustomer(CustomerState.getCustomer());
   customerAddressService.saveCustomerAddress(customerAddress);
-  return showMultiship(request,response,model);
+  return getMultishipAddAddressSuccessView();
 }

@@ -2,8 +2,7 @@
   Order cart=CartState.getCart();
   shippingInfoFormValidator.validate(shippingForm,result);
   if (result.hasErrors()) {
-    checkout(request,response,model);
-    return getCheckoutView();
+    return checkout(request,response,model);
   }
   FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
   fulfillmentGroup.setAddress(shippingForm.getAddress());
