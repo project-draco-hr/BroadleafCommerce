@@ -4,7 +4,7 @@
   billingInfoFormValidator.validate(billingForm,result);
   if (result.hasErrors()) {
     checkout(request,response,model);
-    return ajaxRender("checkout",request,model);
+    return getCheckoutView();
   }
   PaymentInfo ccInfo=creditCardPaymentInfoFactory.constructPaymentInfo(cart);
   ccInfo.setAddress(billingForm.getAddress());
@@ -24,12 +24,7 @@
   if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
     checkout(request,response,model);
     model.addAttribute("paymentException",true);
-    return ajaxRender("checkout",request,model);
+    return getCheckoutView();
   }
-  if (isAjaxRequest(request)) {
-    return buildAjaxRedirect(request,"/" + defaultOrderConfirmationViewName + "/"+ cart.getOrderNumber(),model);
-  }
- else {
-    return "redirect:/" + defaultOrderConfirmationViewName + "/"+ cart.getOrderNumber();
-  }
+  return getConfirmationView(cart.getOrderNumber());
 }

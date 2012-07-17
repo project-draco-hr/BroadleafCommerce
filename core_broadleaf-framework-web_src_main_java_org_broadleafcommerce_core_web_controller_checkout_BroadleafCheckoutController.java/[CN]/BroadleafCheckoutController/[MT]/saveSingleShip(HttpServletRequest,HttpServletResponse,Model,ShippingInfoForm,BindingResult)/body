@@ -3,7 +3,7 @@
   shippingInfoFormValidator.validate(shippingForm,result);
   if (result.hasErrors()) {
     checkout(request,response,model);
-    return ajaxRender("checkout",request,model);
+    return getCheckoutView();
   }
   FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
   fulfillmentGroup.setAddress(shippingForm.getAddress());
@@ -11,5 +11,5 @@
   fulfillmentGroup.setFulfillmentOption(fulfillmentOption);
   cart=orderService.save(cart,true);
   CartState.setCart(cart);
-  return isAjaxRequest(request) ? "ajax/checkout" : "redirect:/checkout";
+  return isAjaxRequest(request) ? getCheckoutView() : getCheckoutPageRedirect();
 }

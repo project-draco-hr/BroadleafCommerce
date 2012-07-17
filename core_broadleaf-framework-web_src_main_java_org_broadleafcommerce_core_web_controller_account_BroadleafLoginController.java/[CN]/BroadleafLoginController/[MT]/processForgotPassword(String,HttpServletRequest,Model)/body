@@ -3,10 +3,10 @@
   if (errorResponse.getHasErrors()) {
     String errorCode=errorResponse.getErrorCodesList().get(0);
     model.addAttribute("errorCode",errorCode);
-    return ajaxRender(getForgotPasswordView(),request,model);
+    return getForgotPasswordView();
   }
  else {
     request.getSession(true).setAttribute("forgot_password_username",username);
-    return ajaxRender(getForgotPasswordSuccessView(),request,model);
+    return getForgotPasswordSuccessView();
   }
 }

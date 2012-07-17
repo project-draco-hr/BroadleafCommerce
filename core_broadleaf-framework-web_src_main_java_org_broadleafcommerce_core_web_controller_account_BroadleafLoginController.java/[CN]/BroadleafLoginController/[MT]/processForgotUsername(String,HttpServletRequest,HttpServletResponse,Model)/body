@@ -3,10 +3,9 @@
   if (errorResponse.getHasErrors()) {
     String errorCode=errorResponse.getErrorCodesList().get(0);
     request.setAttribute("errorCode",errorCode);
-    return ajaxRender(getForgotUsernameView(),request,model);
+    return getForgotUsernameView();
   }
  else {
-    String url=buildRedirectToLoginWithMessage("usernameSent");
-    return ajaxRender(url,request,model);
+    return buildRedirectToLoginWithMessage("usernameSent");
   }
 }

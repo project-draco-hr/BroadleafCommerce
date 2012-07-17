@@ -1,0 +1,10 @@
+{
+  if (isAjaxRequest()) {
+    String viewName="utility/blcRedirect";
+    addStaticVariable(BroadleafControllerUtility.BLC_REDIRECT_ATTRIBUTE,redirectUrl);
+    return super.loadView(viewName,locale);
+  }
+ else {
+    return new RedirectView(redirectUrl,isRedirectContextRelative(),isRedirectHttp10Compatible());
+  }
+}

@@ -4,10 +4,5 @@
   orderService.removeOfferCode(cart,offerCode,false);
   cart=orderService.save(cart,true);
   CartState.setCart(cart);
-  if (isAjaxRequest(request)) {
-    return "ajax/cart";
-  }
- else {
-    return "redirect:/cart";
-  }
+  return isAjaxRequest(request) ? getCartView() : getCartPageRedirect();
 }

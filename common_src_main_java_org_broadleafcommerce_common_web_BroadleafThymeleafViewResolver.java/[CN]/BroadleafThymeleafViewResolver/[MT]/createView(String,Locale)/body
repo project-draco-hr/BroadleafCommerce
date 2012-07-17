@@ -1,0 +1,22 @@
+{
+  if (!canHandle(viewName)) {
+    LOG.trace("[THYMELEAF] View {" + viewName + "} cannot be handled by ThymeleafViewResolver. Passing on to the next resolver in the chain");
+    return null;
+  }
+  if (viewName.startsWith(AJAX_REDIRECT_URL_PREFIX)) {
+    LOG.trace("[THYMELEAF] View {" + viewName + "} is an ajax redirect, and will be handled directly by BroadleafThymeleafViewResolver");
+    String redirectUrl=viewName.substring(AJAX_REDIRECT_URL_PREFIX.length());
+    return loadAjaxRedirectView(redirectUrl,locale);
+  }
+  if (viewName.startsWith(AJAX_URL_PREFIX)) {
+    LOG.trace("[THYMELEAF] View {" + viewName + "} is an ajax modal, and will be handled directly by BroadleafThymeleafViewResolver");
+    String requestedViewName=viewName.substring(AJAX_URL_PREFIX.length());
+    return loadAjaxView(requestedViewName,locale);
+  }
+  if (viewName.startsWith(IFRAME_URL_PREFIX)) {
+    LOG.trace("[THYMELEAF] View {" + viewName + "} is an iFrame modal, and will be handled directly by BroadleafThymeleafViewResolver");
+    String requestedViewName=viewName.substring(IFRAME_URL_PREFIX.length());
+    return loadIFrameView(requestedViewName,locale);
+  }
+  return super.createView(viewName,locale);
+}
