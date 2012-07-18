@@ -1,6 +1,8 @@
 {
   Order cart=CartState.getCart();
-  model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
+  if (!(cart instanceof NullOrderImpl)) {
+    model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
+  }
   model.addAttribute("fulfillmentOptions",fulfillmentOptionService.readAllFulfillmentOptions());
   model.addAttribute("validShipping",hasValidShippingAddresses(cart));
   model.addAttribute("states",stateService.findStates());
