@@ -1,0 +1,15 @@
+{
+  GenericResponse response=new GenericResponse();
+  AdminUser user=null;
+  if (username != null) {
+    user=adminUserDao.readAdminUserByUserName(username);
+  }
+  checkUser(user,response);
+  checkPassword(password,confirmPassword,response);
+  checkPassword(oldPassword,user.getPassword(),response);
+  if (!response.getHasErrors()) {
+    user.setUnencodedPassword(password);
+    saveAdminUser(user);
+  }
+  return response;
+}
