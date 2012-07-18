@@ -1,6 +1,6 @@
 {
   Order wishlist=orderService.findNamedOrderForCustomer(wishlistName,CustomerState.getCustomer());
-  orderService.removeItem(wishlist.getId(),itemId,false);
+  orderService.addAllItemsFromNamedOrder(wishlist,true);
   model.addAttribute("wishlist",wishlist);
   return getAccountWishlistView();
 }
