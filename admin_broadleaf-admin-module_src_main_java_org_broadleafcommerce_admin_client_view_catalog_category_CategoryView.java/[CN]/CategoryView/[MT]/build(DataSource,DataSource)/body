@@ -51,6 +51,19 @@
   allCategoriesDisplay=new GridStructureView(BLCMain.getMessageManager().getString("allChildCategoriesListTitle"),true,false);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(allCategoriesDisplay);
   detailsTab.setPane(dynamicFormDisplay);
+  Tab crossSaleTab=new Tab(BLCMain.getMessageManager().getString("featuredTabTitle"));
+  crossSaleTab.setID("productSkuCrossSaleTab");
+  VLayout crossLayout=new VLayout();
+  crossLayout.setID("productSkuCrossLayout");
+  crossLayout.setHeight100();
+  crossLayout.setWidth100();
+  crossLayout.setBackgroundColor("#eaeaea");
+  crossLayout.setOverflow(Overflow.AUTO);
+  crossSaleDisplay=new GridStructureView(BLCMain.getMessageManager().getString("crossSaleProductsTitle"),true,true);
+  crossLayout.addMember(crossSaleDisplay);
+  upSaleDisplay=new GridStructureView(BLCMain.getMessageManager().getString("upsaleProductsTitle"),true,true);
+  crossLayout.addMember(upSaleDisplay);
+  crossSaleTab.setPane(crossLayout);
   Tab featuredTab=new Tab(BLCMain.getMessageManager().getString("productsTabTitle"));
   featuredTab.setID("categoryFeaturedTab");
   VLayout featuredLayout=new VLayout();
@@ -76,6 +89,7 @@
   mediaLayout.addMember(mediaDisplay);
   mediaTab.setPane(mediaLayout);
   topTabSet.addTab(detailsTab);
+  topTabSet.addTab(crossSaleTab);
   topTabSet.addTab(featuredTab);
   topTabSet.addTab(mediaTab);
   addMember(leftVerticalLayout);
