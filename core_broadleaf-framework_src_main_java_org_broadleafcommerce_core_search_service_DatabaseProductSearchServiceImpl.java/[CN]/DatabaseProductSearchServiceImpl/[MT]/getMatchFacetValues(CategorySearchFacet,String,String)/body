@@ -1,0 +1,17 @@
+{
+  List<SearchFacetResultDTO> results=new ArrayList<SearchFacetResultDTO>();
+  List<String> values;
+  if (entityName.equals("sku")) {
+    values=searchFacetValueDao.readDistinctValuesForField(fieldName,SkuImpl.class,String.class);
+  }
+ else {
+    values=searchFacetValueDao.readDistinctValuesForField(fieldName,ProductImpl.class,String.class);
+  }
+  for (  String value : values) {
+    SearchFacetResultDTO dto=new SearchFacetResultDTO();
+    dto.setValue(value);
+    dto.setFacet(facet);
+    results.add(dto);
+  }
+  return results;
+}
