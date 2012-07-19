@@ -86,4 +86,18 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categoryCrossSaleProductsDS",new CategoryCrossSaleProductListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      crossSalePresenter=new EditableJoinStructurePresenter(getDisplay().getCrossSaleDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
+      crossSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categoryUpSaleProductsDS",new CategoryUpSaleProductListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      upSalePresenter=new EditableJoinStructurePresenter(getDisplay().getUpSaleDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
+      upSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
+    }
+  }
+));
 }

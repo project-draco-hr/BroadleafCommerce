@@ -1,0 +1,37 @@
+{
+  if (order.getFulfillmentGroups() == null || order.getFulfillmentGroups().size() < 2) {
+    return order;
+  }
+  ListIterator<FulfillmentGroup> fgIter=order.getFulfillmentGroups().listIterator();
+  FulfillmentGroup collapsedFg=fgIter.next();
+  Map<Long,FulfillmentGroupItem> fgOrderItemMap=new HashMap<Long,FulfillmentGroupItem>();
+  for (  FulfillmentGroupItem fgi : collapsedFg.getFulfillmentGroupItems()) {
+    fgOrderItemMap.put(fgi.getOrderItem().getId(),fgi);
+  }
+  while (fgIter.hasNext()) {
+    FulfillmentGroup fg=fgIter.next();
+    ListIterator<FulfillmentGroupItem> fgItemIter=fg.getFulfillmentGroupItems().listIterator();
+    while (fgItemIter.hasNext()) {
+      FulfillmentGroupItem fgi=fgItemIter.next();
+      Long orderItemId=fgi.getOrderItem().getId();
+      FulfillmentGroupItem matchingFgi=fgOrderItemMap.get(orderItemId);
+      if (matchingFgi == null) {
+        matchingFgi=fulfillmentGroupItemDao.create();
+        matchingFgi.setFulfillmentGroup(collapsedFg);
+        matchingFgi.setOrderItem(fgi.getOrderItem());
+        matchingFgi.setQuantity(fgi.getQuantity());
+        matchingFgi=fulfillmentGroupItemDao.save(matchingFgi);
+        collapsedFg.getFulfillmentGroupItems().add(matchingFgi);
+        fgOrderItemMap.put(orderItemId,matchingFgi);
+      }
+ else {
+        matchingFgi.setQuantity(matchingFgi.getQuantity() + fgi.getQuantity());
+      }
+      fulfillmentGroupItemDao.delete(fgi);
+      fgItemIter.remove();
+    }
+    fulfillmentGroupDao.delete(fg);
+    fgIter.remove();
+  }
+  return orderService.save(order,priceOrder);
+}

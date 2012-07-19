@@ -1,0 +1,19 @@
+{
+  Order wishlist=orderService.findNamedOrderForCustomer(wishlistName,CustomerState.getCustomer());
+  List<OrderItem> orderItems=wishlist.getOrderItems();
+  OrderItem orderItem=null;
+  for (  OrderItem item : orderItems) {
+    if (orderItemId == item.getId()) {
+      orderItem=item;
+      break;
+    }
+  }
+  if (orderItem != null) {
+    orderService.addItemFromNamedOrder(wishlist,orderItem,true);
+  }
+ else {
+    throw new IllegalArgumentException("The item id provided was not found in the wishlist");
+  }
+  model.addAttribute("wishlist",wishlist);
+  return getAccountWishlistRedirect();
+}
