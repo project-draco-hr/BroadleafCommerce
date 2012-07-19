@@ -1,0 +1,6 @@
+{
+  CriteriaQuery<T> criteria=em.getCriteriaBuilder().createQuery(fieldValueClass);
+  Root<ProductImpl> root=criteria.from(ProductImpl.class);
+  criteria.distinct(true).select(root.get(fieldName).as(fieldValueClass));
+  return em.createQuery(criteria).getResultList();
+}

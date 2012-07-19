@@ -1,0 +1,12 @@
+{
+  List<SearchFacetResultDTO> results=new ArrayList<SearchFacetResultDTO>();
+  String fieldName=facet.getSearchFacet().getFieldName();
+  List<String> values=productDao.readDistinctValuesForField(fieldName,String.class);
+  for (  String value : values) {
+    SearchFacetResultDTO dto=new SearchFacetResultDTO();
+    dto.setDisplayValue(value);
+    dto.setValue(value);
+    results.add(dto);
+  }
+  return results;
+}
