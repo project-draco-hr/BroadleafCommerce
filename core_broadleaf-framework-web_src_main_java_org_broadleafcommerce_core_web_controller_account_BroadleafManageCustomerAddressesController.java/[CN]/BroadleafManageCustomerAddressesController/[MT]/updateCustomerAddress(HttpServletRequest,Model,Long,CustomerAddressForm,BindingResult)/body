@@ -1,0 +1,14 @@
+{
+  customerAddressValidator.validate(form,result);
+  if (result.hasErrors()) {
+    return getCustomerAddressesView();
+  }
+  CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
+  if (customerAddress == null) {
+    throw new IllegalArgumentException("Customer Address not found with the specified customerAddressId");
+  }
+  customerAddress.setAddress(form.getAddress());
+  customerAddress.setAddressName(form.getAddressName());
+  customerAddressService.saveCustomerAddress(customerAddress);
+  return getCustomerAddressesRedirect();
+}

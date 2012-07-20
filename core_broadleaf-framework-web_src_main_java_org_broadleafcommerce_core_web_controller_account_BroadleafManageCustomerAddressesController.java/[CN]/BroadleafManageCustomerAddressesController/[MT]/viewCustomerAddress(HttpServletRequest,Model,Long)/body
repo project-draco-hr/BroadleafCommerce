@@ -1,0 +1,12 @@
+{
+  CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
+  if (customerAddress == null) {
+    throw new IllegalArgumentException("Customer Address not found with the specified customerAddressId");
+  }
+  CustomerAddressForm form=new CustomerAddressForm();
+  form.setAddress(customerAddress.getAddress());
+  form.setAddressName(customerAddress.getAddressName());
+  form.setCustomerAddressId(customerAddress.getId());
+  model.addAttribute("customerAddressForm",form);
+  return getCustomerAddressesView();
+}
