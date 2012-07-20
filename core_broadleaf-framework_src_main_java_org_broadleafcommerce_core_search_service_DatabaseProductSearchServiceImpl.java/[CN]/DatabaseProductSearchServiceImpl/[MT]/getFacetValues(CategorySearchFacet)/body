@@ -1,13 +1,8 @@
 {
-  String qualifiedFieldName=facet.getSearchFacet().getFieldName();
-  String[] splitFieldName=qualifiedFieldName.split("\\.");
-  if (splitFieldName.length != 2) {
-    throw new IllegalArgumentException("The search facet field was not a qualified field: " + qualifiedFieldName);
-  }
   if (facet.getSearchFacet().getSearchFacetRanges().size() > 0) {
-    return getRangeFacetValues(facet,splitFieldName[0],splitFieldName[1]);
+    return getRangeFacetValues(facet);
   }
  else {
-    return getMatchFacetValues(facet,splitFieldName[0],splitFieldName[1]);
+    return getMatchFacetValues(facet);
   }
 }

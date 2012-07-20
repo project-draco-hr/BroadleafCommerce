@@ -1,15 +1,5 @@
 {
-  Date myDate;
-  Long myCurrentDateResolution=currentDateResolution;
-synchronized (DATE_LOCK) {
-    if (currentDate.getTime() - this.currentDate.getTime() > myCurrentDateResolution) {
-      this.currentDate=new Date(currentDate.getTime());
-      myDate=currentDate;
-    }
- else {
-      myDate=this.currentDate;
-    }
-  }
+  Date myDate=getDateFactoringInDateResolution(currentDate);
   TypedQuery<Product> query=em.createNamedQuery("BC_READ_ACTIVE_PRODUCTS_BY_CATEGORY",Product.class);
   query.setParameter("categoryId",categoryId);
   query.setParameter("currentDate",myDate);

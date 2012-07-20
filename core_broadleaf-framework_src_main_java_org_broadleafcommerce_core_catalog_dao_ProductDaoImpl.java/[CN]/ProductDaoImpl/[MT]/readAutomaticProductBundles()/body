@@ -1,15 +1,5 @@
 {
-  Date myDate;
-  Long myCurrentDateResolution=currentDateResolution;
-synchronized (DATE_LOCK) {
-    if (currentDate.getTime() - this.currentDate.getTime() > myCurrentDateResolution) {
-      this.currentDate=new Date(currentDate.getTime());
-      myDate=currentDate;
-    }
- else {
-      myDate=this.currentDate;
-    }
-  }
+  Date myDate=getDateFactoringInDateResolution(currentDate);
   TypedQuery<ProductBundle> query=em.createNamedQuery("BC_READ_AUTOMATIC_PRODUCT_BUNDLES",ProductBundle.class);
   query.setParameter("currentDate",myDate);
   query.setParameter("autoBundle",Boolean.TRUE);

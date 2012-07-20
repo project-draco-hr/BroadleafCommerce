@@ -1,0 +1,15 @@
+{
+  CriteriaQuery<T> criteria=em.getCriteriaBuilder().createQuery(fieldValueClass);
+  Root<ProductImpl> product=criteria.from(ProductImpl.class);
+  Path<Sku> sku=product.get("defaultSku");
+  Path<?> pathToUse;
+  if (fieldName.contains("defaultSku.")) {
+    pathToUse=sku;
+    fieldName=fieldName.substring("defaultSku.".length());
+  }
+ else {
+    pathToUse=product;
+  }
+  criteria.distinct(true).select(pathToUse.get(fieldName).as(fieldValueClass));
+  return em.createQuery(criteria).getResultList();
+}
