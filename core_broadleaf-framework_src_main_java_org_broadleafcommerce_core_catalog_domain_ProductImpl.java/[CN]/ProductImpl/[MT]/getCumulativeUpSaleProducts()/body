@@ -1,7 +1,13 @@
 {
-  List<RelatedProduct> products=getUpSaleProducts();
-  for (  Category parentCategory : getAllParentCategories()) {
-    products.addAll(parentCategory.getCumulativeUpSaleProducts());
+  List<RelatedProduct> returnProducts=getUpSaleProducts();
+  if (defaultCategory != null) {
+    List<RelatedProduct> categoryProducts=defaultCategory.getCumulativeUpSaleProducts();
+    if (categoryProducts != null) {
+      returnProducts.addAll(categoryProducts);
+    }
   }
-  return products;
+  if (returnProducts.contains(this)) {
+    returnProducts.remove(this);
+  }
+  return returnProducts;
 }

@@ -1,7 +1,13 @@
 {
-  List<RelatedProduct> products=getCrossSaleProducts();
-  for (  Category parentCategory : getAllParentCategories()) {
-    products.addAll(parentCategory.getCumulativeCrossSaleProducts());
+  List<RelatedProduct> returnProducts=getCrossSaleProducts();
+  if (defaultCategory != null) {
+    List<RelatedProduct> categoryProducts=defaultCategory.getCumulativeCrossSaleProducts();
+    if (categoryProducts != null) {
+      returnProducts.addAll(categoryProducts);
+    }
   }
-  return products;
+  if (returnProducts.contains(this)) {
+    returnProducts.remove(this);
+  }
+  return returnProducts;
 }
