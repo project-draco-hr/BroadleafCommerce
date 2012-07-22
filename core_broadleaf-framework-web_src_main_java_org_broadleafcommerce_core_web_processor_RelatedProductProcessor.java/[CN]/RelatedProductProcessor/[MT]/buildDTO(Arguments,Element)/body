@@ -1,0 +1,23 @@
+{
+  RelatedProductDTO relatedProductDTO=new RelatedProductDTO();
+  String productIdStr=element.getAttributeValue("productId");
+  String categoryIdStr=element.getAttributeValue("categoryId");
+  String quantityStr=element.getAttributeValue("quantity");
+  String typeStr=element.getAttributeValue("type");
+  if (productIdStr != null) {
+    relatedProductDTO.setProductId((Long)StandardExpressionProcessor.processExpression(args,productIdStr));
+  }
+  if (categoryIdStr != null) {
+    relatedProductDTO.setCategoryId((Long)StandardExpressionProcessor.processExpression(args,categoryIdStr));
+  }
+  if (quantityStr != null) {
+    relatedProductDTO.setQuantity(((BigDecimal)StandardExpressionProcessor.processExpression(args,quantityStr)).intValue());
+  }
+  if (typeStr != null && RelatedProductTypeEnum.getInstance(typeStr) != null) {
+    relatedProductDTO.setType(RelatedProductTypeEnum.getInstance(typeStr));
+  }
+  if ("false".equalsIgnoreCase(element.getAttributeValue("cumulativeResults"))) {
+    relatedProductDTO.setCumulativeResults(false);
+  }
+  return relatedProductDTO;
+}

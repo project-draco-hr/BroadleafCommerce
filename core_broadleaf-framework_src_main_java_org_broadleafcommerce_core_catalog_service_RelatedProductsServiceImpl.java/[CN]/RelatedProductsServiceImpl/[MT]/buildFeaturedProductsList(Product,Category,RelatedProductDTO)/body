@@ -1,0 +1,16 @@
+{
+  List<FeaturedProduct> returnFeaturedProducts=null;
+  if (product != null) {
+    category=product.getDefaultCategory();
+  }
+  if (category != null) {
+    if (relatedProductDTO.isCumulativeResults()) {
+      returnFeaturedProducts=category.getCumulativeFeaturedProducts();
+    }
+ else {
+      returnFeaturedProducts=category.getFeaturedProducts();
+    }
+  }
+  removeCurrentProductFromReturnList(product,returnFeaturedProducts);
+  return resizeList(returnFeaturedProducts,relatedProductDTO.getQuantity());
+}

@@ -1,0 +1,20 @@
+{
+  List<? extends PromotableProduct> returnUpSaleProducts=null;
+  if (product != null) {
+    if (relatedProductDTO.isCumulativeResults()) {
+      returnUpSaleProducts=product.getCumulativeUpSaleProducts();
+    }
+ else {
+      returnUpSaleProducts=product.getUpSaleProducts();
+    }
+  }
+ else   if (category != null) {
+    if (relatedProductDTO.isCumulativeResults()) {
+      returnUpSaleProducts=category.getCumulativeUpSaleProducts();
+    }
+ else {
+      returnUpSaleProducts=category.getUpSaleProducts();
+    }
+  }
+  return resizeList(returnUpSaleProducts,relatedProductDTO.getQuantity());
+}

@@ -1,0 +1,16 @@
+{
+  Product product=lookupProduct(relatedProductDTO);
+  Category category=lookupCategory(relatedProductDTO);
+  if (RelatedProductTypeEnum.FEATURED.equals(relatedProductDTO.getType())) {
+    return buildFeaturedProductsList(product,category,relatedProductDTO);
+  }
+ else   if (RelatedProductTypeEnum.CROSS_SALE.equals(relatedProductDTO.getType())) {
+    return buildCrossSaleProductsList(product,category,relatedProductDTO);
+  }
+ else   if (RelatedProductTypeEnum.UP_SALE.equals(relatedProductDTO.getType())) {
+    return buildUpSaleProductsList(product,category,relatedProductDTO);
+  }
+ else {
+    throw new IllegalArgumentException("RelatedProductType " + relatedProductDTO.getType() + " not supported.");
+  }
+}

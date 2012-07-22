@@ -1,0 +1,20 @@
+{
+  List<? extends PromotableProduct> crossSaleProducts=null;
+  if (product != null) {
+    if (relatedProductDTO.isCumulativeResults()) {
+      crossSaleProducts=product.getCumulativeCrossSaleProducts();
+    }
+ else {
+      crossSaleProducts=product.getCrossSaleProducts();
+    }
+  }
+ else   if (category != null) {
+    if (relatedProductDTO.isCumulativeResults()) {
+      crossSaleProducts=category.getCumulativeCrossSaleProducts();
+    }
+ else {
+      crossSaleProducts=category.getCrossSaleProducts();
+    }
+  }
+  return resizeList(crossSaleProducts,relatedProductDTO.getQuantity());
+}
