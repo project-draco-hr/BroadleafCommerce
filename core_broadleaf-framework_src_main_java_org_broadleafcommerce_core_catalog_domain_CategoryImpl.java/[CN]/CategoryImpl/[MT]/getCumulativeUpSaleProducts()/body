@@ -1,7 +1,8 @@
 {
-  List<RelatedProduct> products=getUpSaleProducts();
-  for (  Category parentCategory : getAllParentCategories()) {
-    products.addAll(parentCategory.getCumulativeUpSaleProducts());
+  Set<RelatedProduct> returnProductsSet=new LinkedHashSet<RelatedProduct>();
+  List<Category> categoryHierarchy=buildCategoryHierarchy(null);
+  for (  Category category : categoryHierarchy) {
+    returnProductsSet.addAll(category.getUpSaleProducts());
   }
-  return products;
+  return new ArrayList<RelatedProduct>(returnProductsSet);
 }

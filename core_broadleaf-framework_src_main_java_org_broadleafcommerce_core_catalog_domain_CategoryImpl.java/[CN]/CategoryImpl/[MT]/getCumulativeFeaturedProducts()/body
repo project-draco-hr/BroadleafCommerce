@@ -1,7 +1,8 @@
 {
-  List<FeaturedProduct> products=getFeaturedProducts();
-  for (  Category parentCategory : getAllParentCategories()) {
-    products.addAll(parentCategory.getCumulativeFeaturedProducts());
+  Set<FeaturedProduct> returnProductsSet=new LinkedHashSet<FeaturedProduct>();
+  List<Category> categoryHierarchy=buildCategoryHierarchy(null);
+  for (  Category category : categoryHierarchy) {
+    returnProductsSet.addAll(category.getFeaturedProducts());
   }
-  return products;
+  return new ArrayList<FeaturedProduct>(returnProductsSet);
 }

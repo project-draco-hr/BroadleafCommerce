@@ -1,7 +1,8 @@
 {
-  List<RelatedProduct> products=getCrossSaleProducts();
-  for (  Category parentCategory : getAllParentCategories()) {
-    products.addAll(parentCategory.getCumulativeCrossSaleProducts());
+  Set<RelatedProduct> returnProductsSet=new LinkedHashSet<RelatedProduct>();
+  List<Category> categoryHierarchy=buildCategoryHierarchy(null);
+  for (  Category category : categoryHierarchy) {
+    returnProductsSet.addAll(category.getCrossSaleProducts());
   }
-  return products;
+  return new ArrayList<RelatedProduct>(returnProductsSet);
 }

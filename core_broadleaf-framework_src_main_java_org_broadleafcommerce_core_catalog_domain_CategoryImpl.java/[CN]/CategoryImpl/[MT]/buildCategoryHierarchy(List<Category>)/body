@@ -1,0 +1,11 @@
+{
+  if (currentHierarchy == null) {
+    currentHierarchy=new ArrayList<Category>();
+    currentHierarchy.add(this);
+  }
+  if (defaultParentCategory != null && !currentHierarchy.contains(defaultParentCategory)) {
+    currentHierarchy.add(defaultParentCategory);
+    defaultParentCategory.buildCategoryHierarchy(currentHierarchy);
+  }
+  return currentHierarchy;
+}
