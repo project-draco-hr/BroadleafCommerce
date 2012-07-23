@@ -1,4 +1,16 @@
 {
+  if (environments == null || environments.size() == 0) {
+    environments=defaultEnvironments;
+  }
+  if (propertyLocations == null || propertyLocations.size() == 0) {
+    propertyLocations=defaultPropertyLocations;
+  }
+ else {
+    Set<Resource> combinedLocations=new TreeSet<Resource>();
+    combinedLocations.addAll(defaultPropertyLocations);
+    combinedLocations.addAll(propertyLocations);
+    propertyLocations=combinedLocations;
+  }
   if (!environments.contains(defaultEnvironment)) {
     throw new AssertionError("Default environment '" + defaultEnvironment + "' not listed in environment list");
   }
@@ -6,9 +18,21 @@
     keyResolver=new SystemPropertyRuntimeEnvironmentKeyResolver();
   }
   String environment=determineEnvironment();
+  Resource[] sharedPropertiesLocation=createSharedPropertiesResource(environment);
+  Resource[] sharedCommonLocation=createSharedCommonResource();
   Resource[] propertiesLocation=createPropertiesResource(environment);
   Resource[] commonLocation=createCommonResource();
   ArrayList<Resource> allLocations=new ArrayList<Resource>();
+  for (  Resource resource : sharedCommonLocation) {
+    if (resource.exists()) {
+      allLocations.add(resource);
+    }
+  }
+  for (  Resource resource : sharedPropertiesLocation) {
+    if (resource.exists()) {
+      allLocations.add(resource);
+    }
+  }
   for (  Resource resource : commonLocation) {
     if (resource.exists()) {
       allLocations.add(resource);
@@ -19,6 +43,18 @@
       allLocations.add(resource);
     }
   }
+  Properties props=new Properties();
+  for (  Resource resource : allLocations) {
+    if (resource.exists()) {
+      props=new Properties(props);
+      props.load(resource.getInputStream());
+      for (      Entry<Object,Object> entry : props.entrySet()) {
+        System.out.println("***** " + entry.getKey() + " "+ entry.getValue());
+      }
+    }
+ else {
+      LOG.warn("Unable to locate resource: " + resource.getFilename());
+    }
+  }
   setLocations(allLocations.toArray(new Resource[]{}));
-  validateProperties();
 }
