@@ -1,0 +1,18 @@
+{
+  if (this == obj)   return true;
+  if (obj == null)   return false;
+  if (getClass() != obj.getClass())   return false;
+  PageItemCriteriaImpl other=(PageItemCriteriaImpl)obj;
+  if (id != null && other.id != null) {
+    return id.equals(other.id);
+  }
+  if (orderItemMatchRule == null) {
+    if (other.orderItemMatchRule != null)     return false;
+  }
+ else   if (!orderItemMatchRule.equals(other.orderItemMatchRule))   return false;
+  if (quantity == null) {
+    if (other.quantity != null)     return false;
+  }
+ else   if (!quantity.equals(other.quantity))   return false;
+  return true;
+}

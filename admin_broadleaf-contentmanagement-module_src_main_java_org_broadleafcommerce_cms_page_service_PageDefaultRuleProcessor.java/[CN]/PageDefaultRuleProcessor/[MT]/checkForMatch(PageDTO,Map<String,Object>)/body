@@ -1,0 +1,18 @@
+{
+  String ruleExpression=page.getRuleExpression();
+  if (ruleExpression != null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Processing content rule for page with id " + page.getId() + ".   Value = "+ ruleExpression);
+    }
+    boolean result=executeExpression(ruleExpression,vars);
+    if (!result) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Page failed to pass rule and will not be included for Page with id " + page.getId() + ".   Value = "+ ruleExpression);
+      }
+    }
+    return result;
+  }
+ else {
+    return true;
+  }
+}

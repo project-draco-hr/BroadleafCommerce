@@ -1,0 +1,21 @@
+{
+  StringBuffer ruleExpression=null;
+  Map<String,PageRule> ruleMap=page.getPageMatchRules();
+  if (ruleMap != null) {
+    for (    String ruleKey : ruleMap.keySet()) {
+      if (ruleExpression == null) {
+        ruleExpression=new StringBuffer(ruleMap.get(ruleKey).getMatchRule());
+      }
+ else {
+        ruleExpression.append(AND);
+        ruleExpression.append(ruleMap.get(ruleKey).getMatchRule());
+      }
+    }
+  }
+  if (ruleExpression != null) {
+    return ruleExpression.toString();
+  }
+ else {
+    return null;
+  }
+}
