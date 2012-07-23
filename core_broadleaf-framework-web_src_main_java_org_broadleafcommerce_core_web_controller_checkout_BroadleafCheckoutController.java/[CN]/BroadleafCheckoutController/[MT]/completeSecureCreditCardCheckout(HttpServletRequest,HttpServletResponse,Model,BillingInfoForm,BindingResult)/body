@@ -3,6 +3,9 @@
   if (cart != null) {
     Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
     orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
+    if (billingForm.isUseShippingAddress()) {
+      copyShippingAddressToBillingAddress(cart,billingForm);
+    }
     billingInfoFormValidator.validate(billingForm,result);
     if (result.hasErrors()) {
       checkout(request,response,model);
