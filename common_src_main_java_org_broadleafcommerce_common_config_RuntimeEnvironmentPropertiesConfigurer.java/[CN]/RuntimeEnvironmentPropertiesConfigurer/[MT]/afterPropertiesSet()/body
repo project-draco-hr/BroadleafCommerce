@@ -2,15 +2,12 @@
   if (environments == null || environments.size() == 0) {
     environments=defaultEnvironments;
   }
-  if (propertyLocations == null || propertyLocations.size() == 0) {
-    propertyLocations=defaultPropertyLocations;
-  }
- else {
-    Set<Resource> combinedLocations=new TreeSet<Resource>();
-    combinedLocations.addAll(defaultPropertyLocations);
+  Set<Resource> combinedLocations=new HashSet<Resource>();
+  combinedLocations.addAll(defaultPropertyLocations);
+  if (propertyLocations != null && propertyLocations.size() > 0) {
     combinedLocations.addAll(propertyLocations);
-    propertyLocations=combinedLocations;
   }
+  propertyLocations=combinedLocations;
   if (!environments.contains(defaultEnvironment)) {
     throw new AssertionError("Default environment '" + defaultEnvironment + "' not listed in environment list");
   }
@@ -18,11 +15,17 @@
     keyResolver=new SystemPropertyRuntimeEnvironmentKeyResolver();
   }
   String environment=determineEnvironment();
+  Resource[] blcPropertiesLocation=createBroadleafResource();
   Resource[] sharedPropertiesLocation=createSharedPropertiesResource(environment);
   Resource[] sharedCommonLocation=createSharedCommonResource();
   Resource[] propertiesLocation=createPropertiesResource(environment);
   Resource[] commonLocation=createCommonResource();
   ArrayList<Resource> allLocations=new ArrayList<Resource>();
+  for (  Resource resource : blcPropertiesLocation) {
+    if (resource.exists()) {
+      allLocations.add(resource);
+    }
+  }
   for (  Resource resource : sharedCommonLocation) {
     if (resource.exists()) {
       allLocations.add(resource);
@@ -43,17 +46,19 @@
       allLocations.add(resource);
     }
   }
-  Properties props=new Properties();
-  for (  Resource resource : allLocations) {
-    if (resource.exists()) {
-      props=new Properties(props);
-      props.load(resource.getInputStream());
-      for (      Entry<Object,Object> entry : props.entrySet()) {
-        System.out.println("***** " + entry.getKey() + " "+ entry.getValue());
+  if (LOG.isDebugEnabled()) {
+    Properties props=new Properties();
+    for (    Resource resource : allLocations) {
+      if (resource.exists()) {
+        props=new Properties(props);
+        props.load(resource.getInputStream());
+        for (        Entry<Object,Object> entry : props.entrySet()) {
+          LOG.debug("Read " + entry.getKey() + " as "+ entry.getValue());
+        }
       }
-    }
  else {
-      LOG.warn("Unable to locate resource: " + resource.getFilename());
+        LOG.debug("Unable to locate resource: " + resource.getFilename());
+      }
     }
   }
   setLocations(allLocations.toArray(new Resource[]{}));
