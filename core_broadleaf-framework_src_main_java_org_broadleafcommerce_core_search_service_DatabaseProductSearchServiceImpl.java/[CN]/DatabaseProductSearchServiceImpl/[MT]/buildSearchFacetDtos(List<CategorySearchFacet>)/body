@@ -1,0 +1,17 @@
+{
+  List<SearchFacetDTO> facets=new ArrayList<SearchFacetDTO>();
+  for (  CategorySearchFacet facet : categoryFacets) {
+    SearchFacetDTO dto=new SearchFacetDTO();
+    dto.setFacet(facet);
+    dto.setShowQuantity(false);
+    dto.setFacetValues(getFacetValues(facet));
+    facets.add(dto);
+  }
+  Collections.sort(facets,new Comparator<SearchFacetDTO>(){
+    public int compare(    SearchFacetDTO o1,    SearchFacetDTO o2){
+      return o1.getFacet().getPosition().compareTo(o2.getFacet().getPosition());
+    }
+  }
+);
+  return facets;
+}

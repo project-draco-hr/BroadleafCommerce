@@ -1,0 +1,48 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  for (  Entry<String,String[]> entry : searchCriteria.getFilterCriteria().entrySet()) {
+    String key=entry.getKey();
+    List<String> eqValues=new ArrayList<String>();
+    List<String[]> rangeValues=new ArrayList<String[]>();
+    Path<?> pathToUse;
+    if (key.contains("defaultSku.")) {
+      pathToUse=sku;
+      key=key.substring("defaultSku.".length());
+    }
+ else {
+      pathToUse=product;
+    }
+    for (    String value : entry.getValue()) {
+      if (value.contains("blcRange[")) {
+        String[] rangeValue=new String[]{value.substring(value.indexOf("[") + 1,value.indexOf(":")),value.substring(value.indexOf(":") + 1,value.indexOf("]"))};
+        rangeValues.add(rangeValue);
+      }
+ else {
+        eqValues.add(value);
+      }
+    }
+    if (eqValues.size() > 0) {
+      restrictions.add(pathToUse.get(key).in(eqValues));
+    }
+    List<Predicate> rangeRestrictions=new ArrayList<Predicate>();
+    for (    String[] range : rangeValues) {
+      BigDecimal min=new BigDecimal(range[0]);
+      BigDecimal max=null;
+      if (range[1] != null && !range[1].equals("null")) {
+        max=new BigDecimal(range[1]);
+      }
+      Predicate minRange=builder.greaterThan(pathToUse.get(key).as(BigDecimal.class),min);
+      Predicate maxRange=null;
+      if (max != null) {
+        maxRange=builder.lessThan(pathToUse.get(key).as(BigDecimal.class),max);
+        rangeRestrictions.add(builder.and(minRange,maxRange));
+      }
+ else {
+        rangeRestrictions.add(minRange);
+      }
+    }
+    if (rangeRestrictions.size() > 0) {
+      restrictions.add(builder.or(rangeRestrictions.toArray(new Predicate[rangeRestrictions.size()])));
+    }
+  }
+}

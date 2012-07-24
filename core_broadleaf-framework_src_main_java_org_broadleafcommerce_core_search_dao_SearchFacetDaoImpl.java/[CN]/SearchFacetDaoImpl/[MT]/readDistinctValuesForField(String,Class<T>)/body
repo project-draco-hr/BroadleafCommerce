@@ -1,5 +1,6 @@
 {
-  CriteriaQuery<T> criteria=em.getCriteriaBuilder().createQuery(fieldValueClass);
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<T> criteria=builder.createQuery(fieldValueClass);
   Root<ProductImpl> product=criteria.from(ProductImpl.class);
   Path<Sku> sku=product.get("defaultSku");
   Path<?> pathToUse;
