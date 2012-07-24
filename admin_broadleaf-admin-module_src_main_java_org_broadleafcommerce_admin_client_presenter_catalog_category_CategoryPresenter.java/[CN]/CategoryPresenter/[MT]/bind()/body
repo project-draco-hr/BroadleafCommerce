@@ -8,7 +8,7 @@
   allChildCategoriesPresenter.bind();
   childProductsPresenter.bind();
   ((TreeGrid)display.getListDisplay().getGrid()).addDataArrivedHandler(new DataArrivedHandler(){
-    public void onDataArrived(    DataArrivedEvent event){
+    @Override public void onDataArrived(    DataArrivedEvent event){
       Record[] records=event.getParentNode().getAttributeAsRecordArray("children");
       for (      Record record : records) {
         String hasChildren=record.getAttribute(CategoryTreeDataSourceFactory.hasChildrenProperty);
@@ -20,10 +20,10 @@
   }
 );
   getDisplay().getRemoveOrphanedButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         SC.confirm(BLCMain.getMessageManager().getString("confirmDelete"),new BooleanCallback(){
-          public void execute(          Boolean value){
+          @Override public void execute(          Boolean value){
             if (value != null && value) {
               getDisplay().getOrphanedCategoryGrid().removeSelectedData();
               getDisplay().getRemoveOrphanedButton().disable();
@@ -37,10 +37,10 @@
   }
 );
   getDisplay().getInsertOrphanButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         getDisplay().getAllCategoriesDisplay().getGrid().addData(getDisplay().getOrphanedCategoryGrid().getSelectedRecord(),new DSCallback(){
-          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
             reloadParentTreeNodeRecords(true);
             getDisplay().getOrphanedCategoryGrid().invalidateCache();
             getDisplay().getRemoveOrphanedButton().disable();
@@ -53,7 +53,7 @@
   }
 );
   getDisplay().getOrphanedCategoryGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
         getDisplay().getRemoveOrphanedButton().enable();
         if (display.getListDisplay().getGrid().getSelectedRecord() != null && !getDisplay().getAllCategoriesDisplay().getGrid().isDisabled()) {

@@ -1,13 +1,13 @@
 {
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categoryTreeDS",new CategoryTreeDataSourceFactory(),null,new Object[]{rootId,rootName},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource top){
+    @Override public void onSetupSuccess(    DataSource top){
       setupDisplayItems(top);
       ((TreeGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{},"250","100");
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categorySearchDS",new CategorySearchDataSourceFactory(),new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.JOINSTRUCTURE,OperationType.ENTITY,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       ListGridDataSource categorySearchDataSource=(ListGridDataSource)result;
       categorySearchDataSource.resetPermanentFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
       EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
@@ -16,14 +16,14 @@
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("allChildCategoriesDS",new CategoryListDataSourceFactory(),new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       allChildCategoriesPresenter=new AllChildCategoriesPresenter(CategoryPresenter.this,getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("categorySearchTitle"));
       allChildCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orphanedCategoriesDS",new OrphanedCategoryListDataSourceFactory(),null,new Object[]{rootId},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       getDisplay().getOrphanedCategoryGrid().setDataSource(result);
       ((ListGridDataSource)result).setAssociatedGrid(getDisplay().getOrphanedCategoryGrid());
       ((ListGridDataSource)result).setupGridFields(new String[]{"name","urlKey"});
@@ -34,7 +34,7 @@
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productSearchDS",new ProductListDataSourceFactory(),new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       ListGridDataSource productSearchDataSource=(ListGridDataSource)result;
       productSearchDataSource.resetPermanentFieldVisibility("name","description","model","manufacturer","activeStartDate","activeEndDate");
       EntitySearchDialog productSearchView=new EntitySearchDialog(productSearchDataSource);
@@ -43,26 +43,23 @@
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("featuredProductsDS",new FeaturedProductListDataSourceFactory(),new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       featuredPresenter=new EditableJoinStructurePresenter(getDisplay().getFeaturedDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
       featuredPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","promotionMessage"},new Boolean[]{false,true});
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("allChildProductsDS",new AllProductsDataSourceFactory(),new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       childProductsPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllProductsDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchPrompt"));
       childProductsPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","model","manufacturer"},new Boolean[]{false,false,false});
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("mediaMapDS",new MediaMapDataSourceFactory(this),null,new Object[]{getMediaMapKeys()},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
-      Map<String,Object> initialValues=new HashMap<String,Object>(2);
-      initialValues.put("name",BLCMain.getMessageManager().getString("mediaNameDefault"));
-      initialValues.put("label",BLCMain.getMessageManager().getString("mediaLabelDefault"));
-      mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("newMediaTitle"),initialValues);
-      mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","name","url","label"},new Boolean[]{true,true,true,true});
+    @Override public void onSetupSuccess(    DataSource result){
+      mediaPresenter=new MapStructurePresenter(getDisplay().getMediaDisplay(),getMediaEntityView(),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("newMediaTitle"));
+      mediaPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","url","title","altText","tags"},new Boolean[]{true,true,true,true,true});
     }
   }
 ));
