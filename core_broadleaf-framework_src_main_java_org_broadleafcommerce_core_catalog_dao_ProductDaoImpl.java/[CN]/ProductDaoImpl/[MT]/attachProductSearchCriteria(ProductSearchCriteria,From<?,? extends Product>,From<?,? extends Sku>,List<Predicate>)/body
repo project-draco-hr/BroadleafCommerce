@@ -9,6 +9,12 @@
       pathToUse=sku;
       key=key.substring("defaultSku.".length());
     }
+ else     if (key.contains("productAttribute.")) {
+      pathToUse=product.join("productAttributes");
+      key=key.substring("productAttribute.".length());
+      restrictions.add(builder.equal(pathToUse.get("name").as(String.class),key));
+      key="value";
+    }
  else {
       pathToUse=product;
     }

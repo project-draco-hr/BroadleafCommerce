@@ -3,7 +3,7 @@
   CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
   Root<CategoryImpl> category=criteria.from(CategoryImpl.class);
   Join<Category,Product> product=category.join("allProducts");
-  Path<Sku> sku=product.get("defaultSku");
+  Join<Product,Sku> sku=product.join("defaultSku");
   criteria.select(product);
   List<Predicate> restrictions=new ArrayList<Predicate>();
   restrictions.add(builder.equal(category.get("id"),categoryId));

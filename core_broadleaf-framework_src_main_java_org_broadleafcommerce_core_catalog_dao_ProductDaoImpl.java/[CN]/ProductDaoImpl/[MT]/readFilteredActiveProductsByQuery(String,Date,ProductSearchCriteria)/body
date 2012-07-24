@@ -2,7 +2,7 @@
   CriteriaBuilder builder=em.getCriteriaBuilder();
   CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
   Root<ProductImpl> product=criteria.from(ProductImpl.class);
-  Path<Sku> sku=product.get("defaultSku");
+  Join<Product,Sku> sku=product.join("defaultSku");
   criteria.select(product);
   List<Predicate> restrictions=new ArrayList<Predicate>();
   String lq=query.toLowerCase();
