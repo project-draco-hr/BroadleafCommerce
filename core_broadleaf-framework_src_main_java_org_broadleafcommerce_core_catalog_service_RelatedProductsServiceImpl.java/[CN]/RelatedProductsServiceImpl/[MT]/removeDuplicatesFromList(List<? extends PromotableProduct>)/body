@@ -1,0 +1,18 @@
+{
+  Set<PromotableProduct> productSet=new LinkedHashSet<PromotableProduct>();
+  Set<Product> relatedProductSet=new LinkedHashSet<Product>();
+  if (returnPromotableProducts != null) {
+    for (    PromotableProduct p : returnPromotableProducts) {
+      if (!relatedProductSet.contains(p.getRelatedProduct())) {
+        productSet.add(p);
+        relatedProductSet.add(p.getRelatedProduct());
+      }
+    }
+  }
+ else {
+    return null;
+  }
+  returnPromotableProducts.clear();
+  returnPromotableProducts.addAll(new ArrayList(productSet));
+  return returnPromotableProducts;
+}
