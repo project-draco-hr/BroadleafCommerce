@@ -9,6 +9,10 @@
   }
   customerAddress.setAddress(form.getAddress());
   customerAddress.setAddressName(form.getAddressName());
-  customerAddressService.saveCustomerAddress(customerAddress);
+  customerAddress=customerAddressService.saveCustomerAddress(customerAddress);
+  if (form.getAddress().isDefault()) {
+    customerAddressService.makeCustomerAddressDefault(customerAddress.getId(),customerAddress.getCustomer().getId());
+  }
+  redirectAttributes.addFlashAttribute("successMessage",getAddressUpdatedMessage());
   return getCustomerAddressesRedirect();
 }
