@@ -1,14 +1,22 @@
 {
   Product cloneProduct=catalogService.findProductById(productId);
   Sku cloneSku=cloneProduct.getDefaultSku();
+  cloneSku.getSkuMedia().size();
   em.detach(cloneSku);
   cloneSku.setId(null);
+  cloneProduct.setDefaultSku(cloneSku);
+  cloneProduct.getProductOptions().size();
+  cloneProduct.getAllParentCategories().size();
   em.detach(cloneProduct);
   cloneProduct.setId(null);
-  cloneProduct.setDefaultSku(cloneSku);
   Product derivedProduct=catalogService.saveProduct(cloneProduct);
-  derivedProduct.setProductOptions(cloneProduct.getProductOptions());
-  derivedProduct.setAllParentCategories(cloneProduct.getAllParentCategories());
-  derivedProduct=catalogService.saveProduct(derivedProduct);
+  cloneProduct=catalogService.findProductById(productId);
+  for (  Sku additionalSku : cloneProduct.getAdditionalSkus()) {
+    additionalSku.getProductOptionValues().size();
+    em.detach(additionalSku);
+    additionalSku.setId(null);
+    additionalSku.setProduct(derivedProduct);
+    catalogService.saveSku(additionalSku);
+  }
   return true;
 }
