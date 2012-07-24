@@ -1,0 +1,14 @@
+{
+  Product cloneProduct=catalogService.findProductById(productId);
+  Sku cloneSku=cloneProduct.getDefaultSku();
+  em.detach(cloneSku);
+  cloneSku.setId(null);
+  em.detach(cloneProduct);
+  cloneProduct.setId(null);
+  cloneProduct.setDefaultSku(cloneSku);
+  Product derivedProduct=catalogService.saveProduct(cloneProduct);
+  derivedProduct.setProductOptions(cloneProduct.getProductOptions());
+  derivedProduct.setAllParentCategories(cloneProduct.getAllParentCategories());
+  derivedProduct=catalogService.saveProduct(derivedProduct);
+  return true;
+}
