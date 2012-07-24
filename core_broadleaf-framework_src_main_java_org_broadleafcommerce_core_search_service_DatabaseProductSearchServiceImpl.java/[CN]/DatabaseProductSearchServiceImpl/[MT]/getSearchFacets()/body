@@ -1,3 +1,10 @@
 {
-  return buildSearchFacetDtos(searchFacetDao.readAllSearchFacets());
+  String cacheKey=CACHE_KEY_PREFIX + "blc-search";
+  List<SearchFacetDTO> facets=(List<SearchFacetDTO>)cache.get(cacheKey);
+  if (facets == null) {
+    facets=buildSearchFacetDtos(searchFacetDao.readAllSearchFacets());
+    Element element=new Element(cacheKey,facets);
+    cache.put(element);
+  }
+  return facets;
 }

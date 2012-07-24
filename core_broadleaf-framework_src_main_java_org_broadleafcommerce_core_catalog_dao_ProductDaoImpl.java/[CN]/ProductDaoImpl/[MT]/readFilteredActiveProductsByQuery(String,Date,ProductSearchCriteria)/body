@@ -9,6 +9,7 @@
   restrictions.add(builder.or(builder.like(builder.lower(sku.get("name").as(String.class)),'%' + lq + '%'),builder.like(builder.lower(sku.get("longDescription").as(String.class)),'%' + lq + '%')));
   attachProductSearchCriteria(searchCriteria,product,sku,restrictions);
   attachActiveRestriction(currentDate,product,sku,restrictions);
+  attachOrderBy(searchCriteria,product,sku,criteria);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
   return (List<Product>)em.createQuery(criteria).getResultList();
 }
