@@ -1,0 +1,23 @@
+{
+  String viewName=originalViewName;
+  if (!isAjaxRequest()) {
+    addStaticVariable("templateName",originalViewName);
+    String longestPrefix="";
+    for (    Entry<String,String> entry : layoutMap.entrySet()) {
+      String viewPrefix=entry.getKey();
+      String viewLayout=entry.getValue();
+      if (viewPrefix.length() > longestPrefix.length()) {
+        if (originalViewName.startsWith(viewPrefix)) {
+          longestPrefix=viewPrefix;
+          if (!"NONE".equals(viewLayout)) {
+            viewName=viewLayout;
+          }
+        }
+      }
+    }
+    if (longestPrefix.equals("")) {
+      viewName=getFullPageLayout();
+    }
+  }
+  return super.loadView(viewName,locale);
+}
