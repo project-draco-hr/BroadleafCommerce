@@ -18,7 +18,9 @@
     }
     if (getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
       BigDecimal offerValue=adjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
-      offerValue=offerValue.setScale(2,RoundingMode.HALF_EVEN);
+      if (isRoundOfferValues()) {
+        offerValue=offerValue.setScale(roundingScale,roundingMode);
+      }
       setValue(new Money(offerValue,adjustmentPrice.getCurrency(),5));
     }
     if (adjustmentPrice.lessThan(getValue())) {
