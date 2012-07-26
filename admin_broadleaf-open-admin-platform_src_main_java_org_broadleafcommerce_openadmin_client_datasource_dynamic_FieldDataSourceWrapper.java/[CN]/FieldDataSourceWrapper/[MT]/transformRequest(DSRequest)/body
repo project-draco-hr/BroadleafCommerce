@@ -6,6 +6,7 @@
   DSResponse response=new DSResponse();
   response.setAttribute("clientContext",dsRequest.getAttributeAsObject("clientContext"));
   response.setStatus(0);
+  HashMap<String,String> duplicateCheck=new HashMap<String,String>();
   List<Record> records=new ArrayList<Record>();
   for (  DataSourceField field : delegate.getFields()) {
     String title=field.getTitle();
@@ -13,6 +14,8 @@
       title=field.getName();
     }
     if (!field.getHidden() && (entered == null || entered.equals("") || (title != null && title.toLowerCase().startsWith(entered.toLowerCase())))) {
+      if (duplicateCheck.get(title) != null)       continue;
+      duplicateCheck.put(title,title);
       Record record=new Record();
       for (      String attribute : field.getAttributes()) {
         record.setAttribute(attribute,field.getAttribute(attribute));
