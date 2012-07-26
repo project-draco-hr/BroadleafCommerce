@@ -1,0 +1,9 @@
+{
+  Money result=new Money(BigDecimal.ZERO);
+  for (  FulfillmentGroup group : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupFee fee : group.getFulfillmentGroupFees()) {
+      result=result.add(fee.getAmount());
+    }
+  }
+  return result;
+}

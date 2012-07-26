@@ -1,0 +1,17 @@
+{
+  boolean appliesToFulfillmentGroup=true;
+  String feeExpression=fee.getExpression();
+  if (!StringUtils.isEmpty(feeExpression)) {
+    Serializable exp=(Serializable)EXPRESSION_CACHE.get(feeExpression);
+    if (exp == null) {
+      ParserContext mvelContext=new ParserContext();
+      mvelContext.addImport("MVEL",MVEL.class);
+      exp=MVEL.compileExpression(feeExpression,mvelContext);
+      EXPRESSION_CACHE.put(feeExpression,exp);
+    }
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("fulfillmentGroup",fulfillmentGroup);
+    return (Boolean)MVEL.executeExpression(feeExpression,vars);
+  }
+  return appliesToFulfillmentGroup;
+}
