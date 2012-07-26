@@ -1,0 +1,9 @@
+{
+  RatingService ratingService=ProcessorUtils.getRatingService(arguments);
+  String ratingVar=element.getAttributeValue("ratingsVar");
+  String itemId=element.getAttributeValue("itemId");
+  RatingSummary ratingSummary=ratingService.readRatingSummary(itemId,RatingType.PRODUCT);
+  if (ratingSummary != null) {
+    addToModel(ratingVar,ratingSummary);
+  }
+}
