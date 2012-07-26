@@ -6,5 +6,10 @@
   if (((DiscreteOrderItem)item).getProduct() != null) {
     orderItemRequest.setProductId(((DiscreteOrderItem)item).getProduct().getId());
   }
+  if (item.getOrderItemAttributes() != null) {
+    for (    Entry<String,OrderItemAttribute> entry : item.getOrderItemAttributes().entrySet()) {
+      orderItemRequest.getItemAttributes().put(entry.getKey(),entry.getValue().getValue());
+    }
+  }
   return orderItemRequest;
 }
