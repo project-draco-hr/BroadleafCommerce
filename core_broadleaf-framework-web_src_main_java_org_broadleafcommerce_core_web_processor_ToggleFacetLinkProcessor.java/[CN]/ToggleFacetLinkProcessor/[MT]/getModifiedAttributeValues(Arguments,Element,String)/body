@@ -1,15 +1,16 @@
 {
   Map<String,String> attrs=new HashMap<String,String>();
+  SearchFacetDTOService facetService=ProcessorUtils.getSearchFacetDTOService(arguments);
   BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
   HttpServletRequest request=blcContext.getRequest();
   String baseUrl=request.getRequestURL().toString();
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
   SearchFacetResultDTO result=(SearchFacetResultDTO)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
-  String key=FacetUtils.getKey(result);
-  String value=FacetUtils.getValue(result);
+  String key=facetService.getKey(result);
+  String value=facetService.getValue(result);
   String[] paramValues=params.get(key);
-  if (ArrayUtils.contains(paramValues,FacetUtils.getValue(result))) {
-    paramValues=(String[])ArrayUtils.removeElement(paramValues,FacetUtils.getValue(result));
+  if (ArrayUtils.contains(paramValues,facetService.getValue(result))) {
+    paramValues=(String[])ArrayUtils.removeElement(paramValues,facetService.getValue(result));
   }
  else {
     paramValues=(String[])ArrayUtils.add(paramValues,value);

@@ -15,11 +15,15 @@
       restrictions.add(builder.equal(pathToUse.get("name").as(String.class),key));
       key="value";
     }
- else {
+ else     if (key.contains("product.")) {
       pathToUse=product;
+      key=key.substring("product.".length());
+    }
+ else {
+      continue;
     }
     for (    String value : entry.getValue()) {
-      if (value.contains("blcRange[")) {
+      if (value.contains("range[")) {
         String[] rangeValue=new String[]{value.substring(value.indexOf("[") + 1,value.indexOf(":")),value.substring(value.indexOf(":") + 1,value.indexOf("]"))};
         rangeValues.add(rangeValue);
       }

@@ -1,0 +1,28 @@
+{
+  ProductSearchCriteria searchCriteria=new ProductSearchCriteria();
+  Map<String,String[]> convertedFacets=new HashMap<String,String[]>();
+  for (Iterator<Entry<String,String[]>> iter=request.getParameterMap().entrySet().iterator(); iter.hasNext(); ) {
+    Map.Entry<String,String[]> entry=iter.next();
+    String key=entry.getKey();
+    if (key.equals(ProductSearchCriteria.SORT_STRING)) {
+      searchCriteria.setSortQuery(entry.getValue()[0]);
+    }
+ else     if (key.equals(ProductSearchCriteria.PAGE_NUMBER)) {
+      searchCriteria.setPage(Integer.parseInt(entry.getValue()[0]));
+    }
+ else     if (key.equals(ProductSearchCriteria.PAGE_SIZE_STRING)) {
+      searchCriteria.setPageSize(Integer.parseInt(entry.getValue()[0]));
+    }
+ else     if (key.equals(ProductSearchCriteria.QUERY_STRING)) {
+      continue;
+    }
+ else {
+      String convertedKey=getConvertedKey(key,availableFacets);
+      if (convertedKey != null) {
+        convertedFacets.put(convertedKey,entry.getValue());
+      }
+    }
+  }
+  searchCriteria.setFilterCriteria(convertedFacets);
+  return searchCriteria;
+}
