@@ -1,0 +1,15 @@
+{
+  Property ruleProperty=entity.findProperty(propertyName);
+  if (ruleProperty != null && !StringUtils.isEmpty(ruleProperty.getValue())) {
+    ruleProperty.setValue(ruleProperty.getRawValue());
+    PageRule rule=structuredContentInstance.getPageMatchRules().get(type.getType());
+    if (rule == null) {
+      rule=(PageRule)entityConfiguration.createEntityInstance(PageRule.class.getName());
+    }
+    rule.setMatchRule(ruleProperty.getValue());
+    structuredContentInstance.getPageMatchRules().put(type.getType(),rule);
+  }
+ else {
+    structuredContentInstance.getPageMatchRules().remove(type.getType());
+  }
+}

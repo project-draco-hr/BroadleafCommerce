@@ -5,12 +5,13 @@
   refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        refresh();
+        extractor.getRemovedItemQualifiers().clear();
+        changeSelection(currentStructuredContentRecord);
       }
     }
   }
 );
-  ruleRefreshButtonHandlerRegistration=getDisplay().getStructuredContentRefreshButton().addClickHandler(new ClickHandler(){
+  ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         extractor.getRemovedItemQualifiers().clear();
@@ -27,7 +28,7 @@
     }
   }
 );
-  ruleSaveButtonHandlerRegistration=getDisplay().getStructuredContentSaveButton().addClickHandler(new ClickHandler(){
+  ruleSaveButtonHandlerRegistration=getDisplay().getRulesSaveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         save();

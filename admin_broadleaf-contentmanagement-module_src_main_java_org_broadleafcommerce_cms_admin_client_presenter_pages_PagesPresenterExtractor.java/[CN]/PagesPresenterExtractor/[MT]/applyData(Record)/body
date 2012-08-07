@@ -1,0 +1,79 @@
+{
+  try {
+    final Map<String,Object> dirtyValues=new HashMap<String,Object>();
+    extractData(selectedRecord,dirtyValues,PagesPresenterInitializer.ATTRIBUTEMAP.get(FilterType.CUSTOMER),getDisplay().getCustomerFilterBuilder(),MVELKEYWORDMAP.get(FilterType.CUSTOMER));
+    extractData(selectedRecord,dirtyValues,PagesPresenterInitializer.ATTRIBUTEMAP.get(FilterType.PRODUCT),getDisplay().getProductFilterBuilder(),MVELKEYWORDMAP.get(FilterType.PRODUCT));
+    extractData(selectedRecord,dirtyValues,PagesPresenterInitializer.ATTRIBUTEMAP.get(FilterType.REQUEST),getDisplay().getRequestFilterBuilder(),MVELKEYWORDMAP.get(FilterType.REQUEST));
+    extractData(selectedRecord,dirtyValues,PagesPresenterInitializer.ATTRIBUTEMAP.get(FilterType.TIME),getDisplay().getTimeFilterBuilder(),MVELKEYWORDMAP.get(FilterType.TIME));
+    extractQualifierData(null,true,dirtyValues);
+    DSRequest requestProperties=new DSRequest();
+    requestProperties.setAttribute("dirtyValues",dirtyValues);
+    for (    String key : dirtyValues.keySet()) {
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().setValue(key,(String)dirtyValues.get(key));
+    }
+    for (    Record d : getDisplay().getListDisplay().getGrid().getRecords()) {
+      printRecord("Before--",d);
+    }
+    getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
+      @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
+        if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+          final String newId=response.getAttribute("newId");
+          System.out.println("the following should not be null????");
+          printRecord("savedRecord",response.getData()[0]);
+          printRecord("Presenter->CurrenPageRecord->",presenter.currentPageRecord);
+          for (          Record d : getDisplay().getListDisplay().getGrid().getRecords()) {
+            printRecord("After--",d);
+          }
+          FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
+          final DynamicForm form=legacyForm.getForm();
+          for (          FormItem formItem : form.getFields()) {
+            if (formItem instanceof HTMLTextItem) {
+              form.setValue(formItem.getFieldName(),((HTMLTextItem)formItem).getHTMLValue());
+            }
+          }
+          PageTemplateFormListDataSource dataSource=(PageTemplateFormListDataSource)form.getDataSource();
+          dataSource.setCustomCriteria(new String[]{"constructForm",newId});
+          form.saveData(new DSCallback(){
+            @Override public void execute(            DSResponse response,            Object rawData,            DSRequest request){
+              if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
+                try {
+                  if (!presenter.currentPageId.equals(newId)) {
+                    Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",presenter.currentPageId);
+                    if (myRecord != null) {
+                      myRecord.setAttribute("id",newId);
+                      presenter.currentPageRecord=myRecord;
+                      presenter.currentPageId=newId;
+                    }
+ else {
+                      String primaryKey=getDisplay().getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
+                      getDisplay().getListDisplay().getGrid().getDataSource().fetchData(new Criteria(primaryKey,newId),new DSCallback(){
+                        @Override public void execute(                        DSResponse response,                        Object rawData,                        DSRequest request){
+                          getDisplay().getListDisplay().getGrid().clearCriteria();
+                          getDisplay().getListDisplay().getGrid().setData(response.getData());
+                          getDisplay().getListDisplay().getGrid().selectRecord(0);
+                        }
+                      }
+);
+                      SC.say(BLCMain.getMessageManager().getString("criteriaDoesNotMatch"));
+                    }
+                  }
+                  getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(presenter.currentPageRecord));
+                }
+ catch (                Exception e) {
+                  SC.warn(e.getMessage());
+                  java.util.logging.Logger.getLogger(getClass().toString()).log(Level.SEVERE,e.getMessage(),e);
+                }
+              }
+            }
+          }
+);
+        }
+      }
+    }
+,requestProperties);
+  }
+ catch (  IncompatibleMVELTranslationException e) {
+    SC.warn(e.getMessage());
+    java.util.logging.Logger.getLogger(getClass().toString()).log(Level.SEVERE,e.getMessage(),e);
+  }
+}

@@ -1,0 +1,30 @@
+{
+  Entity entity=structuredContentEntity;
+  Page content=structuredContent;
+  if (content.getPageMatchRules() != null) {
+    for (    String key : content.getPageMatchRules().keySet()) {
+      PageRuleType type=PageRuleType.getInstance(key);
+      Property prop=null;
+      if (PageRuleType.CUSTOMER.equals(type)) {
+        prop=new Property();
+        prop.setName("customerRule");
+      }
+ else       if (PageRuleType.PRODUCT.equals(type)) {
+        prop=new Property();
+        prop.setName("productRule");
+      }
+ else       if (PageRuleType.REQUEST.equals(type)) {
+        prop=new Property();
+        prop.setName("requestRule");
+      }
+ else       if (PageRuleType.TIME.equals(type)) {
+        prop=new Property();
+        prop.setName("timeRule");
+      }
+      if (prop != null) {
+        prop.setValue(content.getPageMatchRules().get(key).getMatchRule());
+        entity.addProperty(prop);
+      }
+    }
+  }
+}

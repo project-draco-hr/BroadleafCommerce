@@ -3,79 +3,41 @@
   getSaveButtonHandlerRegistration().removeHandler();
   formPresenter.getRefreshButtonHandlerRegistration().removeHandler();
   refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
-      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
-      FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
-      if (legacyForm != null) {
-        legacyForm.getForm().reset();
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        changeSelection(currentPageRecord);
       }
-      for (      FormItem formItem : legacyForm.getForm().getFields()) {
-        if (formItem instanceof CanvasItem) {
-          ((HTMLTextItem)formItem).setHTMLValue((legacyForm.getForm().getValue(formItem.getFieldName())) != null ? legacyForm.getForm().getValue(formItem.getFieldName()).toString() : "");
-        }
+    }
+  }
+);
+  ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        changeSelection(currentPageRecord);
       }
-      getDisplay().getDynamicFormDisplay().getSaveButton().disable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
     }
   }
 );
   saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        DSRequest requestProperties=new DSRequest();
-        try {
-          requestProperties.setAttribute("dirtyValues",getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getChangedValues());
-        }
- catch (        Exception e) {
-          Logger.getLogger(this.getClass().toString()).log(Level.WARNING,"ignore, usually thown in gwt-run mode",e);
-        }
-        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
-          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
-              final String newId=response.getAttribute("newId");
-              FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
-              final DynamicForm form=legacyForm.getForm();
-              for (              FormItem formItem : form.getFields()) {
-                if (formItem instanceof HTMLTextItem) {
-                  form.setValue(formItem.getFieldName(),((HTMLTextItem)formItem).getHTMLValue());
-                }
-              }
-              PageTemplateFormListDataSource dataSource=(PageTemplateFormListDataSource)form.getDataSource();
-              dataSource.setCustomCriteria(new String[]{"constructForm",newId});
-              form.saveData(new DSCallback(){
-                @Override public void execute(                DSResponse response,                Object rawData,                DSRequest request){
-                  if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
-                    getDisplay().getDynamicFormDisplay().getSaveButton().disable();
-                    getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
-                    if (!currentPageId.equals(newId)) {
-                      Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",currentPageId);
-                      if (myRecord != null) {
-                        myRecord.setAttribute("id",newId);
-                        currentPageRecord=myRecord;
-                        currentPageId=newId;
-                      }
- else {
-                        String primaryKey=getDisplay().getListDisplay().getGrid().getDataSource().getPrimaryKeyFieldName();
-                        getDisplay().getListDisplay().getGrid().getDataSource().fetchData(new Criteria(primaryKey,newId),new DSCallback(){
-                          @Override public void execute(                          DSResponse response,                          Object rawData,                          DSRequest request){
-                            getDisplay().getListDisplay().getGrid().clearCriteria();
-                            getDisplay().getListDisplay().getGrid().setData(response.getData());
-                            getDisplay().getListDisplay().getGrid().selectRecord(0);
-                          }
-                        }
+        extractor.applyData(currentPageRecord);
+      }
+    }
+  }
 );
-                        SC.say(BLCMain.getMessageManager().getString("criteriaDoesNotMatch"));
-                      }
-                    }
-                    getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(currentPageRecord));
-                  }
-                }
-              }
+  ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        extractor.getRemovedItemQualifiers().clear();
+      }
+    }
+  }
 );
-            }
-          }
-        }
-,requestProperties);
+  ruleSaveButtonHandlerRegistration=getDisplay().getRulesSaveButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        extractor.applyData(currentPageRecord);
       }
     }
   }
@@ -83,6 +45,68 @@
   display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
       destroyTemplateForm();
+    }
+  }
+);
+  getDisplay().getAddItemButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        final ItemBuilderDisplay display=getDisplay().addItemBuilder(getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"));
+        bindItemBuilderEvents(display);
+        display.setDirty(true);
+        resetButtons();
+      }
+    }
+  }
+);
+  for (  ItemBuilderDisplay itemBuilder : getDisplay().getItemBuilderViews()) {
+    bindItemBuilderEvents(itemBuilder);
+  }
+  getDisplay().getCustomerFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
+      resetButtons();
+    }
+  }
+);
+  getDisplay().getProductFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
+      resetButtons();
+    }
+  }
+);
+  getDisplay().getRequestFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
+      resetButtons();
+    }
+  }
+);
+  getDisplay().getTimeFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getCustomerFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getProductFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getRequestFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getTimeFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      resetButtons();
     }
   }
 );
