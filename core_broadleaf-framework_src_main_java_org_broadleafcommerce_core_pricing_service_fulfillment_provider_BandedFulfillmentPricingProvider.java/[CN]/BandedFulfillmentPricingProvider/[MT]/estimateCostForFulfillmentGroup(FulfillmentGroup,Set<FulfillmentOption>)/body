@@ -12,7 +12,7 @@
         bands=((BandedWeightFulfillmentOption)option).getBands();
       }
       if (bands == null || bands.isEmpty()) {
-        throw new IllegalStateException("There were no Fulfillment Price Bands configred for a BandedPriceFulfillmentOption with ID: " + option.getId());
+        throw new IllegalStateException("There were no Fulfillment Price Bands configured for a BandedPriceFulfillmentOption with ID: " + option.getId());
       }
       BigDecimal retailTotal=BigDecimal.ZERO;
       BigDecimal flatTotal=BigDecimal.ZERO;
@@ -40,7 +40,8 @@
           }
           retailTotal=retailTotal.add(price);
           if (sku != null && sku.getWeight() != null && sku.getWeight().getWeight() != null) {
-            weightTotal=weightTotal.add(sku.getWeight().getWeight());
+            BigDecimal convertedWeight=convertWeight(sku.getWeight().getWeight(),sku.getWeight().getWeightUnitOfMeasure());
+            weightTotal=weightTotal.add(convertedWeight);
           }
         }
       }
