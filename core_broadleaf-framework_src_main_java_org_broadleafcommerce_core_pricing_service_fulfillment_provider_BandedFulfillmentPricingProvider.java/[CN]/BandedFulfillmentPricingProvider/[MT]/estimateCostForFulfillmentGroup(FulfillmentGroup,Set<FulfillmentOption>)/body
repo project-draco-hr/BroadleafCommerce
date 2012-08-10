@@ -45,8 +45,8 @@
           }
         }
       }
-      BigDecimal lowestFulfillmentAmount=BigDecimal.ZERO;
-      BigDecimal lowestFulfillmentBandMinimum=BigDecimal.ZERO;
+      BigDecimal lowestBandFulfillmentPrice=null;
+      BigDecimal lowestBandFulfillmentPriceMinimumAmount=BigDecimal.ZERO;
       for (      FulfillmentBand band : bands) {
         BigDecimal bandMinimumAmount=BigDecimal.ZERO;
         boolean foundMatch=false;
@@ -71,21 +71,31 @@
             LOG.warn("Unknown FulfillmentBandResultAmountType: " + resultAmountType.getType() + " Should be RATE or PERCENTAGE. Ignoring.");
           }
           if (bandFulfillmentPrice != null) {
-            if (lowestFulfillmentBandMinimum.equals(bandMinimumAmount)) {
-              if (bandFulfillmentPrice.compareTo(lowestFulfillmentAmount) <= 0) {
-                lowestFulfillmentAmount=bandFulfillmentPrice;
-                lowestFulfillmentBandMinimum=bandMinimumAmount;
+            if (lowestBandFulfillmentPrice == null) {
+              lowestBandFulfillmentPrice=bandFulfillmentPrice;
+              lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
+            }
+            if (lowestBandFulfillmentPriceMinimumAmount.compareTo(bandMinimumAmount) == 0) {
+              if (bandFulfillmentPrice.compareTo(lowestBandFulfillmentPrice) <= 0) {
+                lowestBandFulfillmentPrice=bandFulfillmentPrice;
+                lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
               }
             }
- else             if (bandMinimumAmount.compareTo(lowestFulfillmentBandMinimum) > 0) {
-              lowestFulfillmentAmount=bandFulfillmentPrice;
-              lowestFulfillmentBandMinimum=bandMinimumAmount;
+ else             if (bandMinimumAmount.compareTo(lowestBandFulfillmentPriceMinimumAmount) > 0) {
+              lowestBandFulfillmentPrice=bandFulfillmentPrice;
+              lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
             }
+          }
+ else {
+            throw new IllegalStateException("Bands must have a non-null fulfillment price");
           }
         }
       }
-      lowestFulfillmentAmount=lowestFulfillmentAmount.add(flatTotal);
-      shippingPrices.put(option,new Money(lowestFulfillmentAmount));
+      if (lowestBandFulfillmentPrice == null) {
+        lowestBandFulfillmentPrice=BigDecimal.ZERO;
+      }
+      lowestBandFulfillmentPrice=lowestBandFulfillmentPrice.add(flatTotal);
+      shippingPrices.put(option,new Money(lowestBandFulfillmentPrice));
     }
   }
   return res;
