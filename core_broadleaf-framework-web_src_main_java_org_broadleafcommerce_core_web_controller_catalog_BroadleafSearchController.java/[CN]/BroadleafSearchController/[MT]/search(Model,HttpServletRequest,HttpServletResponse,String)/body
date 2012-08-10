@@ -7,6 +7,14 @@
  catch (  ServiceException e) {
     query=null;
   }
+  SearchRedirect handler=searchRedirectService.findSearchRedirectBySearchTerm(query);
+  if (handler != null) {
+    String contextPath=request.getContextPath();
+    String url=UrlUtil.fixRedirectUrl(contextPath,handler.getUrl());
+    response.sendRedirect(url);
+    return null;
+  }
+  ;
   if (StringUtils.isNotEmpty(query)) {
     List<SearchFacetDTO> availableFacets=productSearchService.getSearchFacets();
     ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
