@@ -1,0 +1,12 @@
+{
+  Map<String,String> attrs=new HashMap<String,String>();
+  String csrfToken=null;
+  try {
+    csrfToken=ProcessorUtils.getExploitProtectionService(arguments).getCSRFToken();
+  }
+ catch (  ServiceException e) {
+    throw new RuntimeException("Could not get a CSRF token for this session",e);
+  }
+  attrs.put("value",csrfToken);
+  return attrs;
+}
