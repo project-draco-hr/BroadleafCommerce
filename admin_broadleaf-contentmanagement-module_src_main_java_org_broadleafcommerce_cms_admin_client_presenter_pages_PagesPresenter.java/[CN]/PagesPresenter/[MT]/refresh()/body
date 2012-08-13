@@ -1,0 +1,13 @@
+{
+  getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+  FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
+  if (legacyForm != null) {
+    legacyForm.getForm().reset();
+  }
+  for (  FormItem formItem : legacyForm.getForm().getFields()) {
+    if (formItem instanceof CanvasItem) {
+      ((HTMLTextItem)formItem).setHTMLValue((legacyForm.getForm().getValue(formItem.getFieldName())) != null ? legacyForm.getForm().getValue(formItem.getFieldName()).toString() : "");
+    }
+  }
+  resetButtons();
+}

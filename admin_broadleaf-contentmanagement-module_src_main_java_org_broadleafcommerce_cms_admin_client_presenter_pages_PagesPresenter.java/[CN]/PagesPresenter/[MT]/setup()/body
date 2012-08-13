@@ -1,14 +1,31 @@
 {
   super.setup();
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageCustomerDS",new CustomerListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      ((DynamicEntityDataSource)result).permanentlyShowFields("id");
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageProductDS",new ProductListDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageTimeDTODS",new TimeDTOListDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageRequestDTODS",new RequestDTOListDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageOrderItemDS",new OrderItemListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      ((DynamicEntityDataSource)result).permanentlyShowFields("product.id","category.id","sku.id");
+      initializer=new PagesRuleBasedPresenterInitializer(PagesPresenter.this,(DynamicEntityDataSource)result,getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"));
+      extractor=new PagesPresenterExtractor(PagesPresenter.this);
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageDS",new PageDataSourceFactory(),new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource top){
-      setupDisplayItems(top);
+    @Override public void onSetupSuccess(    DataSource top){
+      setupDisplayItems(top,getPresenterSequenceSetupManager().getDataSource("pageCustomerDS"),getPresenterSequenceSetupManager().getDataSource("pageTimeDTODS"),getPresenterSequenceSetupManager().getDataSource("pageRequestDTODS"),getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("pageProductDS"));
       ((ListGridDataSource)top).setupGridFields(new String[]{"locked","fullUrl","description","pageTemplate_Grid"});
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageTemplateSearchDS",new PageTemplateSearchListDataSourceFactory(),new OperationTypes(OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
+    @Override public void onSetupSuccess(    DataSource result){
       ListGridDataSource pageTemplateDataSource=(ListGridDataSource)result;
       pageTemplateDataSource.resetPermanentFieldVisibility("templateName","templatePath");
       EntitySearchDialog pageTemplateSearchView=new EntitySearchDialog(pageTemplateDataSource,true);
@@ -17,7 +34,7 @@
         @Override public void execute(        FormItem formItem){
           if (currentPageRecord != null && BLCMain.ENTITY_ADD.getHidden()) {
             destroyTemplateForm();
-            loadTemplateForm(currentPageRecord);
+            loadTemplateForm(currentPageRecord,null);
           }
         }
       }

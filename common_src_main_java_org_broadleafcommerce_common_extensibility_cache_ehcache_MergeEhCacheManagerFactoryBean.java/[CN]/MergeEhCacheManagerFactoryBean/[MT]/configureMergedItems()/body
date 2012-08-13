@@ -1,0 +1,26 @@
+{
+  Set<Resource> temp=new HashSet<Resource>();
+  if (mergedCacheConfigLocations != null && !mergedCacheConfigLocations.isEmpty()) {
+    for (    String location : mergedCacheConfigLocations) {
+      temp.add(applicationContext.getResource(location));
+    }
+  }
+  if (configLocations != null && !configLocations.isEmpty()) {
+    for (    Resource resource : configLocations) {
+      temp.add(resource);
+    }
+  }
+  try {
+    MergeXmlConfigResource merge=new MergeXmlConfigResource();
+    ResourceInputStream[] sources=new ResourceInputStream[temp.size()];
+    int j=0;
+    for (    Resource resource : temp) {
+      sources[j]=new ResourceInputStream(resource.getInputStream(),resource.getURL().toString());
+      j++;
+    }
+    setConfigLocation(merge.getMergedConfigResource(sources));
+  }
+ catch (  IOException e) {
+    throw new FatalBeanException("Unable to merge cache locations",e);
+  }
+}
