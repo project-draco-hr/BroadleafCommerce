@@ -49,17 +49,11 @@
     adminInstance.setFullUrl(fullUrl);
     adminInstance=staticAssetService.addStaticAsset(adminInstance,getSandBox());
     Entity adminEntity=helper.getRecord(entityProperties,adminInstance,null,null);
-    try {
-      StaticAssetStorage storage=staticAssetStorageService.create();
-      storage.setStaticAssetId(adminInstance.getId());
-      Blob uploadBlob=staticAssetStorageService.createBlob(upload);
-      storage.setFileData(uploadBlob);
-      staticAssetStorageService.save(storage);
-    }
- catch (    Exception e) {
-      staticAssetService.deleteStaticAsset(adminInstance,getSandBox());
-      throw e;
-    }
+    StaticAssetStorage storage=staticAssetStorageService.create();
+    storage.setStaticAssetId(adminInstance.getId());
+    Blob uploadBlob=staticAssetStorageService.createBlob(upload);
+    storage.setFileData(uploadBlob);
+    staticAssetStorageService.save(storage);
     return addImageRecords(adminEntity);
   }
  catch (  Exception e) {

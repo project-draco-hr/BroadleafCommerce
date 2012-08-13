@@ -1,0 +1,20 @@
+{
+  String[] tempLocations;
+  try {
+    Field persistenceXmlLocations=DefaultPersistenceUnitManager.class.getDeclaredField("persistenceXmlLocations");
+    persistenceXmlLocations.setAccessible(true);
+    tempLocations=(String[])persistenceXmlLocations.get(this);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  for (  String legacyLocation : tempLocations) {
+    if (!legacyLocation.endsWith("/persistence.xml")) {
+      mergedPersistenceXmlLocations.add(legacyLocation);
+    }
+  }
+  setPersistenceXmlLocations(mergedPersistenceXmlLocations.toArray(new String[mergedPersistenceXmlLocations.size()]));
+  if (!mergedDataSources.isEmpty()) {
+    setDataSources(mergedDataSources);
+  }
+}

@@ -1,6 +1,5 @@
 {
   Offer promotion=itemOffer.getOffer();
-  OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(promotion.getApplyDiscountToSalePrice());
   boolean matchFound=false;
   do {
     matchFound=false;
@@ -12,7 +11,7 @@
     checkAll: {
       for (      OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
         List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateQualifiersMap().get(itemCriteria);
-        Collections.sort(chargeableItems,priceComparator);
+        Collections.sort(chargeableItems,getQualifierItemComparator(promotion.getApplyDiscountToSalePrice()));
         int qualifierQtyNeeded=itemCriteria.getQuantity();
         for (        PromotableOrderItem chargeableItem : chargeableItems) {
           if (qualifierQtyNeeded > 0) {
@@ -34,7 +33,7 @@
       }
       checkTargets: {
         List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateTargets();
-        Collections.sort(chargeableItems,priceComparator);
+        Collections.sort(chargeableItems,getTargetItemComparator(promotion.getApplyDiscountToSalePrice()));
         for (        PromotableOrderItem chargeableItem : chargeableItems) {
           if (receiveQtyNeeded > 0) {
             int itemQtyAvailableToBeUsedAsTarget=chargeableItem.getQuantityAvailableToBeUsedAsTarget(promotion);

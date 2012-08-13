@@ -1,0 +1,15 @@
+{
+  Set<Resource> temp=new HashSet<Resource>();
+  if (mergedEntityContexts != null && !mergedEntityContexts.isEmpty()) {
+    for (    String location : mergedEntityContexts) {
+      temp.add(webApplicationContext.getResource(location));
+    }
+  }
+  if (entityContexts != null) {
+    for (    Resource resource : entityContexts) {
+      temp.add(resource);
+    }
+  }
+  entityContexts=temp.toArray(new Resource[temp.size()]);
+  applicationcontext=new GenericXmlApplicationContext(entityContexts);
+}
