@@ -11,19 +11,10 @@
     for (    String key : dirtyValues.keySet()) {
       getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().setValue(key,(String)dirtyValues.get(key));
     }
-    for (    Record d : getDisplay().getListDisplay().getGrid().getRecords()) {
-      printRecord("Before--",d);
-    }
     getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
       @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
         if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
           final String newId=response.getAttribute("newId");
-          System.out.println("the following should not be null????");
-          printRecord("savedRecord",response.getData()[0]);
-          printRecord("Presenter->CurrenPageRecord->",presenter.currentPageRecord);
-          for (          Record d : getDisplay().getListDisplay().getGrid().getRecords()) {
-            printRecord("After--",d);
-          }
           FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
           final DynamicForm form=legacyForm.getForm();
           for (          FormItem formItem : form.getFields()) {
