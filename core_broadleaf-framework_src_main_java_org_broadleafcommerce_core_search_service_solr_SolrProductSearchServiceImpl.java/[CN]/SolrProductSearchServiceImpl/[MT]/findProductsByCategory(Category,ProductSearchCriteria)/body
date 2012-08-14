@@ -1,7 +1,9 @@
 {
+  System.out.println("SEARCHING");
   SolrQuery query=new SolrQuery();
   query.setQuery("*:*");
-  query.addSortField("price",SolrQuery.ORDER.asc);
+  query.addSortField("price_d",SolrQuery.ORDER.asc);
+  query.setRows(40);
   try {
     QueryResponse rsp=server.query(query);
     SolrDocumentList docs=rsp.getResults();
@@ -12,5 +14,5 @@
  catch (  SolrServerException e) {
     throw new ServiceException("Could not perform search",e);
   }
-  return null;
+  return new ProductSearchResult();
 }
