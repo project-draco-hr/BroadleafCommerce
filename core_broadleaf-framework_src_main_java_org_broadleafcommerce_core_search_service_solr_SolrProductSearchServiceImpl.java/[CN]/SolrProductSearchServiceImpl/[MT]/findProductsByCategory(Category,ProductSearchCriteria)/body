@@ -1,0 +1,16 @@
+{
+  SolrQuery query=new SolrQuery();
+  query.setQuery("*:*");
+  query.addSortField("price",SolrQuery.ORDER.asc);
+  try {
+    QueryResponse rsp=server.query(query);
+    SolrDocumentList docs=rsp.getResults();
+    for (    SolrDocument doc : docs) {
+      System.out.println(doc.toString());
+    }
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not perform search",e);
+  }
+  return null;
+}
