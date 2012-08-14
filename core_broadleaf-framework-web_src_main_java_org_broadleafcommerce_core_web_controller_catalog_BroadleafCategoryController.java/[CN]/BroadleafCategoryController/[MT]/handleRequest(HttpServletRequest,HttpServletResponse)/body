@@ -2,9 +2,9 @@
   ModelAndView model=new ModelAndView();
   Category category=(Category)request.getAttribute(CategoryHandlerMapping.CURRENT_CATEGORY_ATTRIBUTE_NAME);
   assert(category != null);
-  List<SearchFacetDTO> availableFacets=productSearchService.getCategoryFacets(category);
+  List<SearchFacetDTO> availableFacets=searchService.getCategoryFacets(category);
   ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
-  ProductSearchResult result=productSearchService.findProductsByCategory(category,searchCriteria);
+  ProductSearchResult result=searchService.findProductsByCategory(category,searchCriteria);
   facetService.setActiveFacetResults(result.getFacets(),request);
   model.addObject(CATEGORY_ATTRIBUTE_NAME,category);
   model.addObject(PRODUCTS_ATTRIBUTE_NAME,result.getProducts());

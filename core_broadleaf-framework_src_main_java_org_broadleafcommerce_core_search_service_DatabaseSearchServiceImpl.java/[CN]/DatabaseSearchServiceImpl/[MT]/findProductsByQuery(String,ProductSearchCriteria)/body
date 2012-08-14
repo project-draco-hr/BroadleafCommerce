@@ -1,0 +1,9 @@
+{
+  ProductSearchResult result=new ProductSearchResult();
+  setQualifiedKeys(searchCriteria);
+  List<Product> products=catalogService.findFilteredActiveProductsByQuery(query,SystemTime.asDate(),searchCriteria);
+  List<SearchFacetDTO> facets=getSearchFacets();
+  result.setProducts(products);
+  result.setFacets(facets);
+  return result;
+}

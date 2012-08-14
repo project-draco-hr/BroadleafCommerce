@@ -1,0 +1,19 @@
+{
+  List<SearchFacetDTO> facets=null;
+  String cacheKey=CACHE_KEY_PREFIX + "category:" + category.getId();
+  Element element=cache.get(cacheKey);
+  if (element != null) {
+    facets=(List<SearchFacetDTO>)element.getValue();
+  }
+  if (facets == null) {
+    List<CategorySearchFacet> categorySearchFacets=category.getCumulativeSearchFacets();
+    List<SearchFacet> searchFacets=new ArrayList<SearchFacet>();
+    for (    CategorySearchFacet categorySearchFacet : categorySearchFacets) {
+      searchFacets.add(categorySearchFacet.getSearchFacet());
+    }
+    facets=buildSearchFacetDtos(searchFacets);
+    element=new Element(cacheKey,facets);
+    cache.put(element);
+  }
+  return facets;
+}

@@ -1,6 +1,6 @@
 {
   ProductSearchCriteria searchCriteria=new ProductSearchCriteria();
-  Map<String,String[]> convertedFacets=new HashMap<String,String[]>();
+  Map<String,String[]> facets=new HashMap<String,String[]>();
   for (Iterator<Entry<String,String[]>> iter=request.getParameterMap().entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry<String,String[]> entry=iter.next();
     String key=entry.getKey();
@@ -17,12 +17,9 @@
       continue;
     }
  else {
-      String convertedKey=getConvertedKey(key,availableFacets);
-      if (convertedKey != null) {
-        convertedFacets.put(convertedKey,entry.getValue());
-      }
+      facets.put(key,entry.getValue());
     }
   }
-  searchCriteria.setFilterCriteria(convertedFacets);
+  searchCriteria.setFilterCriteria(facets);
   return searchCriteria;
 }

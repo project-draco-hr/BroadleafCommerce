@@ -6,7 +6,7 @@
   String baseUrl=request.getRequestURL().toString();
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
   SearchFacetResultDTO result=(SearchFacetResultDTO)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
-  String key=facetService.getKey(result);
+  String key=facetService.getUrlKey(result);
   String value=facetService.getValue(result);
   String[] paramValues=params.get(key);
   if (ArrayUtils.contains(paramValues,facetService.getValue(result))) {
