@@ -7,6 +7,8 @@
   }
   FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
   fulfillmentGroup.setAddress(shippingForm.getAddress());
+  fulfillmentGroup.setPersonalMessage(shippingForm.getPersonalMessage());
+  fulfillmentGroup.setDeliveryInstruction(shippingForm.getDeliveryMessage());
   FulfillmentOption fulfillmentOption=fulfillmentOptionService.readFulfillmentOptionById(shippingForm.getFulfillmentOptionId());
   fulfillmentGroup.setFulfillmentOption(fulfillmentOption);
   cart=orderService.save(cart,true);

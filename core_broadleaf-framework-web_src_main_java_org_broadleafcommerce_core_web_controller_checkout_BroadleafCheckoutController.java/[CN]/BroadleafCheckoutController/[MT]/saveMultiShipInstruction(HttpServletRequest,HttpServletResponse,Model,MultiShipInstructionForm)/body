@@ -1,0 +1,13 @@
+{
+  Order cart=CartState.getCart();
+  FulfillmentGroup fulfillmentGroup=null;
+  for (  FulfillmentGroup tempFulfillmentGroup : cart.getFulfillmentGroups()) {
+    if (tempFulfillmentGroup.getId() == instructionForm.getId()) {
+      fulfillmentGroup=tempFulfillmentGroup;
+    }
+  }
+  fulfillmentGroup.setPersonalMessage(instructionForm.getPersonalMessage());
+  fulfillmentGroup.setDeliveryInstruction(instructionForm.getDeliveryMessage());
+  fulfillmentGroupService.save(fulfillmentGroup);
+  return getCheckoutPageRedirect() + "?_=" + System.currentTimeMillis();
+}
