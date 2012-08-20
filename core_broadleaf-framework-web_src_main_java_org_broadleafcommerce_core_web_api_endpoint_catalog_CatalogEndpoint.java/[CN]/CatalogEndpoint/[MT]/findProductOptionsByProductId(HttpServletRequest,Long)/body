@@ -1,0 +1,14 @@
+{
+  Product product=catalogService.findProductById(id);
+  if (product != null) {
+    ArrayList<ProductOptionWrapper> out=new ArrayList<ProductOptionWrapper>();
+    List<ProductOption> options=product.getProductOptions();
+    for (    ProductOption option : options) {
+      ProductOptionWrapper wrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
+      wrapper.wrap(option,request);
+      out.add(wrapper);
+    }
+    return out;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
+}
