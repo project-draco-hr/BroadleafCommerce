@@ -7,6 +7,10 @@
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
+  if (model.getDefaultSku() != null) {
+    this.defaultSku=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
+    this.defaultSku.wrap(model.getDefaultSku(),request);
+  }
   if (model.getProductOptions() != null) {
     this.productOptions=new ArrayList<ProductOptionWrapper>();
     List<ProductOption> options=model.getProductOptions();
@@ -14,6 +18,23 @@
       ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
       optionWrapper.wrap(option,request);
       this.productOptions.add(optionWrapper);
+    }
+  }
+  if (model instanceof ProductBundle) {
+    this.bundle=Boolean.TRUE;
+    ProductBundle bundle=(ProductBundle)model;
+    this.priority=bundle.getPriority();
+    this.potentialSavings=bundle.getPotentialSavings();
+    this.bundleItemsRetailPrice=bundle.getBundleItemsRetailPrice();
+    this.bundleItemsSalePrice=bundle.getBundleItemsSalePrice();
+    if (bundle.getSkuBundleItems() != null) {
+      this.skuBundleItems=new ArrayList<SkuBundleItemWrapper>();
+      List<SkuBundleItem> bundleItems=bundle.getSkuBundleItems();
+      for (      SkuBundleItem item : bundleItems) {
+        SkuBundleItemWrapper skuBundleItemsWrapper=(SkuBundleItemWrapper)context.getBean(SkuBundleItemWrapper.class.getName());
+        skuBundleItemsWrapper.wrap(item,request);
+        this.skuBundleItems.add(skuBundleItemsWrapper);
+      }
     }
   }
 }
