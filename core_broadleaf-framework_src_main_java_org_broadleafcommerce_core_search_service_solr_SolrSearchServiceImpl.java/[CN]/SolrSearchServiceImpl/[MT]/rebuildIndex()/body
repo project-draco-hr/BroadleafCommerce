@@ -1,4 +1,6 @@
 {
+  LOG.info("Rebuilding the solr index...");
+  StopWatch s=new StopWatch();
   List<Product> products=productDao.readAllActiveProducts(SystemTime.asDate());
   List<Field> fields=fieldDao.readAllProductFields();
   Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
@@ -47,4 +49,5 @@
  catch (  SolrServerException e) {
     throw new ServiceException("Could not rebuild index",e);
   }
+  LOG.info("Finished rebuilding the solr index in " + s.toLapString());
 }
