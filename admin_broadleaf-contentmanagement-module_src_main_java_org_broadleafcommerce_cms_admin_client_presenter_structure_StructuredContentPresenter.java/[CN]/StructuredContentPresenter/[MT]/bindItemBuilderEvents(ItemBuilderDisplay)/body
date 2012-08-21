@@ -1,6 +1,6 @@
 {
   display.getRemoveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       extractor.getRemovedItemQualifiers().add(display);
       additionalFilterEventManager.removeFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder());
       resetButtons();
@@ -9,21 +9,21 @@
   }
 );
   display.getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
-    public void onItemChanged(    ItemChangedEvent event){
+    @Override public void onItemChanged(    ItemChangedEvent event){
       resetButtons();
       display.setDirty(true);
     }
   }
 );
   display.getItemForm().addItemChangedHandler(new ItemChangedHandler(){
-    public void onItemChanged(    ItemChangedEvent event){
+    @Override public void onItemChanged(    ItemChangedEvent event){
       resetButtons();
       display.setDirty(true);
     }
   }
 );
   display.getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
       resetButtons();
       display.setDirty(true);
     }

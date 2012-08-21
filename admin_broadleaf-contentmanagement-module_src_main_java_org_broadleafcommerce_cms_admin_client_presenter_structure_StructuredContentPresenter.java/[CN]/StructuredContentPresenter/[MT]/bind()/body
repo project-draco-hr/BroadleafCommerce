@@ -3,7 +3,7 @@
   getSaveButtonHandlerRegistration().removeHandler();
   formPresenter.getRefreshButtonHandlerRegistration().removeHandler();
   refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         extractor.getRemovedItemQualifiers().clear();
         changeSelection(currentStructuredContentRecord);
@@ -12,7 +12,7 @@
   }
 );
   ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         extractor.getRemovedItemQualifiers().clear();
         changeSelection(currentStructuredContentRecord);
@@ -21,7 +21,7 @@
   }
 );
   saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         save();
       }
@@ -29,7 +29,7 @@
   }
 );
   ruleSaveButtonHandlerRegistration=getDisplay().getRulesSaveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         save();
       }
@@ -43,7 +43,7 @@
   }
 );
   getDisplay().getAddItemButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         final ItemBuilderDisplay display=getDisplay().addItemBuilder(getPresenterSequenceSetupManager().getDataSource("scOrderItemDS"));
         bindItemBuilderEvents(display);
@@ -57,25 +57,25 @@
     bindItemBuilderEvents(itemBuilder);
   }
   getDisplay().getCustomerFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
       resetButtons();
     }
   }
 );
   getDisplay().getProductFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
       resetButtons();
     }
   }
 );
   getDisplay().getRequestFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
       resetButtons();
     }
   }
 );
   getDisplay().getTimeFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
+    @Override public void onFilterChanged(    FilterChangedEvent event){
       resetButtons();
     }
   }

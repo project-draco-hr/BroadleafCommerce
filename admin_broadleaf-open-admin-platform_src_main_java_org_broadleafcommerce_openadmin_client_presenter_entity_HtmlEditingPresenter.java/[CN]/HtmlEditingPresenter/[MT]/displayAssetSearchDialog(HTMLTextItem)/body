@@ -3,11 +3,10 @@
   initialValues.put("operation","add");
   initialValues.put("customCriteria","assetListUi");
   initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
-  initialValues.put("_type",new String[]{((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()});
+  initialValues.put("_type",CeilingEntities.STATICASSETS);
   initialValues.put("csrfToken",BLCMain.csrfToken);
-  compileDefaultValuesFromCurrentFilter(initialValues);
-  assetSearchDialogView.setInitialValues(initialValues);
-  assetSearchDialogView.search("Asset Search",new TileGridItemSelectedHandler(){
+  getAssetSearchDialogView().setInitialValues(initialValues);
+  getAssetSearchDialogView().search("Asset Search",new TileGridItemSelectedHandler(){
     @Override public void onSearchItemSelected(    TileGridItemSelected event){
       String staticAssetFullUrl=BLCMain.assetServerUrlPrefix + event.getRecord().getAttribute("fullUrl");
       String name=event.getRecord().getAttribute("name");

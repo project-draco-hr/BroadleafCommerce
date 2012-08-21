@@ -2,9 +2,11 @@
   super();
   textArea=new RichTextArea();
   textArea.addInitializeHandler(new InitializeHandler(){
-    public void onInitialize(    InitializeEvent ie){
+    @Override public void onInitialize(    InitializeEvent ie){
       IFrameElement fe=(IFrameElement)textArea.getElement().cast();
-      if (fe == null)       return;
+      if (fe == null) {
+        return;
+      }
       Style s=fe.getContentDocument().getBody().getStyle();
       s.setProperty("fontFamily","helvetica, sans-serif");
       s.setProperty("fontSize","12");
@@ -40,7 +42,7 @@
 ;
   toolBar.setSaveCommand(saveCommand);
   SecurityManager.getInstance().doSecure("PERMISSION_READ_ASSET",new SecureCallbackAdapter(){
-    public void succeed(){
+    @Override public void succeed(){
       getToolBar().showAssetButton(true);
     }
     @Override public void fail(){
