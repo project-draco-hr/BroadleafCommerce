@@ -1,0 +1,48 @@
+{
+  Customer customer=CustomerState.getCustomer(request);
+  if (customer != null) {
+    Order cart=orderService.findCartForCustomer(customer);
+    if (cart != null) {
+      try {
+        MultivaluedMap<String,String> multiValuedMap=uriInfo.getQueryParameters();
+        HashMap<String,String> productOptions=new HashMap<String,String>();
+        Set<String> keySet=multiValuedMap.keySet();
+        for (        String key : keySet) {
+          if (multiValuedMap.getFirst(key) != null) {
+            productOptions.put(key,multiValuedMap.getFirst(key));
+          }
+        }
+        productOptions.remove("categoryId");
+        productOptions.remove("productId");
+        productOptions.remove("skuId");
+        productOptions.remove("quantity");
+        productOptions.remove("priceOrder");
+        if (skuId == null && productOptions.size() == 0) {
+          throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+        orderItemRequestDTO.setCategoryId(categoryId);
+        orderItemRequestDTO.setProductId(productId);
+        orderItemRequestDTO.setSkuId(skuId);
+        orderItemRequestDTO.setCategoryId(categoryId);
+        orderItemRequestDTO.setQuantity(quantity);
+        if (productOptions.size() > 0) {
+          orderItemRequestDTO.setItemAttributes(productOptions);
+        }
+        Order order=orderService.addItem(cart.getId(),orderItemRequestDTO,priceOrder);
+        order=orderService.save(order,priceOrder);
+        OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+        wrapper.wrap(order,request);
+        return wrapper;
+      }
+ catch (      PricingException e) {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+catch (      AddToCartException e) {
+        throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+      }
+    }
+    throw new WebApplicationException(Response.Status.NOT_FOUND);
+  }
+  throw new WebApplicationException(Response.Status.BAD_REQUEST);
+}

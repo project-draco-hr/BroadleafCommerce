@@ -1,6 +1,11 @@
 {
   Product product=catalogService.findProductById(Long.valueOf(itemId));
   form.setProduct(product);
+  ReviewDetail reviewDetail=ratingService.readReviewByCustomerAndItem(CustomerState.getCustomer(),itemId);
+  if (reviewDetail != null) {
+    form.setReviewText(reviewDetail.getReviewText());
+    form.setRating(reviewDetail.getRatingDetail().getRating());
+  }
   model.addAttribute("reviewForm",form);
   return getFormView();
 }

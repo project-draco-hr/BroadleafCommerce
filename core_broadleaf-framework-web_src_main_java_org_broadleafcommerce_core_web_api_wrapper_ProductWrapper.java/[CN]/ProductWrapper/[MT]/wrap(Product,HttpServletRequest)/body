@@ -7,4 +7,13 @@
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
+  if (model.getProductOptions() != null) {
+    this.productOptions=new ArrayList<ProductOptionWrapper>();
+    List<ProductOption> options=model.getProductOptions();
+    for (    ProductOption option : options) {
+      ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
+      optionWrapper.wrap(option,request);
+      this.productOptions.add(optionWrapper);
+    }
+  }
 }
