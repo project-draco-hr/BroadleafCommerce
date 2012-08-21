@@ -1,5 +1,5 @@
 {
-  List<CategorySearchFacet> returnFacets=new ArrayList<CategorySearchFacet>();
+  final List<CategorySearchFacet> returnFacets=new ArrayList<CategorySearchFacet>();
   returnFacets.addAll(getSearchFacets());
   Collections.sort(returnFacets,facetPositionComparator);
   List<CategorySearchFacet> parentFacets=null;
@@ -8,7 +8,7 @@
     CollectionUtils.filter(parentFacets,new Predicate(){
       @Override public boolean evaluate(      Object arg){
         CategorySearchFacet csf=(CategorySearchFacet)arg;
-        return !getExcludedSearchFacets().contains(csf.getSearchFacet());
+        return !getExcludedSearchFacets().contains(csf.getSearchFacet()) && !returnFacets.contains(csf.getSearchFacet());
       }
     }
 );
