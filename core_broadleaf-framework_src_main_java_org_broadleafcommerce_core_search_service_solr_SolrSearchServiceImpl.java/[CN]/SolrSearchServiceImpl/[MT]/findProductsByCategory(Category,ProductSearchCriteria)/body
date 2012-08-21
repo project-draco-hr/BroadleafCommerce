@@ -1,18 +1,20 @@
 {
-  System.out.println("SEARCHING");
-  SolrQuery query=new SolrQuery();
-  query.setQuery("*:*");
-  query.addSortField("price_d",SolrQuery.ORDER.asc);
-  query.setRows(40);
+  List<SearchFacetDTO> facets=getCategoryFacets(category);
+  Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
+  SolrQuery query=buildSolrQuery(category,namedFacetMap,searchCriteria);
+  QueryResponse response;
   try {
-    QueryResponse rsp=server.query(query);
-    SolrDocumentList docs=rsp.getResults();
-    for (    SolrDocument doc : docs) {
-      System.out.println(doc.toString());
-    }
+    response=server.query(query);
   }
  catch (  SolrServerException e) {
     throw new ServiceException("Could not perform search",e);
   }
-  return new ProductSearchResult();
+  setFacetResults(namedFacetMap,response);
+  sortFacetResults(namedFacetMap);
+  List<Product> products=getProducts(response);
+  ProductSearchResult result=new ProductSearchResult();
+  result.setFacets(facets);
+  result.setProducts(products);
+  setPagingAttributes(result,response,searchCriteria);
+  return result;
 }

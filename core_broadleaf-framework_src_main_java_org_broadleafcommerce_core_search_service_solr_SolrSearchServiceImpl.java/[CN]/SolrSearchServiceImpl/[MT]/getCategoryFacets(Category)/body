@@ -1,3 +1,8 @@
 {
-  return null;
+  List<CategorySearchFacet> categorySearchFacets=category.getCumulativeSearchFacets();
+  List<SearchFacet> searchFacets=new ArrayList<SearchFacet>();
+  for (  CategorySearchFacet categorySearchFacet : categorySearchFacets) {
+    searchFacets.add(categorySearchFacet.getSearchFacet());
+  }
+  return buildSearchFacetDTOs(searchFacets);
 }

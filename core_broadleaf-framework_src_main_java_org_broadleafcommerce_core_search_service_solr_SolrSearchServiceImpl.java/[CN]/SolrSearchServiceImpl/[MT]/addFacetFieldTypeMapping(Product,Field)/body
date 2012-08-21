@@ -1,0 +1,18 @@
+{
+  try {
+    String propertyName=field.getPropertyName();
+    if (propertyName.contains("productAttributes.")) {
+      propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
+    }
+    Class fieldClass=PropertyUtils.getPropertyType(product,propertyName);
+    if (fieldClass.equals(Money.class)) {
+      propertyFacetFieldTypeMap.put(field.getPropertyName(),"td");
+    }
+ else {
+      propertyFacetFieldTypeMap.put(field.getPropertyName(),"s");
+    }
+  }
+ catch (  Exception e) {
+    LOG.warn("Could not find facet field on PRODUCT." + field.getPropertyName());
+  }
+}

@@ -1,0 +1,32 @@
+{
+  if (response.getFacetFields() != null) {
+    for (    FacetField facet : response.getFacetFields()) {
+      String facetFieldName=facet.getName();
+      SearchFacetDTO facetDTO=namedFacetMap.get(facetFieldName);
+      for (      Count value : facet.getValues()) {
+        SearchFacetResultDTO resultDTO=new SearchFacetResultDTO();
+        resultDTO.setFacet(facetDTO.getFacet());
+        resultDTO.setQuantity(new Long(value.getCount()).intValue());
+        resultDTO.setValue(value.getName());
+        facetDTO.getFacetValues().add(resultDTO);
+      }
+    }
+  }
+  if (response.getFacetQuery() != null) {
+    for (    Entry<String,Integer> entry : response.getFacetQuery().entrySet()) {
+      String facetFieldName=entry.getKey().substring(entry.getKey().indexOf("}") + 1,entry.getKey().indexOf(':'));
+      SearchFacetDTO facetDTO=namedFacetMap.get(facetFieldName);
+      String minValue=entry.getKey().substring(entry.getKey().indexOf("[") + 1,entry.getKey().indexOf(" TO"));
+      String maxValue=entry.getKey().substring(entry.getKey().indexOf(" TO ") + 4,entry.getKey().indexOf("]"));
+      if (maxValue.equals("*")) {
+        maxValue=null;
+      }
+      SearchFacetResultDTO resultDTO=new SearchFacetResultDTO();
+      resultDTO.setFacet(facetDTO.getFacet());
+      resultDTO.setQuantity(entry.getValue());
+      resultDTO.setMinValue(new BigDecimal(minValue));
+      resultDTO.setMaxValue(maxValue == null ? null : new BigDecimal(maxValue));
+      facetDTO.getFacetValues().add(resultDTO);
+    }
+  }
+}

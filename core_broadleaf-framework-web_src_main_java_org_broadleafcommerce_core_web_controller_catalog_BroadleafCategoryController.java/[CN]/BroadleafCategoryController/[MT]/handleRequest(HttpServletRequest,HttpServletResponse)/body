@@ -1,19 +1,39 @@
 {
   ModelAndView model=new ModelAndView();
-  Category category=(Category)request.getAttribute(CategoryHandlerMapping.CURRENT_CATEGORY_ATTRIBUTE_NAME);
-  assert(category != null);
-  List<SearchFacetDTO> availableFacets=searchService.getCategoryFacets(category);
-  ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
-  ProductSearchResult result=searchService.findProductsByCategory(category,searchCriteria);
-  facetService.setActiveFacetResults(result.getFacets(),request);
-  model.addObject(CATEGORY_ATTRIBUTE_NAME,category);
-  model.addObject(PRODUCTS_ATTRIBUTE_NAME,result.getProducts());
-  model.addObject(FACETS_ATTRIBUTE_NAME,result.getFacets());
-  if (StringUtils.isNotEmpty(category.getDisplayTemplate())) {
-    model.setViewName(category.getDisplayTemplate());
+  if (request.getMethod().equals("POST")) {
+    String fieldName=request.getParameter("facetField");
+    List<String> activeFieldFilters=new ArrayList<String>();
+    Map<String,String[]> parameters=new HashMap<String,String[]>(request.getParameterMap());
+    for (Iterator<Entry<String,String[]>> iter=parameters.entrySet().iterator(); iter.hasNext(); ) {
+      Map.Entry<String,String[]> entry=iter.next();
+      String key=entry.getKey();
+      if (key.startsWith(fieldName + "-")) {
+        activeFieldFilters.add(key.substring(key.indexOf('-') + 1));
+        iter.remove();
+      }
+    }
+    parameters.put(fieldName,activeFieldFilters.toArray(new String[activeFieldFilters.size()]));
+    parameters.remove("facetField");
+    String newUrl=ProcessorUtils.getUrl(request.getRequestURL().toString(),parameters);
+    model.setViewName("redirect:" + newUrl);
   }
  else {
-    model.setViewName(getDefaultCategoryView());
+    Category category=(Category)request.getAttribute(CategoryHandlerMapping.CURRENT_CATEGORY_ATTRIBUTE_NAME);
+    assert(category != null);
+    List<SearchFacetDTO> availableFacets=searchService.getCategoryFacets(category);
+    ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
+    ProductSearchResult result=searchService.findProductsByCategory(category,searchCriteria);
+    facetService.setActiveFacetResults(result.getFacets(),request);
+    model.addObject(CATEGORY_ATTRIBUTE_NAME,category);
+    model.addObject(PRODUCTS_ATTRIBUTE_NAME,result.getProducts());
+    model.addObject(FACETS_ATTRIBUTE_NAME,result.getFacets());
+    model.addObject(PRODUCT_SEARCH_RESULT_ATTRIBUTE_NAME,result);
+    if (StringUtils.isNotEmpty(category.getDisplayTemplate())) {
+      model.setViewName(category.getDisplayTemplate());
+    }
+ else {
+      model.setViewName(getDefaultCategoryView());
+    }
   }
   return model;
 }
