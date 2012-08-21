@@ -1,20 +1,5 @@
 {
   List<SearchFacetDTO> facets=getCategoryFacets(category);
-  Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
-  SolrQuery query=buildSolrQuery(category,namedFacetMap,searchCriteria);
-  QueryResponse response;
-  try {
-    response=server.query(query);
-  }
- catch (  SolrServerException e) {
-    throw new ServiceException("Could not perform search",e);
-  }
-  setFacetResults(namedFacetMap,response);
-  sortFacetResults(namedFacetMap);
-  List<Product> products=getProducts(response);
-  ProductSearchResult result=new ProductSearchResult();
-  result.setFacets(facets);
-  result.setProducts(products);
-  setPagingAttributes(result,response,searchCriteria);
-  return result;
+  String query="category:" + category.getId();
+  return findProducts(query,facets,searchCriteria);
 }

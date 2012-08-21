@@ -1,8 +1,6 @@
 {
   List<Product> products=productDao.readAllActiveProducts(SystemTime.asDate());
   List<Field> fields=fieldDao.readAllProductFields();
-  propertySearchFieldTypeMap.clear();
-  propertyFacetFieldTypeMap.clear();
   Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
   for (  Product product : products) {
     SolrInputDocument document=new SolrInputDocument();
@@ -19,31 +17,22 @@
           propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
         }
         Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-        String[] searchableFieldTypes=getSearchableFieldTypes(field);
-        if (searchableFieldTypes == null || searchableFieldTypes.length == 0) {
-          addSearchFieldTypeMapping(product,field);
-          searchableFieldTypes=getSearchableFieldTypes(field);
-        }
-        for (        String searchableFieldType : searchableFieldTypes) {
-          String solrPropertyName=field.getPropertyName() + "_" + searchableFieldType;
+        for (        FieldType searchableFieldType : field.getSearchableFieldTypes()) {
+          String solrPropertyName=field.getPropertyName() + "_" + searchableFieldType.getType();
           document.addField(solrPropertyName,propertyValue);
           addedProperties.add(solrPropertyName);
           copyFieldValue.add(propertyValue.toString());
         }
-        String facetFieldType=getFacetFieldType(field);
-        if (facetFieldType == null) {
-          addFacetFieldTypeMapping(product,field);
-          facetFieldType=getFacetFieldType(field);
-        }
+        FieldType facetFieldType=field.getFacetFieldType();
         if (facetFieldType != null) {
-          String solrFacetPropertyName=field.getPropertyName() + "_" + getFacetFieldType(field);
+          String solrFacetPropertyName=field.getPropertyName() + "_" + facetFieldType.getType();
           if (!addedProperties.contains(solrFacetPropertyName)) {
             document.addField(solrFacetPropertyName,propertyValue);
           }
         }
       }
  catch (      Exception e) {
-        LOG.warn("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
+        LOG.debug("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
       }
     }
     document.addField("searchable",StringUtils.join(copyFieldValue," "));
