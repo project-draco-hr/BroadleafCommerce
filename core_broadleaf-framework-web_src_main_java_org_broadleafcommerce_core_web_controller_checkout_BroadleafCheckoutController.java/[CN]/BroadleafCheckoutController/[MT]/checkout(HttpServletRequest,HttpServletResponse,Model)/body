@@ -3,7 +3,15 @@
   if (!(cart instanceof NullOrderImpl)) {
     model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
   }
-  model.addAttribute("validShipping",hasValidShippingAddresses(cart));
+  String editShipping=request.getParameter("edit-shipping");
+  boolean hasValidShipping;
+  if (BooleanUtils.toBoolean(editShipping)) {
+    hasValidShipping=false;
+  }
+ else {
+    hasValidShipping=hasValidShippingAddresses(cart);
+  }
+  model.addAttribute("validShipping",hasValidShipping);
   List<FulfillmentOption> fulfillmentOptions=fulfillmentOptionService.readAllFulfillmentOptions();
   if (hasValidShippingAddresses(cart)) {
     Set<FulfillmentOption> options=new HashSet<FulfillmentOption>();
