@@ -12,7 +12,12 @@
     }
   }
   if (offer.getType().equals(OfferType.ORDER_ITEM) && offer.getTargetItemCriteria() != null) {
-    checkForItemRequirements(candidates,offer.getTargetItemCriteria(),promotableOrderItems,false);
+    for (    OfferItemCriteria criteria : offer.getTargetItemCriteria()) {
+      checkForItemRequirements(candidates,criteria,promotableOrderItems,false);
+      if (!candidates.isMatchedQualifier()) {
+        break;
+      }
+    }
   }
   if (candidates.isMatchedQualifier()) {
     if (!meetsItemQualifierSubtotal(offer,candidates)) {
