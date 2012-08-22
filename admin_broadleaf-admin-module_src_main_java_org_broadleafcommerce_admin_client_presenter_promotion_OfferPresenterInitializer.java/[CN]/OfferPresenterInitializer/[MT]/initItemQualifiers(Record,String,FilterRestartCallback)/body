@@ -24,7 +24,7 @@
         for (        Record record : response.getData()) {
           if (Integer.parseInt(record.getAttribute("quantity")) > 0) {
             final ItemBuilderDisplay display=getDisplay().addItemBuilder(orderItemDataSource);
-            presenter.bindItemBuilderEvents(display);
+            presenter.bindItemBuilderEvents(display,false);
             display.getItemFilterBuilder().clearCriteria();
             display.setRecord(record);
             display.getItemQuantity().setValue(Integer.parseInt(record.getAttribute("quantity")));
@@ -63,7 +63,7 @@
         getDisplay().getBogoRadio().setValue("NO");
         getDisplay().getItemRuleRadio().setValue("NO");
         getDisplay().removeAllItemBuilders();
-        presenter.bindItemBuilderEvents(getDisplay().addItemBuilder(orderItemDataSource));
+        presenter.bindItemBuilderEvents(getDisplay().addItemBuilder(orderItemDataSource),false);
       }
       if (cb != null) {
         cb.processComplete();

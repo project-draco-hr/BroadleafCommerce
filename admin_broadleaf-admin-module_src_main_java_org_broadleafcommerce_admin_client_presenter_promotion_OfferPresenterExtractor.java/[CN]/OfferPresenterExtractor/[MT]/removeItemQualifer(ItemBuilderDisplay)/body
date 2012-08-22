@@ -3,11 +3,13 @@
     presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").removeData(builder.getRecord(),new DSCallback(){
       public void execute(      DSResponse response,      Object rawData,      DSRequest request){
         getDisplay().removeItemBuilder(builder);
+        stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
       }
     }
 );
   }
  else {
     getDisplay().removeItemBuilder(builder);
+    stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
   }
 }

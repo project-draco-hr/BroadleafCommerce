@@ -1,13 +1,13 @@
 {
   int count=0;
-  for (  final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
+  for (  final ItemBuilderDisplay builder : getDisplay().getTargetItemBuilderViews()) {
     if (builder.getDirty()) {
       count++;
     }
   }
-  stateManager.setWatchedItem(CriteriaType.QUALIFIER,count);
-  if ((getDisplay().getBogoRadio().getValue().equals("YES") && type.equals("ORDER_ITEM")) || getDisplay().getItemRuleRadio().getValue().equals("ITEM_RULE") && !type.equals("ORDER_ITEM")) {
-    for (    final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
+  stateManager.setWatchedItem(CriteriaType.TARGET,count);
+  if (type.equals("ORDER_ITEM")) {
+    for (    final ItemBuilderDisplay builder : getDisplay().getTargetItemBuilderViews()) {
       if (builder.getDirty()) {
         String temper=builder.getItemQuantity().getValue().toString();
         Integer quantity=Integer.parseInt(temper);
@@ -22,10 +22,10 @@
           if (builder.getRecord() != null) {
             setData(builder.getRecord(),"quantity",quantity,dirtyValues);
             setData(builder.getRecord(),"orderItemMatchRule",mvel,dirtyValues);
-            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
+            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemTargetCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
-                stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
+                stateManager.finishWatchedItem(CriteriaType.TARGET);
               }
             }
 );
@@ -34,14 +34,14 @@
             final Record temp=new Record();
             temp.setAttribute("quantity",quantity);
             temp.setAttribute("orderItemMatchRule",mvel);
-            temp.setAttribute("_type",new String[]{presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").getDefaultNewEntityFullyQualifiedClassname()});
-            temp.setAttribute(OfferItemCriteriaListDataSourceFactory.foreignKeyName,presenter.getPresenterSequenceSetupManager().getDataSource("offerDS").getPrimaryKeyValue(selectedRecord));
+            temp.setAttribute("_type",new String[]{presenter.getPresenterSequenceSetupManager().getDataSource("offerItemTargetCriteriaDS").getDefaultNewEntityFullyQualifiedClassname()});
+            temp.setAttribute(OfferItemTargetCriteriaListDataSourceFactory.foreignKeyName,presenter.getPresenterSequenceSetupManager().getDataSource("offerDS").getPrimaryKeyValue(selectedRecord));
             temp.setAttribute("id","");
-            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").addData(temp,new DSCallback(){
+            presenter.getPresenterSequenceSetupManager().getDataSource("offerItemTargetCriteriaDS").addData(temp,new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
                 builder.setRecord(temp);
-                stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
+                stateManager.finishWatchedItem(CriteriaType.TARGET);
               }
             }
 );
@@ -53,13 +53,10 @@
  else {
     if (!isValidation) {
       ItemBuilderDisplay[] displays=new ItemBuilderDisplay[]{};
-      displays=getDisplay().getItemBuilderViews().toArray(displays);
+      displays=getDisplay().getTargetItemBuilderViews().toArray(displays);
       for (      final ItemBuilderDisplay builder : displays) {
-        removeItemQualifer(builder);
+        removeItemTarget(builder);
       }
     }
-  }
-  if (type.equals("ORDER_ITEM")) {
-    setData(selectedRecord,"combinableWithOtherOffers",getDisplay().getOrderItemCombineRuleRadio().getValue().equals("YES"),dirtyValues);
   }
 }

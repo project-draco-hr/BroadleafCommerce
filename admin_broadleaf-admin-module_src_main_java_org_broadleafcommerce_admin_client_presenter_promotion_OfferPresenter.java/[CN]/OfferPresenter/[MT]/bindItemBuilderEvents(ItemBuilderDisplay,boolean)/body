@@ -1,9 +1,21 @@
 {
   display.getRemoveButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
-      if (getDisplay().getItemBuilderViews().size() > 1) {
+      boolean greaterThanOne;
+      if (isTarget) {
+        greaterThanOne=getDisplay().getTargetItemBuilderViews().size() > 1;
+      }
+ else {
+        greaterThanOne=getDisplay().getItemBuilderViews().size() > 1;
+      }
+      if (greaterThanOne) {
         additionalFilterEventManager.removeFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder());
-        extractor.removeItemQualifer(display);
+        if (isTarget) {
+          extractor.removeItemTarget(display);
+        }
+ else {
+          extractor.removeItemQualifer(display);
+        }
       }
     }
   }
