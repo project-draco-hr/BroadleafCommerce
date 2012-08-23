@@ -1,0 +1,9 @@
+{
+  CatalogService catalogService=ProcessorUtils.getCatalogService(arguments);
+  Long productId=(Long)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("productId"));
+  Product product=catalogService.findProductById(productId);
+  if (product != null) {
+    addAllProductOptionsToModel(product);
+    addProductOptionPricingToModel(product);
+  }
+}

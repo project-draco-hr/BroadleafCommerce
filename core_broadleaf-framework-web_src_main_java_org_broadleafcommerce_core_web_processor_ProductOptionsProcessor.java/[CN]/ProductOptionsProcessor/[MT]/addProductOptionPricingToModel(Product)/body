@@ -1,0 +1,23 @@
+{
+  List<Sku> skus=product.getSkus();
+  List<ProductOptionPricingDTO> skuPricing=new ArrayList<ProductOptionPricingDTO>();
+  for (  Sku sku : skus) {
+    List<Long> productOptionValueIds=new ArrayList<Long>();
+    List<ProductOptionValue> productOptionValues=sku.getProductOptionValues();
+    for (    ProductOptionValue productOptionValue : productOptionValues) {
+      productOptionValueIds.add(productOptionValue.getId());
+    }
+    Long[] values=new Long[productOptionValueIds.size()];
+    productOptionValueIds.toArray(values);
+    ProductOptionPricingDTO dto=new ProductOptionPricingDTO();
+    if (sku.isOnSale()) {
+      dto.setPrice(sku.getSalePrice().getAmount());
+    }
+ else {
+      dto.setPrice(sku.getRetailPrice().getAmount());
+    }
+    dto.setSelectedOptions(values);
+    skuPricing.add(dto);
+  }
+  writeJSONToModel("skuPricing",skuPricing);
+}
