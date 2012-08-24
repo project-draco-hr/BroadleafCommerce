@@ -41,7 +41,7 @@
           if (receiveQtyNeeded > 0) {
             int itemQtyAvailableToBeUsedAsTarget=chargeableItem.getQuantityAvailableToBeUsedAsTarget(promotion);
             if (itemQtyAvailableToBeUsedAsTarget > 0) {
-              if (promotion.getMaxUses() == 0 || itemOffer.getUses() < promotion.getMaxUses()) {
+              if (promotion.getMaxUses() == 0 || itemOffer.getUses() <= promotion.getMaxUses()) {
                 int qtyToMarkAsTarget=Math.min(receiveQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
                 receiveQtyNeeded-=qtyToMarkAsTarget;
                 chargeableItem.addPromotionDiscount(itemOffer,itemOffer.getOffer().getTargetItemCriteria(),qtyToMarkAsTarget);
