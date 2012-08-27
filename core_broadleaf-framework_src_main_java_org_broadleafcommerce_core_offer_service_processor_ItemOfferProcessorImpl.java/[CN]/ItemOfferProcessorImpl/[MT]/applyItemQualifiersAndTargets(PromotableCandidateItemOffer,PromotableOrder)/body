@@ -7,7 +7,10 @@
     for (    OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
       totalQualifiersNeeded+=itemCriteria.getQuantity();
     }
-    int receiveQtyNeeded=promotion.getTargetItemCriteria().getQuantity();
+    int receiveQtyNeeded=0;
+    for (    OfferItemCriteria targetCriteria : promotion.getTargetItemCriteria()) {
+      receiveQtyNeeded+=targetCriteria.getQuantity();
+    }
     checkAll: {
       for (      OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
         List<PromotableOrderItem> chargeableItems=itemOffer.getCandidateQualifiersMap().get(itemCriteria);
@@ -46,6 +49,7 @@
             }
           }
           if (receiveQtyNeeded == 0) {
+            itemOffer.addUse();
             break checkTargets;
           }
         }

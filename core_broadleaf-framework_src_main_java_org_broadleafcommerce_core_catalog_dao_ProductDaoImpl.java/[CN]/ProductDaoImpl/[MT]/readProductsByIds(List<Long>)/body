@@ -1,0 +1,11 @@
+{
+  if (productIds == null || productIds.size() == 0) {
+    return null;
+  }
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
+  Root<ProductImpl> product=criteria.from(ProductImpl.class);
+  criteria.select(product);
+  criteria.where(product.get("id").as(Long.class).in(productIds));
+  return (List<Product>)em.createQuery(criteria).getResultList();
+}

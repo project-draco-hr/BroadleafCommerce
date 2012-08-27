@@ -4,7 +4,7 @@ switch (SupportedFieldType.valueOf(fieldType)) {
 case BOOLEAN:
     formItem=new BooleanItem();
   formItem.setValueFormatter(new FormItemValueFormatter(){
-    public String formatValue(    Object value,    Record record,    DynamicForm form,    FormItem item){
+    @Override public String formatValue(    Object value,    Record record,    DynamicForm form,    FormItem item){
       if (value == null) {
         item.setValue(false);
         return "false";
@@ -35,7 +35,7 @@ break;
 case FOREIGN_KEY:
 formItem=new SearchFormItem();
 formItem.setValueFormatter(new FormItemValueFormatter(){
-public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+@Override public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 String response;
 if (value == null) {
 response="";
@@ -51,7 +51,7 @@ break;
 case ADDITIONAL_FOREIGN_KEY:
 formItem=new SearchFormItem();
 formItem.setValueFormatter(new FormItemValueFormatter(){
-public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+@Override public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 String response;
 if (value == null) {
 response="";
@@ -68,8 +68,8 @@ case BROADLEAF_ENUMERATION:
 formItem=new SelectItem();
 LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
 String[][] enumerationValues=(String[][])field.getAttributeAsObject("enumerationValues");
-for (int j=0; j < enumerationValues.length; j++) {
-valueMap.put(enumerationValues[j][0],enumerationValues[j][1]);
+for (String[] enumerationValue : enumerationValues) {
+valueMap.put(enumerationValue[0],enumerationValue[1]);
 }
 formItem.setValueMap(valueMap);
 break;
@@ -77,8 +77,8 @@ case EXPLICIT_ENUMERATION:
 formItem=new SelectItem();
 LinkedHashMap<String,String> valueMap2=new LinkedHashMap<String,String>();
 String[][] enumerationValues2=(String[][])field.getAttributeAsObject("enumerationValues");
-for (int j=0; j < enumerationValues2.length; j++) {
-valueMap2.put(enumerationValues2[j][0],enumerationValues2[j][1]);
+for (String[] element : enumerationValues2) {
+valueMap2.put(element[0],element[1]);
 }
 formItem.setValueMap(valueMap2);
 break;
@@ -89,7 +89,7 @@ case ID:
 formItem=new TextItem();
 ((TextItem)formItem).setLength(field.getLength());
 formItem.setValueFormatter(new FormItemValueFormatter(){
-public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
+@Override public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
 return value == null ? "" : ((DynamicEntityDataSource)dataSource).stripDuplicateAllowSpecialCharacters(String.valueOf(value));
 }
 }
@@ -100,17 +100,12 @@ formItem=new PasswordItem();
 ((PasswordItem)formItem).setLength(field.getLength());
 break;
 case HTML:
-HTMLTextItem cItem=new HTMLTextItem();
-formItem=cItem;
-formItem.setHeight(540);
-formItem.setWidth(600);
+formItem=new BLCRichTextItem();
+formItem.setHeight(500);
 break;
 case HTML_BASIC:
-HTMLTextItem cItem2=new HTMLTextItem(DisplayType.BASIC);
-formItem=cItem2;
-formItem.setHeight(200);
-formItem.setWidth(500);
-formItem.setShouldSaveValue(true);
+formItem=new BLCRichTextItem();
+formItem.setHeight(150);
 break;
 case UPLOAD:
 formItem=new UploadItem();

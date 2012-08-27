@@ -5,4 +5,12 @@
   if (ratingSummary != null) {
     addToModel(getRatingsVar(element),ratingSummary);
   }
+  Customer customer=CustomerState.getCustomer();
+  ReviewDetail reviewDetail=null;
+  if (!customer.isAnonymous()) {
+    reviewDetail=ratingService.readReviewByCustomerAndItem(customer,itemId);
+  }
+  if (reviewDetail != null) {
+    addToModel("currentCustomerReview",reviewDetail);
+  }
 }

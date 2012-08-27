@@ -1,3 +1,19 @@
 {
-  return addSandBoxItem(sbox,operationType,itemType,description,groupDescription,temporaryId,originalId,false);
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Adding sandbox item.  " + originalId);
+  }
+  SandBoxItemImpl sandBoxItem=new SandBoxItemImpl();
+  sandBoxItem.setSandBoxOperationType(operationType);
+  sandBoxItem.setSandBoxId(sbox);
+  sandBoxItem.setArchivedFlag(false);
+  sandBoxItem.setDescription(description);
+  sandBoxItem.setOriginalItemId(originalId);
+  sandBoxItem.setTemporaryItemId(temporaryId);
+  sandBoxItem.setSandBoxItemType(itemType);
+  sandBoxItem.setGroupDescription(groupDescription);
+  SandBoxAction action=new SandBoxActionImpl();
+  action.setActionType(SandBoxActionType.EDIT);
+  sandBoxItem.addSandBoxAction(action);
+  action.addSandBoxItem(sandBoxItem);
+  return em.merge(sandBoxItem);
 }

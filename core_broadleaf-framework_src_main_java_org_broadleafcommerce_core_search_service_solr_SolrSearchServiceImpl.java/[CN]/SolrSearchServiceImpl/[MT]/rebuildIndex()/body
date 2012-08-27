@@ -1,0 +1,53 @@
+{
+  LOG.info("Rebuilding the solr index...");
+  StopWatch s=new StopWatch();
+  List<Product> products=productDao.readAllActiveProducts(SystemTime.asDate());
+  List<Field> fields=fieldDao.readAllProductFields();
+  Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
+  for (  Product product : products) {
+    SolrInputDocument document=new SolrInputDocument();
+    document.addField("id",product.getId());
+    for (    Category category : product.getAllParentCategories()) {
+      document.addField("category",category.getId());
+    }
+    List<String> addedProperties=new ArrayList<String>();
+    List<String> copyFieldValue=new ArrayList<String>();
+    for (    Field field : fields) {
+      try {
+        String propertyName=field.getPropertyName();
+        if (propertyName.contains("productAttributes.")) {
+          propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
+        }
+        Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+        for (        FieldType searchableFieldType : field.getSearchableFieldTypes()) {
+          String solrPropertyName=field.getPropertyName() + "_" + searchableFieldType.getType();
+          document.addField(solrPropertyName,propertyValue);
+          addedProperties.add(solrPropertyName);
+          copyFieldValue.add(propertyValue.toString());
+        }
+        FieldType facetFieldType=field.getFacetFieldType();
+        if (facetFieldType != null) {
+          String solrFacetPropertyName=field.getPropertyName() + "_" + facetFieldType.getType();
+          if (!addedProperties.contains(solrFacetPropertyName)) {
+            document.addField(solrFacetPropertyName,propertyValue);
+          }
+        }
+      }
+ catch (      Exception e) {
+        LOG.debug("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
+      }
+    }
+    document.addField("searchable",StringUtils.join(copyFieldValue," "));
+    documents.add(document);
+  }
+  try {
+    server.deleteByQuery("*:*");
+    server.commit();
+    server.add(documents);
+    server.commit();
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not rebuild index",e);
+  }
+  LOG.info("Finished rebuilding the solr index in " + s.toLapString());
+}

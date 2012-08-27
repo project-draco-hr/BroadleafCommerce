@@ -1,0 +1,16 @@
+{
+  List<FulfillmentOption> fulfillmentOptions=fulfillmentOptionService.readAllFulfillmentOptions();
+  Order cart=CartState.getCart();
+  if (hasValidShippingAddresses(cart)) {
+    Set<FulfillmentOption> options=new HashSet<FulfillmentOption>();
+    options.addAll(fulfillmentOptions);
+    FulfillmentEstimationResponse estimateResponse=null;
+    try {
+      estimateResponse=fulfillmentPricingService.estimateCostForFulfillmentGroup(cart.getFulfillmentGroups().get(0),options);
+    }
+ catch (    FulfillmentPriceException e) {
+    }
+    model.addAttribute("estimateResponse",estimateResponse);
+  }
+  model.addAttribute("fulfillmentOptions",fulfillmentOptions);
+}

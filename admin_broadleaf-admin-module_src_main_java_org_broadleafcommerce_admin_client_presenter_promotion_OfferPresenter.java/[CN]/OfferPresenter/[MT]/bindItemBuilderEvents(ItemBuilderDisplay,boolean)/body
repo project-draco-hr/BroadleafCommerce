@@ -1,0 +1,55 @@
+{
+  display.getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      boolean greaterThanOne;
+      if (isTarget) {
+        greaterThanOne=getDisplay().getTargetItemBuilderViews().size() > 1;
+      }
+ else {
+        greaterThanOne=getDisplay().getItemBuilderViews().size() > 1;
+      }
+      if (greaterThanOne) {
+        additionalFilterEventManager.removeFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder());
+        if (isTarget) {
+          extractor.removeItemTarget(display);
+        }
+ else {
+          extractor.removeItemQualifer(display);
+        }
+      }
+    }
+  }
+);
+  display.getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      display.setDirty(true);
+    }
+  }
+);
+  display.getItemForm().addItemChangedHandler(new ItemChangedHandler(){
+    public void onItemChanged(    ItemChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      display.setDirty(true);
+    }
+  }
+);
+  display.getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
+    public void onFilterChanged(    FilterChangedEvent event){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      display.setDirty(true);
+    }
+  }
+);
+  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
+    @Override public void onAdditionalChangeEvent(){
+      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      display.setDirty(true);
+    }
+  }
+);
+}

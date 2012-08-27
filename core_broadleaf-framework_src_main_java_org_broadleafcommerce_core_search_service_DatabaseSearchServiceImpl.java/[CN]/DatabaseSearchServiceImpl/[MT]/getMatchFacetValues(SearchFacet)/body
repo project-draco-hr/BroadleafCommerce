@@ -1,0 +1,14 @@
+{
+  List<SearchFacetResultDTO> results=new ArrayList<SearchFacetResultDTO>();
+  String qualifiedFieldName=facet.getField().getQualifiedFieldName();
+  qualifiedFieldName=getDatabaseQualifiedFieldName(qualifiedFieldName);
+  List<String> values=searchFacetDao.readDistinctValuesForField(qualifiedFieldName,String.class);
+  Collections.sort(values);
+  for (  String value : values) {
+    SearchFacetResultDTO dto=new SearchFacetResultDTO();
+    dto.setValue(value);
+    dto.setFacet(facet);
+    results.add(dto);
+  }
+  return results;
+}

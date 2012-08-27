@@ -1,0 +1,8 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Field> criteria=builder.createQuery(Field.class);
+  Root<FieldImpl> root=criteria.from(FieldImpl.class);
+  criteria.select(root);
+  criteria.where(builder.equal(root.get("abbreviation").as(String.class),abbreviation));
+  return em.createQuery(criteria).getSingleResult();
+}

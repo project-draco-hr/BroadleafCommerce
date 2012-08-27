@@ -364,8 +364,29 @@
   targetItemsLabel.setBackgroundColor("#eaeaea");
   targetItemsLabel.setStyleName("label-bold");
   targetItemsLayout.addMember(targetItemsLabel);
-  targetItemBuilder=new ItemBuilderView(orderItemDataSource,false);
-  targetItemsLayout.addMember((ItemBuilderView)targetItemBuilder);
+  targetItemBuilderViews.add(new ItemBuilderView(orderItemDataSource,true));
+  newTargetItemBuilderLayout=new VLayout();
+  newTargetItemBuilderLayout.setVisible(false);
+  HLayout targetButtonLayout=new HLayout();
+  targetButtonLayout.setID("targetOfferButtonLayout");
+  targetButtonLayout.setWidth100();
+  targetButtonLayout.setAlign(Alignment.LEFT);
+  targetButtonLayout.setHeight(30);
+  targetButtonLayout.setLayoutTopMargin(15);
+  targetAddItemButton=new Button();
+  targetAddItemButton.setIcon(GWT.getModuleBaseURL() + "sc/skins/Enterprise/images/actions/add.png");
+  targetAddItemButton.setTitle(BLCMain.getMessageManager().getString("newItemRuleButtonTitle"));
+  targetAddItemButton.setWidth(136);
+  targetAddItemButton.setWrap(false);
+  targetButtonLayout.addMember(targetAddItemButton);
+  targetButtonLayout.setLayoutBottomMargin(10);
+  newTargetItemBuilderLayout.addMember(targetButtonLayout);
+  targetItemBuilderContainerLayout=new VLayout();
+  newTargetItemBuilderLayout.addMember(targetItemBuilderContainerLayout);
+  for (  ItemBuilderDisplay widget : targetItemBuilderViews) {
+    targetItemBuilderContainerLayout.addMember((ItemBuilderView)widget);
+  }
+  targetItemsLayout.addMember(newTargetItemBuilderLayout);
   targetItemsLayout.setLayoutBottomMargin(10);
   advancedItemCriteriaTarget=new VLayout();
   advancedItemCriteriaTarget.setVisible(false);

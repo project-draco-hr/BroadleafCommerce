@@ -1,9 +1,8 @@
 {
   CriteriaBuilder builder=em.getCriteriaBuilder();
-  CriteriaQuery<CategorySearchFacet> criteria=builder.createQuery(CategorySearchFacet.class);
-  Root<CategorySearchFacetImpl> root=criteria.from(CategorySearchFacetImpl.class);
-  Path<SearchFacet> facet=root.get("searchFacet");
-  criteria.select(root);
+  CriteriaQuery<SearchFacet> criteria=builder.createQuery(SearchFacet.class);
+  Root<SearchFacetImpl> facet=criteria.from(SearchFacetImpl.class);
+  criteria.select(facet);
   criteria.where(builder.equal(facet.get("showOnSearch").as(Boolean.class),true));
   return em.createQuery(criteria).getResultList();
 }

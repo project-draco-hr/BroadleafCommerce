@@ -3,8 +3,16 @@
   if (!(cart instanceof NullOrderImpl)) {
     model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
   }
-  model.addAttribute("fulfillmentOptions",fulfillmentOptionService.readAllFulfillmentOptions());
-  model.addAttribute("validShipping",hasValidShippingAddresses(cart));
+  String editShipping=request.getParameter("edit-shipping");
+  boolean hasValidShipping;
+  if (BooleanUtils.toBoolean(editShipping)) {
+    hasValidShipping=false;
+  }
+ else {
+    hasValidShipping=hasValidShippingAddresses(cart);
+  }
+  model.addAttribute("validShipping",hasValidShipping);
+  putFulfillmentOptionsAndEstimationOnModel(model);
   model.addAttribute("states",stateService.findStates());
   model.addAttribute("countries",countryService.findCountries());
   model.addAttribute("expirationMonths",populateExpirationMonths());

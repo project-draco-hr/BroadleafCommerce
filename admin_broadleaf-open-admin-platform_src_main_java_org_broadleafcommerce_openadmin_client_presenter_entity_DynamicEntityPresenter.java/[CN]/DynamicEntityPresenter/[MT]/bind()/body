@@ -2,7 +2,7 @@
   formPresenter.bind();
   formPresenter.getSaveButtonHandlerRegistration().removeHandler();
   saveButtonHandlerRegistration=display.getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         saveClicked();
       }
@@ -10,7 +10,7 @@
   }
 );
   addClickHandlerRegistration=display.getListDisplay().getAddButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         addClicked();
       }
@@ -18,10 +18,10 @@
   }
 );
   removeClickHandlerRegistration=display.getListDisplay().getRemoveButton().addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         SC.confirm("Are your sure you want to delete this entity?",new BooleanCallback(){
-          public void execute(          Boolean value){
+          @Override public void execute(          Boolean value){
             if (value) {
               removeClicked();
             }
@@ -42,7 +42,7 @@
   }
 );
   selectionChangedHandlerRegistration=display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState() && selectedRecord != null) {
         if (!selectedRecord.equals(lastSelectedRecord)) {
@@ -60,19 +60,21 @@
             display.getListDisplay().getRemoveButton().enable();
           }
           changeSelection(selectedRecord);
+          display.getDynamicFormDisplay().getSaveButton().disable();
+          display.getDynamicFormDisplay().getRefreshButton().disable();
         }
       }
     }
   }
 );
   entityTypeChangedHandlerRegistration=display.getListDisplay().getEntityType().addChangedHandler(new ChangedHandler(){
-    public void onChanged(    ChangedEvent event){
+    @Override public void onChanged(    ChangedEvent event){
       ((DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource()).setDefaultNewEntityFullyQualifiedClassname((String)event.getItem().getValue());
     }
   }
 );
   cellSavedHandlerRegistration=display.getListDisplay().getGrid().addCellSavedHandler(new CellSavedHandler(){
-    public void onCellSaved(    CellSavedEvent event){
+    @Override public void onCellSaved(    CellSavedEvent event){
       display.getListDisplay().getGrid().deselectAllRecords();
       display.getListDisplay().getGrid().selectRecord(event.getRecord());
     }

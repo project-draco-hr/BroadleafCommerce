@@ -1,0 +1,8 @@
+{
+  Map<String,SearchFacetDTO> namedFacetMap=new HashMap<String,SearchFacetDTO>();
+  for (  SearchFacetDTO facet : facets) {
+    Field facetField=facet.getFacet().getField();
+    namedFacetMap.put(getSolrFieldKey(facetField,searchCriteria),facet);
+  }
+  return namedFacetMap;
+}

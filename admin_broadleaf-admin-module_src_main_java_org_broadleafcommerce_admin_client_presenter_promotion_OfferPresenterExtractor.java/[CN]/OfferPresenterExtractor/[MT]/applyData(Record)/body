@@ -1,5 +1,6 @@
 {
   try {
+    final int index=getDisplay().getListDisplay().getGrid().getRecordIndex(selectedRecord);
     Record tempRecord=new Record();
     for (    String attribute : selectedRecord.getAttributes()) {
       if (attribute.equals("_type")) {
@@ -20,19 +21,31 @@
     extractCustomerData(tempRecord,dirtyValues);
     extractOrderData(tempRecord,type,dirtyValues);
     extractQualifierRuleType(tempRecord,dirtyValues);
-    extractTargetItemData(tempRecord,type,dirtyValues);
     extractTargetRuleType(tempRecord,dirtyValues);
     extractFulfillmentGroupData(tempRecord,type,dirtyValues);
     for (    FormItem formItem : getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getFields()) {
       setData(tempRecord,formItem.getName(),formItem.getValue(),dirtyValues);
     }
+    stateManager.clear();
+    extractTargetItemData(tempRecord,type,true,dirtyValues);
     extractQualifierData(tempRecord,type,true,dirtyValues);
     DSRequest requestProperties=new DSRequest();
     requestProperties.setAttribute("dirtyValues",dirtyValues);
+    stateManager.setStateFinishedCallback(new StateFinishedCallback(){
+      @Override public void finished(){
+        if (getDisplay().getListDisplay().getGrid().anySelected()) {
+          getDisplay().getListDisplay().getGrid().deselectAllRecords();
+        }
+        getDisplay().getListDisplay().getGrid().selectRecord(index);
+      }
+    }
+);
     if (getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().validate() && getDisplay().getQualifyingItemSubTotalForm().validate()) {
       getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getDataSource().updateData(tempRecord,new DSCallback(){
         public void execute(        DSResponse response,        Object rawData,        DSRequest request){
           try {
+            stateManager.start();
+            extractTargetItemData(selectedRecord,type,false,dirtyValues);
             extractQualifierData(selectedRecord,type,false,dirtyValues);
             getDisplay().getDynamicFormDisplay().getSaveButton().disable();
             getDisplay().getDynamicFormDisplay().getRefreshButton().disable();

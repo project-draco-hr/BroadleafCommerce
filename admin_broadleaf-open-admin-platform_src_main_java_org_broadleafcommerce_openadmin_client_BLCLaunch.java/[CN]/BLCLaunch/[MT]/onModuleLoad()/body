@@ -1,7 +1,18 @@
 {
-  if (BLCMain.SPLASH_PROGRESS != null) {
-    BLCMain.SPLASH_PROGRESS.startProgress();
+  GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler(){
+    @Override public void onUncaughtException(    Throwable throwable){
+      String title="BLC Admin Uncaught exception: ";
+      java.util.logging.Logger.getLogger(BLCMain.class.getName()).log(Level.SEVERE,title,throwable);
+      if (!throwable.getMessage().contains("(TypeError): Cannot call method 'create' of undefined")) {
+        SC.say(title,"Please see server logs for details.\n" + throwable.getMessage());
+      }
+    }
   }
-  String currentModulePage=History.getToken();
-  BLCMain.drawCurrentState(getSelectedModule(currentModulePage),getSelectedPage(currentModulePage));
+);
+  Scheduler.get().scheduleDeferred(new ScheduledCommand(){
+    @Override public void execute(){
+      onModuleLoad2();
+    }
+  }
+);
 }

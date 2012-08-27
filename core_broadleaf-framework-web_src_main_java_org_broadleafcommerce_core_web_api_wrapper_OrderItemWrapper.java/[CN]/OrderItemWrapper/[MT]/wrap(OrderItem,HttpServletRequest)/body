@@ -10,6 +10,16 @@
     this.category=categoryWrapper;
   }
   this.orderId=model.getOrder().getId();
+  Map<String,OrderItemAttribute> itemAttributes=model.getOrderItemAttributes();
+  if (itemAttributes != null && !itemAttributes.isEmpty()) {
+    this.orderItemAttributes=new ArrayList<OrderItemAttributeWrapper>();
+    Set<String> keys=itemAttributes.keySet();
+    for (    String key : keys) {
+      OrderItemAttributeWrapper orderItemAttributeWrapper=(OrderItemAttributeWrapper)context.getBean(OrderItemAttributeWrapper.class.getName());
+      orderItemAttributeWrapper.wrap(itemAttributes.get(key),request);
+      this.orderItemAttributes.add(orderItemAttributeWrapper);
+    }
+  }
   if (model instanceof DiscreteOrderItem) {
     DiscreteOrderItem doi=(DiscreteOrderItem)model;
     SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());

@@ -284,7 +284,7 @@
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
         final ItemBuilderDisplay display=getDisplay().addItemBuilder(getPresenterSequenceSetupManager().getDataSource("offerOrderItemDS"));
-        bindItemBuilderEvents(display);
+        bindItemBuilderEvents(display,true);
         display.setDirty(true);
         getDisplay().getDynamicFormDisplay().getSaveButton().enable();
         getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
@@ -293,7 +293,7 @@
   }
 );
   for (  final ItemBuilderDisplay display : getDisplay().getItemBuilderViews()) {
-    bindItemBuilderEvents(display);
+    bindItemBuilderEvents(display,true);
   }
   getDisplay().getCustomerFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     public void onFilterChanged(    FilterChangedEvent event){
@@ -343,38 +343,21 @@
     }
   }
 );
-  getDisplay().getTargetItemBuilder().getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
-    public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getTargetItemBuilder().setDirty(true);
+  getDisplay().getTargetAddItemButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        final ItemBuilderDisplay display=getDisplay().addTargetItemBuilder(getPresenterSequenceSetupManager().getDataSource("offerOrderItemDS"));
+        bindItemBuilderEvents(display,true);
+        display.setDirty(true);
+        getDisplay().getDynamicFormDisplay().getSaveButton().enable();
+        getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      }
     }
   }
 );
-  getDisplay().getTargetItemBuilder().getItemForm().addItemChangedHandler(new ItemChangedHandler(){
-    public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getTargetItemBuilder().setDirty(true);
-    }
+  for (  final ItemBuilderDisplay display : getDisplay().getTargetItemBuilderViews()) {
+    bindItemBuilderEvents(display,true);
   }
-);
-  getDisplay().getTargetItemBuilder().getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
-    public void onFilterChanged(    FilterChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getTargetItemBuilder().setDirty(true);
-    }
-  }
-);
-  additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(getDisplay().getTargetItemBuilder().getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
-    @Override public void onAdditionalChangeEvent(){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
-      getDisplay().getTargetItemBuilder().setDirty(true);
-    }
-  }
-);
   getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
     public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {

@@ -20,19 +20,6 @@
           if (!selectedRecord.getAttributeAsBoolean("lockedFlag")) {
             formOnlyView.getForm().enable();
           }
-          for (          final FormItem formItem : formOnlyView.getForm().getFields()) {
-            if (formItem instanceof HTMLTextItem) {
-              ((HTMLTextItem)formItem).setHTMLValue((formOnlyView.getForm().getValue(formItem.getFieldName())) != null ? formOnlyView.getForm().getValue(formItem.getFieldName()).toString() : "");
-              ((HTMLTextItem)formItem).addAssetHandler(new Command(){
-                @Override public void execute(){
-                  displayAssetSearchDialog(((HTMLTextItem)formItem));
-                }
-              }
-);
-              getDisplay().getDynamicFormDisplay().getSaveButton().disable();
-              getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
-            }
-          }
           if (cb != null) {
             cb.processComplete();
           }

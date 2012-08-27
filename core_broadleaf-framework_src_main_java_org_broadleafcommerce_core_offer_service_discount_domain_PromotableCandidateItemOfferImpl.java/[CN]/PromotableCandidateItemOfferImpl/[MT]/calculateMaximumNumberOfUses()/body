@@ -1,6 +1,10 @@
 {
   int maxMatchesFound=9999;
-  int numberOfUsesForThisItemCriteria=calculateMaxUsesForItemCriteria(delegate.getOffer().getTargetItemCriteria(),getOffer());
+  int numberOfUsesForThisItemCriteria=maxMatchesFound;
+  for (  OfferItemCriteria targetCriteria : delegate.getOffer().getTargetItemCriteria()) {
+    int temp=calculateMaxUsesForItemCriteria(targetCriteria,getOffer());
+    numberOfUsesForThisItemCriteria=Math.min(numberOfUsesForThisItemCriteria,temp);
+  }
   maxMatchesFound=Math.min(maxMatchesFound,numberOfUsesForThisItemCriteria);
   int offerMaxUses=getOffer().getMaxUses() == 0 ? maxMatchesFound : getOffer().getMaxUses();
   return Math.min(maxMatchesFound,offerMaxUses);

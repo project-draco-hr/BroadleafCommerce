@@ -1,0 +1,32 @@
+{
+  for (  Entry<String,String[]> entry : searchCriteria.getFilterCriteria().entrySet()) {
+    String solrKey=null;
+    for (    Entry<String,SearchFacetDTO> dtoEntry : namedFacetMap.entrySet()) {
+      if (dtoEntry.getValue().getFacet().getField().getAbbreviation().equals(entry.getKey())) {
+        solrKey=dtoEntry.getKey();
+        dtoEntry.getValue().setActive(true);
+      }
+    }
+    if (solrKey != null) {
+      String solrTag=getSolrFieldTag(GLOBAL_FACET_TAG_FIELD,"tag");
+      String[] selectedValues=entry.getValue().clone();
+      for (int i=0; i < selectedValues.length; i++) {
+        if (selectedValues[i].contains("range[")) {
+          String rangeValue=selectedValues[i].substring(selectedValues[i].indexOf('[') + 1,selectedValues[i].indexOf(']'));
+          String[] rangeValues=StringUtils.split(rangeValue,':');
+          if (rangeValues[1].equals("null")) {
+            rangeValues[1]="*";
+          }
+          selectedValues[i]=solrKey + ":[" + rangeValues[0]+ " TO "+ rangeValues[1]+ "]";
+        }
+ else {
+          selectedValues[i]=solrKey + ":\"" + selectedValues[i]+ "\"";
+        }
+      }
+      String valueString=StringUtils.join(selectedValues," OR ");
+      StringBuilder sb=new StringBuilder();
+      sb.append(solrTag).append("(").append(valueString).append(")");
+      query.addFilterQuery(sb.toString());
+    }
+  }
+}

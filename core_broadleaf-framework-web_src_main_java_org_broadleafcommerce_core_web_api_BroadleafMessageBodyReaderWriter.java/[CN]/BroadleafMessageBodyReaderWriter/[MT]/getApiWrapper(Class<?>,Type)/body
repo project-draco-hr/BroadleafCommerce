@@ -5,7 +5,7 @@
     if (key.equals(((Class)lookupType).getName())) {
       if (Collection.class.isAssignableFrom(type)) {
         Type[] paramType={apiWrappers.get(key).getClass()};
-        return ParameterizedTypeImpl.make(type,paramType,null);
+        return new ParameterizedTypeImpl(paramType,type,null);
       }
  else       if (type.isArray()) {
         return Array.newInstance(apiWrappers.get(key).getClass(),0).getClass();

@@ -1,0 +1,13 @@
+{
+  Map<String,String> attrs=new HashMap<String,String>();
+  BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HttpServletRequest request=blcContext.getRequest();
+  String baseUrl=request.getRequestURL().toString();
+  Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
+  SearchFacetDTO facet=(SearchFacetDTO)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  String key=facet.getFacet().getField().getAbbreviation();
+  params.remove(key);
+  String url=ProcessorUtils.getUrl(baseUrl,params);
+  attrs.put("href",url);
+  return attrs;
+}

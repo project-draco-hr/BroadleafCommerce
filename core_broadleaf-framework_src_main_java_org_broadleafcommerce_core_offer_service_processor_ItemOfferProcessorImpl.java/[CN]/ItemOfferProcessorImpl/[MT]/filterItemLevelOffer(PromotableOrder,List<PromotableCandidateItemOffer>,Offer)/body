@@ -1,5 +1,5 @@
 {
-  boolean isNewFormat=(offer.getQualifyingItemCriteria() != null && offer.getQualifyingItemCriteria().size() > 0) || offer.getTargetItemCriteria() != null;
+  boolean isNewFormat=!CollectionUtils.isEmpty(offer.getQualifyingItemCriteria()) || !CollectionUtils.isEmpty(offer.getTargetItemCriteria());
   boolean itemLevelQualification=false;
   boolean offerCreated=false;
   for (  PromotableOrderItem promotableOrderItem : order.getDiscountableDiscreteOrderItems(offer.getApplyDiscountToSalePrice())) {

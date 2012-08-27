@@ -1,4 +1,11 @@
 {
+  int count=0;
+  for (  final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
+    if (builder.getDirty()) {
+      count++;
+    }
+  }
+  stateManager.setWatchedItem(CriteriaType.QUALIFIER,count);
   if ((getDisplay().getBogoRadio().getValue().equals("YES") && type.equals("ORDER_ITEM")) || getDisplay().getItemRuleRadio().getValue().equals("ITEM_RULE") && !type.equals("ORDER_ITEM")) {
     for (    final ItemBuilderDisplay builder : getDisplay().getItemBuilderViews()) {
       if (builder.getDirty()) {
@@ -18,7 +25,7 @@
             presenter.getPresenterSequenceSetupManager().getDataSource("offerItemCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
-                getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(selectedRecord));
+                stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
               }
             }
 );
@@ -34,7 +41,7 @@
               public void execute(              DSResponse response,              Object rawData,              DSRequest request){
                 builder.setDirty(false);
                 builder.setRecord(temp);
-                getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(selectedRecord));
+                stateManager.finishWatchedItem(CriteriaType.QUALIFIER);
               }
             }
 );
@@ -50,7 +57,6 @@
       for (      final ItemBuilderDisplay builder : displays) {
         removeItemQualifer(builder);
       }
-      getDisplay().getListDisplay().getGrid().selectRecord(getDisplay().getListDisplay().getGrid().getRecordIndex(selectedRecord));
     }
   }
   if (type.equals("ORDER_ITEM")) {
