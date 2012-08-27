@@ -74,7 +74,7 @@ break;
 case FOREIGN_KEY:
 if (cto.get(propertyName).getFilterValues().length > 0) {
 ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-if (mergedProperties.get(propertyName).getCollection()) {
+if (mergedProperties.get(propertyName).getForeignKeyCollection()) {
 if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
 ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
 }
@@ -108,7 +108,7 @@ return o1.getManyToField().compareTo(o2.getManyToField());
 }
 );
 ForeignKey foreignKey=persistencePerspective.getAdditionalForeignKeys()[additionalForeignKeyIndexPosition];
-if (mergedProperties.get(propertyName).getCollection()) {
+if (mergedProperties.get(propertyName).getForeignKeyCollection()) {
 if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
 ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
 }

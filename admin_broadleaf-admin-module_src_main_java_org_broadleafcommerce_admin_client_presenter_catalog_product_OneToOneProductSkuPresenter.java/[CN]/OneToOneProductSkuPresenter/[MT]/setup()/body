@@ -59,7 +59,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("parentCategoriesDS",new ParentCategoryListDataSourceFactory(),new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY),new Object[]{},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      parentCategoriesPresenter=new SimpleSearchJoinStructurePresenter(getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),new String[]{EntityImplementations.PRODUCT},BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      parentCategoriesPresenter=new SimpleSearchJoinStructureAndListPresenter(getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),new String[]{EntityImplementations.PRODUCT},BLCMain.getMessageManager().getString("categorySearchPrompt"));
       parentCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
     }
   }

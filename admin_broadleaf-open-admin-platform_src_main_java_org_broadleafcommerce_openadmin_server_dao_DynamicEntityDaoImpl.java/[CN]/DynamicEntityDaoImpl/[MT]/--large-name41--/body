@@ -5,6 +5,7 @@
     boolean isPropertyForeignKey=testForeignProperty(foreignField,prefix,propertyName);
     int additionalForeignKeyIndexPosition=findAdditionalForeignKeyIndex(additionalForeignFields,prefix,propertyName);
     j++;
+    Field myField=FieldManager.getSingleField(targetClass,propertyName);
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
       FieldPresentationAttributes presentationAttribute=presentationAttributes.get(propertyName);
       Boolean amIExcluded=isParentExcluded || !testPropertyInclusion(presentationAttribute);
@@ -27,6 +28,8 @@
       if (includeField || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0) {
         buildProperty(targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttribute,explicitType,returnedClass);
       }
+    }
+ else     if (myField != null && myField.getAnnotation(AdminPresentationCollection.class) != null) {
     }
   }
 }
