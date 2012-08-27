@@ -1,52 +1,16 @@
 {
+  setWidth(800);
+  setHeight(600);
   setIsModal(true);
   setShowModalMask(true);
   setShowMinimizeButton(false);
-  setWidth(600);
-  setHeight(550);
+  setShowMaximizeButton(true);
   setCanDragResize(true);
   setOverflow(Overflow.AUTO);
-  setVisible(true);
-  textArea=new RichTextArea();
-  toolBar=new RichTextToolbar(textArea,DisplayType.DETAILED);
-  VerticalPanel vp=new VerticalPanel();
-  saveButton=new IButton(BLCMain.getMessageManager().getString("ok"));
-  saveButton.setIcon("[SKIN]/actions/ok.png");
-  IButton cancelButton=new IButton(BLCMain.getMessageManager().getString("cancel"));
-  cancelButton.setIcon("[SKIN]/actions/undo.png");
-  cancelButton.addClickHandler(new ClickHandler(){
-    @Override public void onClick(    ClickEvent event){
-      handlerRegistration.removeHandler();
-      hide();
-    }
-  }
-);
-  final HtmlEditingPresenter pp=HtmlEditingPresenter.getInstance();
-  ;
-  final HLayout buttonsLayout=new HLayout(10);
-  buttonsLayout.setAlign(Alignment.CENTER);
-  buttonsLayout.addMember(saveButton);
-  buttonsLayout.addMember(cancelButton);
-  buttonsLayout.setLayoutTopMargin(2);
-  buttonsLayout.setLayoutBottomMargin(2);
-  buttonsLayout.setWidth100();
-  buttonsLayout.setHeight(25);
-  VLayout mainLayout=new VLayout();
-  mainLayout.setWidth100();
-  mainLayout.setHeight100();
-  mainLayout.addMember(buttonsLayout);
-  mainLayout.addMember(toolBar);
-  mainLayout.addMember(textArea);
-  addItem(mainLayout);
-  toolBar.addAssetHandler(new Command(){
-    @Override public void execute(){
-      pp.displayAssetSearchDialog(toolBar);
-    }
-  }
-);
   addResizedHandler(new ResizedHandler(){
     @Override public void onResized(    ResizedEvent event){
-      resizeGwtWidgets(event.getX(),event.getY());
+      initItem(RichTextEditorDialog.this.getInnerWidth(),RichTextEditorDialog.this.getInnerHeight());
+      mainLayout.redraw();
     }
   }
 );
