@@ -100,32 +100,12 @@ formItem=new PasswordItem();
 ((PasswordItem)formItem).setLength(field.getLength());
 break;
 case HTML:
-final HTMLTextItem cItem=new HTMLTextItem();
-formItem=cItem;
-formItem.setHeight(540);
-formItem.setWidth(600);
-final HtmlEditingPresenter p=HtmlEditingPresenter.getInstance();
-cItem.addAssetHandler(new Command(){
-@Override public void execute(){
-p.displayAssetSearchDialog(cItem);
-}
-}
-);
+formItem=new BLCRichTextItem();
+formItem.setHeight(500);
 break;
 case HTML_BASIC:
-final HTMLTextItem cItem2=new HTMLTextItem(DisplayType.BASIC);
-formItem=cItem2;
-formItem.setHeight(200);
-formItem.setWidth(500);
-formItem.setShouldSaveValue(true);
-final HtmlEditingPresenter pp=HtmlEditingPresenter.getInstance();
-;
-cItem2.addAssetHandler(new Command(){
-@Override public void execute(){
-pp.displayAssetSearchDialog(cItem2);
-}
-}
-);
+formItem=new BLCRichTextItem();
+formItem.setHeight(150);
 break;
 case UPLOAD:
 formItem=new UploadItem();

@@ -1,0 +1,18 @@
+{
+  if (event.getSource().equals(fontlist)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle("<span style=\"font-family: " + fontlist.getValue(fontlist.getSelectedIndex()) + ";\">",HTML_STYLE_CLOSE_SPAN);
+    }
+ else {
+      styleTextFormatter.setFontName(fontlist.getValue(fontlist.getSelectedIndex()));
+    }
+  }
+ else   if (event.getSource().equals(fontSizeList)) {
+    if (isHTMLMode()) {
+      changeHtmlStyle("<font size=\"" + GUI_FONT_SIZES.get(fontSizeList.getValue(fontSizeList.getSelectedIndex())).toString() + "\">",HTML_STYLE_CLOSE_FONT);
+    }
+ else {
+      styleTextFormatter.setFontSize(GUI_FONT_SIZES.get(fontSizeList.getValue(fontSizeList.getSelectedIndex())));
+    }
+  }
+}

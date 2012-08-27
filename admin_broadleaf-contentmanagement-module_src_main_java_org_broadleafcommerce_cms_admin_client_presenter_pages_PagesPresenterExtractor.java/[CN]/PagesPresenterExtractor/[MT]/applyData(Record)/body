@@ -17,11 +17,6 @@
           final String newId=response.getAttribute("newId");
           FormOnlyView legacyForm=(FormOnlyView)((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).getMember("pageTemplateForm");
           final DynamicForm form=legacyForm.getForm();
-          for (          FormItem formItem : form.getFields()) {
-            if (formItem instanceof HTMLTextItem) {
-              form.setValue(formItem.getFieldName(),((HTMLTextItem)formItem).getHTMLValue());
-            }
-          }
           PageTemplateFormListDataSource dataSource=(PageTemplateFormListDataSource)form.getDataSource();
           dataSource.setCustomCriteria(new String[]{"constructForm",newId});
           form.saveData(new DSCallback(){

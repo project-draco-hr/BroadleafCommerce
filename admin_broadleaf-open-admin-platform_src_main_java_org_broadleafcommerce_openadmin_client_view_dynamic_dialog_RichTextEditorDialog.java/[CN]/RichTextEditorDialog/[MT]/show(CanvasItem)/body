@@ -1,0 +1,19 @@
+{
+  setTitle("Edit " + richTextItem.getFieldName());
+  String htmlValueToEdit=(String)richTextItem.getValue();
+  toolBar.setHTML(htmlValueToEdit);
+  handlerRegistration=saveButton.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (richTextItem != null) {
+        richTextItem.storeValue(toolBar.getHTML());
+        richTextItem.setValue(toolBar.getHTML());
+      }
+      hide();
+      handlerRegistration.removeHandler();
+    }
+  }
+);
+  show();
+  resizeTo(800,600);
+  resizeGwtWidgets(800,600);
+}
