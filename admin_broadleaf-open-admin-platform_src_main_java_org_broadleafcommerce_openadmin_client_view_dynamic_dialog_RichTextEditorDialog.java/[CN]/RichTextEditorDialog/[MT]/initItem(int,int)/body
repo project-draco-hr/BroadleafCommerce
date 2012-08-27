@@ -19,7 +19,6 @@
   cancelButton.setIcon("[SKIN]/actions/undo.png");
   cancelButton.addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
-      handlerRegistration.removeHandler();
       hide();
     }
   }
@@ -59,4 +58,14 @@
   }
 );
   textArea.setHTML(legacyHtml);
+  saveButton.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (richTextItem != null) {
+        richTextItem.storeValue(toolBar.getHTML());
+        richTextItem.setValue(toolBar.getHTML());
+      }
+      hide();
+    }
+  }
+);
 }
