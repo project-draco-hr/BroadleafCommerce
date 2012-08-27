@@ -13,7 +13,7 @@
   paymentLogPresenter.bind();
   selectionChangedHandlerRegistration.removeHandler();
   display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
         if (!selectedRecord.equals(lastSelectedRecord)) {
@@ -36,7 +36,7 @@
   }
 );
   getDisplay().getPaymentInfoDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
         additionalPaymentAttributesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("paymentInfoDS"),null);
@@ -48,7 +48,7 @@
   }
 );
   getDisplay().getOrderItemsDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
         orderItemAdjustmentPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("orderItemDS"),null);
@@ -58,7 +58,7 @@
   }
 );
   getDisplay().getFulfillmentGroupDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
         fulfillmentGroupAdjustmentPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("fulfillmentGroupDS"),null);
@@ -66,5 +66,25 @@
     }
   }
 );
+  getDisplay().getExportOrdersButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      AppServices.EXPORT.getExporters(AdminExporterType.ORDER,new AsyncCallback<List<AdminExporterDTO>>(){
+        @Override public void onSuccess(        final List<AdminExporterDTO> result){
+          if (result == null || result.size() == 0) {
+            SC.say(BLCMain.getMessageManager().getString("noOrderExporters"));
+          }
+ else {
+            ExportListSelectionDialog exportSelectionDialog=new ExportListSelectionDialog();
+            exportSelectionDialog.search(BLCMain.getMessageManager().getString("selectExporterTitle"),result);
+          }
+        }
+        @Override public void onFailure(        Throwable caught){
+        }
+      }
+);
+    }
+  }
+);
   setReadOnly(true);
+  getDisplay().getListDisplay().getToolBar().enable();
 }

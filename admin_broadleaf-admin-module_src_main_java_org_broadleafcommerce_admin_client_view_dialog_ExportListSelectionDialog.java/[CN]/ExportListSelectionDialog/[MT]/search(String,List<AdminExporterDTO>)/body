@@ -1,0 +1,18 @@
+{
+  this.setTitle(title);
+  centerInPage();
+  okButton.disable();
+  searchGrid.deselectAllRecords();
+  this.exporters=exporters;
+  ListGridRecord[] records=new ListGridRecord[exporters.size()];
+  int j=0;
+  for (  AdminExporterDTO exporter : exporters) {
+    ListGridRecord record=new ListGridRecord();
+    record.setAttribute("friendlyName",exporter.getFriendlyName());
+    record.setAttribute("exporter",exporter);
+    records[j]=record;
+    j++;
+  }
+  searchGrid.setData(records);
+  show();
+}
