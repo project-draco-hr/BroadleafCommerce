@@ -1,12 +1,14 @@
 {
   List<AdminExporterDTO> result=new ArrayList<AdminExporterDTO>();
-  for (  AdminExporter exporter : exporters) {
-    if (type.equals(exporter.getType())) {
-      AdminExporterDTO dto=new AdminExporterDTO();
-      dto.setName(exporter.getName());
-      dto.setFriendlyName(exporter.getFriendlyName());
-      dto.setAdditionalCriteriaProperties(exporter.getCriteriaFields());
-      result.add(dto);
+  if (!CollectionUtils.isEmpty(getExporters())) {
+    for (    AdminExporter exporter : getExporters()) {
+      if (type.equals(exporter.getType())) {
+        AdminExporterDTO dto=new AdminExporterDTO();
+        dto.setName(exporter.getName());
+        dto.setFriendlyName(exporter.getFriendlyName());
+        dto.setAdditionalCriteriaProperties(exporter.getCriteriaFields());
+        result.add(dto);
+      }
     }
   }
   return result;
