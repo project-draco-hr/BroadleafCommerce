@@ -1,0 +1,14 @@
+{
+  Order cart=CartState.getCart();
+  String customerEmail=request.getParameter("emailAddress");
+  if (StringUtils.isNotBlank(customerEmail)) {
+    cart.setEmailAddress(customerEmail);
+    try {
+      orderService.save(cart,false);
+    }
+ catch (    PricingException pe) {
+      LOG.error("Error when saving the email address for order confirmation to the cart",pe);
+    }
+  }
+  return getCheckoutPageRedirect();
+}

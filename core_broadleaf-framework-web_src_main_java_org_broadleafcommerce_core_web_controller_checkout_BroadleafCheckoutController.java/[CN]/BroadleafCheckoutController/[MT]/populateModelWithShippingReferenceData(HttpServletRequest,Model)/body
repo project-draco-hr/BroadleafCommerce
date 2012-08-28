@@ -1,15 +1,11 @@
 {
-  Order cart=CartState.getCart();
-  if (!(cart instanceof NullOrderImpl)) {
-    model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
-  }
   String editShipping=request.getParameter("edit-shipping");
   boolean hasValidShipping;
   if (BooleanUtils.toBoolean(editShipping)) {
     hasValidShipping=false;
   }
  else {
-    hasValidShipping=hasValidShippingAddresses(cart);
+    hasValidShipping=hasValidShippingAddresses(CartState.getCart());
   }
   model.addAttribute("validShipping",hasValidShipping);
   putFulfillmentOptionsAndEstimationOnModel(model);
@@ -17,5 +13,4 @@
   model.addAttribute("countries",countryService.findCountries());
   model.addAttribute("expirationMonths",populateExpirationMonths());
   model.addAttribute("expirationYears",populateExpirationYears());
-  return getCheckoutView();
 }
