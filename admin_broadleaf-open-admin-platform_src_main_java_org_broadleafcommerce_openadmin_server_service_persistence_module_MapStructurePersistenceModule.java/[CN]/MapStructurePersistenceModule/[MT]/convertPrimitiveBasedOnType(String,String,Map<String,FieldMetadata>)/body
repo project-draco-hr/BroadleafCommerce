@@ -1,0 +1,16 @@
+{
+switch (((BasicFieldMetadata)valueMergedProperties.get(valuePropertyName)).getFieldType()) {
+case BOOLEAN:
+    return Boolean.parseBoolean(value);
+case DATE:
+  return dateFormat.parse(value);
+case DECIMAL:
+return new BigDecimal(value);
+case MONEY:
+return new Money(value);
+case INTEGER:
+return Integer.parseInt(value);
+default :
+return value;
+}
+}

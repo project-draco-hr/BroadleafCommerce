@@ -1,0 +1,24 @@
+{
+  PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  Entity[] payload;
+  int totalRecords;
+  try {
+    Class<?>[] entities=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+    Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+    Class<?>[] entities2=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
+    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,false,new String[]{},new String[]{},null,"");
+    BaseCtoConverter ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
+    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,adornedTargetList.getAdornedTargetEntityClassname());
+    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+    payload=getRecords(mergedPropertiesTarget,records,mergedProperties,adornedTargetList.getTargetObjectPath());
+    totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
+  }
+ catch (  Exception e) {
+    LOG.error("Problem fetching results for " + adornedTargetList.getAdornedTargetEntityClassname(),e);
+    throw new ServiceException("Unable to fetch results for " + adornedTargetList.getAdornedTargetEntityClassname(),e);
+  }
+  DynamicResultSet results=new DynamicResultSet(null,payload,totalRecords);
+  return results;
+}

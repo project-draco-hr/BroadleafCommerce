@@ -1,0 +1,49 @@
+{
+  String[] customCriteria=persistencePackage.getCustomCriteria();
+  if (customCriteria != null && customCriteria.length > 0) {
+    LOG.warn("custom persistence handlers and custom criteria not supported for update types other than BASIC");
+  }
+  PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+  Entity entity=persistencePackage.getEntity();
+  AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  try {
+    AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,entity,adornedTargetList).invoke();
+    List<Serializable> records=adornedTargetRetrieval.getRecords();
+    int index=adornedTargetRetrieval.getIndex();
+    Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
+    FieldManager fieldManager=getFieldManager();
+    if (adornedTargetList.getSortField() != null && entity.findProperty(adornedTargetList.getSortField()).getValue() != null) {
+      Serializable myRecord=records.remove(index);
+      myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
+      Integer newPos=Integer.valueOf(entity.findProperty(adornedTargetList.getSortField()).getValue());
+      if (CollectionUtils.isEmpty(records)) {
+        records.add(myRecord);
+      }
+ else {
+        records.add(newPos,myRecord);
+      }
+      index=1;
+      for (      Serializable record : records) {
+        fieldManager.setFieldValue(record,adornedTargetList.getSortField(),Long.valueOf(index));
+        index++;
+      }
+    }
+ else {
+      String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+      Class<?>[] entities=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+      Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+      Serializable myRecord=records.get(index);
+      myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
+      myRecord=persistenceManager.getDynamicEntityDao().merge(myRecord);
+      List<Serializable> myList=new ArrayList<Serializable>();
+      myList.add(myRecord);
+      Entity[] payload=getRecords(mergedPropertiesTarget,myList,mergedProperties,adornedTargetList.getTargetObjectPath());
+      entity=payload[0];
+    }
+    return entity;
+  }
+ catch (  Exception e) {
+    LOG.error("Problem editing entity",e);
+    throw new ServiceException("Problem updating entity : " + e.getMessage(),e);
+  }
+}

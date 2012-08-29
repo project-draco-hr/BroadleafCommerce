@@ -27,8 +27,8 @@
       if (newIndex > originalIndex) {
         newIndex--;
       }
-      JoinStructure joinStructure=(JoinStructure)((DynamicEntityDataSource)categoryPresenter.getPresenterSequenceSetupManager().getDataSource("allChildCategoriesDS")).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
-      record.setAttribute(joinStructure.getSortField(),newIndex);
+      AdornedTargetList adornedTargetList=(AdornedTargetList)((DynamicEntityDataSource)categoryPresenter.getPresenterSequenceSetupManager().getDataSource("allChildCategoriesDS")).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+      record.setAttribute(adornedTargetList.getSortField(),newIndex);
       display.getGrid().updateData(record,new DSCallback(){
         public void execute(        DSResponse response,        Object rawData,        DSRequest request){
           categoryPresenter.reloadParentTreeNodeRecords(false);

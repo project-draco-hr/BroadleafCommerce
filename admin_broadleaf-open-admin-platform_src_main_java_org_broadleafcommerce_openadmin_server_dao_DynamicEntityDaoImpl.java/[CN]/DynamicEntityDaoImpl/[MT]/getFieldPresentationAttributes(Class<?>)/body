@@ -41,68 +41,60 @@
  else     if (annotColl != null) {
       CollectionMetadata metadata=new CollectionMetadata();
       metadata.setAddType(annotColl.addType());
-      OperationTypes operationTypes=annotColl.operationTypes();
       org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
-      dtoOperationTypes.setFetchType(operationTypes.fetchType());
-      dtoOperationTypes.setInspectType(operationTypes.inspectType());
-      dtoOperationTypes.setRemoveType(operationTypes.removeType());
-      dtoOperationTypes.setUpdateType(operationTypes.updateType());
-      dtoOperationTypes.setAddType(operationTypes.addType());
+      if (annotColl.addType() == AddType.LOOKUP) {
+        dtoOperationTypes.setRemoveType(OperationType.NONDESTRUCTIVEREMOVE);
+      }
       PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
       metadata.setPersistencePerspective(persistencePerspective);
-switch (dtoOperationTypes.getFetchType()) {
-case ENTITY:
-{
-          String foreignKeyName=null;
-          OneToMany oneToMany=field.getAnnotation(OneToMany.class);
-          ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
-          checkForeignKeyName: {
-            if (!StringUtils.isEmpty(annotColl.persistencePerspectiveItem().entity_manyToField())) {
-              foreignKeyName=annotColl.persistencePerspectiveItem().entity_manyToField();
-              break checkForeignKeyName;
-            }
-            if (oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
-              foreignKeyName=oneToMany.mappedBy();
-              break checkForeignKeyName;
-            }
-            if (manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
-              foreignKeyName=manyToMany.mappedBy();
-              break checkForeignKeyName;
-            }
-            if (StringUtils.isEmpty(foreignKeyName)) {
-              throw new IllegalArgumentException("Unable to infer a ManyToOne field name for the @AdminPresentationCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the entity_manyToField field of @PersistencePerspectiveItem");
-            }
-          }
-          ForeignKey foreignKey=new ForeignKey(foreignKeyName,targetClass.getName(),null,ForeignKeyRestrictionType.ID_EQ,annotColl.persistencePerspectiveItem().entity_displayValueProperty());
-          persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
-          String ceiling=null;
-          checkCeiling: {
-            if (oneToMany != null && oneToMany.targetEntity() != void.class) {
-              ceiling=oneToMany.targetEntity().getName();
-              break checkCeiling;
-            }
-            if (manyToMany != null && manyToMany.targetEntity() != void.class) {
-              ceiling=manyToMany.targetEntity().getName();
-              break checkCeiling;
-            }
-          }
-          if (!StringUtils.isEmpty(ceiling)) {
-            metadata.setCollectionCeilingEntity(ceiling);
-          }
+      String foreignKeyName=null;
+      OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+      ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+      checkForeignKeyName: {
+        if (!StringUtils.isEmpty(annotColl.manyToField())) {
+          foreignKeyName=annotColl.manyToField();
+          break checkForeignKeyName;
         }
+        if (oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
+          foreignKeyName=oneToMany.mappedBy();
+          break checkForeignKeyName;
+        }
+        if (manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
+          foreignKeyName=manyToMany.mappedBy();
+          break checkForeignKeyName;
+        }
+        if (StringUtils.isEmpty(foreignKeyName)) {
+          throw new IllegalArgumentException("Unable to infer a ManyToOne field name for the @AdminPresentationCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the manyToField property");
+        }
+      }
+      ForeignKey foreignKey=new ForeignKey(foreignKeyName,targetClass.getName(),null,ForeignKeyRestrictionType.ID_EQ,annotColl.displayValueProperty());
+      persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
+      String ceiling=null;
+      checkCeiling: {
+        if (oneToMany != null && oneToMany.targetEntity() != void.class) {
+          ceiling=oneToMany.targetEntity().getName();
+          break checkCeiling;
+        }
+        if (manyToMany != null && manyToMany.targetEntity() != void.class) {
+          ceiling=manyToMany.targetEntity().getName();
+          break checkCeiling;
+        }
+      }
+      if (!StringUtils.isEmpty(ceiling)) {
+        metadata.setCollectionCeilingEntity(ceiling);
+      }
+      metadata.setExcluded(annotColl.excluded());
+      metadata.setFriendlyName(annotColl.friendlyName());
+      metadata.setSecurityLevel(annotColl.securityLevel());
+      metadata.setOrder(annotColl.order());
+      attributes.put(field.getName(),metadata);
     }
-    metadata.setExcluded(annotColl.excluded());
-    metadata.setFriendlyName(annotColl.friendlyName());
-    metadata.setSecurityLevel(annotColl.securityLevel());
-    metadata.setOrder(annotColl.order());
-    attributes.put(field.getName(),metadata);
-  }
  else {
-    BasicFieldMetadata metadata=new BasicFieldMetadata();
-    metadata.setName(field.getName());
-    metadata.setExcluded(false);
-    attributes.put(field.getName(),metadata);
+      BasicFieldMetadata metadata=new BasicFieldMetadata();
+      metadata.setName(field.getName());
+      metadata.setExcluded(false);
+      attributes.put(field.getName(),metadata);
+    }
   }
-}
-return attributes;
+  return attributes;
 }
