@@ -1,0 +1,16 @@
+{
+  Canvas canvas=new HLayout();
+  canvas.setWidth100();
+  canvas.setHeight100();
+  initializeEntryPoint(canvas,new CategoryPresenter(),new CategoryView());
+  List<String> categoryPermissions=new ArrayList<String>();
+  categoryPermissions.add("PERMISSION_CREATE_CATEGORY");
+  categoryPermissions.add("PERMISSION_UPDATE_CATEGORY");
+  categoryPermissions.add("PERMISSION_DELETE_CATEGORY");
+  categoryPermissions.add("PERMISSION_READ_CATEGORY");
+  ModuleFactory moduleFactory=ModuleFactory.getInstance();
+  moduleFactory.put("category","org.broadleafcommerce.admin.client.view.catalog.category.CategoryView");
+  moduleFactory.put("categoryPresenter","org.broadleafcommerce.admin.client.presenter.catalog.category.CategoryPresenter");
+  org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerSection("BLCMerchandising","category",categoryPermissions);
+  canvas.draw();
+}

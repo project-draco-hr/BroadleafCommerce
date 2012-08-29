@@ -1,0 +1,16 @@
+{
+  String returnParam=null;
+  if (currentModulePage != null) {
+    int start=currentModulePage.indexOf(fragment);
+    int ampLocation=currentModulePage.indexOf("&",start);
+    if (start >= 0) {
+      start=start + fragment.length();
+      int end=currentModulePage.length();
+      if (ampLocation > 0 && ampLocation > start) {
+        end=ampLocation;
+      }
+      returnParam=currentModulePage.substring(start,end);
+    }
+  }
+  return returnParam;
+}
