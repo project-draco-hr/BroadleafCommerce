@@ -1,5 +1,5 @@
 {
-  Map<String,FieldPresentationAttributes> presentationAttributes=getFieldPresentationAttributes(targetClass);
+  Map<String,FieldMetadata> presentationAttributes=getFieldPresentationAttributes(targetClass);
   if (isParentExcluded) {
     for (    String key : presentationAttributes.keySet()) {
       presentationAttributes.get(key).setExcluded(true);
@@ -24,7 +24,7 @@
     propertyList.add(property);
   }
   buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,propertyList,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded);
-  FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
+  BasicFieldMetadata presentationAttribute=new BasicFieldMetadata();
   presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
   presentationAttribute.setVisibility(VisibilityEnum.HIDDEN_ALL);
   if (!ArrayUtils.isEmpty(additionalNonPersistentProperties)) {

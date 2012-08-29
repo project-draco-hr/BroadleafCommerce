@@ -1,0 +1,39 @@
+{
+  Field targetField=FieldManager.getSingleField(targetClass,propertyName);
+  if (targetField == null) {
+    throw new IllegalArgumentException("Unable to find property(" + propertyName + ") in class("+ targetClass.getName()+ ")");
+  }
+  presentationAttribute.setInheritedFromType(targetClass.getName());
+  presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
+  if (targetField.getAnnotation(AdminPresentation.class) != null) {
+    BasicFieldMetadata fieldMetadata=(BasicFieldMetadata)presentationAttribute;
+    fieldMetadata.setFieldType(type);
+    fieldMetadata.setSecondaryType(secondaryType);
+    if (entityType != null && !entityType.isCollectionType()) {
+      Column column=null;
+      for (      Property property : componentProperties) {
+        if (property.getName().equals(propertyName)) {
+          column=(Column)property.getColumnIterator().next();
+          break;
+        }
+      }
+      if (column != null) {
+        fieldMetadata.setLength(column.getLength());
+        fieldMetadata.setScale(column.getScale());
+        fieldMetadata.setPrecision(column.getPrecision());
+        fieldMetadata.setRequired(!column.isNullable());
+        fieldMetadata.setUnique(column.isUnique());
+      }
+      fieldMetadata.setForeignKeyCollection(false);
+    }
+ else {
+      fieldMetadata.setForeignKeyCollection(true);
+    }
+    fieldMetadata.setMutable(true);
+    fieldMetadata.setMergedPropertyType(mergedPropertyType);
+    if (SupportedFieldType.BROADLEAF_ENUMERATION.equals(type)) {
+      setupBroadleafEnumeration(fieldMetadata.getBroadleafEnumeration(),fieldMetadata);
+    }
+  }
+  return presentationAttribute;
+}

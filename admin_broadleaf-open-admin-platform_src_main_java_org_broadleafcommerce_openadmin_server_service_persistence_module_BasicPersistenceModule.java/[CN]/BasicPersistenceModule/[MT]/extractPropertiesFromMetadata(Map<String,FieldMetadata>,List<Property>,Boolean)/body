@@ -9,8 +9,8 @@
     }
     properties.add(prop);
     prop.setMetadata(metadata);
-    if (isHiddenOverride) {
-      prop.getMetadata().getPresentationAttributes().setVisibility(VisibilityEnum.HIDDEN_ALL);
+    if (isHiddenOverride && prop.getMetadata() instanceof BasicFieldMetadata) {
+      ((BasicFieldMetadata)prop.getMetadata()).setVisibility(VisibilityEnum.HIDDEN_ALL);
     }
   }
 }

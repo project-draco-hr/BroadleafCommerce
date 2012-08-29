@@ -1,6 +1,6 @@
 {
   Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
-  FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
+  BasicFieldMetadata presentationAttribute=new BasicFieldMetadata();
   presentationAttribute.setFriendlyName(friendlyPropertyName);
   if (String.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
@@ -32,11 +32,11 @@
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
     fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.DECIMAL,null,parentClass,presentationAttribute,mergedPropertyType));
   }
-  fields.get(propertyName).setLength(255);
-  fields.get(propertyName).setForeignKeyCollection(false);
-  fields.get(propertyName).setRequired(true);
-  fields.get(propertyName).setUnique(true);
-  fields.get(propertyName).setScale(100);
-  fields.get(propertyName).setPrecision(100);
+  ((BasicFieldMetadata)fields.get(propertyName)).setLength(255);
+  ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyCollection(false);
+  ((BasicFieldMetadata)fields.get(propertyName)).setRequired(true);
+  ((BasicFieldMetadata)fields.get(propertyName)).setUnique(true);
+  ((BasicFieldMetadata)fields.get(propertyName)).setScale(100);
+  ((BasicFieldMetadata)fields.get(propertyName)).setPrecision(100);
   return fields;
 }

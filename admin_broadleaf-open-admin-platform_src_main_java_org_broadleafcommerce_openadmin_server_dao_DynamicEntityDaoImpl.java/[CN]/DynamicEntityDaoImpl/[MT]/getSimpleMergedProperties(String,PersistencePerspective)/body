@@ -7,13 +7,24 @@
  else {
     Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
     Class<?> targetClass=Class.forName(entityName);
-    Map<String,FieldPresentationAttributes> attributesMap=getFieldPresentationAttributes(targetClass);
+    Map<String,FieldMetadata> attributesMap=getFieldPresentationAttributes(targetClass);
     for (    String property : attributesMap.keySet()) {
-      FieldPresentationAttributes presentationAttributes=attributesMap.get(property);
+      FieldMetadata presentationAttributes=attributesMap.get(property);
       if (!presentationAttributes.getExcluded()) {
         Field field=getFieldManager().getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
-          buildProperty(targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,presentationAttributes,presentationAttributes.getExplicitFieldType(),field.getType());
+          if (field.getAnnotation(AdminPresentationCollection.class) == null) {
+            buildProperty(targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,presentationAttributes,((BasicFieldMetadata)presentationAttributes).getExplicitFieldType(),field.getType());
+          }
+ else {
+            CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes;
+            if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+              ParameterizedType listType=(ParameterizedType)field.getGenericType();
+              Class<?> listClass=(Class<?>)listType.getActualTypeArguments()[0];
+              fieldMetadata.setCollectionCeilingEntity(listClass.getName());
+            }
+            mergedProperties.put(property,fieldMetadata);
+          }
         }
       }
     }

@@ -1,29 +1,30 @@
 {
-  Map<String,FieldPresentationAttributes> attributes=new HashMap<String,FieldPresentationAttributes>();
+  Map<String,FieldMetadata> attributes=new HashMap<String,FieldMetadata>();
   Field[] fields=getAllFields(targetClass);
   for (  Field field : fields) {
     AdminPresentation annot=field.getAnnotation(AdminPresentation.class);
+    AdminPresentationCollection annotColl=field.getAnnotation(AdminPresentationCollection.class);
     if (annot != null) {
-      FieldPresentationAttributes attr=new FieldPresentationAttributes();
-      attr.setName(field.getName());
-      attr.setFriendlyName(annot.friendlyName());
-      attr.setSecurityLevel(annot.securityLevel());
-      attr.setVisibility(annot.visibility());
-      attr.setOrder(annot.order());
-      attr.setExplicitFieldType(annot.fieldType());
-      attr.setGroup(annot.group());
-      attr.setGroupOrder(annot.groupOrder());
-      attr.setGroupCollapsed(annot.groupCollapsed());
-      attr.setLargeEntry(annot.largeEntry());
-      attr.setProminent(annot.prominent());
-      attr.setColumnWidth(annot.columnWidth());
-      attr.setBroadleafEnumeration(annot.broadleafEnumeration());
-      attr.setReadOnly(annot.readOnly());
-      attr.setExcluded(annot.excluded());
-      attr.setTooltip(annot.tooltip());
-      attr.setHelpText(annot.helpText());
-      attr.setHint(annot.hint());
-      attr.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED ? true : false);
+      BasicFieldMetadata metadata=new BasicFieldMetadata();
+      metadata.setName(field.getName());
+      metadata.setFriendlyName(annot.friendlyName());
+      metadata.setSecurityLevel(annot.securityLevel());
+      metadata.setVisibility(annot.visibility());
+      metadata.setOrder(annot.order());
+      metadata.setExplicitFieldType(annot.fieldType());
+      metadata.setGroup(annot.group());
+      metadata.setGroupOrder(annot.groupOrder());
+      metadata.setGroupCollapsed(annot.groupCollapsed());
+      metadata.setLargeEntry(annot.largeEntry());
+      metadata.setProminent(annot.prominent());
+      metadata.setColumnWidth(annot.columnWidth());
+      metadata.setBroadleafEnumeration(annot.broadleafEnumeration());
+      metadata.setReadOnly(annot.readOnly());
+      metadata.setExcluded(annot.excluded());
+      metadata.setTooltip(annot.tooltip());
+      metadata.setHelpText(annot.helpText());
+      metadata.setHint(annot.hint());
+      metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
       if (annot.validationConfigurations().length != 0) {
         ValidationConfiguration[] configurations=annot.validationConfigurations();
         for (        ValidationConfiguration configuration : configurations) {
@@ -32,17 +33,76 @@
           for (          ConfigurationItem item : items) {
             itemMap.put(item.itemName(),item.itemValue());
           }
-          attr.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+          metadata.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
         }
       }
-      attributes.put(field.getName(),attr);
+      attributes.put(field.getName(),metadata);
     }
- else {
-      FieldPresentationAttributes attr=new FieldPresentationAttributes();
-      attr.setName(field.getName());
-      attr.setExcluded(false);
-      attributes.put(field.getName(),attr);
+ else     if (annotColl != null) {
+      CollectionMetadata metadata=new CollectionMetadata();
+      metadata.setAddType(annotColl.addType());
+      OperationTypes operationTypes=annotColl.operationTypes();
+      org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
+      dtoOperationTypes.setFetchType(operationTypes.fetchType());
+      dtoOperationTypes.setInspectType(operationTypes.inspectType());
+      dtoOperationTypes.setRemoveType(operationTypes.removeType());
+      dtoOperationTypes.setUpdateType(operationTypes.updateType());
+      dtoOperationTypes.setAddType(operationTypes.addType());
+      PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
+      metadata.setPersistencePerspective(persistencePerspective);
+switch (dtoOperationTypes.getFetchType()) {
+case ENTITY:
+{
+          String foreignKeyName=null;
+          OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+          ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+          checkForeignKeyName: {
+            if (!StringUtils.isEmpty(annotColl.persistencePerspectiveItem().entity_manyToField())) {
+              foreignKeyName=annotColl.persistencePerspectiveItem().entity_manyToField();
+              break checkForeignKeyName;
+            }
+            if (oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
+              foreignKeyName=oneToMany.mappedBy();
+              break checkForeignKeyName;
+            }
+            if (manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
+              foreignKeyName=manyToMany.mappedBy();
+              break checkForeignKeyName;
+            }
+            if (StringUtils.isEmpty(foreignKeyName)) {
+              throw new IllegalArgumentException("Unable to infer a ManyToOne field name for the @AdminPresentationCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the entity_manyToField field of @PersistencePerspectiveItem");
+            }
+          }
+          ForeignKey foreignKey=new ForeignKey(foreignKeyName,targetClass.getName(),null,ForeignKeyRestrictionType.ID_EQ,annotColl.persistencePerspectiveItem().entity_displayValueProperty());
+          persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
+          String ceiling=null;
+          checkCeiling: {
+            if (oneToMany != null && oneToMany.targetEntity() != void.class) {
+              ceiling=oneToMany.targetEntity().getName();
+              break checkCeiling;
+            }
+            if (manyToMany != null && manyToMany.targetEntity() != void.class) {
+              ceiling=manyToMany.targetEntity().getName();
+              break checkCeiling;
+            }
+          }
+          if (!StringUtils.isEmpty(ceiling)) {
+            metadata.setCollectionCeilingEntity(ceiling);
+          }
+        }
     }
+    metadata.setExcluded(annotColl.excluded());
+    metadata.setFriendlyName(annotColl.friendlyName());
+    metadata.setSecurityLevel(annotColl.securityLevel());
+    metadata.setOrder(annotColl.order());
+    attributes.put(field.getName(),metadata);
   }
-  return attributes;
+ else {
+    BasicFieldMetadata metadata=new BasicFieldMetadata();
+    metadata.setName(field.getName());
+    metadata.setExcluded(false);
+    attributes.put(field.getName(),metadata);
+  }
+}
+return attributes;
 }

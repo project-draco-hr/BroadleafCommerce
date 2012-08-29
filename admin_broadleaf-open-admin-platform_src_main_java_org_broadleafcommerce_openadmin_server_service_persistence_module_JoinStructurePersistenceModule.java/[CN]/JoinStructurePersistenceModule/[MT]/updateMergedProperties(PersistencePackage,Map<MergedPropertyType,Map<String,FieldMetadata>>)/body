@@ -8,7 +8,7 @@
       Map<String,FieldMetadata> joinMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(joinStructure.getJoinStructureEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.JOINSTRUCTURE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
       String idProp=null;
       for (      String key : joinMergedProperties.keySet()) {
-        if (joinMergedProperties.get(key).getFieldType() == SupportedFieldType.ID) {
+        if (joinMergedProperties.get(key) instanceof BasicFieldMetadata && ((BasicFieldMetadata)joinMergedProperties.get(key)).getFieldType() == SupportedFieldType.ID) {
           idProp=key;
           break;
         }

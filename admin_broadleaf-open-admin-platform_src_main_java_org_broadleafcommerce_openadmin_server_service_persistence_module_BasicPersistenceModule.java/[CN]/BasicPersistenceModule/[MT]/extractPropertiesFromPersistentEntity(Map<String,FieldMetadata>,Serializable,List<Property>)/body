@@ -2,7 +2,7 @@
   FieldManager fieldManager=getFieldManager();
   for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
     String property=entry.getKey();
-    FieldMetadata metadata=mergedProperties.get(property);
+    BasicFieldMetadata metadata=(BasicFieldMetadata)entry.getValue();
     if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(entity.getClass()) || entity.getClass().isAssignableFrom(Class.forName(metadata.getInheritedFromType()))) {
       boolean proceed=true;
       if (property.contains(".")) {
@@ -56,7 +56,7 @@
           String displayVal=null;
           if (value != null) {
             if (metadata.getForeignKeyCollection()) {
-              propertyItem.getMetadata().setFieldType(metadata.getFieldType());
+              ((BasicFieldMetadata)propertyItem.getMetadata()).setFieldType(metadata.getFieldType());
               strVal=null;
             }
  else             if (Date.class.isAssignableFrom(value.getClass())) {
