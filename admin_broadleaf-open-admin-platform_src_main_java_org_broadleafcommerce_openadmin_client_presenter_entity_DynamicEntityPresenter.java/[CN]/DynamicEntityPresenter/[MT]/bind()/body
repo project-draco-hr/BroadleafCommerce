@@ -60,6 +60,9 @@
             display.getListDisplay().getRemoveButton().enable();
           }
           changeSelection(selectedRecord);
+          for (          SubPresentable subPresentable : subPresentables) {
+            subPresentable.load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
+          }
           display.getDynamicFormDisplay().getSaveButton().disable();
           display.getDynamicFormDisplay().getRefreshButton().disable();
         }

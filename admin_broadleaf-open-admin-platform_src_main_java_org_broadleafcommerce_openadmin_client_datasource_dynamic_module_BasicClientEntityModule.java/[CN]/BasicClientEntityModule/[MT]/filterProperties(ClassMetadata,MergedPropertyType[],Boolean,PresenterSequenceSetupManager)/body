@@ -311,14 +311,14 @@ if (metadata.getDataSourceName() != null && metadata.getDataSourceName().length(
 dataSourceName=metadata.getDataSourceName();
 }
  else {
-dataSourceName=property.getName() + "DS1";
+dataSourceName=property.getName() + "AdvancedCollectionDS";
 }
 if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
 throw new RuntimeException("The datasource name (" + dataSourceName + ") was found to already exist in PresenterSequenceSetupManager. The datasource name must be unique.");
 }
 presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new AsyncCallbackAdapter(){
 @Override public void onSetupSuccess(DataSource result){
-Map<String,Object> initialValues=new HashMap<String,Object>(1);
+FormBuilder.buildAdvancedCollectionForm(result,metadata,property.getName(),(DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter());
 }
 }
 ));
