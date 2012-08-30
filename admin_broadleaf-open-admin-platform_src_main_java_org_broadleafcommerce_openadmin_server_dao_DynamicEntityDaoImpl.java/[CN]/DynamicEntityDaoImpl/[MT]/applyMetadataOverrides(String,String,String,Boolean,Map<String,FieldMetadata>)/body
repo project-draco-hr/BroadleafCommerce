@@ -25,7 +25,7 @@
             }
             if (key.equals(propertyName)) {
               FieldMetadata serverMetadata=mergedProperties.get(key);
-              serverMetadata.accept(new MetadataVisitor(){
+              serverMetadata.accept(new MetadataVisitorAdapter(){
                 @Override public void visit(                BasicFieldMetadata serverMetadata){
                   BasicFieldMetadata override=(BasicFieldMetadata)localMetadata;
                   if (override.getFriendlyName() != null) {
@@ -108,7 +108,9 @@
                     serverMetadata.setPrecision(override.getPrecision());
                   }
                 }
-                @Override public void visit(                CollectionMetadata metadata){
+                @Override public void visit(                BasicCollectionMetadata metadata){
+                }
+                @Override public void visit(                AdornedTargetCollectionMetadata metadata){
                 }
               }
 );

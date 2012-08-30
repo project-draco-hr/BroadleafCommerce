@@ -1,0 +1,54 @@
+{
+  AdornedTargetCollectionMetadata metadata=new AdornedTargetCollectionMetadata();
+  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC);
+  PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
+  metadata.setPersistencePerspective(persistencePerspective);
+  String parentObjectProperty=null;
+  OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+  ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+  checkProperty: {
+    if (!StringUtils.isEmpty(adornedTargetCollection.parentObjectProperty())) {
+      parentObjectProperty=adornedTargetCollection.parentObjectProperty();
+      break checkProperty;
+    }
+    if (oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
+      parentObjectProperty=oneToMany.mappedBy();
+      break checkProperty;
+    }
+    if (manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
+      parentObjectProperty=manyToMany.mappedBy();
+      break checkProperty;
+    }
+    if (StringUtils.isEmpty(parentObjectProperty)) {
+      throw new IllegalArgumentException("Unable to infer a parentObjectProperty for the @AdminPresentationAdornedTargetCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the parentObjectProperty property");
+    }
+  }
+  AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,adornedTargetCollection.parentObjectIdProperty(),adornedTargetCollection.targetObjectProperty(),adornedTargetCollection.targetObjectIdProperty(),targetClass.getName(),null,adornedTargetCollection.sortProperty(),adornedTargetCollection.sortAscending());
+  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
+  String ceiling=null;
+  checkCeiling: {
+    if (oneToMany != null && oneToMany.targetEntity() != void.class) {
+      ceiling=oneToMany.targetEntity().getName();
+      break checkCeiling;
+    }
+    if (manyToMany != null && manyToMany.targetEntity() != void.class) {
+      ceiling=manyToMany.targetEntity().getName();
+      break checkCeiling;
+    }
+  }
+  if (!StringUtils.isEmpty(ceiling)) {
+    metadata.setCollectionCeilingEntity(ceiling);
+  }
+  metadata.setExcluded(adornedTargetCollection.excluded());
+  metadata.setFriendlyName(adornedTargetCollection.friendlyName());
+  metadata.setSecurityLevel(adornedTargetCollection.securityLevel());
+  metadata.setOrder(adornedTargetCollection.order());
+  if (!StringUtils.isEmpty(adornedTargetCollection.targetUIElementId())) {
+    metadata.setTargetElementId(adornedTargetCollection.targetUIElementId());
+  }
+  if (!StringUtils.isEmpty(adornedTargetCollection.dataSourceName())) {
+    metadata.setDataSourceName(adornedTargetCollection.dataSourceName());
+  }
+  metadata.setIgnoreAdornedProperties(adornedTargetCollection.ignoreAdornedProperties());
+  attributes.put(field.getName(),metadata);
+}

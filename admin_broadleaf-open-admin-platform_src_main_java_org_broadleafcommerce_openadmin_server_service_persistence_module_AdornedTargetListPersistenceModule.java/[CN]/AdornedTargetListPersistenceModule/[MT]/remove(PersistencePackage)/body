@@ -10,9 +10,9 @@
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,false,new String[]{},new String[]{},null,"");
     CriteriaTransferObject ctoInserted=new CriteriaTransferObject();
-    FilterAndSortCriteria filterCriteriaInsertedLinked=ctoInserted.get(adornedTargetList.getName());
+    FilterAndSortCriteria filterCriteriaInsertedLinked=ctoInserted.get(adornedTargetList.getCollectionFieldName());
     filterCriteriaInsertedLinked.setFilterValue(entity.findProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty()).getValue());
-    FilterAndSortCriteria filterCriteriaInsertedTarget=ctoInserted.get(adornedTargetList.getName() + "Target");
+    FilterAndSortCriteria filterCriteriaInsertedTarget=ctoInserted.get(adornedTargetList.getCollectionFieldName() + "Target");
     filterCriteriaInsertedTarget.setFilterValue(entity.findProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty()).getValue());
     BaseCtoConverter ctoConverterInserted=getAdornedTargetCtoConverter(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
     PersistentEntityCriteria queryCriteriaInserted=ctoConverterInserted.convert(ctoInserted,adornedTargetList.getAdornedTargetEntityClassname());

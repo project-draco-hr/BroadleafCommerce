@@ -1,0 +1,41 @@
+{
+  Layout destination;
+  if (metadata.getTargetElementId() != null && metadata.getTargetElementId().length() > 0) {
+    destination=(Layout)((Layout)presenter.getDisplay()).getMember(metadata.getTargetElementId());
+  }
+ else {
+    destination=(Layout)presenter.getDisplay().getDynamicFormDisplay().getFormOnlyDisplay();
+  }
+  final String viewTitle;
+  if (metadata.getFriendlyName() == null || metadata.getFriendlyName().length() == 0) {
+    viewTitle=propertyName;
+  }
+ else {
+    String temp;
+    try {
+      temp=BLCMain.getMessageManager().getString(metadata.getFriendlyName());
+    }
+ catch (    MissingResourceException e) {
+      temp=metadata.getFriendlyName();
+    }
+    viewTitle=temp;
+  }
+  final GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
+  destination.addMember(advancedCollectionView);
+  metadata.accept(new MetadataVisitorAdapter(){
+    @Override public void visit(    BasicCollectionMetadata metadata){
+      SubPresentable subPresentable;
+      if (metadata.getAddType() == AddType.PERSIST) {
+        subPresentable=new CreateBasedListStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),viewTitle,new HashMap<String,Object>());
+      }
+ else {
+        subPresentable=new SimpleSearchListPresenter(advancedCollectionView,new EntitySearchDialog((ListGridDataSource)lookupDataSource,true),metadata.getAvailableToTypes(),viewTitle);
+      }
+      subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
+      presenter.addSubPresentable(subPresentable);
+    }
+    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+    }
+  }
+);
+}

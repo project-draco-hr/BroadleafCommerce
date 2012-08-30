@@ -1,0 +1,34 @@
+{
+  BasicFieldMetadata metadata=new BasicFieldMetadata();
+  metadata.setName(field.getName());
+  metadata.setFriendlyName(annot.friendlyName());
+  metadata.setSecurityLevel(annot.securityLevel());
+  metadata.setVisibility(annot.visibility());
+  metadata.setOrder(annot.order());
+  metadata.setExplicitFieldType(annot.fieldType());
+  metadata.setGroup(annot.group());
+  metadata.setGroupOrder(annot.groupOrder());
+  metadata.setGroupCollapsed(annot.groupCollapsed());
+  metadata.setLargeEntry(annot.largeEntry());
+  metadata.setProminent(annot.prominent());
+  metadata.setColumnWidth(annot.columnWidth());
+  metadata.setBroadleafEnumeration(annot.broadleafEnumeration());
+  metadata.setReadOnly(annot.readOnly());
+  metadata.setExcluded(annot.excluded());
+  metadata.setTooltip(annot.tooltip());
+  metadata.setHelpText(annot.helpText());
+  metadata.setHint(annot.hint());
+  metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
+  if (annot.validationConfigurations().length != 0) {
+    ValidationConfiguration[] configurations=annot.validationConfigurations();
+    for (    ValidationConfiguration configuration : configurations) {
+      ConfigurationItem[] items=configuration.configurationItems();
+      Map<String,String> itemMap=new HashMap<String,String>();
+      for (      ConfigurationItem item : items) {
+        itemMap.put(item.itemName(),item.itemValue());
+      }
+      metadata.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+    }
+  }
+  attributes.put(field.getName(),metadata);
+}

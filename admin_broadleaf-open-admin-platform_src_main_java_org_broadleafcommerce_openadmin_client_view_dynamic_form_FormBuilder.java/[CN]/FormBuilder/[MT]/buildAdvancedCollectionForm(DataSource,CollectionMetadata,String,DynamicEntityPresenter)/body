@@ -1,29 +1,3 @@
 {
-  Layout destination;
-  if (metadata.getTargetElementId() != null && metadata.getTargetElementId().length() > 0) {
-    destination=(Layout)((Layout)presenter.getDisplay()).getMember(metadata.getTargetElementId());
-  }
- else {
-    destination=(Layout)presenter.getDisplay().getDynamicFormDisplay().getFormOnlyDisplay();
-  }
-  String viewTitle;
-  if (metadata.getFriendlyName() == null || metadata.getFriendlyName().length() == 0) {
-    viewTitle=propertyName;
-  }
- else {
-    try {
-      viewTitle=BLCMain.getMessageManager().getString(metadata.getFriendlyName());
-    }
- catch (    MissingResourceException e) {
-      viewTitle=metadata.getFriendlyName();
-    }
-  }
-  GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
-  destination.addMember(advancedCollectionView);
-  SubPresentable subPresentable;
-  if (metadata.getAddType() == AddType.PERSIST) {
-    subPresentable=new CreateBasedListStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),viewTitle,new HashMap<String,Object>());
-    subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
-    presenter.addSubPresentable(subPresentable);
-  }
+  buildAdvancedCollectionForm(dataSource,null,metadata,propertyName,presenter);
 }

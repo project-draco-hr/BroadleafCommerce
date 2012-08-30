@@ -16,7 +16,7 @@
       }
       if (key.equals(propertyName)) {
         FieldMetadata metadata=mergedProperties.get(key);
-        metadata.accept(new MetadataVisitor(){
+        metadata.accept(new MetadataVisitorAdapter(){
           @Override public void visit(          BasicFieldMetadata metadata){
             metadata.setFriendlyName(annot.friendlyName());
             metadata.setSecurityLevel(annot.securityLevel());
@@ -59,7 +59,9 @@
               }
             }
           }
-          @Override public void visit(          CollectionMetadata metadata){
+          @Override public void visit(          BasicCollectionMetadata metadata){
+          }
+          @Override public void visit(          AdornedTargetCollectionMetadata metadata){
           }
         }
 );

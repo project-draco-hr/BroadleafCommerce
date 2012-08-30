@@ -13,7 +13,7 @@
       }
     }
     if (shouldLoad) {
-      String dataSourceName;
+      final String dataSourceName;
       if (entry.getValue().getDataSourceName() != null && entry.getValue().getDataSourceName().length() > 0) {
         dataSourceName=entry.getValue().getDataSourceName();
       }
@@ -24,12 +24,38 @@
         java.util.logging.Logger.getLogger(getClass().toString()).log(Level.FINE,"Detected collection metadata for a datasource that is already registered (" + dataSourceName + "). Ignoring this repeated definition.");
         return;
       }
-      presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(entry.getValue()),new AsyncCallbackAdapter(){
-        @Override public void onSetupSuccess(        DataSource result){
-          FormBuilder.buildAdvancedCollectionForm(result,entry.getValue(),entry.getKey(),DynamicEntityPresenter.this);
+      entry.getValue().accept(new MetadataVisitorAdapter(){
+        @Override public void visit(        final BasicCollectionMetadata metadata){
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new AsyncCallbackAdapter(){
+            @Override public void onSetupSuccess(            final DataSource baseDS){
+              if (metadata.getAddType() == AddType.PERSIST) {
+                FormBuilder.buildAdvancedCollectionForm(baseDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
+              }
+            }
+          }
+));
+          if (metadata.getAddType() == AddType.LOOKUP) {
+            String lookupDSName=dataSourceName + "Lookup";
+            presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new AsyncCallbackAdapter(){
+              @Override public void onSetupSuccess(              DataSource lookupDS){
+                FormBuilder.buildAdvancedCollectionForm(presenterSequenceSetupManager.getDataSource(dataSourceName),lookupDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
+              }
+            }
+));
+          }
+        }
+        @Override public void visit(        final AdornedTargetCollectionMetadata metadata){
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new NullAsyncCallbackAdapter()));
+          String lookupDSName=dataSourceName + "Lookup";
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new AsyncCallbackAdapter(){
+            @Override public void onSetupSuccess(            DataSource lookupDS){
+              FormBuilder.buildAdvancedCollectionForm(presenterSequenceSetupManager.getDataSource(dataSourceName),lookupDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
+            }
+          }
+));
         }
       }
-));
+);
     }
   }
 }

@@ -38,7 +38,7 @@
 );
   }
   for (  final Property property : metadata.getProperties()) {
-    property.getMetadata().accept(new MetadataVisitor(){
+    property.getMetadata().accept(new MetadataVisitorAdapter(){
       @Override public void visit(      BasicFieldMetadata metadata){
         String mergedPropertyType=metadata.getMergedPropertyType().toString();
         if (Arrays.binarySearch(includeTypes,MergedPropertyType.valueOf(mergedPropertyType)) >= 0) {
@@ -305,7 +305,10 @@ field.setAttribute("rawName",rawName);
 dataSource.addField(field);
 }
 }
-@Override public void visit(final CollectionMetadata metadata){
+@Override public void visit(final BasicCollectionMetadata metadata){
+((DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter()).addCollectionMetadata(property.getName(),metadata);
+}
+@Override public void visit(AdornedTargetCollectionMetadata metadata){
 ((DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter()).addCollectionMetadata(property.getName(),metadata);
 }
 }

@@ -1,7 +1,7 @@
 {
   presentationAttribute.setInheritedFromType(targetClass.getName());
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
-  presentationAttribute.accept(new MetadataVisitor(){
+  presentationAttribute.accept(new MetadataVisitorAdapter(){
     @Override public void visit(    BasicFieldMetadata metadata){
       BasicFieldMetadata fieldMetadata=(BasicFieldMetadata)presentationAttribute;
       fieldMetadata.setFieldType(type);
@@ -37,7 +37,9 @@
         }
       }
     }
-    @Override public void visit(    CollectionMetadata metadata){
+    @Override public void visit(    BasicCollectionMetadata metadata){
+    }
+    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
     }
   }
 );
