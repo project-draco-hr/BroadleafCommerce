@@ -2,4 +2,34 @@
   getDisplay().build(entityDataSource,additionalDataSources);
   formPresenter=new DynamicFormPresenter(display.getDynamicFormDisplay());
   ((PresentationLayerAssociatedDataSource)entityDataSource).setAssociatedGrid(display.getListDisplay().getGrid());
+  for (  final Map.Entry<String,CollectionMetadata> entry : collectionMetadatas.entrySet()) {
+    boolean shouldLoad=false;
+    ClassTree classTree=((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getPolymorphicEntityTree();
+    for (    String availableType : entry.getValue().getAvailableToTypes()) {
+      ClassTree availableTypeResult=classTree.find(availableType);
+      if (availableTypeResult != null) {
+        shouldLoad=true;
+        break;
+      }
+    }
+    if (shouldLoad) {
+      String dataSourceName;
+      if (entry.getValue().getDataSourceName() != null && entry.getValue().getDataSourceName().length() > 0) {
+        dataSourceName=entry.getValue().getDataSourceName();
+      }
+ else {
+        dataSourceName=entry.getKey() + "AdvancedCollectionDS";
+      }
+      if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
+        java.util.logging.Logger.getLogger(getClass().toString()).log(Level.FINE,"Detected collection metadata for a datasource that is already registered (" + dataSourceName + "). Ignoring this repeated definition.");
+        return;
+      }
+      presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(entry.getValue()),new AsyncCallbackAdapter(){
+        @Override public void onSetupSuccess(        DataSource result){
+          FormBuilder.buildAdvancedCollectionForm(result,entry.getValue(),entry.getKey(),DynamicEntityPresenter.this);
+        }
+      }
+));
+    }
+  }
 }

@@ -306,22 +306,7 @@ dataSource.addField(field);
 }
 }
 @Override public void visit(final CollectionMetadata metadata){
-String dataSourceName;
-if (metadata.getDataSourceName() != null && metadata.getDataSourceName().length() > 0) {
-dataSourceName=metadata.getDataSourceName();
-}
- else {
-dataSourceName=property.getName() + "AdvancedCollectionDS";
-}
-if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
-throw new RuntimeException("The datasource name (" + dataSourceName + ") was found to already exist in PresenterSequenceSetupManager. The datasource name must be unique.");
-}
-presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new AsyncCallbackAdapter(){
-@Override public void onSetupSuccess(DataSource result){
-FormBuilder.buildAdvancedCollectionForm(result,metadata,property.getName(),(DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter());
-}
-}
-));
+((DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter()).addCollectionMetadata(property.getName(),metadata);
 }
 }
 );

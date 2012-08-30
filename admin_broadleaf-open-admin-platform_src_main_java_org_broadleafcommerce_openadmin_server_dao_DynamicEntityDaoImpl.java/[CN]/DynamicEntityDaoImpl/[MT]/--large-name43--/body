@@ -8,13 +8,15 @@
     Field myField=FieldManager.getSingleField(targetClass,propertyName);
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
       if (myField != null && myField.getAnnotation(AdminPresentationCollection.class) != null) {
-        CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes.get(propertyName);
-        if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
-          fieldMetadata.setCollectionCeilingEntity(type.getReturnedClass().getName());
+        if (StringUtils.isEmpty(prefix)) {
+          CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes.get(propertyName);
+          if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+            fieldMetadata.setCollectionCeilingEntity(type.getReturnedClass().getName());
+          }
+          fieldMetadata.setInheritedFromType(targetClass.getName());
+          fieldMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
+          fields.put(propertyName,fieldMetadata);
         }
-        fieldMetadata.setInheritedFromType(targetClass.getName());
-        fieldMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
-        fields.put(propertyName,fieldMetadata);
       }
  else {
         FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
