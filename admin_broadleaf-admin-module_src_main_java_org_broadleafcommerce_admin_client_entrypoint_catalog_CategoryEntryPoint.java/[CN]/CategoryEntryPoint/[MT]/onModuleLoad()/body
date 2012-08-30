@@ -1,8 +1,15 @@
 {
-  Canvas canvas=new HLayout();
-  canvas.setWidth100();
-  canvas.setHeight100();
-  initializeEntryPoint(canvas,new CategoryPresenter(),new CategoryView());
+  HLayout container=new HLayout();
+  IButton button=new IButton("&quot;Hello World TEST &quot;");
+  button.addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      SC.say("&quot;Hello World from SmartGWT&quot;");
+    }
+  }
+);
+  container.addChild(button);
+  RootPanel.get("gwt-component").add(container);
+  initializeEntryPoint(container,new CategoryPresenter(),new CategoryView());
   List<String> categoryPermissions=new ArrayList<String>();
   categoryPermissions.add("PERMISSION_CREATE_CATEGORY");
   categoryPermissions.add("PERMISSION_UPDATE_CATEGORY");
@@ -12,5 +19,4 @@
   moduleFactory.put("category","org.broadleafcommerce.admin.client.view.catalog.category.CategoryView");
   moduleFactory.put("categoryPresenter","org.broadleafcommerce.admin.client.presenter.catalog.category.CategoryPresenter");
   org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerSection("BLCMerchandising","category",categoryPermissions);
-  canvas.draw();
 }
