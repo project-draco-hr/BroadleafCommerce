@@ -3,6 +3,7 @@
   setQualifiedKeys(searchCriteria);
   List<Product> products=catalogService.findFilteredActiveProductsByQuery(query,SystemTime.asDate(),searchCriteria);
   List<SearchFacetDTO> facets=getSearchFacets();
+  setActiveFacets(facets,searchCriteria);
   result.setProducts(products);
   result.setFacets(facets);
   result.setTotalResults(products.size());
