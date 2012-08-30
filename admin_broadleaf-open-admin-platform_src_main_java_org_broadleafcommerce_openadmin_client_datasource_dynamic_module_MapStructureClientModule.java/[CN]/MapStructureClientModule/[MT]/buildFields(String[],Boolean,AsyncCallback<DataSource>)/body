@@ -15,7 +15,7 @@
     public void onSuccess(    DynamicResultSet result){
       super.onSuccess(result);
       ClassMetadata metadata=result.getClassMetaData();
-      filterProperties(metadata,new MergedPropertyType[]{MergedPropertyType.MAPSTRUCTUREKEY,MergedPropertyType.MAPSTRUCTUREVALUE},overrideFieldSort);
+      filterProperties(metadata,new MergedPropertyType[]{MergedPropertyType.MAPSTRUCTUREKEY,MergedPropertyType.MAPSTRUCTUREVALUE},overrideFieldSort,((AsyncCallbackAdapter)cb).getDataSourceSetupManager());
       DataSourceField symbolicIdField=new DataSourceTextField("symbolicId");
       symbolicIdField.setCanEdit(false);
       symbolicIdField.setHidden(true);

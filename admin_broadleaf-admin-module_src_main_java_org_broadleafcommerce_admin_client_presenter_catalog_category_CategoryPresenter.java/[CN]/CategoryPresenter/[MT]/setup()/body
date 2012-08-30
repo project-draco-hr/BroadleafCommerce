@@ -51,7 +51,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("allChildProductsDS",new AllProductsDataSourceFactory(),new OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC),new Object[]{},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      childProductsPresenter=new SimpleSearchAdornedTargetAndBasicListPresenter(getDisplay().getAllProductsDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchPrompt"));
+      childProductsPresenter=new SimpleSearchListPresenter(getDisplay().getAllProductsDisplay(),(EntitySearchDialog)library.get("productSearchView"),new String[]{EntityImplementations.CATEGORY},BLCMain.getMessageManager().getString("productSearchPrompt"));
       childProductsPresenter.setDataSource((ListGridDataSource)result,new String[]{"defaultSku.name","model","manufacturer"},new Boolean[]{false,false,false});
     }
   }

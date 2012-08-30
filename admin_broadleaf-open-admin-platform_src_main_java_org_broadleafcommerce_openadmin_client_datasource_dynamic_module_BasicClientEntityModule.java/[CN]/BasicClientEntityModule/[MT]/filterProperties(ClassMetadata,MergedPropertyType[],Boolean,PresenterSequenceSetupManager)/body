@@ -305,7 +305,23 @@ field.setAttribute("rawName",rawName);
 dataSource.addField(field);
 }
 }
-@Override public void visit(CollectionMetadata metadata){
+@Override public void visit(final CollectionMetadata metadata){
+String dataSourceName;
+if (metadata.getDataSourceName() != null && metadata.getDataSourceName().length() > 0) {
+dataSourceName=metadata.getDataSourceName();
+}
+ else {
+dataSourceName=property.getName() + "DS1";
+}
+if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
+throw new RuntimeException("The datasource name (" + dataSourceName + ") was found to already exist in PresenterSequenceSetupManager. The datasource name must be unique.");
+}
+presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new AsyncCallbackAdapter(){
+@Override public void onSetupSuccess(DataSource result){
+Map<String,Object> initialValues=new HashMap<String,Object>(1);
+}
+}
+));
 }
 }
 );
