@@ -24,13 +24,6 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("crossSaleProductsDS",new CrossSaleProductListDataSourceFactory(),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource result){
-      crossSalePresenter=new EditableAdornedTargetListPresenter(getDisplay().getCrossSaleDisplay(),productSearchView,new String[]{EntityImplementations.PRODUCT},BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
-      crossSalePresenter.setDataSource((ListGridDataSource)result,new String[]{"defaultSku.name","promotionMessage"},new Boolean[]{false,true});
-    }
-  }
-));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("upSaleProductsDS",new UpSaleProductListDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       upSalePresenter=new EditableAdornedTargetListPresenter(getDisplay().getUpSaleDisplay(),productSearchView,new String[]{EntityImplementations.PRODUCT},BLCMain.getMessageManager().getString("productSearchTitle"),BLCMain.getMessageManager().getString("setPromotionMessageTitle"),"promotionMessage");
