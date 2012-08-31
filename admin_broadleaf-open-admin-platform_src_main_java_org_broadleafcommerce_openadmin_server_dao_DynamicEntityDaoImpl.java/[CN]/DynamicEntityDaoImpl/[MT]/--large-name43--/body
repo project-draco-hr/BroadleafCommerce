@@ -16,6 +16,15 @@
           fieldMetadata.setInheritedFromType(targetClass.getName());
           fieldMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
           fields.put(propertyName,fieldMetadata);
+          fieldMetadata.accept(new MetadataVisitorAdapter(){
+            @Override public void visit(            AdornedTargetCollectionMetadata metadata){
+              AdornedTargetList targetList=((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST));
+              targetList.setAdornedTargetEntityClassname(metadata.getCollectionCeilingEntity());
+            }
+            @Override public void visit(            BasicCollectionMetadata metadata){
+            }
+          }
+);
         }
       }
  else {

@@ -23,8 +23,13 @@
       throw new IllegalArgumentException("Unable to infer a parentObjectProperty for the @AdminPresentationAdornedTargetCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the parentObjectProperty property");
     }
   }
-  AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,adornedTargetCollection.parentObjectIdProperty(),adornedTargetCollection.targetObjectProperty(),adornedTargetCollection.targetObjectIdProperty(),targetClass.getName(),null,adornedTargetCollection.sortProperty(),adornedTargetCollection.sortAscending());
-  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
+  String sortProperty;
+  if (StringUtils.isEmpty(adornedTargetCollection.sortProperty())) {
+    sortProperty=null;
+  }
+ else {
+    sortProperty=adornedTargetCollection.sortProperty();
+  }
   String ceiling=null;
   checkCeiling: {
     if (oneToMany != null && oneToMany.targetEntity() != void.class) {
@@ -39,6 +44,9 @@
   if (!StringUtils.isEmpty(ceiling)) {
     metadata.setCollectionCeilingEntity(ceiling);
   }
+  metadata.setParentObjectClass(targetClass.getName());
+  AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,adornedTargetCollection.parentObjectIdProperty(),adornedTargetCollection.targetObjectProperty(),adornedTargetCollection.targetObjectIdProperty(),ceiling,sortProperty,adornedTargetCollection.sortAscending());
+  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
   metadata.setExcluded(adornedTargetCollection.excluded());
   metadata.setFriendlyName(adornedTargetCollection.friendlyName());
   metadata.setSecurityLevel(adornedTargetCollection.securityLevel());

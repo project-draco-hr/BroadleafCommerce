@@ -1,10 +1,16 @@
 {
-  PersistencePerspective persistencePerspective=collectionMetadata.getPersistencePerspective();
-  List<DataSourceModule> dataSourceModuleList=new ArrayList<DataSourceModule>();
-  dataSourceModuleList.add(new BasicClientEntityModule(collectionMetadata.getCollectionCeilingEntity(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
-  if (persistencePerspective.getPersistencePerspectiveItems().containsKey(PersistencePerspectiveItemType.ADORNEDTARGETLIST)) {
-    dataSourceModuleList.add(new AdornedTargetListClientModule(collectionMetadata.getCollectionCeilingEntity(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+  final PersistencePerspective persistencePerspective=collectionMetadata.getPersistencePerspective();
+  final List<DataSourceModule> dataSourceModuleList=new ArrayList<DataSourceModule>();
+  collectionMetadata.accept(new MetadataVisitorAdapter(){
+    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+      dataSourceModuleList.add(new BasicClientEntityModule(metadata.getParentObjectClass(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+      dataSourceModuleList.add(new AdornedTargetListClientModule(metadata.getParentObjectClass(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+    }
+    @Override public void visit(    BasicCollectionMetadata metadata){
+      dataSourceModuleList.add(new BasicClientEntityModule(metadata.getCollectionCeilingEntity(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+    }
   }
+);
   if (persistencePerspective.getPersistencePerspectiveItems().containsKey(PersistencePerspectiveItemType.MAPSTRUCTURE)) {
   }
   DataSourceModule[] modules=new DataSourceModule[dataSourceModuleList.size()];

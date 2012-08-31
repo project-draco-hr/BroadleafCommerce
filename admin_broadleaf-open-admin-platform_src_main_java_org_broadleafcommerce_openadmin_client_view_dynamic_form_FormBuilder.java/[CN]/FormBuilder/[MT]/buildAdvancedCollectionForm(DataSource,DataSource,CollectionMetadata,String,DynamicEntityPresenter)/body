@@ -35,6 +35,16 @@
       presenter.addSubPresentable(subPresentable);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+      EntitySearchDialog searchView=new EntitySearchDialog((ListGridDataSource)lookupDataSource,true);
+      SubPresentable subPresentable;
+      if (metadata.isIgnoreAdornedProperties()) {
+        subPresentable=new SimpleSearchListPresenter(advancedCollectionView,searchView,metadata.getAvailableToTypes(),viewTitle);
+      }
+ else {
+        subPresentable=new EditableAdornedTargetListPresenter(advancedCollectionView,searchView,metadata.getAvailableToTypes(),viewTitle,viewTitle);
+      }
+      subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
+      presenter.addSubPresentable(subPresentable);
     }
   }
 );
