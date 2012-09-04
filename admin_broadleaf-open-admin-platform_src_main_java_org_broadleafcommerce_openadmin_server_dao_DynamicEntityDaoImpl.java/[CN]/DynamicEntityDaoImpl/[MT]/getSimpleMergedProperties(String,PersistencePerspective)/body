@@ -13,12 +13,12 @@
       if (!presentationAttributes.getExcluded()) {
         Field field=getFieldManager().getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
-          if (field.getAnnotation(AdminPresentationCollection.class) == null) {
+          if (field.getAnnotation(AdminPresentationCollection.class) == null && field.getAnnotation(AdminPresentationAdornedTargetCollection.class) == null && field.getAnnotation(AdminPresentationMap.class) == null) {
             buildProperty(targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,presentationAttributes,((BasicFieldMetadata)presentationAttributes).getExplicitFieldType(),field.getType());
           }
  else {
             CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes;
-            if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+            if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity()) && field.getAnnotation(AdminPresentationMap.class) == null) {
               ParameterizedType listType=(ParameterizedType)field.getGenericType();
               Class<?> listClass=(Class<?>)listType.getActualTypeArguments()[0];
               fieldMetadata.setCollectionCeilingEntity(listClass.getName());

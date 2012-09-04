@@ -7,7 +7,7 @@
     j++;
     Field myField=FieldManager.getSingleField(targetClass,propertyName);
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
-      if (myField != null && (myField.getAnnotation(AdminPresentationCollection.class) != null || myField.getAnnotation(AdminPresentationAdornedTargetCollection.class) != null)) {
+      if (myField != null && (myField.getAnnotation(AdminPresentationCollection.class) != null || myField.getAnnotation(AdminPresentationAdornedTargetCollection.class) != null) || myField.getAnnotation(AdminPresentationMap.class) != null) {
         if (StringUtils.isEmpty(prefix)) {
           CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes.get(propertyName);
           if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
@@ -22,6 +22,8 @@
               targetList.setAdornedTargetEntityClassname(metadata.getCollectionCeilingEntity());
             }
             @Override public void visit(            BasicCollectionMetadata metadata){
+            }
+            @Override public void visit(            MapMetadata metadata){
             }
           }
 );

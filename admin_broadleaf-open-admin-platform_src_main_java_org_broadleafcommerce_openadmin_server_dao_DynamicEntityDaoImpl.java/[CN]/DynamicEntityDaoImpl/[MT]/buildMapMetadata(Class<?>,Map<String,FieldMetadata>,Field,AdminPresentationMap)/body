@@ -1,0 +1,83 @@
+{
+  MapMetadata metadata=new MapMetadata();
+  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
+  PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
+  metadata.setPersistencePerspective(persistencePerspective);
+  metadata.setParentObjectClass(targetClass.getName());
+  Map idMetadata=getIdMetadata(targetClass);
+  metadata.setParentObjectIdField((String)idMetadata.get("name"));
+  checkProperty: {
+    if (!StringUtils.isEmpty(map.keyClassName())) {
+      metadata.setKeyClassName(map.keyClassName());
+      break checkProperty;
+    }
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[0];
+      if (!ArrayUtils.isEmpty(getAllPolymorphicEntitiesFromCeiling(clazz))) {
+        throw new RuntimeException("Key class for AdminPresentationMap was determined to be a JPA managed type. Only primitive types for the key type are currently supported.");
+      }
+      metadata.setKeyClassName(clazz.getName());
+      break checkProperty;
+    }
+    metadata.setKeyClassName(String.class.getName());
+  }
+  metadata.setKeyPropertyFriendlyName(map.keyPropertyFriendlyName());
+  metadata.setDeleteEntityUponRemove(map.deleteEntityUponRemove());
+  metadata.setValuePropertyFriendlyName(map.valuePropertyFriendlyName());
+  metadata.setKeyPropertyName("key");
+  metadata.setValuePropertyName("value");
+  metadata.setMediaField(map.mediaField());
+  checkProperty: {
+    if (!StringUtils.isEmpty(map.valueClassName())) {
+      metadata.setValueClassName(map.valueClassName());
+      break checkProperty;
+    }
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+      Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(clazz);
+      if (!ArrayUtils.isEmpty(entities)) {
+        metadata.setValueClassName(entities[entities.length - 1].getName());
+        break checkProperty;
+      }
+    }
+    ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+    if (manyToMany != null && !StringUtils.isEmpty(manyToMany.targetEntity().getName())) {
+      metadata.setValueClassName(manyToMany.mappedBy());
+      break checkProperty;
+    }
+    metadata.setValueClassName(String.class.getName());
+  }
+  checkProperty: {
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+      Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(clazz);
+      if (!ArrayUtils.isEmpty(entities)) {
+        metadata.setSimpleValue(false);
+        break checkProperty;
+      }
+    }
+    ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+    if (manyToMany != null && !StringUtils.isEmpty(manyToMany.targetEntity().getName())) {
+      metadata.setSimpleValue(false);
+      break checkProperty;
+    }
+    metadata.setSimpleValue(map.isSimpleValue());
+  }
+  if (!ArrayUtils.isEmpty(map.keys())) {
+    String[][] keys=new String[map.keys().length][2];
+    int j=0;
+    for (    AdminPresentationMapKey mapKey : map.keys()) {
+      keys[j][0]=mapKey.keyName();
+      keys[j][1]=mapKey.friendlyKeyName();
+      j++;
+    }
+    metadata.setKeys(keys);
+  }
+  attributes.put(field.getName(),metadata);
+}

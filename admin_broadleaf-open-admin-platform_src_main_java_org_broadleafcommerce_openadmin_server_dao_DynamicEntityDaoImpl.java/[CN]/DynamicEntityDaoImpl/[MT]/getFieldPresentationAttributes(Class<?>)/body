@@ -5,6 +5,7 @@
     AdminPresentation annot=field.getAnnotation(AdminPresentation.class);
     AdminPresentationCollection annotColl=field.getAnnotation(AdminPresentationCollection.class);
     AdminPresentationAdornedTargetCollection adornedTargetCollection=field.getAnnotation(AdminPresentationAdornedTargetCollection.class);
+    AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
     if (annot != null) {
       buildBasicMetadata(attributes,field,annot);
     }
@@ -13,6 +14,9 @@
     }
  else     if (adornedTargetCollection != null) {
       buildAdornedTargetCollectionMetadata(targetClass,attributes,field,adornedTargetCollection);
+    }
+ else     if (map != null) {
+      buildMapMetadata(targetClass,attributes,field,map);
     }
  else {
       BasicFieldMetadata metadata=new BasicFieldMetadata();
