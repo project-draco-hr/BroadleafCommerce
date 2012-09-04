@@ -4,8 +4,8 @@
     sku=catalogService.findSkuById(skuId);
   }
   if (sku == null && product != null) {
-    if (product.getAdditionalSkus() != null && product.getAdditionalSkus().size() > 0) {
-      throw new RequiredAttributeNotProvidedException("Unable to find non-default sku matching given options");
+    if (product.getAdditionalSkus() != null && product.getAdditionalSkus().size() > 0 && !product.getCanSellWithoutOptions()) {
+      throw new RequiredAttributeNotProvidedException("Unable to find non-default sku matching given options and cannot sell default sku");
     }
     sku=product.getDefaultSku();
   }

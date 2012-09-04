@@ -1,0 +1,19 @@
+{
+  String exporterName=params.get("exporter");
+  AdminExporter exporter=null;
+  for (  AdminExporter test : exporters) {
+    if (test.getName().equals(exporterName)) {
+      exporter=test;
+    }
+  }
+  if (exporter == null) {
+    throw new RuntimeException("Could not find exporter with name: " + exporterName);
+  }
+  response.setContentType("application/download");
+  String fileName=exporter.getFileName();
+  response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\"");
+  ServletOutputStream stream=response.getOutputStream();
+  exporter.writeExport(stream,params);
+  stream.flush();
+  return null;
+}

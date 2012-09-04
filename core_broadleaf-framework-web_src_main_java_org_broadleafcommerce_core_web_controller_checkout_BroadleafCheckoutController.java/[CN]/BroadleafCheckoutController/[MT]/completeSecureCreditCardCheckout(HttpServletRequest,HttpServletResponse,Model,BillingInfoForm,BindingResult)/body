@@ -9,7 +9,7 @@
     }
     billingInfoFormValidator.validate(billingForm,result);
     if (result.hasErrors()) {
-      checkout(request,response,model);
+      populateModelWithShippingReferenceData(request,model);
       return getCheckoutView();
     }
     PaymentInfo ccInfo=creditCardPaymentInfoFactory.constructPaymentInfo(cart);
@@ -27,7 +27,7 @@
     CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
     if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
       processFailedOrderCheckout(cart);
-      checkout(request,response,model);
+      populateModelWithShippingReferenceData(request,model);
       result.rejectValue("creditCardNumber","payment.exception",null,null);
       return getCheckoutView();
     }

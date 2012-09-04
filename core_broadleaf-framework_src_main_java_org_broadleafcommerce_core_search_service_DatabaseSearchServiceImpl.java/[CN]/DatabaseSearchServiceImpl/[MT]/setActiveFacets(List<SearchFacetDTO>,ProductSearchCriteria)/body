@@ -1,0 +1,10 @@
+{
+  for (  SearchFacetDTO facet : facets) {
+    String qualifiedFieldName=getDatabaseQualifiedFieldName(facet.getFacet().getField().getQualifiedFieldName());
+    for (    Entry<String,String[]> entry : searchCriteria.getFilterCriteria().entrySet()) {
+      if (qualifiedFieldName.equals(entry.getKey())) {
+        facet.setActive(true);
+      }
+    }
+  }
+}
