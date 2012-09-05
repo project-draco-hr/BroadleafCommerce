@@ -1,5 +1,6 @@
 {
   AdornedTargetCollectionMetadata metadata=new AdornedTargetCollectionMetadata();
+  metadata.setMutable(adornedTargetCollection.mutable());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC);
   PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
   metadata.setPersistencePerspective(persistencePerspective);
@@ -59,6 +60,7 @@
   if (!StringUtils.isEmpty(adornedTargetCollection.dataSourceName())) {
     metadata.setDataSourceName(adornedTargetCollection.dataSourceName());
   }
+  metadata.setCustomCriteria(adornedTargetCollection.customCriteria());
   metadata.setIgnoreAdornedProperties(adornedTargetCollection.ignoreAdornedProperties());
   attributes.put(field.getName(),metadata);
 }

@@ -1,5 +1,6 @@
 {
   BasicCollectionMetadata metadata=new BasicCollectionMetadata();
+  metadata.setMutable(annotColl.mutable());
   metadata.setAddType(annotColl.addType());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
   if (annotColl.addType() == AddType.LOOKUP) {
@@ -53,5 +54,6 @@
   if (!StringUtils.isEmpty(annotColl.dataSourceName())) {
     metadata.setDataSourceName(annotColl.dataSourceName());
   }
+  metadata.setCustomCriteria(annotColl.customCriteria());
   attributes.put(field.getName(),metadata);
 }

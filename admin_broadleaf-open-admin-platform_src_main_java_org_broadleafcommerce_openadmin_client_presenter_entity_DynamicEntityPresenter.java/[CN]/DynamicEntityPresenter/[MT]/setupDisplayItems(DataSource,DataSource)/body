@@ -12,6 +12,10 @@
         break;
       }
     }
+    if (entry.getValue().getSecurityLevel() != null && !"".equals(entry.getValue().getSecurityLevel())) {
+      org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerField(String.valueOf(entry.getValue().hashCode()),entry.getValue().getSecurityLevel());
+      shouldLoad=org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().isUserAuthorizedToEditField(String.valueOf(entry.getValue().hashCode()));
+    }
     if (shouldLoad) {
       final String dataSourceName;
       if (entry.getValue().getDataSourceName() != null && entry.getValue().getDataSourceName().length() > 0) {
@@ -26,7 +30,7 @@
       }
       entry.getValue().accept(new MetadataVisitorAdapter(){
         @Override public void visit(        final BasicCollectionMetadata metadata){
-          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new AsyncCallbackAdapter(){
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new AsyncCallbackAdapter(){
             @Override public void onSetupSuccess(            final DataSource baseDS){
               if (metadata.getAddType() == AddType.PERSIST) {
                 FormBuilder.buildAdvancedCollectionForm(baseDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
@@ -45,11 +49,28 @@
           }
         }
         @Override public void visit(        final AdornedTargetCollectionMetadata metadata){
-          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata),new NullAsyncCallbackAdapter()));
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new NullAsyncCallbackAdapter()));
           String lookupDSName=dataSourceName + "Lookup";
           presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new AsyncCallbackAdapter(){
             @Override public void onSetupSuccess(            DataSource lookupDS){
               FormBuilder.buildAdvancedCollectionForm(presenterSequenceSetupManager.getDataSource(dataSourceName),lookupDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
+            }
+          }
+));
+        }
+        @Override public void visit(        final MapMetadata metadata){
+          final String lookupDSName=dataSourceName + "Lookup";
+          if (metadata.getMapKeyOptionEntityClass() != null && metadata.getMapKeyOptionEntityClass().length() > 0) {
+            presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new NullAsyncCallbackAdapter()));
+          }
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new AsyncCallbackAdapter(){
+            @Override public void onSetupSuccess(            DataSource baseDS){
+              if (metadata.getMapKeyOptionEntityClass() == null || metadata.getMapKeyOptionEntityClass().length() == 0) {
+                FormBuilder.buildAdvancedCollectionForm(baseDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
+              }
+ else {
+                FormBuilder.buildAdvancedCollectionForm(baseDS,presenterSequenceSetupManager.getDataSource(lookupDSName),metadata,entry.getKey(),DynamicEntityPresenter.this);
+              }
             }
           }
 ));

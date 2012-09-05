@@ -4,7 +4,7 @@
     PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey("id",EntityImplementations.PAYMENT_INFO,null));
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,MAPSTRUCTURE);
-    DataSourceModule[] modules=new DataSourceModule[]{new MapStructureClientModule(CeilingEntities.PAYMENT_INFO,persistencePerspective,AppServices.DYNAMIC_ENTITY,((OrderDisplay)presenter.getDisplay()).getAdditionalAttributesDisplay().getGrid())};
+    DataSourceModule[] modules=new DataSourceModule[]{new MapStructureClientModule(CeilingEntities.PAYMENT_INFO,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
     dataSource.buildFields(null,false,cb);
   }

@@ -37,6 +37,9 @@
       setStartState();
       formPresenter.disable();
       display.getListDisplay().getGrid().deselectAllRecords();
+      for (      SubPresentable subPresentable : subPresentables) {
+        subPresentable.disable();
+      }
       lastSelectedRecord=null;
     }
   }
@@ -61,6 +64,7 @@
           }
           changeSelection(selectedRecord);
           for (          SubPresentable subPresentable : subPresentables) {
+            subPresentable.enable();
             subPresentable.load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
           }
           display.getDynamicFormDisplay().getSaveButton().disable();

@@ -8,6 +8,9 @@
     @Override public void visit(    BasicCollectionMetadata metadata){
       dataSourceModuleList.add(new BasicClientEntityModule(metadata.getCollectionCeilingEntity(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
     }
+    @Override public void visit(    MapMetadata metadata){
+      dataSourceModuleList.add(new BasicClientEntityModule(metadata.getMapKeyOptionEntityClass(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+    }
   }
 );
   DataSourceModule[] modules=new DataSourceModule[dataSourceModuleList.size()];
