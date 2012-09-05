@@ -1,0 +1,43 @@
+{
+  AdminPresentationAdornedTargetCollection annot=presentationAdornedTargetCollectionOverrides.get(propertyName).value();
+  if (annot != null) {
+    String testKey=prefix + key;
+    if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
+      FieldMetadata metadata=mergedProperties.get(key);
+      metadata.setExcluded(true);
+      return;
+    }
+    if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
+      FieldMetadata metadata=mergedProperties.get(key);
+      if (!isParentExcluded) {
+        metadata.setExcluded(false);
+      }
+    }
+    AdornedTargetCollectionMetadata metadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
+    metadata.setCustomCriteria(annot.customCriteria());
+    metadata.setMutable(annot.mutable());
+    metadata.setDataSourceName(annot.dataSourceName());
+    metadata.setFriendlyName(annot.friendlyName());
+    metadata.setOrder(annot.order());
+    metadata.setSecurityLevel(annot.securityLevel());
+    if (!StringUtils.isEmpty(annot.parentObjectProperty())) {
+      ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setLinkedObjectPath(annot.parentObjectProperty());
+    }
+    ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setLinkedIdProperty(annot.parentObjectIdProperty());
+    ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setTargetObjectPath(annot.targetObjectProperty());
+    ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setTargetIdProperty(annot.targetObjectIdProperty());
+    metadata.setMaintainedAdornedTargetFields(annot.maintainedAdornedTargetFields());
+    metadata.setGridVisibleFields(annot.gridVisibleFields());
+    String sortProperty;
+    if (StringUtils.isEmpty(annot.sortProperty())) {
+      sortProperty=null;
+    }
+ else {
+      sortProperty=annot.sortProperty();
+    }
+    ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setSortField(sortProperty);
+    ((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).setSortAscending(annot.sortAscending());
+    metadata.setIgnoreAdornedProperties(annot.ignoreAdornedProperties());
+    metadata.setTargetElementId(annot.targetUIElementId());
+  }
+}

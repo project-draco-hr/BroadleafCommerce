@@ -3,6 +3,14 @@
   metadata.setMutable(annotColl.mutable());
   metadata.setAddType(annotColl.addType());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
+  if (field.getAnnotation(AdminPresentationOperationTypes.class) != null) {
+    AdminPresentationOperationTypes operationTypes=field.getAnnotation(AdminPresentationOperationTypes.class);
+    dtoOperationTypes.setRemoveType(operationTypes.removeType());
+    dtoOperationTypes.setAddType(operationTypes.addType());
+    dtoOperationTypes.setInspectType(operationTypes.inspectType());
+    dtoOperationTypes.setUpdateType(operationTypes.updateType());
+    dtoOperationTypes.setFetchType(operationTypes.fetchType());
+  }
   if (annotColl.addType() == AddType.LOOKUP) {
     dtoOperationTypes.setRemoveType(OperationType.NONDESTRUCTIVEREMOVE);
   }

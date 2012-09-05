@@ -2,11 +2,23 @@
   Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
   Boolean classAnnotatedPopulateManyToOneFields=null;
   Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
+  Map<String,AdminPresentationMapOverride> presentationMapOverrides=new HashMap<String,AdminPresentationMapOverride>();
+  Map<String,AdminPresentationCollectionOverride> presentationCollectionOverrides=new HashMap<String,AdminPresentationCollectionOverride>();
+  Map<String,AdminPresentationAdornedTargetCollectionOverride> presentationAdornedTargetCollectionOverrides=new HashMap<String,AdminPresentationAdornedTargetCollectionOverride>();
   for (int i=entities.length - 1; i >= 0; i--) {
     AdminPresentationOverrides myOverrides=entities[i].getAnnotation(AdminPresentationOverrides.class);
     if (myOverrides != null) {
       for (      AdminPresentationOverride myOverride : myOverrides.value()) {
         presentationOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationMapOverride myOverride : myOverrides.maps()) {
+        presentationMapOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationCollectionOverride myOverride : myOverrides.collections()) {
+        presentationCollectionOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationAdornedTargetCollectionOverride myOverride : myOverrides.adornedTargetCollections()) {
+        presentationAdornedTargetCollectionOverrides.put(myOverride.name(),myOverride);
       }
     }
     AdminPresentationClass adminPresentationClass=entities[i].getAnnotation(AdminPresentationClass.class);
@@ -18,7 +30,16 @@
     populateManyToOneFields=classAnnotatedPopulateManyToOneFields;
   }
   buildPropertiesFromPolymorphicEntities(entities,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,mergedProperties,parentClasses,prefix,isParentExcluded);
-  applyAdminPresentationOverrides(prefix,isParentExcluded,mergedProperties,presentationOverrides);
+  for (  String propertyName : presentationOverrides.keySet()) {
+    for (    String key : mergedProperties.keySet()) {
+      if (key.equals(propertyName)) {
+        buildAdminPresentationOverride(prefix,isParentExcluded,mergedProperties,presentationOverrides,propertyName,key);
+        buildAdminPresentationCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationCollectionOverrides,propertyName,key);
+        buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key);
+        buildAdminPresentationMapOverride(prefix,isParentExcluded,mergedProperties,presentationMapOverrides,propertyName,key);
+      }
+    }
+  }
   applyMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties);
   applyIncludesAndExcludes(includeFields,excludeFields,prefix,isParentExcluded,mergedProperties);
   applyForeignKeyPrecedence(foreignField,additionalForeignFields,mergedProperties);

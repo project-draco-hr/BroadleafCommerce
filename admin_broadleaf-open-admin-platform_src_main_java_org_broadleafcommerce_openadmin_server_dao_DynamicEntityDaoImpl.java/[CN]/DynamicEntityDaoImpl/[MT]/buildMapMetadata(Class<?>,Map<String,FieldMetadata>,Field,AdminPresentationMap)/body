@@ -2,6 +2,14 @@
   MapMetadata metadata=new MapMetadata();
   metadata.setMutable(map.mutable());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
+  if (field.getAnnotation(AdminPresentationOperationTypes.class) != null) {
+    AdminPresentationOperationTypes operationTypes=field.getAnnotation(AdminPresentationOperationTypes.class);
+    dtoOperationTypes.setRemoveType(operationTypes.removeType());
+    dtoOperationTypes.setAddType(operationTypes.addType());
+    dtoOperationTypes.setInspectType(operationTypes.inspectType());
+    dtoOperationTypes.setUpdateType(operationTypes.updateType());
+    dtoOperationTypes.setFetchType(operationTypes.fetchType());
+  }
   PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
   metadata.setPersistencePerspective(persistencePerspective);
   String parentObjectClass=targetClass.getName();

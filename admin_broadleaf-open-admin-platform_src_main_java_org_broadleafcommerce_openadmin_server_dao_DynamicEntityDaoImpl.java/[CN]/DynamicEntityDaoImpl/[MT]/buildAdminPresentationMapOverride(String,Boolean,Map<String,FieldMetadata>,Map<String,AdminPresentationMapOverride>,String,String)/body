@@ -1,0 +1,18 @@
+{
+  AdminPresentationMap annot=presentationMapOverrides.get(propertyName).value();
+  if (annot != null) {
+    String testKey=prefix + key;
+    if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
+      FieldMetadata metadata=mergedProperties.get(key);
+      metadata.setExcluded(true);
+      return;
+    }
+    if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
+      FieldMetadata metadata=mergedProperties.get(key);
+      if (!isParentExcluded) {
+        metadata.setExcluded(false);
+      }
+    }
+    AdornedTargetCollectionMetadata metadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
+  }
+}
