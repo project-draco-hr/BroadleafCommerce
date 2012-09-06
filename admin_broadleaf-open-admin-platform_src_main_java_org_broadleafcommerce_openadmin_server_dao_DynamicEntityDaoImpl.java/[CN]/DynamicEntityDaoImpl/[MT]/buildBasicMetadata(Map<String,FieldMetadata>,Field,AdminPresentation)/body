@@ -6,6 +6,12 @@
   metadata.setVisibility(annot.visibility());
   metadata.setOrder(annot.order());
   metadata.setExplicitFieldType(annot.fieldType());
+  if (annot.fieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+    metadata.setExcluded(true);
+  }
+ else {
+    metadata.setExcluded(annot.excluded());
+  }
   metadata.setGroup(annot.group());
   metadata.setGroupOrder(annot.groupOrder());
   metadata.setGroupCollapsed(annot.groupCollapsed());
@@ -14,10 +20,12 @@
   metadata.setColumnWidth(annot.columnWidth());
   metadata.setBroadleafEnumeration(annot.broadleafEnumeration());
   metadata.setReadOnly(annot.readOnly());
-  metadata.setExcluded(annot.excluded());
   metadata.setTooltip(annot.tooltip());
   metadata.setHelpText(annot.helpText());
   metadata.setHint(annot.hint());
+  metadata.setLookupDisplayProperty(annot.lookupDisplayProperty());
+  metadata.setLookupParentDataSourceName(annot.lookupParentDataSourceName());
+  metadata.setTargetDynamicFormDisplayId(annot.targetDynamicFormDisplayId());
   metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
   if (annot.validationConfigurations().length != 0) {
     ValidationConfiguration[] configurations=annot.validationConfigurations();

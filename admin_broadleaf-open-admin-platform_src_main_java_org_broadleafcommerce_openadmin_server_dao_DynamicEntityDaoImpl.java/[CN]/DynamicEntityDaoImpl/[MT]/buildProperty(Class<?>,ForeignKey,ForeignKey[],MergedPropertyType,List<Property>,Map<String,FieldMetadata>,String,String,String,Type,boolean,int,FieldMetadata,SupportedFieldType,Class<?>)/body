@@ -32,11 +32,23 @@
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.FOREIGN_KEY || foreignField != null && isPropertyForeignKey) {
     ClassMetadata foreignMetadata;
-    try {
-      foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
+    String foreignKeyClass;
+    String lookupDisplayProperty;
+    if (foreignField == null) {
+      Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(type.getReturnedClass());
+      foreignMetadata=getSessionFactory().getClassMetadata(entities[entities.length - 1]);
+      foreignKeyClass=entities[entities.length - 1].getName();
+      lookupDisplayProperty=((BasicFieldMetadata)presentationAttribute).getLookupDisplayProperty();
     }
- catch (    ClassNotFoundException e) {
-      throw new RuntimeException(e);
+ else {
+      try {
+        foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
+      }
+ catch (      ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+      foreignKeyClass=foreignField.getForeignKeyClass();
+      lookupDisplayProperty=foreignField.getDisplayValueProperty();
     }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
@@ -46,16 +58,31 @@
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType));
     }
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
-    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(foreignField.getForeignKeyClass());
-    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyDisplayValueProperty(foreignField.getDisplayValueProperty());
+    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(foreignKeyClass);
+    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyDisplayValueProperty(lookupDisplayProperty);
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.ADDITIONAL_FOREIGN_KEY || additionalForeignFields != null && additionalForeignKeyIndexPosition >= 0) {
-    ClassMetadata foreignMetadata;
-    try {
-      foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
+    if (!type.isEntityType()) {
+      throw new RuntimeException("Only ManyToOne and OneToOne fields can be marked as a SupportedFieldType of ADDITIONAL_FOREIGN_KEY");
     }
- catch (    ClassNotFoundException e) {
-      throw new RuntimeException(e);
+    ClassMetadata foreignMetadata;
+    String foreignKeyClass;
+    String lookupDisplayProperty;
+    if (foreignField == null) {
+      Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(type.getReturnedClass());
+      foreignMetadata=getSessionFactory().getClassMetadata(entities[entities.length - 1]);
+      foreignKeyClass=entities[entities.length - 1].getName();
+      lookupDisplayProperty=((BasicFieldMetadata)presentationAttribute).getLookupDisplayProperty();
+    }
+ else {
+      try {
+        foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
+      }
+ catch (      ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+      foreignKeyClass=additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass();
+      lookupDisplayProperty=additionalForeignFields[additionalForeignKeyIndexPosition].getDisplayValueProperty();
     }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
@@ -65,7 +92,7 @@
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType));
     }
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
-    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass());
-    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyDisplayValueProperty(additionalForeignFields[additionalForeignKeyIndexPosition].getDisplayValueProperty());
+    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(foreignKeyClass);
+    ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyDisplayValueProperty(lookupDisplayProperty);
   }
 }

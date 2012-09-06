@@ -9,17 +9,14 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("categorySearch",new CategoryListDataSourceFactory(),new OperationTypes(OperationType.BASIC,OperationType.BASIC,OperationType.ADORNEDTARGETLIST,OperationType.BASIC,OperationType.BASIC),new Object[]{},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       ListGridDataSource categorySearchDataSource=(ListGridDataSource)result;
-      categorySearchDataSource.resetPermanentFieldVisibility("name","urlKey","activeStartDate","activeEndDate");
       EntitySearchDialog categorySearchView=new EntitySearchDialog(categorySearchDataSource);
       library.put("categorySearchView",categorySearchView);
-      getPresenterSequenceSetupManager().getDataSource("productDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("defaultCategory",categorySearchView,BLCMain.getMessageManager().getString("categorySearchTitle"),getDisplay().getDynamicFormDisplay());
     }
   }
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("oneToOneProductSearchDS",new ProductListDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       final ListGridDataSource productSearchDataSource=(ListGridDataSource)result;
-      productSearchDataSource.resetPermanentFieldVisibility("defaultSku.name","defaultSku.description","model","manufacturer","defaultSku.activeStartDate","defaultSku.activeEndDate");
       productSearchView=new EntitySearchDialog(productSearchDataSource);
     }
   }

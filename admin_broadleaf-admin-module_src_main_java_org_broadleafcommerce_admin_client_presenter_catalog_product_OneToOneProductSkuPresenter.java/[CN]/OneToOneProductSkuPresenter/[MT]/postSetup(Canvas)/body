@@ -5,7 +5,12 @@
         @Override public void onSearchItemSelected(        TileGridItemSelected event){
           String staticAssetFullUrl=BLCMain.assetServerUrlPrefix + event.getRecord().getAttribute("fullUrl");
           formItem.setValue(staticAssetFullUrl);
-          getMediaEntityView().updateMedia(staticAssetFullUrl);
+          for (          SubPresentable subPresentable : subPresentables) {
+            if (((GridStructureDisplay)subPresentable.getDisplay()).getGrid().getDataSource().getDataURL().equals(getPresenterSequenceSetupManager().getDataSource("productMediaMapDS").getDataURL())) {
+              ((MapStructurePresenter)subPresentable).getEntityEditDialog().updateMedia(staticAssetFullUrl);
+              break;
+            }
+          }
         }
       }
 );

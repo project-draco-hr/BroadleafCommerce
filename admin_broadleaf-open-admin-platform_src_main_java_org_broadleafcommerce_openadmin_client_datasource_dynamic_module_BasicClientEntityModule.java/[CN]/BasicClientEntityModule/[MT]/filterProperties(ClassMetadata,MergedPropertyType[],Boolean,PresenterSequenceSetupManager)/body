@@ -186,6 +186,16 @@ if (hidden == null) {
 hidden=true;
 }
 field.setRequired(required);
+if (metadata.getForeignKeyDisplayValueProperty() != null) {
+ForeignKey foreignKey=new ForeignKey(foreignKeyProperty,foreignKeyClass);
+foreignKey.setDisplayValueProperty(metadata.getForeignKeyDisplayValueProperty());
+LookupMetadata lookupMetadata=new LookupMetadata();
+lookupMetadata.setLookupForeignKey(foreignKey);
+lookupMetadata.setParentDataSourceName(metadata.getLookupParentDataSourceName());
+lookupMetadata.setTargetDynamicFormDisplayId(metadata.getTargetDynamicFormDisplayId());
+lookupMetadata.setFriendlyName(friendlyName);
+((DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter()).addLookupMetadata(property.getName(),lookupMetadata);
+}
 break;
 }
 case BROADLEAF_ENUMERATION:
