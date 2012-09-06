@@ -13,9 +13,9 @@
       throw new RuntimeException("Could not get a CSRF token for this session",e);
     }
   }
-  Element e=element.cloneElementNodeWithNewName(element.getParent(),"form",false);
-  e.setRecomputeProcessorsImmediately(true);
-  element.getParent().addChild(e);
+  Element newElement=element.cloneElementNodeWithNewName(element.getParent(),"form",false);
+  newElement.setRecomputeProcessorsImmediately(true);
+  element.getParent().insertAfter(element,newElement);
   element.getParent().removeChild(element);
   return ProcessorResult.OK;
 }
