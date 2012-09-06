@@ -1,0 +1,14 @@
+{
+  HttpServletRequest request=(HttpServletRequest)baseRequest;
+  HttpServletResponse response=(HttpServletResponse)baseResponse;
+  if (request.getMethod().equals("POST")) {
+    String requestToken=request.getParameter(exploitProtectionService.getCsrfTokenParameter());
+    try {
+      exploitProtectionService.compareToken(requestToken);
+    }
+ catch (    ServiceException e) {
+      throw new ServletException(e);
+    }
+  }
+  chain.doFilter(request,response);
+}

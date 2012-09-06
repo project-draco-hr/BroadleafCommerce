@@ -1,0 +1,21 @@
+{
+  if (!"GET".equalsIgnoreCase(element.getAttributeValueFromNormalizedName("method"))) {
+    try {
+      ExploitProtectionService eps=ProcessorUtils.getExploitProtectionService(arguments);
+      String csrfToken=eps.getCSRFToken();
+      Element csrfNode=new Element("input");
+      csrfNode.setAttribute("type","hidden");
+      csrfNode.setAttribute("name",eps.getCsrfTokenParameter());
+      csrfNode.setAttribute("value",csrfToken);
+      element.addChild(csrfNode);
+    }
+ catch (    ServiceException e) {
+      throw new RuntimeException("Could not get a CSRF token for this session",e);
+    }
+  }
+  Element e=element.cloneElementNodeWithNewName(element.getParent(),"form",false);
+  e.setRecomputeProcessorsImmediately(true);
+  element.getParent().addChild(e);
+  element.getParent().removeChild(element);
+  return ProcessorResult.OK;
+}
