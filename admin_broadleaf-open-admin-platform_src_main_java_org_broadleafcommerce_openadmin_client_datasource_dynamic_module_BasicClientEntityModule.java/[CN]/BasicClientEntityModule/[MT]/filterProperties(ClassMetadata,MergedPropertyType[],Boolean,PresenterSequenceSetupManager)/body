@@ -194,6 +194,7 @@ lookupMetadata.setLookupForeignKey(foreignKey);
 lookupMetadata.setParentDataSourceName(metadata.getLookupParentDataSourceName());
 lookupMetadata.setTargetDynamicFormDisplayId(metadata.getTargetDynamicFormDisplayId());
 lookupMetadata.setFriendlyName(friendlyName);
+lookupMetadata.setFieldType(SupportedFieldType.ADDITIONAL_FOREIGN_KEY);
 ((DynamicEntityPresenter)presenterSequenceSetupManager.getPresenter()).addLookupMetadata(property.getName(),lookupMetadata);
 }
 break;
@@ -217,6 +218,18 @@ for (int j=0; j < enumerationValues.length; j++) {
 valueMap2.put(enumerationValues[j][0],enumerationValues[j][1]);
 }
 field.setValueMap(valueMap2);
+break;
+case DATA_DRIVEN_ENUMERATION:
+field=new DataSourceTextField(propertyName,friendlyName);
+field.setCanEdit(mutable);
+field.setRequired(required);
+SelectItem item=new SelectItem();
+item.setShowOptionsFromDataSource(true);
+item.setDisplayField(metadata.getOptionDisplayFieldName());
+item.setValueField(metadata.getOptionValueFieldName());
+item.setAutoFetchData(false);
+item.setDefaultToFirstOption(true);
+field.setEditorType(item);
 break;
 case PASSWORD:
 field=new DataSourcePasswordField(propertyName,friendlyName);

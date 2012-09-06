@@ -66,7 +66,7 @@
         ParameterizedType pType=(ParameterizedType)type;
         Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[0];
         if (!ArrayUtils.isEmpty(getAllPolymorphicEntitiesFromCeiling(clazz))) {
-          throw new RuntimeException("Key class for AdminPresentationMap was determined to be a JPA managed type. Only primitive types for the key type are currently supported.");
+          throw new IllegalArgumentException("Key class for AdminPresentationMap was determined to be a JPA managed type. Only primitive types for the key type are currently supported.");
         }
         keyClassName=clazz.getName();
         break checkProperty;
@@ -157,7 +157,7 @@
         break checkProperty;
       }
       if (map.getSimpleValue() == UnspecifiedBooleanType.UNSPECIFIED) {
-        throw new RuntimeException("Unable to infer if the value for the map is of a complex or simple type based on any parameterized type or ManyToMany annotation. Please explicitly set the isSimpleValue property.");
+        throw new IllegalArgumentException("Unable to infer if the value for the map is of a complex or simple type based on any parameterized type or ManyToMany annotation. Please explicitly set the isSimpleValue property.");
       }
       metadata.setSimpleValue(map.getSimpleValue() == UnspecifiedBooleanType.TRUE);
     }
@@ -194,7 +194,7 @@
     metadata.setMapKeyOptionEntityValueField(map.getMapKeyOptionEntityValueField());
   }
   if (ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
-    throw new RuntimeException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties");
+    throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties");
   }
   ForeignKey foreignKey=new ForeignKey(parentObjectIdField,parentObjectClass);
   MapStructure mapStructure;

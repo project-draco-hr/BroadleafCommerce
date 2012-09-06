@@ -113,6 +113,23 @@
               if (localMetadata.getPrecision() != null) {
                 serverMetadata.setPrecision(localMetadata.getPrecision());
               }
+              if (serverMetadata.getFieldType() == SupportedFieldType.DATA_DRIVEN_ENUMERATION) {
+                if ((StringUtils.isEmpty(localMetadata.getOptionListEntity()) && StringUtils.isEmpty(serverMetadata.getOptionListEntity())) || (StringUtils.isEmpty(localMetadata.getOptionDisplayFieldName()) && StringUtils.isEmpty(serverMetadata.getOptionDisplayFieldName())) || (StringUtils.isEmpty(localMetadata.getOptionValueFieldName()) && StringUtils.isEmpty(serverMetadata.getOptionValueFieldName()))) {
+                  throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + propertyName + "). For SupportedFieldType of DATA_DRIVEN_ENUMERATION, the optionListEntity, optionValueFieldName and optionDisplayFieldName properties must all be filled out.");
+                }
+              }
+              if (localMetadata.getOptionListEntity() != null) {
+                serverMetadata.setOptionListEntity(localMetadata.getOptionListEntity());
+              }
+              if (localMetadata.getOptionCanEditValues() != null) {
+                serverMetadata.setOptionCanEditValues(localMetadata.getOptionCanEditValues());
+              }
+              if (localMetadata.getOptionDisplayFieldName() != null) {
+                serverMetadata.setOptionDisplayFieldName(localMetadata.getOptionDisplayFieldName());
+              }
+              if (localMetadata.getOptionValueFieldName() != null) {
+                serverMetadata.setOptionValueFieldName(localMetadata.getOptionValueFieldName());
+              }
             }
           }
         }

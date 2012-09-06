@@ -26,6 +26,15 @@
   metadata.setLookupDisplayProperty(annot.lookupDisplayProperty());
   metadata.setLookupParentDataSourceName(annot.lookupParentDataSourceName());
   metadata.setTargetDynamicFormDisplayId(annot.targetDynamicFormDisplayId());
+  if (annot.fieldType() == SupportedFieldType.DATA_DRIVEN_ENUMERATION) {
+    if (annot.optionListEntity() == void.class || StringUtils.isEmpty(annot.optionValueFieldName()) || StringUtils.isEmpty(annot.optionDisplayFieldName())) {
+      throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + field.getName() + "). For SupportedFieldType of DATA_DRIVEN_ENUMERATION, the optionListEntity, optionValueFieldName and optionDisplayFieldName properties of @AdminPresentation must all be filled out.");
+    }
+  }
+  metadata.setOptionCanEditValues(annot.optionCanEditValues());
+  metadata.setOptionDisplayFieldName(annot.optionDisplayFieldName());
+  metadata.setOptionListEntity(annot.optionListEntity().getName());
+  metadata.setOptionValueFieldName(annot.optionValueFieldName());
   metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
   if (annot.validationConfigurations().length != 0) {
     ValidationConfiguration[] configurations=annot.validationConfigurations();
