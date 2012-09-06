@@ -9,6 +9,9 @@
     document.addField("id",product.getId());
     for (    Category category : product.getAllParentCategories()) {
       document.addField("category",category.getId());
+      String categorySortField=getCategorySortField(category);
+      int listIndex=category.getAllProducts().indexOf(product);
+      document.addField(categorySortField,listIndex);
     }
     List<String> addedProperties=new ArrayList<String>();
     List<String> copyFieldValue=new ArrayList<String>();
