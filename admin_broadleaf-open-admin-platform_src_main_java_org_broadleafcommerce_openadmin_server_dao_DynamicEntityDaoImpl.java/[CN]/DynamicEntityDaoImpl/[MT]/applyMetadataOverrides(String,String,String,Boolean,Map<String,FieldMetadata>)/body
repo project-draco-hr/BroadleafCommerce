@@ -1,11 +1,11 @@
 {
   if (fieldMetadataOverrides != null && configurationKey != null) {
-    Map<String,Map<String,FieldMetadata>> configuredOverrides=fieldMetadataOverrides.get(configurationKey);
+    Map<String,Map<String,BasicFieldMetadataOverride>> configuredOverrides=fieldMetadataOverrides.get(configurationKey);
     if (configuredOverrides != null) {
-      Map<String,FieldMetadata> entityOverrides=configuredOverrides.get(ceilingEntityFullyQualifiedClassname);
+      Map<String,BasicFieldMetadataOverride> entityOverrides=configuredOverrides.get(ceilingEntityFullyQualifiedClassname);
       if (entityOverrides != null) {
         for (        String propertyName : entityOverrides.keySet()) {
-          final FieldMetadata localMetadata=entityOverrides.get(propertyName);
+          final BasicFieldMetadataOverride localMetadata=entityOverrides.get(propertyName);
           Boolean excluded=localMetadata.getExcluded();
           if (excluded == null) {
             excluded=false;
@@ -24,98 +24,86 @@
               }
             }
             if (key.equals(propertyName)) {
-              FieldMetadata serverMetadata=mergedProperties.get(key);
-              serverMetadata.accept(new MetadataVisitorAdapter(){
-                @Override public void visit(                BasicFieldMetadata serverMetadata){
-                  BasicFieldMetadata override=(BasicFieldMetadata)localMetadata;
-                  if (override.getFriendlyName() != null) {
-                    serverMetadata.setFriendlyName(override.getFriendlyName());
-                  }
-                  if (override.getSecurityLevel() != null) {
-                    serverMetadata.setSecurityLevel(override.getSecurityLevel());
-                  }
-                  if (override.getVisibility() != null) {
-                    serverMetadata.setVisibility(override.getVisibility());
-                  }
-                  if (override.getOrder() != null) {
-                    serverMetadata.setOrder(override.getOrder());
-                  }
-                  if (override.getExplicitFieldType() != null) {
-                    serverMetadata.setExplicitFieldType(override.getExplicitFieldType());
-                    serverMetadata.setFieldType(override.getExplicitFieldType());
-                  }
-                  if (override.getGroup() != null) {
-                    serverMetadata.setGroup(override.getGroup());
-                  }
-                  if (override.getGroupCollapsed() != null) {
-                    serverMetadata.setGroupCollapsed(override.getGroupCollapsed());
-                  }
-                  if (override.getGroupOrder() != null) {
-                    serverMetadata.setGroupOrder(override.getGroupOrder());
-                  }
-                  if (override.isLargeEntry() != null) {
-                    serverMetadata.setLargeEntry(override.isLargeEntry());
-                  }
-                  if (override.isProminent() != null) {
-                    serverMetadata.setProminent(override.isProminent());
-                  }
-                  if (override.getColumnWidth() != null) {
-                    serverMetadata.setColumnWidth(override.getColumnWidth());
-                  }
-                  if (!StringUtils.isEmpty(override.getBroadleafEnumeration()) && !override.getBroadleafEnumeration().equals(serverMetadata.getBroadleafEnumeration())) {
-                    serverMetadata.setBroadleafEnumeration(override.getBroadleafEnumeration());
-                    try {
-                      setupBroadleafEnumeration(override.getBroadleafEnumeration(),serverMetadata);
-                    }
- catch (                    Exception e) {
-                      throw new RuntimeException(e);
-                    }
-                  }
-                  if (override.getReadOnly() != null) {
-                    serverMetadata.setReadOnly(override.getReadOnly());
-                  }
-                  if (override.getExcluded() != null) {
-                    serverMetadata.setExcluded(override.getExcluded());
-                  }
-                  if (isParentExcluded) {
-                    serverMetadata.setExcluded(true);
-                  }
-                  if (override.getTooltip() != null) {
-                    serverMetadata.setTooltip(override.getTooltip());
-                  }
-                  if (override.getHelpText() != null) {
-                    serverMetadata.setHelpText(override.getHelpText());
-                  }
-                  if (override.getHint() != null) {
-                    serverMetadata.setHint(override.getHint());
-                  }
-                  if (override.getRequiredOverride() != null) {
-                    serverMetadata.setRequiredOverride(override.getRequiredOverride());
-                  }
-                  if (override.getValidationConfigurations() != null) {
-                    serverMetadata.setValidationConfigurations(override.getValidationConfigurations());
-                  }
-                  if (override.getLength() != null) {
-                    serverMetadata.setLength(override.getLength());
-                  }
-                  if (override.getUnique() != null) {
-                    serverMetadata.setUnique(override.getUnique());
-                  }
-                  if (override.getScale() != null) {
-                    serverMetadata.setScale(override.getScale());
-                  }
-                  if (override.getPrecision() != null) {
-                    serverMetadata.setPrecision(override.getPrecision());
-                  }
+              BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
+              if (localMetadata.getFriendlyName() != null) {
+                serverMetadata.setFriendlyName(localMetadata.getFriendlyName());
+              }
+              if (localMetadata.getSecurityLevel() != null) {
+                serverMetadata.setSecurityLevel(localMetadata.getSecurityLevel());
+              }
+              if (localMetadata.getVisibility() != null) {
+                serverMetadata.setVisibility(localMetadata.getVisibility());
+              }
+              if (localMetadata.getOrder() != null) {
+                serverMetadata.setOrder(localMetadata.getOrder());
+              }
+              if (localMetadata.getExplicitFieldType() != null) {
+                serverMetadata.setExplicitFieldType(localMetadata.getExplicitFieldType());
+                serverMetadata.setFieldType(localMetadata.getExplicitFieldType());
+              }
+              if (localMetadata.getGroup() != null) {
+                serverMetadata.setGroup(localMetadata.getGroup());
+              }
+              if (localMetadata.getGroupCollapsed() != null) {
+                serverMetadata.setGroupCollapsed(localMetadata.getGroupCollapsed());
+              }
+              if (localMetadata.getGroupOrder() != null) {
+                serverMetadata.setGroupOrder(localMetadata.getGroupOrder());
+              }
+              if (localMetadata.isLargeEntry() != null) {
+                serverMetadata.setLargeEntry(localMetadata.isLargeEntry());
+              }
+              if (localMetadata.isProminent() != null) {
+                serverMetadata.setProminent(localMetadata.isProminent());
+              }
+              if (localMetadata.getColumnWidth() != null) {
+                serverMetadata.setColumnWidth(localMetadata.getColumnWidth());
+              }
+              if (!StringUtils.isEmpty(localMetadata.getBroadleafEnumeration()) && !localMetadata.getBroadleafEnumeration().equals(serverMetadata.getBroadleafEnumeration())) {
+                serverMetadata.setBroadleafEnumeration(localMetadata.getBroadleafEnumeration());
+                try {
+                  setupBroadleafEnumeration(localMetadata.getBroadleafEnumeration(),serverMetadata);
                 }
-                @Override public void visit(                BasicCollectionMetadata metadata){
-                }
-                @Override public void visit(                AdornedTargetCollectionMetadata metadata){
-                }
-                @Override public void visit(                MapMetadata metadata){
+ catch (                Exception e) {
+                  throw new RuntimeException(e);
                 }
               }
-);
+              if (localMetadata.getReadOnly() != null) {
+                serverMetadata.setReadOnly(localMetadata.getReadOnly());
+              }
+              if (localMetadata.getExcluded() != null) {
+                serverMetadata.setExcluded(localMetadata.getExcluded());
+              }
+              if (isParentExcluded) {
+                serverMetadata.setExcluded(true);
+              }
+              if (localMetadata.getTooltip() != null) {
+                serverMetadata.setTooltip(localMetadata.getTooltip());
+              }
+              if (localMetadata.getHelpText() != null) {
+                serverMetadata.setHelpText(localMetadata.getHelpText());
+              }
+              if (localMetadata.getHint() != null) {
+                serverMetadata.setHint(localMetadata.getHint());
+              }
+              if (localMetadata.getRequiredOverride() != null) {
+                serverMetadata.setRequiredOverride(localMetadata.getRequiredOverride());
+              }
+              if (localMetadata.getValidationConfigurations() != null) {
+                serverMetadata.setValidationConfigurations(localMetadata.getValidationConfigurations());
+              }
+              if (localMetadata.getLength() != null) {
+                serverMetadata.setLength(localMetadata.getLength());
+              }
+              if (localMetadata.getUnique() != null) {
+                serverMetadata.setUnique(localMetadata.getUnique());
+              }
+              if (localMetadata.getScale() != null) {
+                serverMetadata.setScale(localMetadata.getScale());
+              }
+              if (localMetadata.getPrecision() != null) {
+                serverMetadata.setPrecision(localMetadata.getPrecision());
+              }
             }
           }
         }

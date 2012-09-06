@@ -32,13 +32,13 @@
         @Override public void visit(        final BasicCollectionMetadata metadata){
           presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new AsyncCallbackAdapter(){
             @Override public void onSetupSuccess(            final DataSource baseDS){
-              if (metadata.getAddType() == AddType.PERSIST) {
+              if (metadata.getAddMethodType() == AddMethodType.PERSIST) {
                 FormBuilder.buildAdvancedCollectionForm(baseDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
               }
             }
           }
 ));
-          if (metadata.getAddType() == AddType.LOOKUP) {
+          if (metadata.getAddMethodType() == AddMethodType.LOOKUP) {
             String lookupDSName=dataSourceName + "Lookup";
             presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new AsyncCallbackAdapter(){
               @Override public void onSetupSuccess(              DataSource lookupDS){

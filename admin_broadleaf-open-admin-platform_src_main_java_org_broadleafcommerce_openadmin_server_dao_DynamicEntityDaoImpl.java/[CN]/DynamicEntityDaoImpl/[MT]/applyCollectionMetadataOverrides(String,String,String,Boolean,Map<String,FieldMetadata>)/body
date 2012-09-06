@@ -1,0 +1,47 @@
+{
+  if (collectionMetadataOverrides != null && configurationKey != null) {
+    Map<String,Map<String,BasicCollectionMetadataOverride>> configuredOverrides=collectionMetadataOverrides.get(configurationKey);
+    if (configuredOverrides != null) {
+      Map<String,BasicCollectionMetadataOverride> entityOverrides=configuredOverrides.get(ceilingEntityFullyQualifiedClassname);
+      if (entityOverrides != null) {
+        for (        String propertyName : entityOverrides.keySet()) {
+          final BasicCollectionMetadataOverride localMetadata=entityOverrides.get(propertyName);
+          Boolean excluded=localMetadata.getExcluded();
+          if (excluded == null) {
+            excluded=false;
+          }
+          for (          String key : mergedProperties.keySet()) {
+            String testKey=prefix + key;
+            if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && excluded) {
+              FieldMetadata metadata=mergedProperties.get(key);
+              metadata.setExcluded(true);
+              continue;
+            }
+            if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !excluded) {
+              FieldMetadata metadata=mergedProperties.get(key);
+              if (!isParentExcluded) {
+                metadata.setExcluded(false);
+              }
+            }
+            if (key.equals(propertyName)) {
+              BasicCollectionMetadata serverMetadata=(BasicCollectionMetadata)mergedProperties.get(key);
+              Class<?> targetClass=Class.forName(((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getForeignKeyClass());
+              String fieldName=serverMetadata.getCollectionFieldName();
+              Field field=targetClass.getField(fieldName);
+              Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+              temp.put(field.getName(),serverMetadata);
+              buildCollectionMetadata(targetClass,temp,field,localMetadata);
+              mergedProperties.put(key,temp.get(field.getName()));
+              if (localMetadata.getExcluded() != null) {
+                serverMetadata.setExcluded(localMetadata.getExcluded());
+              }
+              if (isParentExcluded) {
+                serverMetadata.setExcluded(true);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
