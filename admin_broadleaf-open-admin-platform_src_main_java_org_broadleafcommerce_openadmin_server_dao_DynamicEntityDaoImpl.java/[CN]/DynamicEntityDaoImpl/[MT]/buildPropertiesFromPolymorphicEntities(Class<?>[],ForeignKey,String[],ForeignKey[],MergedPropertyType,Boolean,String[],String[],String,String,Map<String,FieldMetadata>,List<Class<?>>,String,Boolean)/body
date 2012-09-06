@@ -10,9 +10,14 @@ synchronized (LOCK_OBJECT) {
           if (!clazz2.getName().equals(clazz.getName())) {
             for (            Map.Entry<String,FieldMetadata> entry : props.entrySet()) {
               FieldMetadata metadata=entry.getValue();
-              if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
-                String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
-                metadata.setAvailableToTypes(both);
+              try {
+                if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
+                  String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
+                  metadata.setAvailableToTypes(both);
+                }
+              }
+ catch (              ClassNotFoundException e) {
+                throw new RuntimeException(e);
               }
             }
           }

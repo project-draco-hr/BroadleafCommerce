@@ -1,12 +1,24 @@
 {
-  Class<?>[] entityClasses=getAllPolymorphicEntitiesFromCeiling(Class.forName(entityName));
+  Class<?>[] entityClasses;
+  try {
+    entityClasses=getAllPolymorphicEntitiesFromCeiling(Class.forName(entityName));
+  }
+ catch (  ClassNotFoundException e) {
+    throw new RuntimeException(e);
+  }
   if (!ArrayUtils.isEmpty(entityClasses)) {
     Map<String,FieldMetadata> mergedProperties=getMergedProperties(entityName,entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     return mergedProperties;
   }
  else {
     Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
-    Class<?> targetClass=Class.forName(entityName);
+    Class<?> targetClass;
+    try {
+      targetClass=Class.forName(entityName);
+    }
+ catch (    ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
     Map<String,FieldMetadata> attributesMap=getFieldPresentationAttributes(targetClass);
     for (    String property : attributesMap.keySet()) {
       FieldMetadata presentationAttributes=attributesMap.get(property);

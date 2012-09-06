@@ -24,19 +24,24 @@
               }
             }
             if (key.equals(propertyName)) {
-              AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
-              Class<?> targetClass=Class.forName(serverMetadata.getParentObjectClass());
-              String fieldName=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getCollectionFieldName();
-              Field field=targetClass.getField(fieldName);
-              Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-              temp.put(field.getName(),serverMetadata);
-              buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
-              mergedProperties.put(key,temp.get(field.getName()));
-              if (localMetadata.getExcluded() != null) {
-                serverMetadata.setExcluded(localMetadata.getExcluded());
+              try {
+                AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
+                Class<?> targetClass=Class.forName(serverMetadata.getParentObjectClass());
+                String fieldName=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getCollectionFieldName();
+                Field field=targetClass.getField(fieldName);
+                Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+                temp.put(field.getName(),serverMetadata);
+                buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
+                mergedProperties.put(key,temp.get(field.getName()));
+                if (localMetadata.getExcluded() != null) {
+                  serverMetadata.setExcluded(localMetadata.getExcluded());
+                }
+                if (isParentExcluded) {
+                  serverMetadata.setExcluded(true);
+                }
               }
-              if (isParentExcluded) {
-                serverMetadata.setExcluded(true);
+ catch (              Exception e) {
+                throw new RuntimeException(e);
               }
             }
           }

@@ -32,7 +32,12 @@
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.FOREIGN_KEY || foreignField != null && isPropertyForeignKey) {
     ClassMetadata foreignMetadata;
-    foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
+    try {
+      foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(foreignField.getForeignKeyClass()));
+    }
+ catch (    ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType));
@@ -46,7 +51,12 @@
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.ADDITIONAL_FOREIGN_KEY || additionalForeignFields != null && additionalForeignKeyIndexPosition >= 0) {
     ClassMetadata foreignMetadata;
-    foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
+    try {
+      foreignMetadata=getSessionFactory().getClassMetadata(Class.forName(additionalForeignFields[additionalForeignKeyIndexPosition].getForeignKeyClass()));
+    }
+ catch (    ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
       fields.put(propertyName,getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType));
