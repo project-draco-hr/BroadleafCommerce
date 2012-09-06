@@ -1,0 +1,16 @@
+{
+  addConstants(GWT.<ConstantsWithLookup>create(ContentManagementMessages.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCMS.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCommon.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityOpenAdmin.class));
+  setModuleTitle(BLCMain.getMessageManager().getString("cmsModuleTitle"));
+  setModuleKey("BLCRedirectUrlModule");
+  List<String> redirectUrlPermissions=new ArrayList<String>();
+  redirectUrlPermissions.add("PERMISSION_CREATE_URLHANDLER");
+  redirectUrlPermissions.add("PERMISSION_UPDATE_URLHANDLER");
+  redirectUrlPermissions.add("PERMISSION_DELETE_URLHANDLER");
+  redirectUrlPermissions.add("PERMISSION_READ_URLHANDLER");
+  setSection(BLCMain.getMessageManager().getString("redirectUrlPermissions"),"urlRedirect","org.broadleafcommerce.cms.admin.client.view.urlRedirect.UrlRedirectView","urlRedirectPresenter","org.broadleafcommerce.cms.admin.client.presenter.urlRedirect.UrlRedirectPresenter",redirectUrlPermissions);
+  setOrder(100);
+  registerModule();
+}

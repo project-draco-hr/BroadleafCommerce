@@ -1,0 +1,16 @@
+{
+  addConstants(GWT.<ConstantsWithLookup>create(ContentManagementMessages.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCMS.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCommon.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityOpenAdmin.class));
+  setModuleTitle(BLCMain.getMessageManager().getString("cmsModuleTitle"));
+  setModuleKey("BLCAssetsModule");
+  List<String> assetPermissions=new ArrayList<String>();
+  assetPermissions.add("PERMISSION_CREATE_ASSET");
+  assetPermissions.add("PERMISSION_UPDATE_ASSET");
+  assetPermissions.add("PERMISSION_DELETE_ASSET");
+  assetPermissions.add("PERMISSION_READ_ASSET");
+  setSection(BLCMain.getMessageManager().getString("staticAssetsTitle"),"staticAssets","org.broadleafcommerce.cms.admin.client.view.file.StaticAssetsView","staticAssetsPresenter","org.broadleafcommerce.cms.admin.client.presenter.file.StaticAssetsPresenter",assetPermissions);
+  setOrder(100);
+  registerModule();
+}
