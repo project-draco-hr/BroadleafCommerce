@@ -10,7 +10,8 @@
     assert(newCustomer != null);
     Authentication auth=loginService.loginCustomer(registerCustomerForm.getCustomer());
     mergeCartProcessor.execute(request,response,auth);
-    return getRegisterSuccessView();
+    String redirectUrl=registerCustomerForm.getRedirectUrl();
+    return StringUtils.isBlank(redirectUrl) ? getRegisterSuccessView() : "redirect:" + redirectUrl;
   }
  else {
     return getRegisterView();
