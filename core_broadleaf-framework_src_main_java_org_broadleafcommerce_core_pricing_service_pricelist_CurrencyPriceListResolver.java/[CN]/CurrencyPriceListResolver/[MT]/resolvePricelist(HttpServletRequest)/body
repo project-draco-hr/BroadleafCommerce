@@ -1,0 +1,11 @@
+{
+  PriceList priceList=null;
+  BroadleafCurrency currency=(BroadleafCurrency)request.getSession().getAttribute(CURRENCY_VAR);
+  if (currency != null) {
+    String key=currency.getCurrencyCode();
+    if (key != null) {
+      priceList=priceListService.getPriceList(key);
+    }
+  }
+  return priceList;
+}
