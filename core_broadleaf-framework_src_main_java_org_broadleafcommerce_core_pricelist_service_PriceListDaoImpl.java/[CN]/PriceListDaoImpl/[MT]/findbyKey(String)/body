@@ -1,0 +1,12 @@
+{
+  Query query;
+  query=em.createNamedQuery("BC_READ_PRICE_LIST");
+  query.setParameter("key",key);
+  @SuppressWarnings("unchecked") List<PriceList> results=query.getResultList();
+  if (results != null && !results.isEmpty()) {
+    return results.get(0);
+  }
+ else {
+    return null;
+  }
+}
