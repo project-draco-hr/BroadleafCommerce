@@ -7,7 +7,65 @@
     AdminPresentationAdornedTargetCollection adornedTargetCollection=field.getAnnotation(AdminPresentationAdornedTargetCollection.class);
     AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
     if (annot != null) {
-      buildBasicMetadata(attributes,field,annot);
+      BasicFieldMetadataOverride override=new BasicFieldMetadataOverride();
+      override.setBroadleafEnumeration(annot.broadleafEnumeration());
+      override.setColumnWidth(annot.columnWidth());
+      override.setExplicitFieldType(annot.fieldType());
+      override.setFieldType(annot.fieldType());
+      override.setGroup(annot.group());
+      override.setGroupCollapsed(annot.groupCollapsed());
+      override.setGroupOrder(annot.groupOrder());
+      override.setHelpText(annot.helpText());
+      override.setHint(annot.hint());
+      override.setLargeEntry(annot.largeEntry());
+      override.setFriendlyName(annot.friendlyName());
+      override.setSecurityLevel(annot.securityLevel());
+      override.setOrder(annot.order());
+      override.setVisibility(annot.visibility());
+      override.setProminent(annot.prominent());
+      override.setReadOnly(annot.readOnly());
+      if (annot.validationConfigurations().length != 0) {
+        ValidationConfiguration[] configurations=annot.validationConfigurations();
+        for (        ValidationConfiguration configuration : configurations) {
+          ConfigurationItem[] items=configuration.configurationItems();
+          Map<String,String> itemMap=new HashMap<String,String>();
+          for (          ConfigurationItem item : items) {
+            itemMap.put(item.itemName(),item.itemValue());
+          }
+          override.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+        }
+      }
+      if (annot.requiredOverride() != RequiredOverride.IGNORED) {
+        override.setRequiredOverride(annot.requiredOverride() == RequiredOverride.REQUIRED);
+      }
+      override.setExcluded(annot.excluded());
+      override.setTooltip(annot.tooltip());
+      AdminPresentationToOneLookup toOneLookup=field.getAnnotation(AdminPresentationToOneLookup.class);
+      if (toOneLookup != null) {
+        override.setExplicitFieldType(SupportedFieldType.ADDITIONAL_FOREIGN_KEY);
+        override.setFieldType(SupportedFieldType.ADDITIONAL_FOREIGN_KEY);
+        override.setLookupDisplayProperty(toOneLookup.lookupDisplayProperty());
+        override.setLookupParentDataSourceName(toOneLookup.lookupParentDataSourceName());
+        override.setTargetDynamicFormDisplayId(toOneLookup.targetDynamicFormDisplayId());
+      }
+      AdminPresentationDataDrivenEnumeration dataDrivenEnumeration=field.getAnnotation(AdminPresentationDataDrivenEnumeration.class);
+      if (dataDrivenEnumeration != null) {
+        override.setExplicitFieldType(SupportedFieldType.DATA_DRIVEN_ENUMERATION);
+        override.setFieldType(SupportedFieldType.DATA_DRIVEN_ENUMERATION);
+        override.setOptionCanEditValues(dataDrivenEnumeration.optionCanEditValues());
+        override.setOptionDisplayFieldName(dataDrivenEnumeration.optionDisplayFieldName());
+        if (!ArrayUtils.isEmpty(dataDrivenEnumeration.optionFilterParams())) {
+          String[][] params=new String[dataDrivenEnumeration.optionFilterParams().length][2];
+          for (int j=0; j < params.length; j++) {
+            params[j][0]=dataDrivenEnumeration.optionFilterParams()[j].param();
+            params[j][1]=dataDrivenEnumeration.optionFilterParams()[j].value();
+          }
+          override.setOptionFilterValues(params);
+        }
+        override.setOptionListEntity(dataDrivenEnumeration.optionListEntity().getName());
+        override.setOptionValueFieldName(dataDrivenEnumeration.optionValueFieldName());
+      }
+      buildBasicMetadata(targetClass,attributes,field,override);
     }
  else     if (annotColl != null) {
       BasicCollectionMetadataOverride override=new BasicCollectionMetadataOverride();

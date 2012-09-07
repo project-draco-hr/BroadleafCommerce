@@ -1,0 +1,12 @@
+{
+  AdminPresentationToOneLookupOverride override=presentationOverrides.get(propertyName);
+  if (override != null) {
+    AdminPresentationToOneLookup annot=override.value();
+    if (annot != null) {
+      BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(key);
+      metadata.setLookupDisplayProperty(annot.lookupDisplayProperty());
+      metadata.setLookupParentDataSourceName(annot.lookupParentDataSourceName());
+      metadata.setTargetDynamicFormDisplayId(annot.targetDynamicFormDisplayId());
+    }
+  }
+}

@@ -2,6 +2,7 @@
   Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
   Boolean classAnnotatedPopulateManyToOneFields=null;
   Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
+  Map<String,AdminPresentationToOneLookupOverride> presentationToOneLookupOverrides=new HashMap<String,AdminPresentationToOneLookupOverride>();
   Map<String,AdminPresentationMapOverride> presentationMapOverrides=new HashMap<String,AdminPresentationMapOverride>();
   Map<String,AdminPresentationCollectionOverride> presentationCollectionOverrides=new HashMap<String,AdminPresentationCollectionOverride>();
   Map<String,AdminPresentationAdornedTargetCollectionOverride> presentationAdornedTargetCollectionOverrides=new HashMap<String,AdminPresentationAdornedTargetCollectionOverride>();
@@ -10,6 +11,9 @@
     if (myOverrides != null) {
       for (      AdminPresentationOverride myOverride : myOverrides.value()) {
         presentationOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationToOneLookupOverride myOverride : myOverrides.toOneLookups()) {
+        presentationToOneLookupOverrides.put(myOverride.name(),myOverride);
       }
       for (      AdminPresentationMapOverride myOverride : myOverrides.maps()) {
         presentationMapOverrides.put(myOverride.name(),myOverride);
@@ -34,6 +38,7 @@
     for (    String key : mergedProperties.keySet()) {
       if (key.equals(propertyName)) {
         buildAdminPresentationOverride(prefix,isParentExcluded,mergedProperties,presentationOverrides,propertyName,key);
+        buildAdminPresentationToOneLookupOverride(mergedProperties,presentationToOneLookupOverrides,propertyName,key);
         buildAdminPresentationCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationCollectionOverrides,propertyName,key);
         buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key);
         buildAdminPresentationMapOverride(prefix,isParentExcluded,mergedProperties,presentationMapOverrides,propertyName,key);

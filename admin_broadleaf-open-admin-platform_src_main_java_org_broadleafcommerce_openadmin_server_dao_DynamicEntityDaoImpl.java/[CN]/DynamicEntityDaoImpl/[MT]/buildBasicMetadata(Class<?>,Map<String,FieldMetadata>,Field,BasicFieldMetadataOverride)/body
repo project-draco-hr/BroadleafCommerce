@@ -1,0 +1,179 @@
+{
+  BasicFieldMetadata serverMetadata=(BasicFieldMetadata)attributes.get(field.getName());
+  BasicFieldMetadata metadata=new BasicFieldMetadata();
+  metadata.setName(field.getName());
+  metadata.setTargetClass(targetClass.getName());
+  if (serverMetadata != null && basicFieldMetadata.getFriendlyName() == null) {
+    metadata.setFriendlyName(serverMetadata.getFriendlyName());
+  }
+ else {
+    metadata.setFriendlyName(basicFieldMetadata.getFriendlyName());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getSecurityLevel() == null) {
+    metadata.setSecurityLevel(serverMetadata.getSecurityLevel());
+  }
+ else {
+    metadata.setSecurityLevel(basicFieldMetadata.getSecurityLevel());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getVisibility() == null) {
+    metadata.setVisibility(serverMetadata.getVisibility());
+  }
+ else {
+    metadata.setVisibility(basicFieldMetadata.getVisibility());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getOrder() == null) {
+    metadata.setOrder(serverMetadata.getOrder());
+  }
+ else {
+    metadata.setOrder(basicFieldMetadata.getOrder());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getExplicitFieldType() == null) {
+    metadata.setExplicitFieldType(serverMetadata.getExplicitFieldType());
+  }
+ else {
+    metadata.setExplicitFieldType(basicFieldMetadata.getFieldType());
+  }
+  if (basicFieldMetadata.getFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+    metadata.setExcluded(true);
+  }
+ else {
+    if (serverMetadata != null && basicFieldMetadata.getExcluded() == null) {
+      metadata.setExcluded(serverMetadata.getExcluded());
+    }
+ else {
+      metadata.setExcluded(basicFieldMetadata.getExcluded());
+    }
+  }
+  if (serverMetadata != null && basicFieldMetadata.getGroup() == null) {
+    metadata.setGroup(serverMetadata.getGroup());
+  }
+ else {
+    metadata.setGroup(basicFieldMetadata.getGroup());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getGroupOrder() == null) {
+    metadata.setGroupOrder(serverMetadata.getGroupOrder());
+  }
+ else {
+    metadata.setGroupOrder(basicFieldMetadata.getGroupOrder());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getGroupCollapsed() == null) {
+    metadata.setGroupCollapsed(serverMetadata.getGroupCollapsed());
+  }
+ else {
+    metadata.setGroupCollapsed(basicFieldMetadata.getGroupCollapsed());
+  }
+  if (serverMetadata != null && basicFieldMetadata.isLargeEntry() == null) {
+    metadata.setLargeEntry(serverMetadata.isLargeEntry());
+  }
+ else {
+    metadata.setLargeEntry(basicFieldMetadata.isLargeEntry());
+  }
+  if (serverMetadata != null && basicFieldMetadata.isProminent() == null) {
+    metadata.setProminent(serverMetadata.isProminent());
+  }
+ else {
+    metadata.setProminent(basicFieldMetadata.isProminent());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getColumnWidth() == null) {
+    metadata.setColumnWidth(serverMetadata.getColumnWidth());
+  }
+ else {
+    metadata.setColumnWidth(basicFieldMetadata.getColumnWidth());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getBroadleafEnumeration() == null) {
+    metadata.setBroadleafEnumeration(serverMetadata.getBroadleafEnumeration());
+  }
+ else {
+    metadata.setBroadleafEnumeration(basicFieldMetadata.getBroadleafEnumeration());
+  }
+  if (!StringUtils.isEmpty(metadata.getBroadleafEnumeration()) && metadata.getFieldType() == SupportedFieldType.BROADLEAF_ENUMERATION) {
+    try {
+      setupBroadleafEnumeration(metadata.getBroadleafEnumeration(),metadata);
+    }
+ catch (    Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+  if (serverMetadata != null && basicFieldMetadata.getReadOnly() == null) {
+    metadata.setReadOnly(serverMetadata.getReadOnly());
+  }
+ else {
+    metadata.setReadOnly(basicFieldMetadata.getReadOnly());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getTooltip() == null) {
+    metadata.setTooltip(serverMetadata.getTooltip());
+  }
+ else {
+    metadata.setTooltip(basicFieldMetadata.getTooltip());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getHelpText() == null) {
+    metadata.setHelpText(serverMetadata.getHelpText());
+  }
+ else {
+    metadata.setHelpText(basicFieldMetadata.getHelpText());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getHint() == null) {
+    metadata.setHint(serverMetadata.getHint());
+  }
+ else {
+    metadata.setHint(basicFieldMetadata.getHint());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getLookupDisplayProperty() == null) {
+    metadata.setLookupDisplayProperty(serverMetadata.getLookupDisplayProperty());
+  }
+ else {
+    metadata.setLookupDisplayProperty(basicFieldMetadata.getLookupDisplayProperty());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getLookupParentDataSourceName() == null) {
+    metadata.setLookupParentDataSourceName(serverMetadata.getLookupParentDataSourceName());
+  }
+ else {
+    metadata.setLookupParentDataSourceName(basicFieldMetadata.getLookupParentDataSourceName());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getTargetDynamicFormDisplayId() == null) {
+    metadata.setTargetDynamicFormDisplayId(serverMetadata.getTargetDynamicFormDisplayId());
+  }
+ else {
+    metadata.setTargetDynamicFormDisplayId(basicFieldMetadata.getTargetDynamicFormDisplayId());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getOptionListEntity() == null) {
+    metadata.setOptionListEntity(serverMetadata.getOptionListEntity());
+  }
+ else {
+    metadata.setOptionListEntity(basicFieldMetadata.getOptionListEntity());
+  }
+  if (metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
+    metadata.setOptionValueFieldName("key");
+    metadata.setOptionDisplayFieldName("display");
+  }
+ else   if (metadata.getOptionListEntity() == null && (StringUtils.isEmpty(metadata.getOptionValueFieldName()) || StringUtils.isEmpty(metadata.getOptionDisplayFieldName()))) {
+    throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + field.getName() + "). For SupportedFieldType of DATA_DRIVEN_ENUMERATION, the optionListEntity, optionValueFieldName and optionDisplayFieldName properties of @AdminPresentationDataDrivenEnumeration must all be filled out.");
+  }
+ else {
+    if (serverMetadata != null && basicFieldMetadata.getOptionValueFieldName() == null) {
+      metadata.setOptionValueFieldName(serverMetadata.getOptionValueFieldName());
+    }
+ else {
+      metadata.setOptionValueFieldName(basicFieldMetadata.getOptionValueFieldName());
+    }
+    if (serverMetadata != null && basicFieldMetadata.getOptionDisplayFieldName() == null) {
+      metadata.setOptionDisplayFieldName(serverMetadata.getOptionDisplayFieldName());
+    }
+ else {
+      metadata.setOptionDisplayFieldName(basicFieldMetadata.getOptionDisplayFieldName());
+    }
+  }
+  if (serverMetadata != null && basicFieldMetadata.getRequiredOverride() == null) {
+    metadata.setRequiredOverride(serverMetadata.getRequiredOverride());
+  }
+ else {
+    metadata.setRequiredOverride(basicFieldMetadata.getRequiredOverride());
+  }
+  if (serverMetadata != null && basicFieldMetadata.getValidationConfigurations() == null) {
+    metadata.setValidationConfigurations(serverMetadata.getValidationConfigurations());
+  }
+ else {
+    metadata.setValidationConfigurations(basicFieldMetadata.getValidationConfigurations());
+  }
+  attributes.put(field.getName(),metadata);
+}

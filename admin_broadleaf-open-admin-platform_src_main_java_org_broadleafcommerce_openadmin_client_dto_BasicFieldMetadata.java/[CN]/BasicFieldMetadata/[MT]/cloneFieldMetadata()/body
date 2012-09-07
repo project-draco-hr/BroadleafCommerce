@@ -50,6 +50,14 @@
   metadata.optionCanEditValues=optionCanEditValues;
   metadata.optionDisplayFieldName=optionDisplayFieldName;
   metadata.optionValueFieldName=optionValueFieldName;
+  if (optionFilterParams != null) {
+    metadata.optionFilterParams=new String[optionFilterParams.length][];
+    for (int j=0; j < optionFilterParams.length; j++) {
+      metadata.optionFilterParams[j]=new String[optionFilterParams[j].length];
+      System.arraycopy(optionFilterParams[j],0,metadata.optionFilterParams[j],0,optionFilterParams[j].length);
+    }
+  }
+  metadata.targetClass=targetClass;
   metadata=(BasicFieldMetadata)populate(metadata);
   return metadata;
 }

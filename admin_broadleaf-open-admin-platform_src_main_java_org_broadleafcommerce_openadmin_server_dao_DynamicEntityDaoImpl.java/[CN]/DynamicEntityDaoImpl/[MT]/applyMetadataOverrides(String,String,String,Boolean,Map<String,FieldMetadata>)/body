@@ -24,111 +24,24 @@
               }
             }
             if (key.equals(propertyName)) {
-              BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
-              if (localMetadata.getFriendlyName() != null) {
-                serverMetadata.setFriendlyName(localMetadata.getFriendlyName());
-              }
-              if (localMetadata.getSecurityLevel() != null) {
-                serverMetadata.setSecurityLevel(localMetadata.getSecurityLevel());
-              }
-              if (localMetadata.getVisibility() != null) {
-                serverMetadata.setVisibility(localMetadata.getVisibility());
-              }
-              if (localMetadata.getOrder() != null) {
-                serverMetadata.setOrder(localMetadata.getOrder());
-              }
-              if (localMetadata.getExplicitFieldType() != null) {
-                serverMetadata.setExplicitFieldType(localMetadata.getExplicitFieldType());
-                serverMetadata.setFieldType(localMetadata.getExplicitFieldType());
-              }
-              if (localMetadata.getGroup() != null) {
-                serverMetadata.setGroup(localMetadata.getGroup());
-              }
-              if (localMetadata.getGroupCollapsed() != null) {
-                serverMetadata.setGroupCollapsed(localMetadata.getGroupCollapsed());
-              }
-              if (localMetadata.getGroupOrder() != null) {
-                serverMetadata.setGroupOrder(localMetadata.getGroupOrder());
-              }
-              if (localMetadata.isLargeEntry() != null) {
-                serverMetadata.setLargeEntry(localMetadata.isLargeEntry());
-              }
-              if (localMetadata.isProminent() != null) {
-                serverMetadata.setProminent(localMetadata.isProminent());
-              }
-              if (localMetadata.getColumnWidth() != null) {
-                serverMetadata.setColumnWidth(localMetadata.getColumnWidth());
-              }
-              if (!StringUtils.isEmpty(localMetadata.getBroadleafEnumeration()) && !localMetadata.getBroadleafEnumeration().equals(serverMetadata.getBroadleafEnumeration())) {
-                serverMetadata.setBroadleafEnumeration(localMetadata.getBroadleafEnumeration());
-                try {
-                  setupBroadleafEnumeration(localMetadata.getBroadleafEnumeration(),serverMetadata);
+              try {
+                BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
+                Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+                String fieldName=serverMetadata.getName();
+                Field field=targetClass.getField(fieldName);
+                Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+                temp.put(field.getName(),serverMetadata);
+                buildBasicMetadata(targetClass,temp,field,localMetadata);
+                mergedProperties.put(key,temp.get(field.getName()));
+                if (localMetadata.getExcluded() != null) {
+                  serverMetadata.setExcluded(localMetadata.getExcluded());
                 }
- catch (                Exception e) {
-                  throw new RuntimeException(e);
+                if (isParentExcluded) {
+                  serverMetadata.setExcluded(true);
                 }
               }
-              if (localMetadata.getReadOnly() != null) {
-                serverMetadata.setReadOnly(localMetadata.getReadOnly());
-              }
-              if (localMetadata.getExcluded() != null) {
-                serverMetadata.setExcluded(localMetadata.getExcluded());
-              }
-              if (isParentExcluded) {
-                serverMetadata.setExcluded(true);
-              }
-              if (localMetadata.getTooltip() != null) {
-                serverMetadata.setTooltip(localMetadata.getTooltip());
-              }
-              if (localMetadata.getHelpText() != null) {
-                serverMetadata.setHelpText(localMetadata.getHelpText());
-              }
-              if (localMetadata.getHint() != null) {
-                serverMetadata.setHint(localMetadata.getHint());
-              }
-              if (localMetadata.getLookupDisplayProperty() != null) {
-                serverMetadata.setLookupDisplayProperty(localMetadata.getLookupDisplayProperty());
-              }
-              if (localMetadata.getLookupParentDataSourceName() != null) {
-                serverMetadata.setLookupParentDataSourceName(localMetadata.getLookupParentDataSourceName());
-              }
-              if (localMetadata.getTargetDynamicFormDisplayId() != null) {
-                serverMetadata.setTargetDynamicFormDisplayId(localMetadata.getTargetDynamicFormDisplayId());
-              }
-              if (localMetadata.getRequiredOverride() != null) {
-                serverMetadata.setRequiredOverride(localMetadata.getRequiredOverride());
-              }
-              if (localMetadata.getValidationConfigurations() != null) {
-                serverMetadata.setValidationConfigurations(localMetadata.getValidationConfigurations());
-              }
-              if (localMetadata.getLength() != null) {
-                serverMetadata.setLength(localMetadata.getLength());
-              }
-              if (localMetadata.getUnique() != null) {
-                serverMetadata.setUnique(localMetadata.getUnique());
-              }
-              if (localMetadata.getScale() != null) {
-                serverMetadata.setScale(localMetadata.getScale());
-              }
-              if (localMetadata.getPrecision() != null) {
-                serverMetadata.setPrecision(localMetadata.getPrecision());
-              }
-              if (serverMetadata.getFieldType() == SupportedFieldType.DATA_DRIVEN_ENUMERATION) {
-                if ((StringUtils.isEmpty(localMetadata.getOptionListEntity()) && StringUtils.isEmpty(serverMetadata.getOptionListEntity())) || (StringUtils.isEmpty(localMetadata.getOptionDisplayFieldName()) && StringUtils.isEmpty(serverMetadata.getOptionDisplayFieldName())) || (StringUtils.isEmpty(localMetadata.getOptionValueFieldName()) && StringUtils.isEmpty(serverMetadata.getOptionValueFieldName()))) {
-                  throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + propertyName + "). For SupportedFieldType of DATA_DRIVEN_ENUMERATION, the optionListEntity, optionValueFieldName and optionDisplayFieldName properties must all be filled out.");
-                }
-              }
-              if (localMetadata.getOptionListEntity() != null) {
-                serverMetadata.setOptionListEntity(localMetadata.getOptionListEntity());
-              }
-              if (localMetadata.getOptionCanEditValues() != null) {
-                serverMetadata.setOptionCanEditValues(localMetadata.getOptionCanEditValues());
-              }
-              if (localMetadata.getOptionDisplayFieldName() != null) {
-                serverMetadata.setOptionDisplayFieldName(localMetadata.getOptionDisplayFieldName());
-              }
-              if (localMetadata.getOptionValueFieldName() != null) {
-                serverMetadata.setOptionValueFieldName(localMetadata.getOptionValueFieldName());
+ catch (              Exception e) {
+                throw new RuntimeException(e);
               }
             }
           }
