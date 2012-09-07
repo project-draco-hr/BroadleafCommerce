@@ -1,3 +1,7 @@
 {
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
+    DynamicSkuPrices prices=SkuPricingConsiderationContext.getSkuPricingService().getPriceAdjustment(this,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    return prices.getPriceAdjustment();
+  }
   return priceAdjustment == null ? null : new Money(priceAdjustment);
 }

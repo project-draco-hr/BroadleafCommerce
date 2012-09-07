@@ -4,9 +4,11 @@
     for (    ProductOptionValue value : getProductOptionValues()) {
       if (value.getPriceAdjustment() != null) {
         if (optionValuePriceAdjustments == null) {
-          optionValuePriceAdjustments=Money.ZERO;
+          optionValuePriceAdjustments=value.getPriceAdjustment();
         }
-        optionValuePriceAdjustments=optionValuePriceAdjustments.add(value.getPriceAdjustment());
+ else {
+          optionValuePriceAdjustments=optionValuePriceAdjustments.add(value.getPriceAdjustment());
+        }
       }
     }
   }

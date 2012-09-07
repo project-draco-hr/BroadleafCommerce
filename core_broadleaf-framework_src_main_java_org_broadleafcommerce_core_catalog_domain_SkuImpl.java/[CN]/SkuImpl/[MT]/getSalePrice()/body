@@ -1,23 +1,25 @@
 {
+  Money returnPrice=null;
   if (salePrice == null && hasDefaultSku()) {
-    return lookupDefaultSku().getSalePrice();
+    returnPrice=lookupDefaultSku().getSalePrice();
   }
-  if (dynamicPrices != null) {
+ else   if (dynamicPrices != null) {
     return dynamicPrices.getSalePrice();
   }
-  if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
+ else   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
     DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this,getProductOptionValueAdjustments());
     Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
     dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
     handler.reset();
     return dynamicPrices.getSalePrice();
   }
+  if (returnPrice == null) {
+    returnPrice=(salePrice == null ? null : new Money(salePrice));
+  }
+  if (getProductOptionValueAdjustments() == null) {
+    return returnPrice;
+  }
  else {
-    if (getProductOptionValueAdjustments() == null) {
-      return salePrice == null ? null : new Money(salePrice);
-    }
- else {
-      return salePrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(new Money(salePrice));
-    }
+    return returnPrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(returnPrice);
   }
 }
