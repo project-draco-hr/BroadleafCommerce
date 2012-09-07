@@ -1,10 +1,4 @@
 {
-  String orderConfirmationEmail=CartState.getCart().getEmailAddress();
-  boolean customerIsAnonymous=CustomerState.getCustomer().isAnonymous();
-  if (customerIsAnonymous && StringUtils.isBlank(orderConfirmationEmail)) {
-    redirectAttributes.addAttribute("postLoginUrl","/checkout");
-    return getLoginRedirectView();
-  }
   Order cart=CartState.getCart();
   if (!(cart instanceof NullOrderImpl)) {
     model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
