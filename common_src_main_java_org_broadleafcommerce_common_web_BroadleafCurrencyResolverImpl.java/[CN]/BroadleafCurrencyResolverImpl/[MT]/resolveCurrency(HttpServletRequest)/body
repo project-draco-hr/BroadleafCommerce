@@ -1,0 +1,27 @@
+{
+  BroadleafCurrency currency=null;
+  Locale locale=null;
+  locale=((Locale)request.getAttribute(LOCALE_VAR));
+  if (locale != null) {
+    currency=locale.getDefaultCurrency();
+  }
+  if (currency == null) {
+    HttpSession session=request.getSession(true);
+    if (session != null) {
+      locale=(Locale)session.getAttribute(LOCALE_VAR);
+      if (locale != null) {
+        currency=locale.getDefaultCurrency();
+      }
+    }
+  }
+  if (currency == null) {
+    locale=(Locale)localeService.findDefaultLocale();
+    if (locale != null) {
+      currency=locale.getDefaultCurrency();
+    }
+  }
+  if (currency == null) {
+    currency=broadleafCurrencyService.findDefaultBroadleafCurrency();
+  }
+  return currency;
+}

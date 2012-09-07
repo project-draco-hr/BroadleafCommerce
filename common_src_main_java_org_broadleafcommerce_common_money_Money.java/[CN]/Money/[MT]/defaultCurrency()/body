@@ -2,6 +2,10 @@
   if (CurrencyConsiderationContext.getCurrencyConsiderationContext() != null && CurrencyConsiderationContext.getCurrencyConsiderationContext().size() > 0 && CurrencyConsiderationContext.getCurrencyDeterminationService() != null) {
     return Currency.getInstance(CurrencyConsiderationContext.getCurrencyDeterminationService().getCurrencyCode(CurrencyConsiderationContext.getCurrencyConsiderationContext()));
   }
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc != null && brc.getBroadleafCurrency() != null) {
+    return Currency.getInstance(brc.getBroadleafCurrency().getCurrencyCode());
+  }
   if (System.getProperty("currency.default") != null) {
     return Currency.getInstance(System.getProperty("currency.default"));
   }
