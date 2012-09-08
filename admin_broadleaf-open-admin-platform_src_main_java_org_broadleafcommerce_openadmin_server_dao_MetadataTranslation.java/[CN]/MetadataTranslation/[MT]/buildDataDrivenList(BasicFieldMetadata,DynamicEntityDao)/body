@@ -1,0 +1,26 @@
+{
+  try {
+    Criteria criteria=dynamicEntityDao.createCriteria(Class.forName(metadata.getOptionListEntity()));
+    if (metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
+      criteria.add(Restrictions.eq("hidden",false));
+    }
+    for (    Object[] param : metadata.getOptionFilterParams()) {
+      criteria.add(Restrictions.eq((String)param[0],convertType((String)param[1],(OptionFilterParamType)param[2])));
+    }
+    List results=criteria.list();
+    String[][] enumerationValues=new String[results.size()][2];
+    int j=0;
+    for (    Object param : results) {
+      enumerationValues[j][0]=String.valueOf(dynamicEntityDao.getFieldManager().getFieldValue(param,metadata.getOptionDisplayFieldName()));
+      enumerationValues[j][1]=String.valueOf(dynamicEntityDao.getFieldManager().getFieldValue(param,metadata.getOptionValueFieldName()));
+      j++;
+    }
+    if (!CollectionUtils.isEmpty(results) && metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
+      metadata.setOptionCanEditValues((Boolean)dynamicEntityDao.getFieldManager().getFieldValue(results.get(0),"type.modifiable"));
+    }
+    metadata.setEnumerationValues(enumerationValues);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+}

@@ -1,0 +1,24 @@
+{
+  AdminPresentationCollection annotColl=field.getAnnotation(AdminPresentationCollection.class);
+  if (annotColl != null) {
+    BasicCollectionMetadataOverride override=new BasicCollectionMetadataOverride();
+    override.setAddMethodType(annotColl.addType());
+    override.setConfigurationKey(annotColl.configurationKey());
+    override.setManyToField(annotColl.manyToField());
+    override.setCustomCriteria(annotColl.customCriteria());
+    override.setDataSourceName(annotColl.dataSourceName());
+    override.setExcluded(annotColl.excluded());
+    override.setFriendlyName(annotColl.friendlyName());
+    override.setMutable(annotColl.mutable());
+    override.setOrder(annotColl.order());
+    override.setSecurityLevel(annotColl.securityLevel());
+    override.setTargetElementId(annotColl.targetUIElementId());
+    override.setAddType(annotColl.operationTypes().addType());
+    override.setFetchType(annotColl.operationTypes().fetchType());
+    override.setRemoveType(annotColl.operationTypes().removeType());
+    override.setUpdateType(annotColl.operationTypes().updateType());
+    override.setInspectType(annotColl.operationTypes().inspectType());
+    return override;
+  }
+  throw new IllegalArgumentException("AdminPresentationCollection annotation not found on Field");
+}

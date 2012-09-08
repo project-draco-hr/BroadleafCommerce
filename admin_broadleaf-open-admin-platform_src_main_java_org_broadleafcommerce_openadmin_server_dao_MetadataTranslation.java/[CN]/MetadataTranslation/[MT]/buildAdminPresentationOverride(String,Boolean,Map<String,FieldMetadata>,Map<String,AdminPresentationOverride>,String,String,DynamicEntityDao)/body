@@ -1,0 +1,61 @@
+{
+  AdminPresentationOverride override=presentationOverrides.get(propertyName);
+  if (override != null) {
+    AdminPresentation annot=override.value();
+    if (annot != null) {
+      String testKey=prefix + key;
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        metadata.setExcluded(true);
+        return;
+      }
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        if (!isParentExcluded) {
+          metadata.setExcluded(false);
+        }
+      }
+      BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(key);
+      metadata.setFriendlyName(annot.friendlyName());
+      metadata.setSecurityLevel(annot.securityLevel());
+      metadata.setVisibility(annot.visibility());
+      metadata.setOrder(annot.order());
+      metadata.setExplicitFieldType(annot.fieldType());
+      if (annot.fieldType() != SupportedFieldType.UNKNOWN) {
+        metadata.setFieldType(annot.fieldType());
+      }
+      metadata.setGroup(annot.group());
+      metadata.setGroupCollapsed(annot.groupCollapsed());
+      metadata.setGroupOrder(annot.groupOrder());
+      metadata.setLargeEntry(annot.largeEntry());
+      metadata.setProminent(annot.prominent());
+      metadata.setColumnWidth(annot.columnWidth());
+      if (!StringUtils.isEmpty(annot.broadleafEnumeration()) && !annot.broadleafEnumeration().equals(metadata.getBroadleafEnumeration())) {
+        metadata.setBroadleafEnumeration(annot.broadleafEnumeration());
+        try {
+          setupBroadleafEnumeration(annot.broadleafEnumeration(),metadata,dynamicEntityDao);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+      metadata.setReadOnly(annot.readOnly());
+      metadata.setExcluded(isParentExcluded || annot.excluded());
+      metadata.setTooltip(annot.tooltip());
+      metadata.setHelpText(annot.helpText());
+      metadata.setHint(annot.hint());
+      metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
+      if (annot.validationConfigurations().length != 0) {
+        ValidationConfiguration[] configurations=annot.validationConfigurations();
+        for (        ValidationConfiguration configuration : configurations) {
+          ConfigurationItem[] items=configuration.configurationItems();
+          Map<String,String> itemMap=new HashMap<String,String>();
+          for (          ConfigurationItem item : items) {
+            itemMap.put(item.itemName(),item.itemValue());
+          }
+          metadata.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+        }
+      }
+    }
+  }
+}

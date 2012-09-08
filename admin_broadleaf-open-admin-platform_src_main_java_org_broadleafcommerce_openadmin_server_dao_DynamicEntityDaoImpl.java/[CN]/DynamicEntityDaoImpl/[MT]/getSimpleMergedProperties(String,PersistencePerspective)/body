@@ -19,7 +19,7 @@
  catch (    ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
-    Map<String,FieldMetadata> attributesMap=getFieldPresentationAttributes(targetClass);
+    Map<String,FieldMetadata> attributesMap=metadataTranslation.getFieldPresentationAttributes(targetClass,this);
     for (    String property : attributesMap.keySet()) {
       FieldMetadata presentationAttributes=attributesMap.get(property);
       if (!presentationAttributes.getExcluded()) {

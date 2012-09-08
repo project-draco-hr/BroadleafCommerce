@@ -1,5 +1,5 @@
 {
-  Map<String,FieldMetadata> presentationAttributes=getFieldPresentationAttributes(targetClass);
+  Map<String,FieldMetadata> presentationAttributes=metadataTranslation.getFieldPresentationAttributes(targetClass,this);
   if (isParentExcluded) {
     for (    String key : presentationAttributes.keySet()) {
       presentationAttributes.get(key).setExcluded(true);
@@ -53,7 +53,7 @@
           }
         }
         if (testField != null || testMethod != null) {
-          fields.put(additionalNonPersistentProperty,getFieldMetadata(prefix,additionalNonPersistentProperty,propertyList,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType));
+          fields.put(additionalNonPersistentProperty,metadataTranslation.getFieldMetadata(prefix,additionalNonPersistentProperty,propertyList,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType,this));
         }
       }
     }
