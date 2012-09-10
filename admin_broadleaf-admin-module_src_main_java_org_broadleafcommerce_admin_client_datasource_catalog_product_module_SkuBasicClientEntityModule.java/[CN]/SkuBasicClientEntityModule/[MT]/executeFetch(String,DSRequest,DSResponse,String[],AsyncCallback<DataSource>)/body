@@ -6,11 +6,15 @@
     BLCMain.NON_MODAL_PROGRESS.startProgress();
     CriteriaTransferObject cto=getCto(request);
     service.fetch(new PersistencePackage(ceilingEntityFullyQualifiedClassname,fetchTypeFullyQualifiedClassname,null,persistencePerspective,customCriteria,BLCMain.csrfToken),cto,new EntityServiceAsyncCallback<DynamicResultSet>(EntityOperationType.FETCH,requestId,request,response,dataSource){
-      public void onSuccess(      DynamicResultSet result){
+      @Override public void onSuccess(      DynamicResultSet result){
         super.onSuccess(result);
         TreeNode[] recordList=buildRecords(result,null);
         response.setData(recordList);
         response.setTotalRows(result.getTotalRecords());
+        for (        Property property : result.getClassMetaData().getProperties()) {
+          DataSourceField field=((ListGridDataSource)dataSource).getField(property.getName());
+          field.setAttribute("formHidden",FormHiddenEnum.VISIBLE);
+        }
         List<String> productOptionFields=new ArrayList<String>();
         for (        Entity entity : result.getRecords()) {
           for (          Property property : entity.getProperties()) {
