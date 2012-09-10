@@ -36,7 +36,7 @@
 );
   saveButton=new IButton(BLCMain.getMessageManager().getString("ok"));
   saveButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       Record selectedRecord=tileGrid.getSelection()[0];
       handler.onSearchItemSelected(new TileGridItemSelected(selectedRecord,tileGrid.getDataSource()));
       hide();
@@ -45,7 +45,7 @@
 );
   IButton cancelButton=new IButton(BLCMain.getMessageManager().getString("cancel"));
   cancelButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       hide();
     }
   }
@@ -73,7 +73,7 @@
   filterForm.setFields(nameFilterItem,urlFilterItem);
   IButton searchButton=new IButton("Search");
   searchButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       Criteria valuesAsCriteria=filterForm.getValuesAsCriteria();
       tileGrid.fetchData(valuesAsCriteria);
     }
@@ -81,7 +81,7 @@
 );
   final IButton addAssetButton=new IButton("Upload Asset");
   addAssetButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       addNewItem("Add a New Asset",staticAssetDataSource);
     }
   }
@@ -96,7 +96,7 @@
   addItem(mainLayout);
   addAssetButton.hide();
   SecurityManager.getInstance().doSecure("PERMISSION_CREATE_ASSET",new SecureCallbackAdapter(){
-    public void succeed(){
+    @Override public void succeed(){
       addAssetButton.show();
     }
     @Override public void fail(){

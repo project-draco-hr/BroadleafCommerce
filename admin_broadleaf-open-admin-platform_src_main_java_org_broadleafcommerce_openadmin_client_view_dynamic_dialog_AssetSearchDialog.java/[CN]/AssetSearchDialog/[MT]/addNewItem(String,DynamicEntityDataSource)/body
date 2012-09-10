@@ -3,7 +3,7 @@
   hints.put("name",BLCMain.getMessageManager().getString("assetUploadNameHint"));
   hints.put("fullUrl",BLCMain.getMessageManager().getString("assetUploadFullUrlHint"));
   FILE_UPLOAD.editNewRecord("Upload Artifact",staticAssetDataSource,initialValues,hints,new ItemEditedHandler(){
-    public void onItemEdited(    ItemEdited event){
+    @Override public void onItemEdited(    ItemEdited event){
       ListGridRecord[] recordList=new ListGridRecord[]{(ListGridRecord)event.getRecord()};
       DSResponse updateResponse=new DSResponse();
       updateResponse.setData(recordList);
