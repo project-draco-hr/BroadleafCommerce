@@ -1,89 +1,56 @@
 {
   BasicFieldMetadata serverMetadata=(BasicFieldMetadata)attributes.get(field.getName());
-  BasicFieldMetadata metadata=new BasicFieldMetadata();
+  BasicFieldMetadata metadata;
+  if (serverMetadata != null) {
+    metadata=serverMetadata;
+  }
+ else {
+    metadata=new BasicFieldMetadata();
+  }
   metadata.setName(field.getName());
   metadata.setTargetClass(targetClass.getName());
-  if (serverMetadata != null && basicFieldMetadata.getFriendlyName() == null) {
-    metadata.setFriendlyName(serverMetadata.getFriendlyName());
-  }
- else {
+  if (basicFieldMetadata.getFriendlyName() != null) {
     metadata.setFriendlyName(basicFieldMetadata.getFriendlyName());
   }
-  if (serverMetadata != null && basicFieldMetadata.getSecurityLevel() == null) {
-    metadata.setSecurityLevel(serverMetadata.getSecurityLevel());
-  }
- else {
+  if (basicFieldMetadata.getSecurityLevel() != null) {
     metadata.setSecurityLevel(basicFieldMetadata.getSecurityLevel());
   }
-  if (serverMetadata != null && basicFieldMetadata.getVisibility() == null) {
-    metadata.setVisibility(serverMetadata.getVisibility());
-  }
- else {
+  if (basicFieldMetadata.getVisibility() != null) {
     metadata.setVisibility(basicFieldMetadata.getVisibility());
   }
-  if (serverMetadata != null && basicFieldMetadata.getOrder() == null) {
-    metadata.setOrder(serverMetadata.getOrder());
-  }
- else {
+  if (basicFieldMetadata.getOrder() != null) {
     metadata.setOrder(basicFieldMetadata.getOrder());
   }
-  if (serverMetadata != null && basicFieldMetadata.getExplicitFieldType() == null) {
-    metadata.setExplicitFieldType(serverMetadata.getExplicitFieldType());
-  }
- else {
+  if (basicFieldMetadata.getExplicitFieldType() != null) {
     metadata.setExplicitFieldType(basicFieldMetadata.getExplicitFieldType());
   }
-  if (basicFieldMetadata.getExplicitFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+  if (metadata.getExplicitFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
     metadata.setExcluded(true);
   }
  else {
-    if (serverMetadata != null && basicFieldMetadata.getExcluded() == null) {
-      metadata.setExcluded(serverMetadata.getExcluded());
-    }
- else {
+    if (basicFieldMetadata.getExcluded() != null) {
       metadata.setExcluded(basicFieldMetadata.getExcluded());
     }
   }
-  if (serverMetadata != null && basicFieldMetadata.getGroup() == null) {
-    metadata.setGroup(serverMetadata.getGroup());
-  }
- else {
+  if (basicFieldMetadata.getGroup() != null) {
     metadata.setGroup(basicFieldMetadata.getGroup());
   }
-  if (serverMetadata != null && basicFieldMetadata.getGroupOrder() == null) {
-    metadata.setGroupOrder(serverMetadata.getGroupOrder());
-  }
- else {
+  if (basicFieldMetadata.getGroupOrder() != null) {
     metadata.setGroupOrder(basicFieldMetadata.getGroupOrder());
   }
-  if (serverMetadata != null && basicFieldMetadata.getGroupCollapsed() == null) {
-    metadata.setGroupCollapsed(serverMetadata.getGroupCollapsed());
-  }
- else {
+  if (basicFieldMetadata.getGroupCollapsed() != null) {
     metadata.setGroupCollapsed(basicFieldMetadata.getGroupCollapsed());
   }
-  if (serverMetadata != null && basicFieldMetadata.isLargeEntry() == null) {
-    metadata.setLargeEntry(serverMetadata.isLargeEntry());
-  }
- else {
+  if (basicFieldMetadata.isLargeEntry() != null) {
     metadata.setLargeEntry(basicFieldMetadata.isLargeEntry());
   }
-  if (serverMetadata != null && basicFieldMetadata.isProminent() == null) {
-    metadata.setProminent(serverMetadata.isProminent());
-  }
- else {
+  if (basicFieldMetadata.isProminent() != null) {
     metadata.setProminent(basicFieldMetadata.isProminent());
   }
-  if (serverMetadata != null && basicFieldMetadata.getColumnWidth() == null) {
-    metadata.setColumnWidth(serverMetadata.getColumnWidth());
-  }
- else {
+  if (basicFieldMetadata.getColumnWidth() != null) {
     metadata.setColumnWidth(basicFieldMetadata.getColumnWidth());
   }
-  if (serverMetadata != null && basicFieldMetadata.getBroadleafEnumeration() == null) {
-    metadata.setBroadleafEnumeration(serverMetadata.getBroadleafEnumeration());
-  }
- else {
+  if (basicFieldMetadata.getBroadleafEnumeration() != null) {
     metadata.setBroadleafEnumeration(basicFieldMetadata.getBroadleafEnumeration());
   }
   if (!StringUtils.isEmpty(metadata.getBroadleafEnumeration()) && metadata.getFieldType() == SupportedFieldType.BROADLEAF_ENUMERATION) {
@@ -94,94 +61,55 @@
       throw new RuntimeException(e);
     }
   }
-  if (serverMetadata != null && basicFieldMetadata.getReadOnly() == null) {
-    metadata.setReadOnly(serverMetadata.getReadOnly());
-  }
- else {
+  if (basicFieldMetadata.getReadOnly() != null) {
     metadata.setReadOnly(basicFieldMetadata.getReadOnly());
   }
-  if (serverMetadata != null && basicFieldMetadata.getTooltip() == null) {
-    metadata.setTooltip(serverMetadata.getTooltip());
-  }
- else {
+  if (basicFieldMetadata.getTooltip() != null) {
     metadata.setTooltip(basicFieldMetadata.getTooltip());
   }
-  if (serverMetadata != null && basicFieldMetadata.getHelpText() == null) {
-    metadata.setHelpText(serverMetadata.getHelpText());
-  }
- else {
+  if (basicFieldMetadata.getHelpText() != null) {
     metadata.setHelpText(basicFieldMetadata.getHelpText());
   }
-  if (serverMetadata != null && basicFieldMetadata.getHint() == null) {
-    metadata.setHint(serverMetadata.getHint());
-  }
- else {
+  if (basicFieldMetadata.getHint() != null) {
     metadata.setHint(basicFieldMetadata.getHint());
   }
-  if (serverMetadata != null && basicFieldMetadata.getLookupDisplayProperty() == null) {
-    metadata.setLookupDisplayProperty(serverMetadata.getLookupDisplayProperty());
-  }
- else {
+  if (basicFieldMetadata.getLookupDisplayProperty() != null) {
     metadata.setLookupDisplayProperty(basicFieldMetadata.getLookupDisplayProperty());
   }
-  if (serverMetadata != null && basicFieldMetadata.getLookupParentDataSourceName() == null) {
-    metadata.setLookupParentDataSourceName(serverMetadata.getLookupParentDataSourceName());
-  }
- else {
+  if (basicFieldMetadata.getLookupParentDataSourceName() != null) {
     metadata.setLookupParentDataSourceName(basicFieldMetadata.getLookupParentDataSourceName());
   }
-  if (serverMetadata != null && basicFieldMetadata.getTargetDynamicFormDisplayId() == null) {
-    metadata.setTargetDynamicFormDisplayId(serverMetadata.getTargetDynamicFormDisplayId());
-  }
- else {
+  if (basicFieldMetadata.getTargetDynamicFormDisplayId() != null) {
     metadata.setTargetDynamicFormDisplayId(basicFieldMetadata.getTargetDynamicFormDisplayId());
   }
-  if (serverMetadata != null && basicFieldMetadata.getOptionListEntity() == null) {
-    metadata.setOptionListEntity(serverMetadata.getOptionListEntity());
-  }
- else {
+  if (basicFieldMetadata.getOptionListEntity() != null) {
     metadata.setOptionListEntity(basicFieldMetadata.getOptionListEntity());
   }
   if (metadata.getOptionListEntity() != null && metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
     metadata.setOptionValueFieldName("key");
     metadata.setOptionDisplayFieldName("display");
   }
- else   if (metadata.getOptionListEntity() == null && (StringUtils.isEmpty(metadata.getOptionValueFieldName()) || StringUtils.isEmpty(metadata.getOptionDisplayFieldName()))) {
-    throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + field.getName() + "). The optionListEntity, optionValueFieldName and optionDisplayFieldName properties must all be included if not using DataDrivenEnumerationValueImpl as the optionListEntity.");
-  }
  else {
-    if (serverMetadata != null && basicFieldMetadata.getOptionValueFieldName() == null) {
-      metadata.setOptionValueFieldName(serverMetadata.getOptionValueFieldName());
-    }
- else {
+    if (basicFieldMetadata.getOptionValueFieldName() != null) {
       metadata.setOptionValueFieldName(basicFieldMetadata.getOptionValueFieldName());
     }
-    if (serverMetadata != null && basicFieldMetadata.getOptionDisplayFieldName() == null) {
-      metadata.setOptionDisplayFieldName(serverMetadata.getOptionDisplayFieldName());
-    }
- else {
+    if (basicFieldMetadata.getOptionDisplayFieldName() != null) {
       metadata.setOptionDisplayFieldName(basicFieldMetadata.getOptionDisplayFieldName());
     }
   }
-  if (serverMetadata != null && ArrayUtils.isEmpty(basicFieldMetadata.getOptionFilterValues())) {
-    metadata.setOptionFilterParams(serverMetadata.getOptionFilterParams());
+  if (!StringUtils.isEmpty(metadata.getOptionListEntity()) && (StringUtils.isEmpty(metadata.getOptionValueFieldName()) || StringUtils.isEmpty(metadata.getOptionDisplayFieldName()))) {
+    throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + field.getName() + "). The optionListEntity, optionValueFieldName and optionDisplayFieldName properties must all be included if not using DataDrivenEnumerationValueImpl as the optionListEntity.");
   }
- else {
+  if (basicFieldMetadata.getOptionFilterValues() != null) {
     metadata.setOptionFilterParams(basicFieldMetadata.getOptionFilterValues());
   }
   if (!StringUtils.isEmpty(metadata.getOptionListEntity())) {
     buildDataDrivenList(metadata,dynamicEntityDao);
   }
-  if (serverMetadata != null && basicFieldMetadata.getRequiredOverride() == null) {
-    metadata.setRequiredOverride(serverMetadata.getRequiredOverride());
-  }
- else {
+  if (basicFieldMetadata.getRequiredOverride() != null) {
     metadata.setRequiredOverride(basicFieldMetadata.getRequiredOverride());
   }
-  if (serverMetadata != null && basicFieldMetadata.getValidationConfigurations() == null) {
-    metadata.setValidationConfigurations(serverMetadata.getValidationConfigurations());
-  }
- else {
+  if (basicFieldMetadata.getValidationConfigurations() != null) {
     metadata.setValidationConfigurations(basicFieldMetadata.getValidationConfigurations());
   }
   attributes.put(field.getName(),metadata);

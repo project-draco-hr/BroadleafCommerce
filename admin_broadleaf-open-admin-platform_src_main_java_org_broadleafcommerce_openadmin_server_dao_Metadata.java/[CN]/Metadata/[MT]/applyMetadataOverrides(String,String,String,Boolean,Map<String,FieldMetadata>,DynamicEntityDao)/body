@@ -22,20 +22,19 @@
         }
         if (key.equals(propertyName)) {
           try {
-            BasicFieldMetadata serverMetadata=null;
-            if (mergedProperties.containsKey(key) && mergedProperties.get(key) instanceof BasicFieldMetadata) {
-              serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
-            }
-            Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
-            String fieldName=serverMetadata.getName();
-            Field field=targetClass.getField(fieldName);
-            Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-            temp.put(field.getName(),serverMetadata);
-            buildBasicMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
-            serverMetadata=(BasicFieldMetadata)temp.get(field.getName());
-            mergedProperties.put(key,serverMetadata);
-            if (isParentExcluded) {
-              serverMetadata.setExcluded(true);
+            if (mergedProperties.get(key) instanceof BasicFieldMetadata) {
+              BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
+              Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+              String fieldName=serverMetadata.getName();
+              Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
+              Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+              temp.put(field.getName(),serverMetadata);
+              buildBasicMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
+              serverMetadata=(BasicFieldMetadata)temp.get(field.getName());
+              mergedProperties.put(key,serverMetadata);
+              if (isParentExcluded) {
+                serverMetadata.setExcluded(true);
+              }
             }
           }
  catch (          Exception e) {

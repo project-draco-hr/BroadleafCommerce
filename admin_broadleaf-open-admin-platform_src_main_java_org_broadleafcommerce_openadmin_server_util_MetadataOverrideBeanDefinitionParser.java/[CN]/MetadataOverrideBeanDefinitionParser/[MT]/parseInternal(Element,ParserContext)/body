@@ -1,7 +1,7 @@
 {
   BeanDefinitionBuilder overallMapBuilder=BeanDefinitionBuilder.rootBeanDefinition(MapFactoryBean.class);
   Map<String,BeanDefinition> overallMap=new ManagedMap<String,BeanDefinition>();
-  List<Element> overrideItemElements=DomUtils.getChildElementsByTagName(element,"args");
+  List<Element> overrideItemElements=DomUtils.getChildElementsByTagName(element,"overrideItem");
   for (  Element overrideItem : overrideItemElements) {
     String configKey=overrideItem.getAttribute("configurationKey");
     String ceilingEntity=overrideItem.getAttribute("ceilingEntity");
@@ -28,8 +28,7 @@
         }
       }
 {
-        Element validationConfigElement=DomUtils.getChildElementByTagName(fieldElement,"validationConfig");
-        List<Element> validationElements=DomUtils.getChildElementsByTagName(validationConfigElement,"validation");
+        List<Element> validationElements=DomUtils.getChildElementsByTagName(fieldElement,"validation");
         Map<String,Map<String,String>> validationConfigMap=new ManagedMap<String,Map<String,String>>();
         for (        Element validationElement : validationElements) {
           Map<String,String> validationMap=new ManagedMap<String,String>();
@@ -45,8 +44,7 @@
         metadataBuilder.addPropertyValue("validationConfigurations",validationConfigMap);
       }
 {
-        Element optionFilterValuesElement=DomUtils.getChildElementByTagName(fieldElement,"optionFilterValues");
-        List<Element> optionElements=DomUtils.getChildElementsByTagName(optionFilterValuesElement,"option");
+        List<Element> optionElements=DomUtils.getChildElementsByTagName(fieldElement,"optionFilterValue");
         String[][] optionFilterValues=new String[optionElements.size()][3];
         int j=0;
         for (        Element optionElement : optionElements) {
@@ -58,8 +56,7 @@
         metadataBuilder.addPropertyValue("optionFilterValues",optionFilterValues);
       }
 {
-        Element mapKeysElement=DomUtils.getChildElementByTagName(fieldElement,"mapKeys");
-        List<Element> keyElements=DomUtils.getChildElementsByTagName(mapKeysElement,"key");
+        List<Element> keyElements=DomUtils.getChildElementsByTagName(fieldElement,"mapKey");
         String[][] keyValues=new String[keyElements.size()][2];
         int j=0;
         for (        Element keyElement : keyElements) {
@@ -70,8 +67,7 @@
         metadataBuilder.addPropertyValue("keys",keyValues);
       }
 {
-        Element elem=DomUtils.getChildElementByTagName(fieldElement,"customCriteria");
-        List<Element> children=DomUtils.getChildElementsByTagName(elem,"criteria");
+        List<Element> children=DomUtils.getChildElementsByTagName(fieldElement,"customCriteria");
         String[] values=new String[children.size()];
         int j=0;
         for (        Element childElem : children) {
@@ -81,8 +77,7 @@
         metadataBuilder.addPropertyValue("customCriteria",values);
       }
 {
-        Element elem=DomUtils.getChildElementByTagName(fieldElement,"maintainedAdornedTargetFields");
-        List<Element> children=DomUtils.getChildElementsByTagName(elem,"field");
+        List<Element> children=DomUtils.getChildElementsByTagName(fieldElement,"maintainedAdornedTargetField");
         String[] values=new String[children.size()];
         int j=0;
         for (        Element childElem : children) {
@@ -92,8 +87,7 @@
         metadataBuilder.addPropertyValue("maintainedAdornedTargetFields",values);
       }
 {
-        Element elem=DomUtils.getChildElementByTagName(fieldElement,"gridVisibleFields");
-        List<Element> children=DomUtils.getChildElementsByTagName(elem,"field");
+        List<Element> children=DomUtils.getChildElementsByTagName(fieldElement,"gridVisibleField");
         String[] values=new String[children.size()];
         int j=0;
         for (        Element childElem : children) {

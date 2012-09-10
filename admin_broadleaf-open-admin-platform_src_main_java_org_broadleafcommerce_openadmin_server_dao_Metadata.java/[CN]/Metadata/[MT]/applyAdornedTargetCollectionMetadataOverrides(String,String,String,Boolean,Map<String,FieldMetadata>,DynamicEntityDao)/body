@@ -22,20 +22,19 @@
         }
         if (key.equals(propertyName)) {
           try {
-            AdornedTargetCollectionMetadata serverMetadata=null;
-            if (mergedProperties.containsKey(key) && mergedProperties.get(key) instanceof AdornedTargetCollectionMetadata) {
-              serverMetadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
-            }
-            Class<?> targetClass=Class.forName(serverMetadata.getParentObjectClass());
-            String fieldName=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getCollectionFieldName();
-            Field field=targetClass.getField(fieldName);
-            Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-            temp.put(field.getName(),serverMetadata);
-            buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
-            serverMetadata=(AdornedTargetCollectionMetadata)temp.get(field.getName());
-            mergedProperties.put(key,serverMetadata);
-            if (isParentExcluded) {
-              serverMetadata.setExcluded(true);
+            if (mergedProperties.get(key) instanceof AdornedTargetCollectionMetadata) {
+              AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
+              Class<?> targetClass=Class.forName(serverMetadata.getParentObjectClass());
+              String fieldName=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getCollectionFieldName();
+              Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
+              Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+              temp.put(field.getName(),serverMetadata);
+              buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
+              serverMetadata=(AdornedTargetCollectionMetadata)temp.get(field.getName());
+              mergedProperties.put(key,serverMetadata);
+              if (isParentExcluded) {
+                serverMetadata.setExcluded(true);
+              }
             }
           }
  catch (          Exception e) {
