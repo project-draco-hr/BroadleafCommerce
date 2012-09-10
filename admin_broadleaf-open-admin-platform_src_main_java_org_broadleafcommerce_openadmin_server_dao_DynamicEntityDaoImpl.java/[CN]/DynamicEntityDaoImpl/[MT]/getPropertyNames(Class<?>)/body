@@ -1,8 +1,6 @@
 {
   ClassMetadata metadata=getSessionFactory().getClassMetadata(entityClass);
   List<String> propertyNames=new ArrayList<String>();
-  for (  String propertyName : metadata.getPropertyNames()) {
-    propertyNames.add(propertyName);
-  }
+  Collections.addAll(propertyNames,metadata.getPropertyNames());
   return propertyNames;
 }

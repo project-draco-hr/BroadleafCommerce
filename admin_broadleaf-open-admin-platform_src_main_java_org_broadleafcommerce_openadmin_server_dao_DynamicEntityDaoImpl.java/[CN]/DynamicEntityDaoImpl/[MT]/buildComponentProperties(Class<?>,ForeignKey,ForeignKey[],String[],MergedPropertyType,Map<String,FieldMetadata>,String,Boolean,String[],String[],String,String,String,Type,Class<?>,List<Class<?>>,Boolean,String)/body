@@ -3,7 +3,7 @@
   List<String> componentPropertyNames=Arrays.asList(componentProperties);
   Type[] componentTypes=((ComponentType)type).getSubtypes();
   List<Type> componentPropertyTypes=Arrays.asList(componentTypes);
-  Map<String,FieldPresentationAttributes> componentPresentationAttributes=getFieldPresentationAttributes(returnedClass);
+  Map<String,FieldMetadata> componentPresentationAttributes=metadata.getFieldPresentationAttributes(returnedClass,this);
   if (isParentExcluded) {
     for (    String key : componentPresentationAttributes.keySet()) {
       componentPresentationAttributes.get(key).setExcluded(true);
@@ -17,10 +17,10 @@
  catch (  MappingException e) {
     property=persistentClass.getProperty(prefix + propertyName);
   }
-  Iterator<Property> componentPropertyIterator=((org.hibernate.mapping.Component)property.getValue()).getPropertyIterator();
+  Iterator componentPropertyIterator=((org.hibernate.mapping.Component)property.getValue()).getPropertyIterator();
   List<Property> componentPropertyList=new ArrayList<Property>();
   while (componentPropertyIterator.hasNext()) {
-    componentPropertyList.add(componentPropertyIterator.next());
+    componentPropertyList.add((Property)componentPropertyIterator.next());
   }
   Map<String,FieldMetadata> newFields=new HashMap<String,FieldMetadata>();
   buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,componentPresentationAttributes,componentPropertyList,newFields,componentPropertyNames,componentPropertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,propertyName + ".",isParentExcluded);

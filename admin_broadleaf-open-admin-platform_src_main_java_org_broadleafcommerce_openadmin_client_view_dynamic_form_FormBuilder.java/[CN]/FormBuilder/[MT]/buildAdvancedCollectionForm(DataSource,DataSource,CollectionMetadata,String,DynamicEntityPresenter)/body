@@ -1,0 +1,104 @@
+{
+  Layout destination;
+  if (metadata.getTargetElementId() != null && metadata.getTargetElementId().length() > 0) {
+    destination=findMemberById((Layout)presenter.getDisplay(),metadata.getTargetElementId());
+  }
+ else {
+    destination=(Layout)presenter.getDisplay().getDynamicFormDisplay().getFormOnlyDisplay();
+  }
+  final String viewTitle;
+  if (metadata.getFriendlyName() == null || metadata.getFriendlyName().length() == 0) {
+    viewTitle=propertyName;
+  }
+ else {
+    String temp;
+    try {
+      temp=BLCMain.getMessageManager().getString(metadata.getFriendlyName());
+    }
+ catch (    MissingResourceException e) {
+      temp=metadata.getFriendlyName();
+    }
+    viewTitle=temp;
+  }
+  final GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
+  destination.addMember(advancedCollectionView);
+  metadata.accept(new MetadataVisitorAdapter(){
+    @Override public void visit(    BasicCollectionMetadata metadata){
+      SubPresentable subPresentable;
+      if (metadata.getAddMethodType() == AddMethodType.PERSIST) {
+        subPresentable=new CreateBasedListStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),viewTitle,new HashMap<String,Object>());
+      }
+ else {
+        subPresentable=new SimpleSearchListPresenter(advancedCollectionView,new EntitySearchDialog((ListGridDataSource)lookupDataSource,true),metadata.getAvailableToTypes(),viewTitle);
+      }
+      subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
+      subPresentable.setReadOnly(!metadata.isMutable());
+      subPresentable.disable();
+      presenter.addSubPresentable(subPresentable);
+    }
+    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+      List<String> prominentNames=new ArrayList<String>();
+      for (      DataSourceField field : lookupDataSource.getFields()) {
+        if (field.getAttributeAsBoolean("prominent") && !field.getAttributeAsBoolean("permanentlyHidden")) {
+          prominentNames.add(field.getName());
+        }
+      }
+      ((ListGridDataSource)lookupDataSource).resetPermanentFieldVisibility(prominentNames.toArray(new String[prominentNames.size()]));
+      EntitySearchDialog searchView=new EntitySearchDialog((ListGridDataSource)lookupDataSource,true);
+      SubPresentable subPresentable;
+      if (metadata.isIgnoreAdornedProperties() || metadata.getMaintainedAdornedTargetFields().length == 0) {
+        subPresentable=new SimpleSearchListPresenter(advancedCollectionView,searchView,metadata.getAvailableToTypes(),viewTitle);
+      }
+ else {
+        subPresentable=new EditableAdornedTargetListPresenter(advancedCollectionView,searchView,metadata.getAvailableToTypes(),viewTitle,viewTitle,metadata.getMaintainedAdornedTargetFields());
+      }
+      Boolean[] edits=new Boolean[metadata.getGridVisibleFields().length];
+      for (int j=0; j < edits.length; j++) {
+        edits[j]=false;
+      }
+      subPresentable.setDataSource((ListGridDataSource)dataSource,metadata.getGridVisibleFields(),edits);
+      subPresentable.setReadOnly(!metadata.isMutable());
+      subPresentable.disable();
+      presenter.addSubPresentable(subPresentable);
+    }
+    @Override public void visit(    MapMetadata metadata){
+      SubPresentable subPresentable;
+      if (metadata.isSimpleValue()) {
+        subPresentable=new SimpleMapStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),null);
+      }
+ else {
+        MapStructureEntityEditDialog mapEntityAdd;
+        if (lookupDataSource != null) {
+          mapEntityAdd=new MapStructureEntityEditDialog((MapStructure)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE),lookupDataSource,metadata.getMapKeyOptionEntityDisplayField(),metadata.getMapKeyOptionEntityValueField());
+        }
+ else {
+          LinkedHashMap<String,String> keys=new LinkedHashMap<String,String>();
+          for (          String[] key : metadata.getKeys()) {
+            String temp;
+            try {
+              temp=BLCMain.getMessageManager().getString(key[1]);
+            }
+ catch (            MissingResourceException e) {
+              temp=key[1];
+            }
+            keys.put(key[0],temp);
+          }
+          mapEntityAdd=new MapStructureEntityEditDialog((MapStructure)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE),keys);
+        }
+        if (metadata.getMediaField() != null && metadata.getMediaField().length() > 0) {
+          mapEntityAdd.setShowMedia(true);
+          mapEntityAdd.setMediaField(metadata.getMediaField());
+        }
+ else {
+          mapEntityAdd.setShowMedia(false);
+        }
+        subPresentable=new MapStructurePresenter(advancedCollectionView,mapEntityAdd,viewTitle,null);
+      }
+      subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
+      subPresentable.setReadOnly(!metadata.isMutable());
+      subPresentable.disable();
+      presenter.addSubPresentable(subPresentable);
+    }
+  }
+);
+}

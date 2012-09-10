@@ -1,0 +1,54 @@
+{
+  Boolean classAnnotatedPopulateManyToOneFields=null;
+  Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
+  Map<String,AdminPresentationToOneLookupOverride> presentationToOneLookupOverrides=new HashMap<String,AdminPresentationToOneLookupOverride>();
+  Map<String,AdminPresentationDataDrivenEnumerationOverride> presentationDataDrivenEnumerationOverrides=new HashMap<String,AdminPresentationDataDrivenEnumerationOverride>();
+  Map<String,AdminPresentationMapOverride> presentationMapOverrides=new HashMap<String,AdminPresentationMapOverride>();
+  Map<String,AdminPresentationCollectionOverride> presentationCollectionOverrides=new HashMap<String,AdminPresentationCollectionOverride>();
+  Map<String,AdminPresentationAdornedTargetCollectionOverride> presentationAdornedTargetCollectionOverrides=new HashMap<String,AdminPresentationAdornedTargetCollectionOverride>();
+  for (int i=entities.length - 1; i >= 0; i--) {
+    AdminPresentationOverrides myOverrides=entities[i].getAnnotation(AdminPresentationOverrides.class);
+    if (myOverrides != null) {
+      for (      AdminPresentationOverride myOverride : myOverrides.value()) {
+        presentationOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationToOneLookupOverride myOverride : myOverrides.toOneLookups()) {
+        presentationToOneLookupOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationMapOverride myOverride : myOverrides.maps()) {
+        presentationMapOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationCollectionOverride myOverride : myOverrides.collections()) {
+        presentationCollectionOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationAdornedTargetCollectionOverride myOverride : myOverrides.adornedTargetCollections()) {
+        presentationAdornedTargetCollectionOverrides.put(myOverride.name(),myOverride);
+      }
+      for (      AdminPresentationDataDrivenEnumerationOverride myOverride : myOverrides.dataDrivenEnums()) {
+        presentationDataDrivenEnumerationOverrides.put(myOverride.name(),myOverride);
+      }
+    }
+    AdminPresentationClass adminPresentationClass=entities[i].getAnnotation(AdminPresentationClass.class);
+    if (adminPresentationClass != null && classAnnotatedPopulateManyToOneFields == null && adminPresentationClass.populateToOneFields() != PopulateToOneFieldsEnum.NOT_SPECIFIED) {
+      classAnnotatedPopulateManyToOneFields=adminPresentationClass.populateToOneFields() == PopulateToOneFieldsEnum.TRUE;
+    }
+  }
+  Map<String,FieldMetadata> mergedProperties=propertyBuilder.execute(classAnnotatedPopulateManyToOneFields);
+  for (  String propertyName : presentationOverrides.keySet()) {
+    for (    String key : mergedProperties.keySet()) {
+      if (key.startsWith(propertyName)) {
+        buildAdminPresentationOverride(prefix,isParentExcluded,mergedProperties,presentationOverrides,propertyName,key,dynamicEntityDao);
+        buildAdminPresentationToOneLookupOverride(mergedProperties,presentationToOneLookupOverrides,propertyName,key);
+        buildAdminPresentationDataDrivenEnumerationOverride(mergedProperties,presentationDataDrivenEnumerationOverrides,propertyName,key,dynamicEntityDao);
+        buildAdminPresentationCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationCollectionOverrides,propertyName,key);
+        buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key);
+        buildAdminPresentationMapOverride(prefix,isParentExcluded,mergedProperties,presentationMapOverrides,propertyName,key);
+      }
+    }
+  }
+  applyMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyCollectionMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyAdornedTargetCollectionMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyMapMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  return mergedProperties;
+}

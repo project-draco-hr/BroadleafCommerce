@@ -1,9 +1,9 @@
 {
   if (dataSource == null) {
-    operationTypes=new OperationTypes(OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.JOINSTRUCTURE,OperationType.ENTITY);
+    operationTypes=new OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC);
     PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
-    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.JOINSTRUCTURE,new JoinStructure(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.SKU_BUNDLE_ITEM));
-    DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.SKU,persistencePerspective,AppServices.DYNAMIC_ENTITY),new JoinStructureClientModule(CeilingEntities.SKU,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,new AdornedTargetList(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.SKU_BUNDLE_ITEM));
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.SKU,persistencePerspective,AppServices.DYNAMIC_ENTITY),new AdornedTargetListClientModule(CeilingEntities.SKU,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
     dataSource.buildFields(null,false,cb);
   }

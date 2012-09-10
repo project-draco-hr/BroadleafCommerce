@@ -1,0 +1,8 @@
+{
+  Serializable instance=(Serializable)Class.forName(StringUtils.isEmpty(adornedTargetList.getAdornedTargetEntityPolymorphicType()) ? adornedTargetList.getAdornedTargetEntityClassname() : adornedTargetList.getAdornedTargetEntityPolymorphicType()).newInstance();
+  String targetPath=adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty();
+  String linkedPath=adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty();
+  getFieldManager().setFieldValue(instance,linkedPath,Long.valueOf(entity.findProperty(linkedPath).getValue()));
+  getFieldManager().setFieldValue(instance,targetPath,Long.valueOf(entity.findProperty(targetPath).getValue()));
+  return instance;
+}

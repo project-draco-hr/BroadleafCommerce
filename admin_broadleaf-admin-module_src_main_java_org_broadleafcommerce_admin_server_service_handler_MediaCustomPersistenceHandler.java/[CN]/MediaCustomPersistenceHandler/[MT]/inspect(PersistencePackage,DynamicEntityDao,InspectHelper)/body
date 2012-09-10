@@ -1,7 +1,7 @@
 {
   try {
     Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
-    helper.getCompatibleModule(OperationType.MAPSTRUCTURE).updateMergedProperties(persistencePackage,allMergedProperties);
+    helper.getCompatibleModule(OperationType.MAP).updateMergedProperties(persistencePackage,allMergedProperties);
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
     DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);

@@ -1,0 +1,38 @@
+{
+  AdminPresentationCollectionOverride override=presentationCollectionOverrides.get(propertyName);
+  if (override != null) {
+    AdminPresentationCollection annot=override.value();
+    if (annot != null) {
+      String testKey=prefix + key;
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        metadata.setExcluded(true);
+        return;
+      }
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        if (!isParentExcluded) {
+          metadata.setExcluded(false);
+        }
+      }
+      if (!(mergedProperties.get(key) instanceof BasicCollectionMetadata)) {
+        return;
+      }
+      BasicCollectionMetadata metadata=(BasicCollectionMetadata)mergedProperties.get(key);
+      metadata.setCustomCriteria(annot.customCriteria());
+      metadata.setMutable(!annot.readOnly());
+      metadata.setAddMethodType(annot.addType());
+      metadata.setDataSourceName(annot.dataSourceName());
+      metadata.setFriendlyName(annot.friendlyName());
+      metadata.setOrder(annot.order());
+      metadata.setSecurityLevel(annot.securityLevel());
+      if (!StringUtils.isEmpty(annot.manyToField())) {
+        ((ForeignKey)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).setManyToField(annot.manyToField());
+      }
+      metadata.setTargetElementId(annot.targetUIElementId());
+      if (!StringUtils.isEmpty(annot.configurationKey())) {
+        metadata.getPersistencePerspective().setConfigurationKey(annot.configurationKey());
+      }
+    }
+  }
+}

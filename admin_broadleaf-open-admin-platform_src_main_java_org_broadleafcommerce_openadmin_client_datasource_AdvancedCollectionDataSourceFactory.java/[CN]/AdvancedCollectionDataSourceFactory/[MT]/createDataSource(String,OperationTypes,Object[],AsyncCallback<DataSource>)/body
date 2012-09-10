@@ -1,0 +1,76 @@
+{
+  final PersistencePerspective persistencePerspective=collectionMetadata.getPersistencePerspective();
+  final List<DataSourceModule> dataSourceModuleList=new ArrayList<DataSourceModule>();
+  collectionMetadata.accept(new MetadataVisitorAdapter(){
+    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+      dataSourceModuleList.add(new BasicClientEntityModule(metadata.getParentObjectClass(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+      dataSourceModuleList.add(new AdornedTargetListClientModule(metadata.getParentObjectClass(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+      DataSourceModule[] modules=new DataSourceModule[dataSourceModuleList.size()];
+      modules=dataSourceModuleList.toArray(modules);
+      CustomCriteriaListGridDataSource dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+      if (metadata.getCustomCriteria() != null && metadata.getCustomCriteria().length > 0) {
+        dataSource.setUseForAdd(true);
+        dataSource.setUseForFetch(true);
+        dataSource.setUseForInspect(true);
+        dataSource.setUseForRemove(true);
+        dataSource.setUseForUpdate(true);
+        dataSource.setCustomCriteria(metadata.getCustomCriteria());
+      }
+      dataSource.buildFields(null,false,cb);
+    }
+    @Override public void visit(    BasicCollectionMetadata metadata){
+      dataSourceModuleList.add(new BasicClientEntityModule(metadata.getCollectionCeilingEntity(),persistencePerspective,AppServices.DYNAMIC_ENTITY));
+      DataSourceModule[] modules=new DataSourceModule[dataSourceModuleList.size()];
+      modules=dataSourceModuleList.toArray(modules);
+      CustomCriteriaListGridDataSource dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+      if (metadata.getCustomCriteria() != null && metadata.getCustomCriteria().length > 0) {
+        dataSource.setUseForAdd(true);
+        dataSource.setUseForFetch(true);
+        dataSource.setUseForInspect(true);
+        dataSource.setUseForRemove(true);
+        dataSource.setUseForUpdate(true);
+        dataSource.setCustomCriteria(metadata.getCustomCriteria());
+      }
+      dataSource.buildFields(null,false,cb);
+    }
+    @Override public void visit(    MapMetadata metadata){
+      String parentObjectClass=((ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getForeignKeyClass();
+      dataSourceModuleList.add(new MapStructureClientModule(parentObjectClass,persistencePerspective,AppServices.DYNAMIC_ENTITY));
+      DataSourceModule[] modules=new DataSourceModule[dataSourceModuleList.size()];
+      modules=dataSourceModuleList.toArray(modules);
+      CustomCriteriaListGridDataSource dataSource;
+      if (metadata.isSimpleValue()) {
+        dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
+      }
+ else {
+        if (metadata.getMapKeyOptionEntityClass() == null || metadata.getMapKeyOptionEntityClass().length() == 0) {
+          LinkedHashMap<String,String> keys=new LinkedHashMap<String,String>();
+          for (          String[] key : metadata.getKeys()) {
+            String temp;
+            try {
+              temp=BLCMain.getMessageManager().getString(key[1]);
+            }
+ catch (            MissingResourceException e) {
+              temp=key[1];
+            }
+            keys.put(key[0],temp);
+          }
+          dataSource=new ComplexValueMapStructureDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,keys);
+        }
+ else {
+          dataSource=new ComplexValueMapStructureDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,presenter.getPresenterSequenceSetupManager().getDataSource(name + "Lookup"),metadata.getMapKeyOptionEntityDisplayField(),metadata.getMapKeyOptionEntityValueField());
+        }
+      }
+      if (metadata.getCustomCriteria() != null && metadata.getCustomCriteria().length > 0) {
+        dataSource.setUseForAdd(true);
+        dataSource.setUseForFetch(true);
+        dataSource.setUseForInspect(true);
+        dataSource.setUseForRemove(true);
+        dataSource.setUseForUpdate(true);
+        dataSource.setCustomCriteria(metadata.getCustomCriteria());
+      }
+      dataSource.buildFields(null,false,cb);
+    }
+  }
+);
+}

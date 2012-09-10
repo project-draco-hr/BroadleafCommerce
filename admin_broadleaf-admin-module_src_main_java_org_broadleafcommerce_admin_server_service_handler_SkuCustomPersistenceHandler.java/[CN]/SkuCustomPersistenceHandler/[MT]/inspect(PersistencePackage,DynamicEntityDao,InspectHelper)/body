@@ -6,12 +6,12 @@
     List<ProductOption> options=catalogService.readAllProductOptions();
     int order=0;
     for (    ProductOption option : options) {
-      FieldMetadata metadata=new FieldMetadata();
+      BasicFieldMetadata metadata=new BasicFieldMetadata();
       metadata.setFieldType(SupportedFieldType.EXPLICIT_ENUMERATION);
       metadata.setMutable(true);
       metadata.setInheritedFromType(SkuImpl.class.getName());
       metadata.setAvailableToTypes(new String[]{SkuImpl.class.getName()});
-      metadata.setCollection(false);
+      metadata.setForeignKeyCollection(false);
       metadata.setMergedPropertyType(MergedPropertyType.PRIMARY);
       String[][] optionValues=new String[option.getAllowedValues().size()][2];
       for (int i=0; i < option.getAllowedValues().size(); i++) {
@@ -20,17 +20,15 @@
         optionValues[i][1]=value.getAttributeValue();
       }
       metadata.setEnumerationValues(optionValues);
-      FieldPresentationAttributes attributes=new FieldPresentationAttributes();
-      metadata.setPresentationAttributes(attributes);
-      attributes.setName(PRODUCT_OPTION_FIELD_PREFIX + option.getId());
-      attributes.setFriendlyName(option.getLabel());
-      attributes.setGroup("");
-      attributes.setOrder(order);
-      attributes.setExplicitFieldType(SupportedFieldType.UNKNOWN);
-      attributes.setProminent(true);
-      attributes.setBroadleafEnumeration("");
-      attributes.setReadOnly(false);
-      attributes.setRequiredOverride(true);
+      metadata.setName(PRODUCT_OPTION_FIELD_PREFIX + option.getId());
+      metadata.setFriendlyName(option.getLabel());
+      metadata.setGroup("");
+      metadata.setOrder(order);
+      metadata.setExplicitFieldType(SupportedFieldType.UNKNOWN);
+      metadata.setProminent(true);
+      metadata.setBroadleafEnumeration("");
+      metadata.setReadOnly(false);
+      metadata.setRequiredOverride(true);
       properties.put("productOption" + option.getId(),metadata);
     }
     allMergedProperties.put(MergedPropertyType.PRIMARY,properties);

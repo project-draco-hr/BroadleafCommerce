@@ -3,16 +3,21 @@
     String cacheKey=getCacheKey(foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,clazz,configurationKey,isParentExcluded);
     Map<String,FieldMetadata> cacheData;
 synchronized (LOCK_OBJECT) {
-      cacheData=(Map<String,FieldMetadata>)METADATA_CACHE.get(cacheKey);
+      cacheData=METADATA_CACHE.get(cacheKey);
       if (cacheData == null) {
         Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded);
         for (        Class<?> clazz2 : entities) {
           if (!clazz2.getName().equals(clazz.getName())) {
             for (            Map.Entry<String,FieldMetadata> entry : props.entrySet()) {
               FieldMetadata metadata=entry.getValue();
-              if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
-                String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
-                metadata.setAvailableToTypes(both);
+              try {
+                if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(clazz2)) {
+                  String[] both=(String[])ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{clazz2.getName()});
+                  metadata.setAvailableToTypes(both);
+                }
+              }
+ catch (              ClassNotFoundException e) {
+                throw new RuntimeException(e);
               }
             }
           }
