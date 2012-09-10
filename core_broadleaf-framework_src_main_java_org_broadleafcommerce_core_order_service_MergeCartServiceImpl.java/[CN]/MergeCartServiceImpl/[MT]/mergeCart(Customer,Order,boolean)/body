@@ -19,9 +19,13 @@
       customerCart=mergeOfferCodes(anonymousCart,customerCart);
       customerCart=removeExpiredGiftWrapOrderItems(mergeCartResponse,customerCart,oldNewItemMap);
       customerCart=mergeGiftWrapOrderItems(mergeCartResponse,customerCart,oldNewItemMap);
-      customerCart=orderService.save(customerCart,priceOrder);
       orderService.cancelOrder(anonymousCart);
+      customerCart=fulfillmentGroupService.collapseToOneFulfillmentGroup(customerCart,priceOrder);
     }
+  }
+  if (customerCart != null && StringUtils.isNotBlank(customer.getEmailAddress())) {
+    customerCart.setEmailAddress(customer.getEmailAddress());
+    customerCart=orderService.save(customerCart,priceOrder);
   }
   mergeCartResponse.setOrder(customerCart);
   return mergeCartResponse;

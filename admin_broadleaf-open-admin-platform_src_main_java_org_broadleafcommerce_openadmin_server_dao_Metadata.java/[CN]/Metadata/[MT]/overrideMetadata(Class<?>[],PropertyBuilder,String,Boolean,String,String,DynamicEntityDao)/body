@@ -36,7 +36,7 @@
   Map<String,FieldMetadata> mergedProperties=propertyBuilder.execute(classAnnotatedPopulateManyToOneFields);
   for (  String propertyName : presentationOverrides.keySet()) {
     for (    String key : mergedProperties.keySet()) {
-      if (key.equals(propertyName)) {
+      if (key.startsWith(propertyName)) {
         buildAdminPresentationOverride(prefix,isParentExcluded,mergedProperties,presentationOverrides,propertyName,key,dynamicEntityDao);
         buildAdminPresentationToOneLookupOverride(mergedProperties,presentationToOneLookupOverrides,propertyName,key);
         buildAdminPresentationDataDrivenEnumerationOverride(mergedProperties,presentationDataDrivenEnumerationOverrides,propertyName,key,dynamicEntityDao);

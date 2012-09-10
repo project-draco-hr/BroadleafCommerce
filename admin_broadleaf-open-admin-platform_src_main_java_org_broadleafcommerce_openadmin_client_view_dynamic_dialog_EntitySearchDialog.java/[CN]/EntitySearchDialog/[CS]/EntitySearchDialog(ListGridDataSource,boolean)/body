@@ -22,8 +22,9 @@
   dataSource.setAssociatedGrid(searchGrid);
   searchGrid.setDataSource(dataSource);
   dataSource.setupGridFields(new String[]{},new Boolean[]{});
+  searchGrid.setCanEdit(false);
   searchGrid.addSelectionChangedHandler(new SelectionChangedHandler(){
-    public void onSelectionChanged(    SelectionEvent event){
+    @Override public void onSelectionChanged(    SelectionEvent event){
       if (searchGrid.anySelected()) {
         saveButton.enable();
       }
@@ -33,7 +34,7 @@
   addItem(searchGrid);
   saveButton=new IButton(BLCMain.getMessageManager().getString("ok"));
   saveButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       Record selectedRecord=searchGrid.getSelectedRecord();
       EntitySearchDialog.this.handler.onSearchItemSelected(new SearchItemSelected((ListGridRecord)selectedRecord,searchGrid.getDataSource()));
       hide();
@@ -42,7 +43,7 @@
 );
   IButton cancelButton=new IButton(BLCMain.getMessageManager().getString("cancel"));
   cancelButton.addClickHandler(new ClickHandler(){
-    public void onClick(    ClickEvent event){
+    @Override public void onClick(    ClickEvent event){
       hide();
     }
   }

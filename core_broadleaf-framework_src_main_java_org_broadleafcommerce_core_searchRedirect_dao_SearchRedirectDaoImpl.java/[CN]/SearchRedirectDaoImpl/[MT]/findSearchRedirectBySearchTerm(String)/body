@@ -1,0 +1,14 @@
+{
+  Query query;
+  query=em.createNamedQuery("BC_READ_SEARCH_URL");
+  query.setParameter("searchTerm",searchTerm);
+  query.setParameter("now",new Date());
+  query.setMaxResults(1);
+  @SuppressWarnings("unchecked") List<SearchRedirect> results=query.getResultList();
+  if (results != null && !results.isEmpty()) {
+    return results.get(0);
+  }
+ else {
+    return null;
+  }
+}

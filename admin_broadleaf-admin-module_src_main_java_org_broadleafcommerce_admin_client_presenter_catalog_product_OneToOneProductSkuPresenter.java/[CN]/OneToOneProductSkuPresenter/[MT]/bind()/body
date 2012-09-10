@@ -53,4 +53,23 @@
     }
   }
 );
+  getDisplay().getExportProductsButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      AppServices.EXPORT.getExporters(AdminExporterType.PRODUCT,new AsyncCallback<List<AdminExporterDTO>>(){
+        @Override public void onSuccess(        final List<AdminExporterDTO> result){
+          if (result == null || result.size() == 0) {
+            SC.say(BLCMain.getMessageManager().getString("noProductExporters"));
+          }
+ else {
+            ExportListSelectionDialog exportSelectionDialog=new ExportListSelectionDialog();
+            exportSelectionDialog.search(BLCMain.getMessageManager().getString("selectExporterTitle"),result);
+          }
+        }
+        @Override public void onFailure(        Throwable caught){
+        }
+      }
+);
+    }
+  }
+);
 }

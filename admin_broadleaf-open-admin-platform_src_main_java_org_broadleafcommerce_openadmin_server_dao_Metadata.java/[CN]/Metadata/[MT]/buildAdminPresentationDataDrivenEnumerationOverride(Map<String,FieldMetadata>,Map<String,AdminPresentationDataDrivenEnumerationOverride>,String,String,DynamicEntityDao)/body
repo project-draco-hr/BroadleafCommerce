@@ -3,6 +3,9 @@
   if (override != null) {
     AdminPresentationDataDrivenEnumeration annot=override.value();
     if (annot != null) {
+      if (!(mergedProperties.get(key) instanceof BasicFieldMetadata)) {
+        return;
+      }
       BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(key);
       metadata.setFieldType(SupportedFieldType.DATA_DRIVEN_ENUMERATION);
       metadata.setExplicitFieldType(SupportedFieldType.DATA_DRIVEN_ENUMERATION);

@@ -12,7 +12,7 @@
   }
   if (checkForSandboxMatch(staticAsset.getSandbox(),destSandbox)) {
     if (staticAsset.getDeletedFlag()) {
-      SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(staticAsset.getSandbox().getId(),SandBoxItemType.STATIC_ASSET,staticAsset.getId());
+      SandBoxItem item=sandBoxItemDao.retrieveBySandboxAndTemporaryItemId(staticAsset.getSandbox() == null ? null : staticAsset.getSandbox().getId(),SandBoxItemType.STATIC_ASSET,staticAsset.getId());
       if (staticAsset.getOriginalAssetId() == null && item != null) {
         staticAsset.setArchivedFlag(true);
         item.setArchivedFlag(true);

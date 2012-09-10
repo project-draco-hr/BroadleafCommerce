@@ -1,0 +1,13 @@
+{
+  if (exporters == null) {
+    try {
+      setExporters((List<AdminExporter>)applicationContext.getBean("blAdminExporters"));
+    }
+ catch (    NoSuchBeanDefinitionException e) {
+      LOG.debug("blAdminExporters could not be found in your application context");
+    }
+catch (    BeansException e) {
+      LOG.debug("blAdminExporters could not be obtained");
+    }
+  }
+}

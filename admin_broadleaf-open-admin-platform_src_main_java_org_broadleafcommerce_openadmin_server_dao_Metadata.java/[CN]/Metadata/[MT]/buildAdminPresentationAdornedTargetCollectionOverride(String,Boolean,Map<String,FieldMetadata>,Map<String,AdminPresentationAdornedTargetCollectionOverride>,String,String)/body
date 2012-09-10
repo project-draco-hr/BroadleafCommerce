@@ -15,6 +15,9 @@
           metadata.setExcluded(false);
         }
       }
+      if (!(mergedProperties.get(key) instanceof AdornedTargetCollectionMetadata)) {
+        return;
+      }
       AdornedTargetCollectionMetadata metadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
       metadata.setCustomCriteria(annot.customCriteria());
       metadata.setMutable(!annot.readOnly());

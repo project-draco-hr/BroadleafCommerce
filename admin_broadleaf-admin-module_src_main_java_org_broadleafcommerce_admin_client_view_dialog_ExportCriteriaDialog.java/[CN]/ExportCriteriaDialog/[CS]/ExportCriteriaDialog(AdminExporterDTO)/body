@@ -1,0 +1,77 @@
+{
+  super();
+  setShouldShowForm(exporter.getAdditionalCriteriaProperties() != null && exporter.getAdditionalCriteriaProperties().size() > 0);
+  form=new DynamicForm();
+  form.setCellPadding(8);
+  form.setWidth100();
+  form.setCanSubmit(true);
+  form.setMethod(FormMethod.POST);
+  form.setAction(BLCMain.webAppContext + "/export");
+  exporterNameField=new HiddenItem("exporter");
+  exporterNameField.setValue(exporter.getName());
+  HLayout formLayout=new HLayout();
+  formLayout.addMember(form);
+  addItem(formLayout);
+  if (getShouldShowForm()) {
+    this.setTitle("Custom Criteria");
+    this.setIsModal(true);
+    this.setShowModalMask(true);
+    this.setShowMinimizeButton(false);
+    this.setWidth(550);
+    this.setHeight(400);
+    this.setCanDragResize(true);
+    this.setOverflow(Overflow.AUTO);
+    this.setVisible(false);
+    formLayout.setLayoutMargin(20);
+    formLayout.setAlign(Alignment.CENTER);
+    formLayout.setWidth100();
+    ArrayList<FormItem> formItems=new ArrayList<FormItem>();
+    for (    Property property : exporter.getAdditionalCriteriaProperties()) {
+      Boolean presentationLargeEntry=((BasicFieldMetadata)property.getMetadata()).isLargeEntry();
+      boolean largeEntry=(presentationLargeEntry) == null ? false : presentationLargeEntry;
+      DataSourceField lengthField=new DataSourceField();
+      lengthField.setLength(((BasicFieldMetadata)property.getMetadata()).getLength() == null ? 255 : ((BasicFieldMetadata)property.getMetadata()).getLength());
+      FormItem formItem=FormBuilder.buildField(null,lengthField,((BasicFieldMetadata)property.getMetadata()).getFieldType().toString(),largeEntry,form);
+      formItem.setName(property.getName());
+      formItem.setTitle(property.getMetadata().getFriendlyName());
+      formItem.setWrapTitle(false);
+      Boolean required=((BasicFieldMetadata)property.getMetadata()).getRequiredOverride() == null ? false : ((BasicFieldMetadata)property.getMetadata()).getRequiredOverride();
+      formItem.setRequired(required);
+      String prompt=((BasicFieldMetadata)property.getMetadata()).getTooltip() == null ? "" : ((BasicFieldMetadata)property.getMetadata()).getTooltip();
+      formItem.setPrompt(prompt);
+      formItems.add(formItem);
+    }
+    formItems.add(exporterNameField);
+    setFormItems(formItems);
+    form.setFields(formItems.toArray(new FormItem[]{}));
+    submitButton=new IButton("Submit");
+    submitButton.addClickHandler(new ClickHandler(){
+      @Override public void onClick(      ClickEvent event){
+        if (form.validate()) {
+          hide();
+          form.submit();
+        }
+      }
+    }
+);
+    IButton cancelButton=new IButton("Cancel");
+    cancelButton.addClickHandler(new ClickHandler(){
+      @Override public void onClick(      ClickEvent event){
+        hide();
+      }
+    }
+);
+    HLayout hLayout=new HLayout(10);
+    hLayout.setAlign(Alignment.CENTER);
+    hLayout.addMember(submitButton);
+    hLayout.addMember(cancelButton);
+    hLayout.setLayoutTopMargin(10);
+    hLayout.setLayoutBottomMargin(10);
+    addItem(hLayout);
+  }
+ else {
+    this.setWidth(1);
+    this.setHeight(1);
+    form.setFields(new FormItem[]{exporterNameField});
+  }
+}
