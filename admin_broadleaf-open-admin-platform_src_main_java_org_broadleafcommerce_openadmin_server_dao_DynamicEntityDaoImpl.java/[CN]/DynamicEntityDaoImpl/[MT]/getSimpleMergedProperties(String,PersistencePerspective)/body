@@ -7,8 +7,7 @@
     throw new RuntimeException(e);
   }
   if (!ArrayUtils.isEmpty(entityClasses)) {
-    Map<String,FieldMetadata> mergedProperties=getMergedProperties(entityName,entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-    return mergedProperties;
+    return getMergedProperties(entityName,entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
   }
  else {
     Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
@@ -19,11 +18,11 @@
  catch (    ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
-    Map<String,FieldMetadata> attributesMap=metadataTranslation.getFieldPresentationAttributes(targetClass,this);
+    Map<String,FieldMetadata> attributesMap=metadata.getFieldPresentationAttributes(targetClass,this);
     for (    String property : attributesMap.keySet()) {
       FieldMetadata presentationAttributes=attributesMap.get(property);
       if (!presentationAttributes.getExcluded()) {
-        Field field=getFieldManager().getSingleField(targetClass,property);
+        Field field=FieldManager.getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
           if (field.getAnnotation(AdminPresentationCollection.class) == null && field.getAnnotation(AdminPresentationAdornedTargetCollection.class) == null && field.getAnnotation(AdminPresentationMap.class) == null) {
             buildProperty(targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,presentationAttributes,((BasicFieldMetadata)presentationAttributes).getExplicitFieldType(),field.getType());

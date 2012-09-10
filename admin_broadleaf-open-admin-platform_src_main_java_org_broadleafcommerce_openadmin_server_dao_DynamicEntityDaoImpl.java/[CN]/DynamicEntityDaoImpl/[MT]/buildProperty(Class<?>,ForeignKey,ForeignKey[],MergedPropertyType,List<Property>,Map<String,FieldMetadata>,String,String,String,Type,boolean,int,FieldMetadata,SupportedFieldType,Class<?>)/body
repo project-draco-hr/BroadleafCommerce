@@ -1,34 +1,34 @@
 {
   if (explicitType != null && explicitType != SupportedFieldType.UNKNOWN && explicitType != SupportedFieldType.BOOLEAN && explicitType != SupportedFieldType.INTEGER && explicitType != SupportedFieldType.DATE && explicitType != SupportedFieldType.STRING && explicitType != SupportedFieldType.MONEY && explicitType != SupportedFieldType.DECIMAL && explicitType != SupportedFieldType.FOREIGN_KEY && explicitType != SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
-    fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,explicitType,type,targetClass,presentationAttribute,mergedPropertyType,this));
+    fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,explicitType,type,targetClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.BOOLEAN || returnedClass.equals(Boolean.class) || returnedClass.equals(Character.class)) {
-    fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.BOOLEAN,type,targetClass,presentationAttribute,mergedPropertyType,this));
+    fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.BOOLEAN,type,targetClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.INTEGER || returnedClass.equals(Byte.class) || returnedClass.equals(Short.class) || returnedClass.equals(Integer.class) || returnedClass.equals(Long.class)) {
     if (propertyName.equals(idProperty)) {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
  else {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.DATE || returnedClass.equals(Calendar.class) || returnedClass.equals(Date.class) || returnedClass.equals(Timestamp.class)) {
-    fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType,this));
+    fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DATE,type,targetClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.STRING || returnedClass.equals(String.class)) {
     if (propertyName.equals(idProperty)) {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ID,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
  else {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.MONEY || returnedClass.equals(Money.class)) {
-    fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.MONEY,type,targetClass,presentationAttribute,mergedPropertyType,this));
+    fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.MONEY,type,targetClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.DECIMAL || returnedClass.equals(Double.class) || returnedClass.equals(BigDecimal.class)) {
-    fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DECIMAL,type,targetClass,presentationAttribute,mergedPropertyType,this));
+    fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.DECIMAL,type,targetClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (explicitType != null && explicitType == SupportedFieldType.FOREIGN_KEY || foreignField != null && isPropertyForeignKey) {
     ClassMetadata foreignMetadata;
@@ -52,10 +52,10 @@
     }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
  else {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(foreignKeyClass);
@@ -86,10 +86,10 @@
     }
     Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
     if (foreignResponseType.equals(String.class)) {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.STRING,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
  else {
-      fields.put(propertyName,metadataTranslation.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
+      fields.put(propertyName,metadata.getFieldMetadata(prefix,propertyName,componentProperties,SupportedFieldType.ADDITIONAL_FOREIGN_KEY,SupportedFieldType.INTEGER,type,targetClass,presentationAttribute,mergedPropertyType,this));
     }
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyProperty(foreignMetadata.getIdentifierPropertyName());
     ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyClass(foreignKeyClass);
