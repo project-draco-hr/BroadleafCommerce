@@ -101,7 +101,14 @@
     throw new IllegalArgumentException("Problem setting up data driven enumeration for (" + field.getName() + "). The optionListEntity, optionValueFieldName and optionDisplayFieldName properties must all be included if not using DataDrivenEnumerationValueImpl as the optionListEntity.");
   }
   if (basicFieldMetadata.getOptionFilterValues() != null) {
-    metadata.setOptionFilterParams(basicFieldMetadata.getOptionFilterValues());
+    String[][] options=new String[basicFieldMetadata.getOptionFilterValues().length][3];
+    int j=0;
+    for (    Serializable[] option : basicFieldMetadata.getOptionFilterValues()) {
+      options[j][0]=String.valueOf(option[0]);
+      options[j][1]=String.valueOf(option[1]);
+      options[j][2]=String.valueOf(option[2]);
+    }
+    metadata.setOptionFilterParams(options);
   }
   if (!StringUtils.isEmpty(metadata.getOptionListEntity())) {
     buildDataDrivenList(metadata,dynamicEntityDao);

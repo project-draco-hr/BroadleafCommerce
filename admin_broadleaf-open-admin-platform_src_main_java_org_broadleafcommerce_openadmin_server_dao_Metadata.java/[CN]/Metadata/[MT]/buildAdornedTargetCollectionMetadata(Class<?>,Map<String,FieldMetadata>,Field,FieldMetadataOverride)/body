@@ -1,89 +1,68 @@
 {
   AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)attributes.get(field.getName());
-  AdornedTargetCollectionMetadata metadata=new AdornedTargetCollectionMetadata();
-  if (serverMetadata != null && adornedTargetCollectionMetadata.isMutable() == null) {
-    metadata.setMutable(serverMetadata.isMutable());
+  AdornedTargetCollectionMetadata metadata;
+  if (serverMetadata != null) {
+    metadata=serverMetadata;
   }
  else {
+    metadata=new AdornedTargetCollectionMetadata();
+  }
+  metadata.setTargetClass(targetClass.getName());
+  if (adornedTargetCollectionMetadata.isMutable() != null) {
     metadata.setMutable(adornedTargetCollectionMetadata.isMutable());
   }
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getAddType() == null) {
-    dtoOperationTypes.setAddType(serverMetadata.getPersistencePerspective().getOperationTypes().getAddType());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getAddType() != null) {
     dtoOperationTypes.setAddType(adornedTargetCollectionMetadata.getAddType());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getRemoveType() == null) {
-    dtoOperationTypes.setRemoveType(serverMetadata.getPersistencePerspective().getOperationTypes().getRemoveType());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getRemoveType() != null) {
     dtoOperationTypes.setRemoveType(adornedTargetCollectionMetadata.getRemoveType());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getFetchType() == null) {
-    dtoOperationTypes.setFetchType(serverMetadata.getPersistencePerspective().getOperationTypes().getFetchType());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getFetchType() != null) {
     dtoOperationTypes.setFetchType(adornedTargetCollectionMetadata.getFetchType());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getInspectType() == null) {
-    dtoOperationTypes.setInspectType(serverMetadata.getPersistencePerspective().getOperationTypes().getInspectType());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getInspectType() != null) {
     dtoOperationTypes.setInspectType(adornedTargetCollectionMetadata.getInspectType());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getUpdateType() == null) {
-    dtoOperationTypes.setUpdateType(serverMetadata.getPersistencePerspective().getOperationTypes().getUpdateType());
+  if (adornedTargetCollectionMetadata.getUpdateType() != null) {
+    dtoOperationTypes.setUpdateType(adornedTargetCollectionMetadata.getUpdateType());
+  }
+  PersistencePerspective persistencePerspective;
+  if (serverMetadata != null) {
+    persistencePerspective=metadata.getPersistencePerspective();
+    persistencePerspective.setOperationTypes(dtoOperationTypes);
   }
  else {
-    dtoOperationTypes.setInspectType(adornedTargetCollectionMetadata.getUpdateType());
+    persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
+    metadata.setPersistencePerspective(persistencePerspective);
   }
-  PersistencePerspective persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getConfigurationKey() == null) {
-    serverMetadata.getPersistencePerspective().setConfigurationKey(serverMetadata.getPersistencePerspective().getConfigurationKey());
+  if (adornedTargetCollectionMetadata.getConfigurationKey() != null) {
+    persistencePerspective.setConfigurationKey(adornedTargetCollectionMetadata.getConfigurationKey());
   }
- else {
-    if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getConfigurationKey())) {
-      persistencePerspective.setConfigurationKey(adornedTargetCollectionMetadata.getConfigurationKey());
-    }
-  }
-  metadata.setPersistencePerspective(persistencePerspective);
   OneToMany oneToMany=field.getAnnotation(OneToMany.class);
   ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
   String parentObjectProperty=null;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getParentObjectProperty() == null) {
+  if (serverMetadata != null) {
     parentObjectProperty=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getLinkedObjectPath();
   }
- else {
-    checkProperty: {
-      if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getParentObjectProperty())) {
-        parentObjectProperty=adornedTargetCollectionMetadata.getParentObjectProperty();
-        break checkProperty;
-      }
-      if (oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
-        parentObjectProperty=oneToMany.mappedBy();
-        break checkProperty;
-      }
-      if (manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
-        parentObjectProperty=manyToMany.mappedBy();
-        break checkProperty;
-      }
-      if (StringUtils.isEmpty(parentObjectProperty)) {
-        throw new IllegalArgumentException("Unable to infer a parentObjectProperty for the @AdminPresentationAdornedTargetCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the parentObjectProperty property");
-      }
-    }
+  if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getParentObjectProperty())) {
+    parentObjectProperty=adornedTargetCollectionMetadata.getParentObjectProperty();
   }
-  String sortProperty;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getSortProperty() == null) {
+  if (parentObjectProperty == null && oneToMany != null && !StringUtils.isEmpty(oneToMany.mappedBy())) {
+    parentObjectProperty=oneToMany.mappedBy();
+  }
+  if (parentObjectProperty == null && manyToMany != null && !StringUtils.isEmpty(manyToMany.mappedBy())) {
+    parentObjectProperty=manyToMany.mappedBy();
+  }
+  if (StringUtils.isEmpty(parentObjectProperty)) {
+    throw new IllegalArgumentException("Unable to infer a parentObjectProperty for the @AdminPresentationAdornedTargetCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the parentObjectProperty property");
+  }
+  String sortProperty=null;
+  if (serverMetadata != null) {
     sortProperty=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getSortField();
   }
- else {
-    if (StringUtils.isEmpty(adornedTargetCollectionMetadata.getSortProperty())) {
-      sortProperty=null;
-    }
- else {
-      sortProperty=adornedTargetCollectionMetadata.getSortProperty();
-    }
+  if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getSortProperty())) {
+    sortProperty=adornedTargetCollectionMetadata.getSortProperty();
   }
   String ceiling=null;
   checkCeiling: {
@@ -100,98 +79,77 @@
     metadata.setCollectionCeilingEntity(ceiling);
   }
   metadata.setParentObjectClass(targetClass.getName());
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields() == null) {
-    metadata.setMaintainedAdornedTargetFields(serverMetadata.getMaintainedAdornedTargetFields());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields() != null) {
     metadata.setMaintainedAdornedTargetFields(adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getGridVisibleFields() == null) {
-    metadata.setGridVisibleFields(serverMetadata.getGridVisibleFields());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getGridVisibleFields() != null) {
     metadata.setGridVisibleFields(adornedTargetCollectionMetadata.getGridVisibleFields());
   }
-  String parentObjectIdProperty;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getParentObjectIdProperty() == null) {
+  String parentObjectIdProperty=null;
+  if (serverMetadata != null) {
     parentObjectIdProperty=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getLinkedIdProperty();
   }
- else {
+  if (adornedTargetCollectionMetadata.getParentObjectIdProperty() != null) {
     parentObjectIdProperty=adornedTargetCollectionMetadata.getParentObjectIdProperty();
   }
-  String targetObjectProperty;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getTargetObjectProperty() == null) {
+  String targetObjectProperty=null;
+  if (serverMetadata != null) {
     targetObjectProperty=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getTargetObjectPath();
   }
- else {
+  if (adornedTargetCollectionMetadata.getTargetObjectProperty() != null) {
     targetObjectProperty=adornedTargetCollectionMetadata.getTargetObjectProperty();
   }
-  String targetObjectIdProperty;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getTargetObjectIdProperty() == null) {
+  String targetObjectIdProperty=null;
+  if (serverMetadata != null) {
     targetObjectIdProperty=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getTargetIdProperty();
   }
- else {
+  if (adornedTargetCollectionMetadata.getTargetObjectIdProperty() != null) {
     targetObjectIdProperty=adornedTargetCollectionMetadata.getTargetObjectIdProperty();
   }
-  Boolean isAscending;
-  if (serverMetadata != null && adornedTargetCollectionMetadata.isSortAscending() == null) {
+  Boolean isAscending=true;
+  if (serverMetadata != null) {
     isAscending=((AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getSortAscending();
   }
- else {
+  if (adornedTargetCollectionMetadata.isSortAscending() != null) {
     isAscending=adornedTargetCollectionMetadata.isSortAscending();
   }
-  AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,ceiling,sortProperty,isAscending);
-  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getExcluded() == null) {
-    metadata.setExcluded(serverMetadata.getExcluded());
+  if (serverMetadata != null) {
+    AdornedTargetList adornedTargetList=(AdornedTargetList)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+    adornedTargetList.setCollectionFieldName(field.getName());
+    adornedTargetList.setLinkedObjectPath(parentObjectProperty);
+    adornedTargetList.setLinkedIdProperty(parentObjectIdProperty);
+    adornedTargetList.setTargetObjectPath(targetObjectProperty);
+    adornedTargetList.setTargetIdProperty(targetObjectIdProperty);
+    adornedTargetList.setAdornedTargetEntityClassname(ceiling);
+    adornedTargetList.setSortField(sortProperty);
+    adornedTargetList.setSortAscending(isAscending);
   }
  else {
+    AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,ceiling,sortProperty,isAscending);
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
+  }
+  if (adornedTargetCollectionMetadata.getExcluded() != null) {
     metadata.setExcluded(adornedTargetCollectionMetadata.getExcluded());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getFriendlyName() == null) {
-    metadata.setFriendlyName(serverMetadata.getFriendlyName());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getFriendlyName() != null) {
     metadata.setFriendlyName(adornedTargetCollectionMetadata.getFriendlyName());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getSecurityLevel() == null) {
-    metadata.setSecurityLevel(serverMetadata.getSecurityLevel());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getSecurityLevel() != null) {
     metadata.setSecurityLevel(adornedTargetCollectionMetadata.getSecurityLevel());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getOrder() == null) {
-    metadata.setOrder(serverMetadata.getOrder());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getOrder() != null) {
     metadata.setOrder(adornedTargetCollectionMetadata.getOrder());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getTargetElementId() == null) {
-    metadata.setTargetElementId(serverMetadata.getTargetElementId());
+  if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getTargetElementId())) {
+    metadata.setTargetElementId(adornedTargetCollectionMetadata.getTargetElementId());
   }
- else {
-    if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getTargetElementId())) {
-      metadata.setTargetElementId(adornedTargetCollectionMetadata.getTargetElementId());
-    }
+  if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getDataSourceName())) {
+    metadata.setDataSourceName(adornedTargetCollectionMetadata.getDataSourceName());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getDataSourceName() == null) {
-    metadata.setDataSourceName(serverMetadata.getDataSourceName());
-  }
- else {
-    if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getDataSourceName())) {
-      metadata.setDataSourceName(adornedTargetCollectionMetadata.getDataSourceName());
-    }
-  }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.getCustomCriteria() == null) {
-    metadata.setCustomCriteria(serverMetadata.getCustomCriteria());
-  }
- else {
+  if (adornedTargetCollectionMetadata.getCustomCriteria() != null) {
     metadata.setCustomCriteria(adornedTargetCollectionMetadata.getCustomCriteria());
   }
-  if (serverMetadata != null && adornedTargetCollectionMetadata.isIgnoreAdornedProperties() == null) {
-    metadata.setIgnoreAdornedProperties(serverMetadata.isIgnoreAdornedProperties());
-  }
- else {
+  if (adornedTargetCollectionMetadata.isIgnoreAdornedProperties() != null) {
     metadata.setIgnoreAdornedProperties(adornedTargetCollectionMetadata.isIgnoreAdornedProperties());
   }
   attributes.put(field.getName(),metadata);

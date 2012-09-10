@@ -19,11 +19,11 @@
         metadata.setOptionDisplayFieldName(annot.optionDisplayFieldName());
       }
       if (!ArrayUtils.isEmpty(annot.optionFilterParams())) {
-        Serializable[][] params=new Serializable[annot.optionFilterParams().length][3];
+        String[][] params=new String[annot.optionFilterParams().length][3];
         for (int j=0; j < params.length; j++) {
           params[j][0]=annot.optionFilterParams()[j].param();
           params[j][1]=annot.optionFilterParams()[j].value();
-          params[j][2]=annot.optionFilterParams()[j].paramType();
+          params[j][2]=String.valueOf(annot.optionFilterParams()[j].paramType());
         }
         metadata.setOptionFilterParams(params);
       }

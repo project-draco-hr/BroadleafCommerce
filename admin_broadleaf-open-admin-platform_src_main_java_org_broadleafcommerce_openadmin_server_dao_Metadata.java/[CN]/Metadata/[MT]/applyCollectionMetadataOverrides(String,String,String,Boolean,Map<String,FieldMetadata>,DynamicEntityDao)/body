@@ -24,16 +24,18 @@
           try {
             if (mergedProperties.get(key) instanceof BasicCollectionMetadata) {
               BasicCollectionMetadata serverMetadata=(BasicCollectionMetadata)mergedProperties.get(key);
-              Class<?> targetClass=Class.forName(((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getForeignKeyClass());
-              String fieldName=serverMetadata.getCollectionFieldName();
-              Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
-              Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-              temp.put(field.getName(),serverMetadata);
-              buildCollectionMetadata(targetClass,temp,field,localMetadata);
-              serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
-              mergedProperties.put(key,serverMetadata);
-              if (isParentExcluded) {
-                serverMetadata.setExcluded(true);
+              if (serverMetadata.getTargetClass() != null) {
+                Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+                String fieldName=serverMetadata.getCollectionFieldName();
+                Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
+                Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+                temp.put(field.getName(),serverMetadata);
+                buildCollectionMetadata(targetClass,temp,field,localMetadata);
+                serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
+                mergedProperties.put(key,serverMetadata);
+                if (isParentExcluded) {
+                  serverMetadata.setExcluded(true);
+                }
               }
             }
           }
