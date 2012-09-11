@@ -1,0 +1,23 @@
+{
+  Order cart=CartState.getCart();
+  orderInfoFormValidator.validate(orderInfoForm,result);
+  if (result.hasErrors()) {
+    try {
+      cart.setEmailAddress(null);
+      orderService.save(cart,false);
+    }
+ catch (    PricingException pe) {
+      LOG.error("Error when saving the email address for order confirmation to the cart",pe);
+    }
+    populateModelWithShippingReferenceData(request,model);
+    return getCheckoutView();
+  }
+  try {
+    cart.setEmailAddress(orderInfoForm.getEmailAddress());
+    orderService.save(cart,false);
+  }
+ catch (  PricingException pe) {
+    LOG.error("Error when saving the email address for order confirmation to the cart",pe);
+  }
+  return getCheckoutPageRedirect();
+}

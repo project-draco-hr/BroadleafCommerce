@@ -1,0 +1,62 @@
+{
+  BasicFieldMetadata metadata=new BasicFieldMetadata();
+  metadata.fieldType=fieldType;
+  metadata.secondaryType=secondaryType;
+  metadata.length=length;
+  metadata.required=required;
+  metadata.unique=unique;
+  metadata.scale=scale;
+  metadata.precision=precision;
+  metadata.mutable=mutable;
+  metadata.foreignKeyProperty=foreignKeyProperty;
+  metadata.foreignKeyClass=foreignKeyClass;
+  metadata.foreignKeyDisplayValueProperty=foreignKeyDisplayValueProperty;
+  metadata.foreignKeyCollection=foreignKeyCollection;
+  metadata.mergedPropertyType=mergedPropertyType;
+  metadata.enumerationClass=enumerationClass;
+  if (enumerationValues != null) {
+    metadata.enumerationValues=new String[enumerationValues.length][];
+    for (int j=0; j < enumerationValues.length; j++) {
+      metadata.enumerationValues[j]=new String[enumerationValues[j].length];
+      System.arraycopy(enumerationValues[j],0,metadata.enumerationValues[j],0,enumerationValues[j].length);
+    }
+  }
+  metadata.name=name;
+  metadata.visibility=visibility;
+  metadata.group=group;
+  metadata.groupOrder=groupOrder;
+  metadata.groupCollapsed=groupCollapsed;
+  metadata.explicitFieldType=explicitFieldType;
+  metadata.largeEntry=largeEntry;
+  metadata.prominent=prominent;
+  metadata.columnWidth=columnWidth;
+  metadata.broadleafEnumeration=broadleafEnumeration;
+  metadata.readOnly=readOnly;
+  metadata.requiredOverride=requiredOverride;
+  metadata.tooltip=tooltip;
+  metadata.helpText=helpText;
+  metadata.hint=hint;
+  for (  Map.Entry<String,Map<String,String>> entry : validationConfigurations.entrySet()) {
+    Map<String,String> clone=new HashMap<String,String>(entry.getValue().size());
+    for (    Map.Entry<String,String> entry2 : entry.getValue().entrySet()) {
+      clone.put(entry2.getKey(),entry2.getValue());
+    }
+    metadata.validationConfigurations.put(entry.getKey(),clone);
+  }
+  metadata.lookupDisplayProperty=lookupDisplayProperty;
+  metadata.lookupParentDataSourceName=lookupParentDataSourceName;
+  metadata.targetDynamicFormDisplayId=targetDynamicFormDisplayId;
+  metadata.optionListEntity=optionListEntity;
+  metadata.optionCanEditValues=optionCanEditValues;
+  metadata.optionDisplayFieldName=optionDisplayFieldName;
+  metadata.optionValueFieldName=optionValueFieldName;
+  if (optionFilterParams != null) {
+    metadata.optionFilterParams=new String[optionFilterParams.length][];
+    for (int j=0; j < optionFilterParams.length; j++) {
+      metadata.optionFilterParams[j]=new String[optionFilterParams[j].length];
+      System.arraycopy(optionFilterParams[j],0,metadata.optionFilterParams[j],0,optionFilterParams[j].length);
+    }
+  }
+  metadata=(BasicFieldMetadata)populate(metadata);
+  return metadata;
+}

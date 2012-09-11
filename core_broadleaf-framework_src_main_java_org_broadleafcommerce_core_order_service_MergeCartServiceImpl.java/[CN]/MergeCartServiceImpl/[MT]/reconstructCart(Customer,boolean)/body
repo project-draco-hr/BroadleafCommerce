@@ -5,37 +5,17 @@
     List<OrderItem> itemsToRemove=new ArrayList<OrderItem>();
     for (    OrderItem orderItem : customerCart.getOrderItems()) {
       if (orderItem instanceof DiscreteOrderItem) {
-        DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
-        if (discreteOrderItem.getSku().getActiveStartDate() != null) {
-          if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-            itemsToRemove.add(orderItem);
-          }
-        }
- else {
-          if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
-            itemsToRemove.add(orderItem);
-          }
+        DiscreteOrderItem doi=(DiscreteOrderItem)orderItem;
+        if (!checkActive(doi) || !checkInventory(doi) || !checkOtherValidity(orderItem)) {
+          itemsToRemove.add(orderItem);
         }
       }
  else       if (orderItem instanceof BundleOrderItem) {
         BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
-        boolean removeBundle=false;
-        for (        DiscreteOrderItem discreteOrderItem : bundleOrderItem.getDiscreteOrderItems()) {
-          if (discreteOrderItem.getSku().getActiveStartDate() != null) {
-            if (!discreteOrderItem.getSku().isActive(discreteOrderItem.getProduct(),orderItem.getCategory())) {
-              removeBundle=true;
-              break;
-            }
+        for (        DiscreteOrderItem doi : bundleOrderItem.getDiscreteOrderItems()) {
+          if (!checkActive(doi) || !checkInventory(doi) || !checkOtherValidity(orderItem)) {
+            itemsToRemove.add(doi.getBundleOrderItem());
           }
- else {
-            if (!discreteOrderItem.getProduct().isActive() || !orderItem.getCategory().isActive()) {
-              removeBundle=true;
-              break;
-            }
-          }
-        }
-        if (removeBundle) {
-          itemsToRemove.add(orderItem);
         }
       }
     }
@@ -50,9 +30,10 @@
       }
     }
     for (    OrderItem item : itemsToRemove) {
-      removeItemFromOrder(customerCart,item,priceOrder);
+      orderService.removeItem(customerCart.getId(),item.getId(),false);
     }
     reconstructCartResponse.setRemovedItems(itemsToRemove);
+    customerCart=orderService.save(customerCart,priceOrder);
   }
   reconstructCartResponse.setOrder(customerCart);
   return reconstructCartResponse;

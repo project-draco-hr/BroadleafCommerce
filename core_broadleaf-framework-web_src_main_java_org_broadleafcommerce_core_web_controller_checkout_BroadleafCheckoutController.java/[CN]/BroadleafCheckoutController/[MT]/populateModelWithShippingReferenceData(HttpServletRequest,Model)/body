@@ -1,4 +1,13 @@
 {
+  String editOrderInfo=request.getParameter("edit-order-info");
+  boolean hasValidOrderInfo;
+  if (BooleanUtils.toBoolean(editOrderInfo)) {
+    hasValidOrderInfo=false;
+  }
+ else {
+    hasValidOrderInfo=hasValidOrderInfo(CartState.getCart());
+  }
+  model.addAttribute("validOrderInfo",hasValidOrderInfo);
   String editShipping=request.getParameter("edit-shipping");
   boolean hasValidShipping;
   if (BooleanUtils.toBoolean(editShipping)) {

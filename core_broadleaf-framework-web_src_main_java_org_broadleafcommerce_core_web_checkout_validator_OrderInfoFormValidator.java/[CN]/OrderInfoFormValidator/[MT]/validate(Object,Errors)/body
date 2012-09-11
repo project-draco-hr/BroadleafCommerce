@@ -1,0 +1,9 @@
+{
+  OrderInfoForm orderInfoForm=(OrderInfoForm)obj;
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"emailAddress","emailAddress.required");
+  if (!errors.hasErrors()) {
+    if (!EmailValidator.getInstance().isValid(orderInfoForm.getEmailAddress())) {
+      errors.rejectValue("emailAddress","emailAddress.invalid",null,null);
+    }
+  }
+}

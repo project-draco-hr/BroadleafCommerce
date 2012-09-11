@@ -11,7 +11,7 @@
   if (query.length() == 0) {
     return "redirect:/";
   }
-  if (request.getMethod().equals("POST")) {
+  if (request.getParameterMap().containsKey("facetField")) {
     String fieldName=request.getParameter("facetField");
     List<String> activeFieldFilters=new ArrayList<String>();
     Map<String,String[]> parameters=new HashMap<String,String[]>(request.getParameterMap());

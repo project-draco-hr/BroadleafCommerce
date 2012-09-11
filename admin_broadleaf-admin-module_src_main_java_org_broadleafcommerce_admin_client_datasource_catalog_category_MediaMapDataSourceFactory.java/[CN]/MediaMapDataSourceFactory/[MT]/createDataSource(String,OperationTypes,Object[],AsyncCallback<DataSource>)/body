@@ -1,10 +1,10 @@
 {
   if (dataSource == null) {
-    operationTypes=new OperationTypes(OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE,OperationType.MAPSTRUCTURE);
+    operationTypes=new OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
     PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey("id",EntityImplementations.CATEGORY,null));
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,MAPSTRUCTURE);
-    DataSourceModule[] modules=new DataSourceModule[]{new MapStructureClientModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY,((CategoryDisplay)presenter.getDisplay()).getMediaDisplay().getGrid())};
+    DataSourceModule[] modules=new DataSourceModule[]{new MapStructureClientModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
     dataSource=new ComplexValueMapStructureDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,(LinkedHashMap<String,String>)additionalItems[0]);
     dataSource.buildFields(null,false,cb);
   }

@@ -1,25 +1,20 @@
 {
-  Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
-  Boolean classAnnotatedPopulateManyToOneFields=null;
-  Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
-  for (int i=entities.length - 1; i >= 0; i--) {
-    AdminPresentationOverrides myOverrides=entities[i].getAnnotation(AdminPresentationOverrides.class);
-    if (myOverrides != null) {
-      for (      AdminPresentationOverride myOverride : myOverrides.value()) {
-        presentationOverrides.put(myOverride.name(),myOverride);
+  PropertyBuilder propertyBuilder=new PropertyBuilder(){
+    @Override public Map<String,FieldMetadata> execute(    Boolean overridePopulateManyToOne){
+      Map<String,FieldMetadata> mergedProperties=new HashMap<String,FieldMetadata>();
+      Boolean classAnnotatedPopulateManyToOneFields;
+      if (overridePopulateManyToOne != null) {
+        classAnnotatedPopulateManyToOneFields=overridePopulateManyToOne;
       }
-    }
-    AdminPresentationClass adminPresentationClass=entities[i].getAnnotation(AdminPresentationClass.class);
-    if (adminPresentationClass != null && classAnnotatedPopulateManyToOneFields == null && adminPresentationClass.populateToOneFields() != PopulateToOneFieldsEnum.NOT_SPECIFIED) {
-      classAnnotatedPopulateManyToOneFields=adminPresentationClass.populateToOneFields() == PopulateToOneFieldsEnum.TRUE;
+ else {
+        classAnnotatedPopulateManyToOneFields=populateManyToOneFields;
+      }
+      buildPropertiesFromPolymorphicEntities(entities,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,classAnnotatedPopulateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,mergedProperties,parentClasses,prefix,isParentExcluded);
+      return mergedProperties;
     }
   }
-  if (classAnnotatedPopulateManyToOneFields != null) {
-    populateManyToOneFields=classAnnotatedPopulateManyToOneFields;
-  }
-  buildPropertiesFromPolymorphicEntities(entities,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,mergedProperties,parentClasses,prefix,isParentExcluded);
-  applyAdminPresentationOverrides(prefix,isParentExcluded,mergedProperties,presentationOverrides);
-  applyMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties);
+;
+  Map<String,FieldMetadata> mergedProperties=metadata.overrideMetadata(entities,propertyBuilder,prefix,isParentExcluded,ceilingEntityFullyQualifiedClassname,configurationKey,this);
   applyIncludesAndExcludes(includeFields,excludeFields,prefix,isParentExcluded,mergedProperties);
   applyForeignKeyPrecedence(foreignField,additionalForeignFields,mergedProperties);
   return mergedProperties;

@@ -1,3 +1,8 @@
 {
-  return mergeCartService.mergeCart(customer,anonymousCart,priceOrder);
+  try {
+    return mergeCartService.mergeCart(customer,anonymousCart,priceOrder);
+  }
+ catch (  RemoveFromCartException e) {
+    throw new PricingException(e);
+  }
 }

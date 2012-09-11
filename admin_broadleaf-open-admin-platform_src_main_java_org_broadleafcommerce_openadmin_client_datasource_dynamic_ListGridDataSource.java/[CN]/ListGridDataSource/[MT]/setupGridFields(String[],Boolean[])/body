@@ -71,6 +71,7 @@
         if (pos >= 0) {
           gridFields[j].setCanEdit(canEdit[pos]);
         }
+        prominentFields.add(field);
         availableSlots--;
       }
       setupDecimalFormatters(gridFields[j],field);
@@ -94,5 +95,12 @@
       pos++;
     }
   }
+ else {
+    fieldNames=new String[gridFields.length];
+    for (int k=0; k < gridFields.length; k++) {
+      fieldNames[k]=gridFields[k].getName();
+    }
+  }
   getAssociatedGrid().setHilites(hilites);
+  return fieldNames;
 }

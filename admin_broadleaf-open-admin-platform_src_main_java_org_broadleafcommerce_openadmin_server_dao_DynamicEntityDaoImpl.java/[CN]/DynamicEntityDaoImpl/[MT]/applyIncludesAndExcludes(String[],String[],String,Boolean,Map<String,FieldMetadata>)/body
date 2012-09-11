@@ -5,22 +5,12 @@
         String testKey=prefix + key;
         if (!(testKey.startsWith(include + ".") || testKey.equals(include))) {
           FieldMetadata metadata=mergedProperties.get(key);
-          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
-          if (attr == null) {
-            metadata.setPresentationAttributes(new FieldPresentationAttributes());
-            attr=metadata.getPresentationAttributes();
-          }
-          attr.setExcluded(true);
+          metadata.setExcluded(true);
         }
  else {
           FieldMetadata metadata=mergedProperties.get(key);
-          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
-          if (attr == null) {
-            metadata.setPresentationAttributes(new FieldPresentationAttributes());
-            attr=metadata.getPresentationAttributes();
-          }
           if (!isParentExcluded) {
-            attr.setExcluded(false);
+            metadata.setExcluded(false);
           }
         }
       }
@@ -32,22 +22,12 @@
         String testKey=prefix + key;
         if (testKey.startsWith(exclude + ".") || testKey.equals(exclude)) {
           FieldMetadata metadata=mergedProperties.get(key);
-          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
-          if (attr == null) {
-            metadata.setPresentationAttributes(new FieldPresentationAttributes());
-            attr=metadata.getPresentationAttributes();
-          }
-          attr.setExcluded(true);
+          metadata.setExcluded(true);
         }
  else {
           FieldMetadata metadata=mergedProperties.get(key);
-          FieldPresentationAttributes attr=metadata.getPresentationAttributes();
-          if (attr == null) {
-            metadata.setPresentationAttributes(new FieldPresentationAttributes());
-            attr=metadata.getPresentationAttributes();
-          }
           if (!isParentExcluded) {
-            attr.setExcluded(false);
+            metadata.setExcluded(false);
           }
         }
       }

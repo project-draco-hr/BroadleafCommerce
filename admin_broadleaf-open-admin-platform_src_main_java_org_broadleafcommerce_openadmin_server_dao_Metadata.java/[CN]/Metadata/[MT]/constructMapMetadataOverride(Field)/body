@@ -1,0 +1,40 @@
+{
+  AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
+  if (map != null) {
+    FieldMetadataOverride override=new FieldMetadataOverride();
+    override.setConfigurationKey(map.configurationKey());
+    override.setDeleteEntityUponRemove(map.deleteEntityUponRemove());
+    override.setKeyClass(map.keyClass().getName());
+    override.setKeyPropertyFriendlyName(map.keyPropertyFriendlyName());
+    if (!ArrayUtils.isEmpty(map.keys())) {
+      String[][] keys=new String[map.keys().length][2];
+      for (int j=0; j < keys.length; j++) {
+        keys[j][0]=map.keys()[j].keyName();
+        keys[j][1]=map.keys()[j].friendlyKeyName();
+      }
+      override.setKeys(keys);
+    }
+    override.setMapKeyOptionEntityClass(map.mapKeyOptionEntityClass().getName());
+    override.setMapKeyOptionEntityDisplayField(map.mapKeyOptionEntityDisplayField());
+    override.setMapKeyOptionEntityValueField(map.mapKeyOptionEntityValueField());
+    override.setMediaField(map.mediaField());
+    override.setSimpleValue(map.isSimpleValue());
+    override.setValueClass(map.valueClass().getName());
+    override.setValuePropertyFriendlyName(map.valuePropertyFriendlyName());
+    override.setCustomCriteria(map.customCriteria());
+    override.setDataSourceName(map.dataSourceName());
+    override.setExcluded(map.excluded());
+    override.setFriendlyName(map.friendlyName());
+    override.setMutable(!map.readOnly());
+    override.setOrder(map.order());
+    override.setSecurityLevel(map.securityLevel());
+    override.setTargetElementId(map.targetUIElementId());
+    override.setAddType(map.operationTypes().addType());
+    override.setFetchType(map.operationTypes().fetchType());
+    override.setRemoveType(map.operationTypes().removeType());
+    override.setUpdateType(map.operationTypes().updateType());
+    override.setInspectType(map.operationTypes().inspectType());
+    return override;
+  }
+  throw new IllegalArgumentException("AdminPresentationMap annotation not found on field");
+}

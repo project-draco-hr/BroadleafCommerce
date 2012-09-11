@@ -1,4 +1,5 @@
 {
+  Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(unfilteredProperties);
   FieldManager fieldManager=getFieldManager();
   for (  Property property : entity.getProperties()) {
     Field field=fieldManager.getField(instance.getClass(),property.getName());
@@ -8,12 +9,13 @@
     }
     Class<?> returnType=field.getType();
     String value=property.getValue();
-    if (mergedProperties.get(property.getName()) != null) {
-      Boolean mutable=mergedProperties.get(property.getName()).getMutable();
-      Boolean readOnly=mergedProperties.get(property.getName()).getPresentationAttributes().getReadOnly();
+    BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
+    if (metadata != null) {
+      Boolean mutable=metadata.getMutable();
+      Boolean readOnly=metadata.getReadOnly();
       if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
         if (value != null) {
-switch (mergedProperties.get(property.getName()).getFieldType()) {
+switch (metadata.getFieldType()) {
 case BOOLEAN:
             if (Character.class.isAssignableFrom(returnType)) {
               fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value) ? 'Y' : 'N');
@@ -71,11 +73,11 @@ if (StringUtils.isEmpty(value)) {
 foreignInstance=null;
 }
  else {
-if (SupportedFieldType.INTEGER.toString().equals(mergedProperties.get(property.getName()).getSecondaryType().toString())) {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(mergedProperties.get(property.getName()).getForeignKeyClass()),Long.valueOf(value));
+if (SupportedFieldType.INTEGER.toString().equals(metadata.getSecondaryType().toString())) {
+foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),Long.valueOf(value));
 }
  else {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(mergedProperties.get(property.getName()).getForeignKeyClass()),value);
+foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),value);
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
@@ -105,11 +107,11 @@ if (StringUtils.isEmpty(value)) {
 foreignInstance=null;
 }
  else {
-if (SupportedFieldType.INTEGER.toString().equals(mergedProperties.get(property.getName()).getSecondaryType().toString())) {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(mergedProperties.get(property.getName()).getForeignKeyClass()),Long.valueOf(value));
+if (SupportedFieldType.INTEGER.toString().equals(metadata.getSecondaryType().toString())) {
+foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),Long.valueOf(value));
 }
  else {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(mergedProperties.get(property.getName()).getForeignKeyClass()),value);
+foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),value);
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
@@ -134,7 +136,7 @@ break;
 }
 case ID:
 if (setId) {
-switch (mergedProperties.get(property.getName()).getSecondaryType()) {
+switch (metadata.getSecondaryType()) {
 case INTEGER:
 fieldManager.setFieldValue(instance,property.getName(),Long.valueOf(value));
 break;
@@ -148,7 +150,7 @@ break;
 }
  else {
 try {
-if (fieldManager.getFieldValue(instance,property.getName()) != null && (mergedProperties.get(property.getName()).getFieldType() != SupportedFieldType.ID || setId)) {
+if (fieldManager.getFieldValue(instance,property.getName()) != null && (metadata.getFieldType() != SupportedFieldType.ID || setId)) {
 fieldManager.setFieldValue(instance,property.getName(),null);
 }
 }

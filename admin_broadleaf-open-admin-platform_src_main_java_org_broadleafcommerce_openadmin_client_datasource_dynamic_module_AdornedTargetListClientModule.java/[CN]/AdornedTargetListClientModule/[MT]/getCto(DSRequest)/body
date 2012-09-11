@@ -1,0 +1,9 @@
+{
+  AdornedTargetList joinTable=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  CriteriaTransferObject cto=super.getCto(request);
+  if (joinTable.getSortField() != null) {
+    FilterAndSortCriteria sortCriteria=cto.get(joinTable.getSortField());
+    sortCriteria.setSortAscending(joinTable.getSortAscending() != null ? joinTable.getSortAscending() : true);
+  }
+  return cto;
+}

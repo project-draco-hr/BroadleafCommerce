@@ -1,0 +1,12 @@
+{
+  if (metadata == null) {
+    return null;
+  }
+  Map<String,FieldMetadata> newMap=new HashMap<String,FieldMetadata>();
+  for (  Map.Entry<String,FieldMetadata> entry : metadata.entrySet()) {
+    if (entry.getValue() instanceof BasicFieldMetadata) {
+      newMap.put(entry.getKey(),entry.getValue());
+    }
+  }
+  return newMap;
+}
