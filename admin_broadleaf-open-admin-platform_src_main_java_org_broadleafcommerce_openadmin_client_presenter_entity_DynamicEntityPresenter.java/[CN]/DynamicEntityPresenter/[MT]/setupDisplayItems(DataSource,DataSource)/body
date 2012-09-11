@@ -41,7 +41,18 @@
     }
 ));
   }
-  for (  final Map.Entry<String,CollectionMetadata> entry : collectionMetadatas.entrySet()) {
+  List<Map.Entry<String,CollectionMetadata>> list=new LinkedList<Map.Entry<String,CollectionMetadata>>(collectionMetadatas.entrySet());
+  Collections.sort(list,new Comparator<Map.Entry<String,CollectionMetadata>>(){
+    @Override public int compare(    Map.Entry<String,CollectionMetadata> o1,    Map.Entry<String,CollectionMetadata> o2){
+      return o1.getValue().getOrder().compareTo(o2.getValue().getOrder());
+    }
+  }
+);
+  Map<String,CollectionMetadata> sortedMetadatas=new LinkedHashMap<String,CollectionMetadata>();
+  for (  Map.Entry<String,CollectionMetadata> entry : list) {
+    sortedMetadatas.put(entry.getKey(),entry.getValue());
+  }
+  for (  final Map.Entry<String,CollectionMetadata> entry : sortedMetadatas.entrySet()) {
     boolean shouldLoad=false;
     ClassTree classTree=((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getPolymorphicEntityTree();
     for (    String availableType : entry.getValue().getAvailableToTypes()) {
