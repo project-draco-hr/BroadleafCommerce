@@ -51,10 +51,6 @@
         break;
       }
     }
-    if (entry.getValue().getSecurityLevel() != null && !"".equals(entry.getValue().getSecurityLevel())) {
-      org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerField(String.valueOf(entry.getValue().hashCode()),entry.getValue().getSecurityLevel());
-      shouldLoad=org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().isUserAuthorizedToEditField(String.valueOf(entry.getValue().hashCode()));
-    }
     if (shouldLoad) {
       final String dataSourceName;
       if (entry.getValue().getDataSourceName() != null && entry.getValue().getDataSourceName().length() > 0) {
