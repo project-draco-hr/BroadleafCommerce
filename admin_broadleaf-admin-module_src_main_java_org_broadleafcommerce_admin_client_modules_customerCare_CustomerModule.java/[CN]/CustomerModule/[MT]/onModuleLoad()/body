@@ -1,0 +1,18 @@
+{
+  addConstants(GWT.<ConstantsWithLookup>create(CustomerCareMessages.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityCommon.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityFramework.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityProfile.class));
+  addConstants(GWT.<ConstantsWithLookup>create(GeneratedMessagesEntityOpenAdmin.class));
+  addConstants(GWT.<ConstantsWithLookup>create(OpenAdminMessages.class));
+  setModuleTitle(BLCMain.getMessageManager().getString("customerCareModuleTitle"));
+  setModuleKey("BLCCustomerModule");
+  List<String> customerPermissions=new ArrayList<String>();
+  customerPermissions.add("PERMISSION_CREATE_CUSTOMER");
+  customerPermissions.add("PERMISSION_UPDATE_CUSTOMER");
+  customerPermissions.add("PERMISSION_DELETE_CUSTOMER");
+  customerPermissions.add("PERMISSION_READ_CUSTOMER");
+  setSection(BLCMain.getMessageManager().getString("customerMainTitle"),"customer","org.broadleafcommerce.admin.client.view.customer.CustomerView","customerPresenter","org.broadleafcommerce.admin.client.presenter.customer.CustomerPresenter",customerPermissions);
+  setOrder(200);
+  registerModule();
+}
