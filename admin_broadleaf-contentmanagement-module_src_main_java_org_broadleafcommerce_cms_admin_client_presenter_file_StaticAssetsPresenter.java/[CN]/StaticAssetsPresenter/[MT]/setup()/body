@@ -6,12 +6,4 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("localeDS",new LocaleListDataSourceFactory(),new NullAsyncCallbackAdapter()));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetDescriptionMapDS",new StaticAssetDescriptionMapDataSourceFactory(this),new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource result){
-      staticAssetDescriptionPresenter=new MapStructurePresenter(getDisplay().getAssetDescriptionDisplay(),getStaticAssetDescriptionEntityView(),new String[]{EntityImplementations.STATICASSETIMPL},BLCMain.getMessageManager().getString("newAssetDescriptionTitle"));
-      staticAssetDescriptionPresenter.setDataSource((ListGridDataSource)result,new String[]{"key","description","longDescription"},new Boolean[]{true,true,true});
-    }
-  }
-));
 }

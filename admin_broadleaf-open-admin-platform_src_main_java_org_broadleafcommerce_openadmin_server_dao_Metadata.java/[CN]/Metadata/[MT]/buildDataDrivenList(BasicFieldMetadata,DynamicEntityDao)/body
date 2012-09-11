@@ -1,0 +1,34 @@
+{
+  try {
+    Criteria criteria=dynamicEntityDao.createCriteria(Class.forName(metadata.getOptionListEntity()));
+    if (metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
+      criteria.add(Restrictions.eq("hidden",false));
+    }
+    for (    String[] param : metadata.getOptionFilterParams()) {
+      Criteria current=criteria;
+      String key=param[0];
+      if (key.contains(".")) {
+        String[] parts=key.split("\\.");
+        for (int j=0; j < parts.length - 1; j++) {
+          current=current.createCriteria(parts[j],parts[j]);
+        }
+      }
+      current.add(Restrictions.eq(key,convertType(param[1],OptionFilterParamType.valueOf(param[2]))));
+    }
+    List results=criteria.list();
+    String[][] enumerationValues=new String[results.size()][2];
+    int j=0;
+    for (    Object param : results) {
+      enumerationValues[j][1]=String.valueOf(dynamicEntityDao.getFieldManager().getFieldValue(param,metadata.getOptionDisplayFieldName()));
+      enumerationValues[j][0]=String.valueOf(dynamicEntityDao.getFieldManager().getFieldValue(param,metadata.getOptionValueFieldName()));
+      j++;
+    }
+    if (!CollectionUtils.isEmpty(results) && metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
+      metadata.setOptionCanEditValues((Boolean)dynamicEntityDao.getFieldManager().getFieldValue(results.get(0),"type.modifiable"));
+    }
+    metadata.setEnumerationValues(enumerationValues);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+}

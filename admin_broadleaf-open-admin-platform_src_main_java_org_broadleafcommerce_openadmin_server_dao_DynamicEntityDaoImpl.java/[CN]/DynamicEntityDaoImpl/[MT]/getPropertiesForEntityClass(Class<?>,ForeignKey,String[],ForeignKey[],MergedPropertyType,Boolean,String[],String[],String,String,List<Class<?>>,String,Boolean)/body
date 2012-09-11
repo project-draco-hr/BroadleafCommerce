@@ -1,5 +1,5 @@
 {
-  Map<String,FieldPresentationAttributes> presentationAttributes=getFieldPresentationAttributes(targetClass);
+  Map<String,FieldMetadata> presentationAttributes=metadata.getFieldPresentationAttributes(targetClass,this);
   if (isParentExcluded) {
     for (    String key : presentationAttributes.keySet()) {
       presentationAttributes.get(key).setExcluded(true);
@@ -14,17 +14,17 @@
   List<Type> propertyTypes=getPropertyTypes(targetClass);
   propertyTypes.add(idType);
   PersistentClass persistentClass=getPersistentClass(targetClass.getName());
-  Iterator<Property> testIter=persistentClass.getPropertyIterator();
+  Iterator testIter=persistentClass.getPropertyIterator();
   List<Property> propertyList=new ArrayList<Property>();
   while (testIter.hasNext()) {
-    Property property=testIter.next();
-    if (property.getName().indexOf(".") >= 0) {
+    Property property=(Property)testIter.next();
+    if (property.getName().contains(".")) {
       throw new IllegalArgumentException("Properties from entities that utilize a period character ('.') in their name are incompatible with this system. The property name in question is: (" + property.getName() + ") from the class: ("+ targetClass.getName()+ ")");
     }
     propertyList.add(property);
   }
   buildProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,propertyList,fields,propertyNames,propertyTypes,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded);
-  FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
+  BasicFieldMetadata presentationAttribute=new BasicFieldMetadata();
   presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
   presentationAttribute.setVisibility(VisibilityEnum.HIDDEN_ALL);
   if (!ArrayUtils.isEmpty(additionalNonPersistentProperties)) {
@@ -53,7 +53,7 @@
           }
         }
         if (testField != null || testMethod != null) {
-          fields.put(additionalNonPersistentProperty,getFieldMetadata(prefix,additionalNonPersistentProperty,propertyList,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType));
+          fields.put(additionalNonPersistentProperty,metadata.getFieldMetadata(prefix,additionalNonPersistentProperty,propertyList,SupportedFieldType.STRING,null,targetClass,presentationAttribute,mergedPropertyType,this));
         }
       }
     }

@@ -1,11 +1,13 @@
 {
+  Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(mergedUnfilteredProperties);
   Object primaryKey=null;
   String idPropertyName=null;
-  FieldMetadata metaData=null;
+  BasicFieldMetadata metaData=null;
   for (  String property : mergedProperties.keySet()) {
-    if (mergedProperties.get(property).getFieldType() == SupportedFieldType.ID && !property.contains(".")) {
+    BasicFieldMetadata temp=(BasicFieldMetadata)mergedProperties.get(property);
+    if (temp.getFieldType() == SupportedFieldType.ID && !property.contains(".")) {
       idPropertyName=property;
-      metaData=mergedProperties.get(property);
+      metaData=temp;
       break;
     }
   }

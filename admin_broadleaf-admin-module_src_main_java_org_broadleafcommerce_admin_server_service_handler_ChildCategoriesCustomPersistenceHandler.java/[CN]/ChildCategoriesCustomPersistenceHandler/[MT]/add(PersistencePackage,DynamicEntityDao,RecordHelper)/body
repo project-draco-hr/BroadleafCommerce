@@ -1,7 +1,7 @@
 {
-  JoinStructure joinStructure=(JoinStructure)persistencePackage.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.JOINSTRUCTURE);
-  String targetPath=joinStructure.getTargetObjectPath() + "." + joinStructure.getTargetIdProperty();
-  String linkedPath=joinStructure.getLinkedObjectPath() + "." + joinStructure.getLinkedIdProperty();
+  AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePackage.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  String targetPath=adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty();
+  String linkedPath=adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty();
   Long parentId=Long.parseLong(persistencePackage.getEntity().findProperty(linkedPath).getValue());
   Long childId=Long.parseLong(persistencePackage.getEntity().findProperty(targetPath).getValue());
   Category parent=(Category)dynamicEntityDao.retrieve(CategoryImpl.class,parentId);
@@ -10,5 +10,5 @@
     throw new ServiceException("Add unsuccessful. Cannot add a duplicate child category.");
   }
   checkParents(child,parent);
-  return helper.getCompatibleModule(OperationType.JOINSTRUCTURE).add(persistencePackage);
+  return helper.getCompatibleModule(OperationType.ADORNEDTARGETLIST).add(persistencePackage);
 }

@@ -1,7 +1,7 @@
 {
   PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{new ForeignKey(CategoryTreeDataSourceFactory.defaultParentCategoryForeignKey,EntityImplementations.CATEGORY,null)});
-  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.JOINSTRUCTURE,new JoinStructure(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.CATEGORY_XREF,sortField,true));
-  DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY),new JoinStructureClientModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+  persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,new AdornedTargetList(symbolName,linkedObjectPath,linkedIdProperty,targetObjectPath,targetIdProperty,EntityImplementations.CATEGORY_XREF,sortField,true));
+  DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY),new AdornedTargetListClientModule(CeilingEntities.CATEGORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
   CustomCriteriaListGridDataSource dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,false,false,true,false,false);
   dataSource.setCustomCriteria(new String[]{customCriteria});
   dataSource.buildFields(null,false,cb);

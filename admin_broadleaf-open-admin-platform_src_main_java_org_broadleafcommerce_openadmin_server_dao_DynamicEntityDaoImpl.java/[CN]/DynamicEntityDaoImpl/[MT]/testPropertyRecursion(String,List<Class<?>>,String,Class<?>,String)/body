@@ -3,7 +3,13 @@
   if (!StringUtils.isEmpty(prefix)) {
     Field testField=getFieldManager().getField(targetClass,propertyName);
     if (testField == null) {
-      Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
+      Class<?>[] entities;
+      try {
+        entities=getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
+      }
+ catch (      ClassNotFoundException e) {
+        throw new RuntimeException(e);
+      }
       for (      Class<?> clazz : entities) {
         testField=getFieldManager().getField(clazz,propertyName);
         if (testField != null) {

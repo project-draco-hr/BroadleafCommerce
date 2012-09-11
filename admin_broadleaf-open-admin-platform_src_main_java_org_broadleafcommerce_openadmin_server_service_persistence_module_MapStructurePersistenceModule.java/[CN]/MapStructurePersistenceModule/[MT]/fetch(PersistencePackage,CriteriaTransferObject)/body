@@ -11,13 +11,14 @@
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
     PersistentClass persistentClass=persistenceManager.getDynamicEntityDao().getPersistentClass(mapStructure.getValueClassName());
-    Map<String,FieldMetadata> valueMergedProperties;
+    Map<String,FieldMetadata> valueUnfilteredMergedProperties;
     if (persistentClass == null) {
-      valueMergedProperties=persistenceManager.getDynamicEntityDao().getPropertiesForPrimitiveClass(((SimpleValueMapStructure)mapStructure).getValuePropertyName(),((SimpleValueMapStructure)mapStructure).getValuePropertyFriendlyName(),Class.forName(mapStructure.getValueClassName()),Class.forName(ceilingEntityFullyQualifiedClassname),MergedPropertyType.MAPSTRUCTUREVALUE);
+      valueUnfilteredMergedProperties=persistenceManager.getDynamicEntityDao().getPropertiesForPrimitiveClass(((SimpleValueMapStructure)mapStructure).getValuePropertyName(),((SimpleValueMapStructure)mapStructure).getValuePropertyFriendlyName(),Class.forName(mapStructure.getValueClassName()),Class.forName(ceilingEntityFullyQualifiedClassname),MergedPropertyType.MAPSTRUCTUREVALUE);
     }
  else {
-      valueMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,false,new String[]{},new String[]{},null,"");
+      valueUnfilteredMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,false,new String[]{},new String[]{},null,"");
     }
+    Map<String,FieldMetadata> valueMergedProperties=filterOutCollectionMetadata(valueUnfilteredMergedProperties);
     BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
     totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);

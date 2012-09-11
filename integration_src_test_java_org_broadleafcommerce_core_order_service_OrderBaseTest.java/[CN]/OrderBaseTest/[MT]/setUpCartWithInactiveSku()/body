@@ -1,0 +1,10 @@
+{
+  Customer customer=customerService.saveCustomer(createNamedCustomer());
+  Order order=orderService.createNewCartForCustomer(customer);
+  Product newProduct=addTestProduct("Plastic Crate Should Be Inactive","Crates");
+  Category newCategory=newProduct.getDefaultCategory();
+  order=orderService.addItem(order.getId(),new OrderItemRequestDTO(newProduct.getId(),newProduct.getDefaultSku().getId(),newCategory.getId(),1),true);
+  newProduct.getDefaultSku().setActiveEndDate(DateUtils.addDays(new Date(),-1));
+  catalogService.saveSku(newProduct.getDefaultSku());
+  return order;
+}

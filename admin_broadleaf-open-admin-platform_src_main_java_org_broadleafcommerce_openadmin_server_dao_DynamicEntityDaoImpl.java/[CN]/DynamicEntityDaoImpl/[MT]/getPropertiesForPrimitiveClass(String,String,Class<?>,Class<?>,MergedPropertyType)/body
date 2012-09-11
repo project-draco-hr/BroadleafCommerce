@@ -1,42 +1,42 @@
 {
   Map<String,FieldMetadata> fields=new HashMap<String,FieldMetadata>();
-  FieldPresentationAttributes presentationAttribute=new FieldPresentationAttributes();
+  BasicFieldMetadata presentationAttribute=new BasicFieldMetadata();
   presentationAttribute.setFriendlyName(friendlyPropertyName);
   if (String.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.STRING);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.STRING,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.STRING,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (Boolean.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.BOOLEAN);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.BOOLEAN,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.BOOLEAN,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (Date.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.DATE);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.DATE,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.DATE,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (Money.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.MONEY);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.MONEY,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.MONEY,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (Byte.class.isAssignableFrom(targetClass) || Integer.class.isAssignableFrom(targetClass) || Long.class.isAssignableFrom(targetClass)|| Short.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.INTEGER);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.INTEGER,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.INTEGER,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
  else   if (Double.class.isAssignableFrom(targetClass) || BigDecimal.class.isAssignableFrom(targetClass)) {
     presentationAttribute.setExplicitFieldType(SupportedFieldType.DECIMAL);
     presentationAttribute.setVisibility(VisibilityEnum.VISIBLE_ALL);
-    fields.put(propertyName,getFieldMetadata("",propertyName,null,SupportedFieldType.DECIMAL,null,parentClass,presentationAttribute,mergedPropertyType));
+    fields.put(propertyName,metadata.getFieldMetadata("",propertyName,null,SupportedFieldType.DECIMAL,null,parentClass,presentationAttribute,mergedPropertyType,this));
   }
-  fields.get(propertyName).setLength(255);
-  fields.get(propertyName).setCollection(false);
-  fields.get(propertyName).setRequired(true);
-  fields.get(propertyName).setUnique(true);
-  fields.get(propertyName).setScale(100);
-  fields.get(propertyName).setPrecision(100);
+  ((BasicFieldMetadata)fields.get(propertyName)).setLength(255);
+  ((BasicFieldMetadata)fields.get(propertyName)).setForeignKeyCollection(false);
+  ((BasicFieldMetadata)fields.get(propertyName)).setRequired(true);
+  ((BasicFieldMetadata)fields.get(propertyName)).setUnique(true);
+  ((BasicFieldMetadata)fields.get(propertyName)).setScale(100);
+  ((BasicFieldMetadata)fields.get(propertyName)).setPrecision(100);
   return fields;
 }
