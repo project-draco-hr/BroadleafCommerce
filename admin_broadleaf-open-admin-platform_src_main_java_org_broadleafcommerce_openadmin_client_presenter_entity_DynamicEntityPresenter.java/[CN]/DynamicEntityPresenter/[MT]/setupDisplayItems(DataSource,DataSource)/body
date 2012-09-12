@@ -3,45 +3,64 @@
   formPresenter=new DynamicFormPresenter(display.getDynamicFormDisplay());
   ((PresentationLayerAssociatedDataSource)entityDataSource).setAssociatedGrid(display.getListDisplay().getGrid());
   for (  final Map.Entry<String,LookupMetadata> entry : lookupMetadatas.entrySet()) {
-    final String dataSourceName=entry.getKey() + "Lookup";
-    if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
-      java.util.logging.Logger.getLogger(getClass().toString()).log(Level.FINE,"Detected collection metadata for a datasource that is already registered (" + dataSourceName + "). Ignoring this repeated definition.");
-      continue;
-    }
-    presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new ForeignKeyLookupDataSourceFactory(entry.getValue().getLookupForeignKey()),new AsyncCallbackAdapter(){
-      @Override public void onSetupSuccess(      DataSource lookupDS){
-        EntitySearchDialog searchView=new EntitySearchDialog((ListGridDataSource)lookupDS,true);
-        String viewTitle;
-        try {
-          viewTitle=BLCMain.getMessageManager().getString(entry.getValue().getFriendlyName());
-        }
- catch (        MissingResourceException e) {
-          viewTitle=entry.getValue().getFriendlyName();
-        }
-        DynamicEntityDataSource parentDataSource;
-        if (entry.getValue().getParentDataSourceName() == null || entry.getValue().getParentDataSourceName().length() == 0) {
-          parentDataSource=(DynamicEntityDataSource)entityDataSource;
-        }
- else {
-          parentDataSource=presenterSequenceSetupManager.getDataSource(entry.getValue().getParentDataSourceName());
-        }
-        DynamicFormDisplay target;
-        if (entry.getValue().getTargetDynamicFormDisplayId() == null || entry.getValue().getTargetDynamicFormDisplayId().length() == 0) {
-          target=getDisplay().getDynamicFormDisplay();
-        }
- else {
-          Layout temp=FormBuilder.findMemberById((Layout)getDisplay(),entry.getValue().getTargetDynamicFormDisplayId());
-          if (!(temp instanceof DynamicFormDisplay)) {
-            throw new RuntimeException("The target destination for a foreign key lookup must be an instance of DynamicFormDisplay. The requested destination (" + entry.getValue().getTargetDynamicFormDisplayId() + ") is an instance of "+ temp.getClass().getName());
-          }
-          target=(DynamicFormDisplay)temp;
-        }
-        parentDataSource.getFormItemCallbackHandlerManager().addSearchFormItemCallback(entry.getKey(),searchView,viewTitle,target,entry.getValue().getLookupForeignKey(),null);
+    if (entry.getKey().startsWith(getClass().getName())) {
+      final String dataSourceName=entry.getKey() + "Lookup";
+      if (presenterSequenceSetupManager.getDataSource(dataSourceName) != null) {
+        java.util.logging.Logger.getLogger(getClass().toString()).log(Level.FINE,"Detected collection metadata for a datasource that is already registered (" + dataSourceName + "). Ignoring this repeated definition.");
+        continue;
       }
-    }
+      presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new ForeignKeyLookupDataSourceFactory(entry.getValue().getLookupForeignKey()),new AsyncCallbackAdapter(){
+        @Override public void onSetupSuccess(        DataSource lookupDS){
+          EntitySearchDialog searchView=new EntitySearchDialog((ListGridDataSource)lookupDS,true);
+          String viewTitle;
+          try {
+            viewTitle=BLCMain.getMessageManager().getString(entry.getValue().getFriendlyName());
+          }
+ catch (          MissingResourceException e) {
+            viewTitle=entry.getValue().getFriendlyName();
+          }
+          DynamicEntityDataSource parentDataSource;
+          if (entry.getValue().getParentDataSourceName() == null || entry.getValue().getParentDataSourceName().length() == 0) {
+            parentDataSource=(DynamicEntityDataSource)entityDataSource;
+          }
+ else {
+            parentDataSource=presenterSequenceSetupManager.getDataSource(entry.getValue().getParentDataSourceName());
+          }
+          DynamicFormDisplay target;
+          if (entry.getValue().getTargetDynamicFormDisplayId() == null || entry.getValue().getTargetDynamicFormDisplayId().length() == 0) {
+            target=getDisplay().getDynamicFormDisplay();
+          }
+ else {
+            Layout temp=FormBuilder.findMemberById((Layout)getDisplay(),entry.getValue().getTargetDynamicFormDisplayId());
+            if (!(temp instanceof DynamicFormDisplay)) {
+              throw new RuntimeException("The target destination for a foreign key lookup must be an instance of DynamicFormDisplay. The requested destination (" + entry.getValue().getTargetDynamicFormDisplayId() + ") is an instance of "+ temp.getClass().getName());
+            }
+            target=(DynamicFormDisplay)temp;
+          }
+          parentDataSource.getFormItemCallbackHandlerManager().addSearchFormItemCallback(entry.getKey(),searchView,viewTitle,target,entry.getValue().getLookupForeignKey(),null);
+        }
+      }
 ));
+    }
   }
-  for (  final Map.Entry<String,CollectionMetadata> entry : collectionMetadatas.entrySet()) {
+  List<Map.Entry<String,CollectionMetadata>> list=new LinkedList<Map.Entry<String,CollectionMetadata>>(collectionMetadatas.entrySet());
+  Iterator<Map.Entry<String,CollectionMetadata>> itr=list.iterator();
+  while (itr.hasNext()) {
+    if (!itr.next().getKey().startsWith(getClass().getName())) {
+      itr.remove();
+    }
+  }
+  Collections.sort(list,new Comparator<Map.Entry<String,CollectionMetadata>>(){
+    @Override public int compare(    Map.Entry<String,CollectionMetadata> o1,    Map.Entry<String,CollectionMetadata> o2){
+      return o1.getValue().getOrder().compareTo(o2.getValue().getOrder());
+    }
+  }
+);
+  Map<String,CollectionMetadata> sortedMetadatas=new LinkedHashMap<String,CollectionMetadata>();
+  for (  Map.Entry<String,CollectionMetadata> entry : list) {
+    sortedMetadatas.put(entry.getKey(),entry.getValue());
+  }
+  for (  final Map.Entry<String,CollectionMetadata> entry : sortedMetadatas.entrySet()) {
     boolean shouldLoad=false;
     ClassTree classTree=((DynamicEntityDataSource)getDisplay().getListDisplay().getGrid().getDataSource()).getPolymorphicEntityTree();
     for (    String availableType : entry.getValue().getAvailableToTypes()) {
@@ -50,10 +69,6 @@
         shouldLoad=true;
         break;
       }
-    }
-    if (entry.getValue().getSecurityLevel() != null && !"".equals(entry.getValue().getSecurityLevel())) {
-      org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerField(String.valueOf(entry.getValue().hashCode()),entry.getValue().getSecurityLevel());
-      shouldLoad=org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().isUserAuthorizedToEditField(String.valueOf(entry.getValue().hashCode()));
     }
     if (shouldLoad) {
       final String dataSourceName;

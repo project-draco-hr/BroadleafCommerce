@@ -29,12 +29,14 @@
     ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
       @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
         String locked=associatedRecord.getAttribute("__locked");
-        if (!(locked != null && locked.equals("true"))) {
-          setReadOnly(false);
-          setStartState();
-        }
+        if (!readOnly) {
+          if (!(locked != null && locked.equals("true"))) {
+            setReadOnly(false);
+            setStartState();
+          }
  else {
-          setReadOnly(true);
+            setReadOnly(true);
+          }
         }
         if (cb != null) {
           cb.execute(response,rawData,request);
