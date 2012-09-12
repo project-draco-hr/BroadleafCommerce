@@ -1,0 +1,15 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  DynamicSkuPrices prices=new DynamicSkuPrices();
+  PriceList priceList=brc.getPriceList();
+  if (priceList != null && sku.getPriceDataMap().get(priceList.getPriceKey()) != null) {
+    PriceData priceData=sku.getPriceDataMap().get(priceList.getPriceKey());
+    prices.setRetailPrice(BroadleafCurrencyImpl.getMoney(priceData.getRetailPrice(),priceList.getCurrencyCode()));
+    prices.setSalePrice(BroadleafCurrencyImpl.getMoney(priceData.getSalePrice(),priceList.getCurrencyCode()));
+  }
+ else {
+    prices.setRetailPrice(sku.getRetailPrice());
+    prices.setSalePrice(sku.getSalePrice());
+  }
+  return prices;
+}

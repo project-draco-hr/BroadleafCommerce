@@ -1,0 +1,13 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  DynamicSkuPrices prices=new DynamicSkuPrices();
+  PriceList priceList=brc.getPriceList();
+  if (priceList != null && productOptionValue.getPriceAdjustmentMap().get(priceList.getPriceKey()) != null) {
+    PriceAdjustment priceData=productOptionValue.getPriceAdjustmentMap().get(priceList.getPriceKey());
+    prices.setPriceAdjustment(BroadleafCurrencyImpl.getMoney(priceData.getPriceAdjustment(),priceList.getCurrencyCode()));
+  }
+ else {
+    prices.setPriceAdjustment(productOptionValue.getPriceAdjustment());
+  }
+  return prices;
+}
