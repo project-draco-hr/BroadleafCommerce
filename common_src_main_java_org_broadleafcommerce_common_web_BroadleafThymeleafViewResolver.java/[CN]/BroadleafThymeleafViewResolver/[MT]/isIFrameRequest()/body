@@ -1,5 +1,5 @@
 {
-  HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
   String iFrameParameter=request.getParameter("blcIFrame");
   return (iFrameParameter != null && "true".equals(iFrameParameter));
 }
