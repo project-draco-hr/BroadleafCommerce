@@ -1,6 +1,6 @@
 {
   getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("type").addChangedHandler(new ChangedHandler(){
-    public void onChanged(    final ChangedEvent event){
+    @Override public void onChanged(    final ChangedEvent event){
       additionalFilterEventManager.resetFilterState(new FilterStateRunnable(){
         @Override public void run(        FilterRestartCallback cb){
           String eventValue=event.getValue().toString();
@@ -12,7 +12,7 @@
   }
 );
   getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("discountType").addChangedHandler(new ChangedHandler(){
-    public void onChanged(    ChangedEvent event){
+    @Override public void onChanged(    ChangedEvent event){
       String eventValue=event.getValue().toString();
       if (eventValue.equals("FIX_PRICE")) {
         getDisplay().getOrderCombineForm().disable();
@@ -36,7 +36,7 @@
   FormItem endDate=getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getField("endDate");
   if (endDate != null) {
     endDate.addChangedHandler(new ChangedHandler(){
-      @SuppressWarnings("deprecation") public void onChanged(      ChangedEvent event){
+      @Override @SuppressWarnings("deprecation") public void onChanged(      ChangedEvent event){
         Date myDate=(Date)event.getValue();
         if (myDate != null) {
           event.getItem().setValue(myDate);
