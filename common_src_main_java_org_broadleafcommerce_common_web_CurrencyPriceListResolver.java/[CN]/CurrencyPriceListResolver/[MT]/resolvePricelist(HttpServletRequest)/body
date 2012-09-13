@@ -10,9 +10,6 @@
     }
   }
   if (priceList == null) {
-    priceList=(PriceList)session.getAttribute(PRICELIST_VAR);
-  }
-  if (priceList == null) {
     BroadleafCurrency currency=(BroadleafCurrency)session.getAttribute(CURRENCY_VAR);
     if (currency != null) {
       priceList=priceListService.findPriceListByCurrency(currency);
@@ -21,6 +18,5 @@
   if (priceList == null) {
     priceList=priceListService.findDefaultPricelist();
   }
-  session.setAttribute(PRICELIST_VAR,priceList);
   return priceList;
 }
