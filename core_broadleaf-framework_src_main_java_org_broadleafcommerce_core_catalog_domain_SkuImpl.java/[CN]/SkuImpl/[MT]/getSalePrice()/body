@@ -11,7 +11,9 @@
     Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
     dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
     handler.reset();
-    return dynamicPrices.getSalePrice();
+    if (dynamicPrices != null) {
+      returnPrice=dynamicPrices.getSalePrice();
+    }
   }
   if (returnPrice == null) {
     returnPrice=(salePrice == null ? null : new Money(salePrice));

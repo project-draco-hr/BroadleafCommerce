@@ -1,0 +1,19 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Money adjustment=null;
+  PriceList priceList=brc.getPriceList();
+  if (priceList != null) {
+    if (productOptionValue.getPriceAdjustmentMap() == null || productOptionValue.getPriceAdjustmentMap().get(priceList.getPriceKey()) == null) {
+      if (!priceList.getDefaultFlag()) {
+        return null;
+      }
+    }
+ else {
+      PriceAdjustment priceData=productOptionValue.getPriceAdjustmentMap().get(priceList.getPriceKey());
+      if (priceData != null) {
+        adjustment=BroadleafCurrencyImpl.getMoney(priceData.getPriceAdjustment(),priceList.getCurrencyCode());
+      }
+    }
+  }
+  return adjustment;
+}
