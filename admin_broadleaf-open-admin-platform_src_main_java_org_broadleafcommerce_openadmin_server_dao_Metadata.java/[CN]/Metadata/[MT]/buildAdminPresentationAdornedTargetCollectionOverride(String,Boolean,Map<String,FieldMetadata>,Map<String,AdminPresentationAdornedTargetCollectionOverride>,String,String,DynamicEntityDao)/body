@@ -1,0 +1,44 @@
+{
+  AdminPresentationAdornedTargetCollectionOverride override=presentationAdornedTargetCollectionOverrides.get(propertyName);
+  if (override != null) {
+    AdminPresentationAdornedTargetCollection annot=override.value();
+    if (annot != null) {
+      String testKey=prefix + key;
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        metadata.setExcluded(true);
+        return;
+      }
+      if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
+        FieldMetadata metadata=mergedProperties.get(key);
+        if (!isParentExcluded) {
+          metadata.setExcluded(false);
+        }
+      }
+      if (!(mergedProperties.get(key) instanceof AdornedTargetCollectionMetadata)) {
+        return;
+      }
+      AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)mergedProperties.get(key);
+      if (serverMetadata.getTargetClass() != null) {
+        try {
+          Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+          String fieldName=serverMetadata.getFieldName();
+          Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
+          FieldMetadataOverride localMetadata=constructAdornedTargetCollectionMetadataOverride(annot);
+          Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+          buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
+          AdornedTargetCollectionMetadata result=(AdornedTargetCollectionMetadata)temp.get(field.getName());
+          result.setInheritedFromType(serverMetadata.getInheritedFromType());
+          result.setAvailableToTypes(serverMetadata.getAvailableToTypes());
+          mergedProperties.put(key,result);
+          if (isParentExcluded) {
+            serverMetadata.setExcluded(true);
+          }
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@
   }
   metadata.setName(field.getName());
   metadata.setTargetClass(targetClass.getName());
+  metadata.setFieldName(field.getName());
   if (basicFieldMetadata.getFriendlyName() != null) {
     metadata.setFriendlyName(basicFieldMetadata.getFriendlyName());
   }
@@ -26,6 +27,7 @@
   }
   if (metadata.getExplicitFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
     metadata.setExcluded(true);
+    metadata.setVisibility(VisibilityEnum.GRID_HIDDEN);
   }
  else {
     if (basicFieldMetadata.getExcluded() != null) {
@@ -75,6 +77,7 @@
   }
   if (basicFieldMetadata.getLookupDisplayProperty() != null) {
     metadata.setLookupDisplayProperty(basicFieldMetadata.getLookupDisplayProperty());
+    metadata.setForeignKeyDisplayValueProperty(basicFieldMetadata.getLookupDisplayProperty());
   }
   if (basicFieldMetadata.getLookupParentDataSourceName() != null) {
     metadata.setLookupParentDataSourceName(basicFieldMetadata.getLookupParentDataSourceName());
