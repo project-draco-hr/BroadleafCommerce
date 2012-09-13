@@ -1,6 +1,5 @@
 {
   Entity entity=new Entity();
-  Map<String,Object> dirtyValues=request.getAttributeAsMap("dirtyValues");
   List<Property> properties=new ArrayList<Property>();
   String[] attributes=record.getAttributes();
   for (  String attribute : attributes) {
@@ -17,9 +16,6 @@
         property.setValue(dataSource.stripDuplicateAllowSpecialCharacters(record.getAttribute(attribute)));
       }
       property.setName(dataSource.getField(attribute).getAttribute("rawName"));
-      if (dirtyValues != null && dirtyValues.containsKey(property.getName())) {
-        property.setIsDirty(true);
-      }
       properties.add(property);
     }
  else     if (attribute.equals("_type")) {

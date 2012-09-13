@@ -18,45 +18,35 @@
       if (!(mergedProperties.get(key) instanceof BasicFieldMetadata)) {
         return;
       }
-      BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(key);
-      metadata.setFriendlyName(annot.friendlyName());
-      metadata.setSecurityLevel(annot.securityLevel());
-      metadata.setVisibility(annot.visibility());
-      metadata.setOrder(annot.order());
-      metadata.setExplicitFieldType(annot.fieldType());
-      if (annot.fieldType() != SupportedFieldType.UNKNOWN) {
-        metadata.setFieldType(annot.fieldType());
-      }
-      metadata.setGroup(annot.group());
-      metadata.setGroupCollapsed(annot.groupCollapsed());
-      metadata.setGroupOrder(annot.groupOrder());
-      metadata.setLargeEntry(annot.largeEntry());
-      metadata.setProminent(annot.prominent());
-      metadata.setColumnWidth(annot.columnWidth());
-      if (!StringUtils.isEmpty(annot.broadleafEnumeration()) && !annot.broadleafEnumeration().equals(metadata.getBroadleafEnumeration())) {
-        metadata.setBroadleafEnumeration(annot.broadleafEnumeration());
+      BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
+      if (serverMetadata.getTargetClass() != null) {
         try {
-          setupBroadleafEnumeration(annot.broadleafEnumeration(),metadata,dynamicEntityDao);
+          Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+          String fieldName=serverMetadata.getFieldName();
+          Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
+          FieldMetadataOverride localMetadata=constructBasicMetadataOverride(annot,null,null);
+          Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+          buildBasicMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
+          BasicFieldMetadata result=(BasicFieldMetadata)temp.get(field.getName());
+          result.setInheritedFromType(serverMetadata.getInheritedFromType());
+          result.setAvailableToTypes(serverMetadata.getAvailableToTypes());
+          result.setFieldType(serverMetadata.getFieldType());
+          result.setSecondaryType(serverMetadata.getSecondaryType());
+          result.setLength(serverMetadata.getLength());
+          result.setScale(serverMetadata.getScale());
+          result.setPrecision(serverMetadata.getPrecision());
+          result.setRequired(serverMetadata.getRequired());
+          result.setUnique(serverMetadata.getUnique());
+          result.setForeignKeyCollection(serverMetadata.getForeignKeyCollection());
+          result.setMutable(serverMetadata.getMutable());
+          result.setMergedPropertyType(serverMetadata.getMergedPropertyType());
+          mergedProperties.put(key,result);
+          if (isParentExcluded) {
+            serverMetadata.setExcluded(true);
+          }
         }
  catch (        Exception e) {
           throw new RuntimeException(e);
-        }
-      }
-      metadata.setReadOnly(annot.readOnly());
-      metadata.setExcluded(isParentExcluded || annot.excluded());
-      metadata.setTooltip(annot.tooltip());
-      metadata.setHelpText(annot.helpText());
-      metadata.setHint(annot.hint());
-      metadata.setRequiredOverride(annot.requiredOverride() == RequiredOverride.IGNORED ? null : annot.requiredOverride() == RequiredOverride.REQUIRED);
-      if (annot.validationConfigurations().length != 0) {
-        ValidationConfiguration[] configurations=annot.validationConfigurations();
-        for (        ValidationConfiguration configuration : configurations) {
-          ConfigurationItem[] items=configuration.configurationItems();
-          Map<String,String> itemMap=new HashMap<String,String>();
-          for (          ConfigurationItem item : items) {
-            itemMap.put(item.itemName(),item.itemValue());
-          }
-          metadata.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
         }
       }
     }
