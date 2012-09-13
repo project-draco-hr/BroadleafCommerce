@@ -1,5 +1,5 @@
 {
-  Layout destination;
+  final Layout destination;
   if (metadata.getTargetElementId() != null && metadata.getTargetElementId().length() > 0) {
     destination=findMemberById((Layout)presenter.getDisplay(),metadata.getTargetElementId());
   }
@@ -20,8 +20,6 @@
     }
     viewTitle=temp;
   }
-  final GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
-  destination.addMember(advancedCollectionView);
   if (metadata.getSecurityLevel() != null && !"".equals(metadata.getSecurityLevel())) {
     org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().registerField(String.valueOf(metadata.hashCode()),metadata.getSecurityLevel());
     Boolean shouldLoad=org.broadleafcommerce.openadmin.client.security.SecurityManager.getInstance().isUserAuthorizedToEditField(String.valueOf(metadata.hashCode()));
@@ -31,6 +29,8 @@
   }
   metadata.accept(new MetadataVisitorAdapter(){
     @Override public void visit(    BasicCollectionMetadata metadata){
+      GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
+      destination.addMember(advancedCollectionView);
       SubPresentable subPresentable;
       if (metadata.getAddMethodType() == AddMethodType.PERSIST) {
         subPresentable=new CreateBasedListStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),viewTitle,new HashMap<String,Object>());
@@ -44,6 +44,9 @@
       presenter.addSubPresentable(subPresentable);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata metadata){
+      String sortField=((AdornedTargetList)((DynamicEntityDataSource)dataSource).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getSortField();
+      GridStructureView advancedCollectionView=new GridStructureView(viewTitle,sortField != null & sortField.length() > 0,true);
+      destination.addMember(advancedCollectionView);
       List<String> prominentNames=new ArrayList<String>();
       for (      DataSourceField field : lookupDataSource.getFields()) {
         if (field.getAttributeAsBoolean("prominent") && !field.getAttributeAsBoolean("permanentlyHidden")) {
@@ -69,6 +72,8 @@
       presenter.addSubPresentable(subPresentable);
     }
     @Override public void visit(    MapMetadata metadata){
+      GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
+      destination.addMember(advancedCollectionView);
       SubPresentable subPresentable;
       if (metadata.isSimpleValue()) {
         subPresentable=new SimpleMapStructurePresenter(advancedCollectionView,metadata.getAvailableToTypes(),null);

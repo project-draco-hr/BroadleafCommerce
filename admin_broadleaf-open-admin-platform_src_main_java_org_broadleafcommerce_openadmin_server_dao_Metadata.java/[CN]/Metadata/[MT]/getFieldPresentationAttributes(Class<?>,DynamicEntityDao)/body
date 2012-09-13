@@ -7,19 +7,19 @@
     AdminPresentationAdornedTargetCollection adornedTargetCollection=field.getAnnotation(AdminPresentationAdornedTargetCollection.class);
     AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
     if (annot != null) {
-      FieldMetadataOverride override=constructBasicMetadataOverride(field);
+      FieldMetadataOverride override=constructBasicMetadataOverride(annot,field.getAnnotation(AdminPresentationToOneLookup.class),field.getAnnotation(AdminPresentationDataDrivenEnumeration.class));
       buildBasicMetadata(targetClass,attributes,field,override,dynamicEntityDao);
     }
  else     if (annotColl != null) {
-      FieldMetadataOverride override=constructBasicCollectionMetadataOverride(field);
+      FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annotColl);
       buildCollectionMetadata(targetClass,attributes,field,override);
     }
  else     if (adornedTargetCollection != null) {
-      FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(field);
+      FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(adornedTargetCollection);
       buildAdornedTargetCollectionMetadata(targetClass,attributes,field,override);
     }
  else     if (map != null) {
-      FieldMetadataOverride override=constructMapMetadataOverride(field);
+      FieldMetadataOverride override=constructMapMetadataOverride(map);
       buildMapMetadata(targetClass,attributes,field,override,dynamicEntityDao);
     }
  else {

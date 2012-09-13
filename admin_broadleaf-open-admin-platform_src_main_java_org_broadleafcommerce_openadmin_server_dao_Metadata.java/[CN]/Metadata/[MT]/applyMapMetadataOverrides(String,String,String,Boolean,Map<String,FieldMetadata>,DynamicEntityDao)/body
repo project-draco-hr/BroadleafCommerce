@@ -1,36 +1,20 @@
 {
-  Map<String,FieldMetadataOverride> overrides=getTargetedOverride(configurationKey,ceilingEntityFullyQualifiedClassname,OverrideType.MAP);
+  Map<String,FieldMetadataOverride> overrides=getTargetedOverride(configurationKey,ceilingEntityFullyQualifiedClassname);
   if (overrides != null) {
     for (    String propertyName : overrides.keySet()) {
       final FieldMetadataOverride localMetadata=overrides.get(propertyName);
-      Boolean excluded=localMetadata.getExcluded();
-      if (excluded == null) {
-        excluded=false;
-      }
       for (      String key : mergedProperties.keySet()) {
-        String testKey=prefix + key;
-        if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && excluded) {
-          FieldMetadata metadata=mergedProperties.get(key);
-          metadata.setExcluded(true);
-          continue;
-        }
-        if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !excluded) {
-          FieldMetadata metadata=mergedProperties.get(key);
-          if (!isParentExcluded) {
-            metadata.setExcluded(false);
-          }
-        }
         if (key.equals(propertyName)) {
           try {
             if (mergedProperties.get(key) instanceof MapMetadata) {
               MapMetadata serverMetadata=(MapMetadata)mergedProperties.get(key);
               if (serverMetadata.getTargetClass() != null) {
                 Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
-                String fieldName=((MapStructure)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE)).getMapProperty();
+                String fieldName=serverMetadata.getFieldName();
                 Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
                 Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
                 temp.put(field.getName(),serverMetadata);
-                buildMapMetadata(targetClass,temp,field,localMetadata,null);
+                buildMapMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
                 serverMetadata=(MapMetadata)temp.get(field.getName());
                 mergedProperties.put(key,serverMetadata);
                 if (isParentExcluded) {

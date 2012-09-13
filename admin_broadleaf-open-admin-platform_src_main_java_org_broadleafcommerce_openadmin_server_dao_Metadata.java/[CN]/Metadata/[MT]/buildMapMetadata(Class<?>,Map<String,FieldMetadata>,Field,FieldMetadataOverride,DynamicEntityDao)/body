@@ -7,11 +7,12 @@
  else {
     metadata=new MapMetadata();
   }
-  if (map.isMutable() != null) {
-    metadata.setMutable(map.isMutable());
+  if (map.getReadOnly() != null) {
+    metadata.setMutable(!map.getReadOnly());
   }
   metadata.setTargetClass(targetClass.getName());
-  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
+  metadata.setFieldName(field.getName());
+  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
   if (map.getAddType() != null) {
     dtoOperationTypes.setAddType(map.getAddType());
   }
@@ -35,9 +36,6 @@
  else {
     persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
     metadata.setPersistencePerspective(persistencePerspective);
-  }
-  if (map.getConfigurationKey() != null) {
-    persistencePerspective.setConfigurationKey(map.getConfigurationKey());
   }
   String parentObjectClass=targetClass.getName();
   Map idMetadata=dynamicEntityDao.getIdMetadata(targetClass);
