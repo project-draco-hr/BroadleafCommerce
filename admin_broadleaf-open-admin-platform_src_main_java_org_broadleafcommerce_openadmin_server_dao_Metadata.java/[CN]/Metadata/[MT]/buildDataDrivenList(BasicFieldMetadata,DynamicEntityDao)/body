@@ -7,13 +7,15 @@
     for (    String[] param : metadata.getOptionFilterParams()) {
       Criteria current=criteria;
       String key=param[0];
-      if (key.contains(".")) {
-        String[] parts=key.split("\\.");
-        for (int j=0; j < parts.length - 1; j++) {
-          current=current.createCriteria(parts[j],parts[j]);
+      if (!key.equals(".ignore")) {
+        if (key.contains(".")) {
+          String[] parts=key.split("\\.");
+          for (int j=0; j < parts.length - 1; j++) {
+            current=current.createCriteria(parts[j],parts[j]);
+          }
         }
+        current.add(Restrictions.eq(key,convertType(param[1],OptionFilterParamType.valueOf(param[2]))));
       }
-      current.add(Restrictions.eq(key,convertType(param[1],OptionFilterParamType.valueOf(param[2]))));
     }
     List results=criteria.list();
     String[][] enumerationValues=new String[results.size()][2];

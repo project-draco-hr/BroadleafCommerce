@@ -58,27 +58,28 @@
   for (  String propertyName : presentationCollectionOverrides.keySet()) {
     for (    String key : mergedProperties.keySet()) {
       if (key.startsWith(propertyName)) {
-        buildAdminPresentationCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationCollectionOverrides,propertyName,key);
+        buildAdminPresentationCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationCollectionOverrides,propertyName,key,dynamicEntityDao);
       }
     }
   }
   for (  String propertyName : presentationAdornedTargetCollectionOverrides.keySet()) {
     for (    String key : mergedProperties.keySet()) {
       if (key.startsWith(propertyName)) {
-        buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key);
+        buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key,dynamicEntityDao);
       }
     }
   }
-  for (  String propertyName : presentationAdornedTargetCollectionOverrides.keySet()) {
+  for (  String propertyName : presentationMapOverrides.keySet()) {
     for (    String key : mergedProperties.keySet()) {
       if (key.startsWith(propertyName)) {
-        buildAdminPresentationMapOverride(prefix,isParentExcluded,mergedProperties,presentationMapOverrides,propertyName,key);
+        buildAdminPresentationMapOverride(prefix,isParentExcluded,mergedProperties,presentationMapOverrides,propertyName,key,dynamicEntityDao);
       }
     }
   }
-  applyMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
-  applyCollectionMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
-  applyAdornedTargetCollectionMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
-  applyMapMetadataOverrides(ceilingEntityFullyQualifiedClassname,configurationKey,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  setExclusionsBasedOnParents(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties);
+  applyMetadataOverrides(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyCollectionMetadataOverrides(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyAdornedTargetCollectionMetadataOverrides(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
+  applyMapMetadataOverrides(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao);
   return mergedProperties;
 }

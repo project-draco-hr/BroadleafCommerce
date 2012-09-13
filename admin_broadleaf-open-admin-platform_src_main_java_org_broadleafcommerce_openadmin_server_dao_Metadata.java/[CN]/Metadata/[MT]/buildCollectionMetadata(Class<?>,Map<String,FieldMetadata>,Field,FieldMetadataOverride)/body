@@ -8,14 +8,14 @@
     metadata=new BasicCollectionMetadata();
   }
   metadata.setTargetClass(targetClass.getName());
-  metadata.setCollectionFieldName(field.getName());
-  if (collectionMetadata.isMutable() != null) {
-    metadata.setMutable(collectionMetadata.isMutable());
+  metadata.setFieldName(field.getName());
+  if (collectionMetadata.getReadOnly() != null) {
+    metadata.setMutable(!collectionMetadata.getReadOnly());
   }
   if (collectionMetadata.getAddMethodType() != null) {
     metadata.setAddMethodType(collectionMetadata.getAddMethodType());
   }
-  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes();
+  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.BASIC,OperationType.BASIC,OperationType.BASIC,OperationType.BASIC,OperationType.BASIC);
   if (collectionMetadata.getAddType() != null) {
     dtoOperationTypes.setAddType(collectionMetadata.getAddType());
   }
@@ -42,9 +42,6 @@
  else {
     persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
     metadata.setPersistencePerspective(persistencePerspective);
-  }
-  if (collectionMetadata.getConfigurationKey() != null) {
-    persistencePerspective.setConfigurationKey(collectionMetadata.getConfigurationKey());
   }
   String foreignKeyName=null;
   OneToMany oneToMany=field.getAnnotation(OneToMany.class);

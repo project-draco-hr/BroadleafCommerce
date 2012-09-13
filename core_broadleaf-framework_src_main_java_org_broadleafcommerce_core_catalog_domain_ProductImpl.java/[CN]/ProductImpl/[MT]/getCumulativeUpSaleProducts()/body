@@ -6,8 +6,12 @@
       returnProducts.addAll(categoryProducts);
     }
   }
-  if (returnProducts.contains(this)) {
-    returnProducts.remove(this);
+  Iterator<RelatedProduct> itr=returnProducts.iterator();
+  while (itr.hasNext()) {
+    RelatedProduct relatedProduct=itr.next();
+    if (relatedProduct.getProduct().equals(this)) {
+      itr.remove();
+    }
   }
   return returnProducts;
 }
