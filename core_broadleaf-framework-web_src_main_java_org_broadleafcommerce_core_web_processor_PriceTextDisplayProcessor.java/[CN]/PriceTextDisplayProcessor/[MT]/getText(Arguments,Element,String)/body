@@ -7,10 +7,15 @@
     BigDecimal value=(BigDecimal)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
     price=new Money(value);
   }
-  if (price == null || price.isZero()) {
-    return "$0.00";
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc.getJavaLocale() != null) {
+    NumberFormat format=NumberFormat.getCurrencyInstance(brc.getJavaLocale());
+    if (brc.getJavaCurrency() != null) {
+      format.setCurrency(brc.getJavaCurrency());
+    }
+    return format.format(price.getAmount());
   }
  else {
-    return "$" + price.getAmount().toString();
+    return "$ " + price.getAmount().toString();
   }
 }
