@@ -1,0 +1,11 @@
+{
+  List<AdminSection> moduleSections=module.getSections();
+  if (moduleSections != null && !moduleSections.isEmpty()) {
+    for (    AdminSection section : moduleSections) {
+      if (isUserAuthorizedToViewSection(adminUser,section)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
