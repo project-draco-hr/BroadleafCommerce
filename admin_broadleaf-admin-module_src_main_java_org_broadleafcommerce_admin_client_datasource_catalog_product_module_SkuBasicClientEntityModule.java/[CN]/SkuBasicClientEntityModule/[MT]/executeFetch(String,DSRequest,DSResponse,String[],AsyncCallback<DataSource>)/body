@@ -11,9 +11,11 @@
         TreeNode[] recordList=buildRecords(result,null);
         response.setData(recordList);
         response.setTotalRows(result.getTotalRecords());
-        for (        Property property : result.getClassMetaData().getProperties()) {
-          DataSourceField field=((ListGridDataSource)dataSource).getField(property.getName());
-          field.setAttribute("formHidden",FormHiddenEnum.VISIBLE);
+        if (result.getClassMetaData().getProperties() != null) {
+          for (          Property property : result.getClassMetaData().getProperties()) {
+            DataSourceField field=((ListGridDataSource)dataSource).getField(property.getName());
+            field.setAttribute("formHidden",FormHiddenEnum.VISIBLE);
+          }
         }
         List<String> productOptionFields=new ArrayList<String>();
         for (        Entity entity : result.getRecords()) {
