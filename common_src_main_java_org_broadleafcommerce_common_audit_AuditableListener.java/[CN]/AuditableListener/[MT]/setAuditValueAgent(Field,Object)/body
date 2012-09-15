@@ -1,13 +1,25 @@
 {
+  Long customerId=0L;
   try {
-    Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
-    if (authentication != null) {
-      Object principal=authentication.getPrincipal();
+    BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+    if (requestContext != null) {
+      Object customer=requestContext.getRequest().getAttribute(customerRequestAttributeName);
+      if (customer != null) {
+        Class<?> customerClass=customer.getClass();
+        Field userNameField=getSingleField(customerClass,"username");
+        userNameField.setAccessible(true);
+        String username=(String)userNameField.get(customer);
+        if (username != null) {
+          Field idField=getSingleField(customerClass,"id");
+          idField.setAccessible(true);
+          customerId=(Long)idField.get(customer);
+        }
+      }
     }
   }
  catch (  Exception e) {
     e.printStackTrace();
   }
   field.setAccessible(true);
-  field.set(entity,0L);
+  field.set(entity,customerId);
 }
