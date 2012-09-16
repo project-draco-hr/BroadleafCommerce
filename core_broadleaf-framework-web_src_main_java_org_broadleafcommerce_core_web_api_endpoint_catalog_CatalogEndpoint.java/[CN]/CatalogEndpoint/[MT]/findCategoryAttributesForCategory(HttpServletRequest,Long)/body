@@ -1,0 +1,15 @@
+{
+  Category category=catalogService.findCategoryById(id);
+  if (category != null) {
+    ArrayList<CategoryAttributeWrapper> out=new ArrayList<CategoryAttributeWrapper>();
+    if (category.getCategoryAttributes() != null) {
+      for (      CategoryAttribute attribute : category.getCategoryAttributes()) {
+        CategoryAttributeWrapper wrapper=(CategoryAttributeWrapper)context.getBean(CategoryAttributeWrapper.class.getName());
+        wrapper.wrap(attribute,request);
+        out.add(wrapper);
+      }
+    }
+    return out;
+  }
+  throw new WebApplicationException(Response.Status.NOT_FOUND);
+}
