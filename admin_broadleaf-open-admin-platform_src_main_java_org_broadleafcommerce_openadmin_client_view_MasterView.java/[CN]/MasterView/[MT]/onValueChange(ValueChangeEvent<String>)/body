@@ -7,13 +7,10 @@
     if (SecurityManager.getInstance().isUserAuthorizedToViewModule(moduleName) && SecurityManager.getInstance().isUserAuthorizedToViewSection(pages.get(page)[0])) {
       if (moduleName != null && !moduleName.equals(BLCMain.currentModuleKey)) {
         BLCMain.setCurrentModuleKey(moduleName);
-        selectPrimaryMenu(moduleName);
-        buildSecondaryMenu(page,moduleName);
         AppController.getInstance().clearCurrentView();
       }
  else {
         AppController.getInstance().clearCurrentView();
-        buildSecondaryMenu(page,moduleName);
       }
     }
   }
