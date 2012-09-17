@@ -37,8 +37,8 @@
       setStartState();
       formPresenter.disable();
       display.getListDisplay().getGrid().deselectAllRecords();
-      for (      SubPresentable subPresentable : subPresentables) {
-        subPresentable.disable();
+      for (      Map.Entry<String,SubPresentable> subPresentable : subPresentables.entrySet()) {
+        subPresentable.getValue().disable();
       }
       lastSelectedRecord=null;
     }
@@ -63,9 +63,9 @@
             display.getListDisplay().getRemoveButton().enable();
           }
           changeSelection(selectedRecord);
-          for (          SubPresentable subPresentable : subPresentables) {
-            subPresentable.setStartState();
-            subPresentable.load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
+          for (          Map.Entry<String,SubPresentable> subPresentable : subPresentables.entrySet()) {
+            subPresentable.getValue().setStartState();
+            subPresentable.getValue().load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
           }
           display.getDynamicFormDisplay().getSaveButton().disable();
           display.getDynamicFormDisplay().getRefreshButton().disable();

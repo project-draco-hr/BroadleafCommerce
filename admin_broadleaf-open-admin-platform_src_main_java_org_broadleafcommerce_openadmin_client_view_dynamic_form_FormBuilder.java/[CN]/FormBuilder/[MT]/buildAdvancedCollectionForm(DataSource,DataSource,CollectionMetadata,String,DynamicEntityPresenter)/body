@@ -41,7 +41,7 @@
       subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
       subPresentable.setReadOnly(!metadata.isMutable());
       ((GridStructureView)subPresentable.getDisplay()).getToolBar().disable();
-      presenter.addSubPresentable(subPresentable);
+      presenter.setSubPresentable(dataSource.getDataURL(),subPresentable);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata metadata){
       String sortField=((AdornedTargetList)((DynamicEntityDataSource)dataSource).getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST)).getSortField();
@@ -69,7 +69,7 @@
       subPresentable.setDataSource((ListGridDataSource)dataSource,metadata.getGridVisibleFields(),edits);
       subPresentable.setReadOnly(!metadata.isMutable());
       ((GridStructureView)subPresentable.getDisplay()).getToolBar().disable();
-      presenter.addSubPresentable(subPresentable);
+      presenter.setSubPresentable(dataSource.getDataURL(),subPresentable);
     }
     @Override public void visit(    MapMetadata metadata){
       GridStructureView advancedCollectionView=new GridStructureView(viewTitle,false,true);
@@ -109,7 +109,7 @@
       subPresentable.setDataSource((ListGridDataSource)dataSource,new String[]{},new Boolean[]{});
       subPresentable.setReadOnly(!metadata.isMutable());
       ((GridStructureView)subPresentable.getDisplay()).getToolBar().disable();
-      presenter.addSubPresentable(subPresentable);
+      presenter.setSubPresentable(dataSource.getDataURL(),subPresentable);
     }
   }
 );
