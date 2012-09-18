@@ -1,11 +1,6 @@
 {
-  if (skus.size() == 0) {
-    List<Sku> additionalSkus=getAdditionalSkus();
-    for (    Sku sku : additionalSkus) {
-      if (sku.isActive()) {
-        skus.add(sku);
-      }
-    }
+  if (skus == null) {
+    HydratedSetup.populateFromCache(this);
   }
   return skus;
 }
