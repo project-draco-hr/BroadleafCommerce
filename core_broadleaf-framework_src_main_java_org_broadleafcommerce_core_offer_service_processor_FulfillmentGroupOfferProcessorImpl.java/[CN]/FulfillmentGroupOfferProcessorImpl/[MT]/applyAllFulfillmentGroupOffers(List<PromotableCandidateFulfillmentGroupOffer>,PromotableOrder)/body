@@ -19,6 +19,9 @@
       }
     }
     for (    PromotableCandidateFulfillmentGroupOffer candidate : fgOffers) {
+      if (potential.getTotalSavings().getAmount() == BankersRounding.zeroAmount()) {
+        potential.setTotalSavings(new Money(candidate.getFulfillmentGroup().getDelegate().getOrder().getCurrency().getCurrencyCode()));
+      }
       potential.setTotalSavings(potential.getTotalSavings().add(candidate.getFulfillmentGroup().getPriceBeforeAdjustments(candidate.getOffer().getApplyDiscountToSalePrice()).subtract(candidate.getDiscountedPrice())));
       potential.setPriority(candidate.getOffer().getPriority());
     }

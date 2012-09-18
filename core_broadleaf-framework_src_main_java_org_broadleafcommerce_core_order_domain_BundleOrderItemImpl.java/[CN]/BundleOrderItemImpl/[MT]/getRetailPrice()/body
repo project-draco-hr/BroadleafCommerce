@@ -1,9 +1,9 @@
 {
   if (shouldSumItems()) {
-    Money bundleRetailPrice=new Money();
+    Money bundleRetailPrice=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getOrder().getCurrency());
     for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
       Money itemRetailPrice=discreteOrderItem.getRetailPrice();
-      bundleRetailPrice=bundleRetailPrice.add(new Money(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity()));
+      bundleRetailPrice=bundleRetailPrice.add(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(itemRetailPrice.doubleValue() * discreteOrderItem.getQuantity(),getOrder().getCurrency()));
     }
     for (    BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
       bundleRetailPrice=bundleRetailPrice.add(fee.getAmount());

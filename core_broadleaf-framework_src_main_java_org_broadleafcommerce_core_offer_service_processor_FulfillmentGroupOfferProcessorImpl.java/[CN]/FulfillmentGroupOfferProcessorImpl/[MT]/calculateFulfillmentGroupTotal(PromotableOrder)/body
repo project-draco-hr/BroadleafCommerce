@@ -1,7 +1,7 @@
 {
-  Money totalShipping=new Money(0D);
+  Money totalShipping=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,order.getDelegate().getCurrency());
   for (  PromotableFulfillmentGroup fulfillmentGroupMember : order.getFulfillmentGroups()) {
-    PromotableFulfillmentGroup fulfillmentGroup=(PromotableFulfillmentGroup)fulfillmentGroupMember;
+    PromotableFulfillmentGroup fulfillmentGroup=fulfillmentGroupMember;
     if (fulfillmentGroup.getAdjustmentPrice() != null) {
       fulfillmentGroup.setShippingPrice(fulfillmentGroup.getAdjustmentPrice());
     }

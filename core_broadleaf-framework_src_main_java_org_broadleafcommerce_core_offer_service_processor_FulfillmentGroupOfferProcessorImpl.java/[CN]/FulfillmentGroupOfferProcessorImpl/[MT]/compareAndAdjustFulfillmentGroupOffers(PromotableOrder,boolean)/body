@@ -1,10 +1,10 @@
 {
-  Money regularOrderDiscountShippingTotal=new Money(0D);
+  Money regularOrderDiscountShippingTotal=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,order.getDelegate().getCurrency());
   regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(order.calculateOrderItemsPriceWithoutAdjustments());
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
     regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(fg.getAdjustmentPrice());
   }
-  Money discountOrderRegularShippingTotal=new Money(0D);
+  Money discountOrderRegularShippingTotal=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,order.getDelegate().getCurrency());
   discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(order.getSubTotal());
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
     discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(fg.getPriceBeforeAdjustments(true));

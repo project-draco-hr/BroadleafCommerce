@@ -1,27 +1,35 @@
 {
   Money returnPrice=null;
-  if (salePrice == null && hasDefaultSku()) {
-    returnPrice=lookupDefaultSku().getSalePrice();
-  }
- else   if (dynamicPrices != null) {
-    return dynamicPrices.getSalePrice();
-  }
- else   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
-    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this,getProductOptionValueAdjustments());
-    Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
-    dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
-    handler.reset();
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
     if (dynamicPrices != null) {
       returnPrice=dynamicPrices.getSalePrice();
     }
-  }
-  if (returnPrice == null) {
-    returnPrice=(salePrice == null ? null : new Money(salePrice));
-  }
-  if (getProductOptionValueAdjustments() == null) {
-    return returnPrice;
+ else {
+      DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+      returnPrice=dynamicPrices.getSalePrice();
+    }
   }
  else {
-    return returnPrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(returnPrice);
+    if (salePrice != null) {
+      returnPrice=new Money(salePrice,Money.defaultCurrency());
+    }
   }
+  if (returnPrice == null && hasDefaultSku()) {
+    returnPrice=lookupDefaultSku().getSalePrice();
+  }
+  Money optionValueAdjustments=null;
+  if (dynamicPrices != null) {
+    optionValueAdjustments=dynamicPrices.getPriceAdjustment();
+  }
+ else {
+    optionValueAdjustments=getProductOptionValueAdjustments();
+  }
+  if (optionValueAdjustments == null) {
+  }
+ else {
+    returnPrice=salePrice == null ? optionValueAdjustments : optionValueAdjustments.add(returnPrice);
+  }
+  return returnPrice;
 }

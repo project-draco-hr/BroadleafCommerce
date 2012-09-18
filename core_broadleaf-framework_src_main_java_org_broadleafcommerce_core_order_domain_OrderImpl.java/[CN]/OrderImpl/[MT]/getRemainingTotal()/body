@@ -3,7 +3,7 @@
   if (myTotal == null) {
     return null;
   }
-  Money totalPayments=new Money(BigDecimal.ZERO);
+  Money totalPayments=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,getCurrency());
   for (  PaymentInfo pi : getPaymentInfos()) {
     if (pi.getAmount() != null) {
       totalPayments=totalPayments.add(pi.getAmount());

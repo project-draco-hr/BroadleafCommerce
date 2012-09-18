@@ -1,10 +1,13 @@
 {
-  Money dynamicAdjustedPrice=null;
+  Money returnPrice=null;
   if (SkuPricingConsiderationContext.hasDynamicPricing()) {
-    dynamicAdjustedPrice=SkuPricingConsiderationContext.getSkuPricingService().getPriceAdjustmentForProductOptionValue(this,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    DynamicSkuPrices dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getPriceAdjustment(this,priceAdjustment == null ? null : new Money(priceAdjustment),SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    returnPrice=dynamicPrices.getPriceAdjustment();
   }
-  if (dynamicAdjustedPrice == null) {
-    dynamicAdjustedPrice=(priceAdjustment == null ? null : new Money(priceAdjustment));
+ else {
+    if (priceAdjustment != null) {
+      returnPrice=new Money(priceAdjustment,Money.defaultCurrency());
+    }
   }
-  return dynamicAdjustedPrice;
+  return returnPrice;
 }

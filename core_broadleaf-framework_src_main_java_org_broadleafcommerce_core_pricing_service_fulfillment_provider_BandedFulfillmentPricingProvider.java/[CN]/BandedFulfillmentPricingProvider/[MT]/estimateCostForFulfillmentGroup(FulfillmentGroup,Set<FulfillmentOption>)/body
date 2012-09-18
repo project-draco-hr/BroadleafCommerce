@@ -95,7 +95,7 @@
         lowestBandFulfillmentPrice=BigDecimal.ZERO;
       }
       lowestBandFulfillmentPrice=lowestBandFulfillmentPrice.add(flatTotal);
-      shippingPrices.put(option,new Money(lowestBandFulfillmentPrice));
+      shippingPrices.put(option,org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(lowestBandFulfillmentPrice,fulfillmentGroup.getOrder().getCurrency()));
     }
   }
   return res;

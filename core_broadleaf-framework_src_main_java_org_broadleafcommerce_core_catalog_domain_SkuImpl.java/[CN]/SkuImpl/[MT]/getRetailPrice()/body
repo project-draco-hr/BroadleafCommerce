@@ -1,27 +1,35 @@
 {
   Money returnPrice=null;
-  if (retailPrice == null && hasDefaultSku()) {
-    returnPrice=lookupDefaultSku().getRetailPrice();
-  }
- else   if (dynamicPrices != null) {
-    return dynamicPrices.getRetailPrice();
-  }
- else   if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
-    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this,getProductOptionValueAdjustments());
-    Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
-    dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
-    handler.reset();
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
     if (dynamicPrices != null) {
       returnPrice=dynamicPrices.getRetailPrice();
     }
-  }
-  if (returnPrice == null) {
-    returnPrice=(retailPrice == null ? null : new Money(retailPrice));
-  }
-  if (getProductOptionValueAdjustments() == null) {
-    return returnPrice;
+ else {
+      DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+      returnPrice=dynamicPrices.getRetailPrice();
+    }
   }
  else {
-    return retailPrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(returnPrice);
+    if (retailPrice != null) {
+      returnPrice=new Money(retailPrice,Money.defaultCurrency());
+    }
   }
+  if (returnPrice == null && hasDefaultSku()) {
+    returnPrice=lookupDefaultSku().getRetailPrice();
+  }
+  Money optionValueAdjustments=null;
+  if (dynamicPrices != null) {
+    optionValueAdjustments=dynamicPrices.getPriceAdjustment();
+  }
+ else {
+    optionValueAdjustments=getProductOptionValueAdjustments();
+  }
+  if (optionValueAdjustments == null) {
+  }
+ else {
+    returnPrice=retailPrice == null ? optionValueAdjustments : optionValueAdjustments.add(returnPrice);
+  }
+  return returnPrice;
 }
