@@ -1,7 +1,6 @@
 {
   String viewName=originalViewName;
   if (!isAjaxRequest()) {
-    addStaticVariable("templateName",originalViewName);
     String longestPrefix="";
     for (    Entry<String,String> entry : layoutMap.entrySet()) {
       String viewPrefix=entry.getKey();
@@ -19,5 +18,9 @@
       viewName=getFullPageLayout();
     }
   }
-  return super.loadView(viewName,locale);
+  AbstractThymeleafView view=(AbstractThymeleafView)super.loadView(viewName,locale);
+  if (!isAjaxRequest()) {
+    view.addStaticVariable("templateName",originalViewName);
+  }
+  return view;
 }
