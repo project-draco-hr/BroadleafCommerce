@@ -1,6 +1,6 @@
 {
   if (user.getUnencodedPassword() != null) {
-    user.setPassword(passwordEncoder.encodePassword(user.getUnencodedPassword(),null));
+    user.setPassword(passwordEncoder.encodePassword(user.getUnencodedPassword(),getSalt(user)));
   }
   return adminUserDao.saveAdminUser(user);
 }
