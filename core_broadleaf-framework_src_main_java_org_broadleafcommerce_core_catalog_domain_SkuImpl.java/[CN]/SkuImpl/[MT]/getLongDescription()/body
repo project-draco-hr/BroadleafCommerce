@@ -2,5 +2,25 @@
   if (longDescription == null && hasDefaultSku()) {
     return lookupDefaultSku().getLongDescription();
   }
+ else {
+    if (translations != null) {
+      BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+      Locale locale=brc.getLocale();
+      String localeCode=locale.getLocaleCode();
+      if (localeCode != null) {
+        SkuTranslation translation=translations.get(localeCode);
+        if (translation != null && translation.getLongDescription() != null) {
+          return translation.getLongDescription();
+        }
+      }
+      String languageCode=LocaleUtil.findLanguageCode(locale);
+      if (languageCode != null && !localeCode.equals(languageCode)) {
+        SkuTranslation translation=translations.get(languageCode);
+        if (translation != null && translation.getLongDescription() != null) {
+          return translation.getLongDescription();
+        }
+      }
+    }
+  }
   return longDescription;
 }
