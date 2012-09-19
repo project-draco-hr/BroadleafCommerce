@@ -1,0 +1,17 @@
+{
+  Product prod1=savedProducts.get(0);
+  List<RelatedProduct> upSales=new ArrayList<RelatedProduct>();
+  getRelatedUpSaleProduct(prod1,savedProducts.get(2),upSales);
+  getRelatedUpSaleProduct(prod1,savedProducts.get(3),upSales);
+  getRelatedUpSaleProduct(prod1,savedProducts.get(4),upSales);
+  prod1.setUpSaleProducts(upSales);
+  prod1=catalogService.saveProduct(prod1);
+  assert(prod1.getId() != null);
+  Product prod2=savedProducts.get(1);
+  List<RelatedProduct> upSales2=new ArrayList<RelatedProduct>();
+  getRelatedUpSaleProduct(prod2,savedProducts.get(5),upSales2);
+  getRelatedUpSaleProduct(prod2,savedProducts.get(6),upSales2);
+  prod2.setUpSaleProducts(upSales2);
+  prod2=catalogService.saveProduct(prod2);
+  assert(prod2.getId() != null);
+}
