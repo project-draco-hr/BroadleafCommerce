@@ -1,0 +1,10 @@
+{
+  try {
+    inventory=em.merge(inventory);
+    em.flush();
+    return inventory;
+  }
+ catch (  OptimisticLockException ex) {
+    throw new ConcurrentInventoryModificationException("Error saving inventory with id: " + inventory.getId());
+  }
+}
