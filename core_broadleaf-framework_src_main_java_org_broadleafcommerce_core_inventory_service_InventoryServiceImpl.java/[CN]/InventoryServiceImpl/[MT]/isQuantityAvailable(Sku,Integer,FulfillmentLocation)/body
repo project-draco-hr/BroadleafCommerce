@@ -1,0 +1,22 @@
+{
+  if (sku == null || !sku.isActive()) {
+    throw new InventoryUnavailableException("The requested SKU is no longer active");
+  }
+  if (sku.getInventoryType() == null && sku.getDefaultProduct().getDefaultCategory().getInventoryType() == null) {
+    return true;
+  }
+ else   if (InventoryType.NONE.equals(sku.getInventoryType()) || InventoryType.NONE.equals(sku.getDefaultProduct().getDefaultCategory())) {
+    return true;
+  }
+  if (quantity == null || quantity < 0) {
+    throw new IllegalArgumentException("Quantity must be a positive integer");
+  }
+  Inventory inventory=null;
+  if (fulfillmentLocation == null) {
+    inventory=inventoryDao.readInventoryForDefaultFulfillmentLocation(sku);
+  }
+ else {
+    inventory=inventoryDao.readInventory(sku,fulfillmentLocation);
+  }
+  return inventory != null && inventory.getQuantityAvailable() >= quantity;
+}
