@@ -1,6 +1,6 @@
 {
-  if (sku == null || !sku.isActive()) {
-    throw new InventoryUnavailableException("The requested SKU is no longer active");
+  if (!sku.isActive()) {
+    return false;
   }
   if (sku.getInventoryType() == null && (sku.getDefaultProduct().getDefaultCategory() == null || sku.getDefaultProduct().getDefaultCategory().getInventoryType() == null)) {
     return true;
