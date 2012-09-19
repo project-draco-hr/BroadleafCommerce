@@ -1,0 +1,10 @@
+{
+  Map<Object,Object> resources=TransactionSynchronizationManager.getResourceMap();
+  for (  Map.Entry<Object,Object> entry : resources.entrySet()) {
+    if (entry.getKey() instanceof EntityManagerFactory) {
+      EntityManagerFactory emf=(EntityManagerFactory)entry.getKey();
+      return ((EntityManagerHolder)entry.getValue()).getEntityManager();
+    }
+  }
+  throw new RuntimeException("Unable to restore skus from hydrated cache. Please make sure that the OpenEntityManagerInViewFilter is configured in web.xml for the blPU persistence unit.");
+}

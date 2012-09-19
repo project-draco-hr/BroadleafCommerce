@@ -1,11 +1,14 @@
 {
-  if (skus.size() == 0) {
-    List<Sku> additionalSkus=getAdditionalSkus();
-    for (    Sku sku : additionalSkus) {
-      if (sku.isActive()) {
-        skus.add(sku);
-      }
+  if (skuIds == null) {
+    HydratedSetup.populateFromCache(this);
+  }
+  EntityManager em=HydratedSetup.retrieveBoundEntityManager();
+  List<Sku> response=new ArrayList<Sku>(skuIds.size());
+  for (  Long skuId : skuIds) {
+    Sku sku=em.find(SkuImpl.class,skuId);
+    if (sku.isActive()) {
+      response.add(sku);
     }
   }
-  return skus;
+  return response;
 }

@@ -1,9 +1,12 @@
 {
   try {
-    ObjectMapper mapper=new ObjectMapper();
-    Writer strWriter=new StringWriter();
-    mapper.writeValue(strWriter,o);
-    addToModel(arguments,modelKey,strWriter.toString());
+    if (!JSON_CACHE.containsKey(o)) {
+      ObjectMapper mapper=new ObjectMapper();
+      Writer strWriter=new StringWriter();
+      mapper.writeValue(strWriter,o);
+      JSON_CACHE.put(o,strWriter.toString());
+    }
+    addToModel(arguments,modelKey,JSON_CACHE.get(o));
   }
  catch (  Exception ex) {
     LOG.error("There was a problem writing the product option map to JSON",ex);
