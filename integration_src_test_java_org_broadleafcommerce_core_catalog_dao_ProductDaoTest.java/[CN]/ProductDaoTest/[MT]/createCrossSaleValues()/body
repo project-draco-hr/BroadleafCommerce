@@ -1,0 +1,17 @@
+{
+  Product prod1=savedProducts.get(0);
+  List<RelatedProduct> crossSale=new ArrayList<RelatedProduct>();
+  getRelatedCrossProduct(prod1,savedProducts.get(2),crossSale);
+  getRelatedCrossProduct(prod1,savedProducts.get(3),crossSale);
+  getRelatedCrossProduct(prod1,savedProducts.get(4),crossSale);
+  prod1.setCrossSaleProducts(crossSale);
+  prod1=catalogService.saveProduct(prod1);
+  assert(prod1.getId() != null);
+  Product prod2=savedProducts.get(1);
+  List<RelatedProduct> crossSale2=new ArrayList<RelatedProduct>();
+  getRelatedCrossProduct(prod2,savedProducts.get(5),crossSale2);
+  getRelatedCrossProduct(prod2,savedProducts.get(6),crossSale2);
+  prod2.setCrossSaleProducts(crossSale2);
+  prod2=catalogService.saveProduct(prod2);
+  assert(prod2.getId() != null);
+}
