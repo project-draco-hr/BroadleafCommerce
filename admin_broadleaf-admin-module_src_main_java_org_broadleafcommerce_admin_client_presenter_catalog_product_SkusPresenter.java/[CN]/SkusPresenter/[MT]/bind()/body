@@ -10,7 +10,11 @@
         initialValues.put("_type",type);
         ItemEditedHandler editHandler=new ItemEditedHandler(){
           @Override public void onItemEdited(          ItemEdited event){
-            ((SubItemDisplay)getDisplay()).getGrid().invalidateCache();
+            for (            String attribute : event.getRecord().getAttributes()) {
+              if (attribute.startsWith("productOption")) {
+                display.getGrid().showField(attribute);
+              }
+            }
           }
         }
 ;
