@@ -1,22 +1,18 @@
 {
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
-  Long skuId=request.getItemRequest().getSkuId();
   Sku sku=null;
-  if (skuId != null) {
-    sku=catalogService.findSkuById(skuId);
+  if (request.getItemRequest().getSkuId() != null) {
+    sku=catalogService.findSkuById(request.getItemRequest().getSkuId());
   }
  else {
     OrderItem orderItem=orderItemService.readOrderItemById(request.getItemRequest().getOrderItemId());
     if (orderItem instanceof DiscreteOrderItem) {
       sku=((DiscreteOrderItem)orderItem).getSku();
       request.getItemRequest().setSkuId(sku.getId());
-      skuId=sku.getId();
     }
   }
-  boolean quantityAvailable=inventoryService.isQuantityAvailable(sku,request.getItemRequest().getQuantity());
-  if (!quantityAvailable) {
-    String errorMessage="Error: Sku with id of " + skuId + " does not have "+ request.getItemRequest().getQuantity()+ " items in available inventory.";
-    throw new InventoryUnavailableException(errorMessage);
+  if (sku == null || !sku.isActive()) {
+    throw new InventoryUnavailableException("The requested SKU is no longer active");
   }
   return context;
 }
