@@ -1,12 +1,3 @@
 {
-  if (skuIds == null) {
-    HydratedSetup.populateFromCache(this);
-  }
-  EntityManager em=HydratedSetup.retrieveBoundEntityManager();
-  List<Sku> response=new ArrayList<Sku>(skuIds.size());
-  for (  Long skuId : skuIds) {
-    Sku sku=em.find(SkuImpl.class,skuId);
-    response.add(sku);
-  }
-  return response;
+  return additionalSkus;
 }

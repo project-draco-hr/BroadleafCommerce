@@ -2,7 +2,7 @@
   Map<String,Media> result=new HashMap<String,Media>();
   result.putAll(getMedia());
   for (  Sku additionalSku : getAdditionalSkus()) {
-    if (!additionalSku.getId().equals(getDefaultSku().getId())) {
+    if (additionalSku.getId() != getDefaultSku().getId()) {
       result.putAll(additionalSku.getSkuMedia());
     }
   }
