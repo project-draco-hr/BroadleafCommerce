@@ -1,13 +1,10 @@
 {
-  CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
-  Order cart=CartState.getCart();
-  for (  FulfillmentGroup fg : cart.getFulfillmentGroups()) {
-    if (fg.getAddress().getId().equals(customerAddress.getAddress().getId())) {
-      redirectAttributes.addFlashAttribute("errorMessage",getAddressRemovedErrorMessage());
-      return getCustomerAddressesRedirect();
-    }
+  try {
+    customerAddressService.deleteCustomerAddressById(customerAddressId);
+    redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
   }
-  customerAddressService.deleteCustomerAddressById(customerAddressId);
-  redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
+ catch (  DataIntegrityViolationException e) {
+    redirectAttributes.addFlashAttribute("errorMessage",getAddressRemovedErrorMessage());
+  }
   return getCustomerAddressesRedirect();
 }
