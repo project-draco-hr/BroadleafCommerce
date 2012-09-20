@@ -4,7 +4,7 @@
   ReconstructCartResponse reconstructCartResponse=reconstructCart(customer,false);
   mergeCartResponse.setRemovedItems(reconstructCartResponse.getRemovedItems());
   Order customerCart=reconstructCartResponse.getOrder();
-  if (anonymousCart.equals(customerCart)) {
+  if (anonymousCart != null && customerCart != null && anonymousCart.equals(customerCart)) {
     setNewCartOwnership(anonymousCart,customer);
     mergeCartResponse.setOrder(anonymousCart);
   }
