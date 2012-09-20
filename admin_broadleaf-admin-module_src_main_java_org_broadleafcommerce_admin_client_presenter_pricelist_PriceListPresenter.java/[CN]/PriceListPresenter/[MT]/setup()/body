@@ -1,0 +1,9 @@
+{
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("priceListDS",new PriceListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource top){
+      setupDisplayItems(top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{"id","friendlyName","priceKey","currency"},new Boolean[]{true,true,true,true});
+    }
+  }
+));
+}
