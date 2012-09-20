@@ -17,10 +17,10 @@
     }
     Inventory inventory=null;
     if (fulfillmentLocation != null) {
-      inventory=inventoryDao.readInventory(sku,fulfillmentLocation);
+      inventory=inventoryDao.readInventoryForUpdate(sku,fulfillmentLocation);
     }
  else {
-      inventory=inventoryDao.readInventoryForDefaultFulfillmentLocation(sku);
+      inventory=inventoryDao.readInventoryForUpdateForDefaultFulfillmentLocation(sku);
     }
     if (inventory != null) {
       Integer quantityAvailable=inventory.getQuantityAvailable();

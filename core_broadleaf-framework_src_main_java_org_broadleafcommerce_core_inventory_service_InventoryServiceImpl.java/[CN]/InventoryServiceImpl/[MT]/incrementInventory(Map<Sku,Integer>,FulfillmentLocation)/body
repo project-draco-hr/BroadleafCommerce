@@ -17,7 +17,7 @@
     if (quantity == 0) {
       continue;
     }
-    Inventory inventory=readInventory(sku,fulfillmentLocation);
+    Inventory inventory=inventoryDao.readInventoryForUpdate(sku,fulfillmentLocation);
     if (inventory != null) {
       inventory.setQuantityAvailable(inventory.getQuantityAvailable() + quantity);
       inventoryDao.save(inventory);
