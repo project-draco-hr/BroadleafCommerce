@@ -1,7 +1,6 @@
 {
   Query query=em.createNamedQuery("BC_READ_SKU_INVENTORY_FOR_DEFAULT_LOCATION");
   query.setParameter("skuId",sku.getId());
-  query.setLockMode(LockModeType.OPTIMISTIC);
   query.setMaxResults(1);
   List<Inventory> inventories=query.getResultList();
   if (CollectionUtils.isNotEmpty(inventories)) {
