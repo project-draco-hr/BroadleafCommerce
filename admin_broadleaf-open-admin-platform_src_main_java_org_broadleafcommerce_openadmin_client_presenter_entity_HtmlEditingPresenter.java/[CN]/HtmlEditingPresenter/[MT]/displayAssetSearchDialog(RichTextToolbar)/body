@@ -1,15 +1,26 @@
 {
-  if (staticAssetsDataSouce == null) {
-    StaticAssetsTileGridDataSourceFactory factory=new StaticAssetsTileGridDataSourceFactory();
-    factory.createDataSource("staticAssetTreeDS",null,null,new AsyncCallbackAdapter(){
-      @Override public void onSetupSuccess(      DataSource dataSource){
-        staticAssetsDataSouce=(TileGridDataSource)dataSource;
-        displayDialog(item,staticAssetsDataSouce);
+  HashMap<String,Object> initialValues=new HashMap<String,Object>(10);
+  initialValues.put("operation","add");
+  initialValues.put("customCriteria","assetListUi");
+  initialValues.put("ceilingEntityFullyQualifiedClassname",CeilingEntities.STATICASSETS);
+  initialValues.put("_type",CeilingEntities.STATICASSETS);
+  initialValues.put("csrfToken",BLCMain.csrfToken);
+  getAssetSearchDialogView().setInitialValues(initialValues);
+  getAssetSearchDialogView().search("Asset Search",new TileGridItemSelectedHandler(){
+    @Override public void onSearchItemSelected(    TileGridItemSelected event){
+      String staticAssetFullUrl=BLCMain.assetServerUrlPrefix + event.getRecord().getAttribute("fullUrl");
+      String name=event.getRecord().getAttribute("name");
+      String fileExtension=event.getRecord().getAttribute("fileExtension");
+      String richContent;
+      if (fileExtension.equals("gif") || fileExtension.equals("jpg") || fileExtension.equals("png")) {
+        richContent="<img title='" + name + "' src='"+ staticAssetFullUrl+ "' alt='"+ name+ "'/>";
       }
-    }
-);
-  }
  else {
-    displayDialog(item,staticAssetsDataSouce);
+        richContent="<a href='" + staticAssetFullUrl + "'>"+ name+ "</a>";
+      }
+      LogFactory.getLog(this.getClass()).debug("inserting from dialog...." + fileExtension + " "+ name+ " "+ staticAssetFullUrl);
+      item.insertAsset(fileExtension,name,staticAssetFullUrl);
+    }
   }
+);
 }
