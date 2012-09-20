@@ -1,4 +1,12 @@
 {
+  CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
+  Order cart=CartState.getCart();
+  for (  FulfillmentGroup fg : cart.getFulfillmentGroups()) {
+    if (fg.getAddress().getId().equals(customerAddress.getAddress().getId())) {
+      redirectAttributes.addFlashAttribute("errorMessage",getAddressRemovedErrorMessage());
+      return getCustomerAddressesRedirect();
+    }
+  }
   customerAddressService.deleteCustomerAddressById(customerAddressId);
   redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
   return getCustomerAddressesRedirect();
