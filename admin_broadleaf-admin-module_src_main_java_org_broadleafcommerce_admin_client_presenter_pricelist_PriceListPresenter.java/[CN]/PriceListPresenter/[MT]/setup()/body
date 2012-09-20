@@ -6,4 +6,12 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("currencyDS",new CurrencyListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      ((ListGridDataSource)result).resetPermanentFieldVisibility("friendlyName");
+      final EntitySearchDialog localeSearchView=new EntitySearchDialog((ListGridDataSource)result,true);
+      getPresenterSequenceSetupManager().getDataSource("priceListDS").getFormItemCallbackHandlerManager().addSearchFormItemCallback("currencyCode",localeSearchView,BLCMain.getMessageManager().getString("localeSearchPrompt"),display.getDynamicFormDisplay());
+    }
+  }
+));
 }
