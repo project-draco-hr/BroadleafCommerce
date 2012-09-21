@@ -1,7 +1,15 @@
 {
   HttpServletRequest request=(HttpServletRequest)baseRequest;
   HttpServletResponse response=(HttpServletResponse)baseResponse;
-  if (request.getMethod().equals("POST")) {
+  boolean excludedRequestFound=false;
+  for (  String pattern : excludedRequestPatterns) {
+    RequestMatcher matcher=new AntPathRequestMatcher(pattern);
+    if (matcher.matches(request)) {
+      excludedRequestFound=true;
+      break;
+    }
+  }
+  if (request.getMethod().equals("POST") && !excludedRequestFound) {
     String requestToken=request.getParameter(exploitProtectionService.getCsrfTokenParameter());
     try {
       exploitProtectionService.compareToken(requestToken);
