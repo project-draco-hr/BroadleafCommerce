@@ -18,6 +18,7 @@
   while (retryCount < maxRetries) {
     try {
       inventoryService.decrementInventory(skuInventoryMap);
+      seed.getUserDefinedFields().put("BLC_INVENTORY_DECREMENTED",skuInventoryMap);
       break;
     }
  catch (    ConcurrentInventoryModificationException ex) {

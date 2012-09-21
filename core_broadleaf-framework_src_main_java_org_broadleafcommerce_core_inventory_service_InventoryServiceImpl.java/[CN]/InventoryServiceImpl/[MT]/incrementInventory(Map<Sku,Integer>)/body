@@ -1,0 +1,26 @@
+{
+  Set<Sku> skus=skuInventory.keySet();
+  for (  Sku sku : skus) {
+    Integer quantity=skuInventory.get(sku);
+    if (sku.getInventoryType() == null && (sku.getDefaultProduct().getDefaultCategory() == null || sku.getDefaultProduct().getDefaultCategory().getInventoryType() == null)) {
+      continue;
+    }
+ else     if (InventoryType.NONE.equals(sku.getInventoryType()) || (sku.getDefaultProduct().getDefaultCategory() != null && InventoryType.NONE.equals(sku.getDefaultProduct().getDefaultCategory().getInventoryType()))) {
+      continue;
+    }
+    if (quantity == null || quantity < 0) {
+      throw new IllegalArgumentException("Quantity must not be a positive integer");
+    }
+    if (quantity == 0) {
+      continue;
+    }
+    Inventory inventory=inventoryDao.readInventoryForUpdateForDefaultFulfillmentLocation(sku);
+    if (inventory != null) {
+      inventory.setQuantityAvailable(inventory.getQuantityAvailable() + quantity);
+      inventoryDao.save(inventory);
+    }
+ else {
+      throw new IllegalStateException("There was a call to InventoryServiceImpl.incrementInventory for a default fulfillment location, but no default " + "inventory for the sku: " + sku.getId() + " could be found!");
+    }
+  }
+}
