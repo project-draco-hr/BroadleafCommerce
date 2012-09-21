@@ -3,9 +3,9 @@
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
   OrderItem orderItem=null;
-  for (  DiscreteOrderItem doi : order.getDiscreteOrderItems()) {
-    if (doi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
-      orderItem=doi;
+  for (  OrderItem oi : order.getOrderItems()) {
+    if (oi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
+      orderItem=oi;
     }
   }
   if (orderItem == null || !order.getOrderItems().contains(orderItem)) {
@@ -13,7 +13,14 @@
   }
   OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(orderItem));
   request.setOrderItemQuantityDelta(orderItemRequestDTO.getQuantity() - itemFromOrder.getQuantity());
+  Integer oldQuantity=itemFromOrder.getQuantity();
   itemFromOrder.setQuantity(orderItemRequestDTO.getQuantity());
+  if (itemFromOrder instanceof BundleOrderItem) {
+    for (    DiscreteOrderItem doi : ((BundleOrderItem)itemFromOrder).getDiscreteOrderItems()) {
+      Integer qtyMultiplier=doi.getQuantity() / oldQuantity;
+      doi.setQuantity(qtyMultiplier * orderItemRequestDTO.getQuantity());
+    }
+  }
   order=orderService.save(order,false);
   request.setAddedOrderItem(itemFromOrder);
   request.setOrder(order);

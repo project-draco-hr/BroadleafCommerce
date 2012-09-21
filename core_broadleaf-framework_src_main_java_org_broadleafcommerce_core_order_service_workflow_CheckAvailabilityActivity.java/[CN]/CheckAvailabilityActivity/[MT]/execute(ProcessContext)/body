@@ -10,6 +10,10 @@
       sku=((DiscreteOrderItem)orderItem).getSku();
       request.getItemRequest().setSkuId(sku.getId());
     }
+ else     if (orderItem instanceof BundleOrderItem) {
+      sku=((BundleOrderItem)orderItem).getSku();
+      request.getItemRequest().setSkuId(sku.getId());
+    }
   }
   if (sku == null || !sku.isActive()) {
     throw new InventoryUnavailableException("The requested SKU is no longer active");

@@ -1,0 +1,43 @@
+{
+  boolean done=false;
+  if (orderItemQuantityDelta > 0) {
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      for (      FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
+        if (!done && fgItem.getOrderItem().equals(orderItem)) {
+          fgItem.setQuantity(fgItem.getQuantity() + orderItemQuantityDelta);
+          done=true;
+        }
+      }
+    }
+  }
+ else {
+    int remainingToDecrement=-1 * orderItemQuantityDelta;
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      ListIterator<FulfillmentGroupItem> fgItemIter=fg.getFulfillmentGroupItems().listIterator();
+      while (fgItemIter.hasNext()) {
+        FulfillmentGroupItem fgItem=fgItemIter.next();
+        if (fgItem.getOrderItem().equals(orderItem)) {
+          if (!done && fgItem.getQuantity() == remainingToDecrement) {
+            fgItemIter.remove();
+            fgItemDao.delete(fgItem);
+            done=true;
+          }
+ else           if (!done && fgItem.getQuantity() > remainingToDecrement) {
+            fgItem.setQuantity(fgItem.getQuantity() - remainingToDecrement);
+            done=true;
+          }
+ else           if (!done) {
+            remainingToDecrement=remainingToDecrement - fgItem.getQuantity();
+            fgItemIter.remove();
+            fgItemDao.delete(fgItem);
+          }
+        }
+      }
+    }
+  }
+  if (!done) {
+    throw new IllegalStateException("Could not find matching fulfillment group item for the given order item");
+  }
+  order=orderService.save(order,false);
+  return order;
+}
