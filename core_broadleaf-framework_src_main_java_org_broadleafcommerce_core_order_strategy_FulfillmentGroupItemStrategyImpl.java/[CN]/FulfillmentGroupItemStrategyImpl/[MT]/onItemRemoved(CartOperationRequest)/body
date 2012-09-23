@@ -1,6 +1,14 @@
 {
   Order order=request.getOrder();
   OrderItem orderItem=orderItemService.readOrderItemById(request.getItemRequest().getOrderItemId());
-  fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
+  if (orderItem instanceof BundleOrderItem) {
+    List<OrderItem> itemsToRemove=new ArrayList<OrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
+    for (    OrderItem oi : itemsToRemove) {
+      fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,oi);
+    }
+  }
+ else {
+    fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
+  }
   return request;
 }

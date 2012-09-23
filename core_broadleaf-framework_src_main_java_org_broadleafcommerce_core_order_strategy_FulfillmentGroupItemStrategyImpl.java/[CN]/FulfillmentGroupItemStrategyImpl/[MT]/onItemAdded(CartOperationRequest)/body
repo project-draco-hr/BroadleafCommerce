@@ -11,12 +11,15 @@
  else {
     fulfillmentGroup=order.getFulfillmentGroups().get(0);
   }
-  FulfillmentGroupItemRequest fulfillmentGroupItemRequest=new FulfillmentGroupItemRequest();
-  fulfillmentGroupItemRequest.setOrder(order);
-  fulfillmentGroupItemRequest.setOrderItem(orderItem);
-  fulfillmentGroupItemRequest.setQuantity(orderItem.getQuantity());
-  fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
-  fulfillmentGroup=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,false);
+  if (orderItem instanceof BundleOrderItem) {
+    List<OrderItem> itemsToAdd=new ArrayList<OrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
+    for (    OrderItem oi : itemsToAdd) {
+      fulfillmentGroup=addItemToFulfillmentGroup(order,oi,fulfillmentGroup);
+    }
+  }
+ else {
+    fulfillmentGroup=addItemToFulfillmentGroup(order,orderItem,fulfillmentGroup);
+  }
   order=fulfillmentGroup.getOrder();
   request.setOrder(order);
   return request;

@@ -10,5 +10,12 @@
   if (request.getOrder() == null) {
     throw new IllegalArgumentException("Order is required when updating item quantities");
   }
+  OrderItem orderItem=orderItemService.readOrderItemById(orderItemRequestDTO.getOrderItemId());
+  if (orderItem != null && orderItem instanceof DiscreteOrderItem) {
+    DiscreteOrderItem doi=(DiscreteOrderItem)orderItem;
+    if (doi.getBundleOrderItem() != null) {
+      throw new IllegalArgumentException("Cannot update an item that is part of a bundle");
+    }
+  }
   return context;
 }

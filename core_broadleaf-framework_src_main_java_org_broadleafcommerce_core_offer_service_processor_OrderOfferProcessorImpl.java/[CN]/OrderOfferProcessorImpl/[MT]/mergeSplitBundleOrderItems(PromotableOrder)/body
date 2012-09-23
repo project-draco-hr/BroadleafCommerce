@@ -1,7 +1,6 @@
 {
   List<BundleOrderItemSplitContainer> bundleContainers=order.getBundleSplitItems();
   for (  BundleOrderItemSplitContainer bundleContainer : bundleContainers) {
-    PromotableFulfillmentGroup targetGroup=getTargetFulfillmentGroup(order,bundleContainer.getKey());
     List<BundleOrderItem> bundleOrderItems=bundleContainer.getSplitItems();
     Map<String,BundleOrderItem> gatheredBundleItems=new HashMap<String,BundleOrderItem>();
     for (    BundleOrderItem bundleOrderItem : bundleOrderItems) {
@@ -15,21 +14,46 @@
         temp.setQuantity(temp.getQuantity() + 1);
       }
     }
+    List<FulfillmentGroupItemRequest> bundleFGItemRequests=new ArrayList<FulfillmentGroupItemRequest>();
+    for (    BundleOrderItem val : gatheredBundleItems.values()) {
+      val.setId(null);
+      Map<Long,Map<PromotableFulfillmentGroup,Integer>> targetGroups=new HashMap<Long,Map<PromotableFulfillmentGroup,Integer>>();
+      Long index=0L;
+      for (      DiscreteOrderItem discreteOrderItem : val.getDiscreteOrderItems()) {
+        OrderItem key=order.searchSplitItemsForKey(discreteOrderItem);
+        Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,key);
+        discreteOrderItem.setId(null);
+        discreteOrderItem.setBundleOrderItem(val);
+        if (!groups.isEmpty()) {
+          targetGroups.put(index,groups);
+        }
+        index++;
+      }
+      val=(BundleOrderItem)addOrderItemToOrder(order.getDelegate(),val,false);
+      index=0L;
+      List<FulfillmentGroupItemRequest> orderItemFGRequests=new ArrayList<FulfillmentGroupItemRequest>();
+      for (      DiscreteOrderItem discreteOrderItem : val.getDiscreteOrderItems()) {
+        if (targetGroups.containsKey(index)) {
+          buildFullfillmentGroupItemRequestForItem(order,targetGroups.get(index),orderItemFGRequests,discreteOrderItem);
+        }
+        index++;
+      }
+      for (      FulfillmentGroupItemRequest request : orderItemFGRequests) {
+        fulfillmentGroupService.addItemToFulfillmentGroup(request,false);
+      }
+      Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,bundleContainer.getKey());
+      if (!groups.isEmpty()) {
+        buildFullfillmentGroupItemRequestForItem(order,groups,bundleFGItemRequests,val);
+      }
+    }
+    for (    FulfillmentGroupItemRequest request : bundleFGItemRequests) {
+      fulfillmentGroupService.addItemToFulfillmentGroup(request,false);
+    }
     try {
       orderService.removeItem(order.getDelegate().getId(),bundleContainer.getKey().getId(),false);
     }
  catch (    RemoveFromCartException e) {
       throw new PricingException("Could not remove item",e);
-    }
-    for (    BundleOrderItem vals : gatheredBundleItems.values()) {
-      vals.setId(null);
-      BundleOrderItem temp=(BundleOrderItem)addOrderItemToOrder(order.getDelegate(),vals,false);
-      if (targetGroup != null) {
-        FulfillmentGroupItemRequest fgItemRequest=new FulfillmentGroupItemRequest();
-        fgItemRequest.setFulfillmentGroup(targetGroup.getDelegate());
-        fgItemRequest.setOrderItem(temp);
-        fulfillmentGroupService.addItemToFulfillmentGroup(fgItemRequest,false);
-      }
     }
   }
 }

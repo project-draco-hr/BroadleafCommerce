@@ -1,6 +1,11 @@
 {
   DiscreteOrderItem itemFromBundle=bundle.getDiscreteOrderItems().remove(bundle.getDiscreteOrderItems().indexOf(item));
-  orderItemService.delete(itemFromBundle);
+  try {
+    orderService.removeItem(order.getId(),itemFromBundle.getId(),false);
+  }
+ catch (  RemoveFromCartException e) {
+    throw new PricingException("Could not remove item",e);
+  }
   itemFromBundle.setBundleOrderItem(null);
   order=orderService.save(order,priceOrder);
   return order;
