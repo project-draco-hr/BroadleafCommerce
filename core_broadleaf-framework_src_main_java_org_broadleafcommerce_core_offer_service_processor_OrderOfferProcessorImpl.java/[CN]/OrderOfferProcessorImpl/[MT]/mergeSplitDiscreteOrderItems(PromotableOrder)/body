@@ -50,31 +50,27 @@
       }
     }
   }
+  List<FulfillmentGroupItemRequest> fgiRequests=new ArrayList<FulfillmentGroupItemRequest>();
   for (  OrderItemSplitContainer key : order.getSplitItems()) {
     List<PromotableOrderItem> mySplits=key.getSplitItems();
     if (!CollectionUtils.isEmpty(mySplits)) {
-      PromotableFulfillmentGroup targetGroup=getTargetFulfillmentGroup(order,key.getKey());
+      Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,key.getKey());
       for (      PromotableOrderItem myItem : mySplits) {
         myItem.assignFinalPrice();
         DiscreteOrderItem delegateItem=myItem.getDelegate();
         Long delegateItemBundleItemId=getBundleId(delegateItem);
         if (delegateItemBundleItemId == null) {
           delegateItem=(DiscreteOrderItem)addOrderItemToOrder(order.getDelegate(),delegateItem,false);
-          if (targetGroup != null) {
-            FulfillmentGroupItemRequest fgItemRequest=new FulfillmentGroupItemRequest();
-            fgItemRequest.setFulfillmentGroup(targetGroup.getDelegate());
-            fgItemRequest.setOrderItem(delegateItem);
-            fgItemRequest.setOrder(order.getDelegate());
-            fgItemRequest.setQuantity(delegateItem.getQuantity());
-            fulfillmentGroupService.addItemToFulfillmentGroup(fgItemRequest,false);
+          if (!groups.isEmpty()) {
+            buildFullfillmentGroupItemRequestForItem(order,groups,fgiRequests,delegateItem);
           }
-        }
- else {
-          delegateItem=addOrderItemToBundle(order.getDelegate(),delegateItem.getBundleOrderItem(),delegateItem,false);
         }
         myItem.setDelegate(delegateItem);
       }
     }
+  }
+  for (  FulfillmentGroupItemRequest fgItemRequest : fgiRequests) {
+    fulfillmentGroupService.addItemToFulfillmentGroup(fgItemRequest,false);
   }
   List<GiftWrapOrderItem> giftWrapItems=new ArrayList<GiftWrapOrderItem>();
   for (  DiscreteOrderItem discreteOrderItem : order.getDelegate().getDiscreteOrderItems()) {
@@ -102,9 +98,6 @@
  catch (      RemoveFromCartException e) {
         throw new PricingException("Could not remove item",e);
       }
-    }
- else {
-      delegateItem.getBundleOrderItem().getDiscreteOrderItems().remove(itemToRemove.getDelegate());
     }
   }
 }

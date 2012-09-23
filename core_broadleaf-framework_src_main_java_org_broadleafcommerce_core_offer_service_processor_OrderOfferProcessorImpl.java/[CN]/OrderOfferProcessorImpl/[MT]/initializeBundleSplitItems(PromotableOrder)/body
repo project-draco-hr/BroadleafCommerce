@@ -16,6 +16,9 @@
         for (int j=1; j <= bundleOrderItem.getQuantity(); j++) {
           count++;
           BundleOrderItem temp=(BundleOrderItem)bundleOrderItem.clone();
+          for (int x=0; x < temp.getDiscreteOrderItems().size(); x++) {
+            temp.getDiscreteOrderItems().get(x).setId(bundleOrderItem.getDiscreteOrderItems().get(x).getId());
+          }
           temp.setQuantity(1);
           temp.setId(count);
           searchHit.add(temp);
@@ -24,6 +27,9 @@
  else {
         count++;
         BundleOrderItem temp=(BundleOrderItem)bundleOrderItem.clone();
+        for (int x=0; x < temp.getDiscreteOrderItems().size(); x++) {
+          temp.getDiscreteOrderItems().get(x).setId(bundleOrderItem.getDiscreteOrderItems().get(x).getId());
+        }
         temp.setId(count);
         searchHit.add(temp);
       }

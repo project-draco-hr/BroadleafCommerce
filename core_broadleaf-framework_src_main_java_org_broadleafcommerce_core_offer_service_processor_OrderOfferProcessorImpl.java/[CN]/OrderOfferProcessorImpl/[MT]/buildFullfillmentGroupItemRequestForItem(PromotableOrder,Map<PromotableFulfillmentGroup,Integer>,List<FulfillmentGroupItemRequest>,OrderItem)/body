@@ -1,0 +1,26 @@
+{
+  Integer quantityAvailableInThisItem=discreteOrderItem.getQuantity();
+  for (  Map.Entry<PromotableFulfillmentGroup,Integer> entry : groups2.entrySet()) {
+    int amount;
+    Integer quantityInThisFG=entry.getValue();
+    if (quantityAvailableInThisItem >= quantityInThisFG) {
+      entry.setValue(0);
+      quantityAvailableInThisItem-=quantityInThisFG;
+      amount=quantityInThisFG;
+    }
+ else {
+      entry.setValue(quantityInThisFG - quantityAvailableInThisItem);
+      amount=quantityAvailableInThisItem;
+      quantityAvailableInThisItem=0;
+    }
+    FulfillmentGroupItemRequest fgItemRequest=new FulfillmentGroupItemRequest();
+    fgItemRequest.setFulfillmentGroup(entry.getKey().getDelegate());
+    fgItemRequest.setOrderItem(discreteOrderItem);
+    fgItemRequest.setOrder(order.getDelegate());
+    fgItemRequest.setQuantity(amount);
+    requests.add(fgItemRequest);
+    if (quantityAvailableInThisItem == 0) {
+      break;
+    }
+  }
+}

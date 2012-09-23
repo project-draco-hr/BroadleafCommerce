@@ -33,7 +33,9 @@
       }
     }
     for (    BundleOrderItemSplitContainer container : bundleSplitItems) {
-      basicOrderItems.addAll(container.getSplitItems());
+      if (container.getKey().shouldSumItems()) {
+        basicOrderItems.addAll(container.getSplitItems());
+      }
     }
     try {
       for (      OrderItem temp : basicOrderItems) {

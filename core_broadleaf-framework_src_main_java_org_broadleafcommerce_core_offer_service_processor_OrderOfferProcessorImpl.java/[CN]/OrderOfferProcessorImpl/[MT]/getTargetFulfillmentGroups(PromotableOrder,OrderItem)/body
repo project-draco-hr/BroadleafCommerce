@@ -1,0 +1,12 @@
+{
+  Map<PromotableFulfillmentGroup,Integer> groupIntegerMap=new HashMap<PromotableFulfillmentGroup,Integer>();
+  for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : fg.getDelegate().getFulfillmentGroupItems()) {
+      if (fgItem.getOrderItem().equals(key)) {
+        groupIntegerMap.put(fg,fgItem.getQuantity());
+        break;
+      }
+    }
+  }
+  return groupIntegerMap;
+}
