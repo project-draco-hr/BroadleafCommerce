@@ -2,11 +2,13 @@
   HttpServletRequest request=(HttpServletRequest)baseRequest;
   HttpServletResponse response=(HttpServletResponse)baseResponse;
   boolean excludedRequestFound=false;
-  for (  String pattern : excludedRequestPatterns) {
-    RequestMatcher matcher=new AntPathRequestMatcher(pattern);
-    if (matcher.matches(request)) {
-      excludedRequestFound=true;
-      break;
+  if (excludedRequestPatterns != null && excludedRequestPatterns.size() > 0) {
+    for (    String pattern : excludedRequestPatterns) {
+      RequestMatcher matcher=new AntPathRequestMatcher(pattern);
+      if (matcher.matches(request)) {
+        excludedRequestFound=true;
+        break;
+      }
     }
   }
   if (request.getMethod().equals("POST") && !excludedRequestFound) {
