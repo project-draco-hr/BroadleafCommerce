@@ -50,7 +50,6 @@
       }
     }
   }
-  List<FulfillmentGroupItemRequest> fgiRequests=new ArrayList<FulfillmentGroupItemRequest>();
   for (  OrderItemSplitContainer key : order.getSplitItems()) {
     List<PromotableOrderItem> mySplits=key.getSplitItems();
     if (!CollectionUtils.isEmpty(mySplits)) {
@@ -64,7 +63,7 @@
             Iterator<OrderMultishipOption> itr=order.getMultiShipOptions().iterator();
             while (itr.hasNext()) {
               OrderMultishipOption option=itr.next();
-              if (buildIdentifier(option.getOrderItem(),null).equals(buildIdentifier(key.getKey(),null))) {
+              if ((option.getOrderItem() instanceof DiscreteOrderItem) && ((DiscreteOrderItem)option.getOrderItem()).getSku().equals(delegateItem.getSku())) {
                 option.setOrderItem(delegateItem);
                 orderMultishipOptionService.save(option);
                 itr.remove();
@@ -72,13 +71,15 @@
               }
             }
           }
+          FulfillmentGroupItem fgItem=fulfillmentGroupItemDao.create();
+          fgItem.setQuantity(delegateItem.getQuantity());
+          fgItem.setOrderItem(delegateItem);
+          fgItem.setFulfillmentGroup(order.getDelegate().getFulfillmentGroups().get(0));
+          order.getDelegate().getFulfillmentGroups().get(0).getFulfillmentGroupItems().add(fgItem);
         }
         myItem.setDelegate(delegateItem);
       }
     }
-  }
-  for (  FulfillmentGroupItemRequest fgItemRequest : fgiRequests) {
-    fulfillmentGroupService.addItemToFulfillmentGroup(fgItemRequest,false);
   }
   List<GiftWrapOrderItem> giftWrapItems=new ArrayList<GiftWrapOrderItem>();
   for (  DiscreteOrderItem discreteOrderItem : order.getDelegate().getDiscreteOrderItems()) {
