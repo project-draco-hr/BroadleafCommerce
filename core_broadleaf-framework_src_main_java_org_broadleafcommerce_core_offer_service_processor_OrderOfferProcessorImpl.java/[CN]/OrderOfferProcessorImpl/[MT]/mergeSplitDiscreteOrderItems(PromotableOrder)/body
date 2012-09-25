@@ -54,15 +54,23 @@
   for (  OrderItemSplitContainer key : order.getSplitItems()) {
     List<PromotableOrderItem> mySplits=key.getSplitItems();
     if (!CollectionUtils.isEmpty(mySplits)) {
-      Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,key.getKey());
       for (      PromotableOrderItem myItem : mySplits) {
         myItem.assignFinalPrice();
         DiscreteOrderItem delegateItem=myItem.getDelegate();
         Long delegateItemBundleItemId=getBundleId(delegateItem);
         if (delegateItemBundleItemId == null) {
           delegateItem=(DiscreteOrderItem)addOrderItemToOrder(order.getDelegate(),delegateItem,false);
-          if (!groups.isEmpty()) {
-            buildFullfillmentGroupItemRequestForItem(order,groups,fgiRequests,delegateItem);
+          for (int j=0; j < delegateItem.getQuantity(); j++) {
+            Iterator<OrderMultishipOption> itr=order.getMultiShipOptions().iterator();
+            while (itr.hasNext()) {
+              OrderMultishipOption option=itr.next();
+              if (buildIdentifier(option.getOrderItem(),null).equals(buildIdentifier(key.getKey(),null))) {
+                option.setOrderItem(delegateItem);
+                orderMultishipOptionService.save(option);
+                itr.remove();
+                break;
+              }
+            }
           }
         }
         myItem.setDelegate(delegateItem);

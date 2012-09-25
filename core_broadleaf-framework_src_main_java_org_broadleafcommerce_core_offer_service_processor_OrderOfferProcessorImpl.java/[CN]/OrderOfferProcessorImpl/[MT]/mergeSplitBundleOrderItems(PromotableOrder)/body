@@ -1,59 +1,66 @@
 {
   List<BundleOrderItemSplitContainer> bundleContainers=order.getBundleSplitItems();
   for (  BundleOrderItemSplitContainer bundleContainer : bundleContainers) {
-    List<BundleOrderItem> bundleOrderItems=bundleContainer.getSplitItems();
-    Map<String,BundleOrderItem> gatheredBundleItems=new HashMap<String,BundleOrderItem>();
-    for (    BundleOrderItem bundleOrderItem : bundleOrderItems) {
-      bundleOrderItem.assignFinalPrice();
-      String hash=bundleOrderItem.getPrice().stringValue();
-      if (!gatheredBundleItems.containsKey(hash)) {
-        gatheredBundleItems.put(hash,bundleOrderItem);
-      }
- else {
-        BundleOrderItem temp=gatheredBundleItems.get(hash);
-        temp.setQuantity(temp.getQuantity() + 1);
-      }
-    }
-    List<FulfillmentGroupItemRequest> bundleFGItemRequests=new ArrayList<FulfillmentGroupItemRequest>();
-    for (    BundleOrderItem val : gatheredBundleItems.values()) {
+    for (    BundleOrderItemSplitContainer bundleOrderItemSplitContainer : bundleContainers) {
+      BundleOrderItem val=bundleOrderItemSplitContainer.getSplitItems().get(0);
       val.setId(null);
-      Map<Long,Map<PromotableFulfillmentGroup,Integer>> targetGroups=new HashMap<Long,Map<PromotableFulfillmentGroup,Integer>>();
-      Long index=0L;
-      for (      DiscreteOrderItem discreteOrderItem : val.getDiscreteOrderItems()) {
-        OrderItem key=order.searchSplitItemsForKey(discreteOrderItem);
-        Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,key);
-        discreteOrderItem.setId(null);
-        discreteOrderItem.setBundleOrderItem(val);
-        if (!groups.isEmpty()) {
-          targetGroups.put(index,groups);
+      List<DiscreteOrderItem> itemsToAdd=new ArrayList<DiscreteOrderItem>();
+      for (      DiscreteOrderItem discreteOrderItem : bundleOrderItemSplitContainer.getKey().getDiscreteOrderItems()) {
+        PromotableOrderItem poi=new PromotableOrderItemImpl(discreteOrderItem,null,null);
+        List<PromotableOrderItem> items=order.searchSplitItems(poi);
+        for (        PromotableOrderItem temp : items) {
+          DiscreteOrderItem delegate=temp.getDelegate();
+          delegate.setId(null);
+          delegate.setBundleOrderItem(val);
+          itemsToAdd.add(delegate);
         }
-        index++;
+      }
+      val.getDiscreteOrderItems().clear();
+      val.getDiscreteOrderItems().addAll(itemsToAdd);
+      try {
+        orderService.removeItem(order.getDelegate().getId(),bundleContainer.getKey().getId(),false);
+      }
+ catch (      RemoveFromCartException e) {
+        throw new PricingException("Could not remove item",e);
+      }
+      if (CollectionUtils.isEmpty(order.getDelegate().getFulfillmentGroups())) {
+        FulfillmentGroup fg=fulfillmentGroupService.createEmptyFulfillmentGroup();
+        fg.setOrder(order.getDelegate());
+        order.getDelegate().getFulfillmentGroups().add(fg);
       }
       val=(BundleOrderItem)addOrderItemToOrder(order.getDelegate(),val,false);
-      index=0L;
-      List<FulfillmentGroupItemRequest> orderItemFGRequests=new ArrayList<FulfillmentGroupItemRequest>();
       for (      DiscreteOrderItem discreteOrderItem : val.getDiscreteOrderItems()) {
-        if (targetGroups.containsKey(index)) {
-          buildFullfillmentGroupItemRequestForItem(order,targetGroups.get(index),orderItemFGRequests,discreteOrderItem);
+        for (int j=0; j < discreteOrderItem.getQuantity(); j++) {
+          Iterator<OrderMultishipOption> itr=order.getMultiShipOptions().iterator();
+          while (itr.hasNext()) {
+            OrderMultishipOption option=itr.next();
+            if ((option.getOrderItem() instanceof DiscreteOrderItem) && ((DiscreteOrderItem)option.getOrderItem()).getSku().equals(discreteOrderItem.getSku())) {
+              option.setOrderItem(discreteOrderItem);
+              orderMultishipOptionService.save(option);
+              itr.remove();
+              break;
+            }
+          }
         }
-        index++;
+        FulfillmentGroupItem fgItem=fulfillmentGroupItemDao.create();
+        fgItem.setQuantity(discreteOrderItem.getQuantity());
+        fgItem.setOrderItem(discreteOrderItem);
+        fgItem.setFulfillmentGroup(order.getDelegate().getFulfillmentGroups().get(0));
+        order.getDelegate().getFulfillmentGroups().get(0).getFulfillmentGroupItems().add(fgItem);
       }
-      for (      FulfillmentGroupItemRequest request : orderItemFGRequests) {
-        fulfillmentGroupService.addItemToFulfillmentGroup(request,false);
+      for (int j=0; j < val.getQuantity(); j++) {
+        Iterator<OrderMultishipOption> itr=order.getMultiShipOptions().iterator();
+        while (itr.hasNext()) {
+          OrderMultishipOption option=itr.next();
+          if (buildIdentifier(option.getOrderItem(),null).equals(buildIdentifier(val,null))) {
+            option.setOrderItem(val);
+            orderMultishipOptionService.save(option);
+            itr.remove();
+            break;
+          }
+        }
       }
-      Map<PromotableFulfillmentGroup,Integer> groups=getTargetFulfillmentGroups(order,bundleContainer.getKey());
-      if (!groups.isEmpty()) {
-        buildFullfillmentGroupItemRequestForItem(order,groups,bundleFGItemRequests,val);
-      }
-    }
-    for (    FulfillmentGroupItemRequest request : bundleFGItemRequests) {
-      fulfillmentGroupService.addItemToFulfillmentGroup(request,false);
-    }
-    try {
-      orderService.removeItem(order.getDelegate().getId(),bundleContainer.getKey().getId(),false);
-    }
- catch (    RemoveFromCartException e) {
-      throw new PricingException("Could not remove item",e);
     }
   }
+  orderService.save(order.getDelegate(),false);
 }

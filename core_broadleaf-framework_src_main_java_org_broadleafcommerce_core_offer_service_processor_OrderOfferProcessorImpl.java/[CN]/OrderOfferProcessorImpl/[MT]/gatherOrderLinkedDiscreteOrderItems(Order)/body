@@ -24,7 +24,12 @@
       }
     }
  else {
-      removeItemFromBundle(order,orderItem.getBundleOrderItem(),orderItem,false);
+      BundleOrderItem bundleOrderItem=orderItem.getBundleOrderItem();
+      orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(orderItem.getId());
+      fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
+      bundleOrderItem.getDiscreteOrderItems().remove(orderItem);
+      orderItem.setBundleOrderItem(null);
+      orderItemService.saveOrderItem(bundleOrderItem);
     }
   }
 }
