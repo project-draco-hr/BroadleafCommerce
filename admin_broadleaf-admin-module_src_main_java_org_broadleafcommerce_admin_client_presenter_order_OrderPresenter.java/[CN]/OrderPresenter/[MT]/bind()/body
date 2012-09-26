@@ -41,8 +41,8 @@
       if (event.getState()) {
         additionalPaymentAttributesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("paymentInfoDS"),null);
         String id=getPresenterSequenceSetupManager().getDataSource("paymentInfoDS").getPrimaryKeyValue(selectedRecord);
-        getDisplay().getPaymentResponseDisplay().getGrid().fetchData(new Criteria("paymentInfoId",id));
-        getDisplay().getPaymentLogDisplay().getGrid().fetchData(new Criteria("paymentInfoId",id));
+        getDisplay().getPaymentResponseDisplay().getGrid().fetchData(new Criteria("paymentInfoReferenceNumber",selectedRecord.getAttributeAsString("referenceNumber")));
+        getDisplay().getPaymentLogDisplay().getGrid().fetchData(new Criteria("paymentInfoReferenceNumber",selectedRecord.getAttributeAsString("referenceNumber")));
       }
     }
   }
