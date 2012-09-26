@@ -1,3 +1,10 @@
 {
   super.bind();
+  extendedFetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      userPermissionPresenter.disable();
+      userRolePresenter.disable();
+    }
+  }
+);
 }
