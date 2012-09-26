@@ -1,0 +1,9 @@
+{
+  if (sku.getFulfillmentType() != null) {
+    return sku.getFulfillmentType();
+  }
+  if (sku.getDefaultProduct() != null && sku.getDefaultProduct().getDefaultCategory() != null) {
+    return sku.getDefaultProduct().getDefaultCategory().getFulfillmentType();
+  }
+  return null;
+}
