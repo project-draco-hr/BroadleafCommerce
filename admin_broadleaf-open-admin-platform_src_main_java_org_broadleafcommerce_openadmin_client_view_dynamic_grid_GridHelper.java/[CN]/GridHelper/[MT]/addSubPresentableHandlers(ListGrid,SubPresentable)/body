@@ -9,7 +9,9 @@
     add(extendedFetchDataHandlerRegistration);
     extendedFetchDataHandlerRegistration=grid.addSelectionChangedHandler(new SelectionChangedHandler(){
       @Override public void onSelectionChanged(      SelectionEvent event){
-        permissionsPresenter.enable();
+        if (event.getState()) {
+          permissionsPresenter.enable();
+        }
       }
     }
 );
