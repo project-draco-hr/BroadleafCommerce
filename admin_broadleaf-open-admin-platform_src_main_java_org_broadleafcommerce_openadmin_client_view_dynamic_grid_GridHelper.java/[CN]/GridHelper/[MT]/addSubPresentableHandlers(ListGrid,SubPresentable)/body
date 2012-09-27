@@ -1,0 +1,25 @@
+{
+  for (  final SubPresentable permissionsPresenter : permissionsPresenters) {
+    HandlerRegistration extendedFetchDataHandlerRegistration=grid.addFetchDataHandler(new FetchDataHandler(){
+      @Override public void onFilterData(      FetchDataEvent event){
+        permissionsPresenter.disable();
+      }
+    }
+);
+    add(extendedFetchDataHandlerRegistration);
+    extendedFetchDataHandlerRegistration=grid.addSelectionChangedHandler(new SelectionChangedHandler(){
+      @Override public void onSelectionChanged(      SelectionEvent event){
+        permissionsPresenter.enable();
+      }
+    }
+);
+    add(extendedFetchDataHandlerRegistration);
+    extendedFetchDataHandlerRegistration=grid.addFilterEditorSubmitHandler(new FilterEditorSubmitHandler(){
+      @Override public void onFilterEditorSubmit(      FilterEditorSubmitEvent event){
+        permissionsPresenter.disable();
+      }
+    }
+);
+    add(extendedFetchDataHandlerRegistration);
+  }
+}
