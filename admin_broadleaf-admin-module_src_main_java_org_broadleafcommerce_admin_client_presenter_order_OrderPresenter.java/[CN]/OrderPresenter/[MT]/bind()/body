@@ -11,34 +11,40 @@
   feesPresenter.bind();
   paymentResponsePresenter.bind();
   paymentLogPresenter.bind();
+  subPresentables.add(orderItemPresenter);
+  subPresentables.add(fulfillmentGroupPresenter);
+  subPresentables.add(paymentInfoPresenter);
+  subPresentables.add(additionalPaymentAttributesPresenter);
+  subPresentables.add(offerCodePresenter);
+  subPresentables.add(orderAdjustmentPresenter);
+  subPresentables.add(orderItemAdjustmentPresenter);
+  subPresentables.add(fulfillmentGroupAdjustmentPresenter);
+  subPresentables.add(feesPresenter);
+  subPresentables.add(paymentResponsePresenter);
+  subPresentables.add(paymentLogPresenter);
   selectionChangedHandlerRegistration.removeHandler();
   display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
+        for (        SubPresentable sp : subPresentables) {
+          sp.enable();
+        }
         if (!selectedRecord.equals(lastSelectedRecord)) {
           lastSelectedRecord=selectedRecord;
           if (selectedRecord.getAttributeAsStringArray("_type") == null) {
             formPresenter.disable();
           }
  else {
-            orderItemPresenter.enable();
-            fulfillmentGroupPresenter.enable();
-            paymentInfoPresenter.enable();
-            additionalPaymentAttributesPresenter.enable();
-            offerCodePresenter.enable();
-            orderAdjustmentPresenter.enable();
-            orderItemAdjustmentPresenter.enable();
-            fulfillmentGroupAdjustmentPresenter.enable();
-            feesPresenter.enable();
-            paymentResponsePresenter.enable();
-            paymentLogPresenter.enable();
             formPresenter.setStartState();
             getPresenterSequenceSetupManager().getDataSource("orderDS").resetPermanentFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("_type"));
             display.getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),false,false,false,selectedRecord);
             display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
           }
           changeSelection(selectedRecord);
+        }
+        for (        SubPresentable sp : subPresentables) {
+          sp.setReadOnly(true);
         }
       }
     }
@@ -96,17 +102,9 @@
 );
   extendedFetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
-      orderItemPresenter.disable();
-      fulfillmentGroupPresenter.disable();
-      paymentInfoPresenter.disable();
-      additionalPaymentAttributesPresenter.disable();
-      offerCodePresenter.disable();
-      orderAdjustmentPresenter.disable();
-      orderItemAdjustmentPresenter.disable();
-      fulfillmentGroupAdjustmentPresenter.disable();
-      feesPresenter.disable();
-      paymentResponsePresenter.disable();
-      paymentLogPresenter.disable();
+      for (      SubPresentable sp : subPresentables) {
+        sp.disable();
+      }
     }
   }
 );
