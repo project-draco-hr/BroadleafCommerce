@@ -1,6 +1,14 @@
 {
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
   Long orderItemId=request.getItemRequest().getOrderItemId();
-  orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(orderItemId);
+  OrderItem orderItem=orderItemService.readOrderItemById(orderItemId);
+  if (orderItem instanceof BundleOrderItem) {
+    for (    OrderItem discrete : ((BundleOrderItem)orderItem).getDiscreteOrderItems()) {
+      orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(discrete.getId());
+    }
+  }
+ else {
+    orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(orderItemId);
+  }
   return context;
 }

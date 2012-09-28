@@ -1,0 +1,48 @@
+{
+  StringBuffer identifier=new StringBuffer();
+  if (orderItem.getSplitParentItemId() != null || orderService.getAutomaticallyMergeLikeItems()) {
+    if (!orderService.getAutomaticallyMergeLikeItems()) {
+      identifier.append(orderItem.getSplitParentItemId());
+    }
+ else {
+      if (orderItem instanceof BundleOrderItem) {
+        BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItem;
+        if (bundleOrderItem.getSku() != null) {
+          identifier.append(bundleOrderItem.getSku().getId());
+        }
+ else {
+          if (orderItem.getSplitParentItemId() != null) {
+            identifier.append(orderItem.getSplitParentItemId());
+          }
+ else {
+            identifier.append(orderItem.getId());
+          }
+        }
+      }
+ else       if (orderItem instanceof DiscreteOrderItem) {
+        DiscreteOrderItem discreteOrderItem=(DiscreteOrderItem)orderItem;
+        identifier.append(discreteOrderItem.getSku().getId());
+        identifier.append('_').append(discreteOrderItem.getBundleOrderItem());
+      }
+ else {
+        if (orderItem.getSplitParentItemId() != null) {
+          identifier.append(orderItem.getSplitParentItemId());
+        }
+ else {
+          identifier.append(orderItem.getId());
+        }
+      }
+    }
+    if (includePrice) {
+      identifier.append('_').append(orderItem.getPrice().stringValue());
+    }
+    if (extraIdentifier != null) {
+      identifier.append('_').append(extraIdentifier);
+    }
+    addOptionAttributesToIdentifier(identifier,orderItem);
+  }
+ else {
+    identifier.append(orderItem.getId());
+  }
+  return identifier.toString();
+}

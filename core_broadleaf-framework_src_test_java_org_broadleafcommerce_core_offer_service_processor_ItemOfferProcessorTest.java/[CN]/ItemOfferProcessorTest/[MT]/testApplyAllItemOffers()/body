@@ -9,6 +9,18 @@
   EasyMock.expect(orderServiceMock.getAutomaticallyMergeLikeItems()).andReturn(true).anyTimes();
   EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
   EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
+  EasyMock.expect(multishipOptionServiceMock.findOrderMultishipOptions(EasyMock.isA(Long.class))).andAnswer(new IAnswer<List<OrderMultishipOption>>(){
+    @Override public List<OrderMultishipOption> answer() throws Throwable {
+      return new ArrayList<OrderMultishipOption>();
+    }
+  }
+).anyTimes();
+  multishipOptionServiceMock.deleteAllOrderMultishipOptions(EasyMock.isA(Order.class));
+  EasyMock.expectLastCall().anyTimes();
+  EasyMock.expect(fgServiceMock.collapseToOneFulfillmentGroup(EasyMock.isA(Order.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getSameOrderAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.create()).andAnswer(OfferDataItemProvider.getCreateFulfillmentGroupItemAnswer()).anyTimes();
+  fgItemDaoMock.delete(EasyMock.isA(FulfillmentGroupItem.class));
+  EasyMock.expectLastCall().anyTimes();
   replay();
   PromotableOrder order=dataProvider.createBasicOrder();
   Offer offer1=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);

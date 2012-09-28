@@ -1,0 +1,55 @@
+{
+  if (order.isHasMultiShipOptions()) {
+    List<OrderMultishipOption> multishipOptions=new ArrayList<OrderMultishipOption>(order.getMultiShipOptions());
+    List<FulfillmentGroupItem> itemsToRemove=new ArrayList<FulfillmentGroupItem>();
+    Map<String,FulfillmentGroup> fgMap=new HashMap<String,FulfillmentGroup>();
+    for (    OrderMultishipOption option : multishipOptions) {
+      for (      FulfillmentGroupItem item : order.getDelegate().getFulfillmentGroups().get(0).getFulfillmentGroupItems()) {
+        if (option.getOrderItem().getId().equals(item.getOrderItem().getId())) {
+          String key=getKey(option.getAddress(),option.getFulfillmentOption());
+          FulfillmentGroup fg;
+          if (fgMap.containsKey(key)) {
+            fg=fgMap.get(key);
+          }
+ else {
+            FulfillmentGroupRequest fgr=new FulfillmentGroupRequest();
+            fgr.setOrder(order.getDelegate());
+            if (option.getAddress() != null) {
+              fgr.setAddress(option.getAddress());
+            }
+            if (option.getFulfillmentOption() != null) {
+              fgr.setOption(option.getFulfillmentOption());
+            }
+            fg=fulfillmentGroupService.addFulfillmentGroupToOrder(fgr,false);
+            fg=fulfillmentGroupService.save(fg);
+            order.getDelegate().getFulfillmentGroups().add(fg);
+            fgMap.put(key,fg);
+          }
+          FulfillmentGroupItem fulfillmentGroupItem=fulfillmentGroupItemDao.create();
+          fulfillmentGroupItem.setFulfillmentGroup(fg);
+          fulfillmentGroupItem.setOrderItem(option.getOrderItem());
+          fulfillmentGroupItem.setQuantity(1);
+          fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
+          fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
+          if (item.getQuantity() - 1 <= 0) {
+            itemsToRemove.add(item);
+          }
+ else {
+            item.setQuantity(item.getQuantity() - 1);
+          }
+        }
+      }
+    }
+    for (    FulfillmentGroupItem item : itemsToRemove) {
+      FulfillmentGroup fg=item.getFulfillmentGroup();
+      fg.getFulfillmentGroupItems().remove(item);
+      fulfillmentGroupItemDao.delete(item);
+      if (fg.getFulfillmentGroupItems().size() == 0) {
+        order.getDelegate().getFulfillmentGroups().remove(fg);
+        fg.setOrder(null);
+        fulfillmentGroupService.delete(fg);
+        orderService.save(order.getDelegate(),false);
+      }
+    }
+  }
+}

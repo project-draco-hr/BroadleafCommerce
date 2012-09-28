@@ -1,0 +1,41 @@
+{
+  List<DiscreteOrderItem> itemsToRemove=new ArrayList<DiscreteOrderItem>();
+  List<FulfillmentGroupItem> fgItemsToRemove=new ArrayList<FulfillmentGroupItem>();
+  Map<Long,Map<String,Object[]>> gatherMap=new HashMap<Long,Map<String,Object[]>>();
+  for (  FulfillmentGroup group : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : group.getFulfillmentGroupItems()) {
+      OrderItem orderItem=fgItem.getOrderItem();
+      if (orderItem instanceof DiscreteOrderItem && ((DiscreteOrderItem)orderItem).getBundleOrderItem() != null) {
+        Map<String,Object[]> gatheredItem=gatherMap.get(((DiscreteOrderItem)orderItem).getSku().getId());
+        if (gatheredItem == null) {
+          gatheredItem=new HashMap<String,Object[]>();
+          gatherMap.put(((DiscreteOrderItem)orderItem).getSku().getId(),gatheredItem);
+        }
+        gatherFulfillmentGroupLinkedDiscreteOrderItem(itemsToRemove,fgItemsToRemove,gatheredItem,fgItem,(DiscreteOrderItem)orderItem,null,orderMultishipOptionService.findOrderMultishipOptions(order.getId()),false);
+      }
+    }
+  }
+  for (  Map<String,Object[]> values : gatherMap.values()) {
+    for (    Object[] item : values.values()) {
+      orderItemService.saveOrderItem((OrderItem)item[0]);
+      fulfillmentGroupItemDao.save((FulfillmentGroupItem)item[1]);
+    }
+  }
+  for (  FulfillmentGroupItem fgItem : fgItemsToRemove) {
+    FulfillmentGroup fg=fgItem.getFulfillmentGroup();
+    fg.getFulfillmentGroupItems().remove(fgItem);
+    fulfillmentGroupItemDao.delete(fgItem);
+    if (fg.getFulfillmentGroupItems().isEmpty()) {
+      order.getFulfillmentGroups().remove(fg);
+      fulfillmentGroupService.delete(fg);
+    }
+  }
+  for (  DiscreteOrderItem orderItem : itemsToRemove) {
+    if (orderItem.getBundleOrderItem() != null) {
+      BundleOrderItem bundleOrderItem=orderItem.getBundleOrderItem();
+      bundleOrderItem.getDiscreteOrderItems().remove(orderItem);
+      orderItem.setBundleOrderItem(null);
+      orderItemService.saveOrderItem(bundleOrderItem);
+    }
+  }
+}
