@@ -1,0 +1,38 @@
+{
+  offerService=new OfferServiceImpl();
+  customerOfferDaoMock=EasyMock.createMock(CustomerOfferDao.class);
+  offerCodeDaoMock=EasyMock.createMock(OfferCodeDao.class);
+  offerDaoMock=EasyMock.createMock(OfferDao.class);
+  offerService.setCustomerOfferDao(customerOfferDaoMock);
+  offerService.setOfferCodeDao(offerCodeDaoMock);
+  offerService.setOfferDao(offerDaoMock);
+  orderServiceMock=EasyMock.createMock(OrderService.class);
+  orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
+  fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
+  fgServiceMock=EasyMock.createMock(FulfillmentGroupService.class);
+  multishipOptionServiceMock=EasyMock.createMock(OrderMultishipOptionService.class);
+  OrderItemMergeService orderItemMergeService=new OrderItemMergeServiceImpl();
+  orderItemMergeService.setOrderService(orderServiceMock);
+  orderItemMergeService.setFulfillmentGroupItemDao(fgItemDaoMock);
+  orderItemMergeService.setFulfillmentGroupService(fgServiceMock);
+  orderItemMergeService.setOrderItemService(orderItemServiceMock);
+  orderItemMergeService.setOrderMultishipOptionService(multishipOptionServiceMock);
+  orderItemMergeService.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
+  orderProcessor.setOfferDao(offerDaoMock);
+  orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  orderProcessor.setOrderItemMergeService(orderItemMergeService);
+  offerService.setOrderOfferProcessor(orderProcessor);
+  offerService.setOrderItemMergeService(orderItemMergeService);
+  ItemOfferProcessor itemProcessor=new ItemOfferProcessorImpl();
+  itemProcessor.setOfferDao(offerDaoMock);
+  itemProcessor.setOrderItemMergeService(orderItemMergeService);
+  itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  offerService.setItemOfferProcessor(itemProcessor);
+  FulfillmentGroupOfferProcessor fgProcessor=new FulfillmentGroupOfferProcessorImpl();
+  fgProcessor.setOfferDao(offerDaoMock);
+  fgProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  fgProcessor.setOrderItemMergeService(orderItemMergeService);
+  offerService.setFulfillmentGroupOfferProcessor(fgProcessor);
+  offerService.setPromotableItemFactory(new PromotableItemFactoryImpl());
+}

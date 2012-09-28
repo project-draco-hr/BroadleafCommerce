@@ -1,0 +1,28 @@
+{
+  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andReturn(new CandidateItemOfferImpl()).times(4);
+  replay();
+  PromotableOrder order=dataProvider.createBasicOrder();
+  List<PromotableCandidateItemOffer> qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,null,null);
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
+  assertTrue(qualifiedOffers.size() == 2 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)) && qualifiedOffers.get(1).getOffer().equals(offers.get(0)));
+  qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
+  assertTrue(qualifiedOffers.size() == 1 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)) && qualifiedOffers.get(0).getCandidateQualifiersMap().size() == 1);
+  qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  offers.get(0).setQualifyingItemSubTotal(new Money(1));
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
+  assertTrue(qualifiedOffers.size() == 1 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)) && qualifiedOffers.get(0).getCandidateQualifiersMap().size() == 1);
+  qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  offers.get(0).setQualifyingItemSubTotal(new Money(99999));
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
+  assertTrue(qualifiedOffers.size() == 0);
+  qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
+  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
+  assertTrue(qualifiedOffers.size() == 0);
+  verify();
+}

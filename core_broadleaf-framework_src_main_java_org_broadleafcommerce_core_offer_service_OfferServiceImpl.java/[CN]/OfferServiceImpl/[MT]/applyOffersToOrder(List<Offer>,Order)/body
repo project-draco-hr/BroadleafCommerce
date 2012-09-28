@@ -8,9 +8,9 @@
       orderOfferProcessor.compileOrderTotal(promotableOrder);
     }
  else {
-      mergeService.prepareCart(promotableOrder);
-      mergeService.gatherCart(promotableOrder);
-      mergeService.initializeBundleSplitItems(promotableOrder);
+      orderItemMergeService.prepareCart(promotableOrder);
+      orderItemMergeService.gatherCart(promotableOrder);
+      orderItemMergeService.initializeBundleSplitItems(promotableOrder);
       List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
       List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
       itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
@@ -19,9 +19,9 @@
       }
  else {
         itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
-        mergeService.gatherCart(promotableOrder);
+        orderItemMergeService.gatherCart(promotableOrder);
       }
-      mergeService.finalizeCart(promotableOrder);
+      orderItemMergeService.finalizeCart(promotableOrder);
     }
   }
 }

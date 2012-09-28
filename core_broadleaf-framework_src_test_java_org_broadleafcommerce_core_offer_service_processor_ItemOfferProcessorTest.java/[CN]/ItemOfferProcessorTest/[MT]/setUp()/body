@@ -1,0 +1,19 @@
+{
+  offerDaoMock=EasyMock.createMock(OfferDao.class);
+  orderServiceMock=EasyMock.createMock(OrderService.class);
+  orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
+  fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
+  fgServiceMock=EasyMock.createMock(FulfillmentGroupService.class);
+  multishipOptionServiceMock=EasyMock.createMock(OrderMultishipOptionService.class);
+  OrderItemMergeService orderItemMergeService=new OrderItemMergeServiceImpl();
+  orderItemMergeService.setOrderService(orderServiceMock);
+  orderItemMergeService.setFulfillmentGroupItemDao(fgItemDaoMock);
+  orderItemMergeService.setFulfillmentGroupService(fgServiceMock);
+  orderItemMergeService.setOrderItemService(orderItemServiceMock);
+  orderItemMergeService.setOrderMultishipOptionService(multishipOptionServiceMock);
+  orderItemMergeService.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  itemProcessor=new ItemOfferProcessorImpl();
+  itemProcessor.setOfferDao(offerDaoMock);
+  itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  itemProcessor.setOrderItemMergeService(orderItemMergeService);
+}
