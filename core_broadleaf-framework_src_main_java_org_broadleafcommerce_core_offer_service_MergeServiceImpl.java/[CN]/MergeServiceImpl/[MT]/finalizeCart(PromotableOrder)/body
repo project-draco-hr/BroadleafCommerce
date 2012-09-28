@@ -34,7 +34,7 @@
     for (    FulfillmentGroupItem item : itemsToRemove) {
       FulfillmentGroup fg=item.getFulfillmentGroup();
       fg.getFulfillmentGroupItems().remove(item);
-      item.setFulfillmentGroup(null);
+      fulfillmentGroupItemDao.delete(item);
       if (fg.getFulfillmentGroupItems().size() == 0) {
         order.getDelegate().getFulfillmentGroups().remove(fg);
         fg.setOrder(null);

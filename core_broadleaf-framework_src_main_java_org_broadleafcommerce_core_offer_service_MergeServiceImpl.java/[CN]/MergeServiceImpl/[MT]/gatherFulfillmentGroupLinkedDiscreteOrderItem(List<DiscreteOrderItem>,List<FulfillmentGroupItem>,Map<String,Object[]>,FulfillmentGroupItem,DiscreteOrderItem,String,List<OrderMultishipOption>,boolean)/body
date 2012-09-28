@@ -6,12 +6,15 @@
     return;
   }
   for (  OrderMultishipOption option : options) {
-    if (option.getOrderItem().equals(orderItem)) {
-      option.setOrderItem(orderItem);
+    if (option.getOrderItem().getId().equals(orderItem.getId())) {
+      option.setOrderItem((OrderItem)gatheredOrderItem[0]);
       orderMultishipOptionService.save(option);
     }
   }
-  ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + orderItem.getQuantity());
   ((FulfillmentGroupItem)gatheredOrderItem[1]).setQuantity(((FulfillmentGroupItem)gatheredOrderItem[1]).getQuantity() + fgItem.getQuantity());
-  itemsToRemove.add(orderItem);
+  if (!((OrderItem)gatheredOrderItem[0]).getId().equals(orderItem.getId())) {
+    ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + fgItem.getQuantity());
+    itemsToRemove.add(orderItem);
+  }
+  fgItemsToRemove.add(fgItem);
 }
