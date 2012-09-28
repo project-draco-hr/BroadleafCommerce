@@ -137,6 +137,7 @@ case DATE:
 field=new DataSourceDateTimeField(propertyName,friendlyName);
 field.setCanEdit(mutable);
 field.setRequired(required);
+field.setEditorType(new MiniDateRangeItem());
 break;
 case INTEGER:
 field=new DataSourceIntegerField(propertyName,friendlyName);
@@ -377,13 +378,19 @@ dataSource.addField(field);
 }
 }
 @Override public void visit(final BasicCollectionMetadata metadata){
+if (presenterSequenceSetupManager != null) {
 DynamicEntityPresenter.collectionMetadatas.put(presenterSequenceSetupManager.getPresenter().getClass().getName() + "_" + property.getName(),metadata);
+}
 }
 @Override public void visit(AdornedTargetCollectionMetadata metadata){
+if (presenterSequenceSetupManager != null) {
 DynamicEntityPresenter.collectionMetadatas.put(presenterSequenceSetupManager.getPresenter().getClass().getName() + "_" + property.getName(),metadata);
 }
+}
 @Override public void visit(MapMetadata metadata){
+if (presenterSequenceSetupManager != null) {
 DynamicEntityPresenter.collectionMetadatas.put(presenterSequenceSetupManager.getPresenter().getClass().getName() + "_" + property.getName(),metadata);
+}
 }
 }
 );

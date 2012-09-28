@@ -1,5 +1,7 @@
 {
   context.stopProcess();
-  LOG.error("An error occurred during the workflow",th);
+  if (!unloggedExceptionClasses.contains(th.getClass().getName())) {
+    LOG.error("An error occurred during the workflow",th);
+  }
   throw new WorkflowException(th);
 }

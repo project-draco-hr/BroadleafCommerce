@@ -1,0 +1,10 @@
+{
+  Query query=em.createNamedQuery("BC_READ_SKU_INVENTORY_FOR_DEFAULT_LOCATION");
+  query.setParameter("skuId",sku.getId());
+  query.setMaxResults(1);
+  List<Inventory> inventories=query.getResultList();
+  if (CollectionUtils.isNotEmpty(inventories)) {
+    return inventories.get(0);
+  }
+  return null;
+}

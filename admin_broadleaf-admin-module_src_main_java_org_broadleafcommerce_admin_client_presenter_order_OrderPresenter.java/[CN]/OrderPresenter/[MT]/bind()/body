@@ -11,25 +11,40 @@
   feesPresenter.bind();
   paymentResponsePresenter.bind();
   paymentLogPresenter.bind();
+  subPresentables.add(orderItemPresenter);
+  subPresentables.add(fulfillmentGroupPresenter);
+  subPresentables.add(paymentInfoPresenter);
+  subPresentables.add(additionalPaymentAttributesPresenter);
+  subPresentables.add(offerCodePresenter);
+  subPresentables.add(orderAdjustmentPresenter);
+  subPresentables.add(orderItemAdjustmentPresenter);
+  subPresentables.add(fulfillmentGroupAdjustmentPresenter);
+  subPresentables.add(feesPresenter);
+  subPresentables.add(paymentResponsePresenter);
+  subPresentables.add(paymentLogPresenter);
   selectionChangedHandlerRegistration.removeHandler();
   display.getListDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     @Override public void onSelectionChanged(    SelectionEvent event){
       ListGridRecord selectedRecord=event.getSelectedRecord();
       if (event.getState()) {
+        for (        SubPresentable sp : subPresentables) {
+          sp.enable();
+        }
         if (!selectedRecord.equals(lastSelectedRecord)) {
           lastSelectedRecord=selectedRecord;
           if (selectedRecord.getAttributeAsStringArray("_type") == null) {
             formPresenter.disable();
-            display.getListDisplay().getRemoveButton().disable();
           }
  else {
             formPresenter.setStartState();
             getPresenterSequenceSetupManager().getDataSource("orderDS").resetPermanentFieldVisibilityBasedOnType(selectedRecord.getAttributeAsStringArray("_type"));
             display.getDynamicFormDisplay().getFormOnlyDisplay().buildFields(display.getListDisplay().getGrid().getDataSource(),false,false,false,selectedRecord);
             display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
-            display.getListDisplay().getRemoveButton().enable();
           }
           changeSelection(selectedRecord);
+        }
+        for (        SubPresentable sp : subPresentables) {
+          sp.setReadOnly(true);
         }
       }
     }
@@ -41,8 +56,8 @@
       if (event.getState()) {
         additionalPaymentAttributesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("paymentInfoDS"),null);
         String id=getPresenterSequenceSetupManager().getDataSource("paymentInfoDS").getPrimaryKeyValue(selectedRecord);
-        getDisplay().getPaymentResponseDisplay().getGrid().fetchData(new Criteria("paymentInfoId",id));
-        getDisplay().getPaymentLogDisplay().getGrid().fetchData(new Criteria("paymentInfoId",id));
+        getDisplay().getPaymentResponseDisplay().getGrid().fetchData(new Criteria("paymentInfoReferenceNumber",selectedRecord.getAttributeAsString("referenceNumber")));
+        getDisplay().getPaymentLogDisplay().getGrid().fetchData(new Criteria("paymentInfoReferenceNumber",selectedRecord.getAttributeAsString("referenceNumber")));
       }
     }
   }
@@ -82,6 +97,14 @@
         }
       }
 );
+    }
+  }
+);
+  extendedFetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+    @Override public void onFilterData(    FetchDataEvent event){
+      for (      SubPresentable sp : subPresentables) {
+        sp.disable();
+      }
     }
   }
 );

@@ -1,0 +1,10 @@
+{
+  Product result=productDao.readProductById(savedProducts.get(1).getId());
+  List<RelatedProduct> related=result.getCrossSaleProducts();
+  assert(related != null);
+  assert(!related.isEmpty());
+  assert(related.size() == 2 || related.size() == 3);
+  for (  RelatedProduct rp : related) {
+    assert(rp instanceof CrossSaleProductImpl);
+  }
+}

@@ -2,10 +2,10 @@
   Money price=new Money(BankersRounding.zeroAmount());
   for (  SkuBundleItem item : getSkuBundleItems()) {
     if (price.isZero()) {
-      price=item.getSalePrice();
+      price=price.add(item.getSalePrice().multiply(item.getQuantity()));
     }
  else {
-      price=price.add(item.getSalePrice());
+      price=price.add(item.getRetailPrice().multiply(item.getQuantity()));
     }
   }
   return price;

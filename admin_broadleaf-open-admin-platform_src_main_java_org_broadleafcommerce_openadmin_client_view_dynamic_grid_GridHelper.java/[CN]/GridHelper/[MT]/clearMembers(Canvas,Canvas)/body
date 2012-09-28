@@ -1,0 +1,21 @@
+{
+  if (pane == grid) {
+    return;
+  }
+  if (pane instanceof TabSet) {
+    for (    Tab t : ((TabSet)pane).getTabs()) {
+      clearMembers(grid,t.getPane());
+    }
+  }
+  if (pane instanceof com.smartgwt.client.widgets.layout.Layout) {
+    for (    Canvas c : ((com.smartgwt.client.widgets.layout.Layout)pane).getMembers()) {
+      clearMembers(grid,c);
+    }
+  }
+  if (pane instanceof com.smartgwt.client.widgets.grid.ListGrid) {
+    ((com.smartgwt.client.widgets.grid.ListGrid)pane).setData(new ListGridRecord[]{});
+  }
+  if (pane instanceof DynamicForm) {
+    ((DynamicForm)pane).clearValues();
+  }
+}

@@ -9,6 +9,13 @@
       adminInstance.getAllParentCategories().add(adminInstance.getDefaultCategory());
     }
     adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
+    if (adminInstance.getDefaultSku() == null) {
+      Sku newSku=catalogService.createSku();
+      adminInstance.setDefaultSku(newSku);
+      adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
+    }
+    adminInstance.getDefaultSku().setDefaultProduct(adminInstance);
+    dynamicEntityDao.merge(adminInstance.getDefaultSku());
     return helper.getRecord(adminProperties,adminInstance,null,null);
   }
  catch (  Exception e) {

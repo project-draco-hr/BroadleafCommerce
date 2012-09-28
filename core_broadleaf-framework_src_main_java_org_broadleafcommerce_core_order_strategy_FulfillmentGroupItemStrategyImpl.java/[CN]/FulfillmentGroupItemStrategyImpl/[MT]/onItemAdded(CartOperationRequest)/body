@@ -1,23 +1,70 @@
 {
   Order order=request.getOrder();
   OrderItem orderItem=request.getAddedOrderItem();
-  FulfillmentGroup fulfillmentGroup=null;
-  if (order.getFulfillmentGroups().size() == 0) {
-    fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
-    fulfillmentGroup.setOrder(order);
-    fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
-    order.getFulfillmentGroups().add(fulfillmentGroup);
+  Map<FulfillmentType,FulfillmentGroup> fulfillmentGroups=new HashMap<FulfillmentType,FulfillmentGroup>();
+  FulfillmentGroup nullFulfillmentTypeGroup=null;
+  if (order.getFulfillmentGroups() != null) {
+    for (    FulfillmentGroup group : order.getFulfillmentGroups()) {
+      if (group.getType() == null) {
+        if (nullFulfillmentTypeGroup == null) {
+          nullFulfillmentTypeGroup=group;
+        }
+      }
+ else {
+        if (fulfillmentGroups.get(group.getType()) == null) {
+          fulfillmentGroups.put(group.getType(),group);
+        }
+      }
+    }
+  }
+  if (orderItem instanceof BundleOrderItem) {
+    List<DiscreteOrderItem> itemsToAdd=new ArrayList<DiscreteOrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
+    for (    DiscreteOrderItem doi : itemsToAdd) {
+      FulfillmentGroup fulfillmentGroup=null;
+      FulfillmentType type=resolveFulfillmentType(doi.getSku());
+      if (type == null) {
+        fulfillmentGroup=nullFulfillmentTypeGroup;
+      }
+ else {
+        if (FulfillmentType.PHYSICAL_PICKUP_OR_SHIP.equals(type)) {
+          type=FulfillmentType.PHYSICAL_SHIP;
+        }
+        fulfillmentGroup=fulfillmentGroups.get(type);
+      }
+      if (fulfillmentGroup == null) {
+        fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
+        fulfillmentGroup.setType(type);
+        fulfillmentGroup.setOrder(order);
+        fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
+        order.getFulfillmentGroups().add(fulfillmentGroup);
+      }
+      fulfillmentGroup=addItemToFulfillmentGroup(order,doi,fulfillmentGroup);
+      order=fulfillmentGroup.getOrder();
+    }
   }
  else {
-    fulfillmentGroup=order.getFulfillmentGroups().get(0);
+    DiscreteOrderItem doi=(DiscreteOrderItem)orderItem;
+    FulfillmentGroup fulfillmentGroup=null;
+    FulfillmentType type=resolveFulfillmentType(doi.getSku());
+    if (type == null) {
+      fulfillmentGroup=nullFulfillmentTypeGroup;
+    }
+ else {
+      if (FulfillmentType.PHYSICAL_PICKUP_OR_SHIP.equals(type)) {
+        type=FulfillmentType.PHYSICAL_SHIP;
+      }
+      fulfillmentGroup=fulfillmentGroups.get(type);
+    }
+    if (fulfillmentGroup == null) {
+      fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
+      fulfillmentGroup.setType(type);
+      fulfillmentGroup.setOrder(order);
+      fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
+      order.getFulfillmentGroups().add(fulfillmentGroup);
+    }
+    fulfillmentGroup=addItemToFulfillmentGroup(order,(DiscreteOrderItem)orderItem,fulfillmentGroup);
+    order=fulfillmentGroup.getOrder();
   }
-  FulfillmentGroupItemRequest fulfillmentGroupItemRequest=new FulfillmentGroupItemRequest();
-  fulfillmentGroupItemRequest.setOrder(order);
-  fulfillmentGroupItemRequest.setOrderItem(orderItem);
-  fulfillmentGroupItemRequest.setQuantity(orderItem.getQuantity());
-  fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
-  fulfillmentGroup=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,request.isPriceOrder());
-  order=fulfillmentGroup.getOrder();
   request.setOrder(order);
   return request;
 }
