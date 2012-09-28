@@ -25,12 +25,21 @@
             order.getDelegate().getFulfillmentGroups().add(fg);
             fgMap.put(key,fg);
           }
-          FulfillmentGroupItem fulfillmentGroupItem=fulfillmentGroupItemDao.create();
-          fulfillmentGroupItem.setFulfillmentGroup(fg);
-          fulfillmentGroupItem.setOrderItem(option.getOrderItem());
-          fulfillmentGroupItem.setQuantity(1);
-          fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
-          fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
+          checkGroup: {
+            for (            FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
+              if (fgItem.getOrderItem().getId().equals(option.getOrderItem().getId())) {
+                fgItem.setQuantity(fgItem.getQuantity() + 1);
+                fulfillmentGroupItemDao.save(fgItem);
+                break checkGroup;
+              }
+            }
+            FulfillmentGroupItem fulfillmentGroupItem=fulfillmentGroupItemDao.create();
+            fulfillmentGroupItem.setFulfillmentGroup(fg);
+            fulfillmentGroupItem.setOrderItem(option.getOrderItem());
+            fulfillmentGroupItem.setQuantity(1);
+            fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
+            fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
+          }
           if (item.getQuantity() - 1 <= 0) {
             itemsToRemove.add(item);
           }
