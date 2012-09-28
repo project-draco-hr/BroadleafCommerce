@@ -1,0 +1,17 @@
+{
+  String identifier=buildIdentifier(orderItem,extraIdentifier,includePrice);
+  Object[] gatheredOrderItem=gatheredItem.get(identifier);
+  if (gatheredOrderItem == null) {
+    gatheredItem.put(identifier,new Object[]{orderItem,fgItem});
+    return;
+  }
+  for (  OrderMultishipOption option : options) {
+    if (option.getOrderItem().equals(orderItem)) {
+      option.setOrderItem(orderItem);
+      orderMultishipOptionService.save(option);
+    }
+  }
+  ((OrderItem)gatheredOrderItem[0]).setQuantity(((OrderItem)gatheredOrderItem[0]).getQuantity() + orderItem.getQuantity());
+  ((FulfillmentGroupItem)gatheredOrderItem[1]).setQuantity(((FulfillmentGroupItem)gatheredOrderItem[1]).getQuantity() + fgItem.getQuantity());
+  itemsToRemove.add(orderItem);
+}

@@ -1,78 +1,117 @@
 {
   List<OrderMultishipOption> multishipOptions=orderMultishipOptionService.findOrderMultishipOptions(order.getId());
-  Map<Long,Integer> fgItemQuantityMap=new HashMap<Long,Integer>();
-  Map<String,FulfillmentGroup> multishipGroups=new HashMap<String,FulfillmentGroup>();
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    String key=getKey(fg.getAddress(),fg.getFulfillmentOption());
-    multishipGroups.put(key,fg);
-    for (    FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
-      fgItemQuantityMap.put(fgi.getId(),fgi.getQuantity());
-    }
-  }
-  for (  OrderMultishipOption option : multishipOptions) {
-    String key=getKey(option.getAddress(),option.getFulfillmentOption());
-    FulfillmentGroup fg=multishipGroups.get(key);
-    if (fg == null) {
-      FulfillmentGroupRequest fgr=new FulfillmentGroupRequest();
-      fgr.setOrder(order);
-      if (option.getAddress() != null) {
-        fgr.setAddress(option.getAddress());
-      }
-      if (option.getFulfillmentOption() != null) {
-        fgr.setOption(option.getFulfillmentOption());
-      }
-      fg=addFulfillmentGroupToOrder(fgr,false);
-      fg=save(fg);
-      order.getFulfillmentGroups().add(fg);
-    }
-    FulfillmentGroupItem fulfillmentGroupItem=null;
-    for (    FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
-      if (fgi.getOrderItem().getId() == option.getOrderItem().getId()) {
-        fulfillmentGroupItem=fgi;
+  if (!CollectionUtils.isEmpty(multishipOptions)) {
+    List<FulfillmentGroupItem> itemsToRemove=new ArrayList<FulfillmentGroupItem>();
+    Map<Long,Integer> fgItemQuantityMap=new HashMap<Long,Integer>();
+    Map<String,FulfillmentGroup> multishipGroups=new HashMap<String,FulfillmentGroup>();
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      String key=getKey(fg.getAddress(),fg.getFulfillmentOption());
+      multishipGroups.put(key,fg);
+      for (      FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
+        fgItemQuantityMap.put(fgi.getId(),fgi.getQuantity());
       }
     }
-    if (fulfillmentGroupItem == null) {
-      fulfillmentGroupItem=fulfillmentGroupItemDao.create();
-      fulfillmentGroupItem.setFulfillmentGroup(fg);
-      fulfillmentGroupItem.setOrderItem(option.getOrderItem());
-      fulfillmentGroupItem.setQuantity(1);
-      fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
-      fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
-    }
+    for (    OrderMultishipOption option : multishipOptions) {
+      String key=getKey(option.getAddress(),option.getFulfillmentOption());
+      FulfillmentGroup fg=multishipGroups.get(key);
+      if (fg == null) {
+        FulfillmentGroupRequest fgr=new FulfillmentGroupRequest();
+        fgr.setOrder(order);
+        if (option.getAddress() != null) {
+          fgr.setAddress(option.getAddress());
+        }
+        if (option.getFulfillmentOption() != null) {
+          fgr.setOption(option.getFulfillmentOption());
+        }
+        fg=addFulfillmentGroupToOrder(fgr,false);
+        fg=save(fg);
+        order.getFulfillmentGroups().add(fg);
+      }
+      FulfillmentGroupItem fulfillmentGroupItem=null;
+      for (      FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
+        if (fgi.getOrderItem().getId() == option.getOrderItem().getId()) {
+          fulfillmentGroupItem=fgi;
+        }
+      }
+      if (fulfillmentGroupItem == null) {
+        fulfillmentGroupItem=fulfillmentGroupItemDao.create();
+        fulfillmentGroupItem.setFulfillmentGroup(fg);
+        fulfillmentGroupItem.setOrderItem(option.getOrderItem());
+        fulfillmentGroupItem.setQuantity(1);
+        fulfillmentGroupItem=fulfillmentGroupItemDao.save(fulfillmentGroupItem);
+        checkMap: {
+          for (          FulfillmentGroup legFg : order.getFulfillmentGroups()) {
+            if (legFg.getAddress() == null && legFg.getFulfillmentOption() == null) {
+              for (              FulfillmentGroupItem fgi : legFg.getFulfillmentGroupItems()) {
+                if (fgi.getOrderItem().getId() == option.getOrderItem().getId()) {
+                  fgItemQuantityMap.put(fgi.getId(),fgItemQuantityMap.get(fgi.getId()) - 1);
+                  if (fgItemQuantityMap.get(fgi.getId()) == 0) {
+                    itemsToRemove.add(fgi);
+                  }
+                  break checkMap;
+                }
+              }
+            }
+          }
+        }
+        fg.getFulfillmentGroupItems().add(fulfillmentGroupItem);
+      }
  else {
-      if (fulfillmentGroupItem.getId() != null) {
-        Integer qty=fgItemQuantityMap.get(fulfillmentGroupItem.getId());
-        if (qty == null || qty == 0) {
+        if (fulfillmentGroupItem.getId() != null) {
+          Integer qty=fgItemQuantityMap.get(fulfillmentGroupItem.getId());
+          if (qty == null || qty == 0) {
+            fulfillmentGroupItem.setQuantity(fulfillmentGroupItem.getQuantity() + 1);
+          }
+ else {
+            qty-=1;
+            fgItemQuantityMap.put(fulfillmentGroupItem.getId(),qty);
+          }
+        }
+ else {
           fulfillmentGroupItem.setQuantity(fulfillmentGroupItem.getQuantity() + 1);
         }
+      }
+      multishipGroups.put(key,fg);
+    }
+    for (    Entry<Long,Integer> entry : fgItemQuantityMap.entrySet()) {
+      if (entry.getValue() > 0) {
+        FulfillmentGroupItem fgi=fulfillmentGroupItemDao.readFulfillmentGroupItemById(entry.getKey());
+        if (fgi.getQuantity() == entry.getValue()) {
+          if (fgi.getFulfillmentGroup().getAddress() == null && fgi.getFulfillmentGroup().getFulfillmentOption() == null) {
+            continue;
+          }
+          FulfillmentGroup fg=fgi.getFulfillmentGroup();
+          fg.getFulfillmentGroupItems().remove(fgi);
+          fulfillmentGroupItemDao.delete(fgi);
+          if (fg.getFulfillmentGroupItems().size() == 0) {
+            order.getFulfillmentGroups().remove(fg);
+            fulfillmentGroupDao.delete(fg);
+          }
+        }
  else {
-          qty-=1;
-          fgItemQuantityMap.put(fulfillmentGroupItem.getId(),qty);
+          fgi.setQuantity(fgi.getQuantity() - entry.getValue());
+          fulfillmentGroupItemDao.save(fgi);
         }
       }
- else {
-        fulfillmentGroupItem.setQuantity(fulfillmentGroupItem.getQuantity() + 1);
+    }
+    for (    FulfillmentGroupItem fulfillmentGroupItem : itemsToRemove) {
+      FulfillmentGroup fulfillmentGroup=fulfillmentGroupItem.getFulfillmentGroup();
+      fulfillmentGroupItem.setFulfillmentGroup(null);
+      fulfillmentGroup.getFulfillmentGroupItems().remove(fulfillmentGroupItem);
+      if (CollectionUtils.isEmpty(fulfillmentGroup.getFulfillmentGroupItems())) {
+        order.getFulfillmentGroups().remove(fulfillmentGroup);
+        fulfillmentGroupDao.delete(fulfillmentGroup);
       }
     }
-    multishipGroups.put(key,fg);
-  }
-  for (  Entry<Long,Integer> entry : fgItemQuantityMap.entrySet()) {
-    if (entry.getValue() > 0) {
-      FulfillmentGroupItem fgi=fulfillmentGroupItemDao.readFulfillmentGroupItemById(entry.getKey());
-      if (fgi.getQuantity() == entry.getValue()) {
-        FulfillmentGroup fg=fgi.getFulfillmentGroup();
-        fg.getFulfillmentGroupItems().remove(fgi);
-        fulfillmentGroupItemDao.delete(fgi);
-        if (fg.getFulfillmentGroupItems().size() == 0) {
-          order.getFulfillmentGroups().remove(fg);
-          fulfillmentGroupDao.delete(fg);
-        }
-      }
- else {
-        fgi.setQuantity(fgi.getQuantity() - entry.getValue());
-        fulfillmentGroupItemDao.save(fgi);
-      }
+    OfferContext offerContext=new OfferContext();
+    offerContext.setExecutePromotionCalculation(false);
+    OfferContext.setOfferContext(offerContext);
+    try {
+      order=orderService.save(order,priceOrder);
+    }
+  finally {
+      OfferContext.setOfferContext(null);
     }
   }
-  return orderService.save(order,priceOrder);
+  return order;
 }

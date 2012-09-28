@@ -1,21 +1,24 @@
 {
-  PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
-  promotableOrder.removeAllCandidateFulfillmentGroupOffers();
-  promotableOrder.removeAllFulfillmentAdjustments();
-  List<Offer> possibleFGOffers=new ArrayList<Offer>();
-  for (  Offer offer : offers) {
-    if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {
-      possibleFGOffers.add(offer);
+  OfferContext offerContext=OfferContext.getOfferContext();
+  if (offerContext == null || offerContext.executePromotionCalculation) {
+    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
+    promotableOrder.removeAllCandidateFulfillmentGroupOffers();
+    promotableOrder.removeAllFulfillmentAdjustments();
+    List<Offer> possibleFGOffers=new ArrayList<Offer>();
+    for (    Offer offer : offers) {
+      if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {
+        possibleFGOffers.add(offer);
+      }
     }
+    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,promotableOrder.getCustomer());
+    List<PromotableCandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
+    for (    Offer offer : filteredOffers) {
+      fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(promotableOrder,qualifiedFGOffers,offer);
+    }
+    if (!qualifiedFGOffers.isEmpty()) {
+      fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,promotableOrder);
+    }
+    mergeService.gatherCart(promotableOrder);
+    fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(promotableOrder);
   }
-  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,promotableOrder.getCustomer());
-  List<PromotableCandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
-  for (  Offer offer : filteredOffers) {
-    fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(promotableOrder,qualifiedFGOffers,offer);
-  }
-  if (!qualifiedFGOffers.isEmpty()) {
-    fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,promotableOrder);
-  }
-  fulfillmentGroupOfferProcessor.gatherCart(promotableOrder);
-  fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(promotableOrder);
 }

@@ -1,0 +1,20 @@
+{
+  try {
+    mergeSplitDiscreteOrderItems(order);
+    mergeSplitBundleOrderItems(order);
+    order.resetDiscreteOrderItems();
+    for (    PromotableOrderItem myItem : order.getDiscountableDiscreteOrderItems()) {
+      if (myItem.isHasOrderItemAdjustments()) {
+        for (        OrderItemAdjustment adjustment : myItem.getDelegate().getOrderItemAdjustments()) {
+          PromotableOrderItemAdjustment promotableOrderItemAdjustment=promotableItemFactory.createPromotableOrderItemAdjustment(adjustment,myItem);
+          myItem.resetAdjustmentPrice();
+          promotableOrderItemAdjustment.computeAdjustmentValues();
+          myItem.computeAdjustmentPrice();
+        }
+      }
+    }
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException("Could not propagate the items split by the promotion engine into the order",e);
+  }
+}

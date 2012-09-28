@@ -2,6 +2,7 @@
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
+  mergeService.gatherSplitItemsInBundles(order);
   OrderItem orderItem=null;
   for (  OrderItem oi : order.getOrderItems()) {
     if (oi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
