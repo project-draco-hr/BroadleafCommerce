@@ -3,6 +3,8 @@
   display.getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
       display.getFormOnlyDisplay().getForm().clearValues();
+      display.getFormOnlyDisplay().getForm().disable();
+      display.getRemoveButton().disable();
     }
   }
 );
@@ -16,6 +18,8 @@
         display.getFormOnlyDisplay().getForm().enable();
       }
  else {
+        display.getFormOnlyDisplay().getForm().clearValues();
+        display.getFormOnlyDisplay().getForm().disable();
         display.getRemoveButton().disable();
       }
       updatePresenterReadOnlyStatus();
@@ -27,7 +31,7 @@
       if (event.isLeftButtonDown()) {
         display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
           @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
-            display.getRemoveButton().disable();
+            setStartState();
           }
         }
 );
