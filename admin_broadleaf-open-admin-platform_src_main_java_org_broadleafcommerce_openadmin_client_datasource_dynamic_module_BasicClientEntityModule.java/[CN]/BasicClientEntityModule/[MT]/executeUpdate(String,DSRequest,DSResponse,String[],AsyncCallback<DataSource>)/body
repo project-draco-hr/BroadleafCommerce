@@ -11,7 +11,7 @@
     }
   }
   service.update(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Entity>(EntityOperationType.UPDATE,requestId,request,response,dataSource){
-    public void onSuccess(    Entity result){
+    @Override public void onSuccess(    Entity result){
       super.onSuccess(null);
       if (processResult(result,requestId,response,dataSource)) {
         TreeNode record=(TreeNode)buildRecord(result,false);

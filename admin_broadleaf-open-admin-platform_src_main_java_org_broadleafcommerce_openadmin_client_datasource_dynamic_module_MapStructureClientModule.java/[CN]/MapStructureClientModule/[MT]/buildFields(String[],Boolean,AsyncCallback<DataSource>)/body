@@ -1,5 +1,8 @@
 {
-  AppServices.DYNAMIC_ENTITY.inspect(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria,BLCMain.csrfToken),new AbstractCallback<DynamicResultSet>(){
+  BatchManager batchManager=BatchManager.getInstance();
+  BatchPackage batchPackage=new BatchPackage();
+  batchPackage.setPersistencePackage(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria,BLCMain.csrfToken));
+  batchPackage.setAsyncCallback(new AbstractCallback<DynamicResultSet>(){
     @Override protected void onOtherException(    Throwable exception){
       super.onOtherException(exception);
       if (cb != null) {
@@ -12,7 +15,7 @@
         cb.onFailure(exception);
       }
     }
-    public void onSuccess(    DynamicResultSet result){
+    @Override public void onSuccess(    DynamicResultSet result){
       super.onSuccess(result);
       ClassMetadata metadata=result.getClassMetaData();
       filterProperties(metadata,new MergedPropertyType[]{MergedPropertyType.MAPSTRUCTUREKEY,MergedPropertyType.MAPSTRUCTUREVALUE},overrideFieldSort,((AsyncCallbackAdapter)cb).getDataSourceSetupManager());
@@ -39,4 +42,7 @@
     }
   }
 );
+  batchPackage.setBatchOperationType(BatchOperationType.INSPECT);
+  batchManager.addBatchPackage(batchPackage);
+  ((AsyncCallbackAdapter)cb).notifyManager();
 }

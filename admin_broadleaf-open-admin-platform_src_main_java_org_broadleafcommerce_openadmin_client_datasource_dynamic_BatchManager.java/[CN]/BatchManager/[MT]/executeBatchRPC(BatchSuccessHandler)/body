@@ -1,0 +1,65 @@
+{
+  BatchOperationType batchOperationType=null;
+  List<PersistencePackage> persistencePackages=new ArrayList<PersistencePackage>();
+  for (  BatchPackage batchPackage : batchPackages) {
+switch (batchPackage.getBatchOperationType()) {
+case INSPECT:
+      if (batchOperationType == null) {
+        batchOperationType=BatchOperationType.INSPECT;
+      }
+ else       if (batchOperationType != BatchOperationType.INSPECT) {
+        throw new IllegalArgumentException("Differing operation types detected in a single batch");
+      }
+    persistencePackages.add(batchPackage.getPersistencePackage());
+  break;
+default :
+throw new IllegalArgumentException("Operation Type not supported: " + batchPackage.getBatchOperationType());
+}
+}
+BatchPersistencePackage batchPersistencePackage=new BatchPersistencePackage();
+batchPersistencePackage.setPersistencePackages(persistencePackages.toArray(new PersistencePackage[persistencePackages.size()]));
+AppServices.DYNAMIC_ENTITY.batchInspect(batchPersistencePackage,new AbstractCallback<BatchDynamicResultSet>(){
+@Override protected void onOtherException(Throwable exception){
+try {
+super.onOtherException(exception);
+for (BatchPackage batchPackage : batchPackages) {
+  if (batchPackage.getAsyncCallback() != null) {
+    batchPackage.getAsyncCallback().onFailure(exception);
+    break;
+  }
+}
+}
+  finally {
+batchPackages.clear();
+}
+}
+@Override protected void onSecurityException(ApplicationSecurityException exception){
+try {
+super.onSecurityException(exception);
+for (BatchPackage batchPackage : batchPackages) {
+  if (batchPackage.getAsyncCallback() != null) {
+    batchPackage.getAsyncCallback().onFailure(exception);
+    break;
+  }
+}
+}
+  finally {
+batchPackages.clear();
+}
+}
+@Override public void onSuccess(BatchDynamicResultSet result){
+super.onSuccess(result);
+for (int j=0; j < batchPackages.size(); j++) {
+BatchPackage batchPackage=batchPackages.get(j);
+if (batchPackage.getAsyncCallback() != null) {
+  batchPackage.getAsyncCallback().onSuccess(result.getDynamicResultSets()[j]);
+}
+}
+batchPackages.clear();
+if (successHandler != null) {
+successHandler.onSuccess();
+}
+}
+}
+);
+}
