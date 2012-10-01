@@ -44,6 +44,22 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuPriceListDS",new PriceListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource top){
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("priceListMapDS",new PriceListMapDataSourceFactory(this),null,null,new AsyncCallbackAdapter(){
+    private MapStructureEntityEditDialog mapEntityAdd;
+    @Override public void onSetupSuccess(    DataSource result){
+      Map<String,Object> initialValues=new HashMap<String,Object>(2);
+      initialValues.put("name",BLCMain.getMessageManager().getString("mediaNameDefault"));
+      initialValues.put("label",BLCMain.getMessageManager().getString("mediaLabelDefault"));
+      priceListPresenter=new MapStructurePresenter(getDisplay().getSkuPriceListDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
+      priceListPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skusDS",new ProductSkusDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       skusPresenter=new SkusPresenter(getDisplay().getSkusDisplay(),"Add Sku",null,false,true,false);
