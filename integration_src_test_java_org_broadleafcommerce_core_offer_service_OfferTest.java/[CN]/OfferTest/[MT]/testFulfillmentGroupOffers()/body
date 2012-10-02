@@ -2,6 +2,7 @@
   Order order=orderService.createNewCartForCustomer(createCustomer());
   FixedPriceFulfillmentOption option=new FixedPriceFulfillmentOptionImpl();
   option.setPrice(new Money(0));
+  option.setFulfillmentType(FulfillmentType.PHYSICAL_SHIP);
   order.setFulfillmentGroups(createFulfillmentGroups(option,5D,order));
   orderService.save(order,false);
   order.addOrderItem(createDiscreteOrderItem(sku1,10D,null,true,2,order));

@@ -1,0 +1,32 @@
+{
+  CheckoutSeed seed=((CheckoutContext)context).getSeedData();
+  List<OrderItem> orderItems=seed.getOrder().getOrderItems();
+  Map<Sku,Integer> skuInventoryMap=new HashMap<Sku,Integer>();
+  for (  OrderItem orderItem : orderItems) {
+    Sku sku=null;
+    if (orderItem instanceof DiscreteOrderItem) {
+      DiscreteOrderItem item=(DiscreteOrderItem)orderItem;
+      sku=item.getSku();
+    }
+ else     if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem item=(BundleOrderItem)orderItem;
+      sku=item.getSku();
+    }
+    skuInventoryMap.put(sku,orderItem.getQuantity());
+  }
+  int retryCount=0;
+  while (retryCount < maxRetries) {
+    try {
+      inventoryService.decrementInventory(skuInventoryMap);
+      seed.getUserDefinedFields().put("BLC_INVENTORY_DECREMENTED",skuInventoryMap);
+      break;
+    }
+ catch (    ConcurrentInventoryModificationException ex) {
+      retryCount++;
+      if (retryCount == maxRetries) {
+        throw ex;
+      }
+    }
+  }
+  return context;
+}

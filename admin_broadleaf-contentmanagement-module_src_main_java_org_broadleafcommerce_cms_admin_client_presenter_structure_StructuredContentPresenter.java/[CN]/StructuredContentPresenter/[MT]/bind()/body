@@ -36,9 +36,14 @@
     }
   }
 );
-  display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
+  extendedFetchDataHandlerRegistration=display.getListDisplay().getGrid().addFetchDataHandler(new FetchDataHandler(){
     @Override public void onFilterData(    FetchDataEvent event){
       destroyContentTypeForm();
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+      getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().disable();
+      getDisplay().disableRules();
+      getDisplay().getRulesSaveButton().disable();
+      getDisplay().getRulesRefreshButton().disable();
     }
   }
 );

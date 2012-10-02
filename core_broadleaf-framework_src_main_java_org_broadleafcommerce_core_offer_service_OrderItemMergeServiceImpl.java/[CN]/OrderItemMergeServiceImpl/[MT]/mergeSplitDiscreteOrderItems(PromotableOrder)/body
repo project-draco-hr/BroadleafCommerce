@@ -1,0 +1,136 @@
+{
+  if (CollectionUtils.isEmpty(order.getDelegate().getFulfillmentGroups())) {
+    FulfillmentGroup fg=fulfillmentGroupService.createEmptyFulfillmentGroup();
+    fg.setOrder(order.getDelegate());
+    order.getDelegate().getFulfillmentGroups().add(fg);
+  }
+  List<PromotableOrderItem> itemsToRemove=new ArrayList<PromotableOrderItem>();
+  List<DiscreteOrderItem> delegatesToRemove=new ArrayList<DiscreteOrderItem>();
+  Iterator<PromotableOrderItem> finalItems=order.getDiscountableDiscreteOrderItems().iterator();
+  Map<String,PromotableOrderItem> allItems=new HashMap<String,PromotableOrderItem>();
+  while (finalItems.hasNext()) {
+    PromotableOrderItem nextItem=finalItems.next();
+    List<PromotableOrderItem> mySplits=order.searchSplitItems(nextItem);
+    if (!CollectionUtils.isEmpty(mySplits)) {
+      PromotableOrderItem cloneItem=nextItem.clone();
+      cloneItem.clearAllDiscount();
+      cloneItem.clearAllQualifiers();
+      cloneItem.removeAllAdjustments();
+      cloneItem.setQuantity(0);
+      Iterator<PromotableOrderItem> splitItemIterator=mySplits.iterator();
+      while (splitItemIterator.hasNext()) {
+        PromotableOrderItem splitItem=splitItemIterator.next();
+        if (!splitItem.isHasOrderItemAdjustments()) {
+          cloneItem.setQuantity(cloneItem.getQuantity() + splitItem.getQuantity());
+          splitItemIterator.remove();
+        }
+      }
+      if (cloneItem.getQuantity() > 0) {
+        String identifier=String.valueOf(cloneItem.getSku().getId());
+        Long bundleItemId=getBundleId(cloneItem.getDelegate());
+        if (bundleItemId != null) {
+          identifier+=bundleItemId;
+        }
+        if (allItems.containsKey(identifier)) {
+          PromotableOrderItem savedItem=allItems.get(identifier);
+          savedItem.setQuantity(savedItem.getQuantity() + cloneItem.getQuantity());
+        }
+ else {
+          allItems.put(identifier,cloneItem);
+          mySplits.add(cloneItem);
+        }
+      }
+      if (nextItem.getDelegate().getBundleOrderItem() == null) {
+        if (mySplits.contains(nextItem)) {
+          mySplits.remove(nextItem);
+        }
+ else {
+          itemsToRemove.add(nextItem);
+          delegatesToRemove.add(nextItem.getDelegate());
+        }
+      }
+ else {
+        itemsToRemove.add(nextItem);
+        delegatesToRemove.add(nextItem.getDelegate());
+      }
+    }
+  }
+  for (  OrderItemSplitContainer key : order.getSplitItems()) {
+    List<PromotableOrderItem> mySplits=key.getSplitItems();
+    if (!CollectionUtils.isEmpty(mySplits)) {
+      FulfillmentGroup identifiedFg=null;
+      for (      FulfillmentGroup fg : order.getDelegate().getFulfillmentGroups()) {
+        Iterator<FulfillmentGroupItem> fgItems=fg.getFulfillmentGroupItems().iterator();
+        while (fgItems.hasNext()) {
+          FulfillmentGroupItem fgItem=fgItems.next();
+          if (fgItem.getOrderItem().equals(key.getKey())) {
+            if (identifiedFg == null) {
+              identifiedFg=fg;
+            }
+            fulfillmentGroupItemDao.delete(fgItem);
+            fgItems.remove();
+          }
+        }
+      }
+      if (identifiedFg == null) {
+        identifiedFg=order.getDelegate().getFulfillmentGroups().get(0);
+      }
+      for (      PromotableOrderItem myItem : mySplits) {
+        myItem.assignFinalPrice();
+        DiscreteOrderItem delegateItem=myItem.getDelegate();
+        if (delegateItem.getBundleOrderItem() == null) {
+          delegateItem=(DiscreteOrderItem)addOrderItemToOrder(order.getDelegate(),delegateItem,false);
+          for (int j=0; j < delegateItem.getQuantity(); j++) {
+            Iterator<OrderMultishipOption> itr=new ArrayList<OrderMultishipOption>(order.getMultiShipOptions()).iterator();
+            while (itr.hasNext()) {
+              OrderMultishipOption option=itr.next();
+              if ((option.getOrderItem() instanceof DiscreteOrderItem) && option.getOrderItem().equals(key.getKey())) {
+                option.setOrderItem(delegateItem);
+                orderMultishipOptionService.save(option);
+                itr.remove();
+                break;
+              }
+            }
+          }
+          FulfillmentGroupItem fgItem=fulfillmentGroupItemDao.create();
+          fgItem.setQuantity(delegateItem.getQuantity());
+          fgItem.setOrderItem(delegateItem);
+          fgItem.setFulfillmentGroup(identifiedFg);
+          fgItem=fulfillmentGroupItemDao.save(fgItem);
+          identifiedFg.getFulfillmentGroupItems().add(fgItem);
+        }
+        myItem.setDelegate(delegateItem);
+      }
+    }
+  }
+  List<GiftWrapOrderItem> giftWrapItems=new ArrayList<GiftWrapOrderItem>();
+  for (  DiscreteOrderItem discreteOrderItem : order.getDelegate().getDiscreteOrderItems()) {
+    if (discreteOrderItem instanceof GiftWrapOrderItem) {
+      if (!delegatesToRemove.contains(discreteOrderItem)) {
+        giftWrapItems.add((GiftWrapOrderItem)discreteOrderItem);
+      }
+ else {
+        Iterator<OrderItem> wrappedItems=((GiftWrapOrderItem)discreteOrderItem).getWrappedItems().iterator();
+        while (wrappedItems.hasNext()) {
+          OrderItem wrappedItem=wrappedItems.next();
+          wrappedItem.setGiftWrapOrderItem(null);
+          wrappedItems.remove();
+        }
+      }
+    }
+  }
+  for (  PromotableOrderItem itemToRemove : itemsToRemove) {
+    DiscreteOrderItem delegateItem=itemToRemove.getDelegate();
+    mergeSplitGiftWrapOrderItems(order,giftWrapItems,itemToRemove,delegateItem);
+    if (delegateItem.getBundleOrderItem() == null) {
+      Iterator<OrderItem> orderItems=order.getDelegate().getOrderItems().iterator();
+      while (orderItems.hasNext()) {
+        OrderItem orderItem=orderItems.next();
+        if (orderItem.getId().equals(itemToRemove.getDelegate().getId())) {
+          orderItem.setOrder(null);
+          orderItems.remove();
+        }
+      }
+    }
+  }
+}

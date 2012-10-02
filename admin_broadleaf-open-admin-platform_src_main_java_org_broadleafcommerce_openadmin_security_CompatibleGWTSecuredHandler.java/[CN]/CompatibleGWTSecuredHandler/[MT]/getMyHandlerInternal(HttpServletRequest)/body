@@ -1,0 +1,34 @@
+{
+  String lookupPath=getUrlPathHelper().getLookupPathForRequest(request);
+  Field mapField=AbstractUrlHandlerMapping.class.getDeclaredField("handlerMap");
+  mapField.setAccessible(true);
+  Map<String,Object> handlerMap=(Map<String,Object>)mapField.get(this);
+  if (MapUtils.isEmpty(handlerMap)) {
+    afterPropertiesSet();
+  }
+  Object handler=lookupHandler(lookupPath,request);
+  if (handler == null) {
+    Object rawHandler=null;
+    if ("/".equals(lookupPath)) {
+      rawHandler=getRootHandler();
+    }
+    if (rawHandler == null) {
+      rawHandler=getDefaultHandler();
+    }
+    if (rawHandler != null) {
+      if (rawHandler instanceof String) {
+        String handlerName=(String)rawHandler;
+        rawHandler=getApplicationContext().getBean(handlerName);
+      }
+      validateHandler(rawHandler,request);
+      handler=buildPathExposingHandler(rawHandler,lookupPath,lookupPath,null);
+    }
+  }
+  if (handler != null && logger.isDebugEnabled()) {
+    logger.debug("Mapping [" + lookupPath + "] to "+ handler);
+  }
+ else   if (handler == null && logger.isTraceEnabled()) {
+    logger.trace("No handler mapping found for [" + lookupPath + "]");
+  }
+  return handler;
+}

@@ -1,0 +1,17 @@
+{
+  Connection<?> connection=ProviderSignInUtils.getConnection(new ServletWebRequest(request));
+  if (connection != null) {
+    UserProfile userProfile=connection.fetchUserProfile();
+    Customer customer=registerCustomerForm.getCustomer();
+    customer.setFirstName(userProfile.getFirstName());
+    customer.setLastName(userProfile.getLastName());
+    customer.setEmailAddress(userProfile.getEmail());
+    if (isUseEmailForLogin()) {
+      customer.setUsername(userProfile.getEmail());
+    }
+ else {
+      customer.setUsername(userProfile.getUsername());
+    }
+  }
+  return super.register(registerCustomerForm,request,response,model);
+}

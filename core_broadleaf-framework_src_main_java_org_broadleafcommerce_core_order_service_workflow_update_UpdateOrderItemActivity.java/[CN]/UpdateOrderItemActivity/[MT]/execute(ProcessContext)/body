@@ -2,10 +2,11 @@
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
+  orderItemMergeService.gatherSplitItemsInBundles(order);
   OrderItem orderItem=null;
-  for (  DiscreteOrderItem doi : order.getDiscreteOrderItems()) {
-    if (doi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
-      orderItem=doi;
+  for (  OrderItem oi : order.getOrderItems()) {
+    if (oi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
+      orderItem=oi;
     }
   }
   if (orderItem == null || !order.getOrderItems().contains(orderItem)) {
@@ -13,7 +14,25 @@
   }
   OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(orderItem));
   request.setOrderItemQuantityDelta(orderItemRequestDTO.getQuantity() - itemFromOrder.getQuantity());
+  Integer oldQuantity=itemFromOrder.getQuantity();
   itemFromOrder.setQuantity(orderItemRequestDTO.getQuantity());
+  if (itemFromOrder instanceof BundleOrderItem) {
+    Map<Sku,Integer> libraryQty=new HashMap<Sku,Integer>();
+    for (    DiscreteOrderItem doi : ((BundleOrderItem)itemFromOrder).getDiscreteOrderItems()) {
+      if (!libraryQty.containsKey(doi.getSku())) {
+        libraryQty.put(doi.getSku(),0);
+      }
+      libraryQty.put(doi.getSku(),libraryQty.get(doi.getSku()) + doi.getQuantity());
+    }
+    for (    Map.Entry<Sku,Integer> entry : libraryQty.entrySet()) {
+      entry.setValue((entry.getValue() / oldQuantity) * orderItemRequestDTO.getQuantity());
+    }
+    for (    DiscreteOrderItem doi : ((BundleOrderItem)itemFromOrder).getDiscreteOrderItems()) {
+      Integer newQty=libraryQty.get(doi.getSku());
+      doi.setQuantity(newQty);
+      libraryQty.put(doi.getSku(),0);
+    }
+  }
   order=orderService.save(order,false);
   request.setAddedOrderItem(itemFromOrder);
   request.setOrder(order);

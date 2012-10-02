@@ -1,0 +1,22 @@
+{
+  if (isUseEmailForLogin()) {
+    Customer customer=registerCustomerForm.getCustomer();
+    customer.setUsername(customer.getEmailAddress());
+  }
+  registerCustomerValidator.validate(registerCustomerForm,errors,isUseEmailForLogin());
+  if (!errors.hasErrors()) {
+    Customer newCustomer=customerService.registerCustomer(registerCustomerForm.getCustomer(),registerCustomerForm.getPassword(),registerCustomerForm.getPasswordConfirm());
+    assert(newCustomer != null);
+    ProviderSignInUtils.handlePostSignUp(newCustomer.getUsername(),new ServletWebRequest(request));
+    Authentication auth=loginService.loginCustomer(registerCustomerForm.getCustomer());
+    mergeCartProcessor.execute(request,response,auth);
+    String redirectUrl=registerCustomerForm.getRedirectUrl();
+    if (StringUtils.isNotBlank(redirectUrl) && redirectUrl.contains(":")) {
+      redirectUrl=null;
+    }
+    return StringUtils.isBlank(redirectUrl) ? getRegisterSuccessView() : "redirect:" + redirectUrl;
+  }
+ else {
+    return getRegisterView();
+  }
+}

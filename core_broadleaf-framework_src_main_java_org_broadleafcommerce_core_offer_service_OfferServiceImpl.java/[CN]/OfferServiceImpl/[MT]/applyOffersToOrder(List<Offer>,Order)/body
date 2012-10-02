@@ -1,22 +1,27 @@
 {
-  PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
-  orderOfferProcessor.clearOffersandAdjustments(promotableOrder);
-  List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,promotableOrder.getCustomer());
-  if ((filteredOffers == null) || (filteredOffers.isEmpty())) {
-    orderOfferProcessor.compileOrderTotal(promotableOrder);
-  }
- else {
-    itemOfferProcessor.gatherCart(promotableOrder);
-    orderOfferProcessor.initializeBundleSplitItems(promotableOrder);
-    List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
-    List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
-    itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
-    if ((qualifiedItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
+  OfferContext offerContext=OfferContext.getOfferContext();
+  if (offerContext == null || offerContext.executePromotionCalculation) {
+    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
+    orderOfferProcessor.clearOffersandAdjustments(promotableOrder);
+    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,promotableOrder.getCustomer());
+    if ((filteredOffers == null) || (filteredOffers.isEmpty())) {
       orderOfferProcessor.compileOrderTotal(promotableOrder);
     }
  else {
-      itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
-      itemOfferProcessor.gatherCart(promotableOrder);
+      orderItemMergeService.prepareCart(promotableOrder);
+      orderItemMergeService.gatherCart(promotableOrder);
+      orderItemMergeService.initializeBundleSplitItems(promotableOrder);
+      List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
+      List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
+      itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
+      if ((qualifiedItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
+        orderOfferProcessor.compileOrderTotal(promotableOrder);
+      }
+ else {
+        itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
+        orderItemMergeService.gatherCart(promotableOrder);
+      }
+      orderItemMergeService.finalizeCart(promotableOrder);
     }
   }
 }

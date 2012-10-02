@@ -1,7 +1,12 @@
 {
   Money price=new Money(BigDecimal.ZERO);
   for (  SkuBundleItem item : getSkuBundleItems()) {
-    price=price.add(item.getSalePrice());
+    if (item.getSalePrice() != null) {
+      price=price.add(item.getSalePrice().multiply(item.getQuantity()));
+    }
+ else {
+      price=price.add(item.getRetailPrice().multiply(item.getQuantity()));
+    }
   }
   return price;
 }

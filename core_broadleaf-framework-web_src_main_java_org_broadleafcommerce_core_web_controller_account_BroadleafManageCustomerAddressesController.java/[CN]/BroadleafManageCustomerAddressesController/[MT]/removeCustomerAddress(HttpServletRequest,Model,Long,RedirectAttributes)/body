@@ -1,5 +1,10 @@
 {
-  customerAddressService.deleteCustomerAddressById(customerAddressId);
-  redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
+  try {
+    customerAddressService.deleteCustomerAddressById(customerAddressId);
+    redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
+  }
+ catch (  DataIntegrityViolationException e) {
+    redirectAttributes.addFlashAttribute("errorMessage",getAddressRemovedErrorMessage());
+  }
   return getCustomerAddressesRedirect();
 }

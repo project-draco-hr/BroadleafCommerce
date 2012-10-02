@@ -24,7 +24,7 @@
       throw new IllegalArgumentException("Something went wrong creating automatic bundles.  Not enough skus to fulfill bundle requirements for sku id: " + skuBundleItem.getSku().getId());
     }
     for (    DiscreteOrderItem item : itemMatches) {
-      order=orderService.removeItem(order.getId(),bundleOrderItem.getId(),false);
+      order=orderService.removeItem(order.getId(),item.getId(),false);
     }
     DiscreteOrderItem baseItem=null;
     if (itemMatches.size() > 0) {
@@ -80,7 +80,6 @@
           FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
           newFulfillmentGroupItem.setOrderItem(discreteOrderItem);
           newFulfillmentGroupItem.setQuantity(discreteOrderItem.getQuantity());
-          newFulfillmentGroupItem=fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
           for (          FulfillmentGroup fg : order.getFulfillmentGroups()) {
             if (newFulfillmentGroupItem.getFulfillmentGroup() != null && fg.getId().equals(newFulfillmentGroupItem.getFulfillmentGroup().getId())) {
               fg.addFulfillmentGroupItem(newFulfillmentGroupItem);
