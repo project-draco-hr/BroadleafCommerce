@@ -8,7 +8,7 @@
     SolrInputDocument document=new SolrInputDocument();
     document.addField("id",product.getId());
     for (    Category category : product.getAllParentCategories()) {
-      document.addField("explicitCategory",category.getId());
+      document.addField(getExplicitCategoryFieldName(),category.getId());
       String categorySortField=getCategorySortField(category);
       int listIndex=category.getAllProducts().indexOf(product);
       document.addField(categorySortField,listIndex);
@@ -26,7 +26,7 @@
       fullCategoryHierarchy.addAll(category.buildFullCategoryHierarchy(null));
     }
     for (    Category category : fullCategoryHierarchy) {
-      document.addField("category",category.getId());
+      document.addField(getCategoryFieldName(),category.getId());
     }
     List<String> addedProperties=new ArrayList<String>();
     List<String> copyFieldValue=new ArrayList<String>();
@@ -37,15 +37,17 @@
           propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
         }
         Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-        for (        FieldType searchableFieldType : field.getSearchableFieldTypes()) {
-          String solrPropertyName=field.getPropertyName() + "_" + searchableFieldType.getType();
-          document.addField(solrPropertyName,propertyValue);
-          addedProperties.add(solrPropertyName);
-          copyFieldValue.add(propertyValue.toString());
+        if (field.getSearchable()) {
+          for (          FieldType searchableFieldType : field.getSearchableFieldTypes()) {
+            String solrPropertyName=getPropertyNameForFieldSearchable(field,searchableFieldType);
+            document.addField(solrPropertyName,propertyValue);
+            addedProperties.add(solrPropertyName);
+            copyFieldValue.add(propertyValue.toString());
+          }
         }
         FieldType facetFieldType=field.getFacetFieldType();
         if (facetFieldType != null) {
-          String solrFacetPropertyName=field.getPropertyName() + "_" + facetFieldType.getType();
+          String solrFacetPropertyName=getPropertyNameForFieldFacet(field);
           if (!addedProperties.contains(solrFacetPropertyName)) {
             document.addField(solrFacetPropertyName,propertyValue);
           }
@@ -55,7 +57,7 @@
         LOG.debug("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
       }
     }
-    document.addField("searchable",StringUtils.join(copyFieldValue," "));
+    document.addField(getSearchableFieldName(),StringUtils.join(copyFieldValue," "));
     documents.add(document);
   }
   if (LOG.isTraceEnabled()) {
