@@ -4,8 +4,6 @@
     fg.setOrder(order.getDelegate());
     order.getDelegate().getFulfillmentGroups().add(fg);
   }
-  order.getDelegate().getFulfillmentGroups().get(0).setAddress(null);
-  order.getDelegate().getFulfillmentGroups().get(0).setFulfillmentOption(null);
   List<PromotableOrderItem> itemsToRemove=new ArrayList<PromotableOrderItem>();
   List<DiscreteOrderItem> delegatesToRemove=new ArrayList<DiscreteOrderItem>();
   Iterator<PromotableOrderItem> finalItems=order.getDiscountableDiscreteOrderItems().iterator();
@@ -60,13 +58,22 @@
   for (  OrderItemSplitContainer key : order.getSplitItems()) {
     List<PromotableOrderItem> mySplits=key.getSplitItems();
     if (!CollectionUtils.isEmpty(mySplits)) {
-      Iterator<FulfillmentGroupItem> fgItems=order.getDelegate().getFulfillmentGroups().get(0).getFulfillmentGroupItems().iterator();
-      while (fgItems.hasNext()) {
-        FulfillmentGroupItem fgItem=fgItems.next();
-        if (fgItem.getOrderItem().equals(key.getKey())) {
-          fulfillmentGroupItemDao.delete(fgItem);
-          fgItems.remove();
+      FulfillmentGroup identifiedFg=null;
+      for (      FulfillmentGroup fg : order.getDelegate().getFulfillmentGroups()) {
+        Iterator<FulfillmentGroupItem> fgItems=fg.getFulfillmentGroupItems().iterator();
+        while (fgItems.hasNext()) {
+          FulfillmentGroupItem fgItem=fgItems.next();
+          if (fgItem.getOrderItem().equals(key.getKey())) {
+            if (identifiedFg == null) {
+              identifiedFg=fg;
+            }
+            fulfillmentGroupItemDao.delete(fgItem);
+            fgItems.remove();
+          }
         }
+      }
+      if (identifiedFg == null) {
+        identifiedFg=order.getDelegate().getFulfillmentGroups().get(0);
       }
       for (      PromotableOrderItem myItem : mySplits) {
         myItem.assignFinalPrice();
@@ -88,9 +95,9 @@
           FulfillmentGroupItem fgItem=fulfillmentGroupItemDao.create();
           fgItem.setQuantity(delegateItem.getQuantity());
           fgItem.setOrderItem(delegateItem);
-          fgItem.setFulfillmentGroup(order.getDelegate().getFulfillmentGroups().get(0));
+          fgItem.setFulfillmentGroup(identifiedFg);
           fgItem=fulfillmentGroupItemDao.save(fgItem);
-          order.getDelegate().getFulfillmentGroups().get(0).getFulfillmentGroupItems().add(fgItem);
+          identifiedFg.getFulfillmentGroupItems().add(fgItem);
         }
         myItem.setDelegate(delegateItem);
       }

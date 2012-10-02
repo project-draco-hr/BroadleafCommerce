@@ -11,7 +11,7 @@
     }
   }
   service.remove(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Void>(EntityOperationType.REMOVE,requestId,request,response,dataSource){
-    public void onSuccess(    Void item){
+    @Override public void onSuccess(    Void item){
       super.onSuccess(null);
       if (cb != null) {
         cb.onSuccess(dataSource);
