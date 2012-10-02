@@ -8,7 +8,7 @@
  catch (  ServiceException e) {
     query=null;
   }
-  if (query.length() == 0) {
+  if (query == null || query.length() == 0) {
     return "redirect:/";
   }
   if (request.getParameterMap().containsKey("facetField")) {
@@ -37,7 +37,6 @@
       response.sendRedirect(url);
       return null;
     }
-    ;
     if (StringUtils.isNotEmpty(query)) {
       List<SearchFacetDTO> availableFacets=searchService.getSearchFacets();
       ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
