@@ -1,6 +1,7 @@
 {
   List<SearchFacetDTO> facets=getSearchFacets();
+  query=sanitizeQuery(query);
   StringBuilder sb=new StringBuilder();
-  sb.append("category:").append(category.getId()).append(" AND ").append("searchable:*").append(query).append("*");
+  sb.append(getCategoryFieldName()).append(":").append(category.getId()).append(" AND ").append(getSearchableFieldName()).append(":(").append(query).append(")");
   return findProducts(sb.toString(),facets,searchCriteria,null);
 }
