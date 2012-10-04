@@ -23,6 +23,10 @@
     gridFields[j]=new ListGridField(field.getName(),field.getTitle(),j == 0 ? 200 : 150);
     if (MergedPropertyType.MAPSTRUCTUREKEY.toString().equals(field.getAttribute("mergedPropertyType"))) {
       ComboBoxItem selectItem=new ComboBoxItem();
+      DataSource optionDataSource=null;
+      if (presenterSequenceSetupManager != null && lookupDataSourcename != null) {
+        optionDataSource=presenterSequenceSetupManager.getDataSource(lookupDataSourcename);
+      }
       if (keyMap == null && optionDataSource == null) {
         throw new RuntimeException("Must supply either a key map or option data source to support the key values for this map structure.");
       }
