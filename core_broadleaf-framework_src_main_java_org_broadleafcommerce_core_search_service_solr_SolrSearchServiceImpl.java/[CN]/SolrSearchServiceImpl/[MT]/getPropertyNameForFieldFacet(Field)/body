@@ -2,5 +2,6 @@
   if (field.getFacetFieldType() == null) {
     return null;
   }
-  return new StringBuilder().append(getGlobalPrefix()).append(field.getFacetFieldType().equals(FieldType.PRICE) ? getPricelistPrefix() : getLocalePrefix()).append(field.getPropertyName()).append("_").append(field.getFacetFieldType().getType()).toString();
+  String prefix=field.getFacetFieldType().equals(FieldType.PRICE) ? getPricelistPrefix() : getLocalePrefix();
+  return getPropertyNameForFieldFacet(field,prefix);
 }
