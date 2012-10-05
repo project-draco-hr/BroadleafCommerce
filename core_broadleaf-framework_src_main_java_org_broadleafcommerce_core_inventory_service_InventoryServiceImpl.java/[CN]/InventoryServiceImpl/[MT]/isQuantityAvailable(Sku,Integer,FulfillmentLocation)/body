@@ -2,10 +2,10 @@
   if (!sku.isActive()) {
     return false;
   }
-  if (sku.getInventoryType() == null && (sku.getDefaultProduct().getDefaultCategory() == null || sku.getDefaultProduct().getDefaultCategory().getInventoryType() == null)) {
+  if (sku.getInventoryType() == null && (sku.getProduct().getDefaultCategory() == null || sku.getProduct().getDefaultCategory().getInventoryType() == null)) {
     return true;
   }
- else   if (InventoryType.NONE.equals(sku.getInventoryType()) || (sku.getDefaultProduct().getDefaultCategory() != null && InventoryType.NONE.equals(sku.getDefaultProduct().getDefaultCategory().getInventoryType()))) {
+ else   if (InventoryType.NONE.equals(sku.getInventoryType()) || (sku.getProduct().getDefaultCategory() != null && InventoryType.NONE.equals(sku.getProduct().getDefaultCategory().getInventoryType()))) {
     return true;
   }
   if (quantity == null || quantity < 0) {
