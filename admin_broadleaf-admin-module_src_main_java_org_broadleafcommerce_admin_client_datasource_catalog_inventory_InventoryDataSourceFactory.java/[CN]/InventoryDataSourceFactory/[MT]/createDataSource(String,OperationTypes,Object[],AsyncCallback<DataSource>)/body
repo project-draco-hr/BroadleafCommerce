@@ -1,0 +1,16 @@
+{
+  if (dataSource == null) {
+    operationTypes=new OperationTypes(OperationType.BASIC,OperationType.BASIC,OperationType.BASIC,OperationType.BASIC,OperationType.BASIC);
+    PersistencePerspective persistencePerspective=new PersistencePerspective(operationTypes,new String[]{},new ForeignKey[]{});
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey("fulfillmentLocation",EntityImplementations.FULFILLMENT_LOCATION,null));
+    DataSourceModule[] modules=new DataSourceModule[]{new BasicClientEntityModule(CeilingEntities.INVENTORY,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
+    dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,false,false,false,false,false);
+    dataSource.setCustomCriteria(new String[]{"inventoryList"});
+    dataSource.buildFields(null,false,cb);
+  }
+ else {
+    if (cb != null) {
+      cb.onSuccess(dataSource);
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  VLayout leftVerticalLayout=new VLayout();
+  leftVerticalLayout.setID("fulfillmentLocationListLayout");
+  leftVerticalLayout.setHeight100();
+  leftVerticalLayout.setWidth("33%");
+  leftVerticalLayout.setShowResizeBar(true);
+  addMember(leftVerticalLayout);
+  listDisplay=new DynamicEntityListView(BLCMain.getMessageManager().getString("fulfillmentLocationListTitle"),entityDataSource);
+  listDisplay.setShowResizeBar(true);
+  leftVerticalLayout.addMember(listDisplay);
+  TabSet topTabSet=new TabSet();
+  topTabSet.setID("inventoryTopTabSet");
+  topTabSet.setTabBarPosition(Side.TOP);
+  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
+  topTabSet.setWidth("67%");
+  topTabSet.setHeight100();
+  topTabSet.setPaneMargin(0);
+  addMember(topTabSet);
+  Tab detailsTab=new Tab(BLCMain.getMessageManager().getString("fulfillmentLocationDetailsTitle"));
+  detailsTab.setID("fulfillmentLocationDetailsTab");
+  topTabSet.addTab(detailsTab);
+  dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("fulfillmentLocationDetailsTitle"),entityDataSource);
+  detailsTab.setPane(dynamicFormDisplay);
+  Tab inventoryTab=new Tab(BLCMain.getMessageManager().getString("inventoryListTitle"));
+  inventoryTab.setID("inventoryList");
+  topTabSet.addTab(inventoryTab);
+  VLayout inventoryLayout=new VLayout();
+  inventoryLayout.setID("inventoryLayout");
+  inventoryLayout.setHeight100();
+  inventoryLayout.setWidth100();
+  inventoryLayout.setBackgroundColor("#eaeaea");
+  inventoryLayout.setOverflow(Overflow.AUTO);
+  inventoryDisplay=new GridStructureView(BLCMain.getMessageManager().getString("inventoryListTitle"),false,true);
+  inventoryLayout.addMember(inventoryDisplay);
+  inventoryTab.setPane(inventoryLayout);
+}

@@ -1,0 +1,26 @@
+{
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("fulfillmentLocationDS",new FulfillmentLocationDataSourceFactory(),new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource top){
+      setupDisplayItems(top);
+      ((ListGridDataSource)top).setupGridFields(new String[]{},new Boolean[]{});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("inventoryDS",new InventoryDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      inventoryPresenter=new CreateBasedListStructurePresenter(getDisplay().getInventoryDisplay(),BLCMain.getMessageManager().getString("newInventory"));
+      inventoryPresenter.setDataSource((CustomCriteriaListGridDataSource)result,new String[]{},new Boolean[]{});
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuDS",new SkuListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      ListGridDataSource listGridDataSource=(ListGridDataSource)result;
+      listGridDataSource.resetPermanentFieldVisibility("id","name","productOptionList");
+      final EntitySearchDialog skuSearch=new EntitySearchDialog(listGridDataSource,true);
+      DynamicEntityDataSource dataSource=getPresenterSequenceSetupManager().getDataSource("inventoryDS");
+      dataSource.getFormItemCallbackHandlerManager().addSearchFormItemCallback("sku",skuSearch,"Sku",null,null,null,dataSource);
+    }
+  }
+));
+}
