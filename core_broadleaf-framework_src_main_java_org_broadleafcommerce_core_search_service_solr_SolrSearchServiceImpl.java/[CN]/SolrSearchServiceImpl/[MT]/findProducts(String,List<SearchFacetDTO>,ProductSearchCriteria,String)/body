@@ -1,6 +1,6 @@
 {
   Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
-  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(getIdFieldName()).setRows(100).setFilterQueries(getNamespaceFieldName() + ":" + getCurrentNamespace()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(getIdFieldName()).setRows(searchCriteria.getPageSize()).setFilterQueries(getNamespaceFieldName() + ":" + getCurrentNamespace()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
   attachSortClause(solrQuery,searchCriteria,defaultSort);
   attachActiveFacetFilters(solrQuery,namedFacetMap,searchCriteria);
   attachFacets(solrQuery,namedFacetMap);

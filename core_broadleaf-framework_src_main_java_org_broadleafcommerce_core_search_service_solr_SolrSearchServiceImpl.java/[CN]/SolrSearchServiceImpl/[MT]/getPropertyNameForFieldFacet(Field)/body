@@ -1,7 +1,19 @@
 {
-  if (field.getFacetFieldType() == null) {
+  FieldType fieldType=field.getFacetFieldType();
+  if (fieldType == null) {
     return null;
   }
-  String prefix=field.getFacetFieldType().equals(FieldType.PRICE) ? getPricelistPrefix() : getLocalePrefix();
+  String prefix;
+  if (fieldType.equals(FieldType.PRICE)) {
+    prefix=getPricelistPrefix();
+  }
+ else {
+    if (field.getTranslatable()) {
+      prefix=getLocalePrefix();
+    }
+ else {
+      prefix=getDefaultLocalePrefix();
+    }
+  }
   return getPropertyNameForFieldFacet(field,prefix);
 }

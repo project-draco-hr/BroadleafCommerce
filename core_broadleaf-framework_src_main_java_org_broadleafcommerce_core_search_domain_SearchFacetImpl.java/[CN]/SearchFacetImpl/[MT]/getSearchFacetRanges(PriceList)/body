@@ -2,7 +2,8 @@
   List<SearchFacetRange> ranges=new ArrayList<SearchFacetRange>(searchFacetRanges);
   CollectionUtils.filter(ranges,new Predicate(){
     @Override public boolean evaluate(    Object arg){
-      return ((SearchFacetRange)arg).getPriceList() == null;
+      PriceList pl=((SearchFacetRange)arg).getPriceList();
+      return pl != null && pl.getPriceKey().equals(priceList.getPriceKey());
     }
   }
 );

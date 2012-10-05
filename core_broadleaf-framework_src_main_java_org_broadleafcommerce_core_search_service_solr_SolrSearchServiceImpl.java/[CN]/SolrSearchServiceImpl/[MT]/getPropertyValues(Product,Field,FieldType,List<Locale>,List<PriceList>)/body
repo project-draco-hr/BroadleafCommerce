@@ -5,19 +5,35 @@
   }
   Map<String,Object> values=new HashMap<String,Object>();
   if (fieldType.equals(FieldType.PRICE)) {
+    BroadleafRequestContext tempContext=new BroadleafRequestContext();
+    tempContext.setPriceList(null);
+    BroadleafRequestContext.setBroadleafRequestContext(tempContext);
     Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-    values.put("default",propertyValue);
+    values.put("",propertyValue);
+    if (priceLists != null) {
+      for (      PriceList priceList : priceLists) {
+        tempContext=new BroadleafRequestContext();
+        tempContext.setPriceList(priceList);
+        BroadleafRequestContext.setBroadleafRequestContext(tempContext);
+        product.clearDynamicPrices();
+        propertyValue=PropertyUtils.getProperty(product,propertyName);
+        values.put(priceList.getPriceKey(),propertyValue);
+      }
+    }
   }
  else {
     for (    Locale locale : locales) {
-      BroadleafRequestContext ctx=BroadleafRequestContext.getBroadleafRequestContext();
-      if (ctx == null) {
-        ctx=new BroadleafRequestContext();
-        BroadleafRequestContext.setBroadleafRequestContext(ctx);
+      String localeCode=locale.getLocaleCode();
+      if (!field.getTranslatable() && !locale.getDefaultFlag()) {
+        locale=getDefaultLocale();
       }
-      ctx.setLocale(locale);
+      if (field.getTranslatable()) {
+        BroadleafRequestContext tempContext=new BroadleafRequestContext();
+        tempContext.setLocale(locale);
+        BroadleafRequestContext.setBroadleafRequestContext(tempContext);
+      }
       Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-      values.put(locale.getLocaleCode(),propertyValue);
+      values.put(localeCode,propertyValue);
     }
   }
   return values;

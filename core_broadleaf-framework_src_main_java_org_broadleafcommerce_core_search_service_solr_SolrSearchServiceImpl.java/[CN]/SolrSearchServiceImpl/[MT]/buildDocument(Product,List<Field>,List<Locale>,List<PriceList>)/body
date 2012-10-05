@@ -6,14 +6,17 @@
   for (  Field field : fields) {
     try {
       if (field.getSearchable()) {
-        for (        FieldType searchableFieldType : field.getSearchableFieldTypes()) {
-          Map<String,Object> propertyValues=getPropertyValues(product,field,searchableFieldType,locales,priceLists);
+        for (        FieldType sft : field.getSearchableFieldTypes()) {
+          Map<String,Object> propertyValues=getPropertyValues(product,field,sft,locales,priceLists);
           for (          Entry<String,Object> entry : propertyValues.entrySet()) {
-            String prefix=entry.getKey() + "_";
+            String prefix=entry.getKey();
+            prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
+            String solrPropertyName=getPropertyNameForFieldSearchable(field,sft,prefix);
             Object value=entry.getValue();
-            String solrPropertyName=getPropertyNameForFieldSearchable(field,searchableFieldType,prefix);
-            document.addField(solrPropertyName,value);
-            addedProperties.add(solrPropertyName);
+            if (sft.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(getDefaultLocalePrefix())) {
+              document.addField(solrPropertyName,value);
+              addedProperties.add(solrPropertyName);
+            }
             List<String> copyFieldValue=copyFieldValues.get(prefix);
             if (copyFieldValue == null) {
               copyFieldValue=new ArrayList<String>();
@@ -23,15 +26,18 @@
           }
         }
       }
-      FieldType facetFieldType=field.getFacetFieldType();
-      if (facetFieldType != null) {
-        Map<String,Object> propertyValues=getPropertyValues(product,field,facetFieldType,locales,priceLists);
+      FieldType facetType=field.getFacetFieldType();
+      if (facetType != null) {
+        Map<String,Object> propertyValues=getPropertyValues(product,field,facetType,locales,priceLists);
         for (        Entry<String,Object> entry : propertyValues.entrySet()) {
-          String prefix=entry.getKey() + "_";
+          String prefix=entry.getKey();
+          prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
           String solrFacetPropertyName=getPropertyNameForFieldFacet(field,prefix);
-          if (!addedProperties.contains(solrFacetPropertyName)) {
-            Object value=entry.getValue();
-            document.addField(solrFacetPropertyName,value);
+          Object value=entry.getValue();
+          if (facetType.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(getDefaultLocalePrefix())) {
+            if (!addedProperties.contains(solrFacetPropertyName)) {
+              document.addField(solrFacetPropertyName,value);
+            }
           }
         }
       }

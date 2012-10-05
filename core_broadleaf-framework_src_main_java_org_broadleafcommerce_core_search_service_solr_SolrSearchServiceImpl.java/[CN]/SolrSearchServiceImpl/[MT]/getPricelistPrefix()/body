@@ -1,3 +1,9 @@
 {
-  return "default_";
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    PriceList priceList=BroadleafRequestContext.getBroadleafRequestContext().getPriceList();
+    if (priceList != null) {
+      return priceList.getPriceKey() + "_";
+    }
+  }
+  return getDefaultPriceListPrefix();
 }

@@ -1,4 +1,15 @@
 {
-  String prefix=searchableFieldType.equals(FieldType.PRICE) ? getPricelistPrefix() : getLocalePrefix();
+  String prefix;
+  if (searchableFieldType.equals(FieldType.PRICE)) {
+    prefix=getPricelistPrefix();
+  }
+ else {
+    if (field.getTranslatable()) {
+      prefix=getLocalePrefix();
+    }
+ else {
+      prefix=getDefaultLocalePrefix();
+    }
+  }
   return getPropertyNameForFieldSearchable(field,searchableFieldType,prefix);
 }

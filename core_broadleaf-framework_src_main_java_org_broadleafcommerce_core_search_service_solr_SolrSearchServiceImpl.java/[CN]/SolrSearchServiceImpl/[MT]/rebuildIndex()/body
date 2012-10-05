@@ -1,7 +1,16 @@
 {
   LOG.info("Rebuilding the solr index...");
   StopWatch s=new StopWatch();
-  List<Product> products=productDao.readAllActiveProducts(SystemTime.asDate());
+  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
+  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
+  if (indexPriceLists) {
+    HashMap<String,String> pricingMap=new HashMap<String,String>();
+    pricingMap.put("INDEX_PRICE_LIST","true");
+    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(pricingMap);
+    SkuPricingConsiderationContext.setSkuPricingService(priceListPricingService);
+  }
+  List<Product> products=readAllActiveProducts();
   List<Field> fields=fieldDao.readAllProductFields();
   List<Locale> locales=getAllLocales();
   List<PriceList> priceLists=getAllPriceLists();
@@ -24,6 +33,11 @@
   }
  catch (  SolrServerException e) {
     throw new ServiceException("Could not rebuild index",e);
+  }
+ finally {
+    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
+    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
+    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
   }
   LOG.info("Finished rebuilding the solr index in " + s.toLapString());
 }
