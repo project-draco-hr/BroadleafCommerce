@@ -1,0 +1,14 @@
+{
+  ClassSourceFileComposerFactory composer=new ClassSourceFileComposerFactory(packageName,simpleName);
+  for (  String interfaceItem : interfaces) {
+    composer.addImplementedInterface(interfaceItem);
+  }
+  PrintWriter printWriter=context.tryCreate(logger,packageName,simpleName);
+  if (printWriter == null) {
+    return null;
+  }
+ else {
+    SourceWriter sw=composer.createSourceWriter(context,printWriter);
+    return sw;
+  }
+}
