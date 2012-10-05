@@ -21,5 +21,14 @@
  else   if (configurationItems.containsKey("errorMessage")) {
     valid.setErrorMessage(configurationItems.get("errorMessage"));
   }
+  if (valid instanceof IntegerRangeValidator) {
+    IntegerRangeValidator integerRangeValidator=(IntegerRangeValidator)valid;
+    if (configurationItems.containsKey("min")) {
+      integerRangeValidator.setMin(Integer.parseInt(configurationItems.get("min")));
+    }
+    if (configurationItems.containsKey("max")) {
+      integerRangeValidator.setMin(Integer.parseInt(configurationItems.get("max")));
+    }
+  }
   return valid;
 }
