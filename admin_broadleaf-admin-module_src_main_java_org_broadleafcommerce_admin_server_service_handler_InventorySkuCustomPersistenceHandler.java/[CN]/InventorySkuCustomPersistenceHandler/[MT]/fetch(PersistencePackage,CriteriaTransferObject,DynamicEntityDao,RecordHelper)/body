@@ -1,0 +1,36 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    Long fulfillmentLocationId=Long.parseLong(persistencePackage.getCustomCriteria()[1]);
+    FulfillmentLocation fulfillmentLocation=(FulfillmentLocation)dynamicEntityDao.retrieve(FulfillmentLocationImpl.class,fulfillmentLocationId);
+    List<Sku> skus=inventoryService.readSkusNotAtFulfillmentLocation(fulfillmentLocation);
+    List<Serializable> records=new ArrayList<Serializable>(skus);
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
+    Entity[] payload=helper.getRecords(originalProps,records);
+    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
+    int recordSize=records.size();
+    for (int i=0; i < recordSize; i++) {
+      Sku sku=(Sku)records.get(i);
+      Entity entity=payload[i];
+      List<ProductOptionValue> optionValues=sku.getProductOptionValues();
+      StringBuilder options=new StringBuilder("");
+      for (      ProductOptionValue value : optionValues) {
+        if (StringUtils.isNotBlank(options.toString())) {
+          options.append("; ");
+        }
+        options.append(value.getProductOption().getAttributeName()).append(": ").append(value.getAttributeValue());
+      }
+      Property optionProperty=new Property();
+      optionProperty.setName("productOptionList");
+      optionProperty.setValue(options.toString());
+      entity.addProperty(optionProperty);
+    }
+    return new DynamicResultSet(payload,totalRecords);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
+  }
+}
