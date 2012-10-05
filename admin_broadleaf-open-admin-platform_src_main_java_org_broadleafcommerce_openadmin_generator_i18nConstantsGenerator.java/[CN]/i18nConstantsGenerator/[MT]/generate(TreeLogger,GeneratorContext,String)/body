@@ -1,0 +1,60 @@
+{
+  TypeOracle typeOracle=context.getTypeOracle();
+  JClassType clazz=typeOracle.findType(typeName);
+  if (clazz == null) {
+    logger.log(TreeLogger.ERROR,"Unable to find metadata for type '" + typeName + "'",null);
+    throw new UnableToCompleteException();
+  }
+  try {
+    Map<String,String> generatedClasses=generateDynamicConstantClasses(clazz,logger,context);
+    logger.log(TreeLogger.INFO,"Generating source for " + clazz.getQualifiedSourceName(),null);
+    String packageName=clazz.getPackage().getName();
+    String simpleName=clazz.getName() + "Wrapper";
+    SourceWriter sourceWriter=getSourceWriter(packageName,simpleName,context,logger,new String[]{"org.broadleafcommerce.openadmin.client.i18nConstants"});
+    if (sourceWriter != null) {
+      sourceWriter.println("private java.util.List<String> supportedLocales = new java.util.ArrayList<String>();");
+      sourceWriter.println("public " + simpleName + "() {");
+      for (      Map.Entry<String,String> entry : generatedClasses.entrySet()) {
+        sourceWriter.print("supportedLocales.add(\"");
+        sourceWriter.print(entry.getKey());
+        sourceWriter.print("\");\n");
+      }
+      sourceWriter.println("}");
+      sourceWriter.println("");
+      sourceWriter.println("public void retrievei18nProperties(final org.broadleafcommerce.openadmin.client.i18nPropertiesClient i18nClient) {");
+      sourceWriter.println("com.google.gwt.i18n.client.LocaleInfo localeInfo = com.google.gwt.i18n.client.LocaleInfo.getCurrentLocale();");
+      sourceWriter.println("String localeName = localeInfo.getLocaleName();");
+      sourceWriter.println("if (!supportedLocales.contains(localeName) && localeName.contains(\"_\")){");
+      sourceWriter.println("localeName = localeName.substring(0, localeName.indexOf(\"_\"));");
+      sourceWriter.println("if (!supportedLocales.contains(localeName)){");
+      sourceWriter.println("localeName = null;");
+      sourceWriter.println("}");
+      sourceWriter.println("} else {");
+      sourceWriter.println("localeName = null;");
+      sourceWriter.println("}");
+      sourceWriter.println("if (localeName == null){");
+      sourceWriter.print("i18nClient.onSuccess(new ");
+      sourceWriter.print(generatedClasses.values().iterator().next());
+      sourceWriter.print("().getAlli18nProperties());\n");
+      sourceWriter.println("return;");
+      sourceWriter.println("}");
+      for (      Map.Entry<String,String> entry : generatedClasses.entrySet()) {
+        sourceWriter.println("if (localeName.equals(\"" + entry.getKey() + "\")){");
+        sourceWriter.print("i18nClient.onSuccess(new ");
+        sourceWriter.print(entry.getValue());
+        sourceWriter.print("().getAlli18nProperties());\n");
+        sourceWriter.println("return;");
+        sourceWriter.println("}");
+      }
+      sourceWriter.println("i18nClient.onUnavailable(new RuntimeException(\"Unable to find a localized file for " + packageName + "."+ simpleName+ "\"));");
+      sourceWriter.println("}");
+      sourceWriter.commit(logger);
+      logger.log(TreeLogger.INFO,"Done Generating source for " + clazz.getQualifiedSourceName() + "Wrapper",null);
+    }
+    return clazz.getQualifiedSourceName() + "Wrapper";
+  }
+ catch (  NotFoundException e) {
+    e.printStackTrace();
+    throw new UnableToCompleteException();
+  }
+}
