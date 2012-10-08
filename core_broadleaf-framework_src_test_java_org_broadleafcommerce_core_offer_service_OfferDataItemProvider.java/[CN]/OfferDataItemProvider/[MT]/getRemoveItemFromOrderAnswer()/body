@@ -6,14 +6,14 @@
       Iterator<OrderItem> orderItemItr=order.getOrderItems().listIterator();
       while (orderItemItr.hasNext()) {
         OrderItem item=orderItemItr.next();
-        if (item.getId().equals((Long)EasyMock.getCurrentArguments()[1])) {
+        if (item.getId().equals(EasyMock.getCurrentArguments()[1])) {
           orderItemItr.remove();
         }
       }
       for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
         Iterator<FulfillmentGroupItem> itr=fg.getFulfillmentGroupItems().iterator();
         while (itr.hasNext()) {
-          if (itr.next().getOrderItem().getId().equals((Long)EasyMock.getCurrentArguments()[1])) {
+          if (itr.next().getOrderItem().getId().equals(EasyMock.getCurrentArguments()[1])) {
             itr.remove();
           }
         }
