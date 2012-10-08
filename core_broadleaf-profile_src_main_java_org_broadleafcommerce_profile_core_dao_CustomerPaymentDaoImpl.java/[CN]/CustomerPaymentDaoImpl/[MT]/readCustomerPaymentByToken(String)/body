@@ -1,0 +1,11 @@
+{
+  Query query=em.createNamedQuery("BC_READ_CUSTOMER_PAYMENT_BY_TOKEN");
+  query.setParameter("token",token);
+  CustomerPayment payment=null;
+  try {
+    payment=(CustomerPayment)query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+  }
+  return payment;
+}
