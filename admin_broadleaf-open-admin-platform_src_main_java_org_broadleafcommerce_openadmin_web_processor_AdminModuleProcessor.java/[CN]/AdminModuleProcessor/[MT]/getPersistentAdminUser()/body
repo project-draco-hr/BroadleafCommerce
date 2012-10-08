@@ -1,0 +1,11 @@
+{
+  SecurityContext ctx=SecurityContextHolder.getContext();
+  if (ctx != null) {
+    Authentication auth=ctx.getAuthentication();
+    if (auth != null && !auth.getName().equals(ANONYMOUS_USER_NAME)) {
+      UserDetails temp=(UserDetails)auth.getPrincipal();
+      return securityService.readAdminUserByUserName(temp.getUsername());
+    }
+  }
+  return null;
+}

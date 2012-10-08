@@ -1,0 +1,11 @@
+{
+  Query query=em.createNamedQuery("BC_READ_ADMIN_SECTION_BY_URI");
+  query.setParameter("uri",uri);
+  AdminSection adminSection=null;
+  try {
+    adminSection=(AdminSection)query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+  }
+  return adminSection;
+}

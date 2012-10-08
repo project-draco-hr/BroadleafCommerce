@@ -1,0 +1,9 @@
+{
+  String resultVar=element.getAttributeValue("resultVar");
+  initServices(arguments);
+  AdminUser user=getPersistentAdminUser();
+  if (user != null) {
+    List<AdminModule> modules=adminNavigationService.buildMenu(user);
+    addToModel(arguments,resultVar,modules);
+  }
+}

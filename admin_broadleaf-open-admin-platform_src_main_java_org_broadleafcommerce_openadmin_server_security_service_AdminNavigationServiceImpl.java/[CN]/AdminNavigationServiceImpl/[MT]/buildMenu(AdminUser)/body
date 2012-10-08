@@ -1,0 +1,12 @@
+{
+  List<AdminModule> modules=adminNavigationDao.readAllAdminModules();
+  List<AdminModule> filtered=new ArrayList<AdminModule>();
+  for (  AdminModule module : modules) {
+    if (isUserAuthorizedToViewModule(adminUser,module)) {
+      filtered.add(module);
+    }
+  }
+  BeanComparator displayComparator=new BeanComparator("displayOrder");
+  Collections.sort(filtered,displayComparator);
+  return filtered;
+}
