@@ -1,0 +1,40 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  DynamicSkuPrices prices=new DynamicSkuPrices();
+  ;
+  PriceList priceList=brc.getPriceList();
+  if (priceList != null) {
+    if (sku.getPriceDataMap() != null) {
+      PriceData priceData=sku.getPriceDataMap().get(priceList.getPriceKey());
+      if (priceData != null) {
+        prices=new DynamicSkuPrices();
+        prices.setRetailPrice(BroadleafCurrencyImpl.getMoney(priceData.getRetailPrice(),priceList.getCurrencyCode()));
+        prices.setSalePrice(BroadleafCurrencyImpl.getMoney(priceData.getSalePrice(),priceList.getCurrencyCode()));
+      }
+    }
+    Money adjustments=null;
+    if (sku.getProductOptionValueAdjustments() != null) {
+      for (      ProductOptionValue optionValue : sku.getProductOptionValues()) {
+        if (optionValue.getPriceAdjustmentMap() != null) {
+          PriceAdjustment adjustment=optionValue.getPriceAdjustmentMap().get(priceList.getPriceKey());
+          if (adjustment != null && adjustment.getPriceAdjustment() != null) {
+            Money adjustmentAsMoney=BroadleafCurrencyImpl.getMoney(adjustment.getPriceAdjustment(),priceList.getCurrencyCode());
+            if (adjustments == null) {
+              adjustments=adjustmentAsMoney;
+            }
+ else {
+              adjustments=adjustments.add(adjustmentAsMoney);
+            }
+          }
+        }
+      }
+      prices.setPriceAdjustment(adjustments);
+    }
+  }
+ else {
+    prices.setRetailPrice(sku.getRetailPrice());
+    prices.setSalePrice(sku.getSalePrice());
+    prices.setPriceAdjustment(sku.getProductOptionValueAdjustments());
+  }
+  return prices;
+}

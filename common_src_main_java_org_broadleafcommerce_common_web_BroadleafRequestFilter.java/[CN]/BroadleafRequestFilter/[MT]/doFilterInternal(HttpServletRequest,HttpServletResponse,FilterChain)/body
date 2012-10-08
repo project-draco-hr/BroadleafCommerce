@@ -25,6 +25,8 @@
   }
   Site site=siteResolver.resolveSite(request);
   Locale locale=localeResolver.resolveLocale(request);
+  BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
+  PriceList priceList=pricelistResolver.resolvePricelist(request);
   Theme theme=themeResolver.resolveTheme(request,site);
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   if (currentSandbox != null) {
@@ -36,6 +38,8 @@
   BroadleafRequestContext brc=new BroadleafRequestContext();
   brc.setSite(site);
   brc.setLocale(locale);
+  brc.setBroadleafCurrency(currency);
+  brc.setPriceList(priceList);
   brc.setRequest(request);
   brc.setSandbox(currentSandbox);
   brc.setResponse(response);

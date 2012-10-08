@@ -6,6 +6,7 @@
   bundleOrderItem.setSku(itemRequest.getSku());
   bundleOrderItem.setName(itemRequest.getName());
   bundleOrderItem.setProductBundle(productBundle);
+  bundleOrderItem.setOrder(itemRequest.getOrder());
   for (  SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
     Product bundleProduct=skuBundleItem.getBundle();
     Sku bundleSku=skuBundleItem.getSku();
@@ -23,9 +24,9 @@
     bundleItemRequest.setSku(bundleSku);
     bundleItemRequest.setItemAttributes(itemRequest.getItemAttributes());
     bundleItemRequest.setSalePriceOverride(skuBundleItem.getSalePrice());
+    bundleItemRequest.setBundleOrderItem(bundleOrderItem);
     DiscreteOrderItem bundleDiscreteItem=createDiscreteOrderItem(bundleItemRequest);
     bundleDiscreteItem.setSkuBundleItem(skuBundleItem);
-    bundleDiscreteItem.setBundleOrderItem(bundleOrderItem);
     bundleOrderItem.getDiscreteOrderItems().add(bundleDiscreteItem);
   }
   bundleOrderItem.updatePrices();

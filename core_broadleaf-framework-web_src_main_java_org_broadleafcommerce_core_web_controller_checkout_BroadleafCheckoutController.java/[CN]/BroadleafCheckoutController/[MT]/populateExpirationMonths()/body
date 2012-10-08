@@ -1,7 +1,15 @@
 {
+  DateFormatSymbols dateFormatter;
+  if (BroadleafRequestContext.hasLocale()) {
+    Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getJavaLocale();
+    dateFormatter=new DateFormatSymbols(locale);
+  }
+ else {
+    dateFormatter=new DateFormatSymbols();
+  }
   List<String> expirationMonths=new ArrayList<String>();
   NumberFormat formatter=new DecimalFormat("00");
-  String[] months=new DateFormatSymbols().getMonths();
+  String[] months=dateFormatter.getMonths();
   for (int i=1; i < months.length; i++) {
     expirationMonths.add(formatter.format(i) + " - " + months[i - 1]);
   }

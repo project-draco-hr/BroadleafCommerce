@@ -1,23 +1,35 @@
 {
-  if (salePrice == null && hasDefaultSku()) {
-    return lookupDefaultSku().getSalePrice();
+  Money returnPrice=null;
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
+    if (dynamicPrices != null) {
+      returnPrice=dynamicPrices.getSalePrice();
+    }
+ else {
+      DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+      returnPrice=dynamicPrices.getSalePrice();
+    }
   }
+ else {
+    if (salePrice != null) {
+      returnPrice=new Money(salePrice,Money.defaultCurrency());
+    }
+  }
+  if (returnPrice == null && hasDefaultSku()) {
+    returnPrice=lookupDefaultSku().getSalePrice();
+  }
+  Money optionValueAdjustments=null;
   if (dynamicPrices != null) {
-    return dynamicPrices.getSalePrice();
-  }
-  if (SkuPricingConsiderationContext.getSkuPricingConsiderationContext() != null && SkuPricingConsiderationContext.getSkuPricingConsiderationContext().size() > 0 && SkuPricingConsiderationContext.getSkuPricingService() != null) {
-    DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this,getProductOptionValueAdjustments());
-    Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
-    dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
-    handler.reset();
-    return dynamicPrices.getSalePrice();
+    optionValueAdjustments=dynamicPrices.getPriceAdjustment();
   }
  else {
-    if (getProductOptionValueAdjustments() == null) {
-      return salePrice == null ? null : new Money(salePrice);
-    }
- else {
-      return salePrice == null ? getProductOptionValueAdjustments() : getProductOptionValueAdjustments().add(new Money(salePrice));
-    }
+    optionValueAdjustments=getProductOptionValueAdjustments();
   }
+  if (optionValueAdjustments == null) {
+  }
+ else {
+    returnPrice=salePrice == null ? optionValueAdjustments : optionValueAdjustments.add(returnPrice);
+  }
+  return returnPrice;
 }

@@ -14,10 +14,10 @@
       return false;
     }
  else {
-      Money accumulatedTotal=new Money(0);
+      Money accumulatedTotal=null;
       for (      PromotableOrderItem orderItem : candidateItem.getCandidateTargets()) {
         Money itemPrice=orderItem.getCurrentPrice().multiply(orderItem.getQuantity());
-        accumulatedTotal=accumulatedTotal.add(itemPrice);
+        accumulatedTotal=accumulatedTotal == null ? itemPrice : accumulatedTotal.add(itemPrice);
         if (accumulatedTotal.greaterThan(qualifyingSubtotal)) {
           if (LOG.isTraceEnabled()) {
             LOG.trace("Offer " + offer.getName() + " meets qualifying item subtotal.");
@@ -32,7 +32,7 @@
   }
  else {
     if (candidateItem.getCandidateQualifiersMap() != null) {
-      Money accumulatedTotal=new Money(0);
+      Money accumulatedTotal=null;
       Set<PromotableOrderItem> usedItems=new HashSet<PromotableOrderItem>();
       for (      OfferItemCriteria criteria : candidateItem.getCandidateQualifiersMap().keySet()) {
         List<PromotableOrderItem> promotableItems=candidateItem.getCandidateQualifiersMap().get(criteria);
@@ -41,7 +41,7 @@
             if (!usedItems.contains(item)) {
               usedItems.add(item);
               Money itemPrice=item.getCurrentPrice().multiply(item.getQuantity());
-              accumulatedTotal=accumulatedTotal.add(itemPrice);
+              accumulatedTotal=accumulatedTotal == null ? itemPrice : accumulatedTotal.add(itemPrice);
               if (accumulatedTotal.greaterThan(qualifyingSubtotal)) {
                 if (LOG.isTraceEnabled()) {
                   LOG.trace("Offer " + offer.getName() + " meets the item subtotal requirement.");

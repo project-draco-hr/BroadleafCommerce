@@ -1,15 +1,15 @@
 {
-  Money savings=new Money(0);
+  Money savings=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0,orderItem.getDelegate().getOrder().getCurrency());
   Money salesPrice=orderItem.getPriceBeforeAdjustments(getOffer().getApplyDiscountToSalePrice());
   if (getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
-    savings=savings.add(new Money(getOffer().getValue()).multiply(qtyToReceiveSavings));
+    savings=savings.add(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getOffer().getValue(),orderItem.getDelegate().getOrder().getCurrency()).multiply(qtyToReceiveSavings));
   }
  else   if (getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
     BigDecimal savingsPercent=getOffer().getValue().divide(new BigDecimal(100));
     savings=savings.add(salesPrice.multiply(savingsPercent).multiply(qtyToReceiveSavings));
   }
  else {
-    savings=savings.add(salesPrice.multiply(qtyToReceiveSavings).subtract(new Money(getOffer().getValue()).multiply(qtyToReceiveSavings)));
+    savings=savings.add(salesPrice.multiply(qtyToReceiveSavings).subtract(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getOffer().getValue(),orderItem.getDelegate().getOrder().getCurrency()).multiply(qtyToReceiveSavings)));
   }
   return savings;
 }

@@ -1,3 +1,20 @@
 {
+  if (translations != null && BroadleafRequestContext.hasLocale()) {
+    Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getLocale();
+    String localeCode=locale.getLocaleCode();
+    if (localeCode != null) {
+      FulfillmentOptionTranslation translation=translations.get(localeCode);
+      if (translation != null && translation.getLongDescription() != null) {
+        return translation.getLongDescription();
+      }
+    }
+    String languageCode=LocaleUtil.findLanguageCode(locale);
+    if (languageCode != null && !localeCode.equals(languageCode)) {
+      FulfillmentOptionTranslation translation=translations.get(languageCode);
+      if (translation != null && translation.getLongDescription() != null) {
+        return translation.getLongDescription();
+      }
+    }
+  }
   return longDescription;
 }

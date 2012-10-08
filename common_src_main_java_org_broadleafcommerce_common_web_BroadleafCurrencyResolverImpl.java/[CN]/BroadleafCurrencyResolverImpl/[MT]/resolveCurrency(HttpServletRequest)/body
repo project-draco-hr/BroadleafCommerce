@@ -1,0 +1,26 @@
+{
+  BroadleafCurrency currency=null;
+  HttpSession session=request.getSession(true);
+  currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR);
+  if (currency == null && request.getParameter(CURRENCY_CODE_PARAM) != null) {
+    String currencyCode=request.getParameter(CURRENCY_CODE_PARAM);
+    currency=broadleafCurrencyService.findCurrencyByCode(currencyCode);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Attempt to find currency by param " + currencyCode + " resulted in "+ currency);
+    }
+  }
+  if (currency == null) {
+    currency=(BroadleafCurrency)session.getAttribute(CURRENCY_VAR);
+  }
+  if (currency == null) {
+    Locale locale=(Locale)session.getAttribute(BroadleafLocaleResolverImpl.LOCALE_VAR);
+    if (locale != null) {
+      currency=locale.getDefaultCurrency();
+    }
+  }
+  if (currency == null) {
+    currency=broadleafCurrencyService.findDefaultBroadleafCurrency();
+  }
+  session.setAttribute(CURRENCY_VAR,currency);
+  return currency;
+}

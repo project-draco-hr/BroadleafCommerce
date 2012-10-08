@@ -3,6 +3,9 @@
   query.setParameter("localeCode",localeCode);
   List<Locale> localeList=(List<Locale>)query.getResultList();
   if (localeList.size() >= 1) {
+    if (localeList.size() > 1) {
+      LOG.warn("Locale code " + localeCode + " exists for more than one locale");
+    }
     return localeList.get(0);
   }
   return null;

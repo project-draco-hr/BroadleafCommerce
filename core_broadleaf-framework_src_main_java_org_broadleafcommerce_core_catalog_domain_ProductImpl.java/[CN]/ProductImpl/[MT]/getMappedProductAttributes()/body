@@ -1,7 +1,8 @@
 {
-  Map<String,ProductAttribute> map=new HashMap<String,ProductAttribute>();
-  for (  ProductAttribute attr : getProductAttributes()) {
-    map.put(attr.getName(),attr);
+  return BLCMapUtils.keyedMap(getProductAttributes(),new TypedClosure<String,ProductAttribute>(){
+    @Override public String getKey(    ProductAttribute value){
+      return value.getName();
+    }
   }
-  return map;
+);
 }

@@ -1,0 +1,9 @@
+{
+  Query query=em.createNamedQuery("BC_READ_PRICE_LIST_BY_CURRENCY_CODE");
+  query.setParameter("currency",currency);
+  List<PriceList> priceList=query.getResultList();
+  if (priceList.size() >= 1) {
+    return priceList.get(0);
+  }
+  return null;
+}

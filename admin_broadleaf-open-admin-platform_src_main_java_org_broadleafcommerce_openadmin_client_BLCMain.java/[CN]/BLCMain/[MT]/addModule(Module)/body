@@ -1,3 +1,11 @@
 {
-  modules.put(module.getModuleKey(),module);
+  Module existing=modules.get(module.getModuleKey());
+  if (existing == null || existing == module) {
+    modules.put(module.getModuleKey(),module);
+    return;
+  }
+  for (  ModuleSectionPojo section : new ArrayList<ModuleSectionPojo>(((AbstractModule)module).getSections())) {
+    ((AbstractModule)module).removeSection(section.getSectionTitle());
+    ((AbstractModule)existing).setSection(section.getSectionTitle(),section.sectionViewKey,section.sectionViewClass,section.sectionPresenterKey,section.sectionPresenterClass,section.sectionPermissions);
+  }
 }

@@ -1,0 +1,29 @@
+{
+  super.bind();
+  addClickedHandlerRegistration=display.getAddButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DynamicEntityDataSource ds=(DynamicEntityDataSource)display.getGrid().getDataSource();
+        ForeignKey foreignKey=(ForeignKey)ds.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        initialValues.put(foreignKey.getManyToField(),abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord));
+        String[] type=new String[]{((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()};
+        initialValues.put("_type",type);
+        BLCMain.ENTITY_ADD.editNewRecord(newEntityDialogTitle,ds,initialValues,null,null,null);
+      }
+    }
+  }
+);
+  removedClickedHandlerRegistration=display.getRemoveButton().addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+          @Override public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            display.getRemoveButton().disable();
+          }
+        }
+);
+      }
+    }
+  }
+);
+}

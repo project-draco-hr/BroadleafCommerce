@@ -10,12 +10,14 @@
     Long[] values=new Long[productOptionValueIds.size()];
     productOptionValueIds.toArray(values);
     ProductOptionPricingDTO dto=new ProductOptionPricingDTO();
+    Money currentPrice;
     if (sku.isOnSale()) {
-      dto.setPrice(sku.getSalePrice().getAmount());
+      currentPrice=sku.getSalePrice();
     }
  else {
-      dto.setPrice(sku.getRetailPrice().getAmount());
+      currentPrice=sku.getRetailPrice();
     }
+    dto.setPrice(formatPrice(currentPrice));
     dto.setSelectedOptions(values);
     skuPricing.add(dto);
   }

@@ -1,0 +1,20 @@
+{
+  if (pageDTOList == null) {
+    return NULL_PAGE;
+  }
+  for (  PageDTO page : pageDTOList) {
+    if (locale != null && locale.getLocaleCode() != null) {
+      if (page.getLocaleCode().equals(locale.getLocaleCode())) {
+        if (passesPageRules(page,ruleDTOs)) {
+          return page;
+        }
+      }
+    }
+  }
+  for (  PageDTO page : pageDTOList) {
+    if (passesPageRules(page,ruleDTOs)) {
+      return page;
+    }
+  }
+  return NULL_PAGE;
+}

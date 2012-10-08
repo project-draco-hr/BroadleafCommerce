@@ -1,64 +1,22 @@
 {
   LOG.info("Rebuilding the solr index...");
   StopWatch s=new StopWatch();
-  List<Product> products=productDao.readAllActiveProducts(SystemTime.asDate());
+  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
+  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
+  if (indexPriceLists) {
+    HashMap<String,String> pricingMap=new HashMap<String,String>();
+    pricingMap.put("INDEX_PRICE_LIST","true");
+    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(pricingMap);
+    SkuPricingConsiderationContext.setSkuPricingService(priceListPricingService);
+  }
+  List<Product> products=readAllActiveProducts();
   List<Field> fields=fieldDao.readAllProductFields();
+  List<Locale> locales=getAllLocales();
+  List<PriceList> priceLists=getAllPriceLists();
   Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
   for (  Product product : products) {
-    SolrInputDocument document=new SolrInputDocument();
-    document.addField(getIdFieldName(),product.getId());
-    for (    Category category : product.getAllParentCategories()) {
-      document.addField(getExplicitCategoryFieldName(),category.getId());
-      String categorySortField=getCategorySortField(category);
-      int listIndex=category.getAllProducts().indexOf(product);
-      document.addField(categorySortField,listIndex);
-    }
-    Set<Category> fullCategoryHierarchy=new TreeSet<Category>(new Comparator<Category>(){
-      @Override public int compare(      Category o1,      Category o2){
-        if (o1.equals(o2)) {
-          return 0;
-        }
-        return 1;
-      }
-    }
-);
-    for (    Category category : product.getAllParentCategories()) {
-      fullCategoryHierarchy.addAll(category.buildFullCategoryHierarchy(null));
-    }
-    for (    Category category : fullCategoryHierarchy) {
-      document.addField(getCategoryFieldName(),category.getId());
-    }
-    List<String> addedProperties=new ArrayList<String>();
-    List<String> copyFieldValue=new ArrayList<String>();
-    for (    Field field : fields) {
-      try {
-        String propertyName=field.getPropertyName();
-        if (propertyName.contains("productAttributes.")) {
-          propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
-        }
-        Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-        if (field.getSearchable()) {
-          for (          FieldType searchableFieldType : field.getSearchableFieldTypes()) {
-            String solrPropertyName=getPropertyNameForFieldSearchable(field,searchableFieldType);
-            document.addField(solrPropertyName,propertyValue);
-            addedProperties.add(solrPropertyName);
-            copyFieldValue.add(propertyValue.toString());
-          }
-        }
-        FieldType facetFieldType=field.getFacetFieldType();
-        if (facetFieldType != null) {
-          String solrFacetPropertyName=getPropertyNameForFieldFacet(field);
-          if (!addedProperties.contains(solrFacetPropertyName)) {
-            document.addField(solrFacetPropertyName,propertyValue);
-          }
-        }
-      }
- catch (      Exception e) {
-        LOG.debug("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
-      }
-    }
-    document.addField(getSearchableFieldName(),StringUtils.join(copyFieldValue," "));
-    documents.add(document);
+    documents.add(buildDocument(product,fields,locales,priceLists));
   }
   if (LOG.isTraceEnabled()) {
     for (    SolrInputDocument document : documents) {
@@ -66,13 +24,20 @@
     }
   }
   try {
-    server.deleteByQuery(getGlobalPrefix() + "*:*");
+    String deleteQuery=getNamespaceFieldName() + ":" + getCurrentNamespace();
+    LOG.trace("Deleting by query: " + deleteQuery);
+    server.deleteByQuery(deleteQuery);
     server.commit();
     server.add(documents);
     server.commit();
   }
  catch (  SolrServerException e) {
     throw new ServiceException("Could not rebuild index",e);
+  }
+ finally {
+    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
+    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
+    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
   }
   LOG.info("Finished rebuilding the solr index in " + s.toLapString());
 }

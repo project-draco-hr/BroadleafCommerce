@@ -1,0 +1,14 @@
+{
+  if (price == null) {
+    return null;
+  }
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc.getJavaLocale() != null) {
+    NumberFormat format=NumberFormat.getCurrencyInstance(brc.getJavaLocale());
+    format.setCurrency(price.getCurrency());
+    return format.format(price.getAmount());
+  }
+ else {
+    return "$ " + price.getAmount().toString();
+  }
+}

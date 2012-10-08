@@ -1,16 +1,16 @@
 {
-  Money orderTotalTax=new Money(BigDecimal.ZERO);
+  Money orderTotalTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    Money fgTotalFgTax=new Money(BigDecimal.ZERO);
-    Money fgTotalItemTax=new Money(BigDecimal.ZERO);
-    Money fgTotalFeeTax=new Money(BigDecimal.ZERO);
+    Money fgTotalFgTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
+    Money fgTotalItemTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
+    Money fgTotalFeeTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
     if (fg.getTaxes() != null) {
       for (      TaxDetail tax : fg.getTaxes()) {
         fgTotalFgTax=fgTotalFgTax.add(tax.getAmount());
       }
     }
     for (    FulfillmentGroupItem item : fg.getFulfillmentGroupItems()) {
-      Money itemTotalTax=new Money(BigDecimal.ZERO);
+      Money itemTotalTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
       if (item.getTaxes() != null) {
         for (        TaxDetail tax : item.getTaxes()) {
           itemTotalTax=itemTotalTax.add(tax.getAmount());
@@ -20,7 +20,7 @@
       fgTotalItemTax=fgTotalItemTax.add(itemTotalTax);
     }
     for (    FulfillmentGroupFee fee : fg.getFulfillmentGroupFees()) {
-      Money feeTotalTax=new Money(BigDecimal.ZERO);
+      Money feeTotalTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency());
       if (fee.getTaxes() != null) {
         for (        TaxDetail tax : fee.getTaxes()) {
           feeTotalTax=feeTotalTax.add(tax.getAmount());
@@ -29,7 +29,7 @@
       fee.setTotalTax(feeTotalTax);
       fgTotalFeeTax=fgTotalFeeTax.add(feeTotalTax);
     }
-    Money fgTotalTax=new Money(BigDecimal.ZERO).add(fgTotalFgTax).add(fgTotalItemTax).add(fgTotalFeeTax);
+    Money fgTotalTax=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(BigDecimal.ZERO,order.getCurrency()).add(fgTotalFgTax).add(fgTotalItemTax).add(fgTotalFeeTax);
     fg.setTotalFulfillmentGroupTax(fgTotalFgTax);
     fg.setTotalItemTax(fgTotalItemTax);
     fg.setTotalFeeTax(fgTotalFeeTax);

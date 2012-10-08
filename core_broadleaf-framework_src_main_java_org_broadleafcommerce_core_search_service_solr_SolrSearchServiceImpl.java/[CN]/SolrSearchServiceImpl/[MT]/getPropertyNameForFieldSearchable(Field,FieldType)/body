@@ -1,3 +1,15 @@
 {
-  return new StringBuilder().append(getGlobalPrefix()).append(searchableFieldType.equals(FieldType.PRICE) ? getPricelistPrefix() : getLocalePrefix()).append(field.getPropertyName()).append("_").append(searchableFieldType.getType()).toString();
+  String prefix;
+  if (searchableFieldType.equals(FieldType.PRICE)) {
+    prefix=getPricelistPrefix();
+  }
+ else {
+    if (field.getTranslatable()) {
+      prefix=getLocalePrefix();
+    }
+ else {
+      prefix=getDefaultLocalePrefix();
+    }
+  }
+  return getPropertyNameForFieldSearchable(field,searchableFieldType,prefix);
 }

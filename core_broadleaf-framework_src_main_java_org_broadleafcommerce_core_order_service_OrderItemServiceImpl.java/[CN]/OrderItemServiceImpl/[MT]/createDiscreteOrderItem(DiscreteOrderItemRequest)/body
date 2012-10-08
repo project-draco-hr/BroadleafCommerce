@@ -1,6 +1,7 @@
 {
   final DiscreteOrderItem item=(DiscreteOrderItem)orderItemDao.create(OrderItemType.DISCRETE);
   populateDiscreteOrderItem(item,itemRequest);
+  item.setBundleOrderItem(itemRequest.getBundleOrderItem());
   item.setBaseSalePrice(itemRequest.getSalePriceOverride() == null ? itemRequest.getSku().getSalePrice() : itemRequest.getSalePriceOverride());
   item.setBaseRetailPrice(itemRequest.getSku().getRetailPrice());
   item.setDiscreteOrderItemFeePrices(itemRequest.getDiscreteOrderItemFeePrices());

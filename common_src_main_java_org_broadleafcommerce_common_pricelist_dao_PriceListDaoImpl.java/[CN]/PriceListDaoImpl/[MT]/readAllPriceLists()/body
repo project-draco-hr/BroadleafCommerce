@@ -1,0 +1,7 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<PriceList> criteria=builder.createQuery(PriceList.class);
+  Root<PriceListImpl> priceList=criteria.from(PriceListImpl.class);
+  criteria.select(priceList);
+  return (List<PriceList>)em.createQuery(criteria).getResultList();
+}

@@ -1,0 +1,19 @@
+{
+  Sku sku=skuDao.readSkuById(skuId);
+  Product product;
+  if (productId != null) {
+    product=productDao.readProductById(productId);
+  }
+ else {
+    product=null;
+  }
+  Category category;
+  if (categoryId != null) {
+    category=categoryDao.readCategoryById(categoryId);
+  }
+ else {
+    category=null;
+  }
+  Order order=orderDao.readOrderById(orderId);
+  return createDiscreteOrderItemRequest(order,null,sku,product,category,quantity,null);
+}

@@ -3,6 +3,7 @@
   if (cart == null || cart.equals(orderService.getNullOrder())) {
     cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
   }
+  repriceOrderProcessor.execute(request,response);
   cart=orderService.addItem(cart.getId(),itemRequest,false);
   cart=orderService.save(cart,true);
   CartState.setCart(cart);

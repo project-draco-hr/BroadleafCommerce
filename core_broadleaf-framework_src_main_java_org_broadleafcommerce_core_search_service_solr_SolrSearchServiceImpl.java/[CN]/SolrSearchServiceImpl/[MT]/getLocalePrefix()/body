@@ -1,3 +1,9 @@
 {
-  return "";
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getLocale();
+    if (locale != null) {
+      return locale.getLocaleCode() + "_";
+    }
+  }
+  return getDefaultLocalePrefix();
 }

@@ -19,7 +19,19 @@
       }
     }
     for (    PromotableCandidateFulfillmentGroupOffer candidate : fgOffers) {
-      potential.setTotalSavings(potential.getTotalSavings().add(candidate.getFulfillmentGroup().getPriceBeforeAdjustments(candidate.getOffer().getApplyDiscountToSalePrice()).subtract(candidate.getDiscountedPrice())));
+      if (potential.getTotalSavings().getAmount().equals(BankersRounding.zeroAmount())) {
+        BroadleafCurrency currency=candidate.getFulfillmentGroup().getDelegate().getOrder().getCurrency();
+        if (currency != null) {
+          potential.setTotalSavings(new Money(BigDecimal.ZERO,currency.getCurrencyCode()));
+        }
+ else {
+          potential.setTotalSavings(new Money(BigDecimal.ZERO));
+        }
+      }
+      boolean applyToSalePrice=candidate.getOffer().getApplyDiscountToSalePrice();
+      Money priceBeforeAdjustments=candidate.getFulfillmentGroup().getPriceBeforeAdjustments(applyToSalePrice);
+      Money discountedPrice=candidate.getDiscountedPrice();
+      potential.setTotalSavings(potential.getTotalSavings().add(priceBeforeAdjustments.subtract(discountedPrice)));
       potential.setPriority(candidate.getOffer().getPriority());
     }
     potentials.add(potential);

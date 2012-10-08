@@ -1,0 +1,19 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  DynamicSkuPrices prices=new DynamicSkuPrices();
+  ;
+  PriceList priceList=brc.getPriceList();
+  if ((priceList != null)) {
+    if (skuBundleItem.getPriceDataMap() != null) {
+      SkuBundleItemPriceData priceData=skuBundleItem.getPriceDataMap().get(priceList.getPriceKey());
+      if (priceData != null) {
+        prices=new DynamicSkuPrices();
+        prices.setSalePrice(BroadleafCurrencyImpl.getMoney(priceData.getSalePrice(),priceList.getCurrencyCode()));
+      }
+    }
+  }
+ else {
+    prices.setSalePrice(skuBundleItem.getSalePrice());
+  }
+  return prices;
+}

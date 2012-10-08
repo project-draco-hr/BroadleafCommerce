@@ -1,9 +1,9 @@
 {
   if (shouldSumItems()) {
-    Money currentBundleTaxablePrice=new Money();
+    Money currentBundleTaxablePrice=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getOrder().getCurrency());
     for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
       Money currentItemTaxablePrice=discreteOrderItem.getTaxablePrice();
-      currentBundleTaxablePrice=currentBundleTaxablePrice.add(new Money(currentItemTaxablePrice.doubleValue() * discreteOrderItem.getQuantity()));
+      currentBundleTaxablePrice=currentBundleTaxablePrice.add(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(currentItemTaxablePrice.doubleValue() * discreteOrderItem.getQuantity(),getOrder().getCurrency()));
     }
     for (    BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
       if (fee.isTaxable()) {
@@ -13,7 +13,7 @@
     return currentBundleTaxablePrice;
   }
  else {
-    Money taxablePrice=new Money(0D);
+    Money taxablePrice=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,getOrder().getCurrency());
     if (sku != null && sku.isTaxable() == null || sku.isTaxable()) {
       taxablePrice=getPrice();
     }
