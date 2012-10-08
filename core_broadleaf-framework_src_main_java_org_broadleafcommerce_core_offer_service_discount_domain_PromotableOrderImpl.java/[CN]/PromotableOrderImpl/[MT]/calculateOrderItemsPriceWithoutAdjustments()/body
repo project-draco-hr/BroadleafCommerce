@@ -1,5 +1,5 @@
 {
-  Money calculatedSubTotal=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getDelegate().getCurrency());
+  Money calculatedSubTotal=BroadleafCurrencyUtils.getMoney(getDelegate().getCurrency());
   for (  OrderItem orderItem : delegate.getOrderItems()) {
     Money price=orderItem.getPriceBeforeAdjustments(true);
     calculatedSubTotal=calculatedSubTotal.add(price.multiply(orderItem.getQuantity()));

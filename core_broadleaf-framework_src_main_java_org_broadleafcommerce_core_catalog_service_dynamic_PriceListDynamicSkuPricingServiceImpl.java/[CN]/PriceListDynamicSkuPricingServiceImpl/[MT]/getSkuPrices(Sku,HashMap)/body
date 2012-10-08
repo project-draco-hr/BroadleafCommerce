@@ -8,8 +8,8 @@
       PriceData priceData=sku.getPriceDataMap().get(priceList.getPriceKey());
       if (priceData != null) {
         prices=new DynamicSkuPrices();
-        prices.setRetailPrice(BroadleafCurrencyImpl.getMoney(priceData.getRetailPrice(),priceList.getCurrencyCode()));
-        prices.setSalePrice(BroadleafCurrencyImpl.getMoney(priceData.getSalePrice(),priceList.getCurrencyCode()));
+        prices.setRetailPrice(BroadleafCurrencyUtils.getMoney(priceData.getRetailPrice(),priceList.getCurrencyCode()));
+        prices.setSalePrice(BroadleafCurrencyUtils.getMoney(priceData.getSalePrice(),priceList.getCurrencyCode()));
       }
     }
     Money adjustments=null;
@@ -18,7 +18,7 @@
         if (optionValue.getPriceAdjustmentMap() != null) {
           PriceAdjustment adjustment=optionValue.getPriceAdjustmentMap().get(priceList.getPriceKey());
           if (adjustment != null && adjustment.getPriceAdjustment() != null) {
-            Money adjustmentAsMoney=BroadleafCurrencyImpl.getMoney(adjustment.getPriceAdjustment(),priceList.getCurrencyCode());
+            Money adjustmentAsMoney=BroadleafCurrencyUtils.getMoney(adjustment.getPriceAdjustment(),priceList.getCurrencyCode());
             if (adjustments == null) {
               adjustments=adjustmentAsMoney;
             }

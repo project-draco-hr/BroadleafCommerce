@@ -2,16 +2,17 @@
   if (shouldSumItems()) {
     Money bundleSalePrice=null;
     if (hasSaleItems()) {
-      bundleSalePrice=org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(getOrder().getCurrency());
+      bundleSalePrice=BroadleafCurrencyUtils.getMoney(getOrder().getCurrency());
       for (      DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
-        Money itemSalePrice=null;
+        BigDecimal itemSalePrice=null;
         if (discreteOrderItem.getSalePrice() != null) {
-          itemSalePrice=discreteOrderItem.getSalePrice();
+          itemSalePrice=discreteOrderItem.getSalePrice().getAmount();
         }
  else {
-          itemSalePrice=discreteOrderItem.getRetailPrice();
+          itemSalePrice=discreteOrderItem.getRetailPrice().getAmount();
         }
-        bundleSalePrice=bundleSalePrice.add(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(itemSalePrice.doubleValue() * discreteOrderItem.getQuantity(),getOrder().getCurrency()));
+        BigDecimal quantityPrice=itemSalePrice.multiply(new BigDecimal(discreteOrderItem.getQuantity()));
+        bundleSalePrice=bundleSalePrice.add(BroadleafCurrencyUtils.getMoney(quantityPrice,getOrder().getCurrency()));
       }
       for (      BundleOrderItemFeePrice fee : getBundleOrderItemFeePrices()) {
         bundleSalePrice=bundleSalePrice.add(fee.getAmount());

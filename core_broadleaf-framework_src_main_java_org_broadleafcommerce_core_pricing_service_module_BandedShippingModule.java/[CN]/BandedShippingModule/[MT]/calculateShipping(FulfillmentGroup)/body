@@ -5,9 +5,9 @@
   }
   if (fulfillmentGroup.getFulfillmentGroupItems().size() == 0) {
     LOG.warn("fulfillment group (" + fulfillmentGroup.getId() + ") does not contain any fulfillment group items. Unable to price banded shipping");
-    fulfillmentGroup.setShippingPrice(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,fulfillmentGroup.getOrder().getCurrency()));
-    fulfillmentGroup.setSaleShippingPrice(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,fulfillmentGroup.getOrder().getCurrency()));
-    fulfillmentGroup.setRetailShippingPrice(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(0D,fulfillmentGroup.getOrder().getCurrency()));
+    fulfillmentGroup.setShippingPrice(BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,fulfillmentGroup.getOrder().getCurrency()));
+    fulfillmentGroup.setSaleShippingPrice(BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,fulfillmentGroup.getOrder().getCurrency()));
+    fulfillmentGroup.setRetailShippingPrice(BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,fulfillmentGroup.getOrder().getCurrency()));
     return;
   }
   Address address=fulfillmentGroup.getAddress();
@@ -34,7 +34,7 @@
  else {
     shippingPrice=sr.getBandResultQuantity();
   }
-  fulfillmentGroup.setShippingPrice(org.broadleafcommerce.common.currency.domain.BroadleafCurrencyImpl.getMoney(shippingPrice,fulfillmentGroup.getOrder().getCurrency()));
+  fulfillmentGroup.setShippingPrice(BroadleafCurrencyUtils.getMoney(shippingPrice,fulfillmentGroup.getOrder().getCurrency()));
   fulfillmentGroup.setSaleShippingPrice(fulfillmentGroup.getShippingPrice());
   fulfillmentGroup.setRetailShippingPrice(fulfillmentGroup.getSaleShippingPrice());
 }
