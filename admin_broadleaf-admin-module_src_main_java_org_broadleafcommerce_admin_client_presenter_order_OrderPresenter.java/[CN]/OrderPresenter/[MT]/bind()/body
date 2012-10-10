@@ -83,7 +83,7 @@
 );
   getDisplay().getExportOrdersButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
-      AppServices.EXPORT.getExporters(AdminExporterType.ORDER,new AsyncCallback<List<AdminExporterDTO>>(){
+      AppServices.EXPORT.getExporters(AdminExporterType.ORDER.toString(),new AsyncCallback<List<AdminExporterDTO>>(){
         @Override public void onSuccess(        final List<AdminExporterDTO> result){
           if (result == null || result.size() == 0) {
             SC.say(BLCMain.getMessageManager().getString("noOrderExporters"));
