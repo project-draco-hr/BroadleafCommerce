@@ -1,9 +1,15 @@
 {
   Order cart=CartState.getCart();
-  if (cart == null || cart.equals(orderService.getNullOrder())) {
-    cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
+  if (cart == null || cart instanceof NullOrderImpl) {
+    BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+    if (BroadleafRequestContext.hasLocale() && (brc.getPriceList() != null)) {
+      cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request),brc.getPriceList(),brc.getLocale());
+    }
+ else {
+      cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
+    }
   }
-  repriceOrderProcessor.execute(request,response);
+  updateCartService.validateCart(cart);
   cart=orderService.addItem(cart.getId(),itemRequest,false);
   cart=orderService.save(cart,true);
   CartState.setCart(cart);

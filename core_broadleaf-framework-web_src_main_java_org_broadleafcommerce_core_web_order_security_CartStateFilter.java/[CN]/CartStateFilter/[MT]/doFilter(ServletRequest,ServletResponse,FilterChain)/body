@@ -8,6 +8,22 @@
     if (cart == null) {
       cart=orderService.getNullOrder();
     }
+ else {
+      try {
+        updateCartService.validateCart(cart);
+      }
+ catch (      IllegalArgumentException e) {
+        if (copyCartToNewLocaleAndPricelist) {
+          UpdateCartResponse updateCartResponse=updateCartService.copyCartToNewLocaleAndPricelist(cart);
+          request.setAttribute("updateCartResponse",updateCartResponse);
+        }
+ else {
+          BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+          orderService.cancelOrder(cart);
+          cart=orderService.createNewCartForCustomer(customer,brc.getPriceList(),brc.getLocale());
+        }
+      }
+    }
     request.setAttribute(cartRequestAttributeName,cart);
     Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);
     if (ruleMap == null) {

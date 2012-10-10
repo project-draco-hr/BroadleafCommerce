@@ -41,15 +41,30 @@
     }
   }
   for (  OrderItem orderItem : itemsToReset) {
-    currentCart=orderService.removeItem(currentCart.getId(),orderItem.getId(),false);
+    try {
+      currentCart=orderService.removeItem(currentCart.getId(),orderItem.getId(),false);
+    }
+ catch (    RemoveFromCartException e) {
+      e.printStackTrace();
+    }
   }
   for (  AddToCartItem itemRequest : itemsToReprice) {
-    currentCart=orderService.addItem(currentCart.getId(),itemRequest,false);
+    try {
+      currentCart=orderService.addItem(currentCart.getId(),itemRequest,false);
+    }
+ catch (    AddToCartException e) {
+      e.printStackTrace();
+    }
   }
-  currentCart=orderService.save(currentCart,repriceOrder);
+  try {
+    currentCart=orderService.save(currentCart,repriceOrder);
+  }
+ catch (  PricingException e) {
+    e.printStackTrace();
+  }
   setSavedCurrency(currency);
-  RepriceOrderResponse repriceOrderResponse=new RepriceOrderResponse();
-  repriceOrderResponse.setRemovedItems(itemsToRemove);
-  repriceOrderResponse.setOrder(currentCart);
-  return repriceOrderResponse;
+  UpdateCartResponse updateCartResponse=new UpdateCartResponse();
+  updateCartResponse.setRemovedItems(itemsToRemove);
+  updateCartResponse.setOrder(currentCart);
+  return updateCartResponse;
 }
