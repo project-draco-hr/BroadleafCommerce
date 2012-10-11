@@ -1,5 +1,6 @@
 {
-  Order wishlist=orderService.findNamedOrderForCustomer(wishlistName,CustomerState.getCustomer());
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Order wishlist=orderService.findNamedOrderForCustomerByPricelistAndLocale(wishlistName,CustomerState.getCustomer(),brc.getPriceList(),brc.getLocale());
   orderService.addAllItemsFromNamedOrder(wishlist,true);
   model.addAttribute("wishlist",wishlist);
   return getAccountWishlistRedirect();

@@ -1,7 +1,8 @@
 {
-  Order wishlist=orderService.findNamedOrderForCustomer(wishlistName,CustomerState.getCustomer(request));
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Order wishlist=orderService.findNamedOrderForCustomerByPricelistAndLocale(wishlistName,CustomerState.getCustomer(request),brc.getPriceList(),brc.getLocale());
   if (wishlist == null) {
-    wishlist=orderService.createNamedOrderForCustomer(wishlistName,CustomerState.getCustomer(request));
+    wishlist=orderService.createNamedOrderForCustomer(wishlistName,CustomerState.getCustomer(request),brc.getPriceList(),brc.getLocale());
   }
   wishlist=orderService.addItem(wishlist.getId(),itemRequest,true);
   return getAccountWishlistRedirect();
