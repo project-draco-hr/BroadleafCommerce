@@ -2,5 +2,13 @@
 synchronized (DynamicEntityDaoImpl.LOCK_OBJECT) {
     DynamicEntityDaoImpl.METADATA_CACHE.clear();
     DynamicEntityDaoImpl.POLYMORPHIC_ENTITY_CACHE.clear();
+    try {
+      Field metadataCache=DynamicEntityRemoteService.class.getDeclaredField("METADATA_CACHE");
+      metadataCache.setAccessible(true);
+      ((Map)metadataCache.get(null)).clear();
+    }
+ catch (    Throwable e) {
+      throw new RuntimeException(e);
+    }
   }
 }
