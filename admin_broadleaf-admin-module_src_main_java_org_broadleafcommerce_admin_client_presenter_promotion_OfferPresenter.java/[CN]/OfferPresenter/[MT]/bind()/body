@@ -187,6 +187,10 @@
             getDisplay().getListDisplay().getRemoveButton().enable();
           }
           changeSelection(selectedRecord);
+          for (          Map.Entry<String,SubPresentable> subPresentable : subPresentables.entrySet()) {
+            subPresentable.getValue().setStartState();
+            subPresentable.getValue().load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
+          }
         }
       }
     }
