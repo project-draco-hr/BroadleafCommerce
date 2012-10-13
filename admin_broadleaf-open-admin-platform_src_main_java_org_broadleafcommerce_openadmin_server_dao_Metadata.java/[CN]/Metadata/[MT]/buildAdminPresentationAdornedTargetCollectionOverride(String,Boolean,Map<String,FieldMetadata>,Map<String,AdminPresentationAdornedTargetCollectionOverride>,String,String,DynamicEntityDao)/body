@@ -26,7 +26,7 @@
           Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
           FieldMetadataOverride localMetadata=constructAdornedTargetCollectionMetadataOverride(annot);
           Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-          buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata);
+          buildAdornedTargetCollectionMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
           AdornedTargetCollectionMetadata result=(AdornedTargetCollectionMetadata)temp.get(field.getName());
           result.setInheritedFromType(serverMetadata.getInheritedFromType());
           result.setAvailableToTypes(serverMetadata.getAvailableToTypes());
