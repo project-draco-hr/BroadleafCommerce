@@ -53,7 +53,6 @@
         fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),Long.valueOf(totalRecords + 1));
       }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
-      persistenceManager.getDynamicEntityDao().flush();
       persistenceManager.getDynamicEntityDao().clear();
       List<Serializable> recordsInserted2=persistenceManager.getDynamicEntityDao().query(queryCriteriaInserted,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
       payload=getRecords(mergedPropertiesTarget,recordsInserted2,mergedProperties,adornedTargetList.getTargetObjectPath())[0];
