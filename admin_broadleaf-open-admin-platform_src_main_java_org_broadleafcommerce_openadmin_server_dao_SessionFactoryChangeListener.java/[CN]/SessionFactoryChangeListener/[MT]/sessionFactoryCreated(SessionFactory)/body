@@ -10,5 +10,13 @@ synchronized (DynamicEntityDaoImpl.LOCK_OBJECT) {
  catch (    Throwable e) {
       throw new RuntimeException(e);
     }
+    try {
+      Field fieldCache=IdOverrideTableGenerator.class.getDeclaredField("FIELD_CACHE");
+      fieldCache.setAccessible(true);
+      ((Map)fieldCache.get(null)).clear();
+    }
+ catch (    Throwable e) {
+      throw new RuntimeException(e);
+    }
   }
 }
