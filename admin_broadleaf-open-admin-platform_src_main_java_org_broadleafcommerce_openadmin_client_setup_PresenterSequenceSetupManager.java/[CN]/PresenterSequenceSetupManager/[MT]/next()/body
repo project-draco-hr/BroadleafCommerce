@@ -1,10 +1,8 @@
 {
   if (itemsIterator.hasNext()) {
-    stage1=true;
     itemsIterator.next().invoke();
   }
  else   if (supplementalItemsIterator != null && supplementalItemsIterator.hasNext()) {
-    stage2=true;
     supplementalItemsIterator.next().invoke();
   }
  else {
@@ -13,6 +11,7 @@
       batchManager.executeBatchRPC(new BatchSuccessHandler(){
         @Override public void onSuccess(){
           if (supplementalItemsIterator == null) {
+            stage2=true;
             supplementalItemsIterator=supplementalItems.iterator();
           }
           if (supplementalItemsIterator.hasNext()) {

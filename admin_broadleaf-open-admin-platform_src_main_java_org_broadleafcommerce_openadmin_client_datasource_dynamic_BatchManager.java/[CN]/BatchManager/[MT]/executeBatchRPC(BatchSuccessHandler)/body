@@ -1,8 +1,11 @@
 {
   BatchOperationType batchOperationType=null;
   List<PersistencePackage> persistencePackages=new ArrayList<PersistencePackage>();
-  for (  BatchPackage batchPackage : batchPackages) {
-switch (batchPackage.getBatchOperationType()) {
+  Iterator<Map.Entry<Integer,BatchPackage>> itr=batchPackages.entrySet().iterator();
+  while (itr.hasNext()) {
+    Map.Entry<Integer,BatchPackage> entry=itr.next();
+    itr.remove();
+switch (entry.getValue().getBatchOperationType()) {
 case INSPECT:
       if (batchOperationType == null) {
         batchOperationType=BatchOperationType.INSPECT;
@@ -10,54 +13,57 @@ case INSPECT:
  else       if (batchOperationType != BatchOperationType.INSPECT) {
         throw new IllegalArgumentException("Differing operation types detected in a single batch");
       }
-    persistencePackages.add(batchPackage.getPersistencePackage());
-  break;
+    PersistencePackage persistencePackage=entry.getValue().getPersistencePackage();
+  persistencePackage.setBatchId(entry.getValue().getBatchPackageId());
+persistencePackages.add(persistencePackage);
+break;
 default :
-throw new IllegalArgumentException("Operation Type not supported: " + batchPackage.getBatchOperationType());
+throw new IllegalArgumentException("Operation Type not supported: " + entry.getValue().getBatchOperationType());
 }
+sentPackages.put(entry.getKey(),entry.getValue());
 }
 BatchPersistencePackage batchPersistencePackage=new BatchPersistencePackage();
 batchPersistencePackage.setPersistencePackages(persistencePackages.toArray(new PersistencePackage[persistencePackages.size()]));
 AppServices.DYNAMIC_ENTITY.batchInspect(batchPersistencePackage,new AbstractCallback<BatchDynamicResultSet>(){
 @Override protected void onOtherException(Throwable exception){
-List<BatchPackage> myPackages=new ArrayList<BatchPackage>();
-for (BatchPackage batchPackage : batchPackages) {
-myPackages.add(batchPackage);
-}
-batchPackages.clear();
+try {
 super.onOtherException(exception);
-for (BatchPackage batchPackage : myPackages) {
-if (batchPackage.getAsyncCallback() != null) {
-  batchPackage.getAsyncCallback().onFailure(exception);
-  break;
+for (Map.Entry<Integer,BatchPackage> entry : batchPackages.entrySet()) {
+if (entry.getValue().getAsyncCallback() != null) {
+entry.getValue().getAsyncCallback().onFailure(exception);
+break;
 }
+}
+}
+  finally {
+batchPackages.clear();
+sentPackages.clear();
 }
 }
 @Override protected void onSecurityException(ApplicationSecurityException exception){
-List<BatchPackage> myPackages=new ArrayList<BatchPackage>();
-for (BatchPackage batchPackage : batchPackages) {
-myPackages.add(batchPackage);
-}
-batchPackages.clear();
+try {
 super.onSecurityException(exception);
-for (BatchPackage batchPackage : myPackages) {
-if (batchPackage.getAsyncCallback() != null) {
-  batchPackage.getAsyncCallback().onFailure(exception);
-  break;
+for (Map.Entry<Integer,BatchPackage> entry : batchPackages.entrySet()) {
+if (entry.getValue().getAsyncCallback() != null) {
+entry.getValue().getAsyncCallback().onFailure(exception);
+break;
 }
+}
+}
+  finally {
+batchPackages.clear();
+sentPackages.clear();
 }
 }
 @Override public void onSuccess(BatchDynamicResultSet result){
-List<BatchPackage> myPackages=new ArrayList<BatchPackage>();
-for (BatchPackage batchPackage : batchPackages) {
-myPackages.add(batchPackage);
-}
-batchPackages.clear();
 super.onSuccess(result);
-for (int j=0; j < myPackages.size(); j++) {
-BatchPackage batchPackage=myPackages.get(j);
+for (DynamicResultSet dynamicResultSet : result.getDynamicResultSets()) {
+if (!sentPackages.containsKey(dynamicResultSet.getBatchId())) {
+throw new RuntimeException("Unable to find a BatchPackage that matches the DynamicResultSet at batchId: " + dynamicResultSet.getBatchId());
+}
+BatchPackage batchPackage=sentPackages.remove(dynamicResultSet.getBatchId());
 if (batchPackage.getAsyncCallback() != null) {
-  batchPackage.getAsyncCallback().onSuccess(result.getDynamicResultSets()[j]);
+batchPackage.getAsyncCallback().onSuccess(dynamicResultSet);
 }
 }
 if (successHandler != null) {

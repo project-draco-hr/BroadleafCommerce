@@ -1,37 +1,3 @@
 {
-  int pos=-1;
-  if (itemsIterator == null) {
-    if (items.contains(item)) {
-      pos=items.indexOf(item);
-      items.remove(pos);
-    }
-  }
- else {
-    if (supplementalItems.contains(item)) {
-      pos=supplementalItems.indexOf(item);
-      supplementalItems.remove(pos);
-    }
-  }
-  item.getAdapter().registerDataSourceSetupManager(this);
-  if (itemsIterator == null) {
-    if (pos >= 0) {
-      items.add(pos,item);
-    }
- else {
-      items.add(item);
-    }
-  }
- else {
-    if (!stage2) {
-      if (pos >= 0) {
-        supplementalItems.add(pos,item);
-      }
- else {
-        supplementalItems.add(item);
-      }
-    }
- else {
-      item.invoke();
-    }
-  }
+  addOrReplaceItem(item,null);
 }
