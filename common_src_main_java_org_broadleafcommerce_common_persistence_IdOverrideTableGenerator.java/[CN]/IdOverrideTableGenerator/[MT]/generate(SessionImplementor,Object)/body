@@ -1,5 +1,21 @@
 {
-  final Serializable id=session.getEntityPersister(entityName,obj).getIdentifier(obj,session);
+  String objName=obj.getClass().getName();
+  if (!FIELD_CACHE.containsKey(objName)) {
+    Field field=getIdField(obj.getClass());
+    if (field == null) {
+      throw new IllegalArgumentException("Cannot specify IdOverrideTableGenerator for an entity (" + objName + ") that does not have an Id field declared using the @Id annotation.");
+    }
+    field.setAccessible(true);
+    FIELD_CACHE.put(objName,field);
+  }
+  Field field=FIELD_CACHE.get(objName);
+  final Serializable id;
+  try {
+    id=(Serializable)field.get(obj);
+  }
+ catch (  IllegalAccessException e) {
+    throw new RuntimeException(e);
+  }
   if (id != null) {
     return id;
   }

@@ -1,0 +1,14 @@
+{
+  Field response=null;
+  Field[] fields=clazz.getDeclaredFields();
+  for (  Field field : fields) {
+    if (field.getAnnotation(Id.class) != null) {
+      response=field;
+      break;
+    }
+  }
+  if (response == null && clazz.getSuperclass() != null) {
+    response=getIdField(clazz.getSuperclass());
+  }
+  return response;
+}
