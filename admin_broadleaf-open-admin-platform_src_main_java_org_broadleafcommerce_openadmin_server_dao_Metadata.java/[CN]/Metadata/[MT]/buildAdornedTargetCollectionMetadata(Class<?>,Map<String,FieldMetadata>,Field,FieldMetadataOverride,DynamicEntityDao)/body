@@ -65,20 +65,6 @@
   if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getSortProperty())) {
     sortProperty=adornedTargetCollectionMetadata.getSortProperty();
   }
-  String ceiling=null;
-  checkCeiling: {
-    if (oneToMany != null && oneToMany.targetEntity() != void.class) {
-      ceiling=oneToMany.targetEntity().getName();
-      break checkCeiling;
-    }
-    if (manyToMany != null && manyToMany.targetEntity() != void.class) {
-      ceiling=manyToMany.targetEntity().getName();
-      break checkCeiling;
-    }
-  }
-  if (!StringUtils.isEmpty(ceiling)) {
-    metadata.setCollectionCeilingEntity(ceiling);
-  }
   metadata.setParentObjectClass(targetClass.getName());
   if (adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields() != null) {
     metadata.setMaintainedAdornedTargetFields(adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields());
@@ -99,6 +85,33 @@
   }
   if (adornedTargetCollectionMetadata.getTargetObjectProperty() != null) {
     targetObjectProperty=adornedTargetCollectionMetadata.getTargetObjectProperty();
+  }
+  Class<?> collectionTarget=null;
+  checkCeiling: {
+    if (oneToMany != null && oneToMany.targetEntity() != void.class) {
+      collectionTarget=oneToMany.targetEntity();
+      break checkCeiling;
+    }
+    if (manyToMany != null && manyToMany.targetEntity() != void.class) {
+      collectionTarget=manyToMany.targetEntity();
+      break checkCeiling;
+    }
+  }
+  if (collectionTarget == null) {
+    throw new IllegalArgumentException("Unable to infer the type of the collection from the targetEntity property of a OneToMany or ManyToMany collection.");
+  }
+  Field collectionTargetField=dynamicEntityDao.getFieldManager().getField(collectionTarget,targetObjectProperty);
+  ManyToOne manyToOne=collectionTargetField.getAnnotation(ManyToOne.class);
+  String ceiling=null;
+  checkCeiling: {
+    if (manyToOne != null && manyToOne.targetEntity() != void.class) {
+      ceiling=manyToOne.targetEntity().getName();
+      break checkCeiling;
+    }
+    ceiling=collectionTargetField.getType().getName();
+  }
+  if (!StringUtils.isEmpty(ceiling)) {
+    metadata.setCollectionCeilingEntity(ceiling);
   }
   String targetObjectIdProperty=null;
   if (serverMetadata != null) {
@@ -121,12 +134,12 @@
     adornedTargetList.setLinkedIdProperty(parentObjectIdProperty);
     adornedTargetList.setTargetObjectPath(targetObjectProperty);
     adornedTargetList.setTargetIdProperty(targetObjectIdProperty);
-    adornedTargetList.setAdornedTargetEntityClassname(ceiling);
+    adornedTargetList.setAdornedTargetEntityClassname(collectionTarget.getName());
     adornedTargetList.setSortField(sortProperty);
     adornedTargetList.setSortAscending(isAscending);
   }
  else {
-    AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,ceiling,sortProperty,isAscending);
+    AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,collectionTarget.getName(),sortProperty,isAscending);
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
   }
   if (adornedTargetCollectionMetadata.getExcluded() != null) {
