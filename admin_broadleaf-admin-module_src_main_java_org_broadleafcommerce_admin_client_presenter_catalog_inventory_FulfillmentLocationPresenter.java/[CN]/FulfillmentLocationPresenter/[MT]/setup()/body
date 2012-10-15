@@ -8,18 +8,18 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("inventoryDS",new InventoryDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      inventoryPresenter=new CreateBasedListStructurePresenter(getDisplay().getInventoryDisplay(),BLCMain.getMessageManager().getString("newInventory"));
-      inventoryPresenter.setDataSource((CustomCriteriaListGridDataSource)result,new String[]{},new Boolean[]{});
+      inventoryPresenter=new InventoryPresenter(getDisplay().getInventoryDisplay(),BLCMain.getMessageManager().getString("newInventory"));
+      inventoryPresenter.setDataSource((CustomCriteriaListGridDataSource)result,new String[]{"sku.id","sku.name","quantityAvailable","quantityOnHand"},new Boolean[]{false,false,false,false});
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuDS",new SkuListDataSourceFactory(),new AsyncCallbackAdapter(){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuDS",new InventorySkuDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      ListGridDataSource listGridDataSource=(ListGridDataSource)result;
-      listGridDataSource.resetPermanentFieldVisibility("id","name","productOptionList");
-      final EntitySearchDialog skuSearch=new EntitySearchDialog(listGridDataSource,true);
+      ListGridDataSource ds=(ListGridDataSource)result;
+      ds.resetPermanentFieldVisibility("id","name","productOptionList");
+      ds.getField("id").setAttribute("order",1);
       DynamicEntityDataSource dataSource=getPresenterSequenceSetupManager().getDataSource("inventoryDS");
-      dataSource.getFormItemCallbackHandlerManager().addSearchFormItemCallback("sku",skuSearch,"Sku",null,null,null,dataSource);
+      dataSource.getFormItemCallbackHandlerManager().addSearchFormItemCallback("sku",new EntitySearchDialog(ds),"Sku",null,null,null,dataSource);
     }
   }
 ));

@@ -1,0 +1,71 @@
+{
+  dataArrivedHandlerRegistration=display.getGrid().addDataArrivedHandler(new DataArrivedHandler(){
+    public void onDataArrived(    DataArrivedEvent event){
+      display.getRemoveButton().disable();
+    }
+  }
+);
+  editCompletedHandlerRegistration=display.getGrid().addEditCompleteHandler(new EditCompleteHandler(){
+    public void onEditComplete(    EditCompleteEvent event){
+      display.getGrid().deselectAllRecords();
+      setStartState();
+    }
+  }
+);
+  selectionChangedHandlerRegistration=display.getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
+    public void onSelectionChanged(    SelectionEvent event){
+      if (event.getState()) {
+        display.getRemoveButton().enable();
+      }
+ else {
+        display.getRemoveButton().disable();
+      }
+    }
+  }
+);
+  removedClickedHandlerRegistration=display.getRemoveButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        display.getGrid().removeData(display.getGrid().getSelectedRecord(),new DSCallback(){
+          public void execute(          DSResponse response,          Object rawData,          DSRequest request){
+            display.getRemoveButton().disable();
+          }
+        }
+);
+      }
+    }
+  }
+);
+  addClickedHandlerRegistration=display.getAddButton().addClickHandler(new ClickHandler(){
+    public void onClick(    ClickEvent event){
+      if (event.isLeftButtonDown()) {
+        DynamicEntityDataSource ds=(DynamicEntityDataSource)display.getGrid().getDataSource();
+        ForeignKey foreignKey=(ForeignKey)ds.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        initialValues.put(foreignKey.getManyToField(),abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord));
+        String[] type=new String[]{((DynamicEntityDataSource)display.getGrid().getDataSource()).getDefaultNewEntityFullyQualifiedClassname()};
+        initialValues.put("_type",type);
+        ds.getField("quantityAvailable").setCanEdit(true);
+        ds.getField("quantityOnHand").setCanEdit(true);
+        ds.getField("quantityAvailableChange").setAttribute("formHidden",FormHiddenEnum.HIDDEN);
+        ds.getField("quantityOnHandChange").setAttribute("formHidden",FormHiddenEnum.HIDDEN);
+        BLCMain.ENTITY_ADD.editNewRecord(editDialogTitle,ds,initialValues,null,null,null);
+      }
+    }
+  }
+);
+  rowDoubleClickedHandlerRegistration=display.getGrid().addCellDoubleClickHandler(new CellDoubleClickHandler(){
+    @Override public void onCellDoubleClick(    CellDoubleClickEvent cellDoubleClickEvent){
+      if (cellDoubleClickEvent.isLeftButtonDown()) {
+        DynamicEntityDataSource ds=(DynamicEntityDataSource)display.getGrid().getDataSource();
+        ds.getField("quantityAvailable").setCanEdit(false);
+        ds.getField("quantityOnHand").setCanEdit(false);
+        ds.getField("quantityAvailableChange").setAttribute("formHidden",FormHiddenEnum.VISIBLE);
+        ds.getField("quantityOnHandChange").setAttribute("formHidden",FormHiddenEnum.VISIBLE);
+        display.getGrid().getSelectedRecord().setAttribute("quantityOnHandChange","");
+        display.getGrid().getSelectedRecord().setAttribute("quantityAvailableChange","");
+        BLCMain.ENTITY_ADD.editRecord(editDialogTitle,ds,display.getGrid().getSelectedRecord(),null,null,null,readOnly);
+      }
+    }
+  }
+);
+}
