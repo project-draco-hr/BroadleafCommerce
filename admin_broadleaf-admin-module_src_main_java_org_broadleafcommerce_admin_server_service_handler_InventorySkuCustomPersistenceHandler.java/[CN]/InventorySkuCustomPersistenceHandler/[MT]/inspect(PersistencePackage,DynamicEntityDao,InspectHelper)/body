@@ -20,12 +20,8 @@
     fieldMetadata.setReadOnly(false);
     fieldMetadata.setVisibility(VisibilityEnum.VISIBLE_ALL);
     properties.put("productOptionList",fieldMetadata);
-    BasicFieldMetadata idMetaData=(BasicFieldMetadata)properties.get("id");
-    idMetaData.setOrder(1);
-    properties.put("sku.id",idMetaData);
-    BasicFieldMetadata nameMetaData=(BasicFieldMetadata)properties.get("name");
-    nameMetaData.setOrder(2);
-    properties.put("sku.name",nameMetaData);
+    properties.get("id").setOrder(1);
+    properties.get("name").setOrder(2);
     allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
