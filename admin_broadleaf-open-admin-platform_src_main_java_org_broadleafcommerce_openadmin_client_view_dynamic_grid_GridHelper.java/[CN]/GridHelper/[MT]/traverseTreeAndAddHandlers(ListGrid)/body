@@ -4,5 +4,9 @@
   if (parent.getParentElement() != null) {
     parent=parent.getParentElement();
   }
+ else {
+    java.util.logging.Logger.getLogger(BLCMain.class.getName()).log(Level.WARNING,"Parent element not set, please use setParentElement() so that the grid can enable/disable elements on the right hand side.");
+    return;
+  }
   addUpdateHandlers(grid,parent);
 }
