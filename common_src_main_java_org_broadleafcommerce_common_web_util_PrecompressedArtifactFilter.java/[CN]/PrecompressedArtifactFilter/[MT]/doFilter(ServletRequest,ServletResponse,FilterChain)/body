@@ -1,14 +1,43 @@
 {
   HttpServletRequest request=(HttpServletRequest)servletRequest;
   HttpServletResponse response=(HttpServletResponse)servletResponse;
-  if (!configurer.determineEnvironment().equals(configurer.getDefaultEnvironment()) || useWhileInDefaultEnvironment) {
-    String path=getResourcePath(request);
-    String gzipPath=path + ".gz";
-    if (useGzipCompression(request,response,path,gzipPath)) {
-      response.addHeader("Content-Encoding","gzip");
-      request=new PrecompressedHttpServletRequest(request,path,gzipPath);
-      response=new PrecompressedHttpServletResponse(response,path);
+  checkOutput: {
+    if (!configurer.determineEnvironment().equals(configurer.getDefaultEnvironment()) || useWhileInDefaultEnvironment) {
+      String path=getResourcePath(request);
+      String gzipPath=path + ".gz";
+      if (useGzipCompression(request,response,path,gzipPath)) {
+        File output=new File(getServletContext().getRealPath(gzipPath));
+        if (output.exists()) {
+          response.addHeader("Content-Encoding","gzip");
+          ServletOutputStream sos=servletResponse.getOutputStream();
+          BufferedInputStream bis=null;
+          try {
+            bis=new BufferedInputStream(new FileInputStream(output));
+            boolean eof=false;
+            while (!eof) {
+              int temp=bis.read();
+              if (temp < 0) {
+                eof=true;
+              }
+ else {
+                sos.write(temp);
+              }
+            }
+          }
+  finally {
+            sos.flush();
+            try {
+              if (bis != null) {
+                bis.close();
+              }
+            }
+ catch (            Exception e) {
+            }
+          }
+          break checkOutput;
+        }
+      }
     }
+    chain.doFilter(request,response);
   }
-  chain.doFilter(request,response);
 }

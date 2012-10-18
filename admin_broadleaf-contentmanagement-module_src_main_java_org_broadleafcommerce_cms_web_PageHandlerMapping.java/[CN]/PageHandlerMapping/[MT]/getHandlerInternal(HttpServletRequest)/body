@@ -1,11 +1,11 @@
 {
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  PageDTO page=pageService.findPageByURI(context.getSandbox(),context.getLocale(),context.getRequestURIWithoutContext(),buildMvelParameters(request),context.isSecure());
-  if (page != null && !(page instanceof NullPageDTO)) {
-    context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,page);
-    return controllerName;
+  if (context != null && context.getRequestURIWithoutContext() != null) {
+    PageDTO page=pageService.findPageByURI(context.getSandbox(),context.getLocale(),context.getRequestURIWithoutContext(),buildMvelParameters(request),context.isSecure());
+    if (page != null && !(page instanceof NullPageDTO)) {
+      context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,page);
+      return controllerName;
+    }
   }
- else {
-    return null;
-  }
+  return null;
 }
