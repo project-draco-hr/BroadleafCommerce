@@ -2,10 +2,18 @@
   FulfillmentEstimationResponse response=new FulfillmentEstimationResponse();
   HashMap<FulfillmentOption,Money> prices=new HashMap<FulfillmentOption,Money>();
   response.setFulfillmentOptionPrices(prices);
-  for (  FulfillmentPricingProvider processor : providers) {
-    FulfillmentEstimationResponse processorResponse=processor.estimateCostForFulfillmentGroup(fulfillmentGroup,options);
-    if (processorResponse != null && processorResponse.getFulfillmentOptionPrices() != null && processorResponse.getFulfillmentOptionPrices().size() > 0) {
-      prices.putAll(processorResponse.getFulfillmentOptionPrices());
+  for (  FulfillmentPricingProvider provider : providers) {
+    try {
+      FulfillmentEstimationResponse processorResponse=provider.estimateCostForFulfillmentGroup(fulfillmentGroup,options);
+      if (processorResponse != null && processorResponse.getFulfillmentOptionPrices() != null && processorResponse.getFulfillmentOptionPrices().size() > 0) {
+        prices.putAll(processorResponse.getFulfillmentOptionPrices());
+      }
+    }
+ catch (    FulfillmentPriceException e) {
+      String errorMessage="FulfillmentPriceException thrown when trying to estimate fulfillment costs from ";
+      errorMessage+=provider.getClass().getName();
+      errorMessage+=". Underlying message was: " + e.getMessage();
+      LOG.error(errorMessage);
     }
   }
   return response;

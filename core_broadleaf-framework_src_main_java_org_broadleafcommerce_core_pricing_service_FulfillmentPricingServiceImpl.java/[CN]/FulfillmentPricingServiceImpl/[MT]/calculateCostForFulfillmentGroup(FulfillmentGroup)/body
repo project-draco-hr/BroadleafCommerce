@@ -5,9 +5,9 @@
     fulfillmentGroup.setSaleShippingPrice(Money.ZERO);
     return fulfillmentGroup;
   }
-  for (  FulfillmentPricingProvider processor : providers) {
-    if (processor.canCalculateCostForFulfillmentGroup(fulfillmentGroup,fulfillmentGroup.getFulfillmentOption())) {
-      return processor.calculateCostForFulfillmentGroup(fulfillmentGroup);
+  for (  FulfillmentPricingProvider provider : providers) {
+    if (provider.canCalculateCostForFulfillmentGroup(fulfillmentGroup,fulfillmentGroup.getFulfillmentOption())) {
+      return provider.calculateCostForFulfillmentGroup(fulfillmentGroup);
     }
   }
   throw new FulfillmentPriceException("No valid processor was found to calculate the FulfillmentGroup cost with " + "FulfillmentOption id: " + fulfillmentGroup.getFulfillmentOption().getId() + " and name: "+ fulfillmentGroup.getFulfillmentOption().getName());
