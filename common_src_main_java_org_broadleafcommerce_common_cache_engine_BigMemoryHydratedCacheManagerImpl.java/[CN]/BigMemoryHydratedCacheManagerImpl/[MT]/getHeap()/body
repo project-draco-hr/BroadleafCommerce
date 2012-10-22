@@ -1,0 +1,14 @@
+{
+  if (offHeap == null) {
+    if (CacheManager.getInstance().cacheExists("hydrated-offheap-cache")) {
+      offHeap=CacheManager.getInstance().getCache("hydrated-offheap-cache");
+    }
+ else {
+      CacheConfiguration config=new CacheConfiguration("hydrated-offheap-cache",500).eternal(true).overflowToOffHeap(true).maxMemoryOffHeap("1400M");
+      Cache cache=new Cache(config);
+      CacheManager.create().addCache(cache);
+      offHeap=cache;
+    }
+  }
+  return offHeap;
+}
