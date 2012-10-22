@@ -2,9 +2,16 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Customer adminInstance=customerService.createCustomer();
+    Customer adminInstance=(Customer)Class.forName(entity.getType()[0]).newInstance();
+    adminInstance.setId(customerService.findNextCustomerId());
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Customer.class.getName(),persistencePerspective);
     adminInstance=(Customer)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    if (customerService.readCustomerByUsername(adminInstance.getUsername()) != null) {
+      Entity error=new Entity();
+      error.setValidationFailure(true);
+      error.addValidationError("username","nonUniqueUsernameError");
+      return error;
+    }
     adminInstance=(Customer)dynamicEntityDao.merge(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
