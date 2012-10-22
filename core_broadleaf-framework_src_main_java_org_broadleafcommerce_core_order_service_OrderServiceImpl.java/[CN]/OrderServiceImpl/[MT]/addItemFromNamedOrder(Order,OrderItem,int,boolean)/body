@@ -13,7 +13,12 @@
     OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
     orderItemRequestDTO.setOrderItemId(item.getId());
     orderItemRequestDTO.setQuantity(item.getQuantity() - quantity);
-    updateItemQuantity(namedOrder.getId(),orderItemRequestDTO,false);
+    try {
+      updateItemQuantity(namedOrder.getId(),orderItemRequestDTO,false);
+    }
+ catch (    InventoryUnavailableException e) {
+      throw new UpdateCartException("Could not update cart quantity",e.getCause());
+    }
   }
   OrderItemRequestDTO orderItemRequest=orderItemService.buildOrderItemRequestDTOFromOrderItem(item);
   orderItemRequest.setQuantity(quantity);

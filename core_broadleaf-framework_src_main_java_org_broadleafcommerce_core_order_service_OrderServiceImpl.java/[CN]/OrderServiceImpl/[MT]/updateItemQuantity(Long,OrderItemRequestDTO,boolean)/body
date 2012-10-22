@@ -8,6 +8,9 @@
     return context.getSeedData().getOrder();
   }
  catch (  WorkflowException e) {
+    if (e.getCause() instanceof InventoryUnavailableException) {
+      throw new InventoryUnavailableException(e.getCause());
+    }
     throw new UpdateCartException("Could not update cart quantity",getCartOperationExceptionRootCause(e));
   }
 }
