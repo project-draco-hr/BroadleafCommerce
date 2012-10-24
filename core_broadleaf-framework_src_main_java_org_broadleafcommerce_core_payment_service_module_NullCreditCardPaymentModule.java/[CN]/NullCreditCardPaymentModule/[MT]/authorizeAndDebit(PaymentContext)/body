@@ -43,6 +43,7 @@
   responseItem.setTransactionTimestamp(SystemTime.asDate());
   responseItem.setTransactionSuccess(validDate && validCard && validCVV);
   responseItem.setAmountPaid(paymentInfo.getAmount());
+  responseItem.setCurrency(paymentInfo.getOrder().getCurrency());
   if (responseItem.getTransactionSuccess()) {
     Map<String,String> additionalFields=new HashMap<String,String>();
     additionalFields.put(PaymentInfoAdditionalFieldType.NAME_ON_CARD.getType(),nameOnCard);
