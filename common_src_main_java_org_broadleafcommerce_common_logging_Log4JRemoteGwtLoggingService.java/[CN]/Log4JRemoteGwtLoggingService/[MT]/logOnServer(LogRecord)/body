@@ -1,0 +1,21 @@
+{
+  Level level=record.getLevel();
+  String message;
+  message=record.getMessage();
+  if (Level.INFO.equals(level)) {
+    LOG.info(message,record.getThrown());
+  }
+ else   if (Level.SEVERE.equals(level)) {
+    LOG.error(message,record.getThrown());
+  }
+ else   if (Level.WARNING.equals(level)) {
+    LOG.warn(message,record.getThrown());
+  }
+ else   if (Level.FINE.equals(level)) {
+    LOG.debug(message,record.getThrown());
+  }
+ else {
+    LOG.error(message,record.getThrown());
+  }
+  return null;
+}

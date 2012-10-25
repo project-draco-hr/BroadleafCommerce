@@ -1,7 +1,8 @@
 {
+  int lastPos=request.getRequestURI().lastIndexOf("/");
   String requestURIWithoutContext;
-  if (request.getContextPath() != null) {
-    requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
+  if (lastPos >= 0) {
+    requestURIWithoutContext=request.getRequestURI().substring(lastPos,request.getRequestURI().length());
   }
  else {
     requestURIWithoutContext=request.getRequestURI();
