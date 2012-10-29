@@ -1,6 +1,7 @@
 {
-  HttpServletRequest request=(HttpServletRequest)sRequest;
-  HttpServletResponse response=(HttpServletResponse)sResponse;
+  BroadleafRequestContext blcRequestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HttpServletRequest request=(blcRequestContext != null) ? blcRequestContext.getRequest() : (HttpServletRequest)sRequest;
+  HttpServletResponse response=(blcRequestContext != null) ? blcRequestContext.getResponse() : (HttpServletResponse)sResponse;
   HttpSession session=request.getSession(false);
   if (SecurityContextHolder.getContext() == null) {
     chain.doFilter(request,response);
@@ -11,6 +12,7 @@
     String decryptedActiveIdValue=encryptionModule.decrypt(activeIdCookieValue);
     if (!activeIdSessionValue.equals(decryptedActiveIdValue)) {
       abortUser(request,response);
+      return;
     }
   }
  else   if (request.isSecure()) {
