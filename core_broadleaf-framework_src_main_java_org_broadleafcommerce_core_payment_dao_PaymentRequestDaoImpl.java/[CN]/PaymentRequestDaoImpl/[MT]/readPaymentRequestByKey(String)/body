@@ -1,0 +1,9 @@
+{
+  Query query=em.createNamedQuery("BC_READ_PAYMENT_REQUEST_BY_KEY");
+  query.setParameter("key",key);
+  List x=query.getResultList();
+  if (x == null || x.isEmpty()) {
+    return null;
+  }
+  return (PaymentRequest)x.get(0);
+}
