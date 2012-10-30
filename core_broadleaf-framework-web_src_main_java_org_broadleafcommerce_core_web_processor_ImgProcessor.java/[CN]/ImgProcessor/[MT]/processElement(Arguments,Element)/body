@@ -1,0 +1,22 @@
+{
+  String src=element.getAttributeValue("src");
+  String alt=element.getAttributeValue("alt");
+  if (isExpression(src)) {
+    src=(String)StandardExpressionProcessor.processExpression(arguments,src);
+  }
+  if (alt != null) {
+    if (isExpression(alt)) {
+      alt=parseImgName((String)StandardExpressionProcessor.processExpression(arguments,alt));
+    }
+  }
+ else {
+    alt=parseImgName(src);
+  }
+  element.setAttribute("src",src);
+  element.setAttribute("alt",alt);
+  Element newElement=element.cloneElementNodeWithNewName(element.getParent(),"img",false);
+  newElement.setRecomputeProcessorsImmediately(true);
+  element.getParent().insertAfter(element,newElement);
+  element.getParent().removeChild(element);
+  return ProcessorResult.OK;
+}
