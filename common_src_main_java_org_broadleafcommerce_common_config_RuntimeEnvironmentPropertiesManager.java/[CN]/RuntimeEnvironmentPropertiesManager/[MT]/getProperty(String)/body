@@ -1,0 +1,14 @@
+{
+  if (key == null) {
+    return null;
+  }
+  String name=prefix + "." + key;
+  if (prefix == null) {
+    name=key;
+  }
+  String rv=beanFactory.resolveEmbeddedValue("${" + name + "}");
+  if (rv.equals("${" + name + "}")) {
+    return null;
+  }
+  return rv;
+}

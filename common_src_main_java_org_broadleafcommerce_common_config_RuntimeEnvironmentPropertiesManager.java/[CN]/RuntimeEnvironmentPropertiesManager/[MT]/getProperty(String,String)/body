@@ -1,0 +1,15 @@
+{
+  if (key == null) {
+    return null;
+  }
+  String name=prefix + "." + key+ "."+ suffix;
+  if (prefix == null) {
+    name=key + "." + suffix;
+  }
+  String rv=beanFactory.resolveEmbeddedValue("${" + name + "}");
+  if (rv == null || rv.equals("${" + name + "}")) {
+    LOG.warn("property ${" + name + "} not found, Reverting to property without suffix"+ suffix);
+    rv=getProperty(key);
+  }
+  return rv;
+}
