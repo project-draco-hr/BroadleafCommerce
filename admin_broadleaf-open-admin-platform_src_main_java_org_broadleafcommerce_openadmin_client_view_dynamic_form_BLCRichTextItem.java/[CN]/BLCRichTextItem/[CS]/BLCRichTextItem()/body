@@ -1,40 +1,20 @@
 {
+  super();
   setShouldSaveValue(true);
   setShowTitle(true);
-  Canvas canvas=new Canvas();
-  canvas.setHeight(200);
-  canvas.setWidth(600);
-  Button editButton=new Button(BLCMain.getMessageManager().getString("editRichText"));
-  editButton.addClickHandler(new ClickHandler(){
-    @Override public void onClick(    ClickEvent event){
+  setTextBoxStyle("bl-rich-text-item");
+  setWidth(600);
+  FormItemIcon editIcon=new FormItemIcon();
+  editIcon.setSrc(GWT.getModuleBaseURL() + "sc/skins/Broadleaf/images/glyphicons/edit.png");
+  editIcon.setHeight(16);
+  editIcon.setWidth(16);
+  setIcons(editIcon);
+  addIconClickHandler(new IconClickHandler(){
+    public void onIconClick(    IconClickEvent event){
       RichTextEditorDialog dialog=new RichTextEditorDialog();
       dialog.show(BLCRichTextItem.this);
       dialog.centerInPage();
     }
   }
 );
-  VLayout layout=new VLayout();
-  layout.setWidth100();
-  layout.setHeight100();
-  layout.addMember(editButton);
-  htmlPane=new HTMLPane();
-  htmlPane.setStyleName("blcHtmlPane");
-  htmlPane.setDisabled(true);
-  layout.addMember(htmlPane);
-  addShowValueHandler(new ShowValueHandler(){
-    @Override public void onShowValue(    ShowValueEvent event){
-      htmlPane.setVisible(true);
-      htmlPane.setContents((String)event.getDataValue());
-    }
-  }
-);
-  addChangedHandler(new ChangedHandler(){
-    @Override public void onChanged(    ChangedEvent event){
-      htmlPane.setVisible(true);
-      htmlPane.setContents((String)event.getValue());
-    }
-  }
-);
-  canvas.addChild(layout);
-  setCanvas(canvas);
 }

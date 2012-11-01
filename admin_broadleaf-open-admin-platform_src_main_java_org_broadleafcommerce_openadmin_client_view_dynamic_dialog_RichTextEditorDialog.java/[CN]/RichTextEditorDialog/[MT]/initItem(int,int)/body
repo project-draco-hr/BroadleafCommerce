@@ -59,7 +59,8 @@
   saveButton.addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       if (richTextItem != null) {
-        richTextItem.storeValue(toolBar.getHTML());
+        richTextItem.setValue(toolBar.getHTML());
+        richTextItem.getForm().fireEvent(new ItemChangedEvent(richTextItem.getJsObj()));
       }
       hide();
     }
