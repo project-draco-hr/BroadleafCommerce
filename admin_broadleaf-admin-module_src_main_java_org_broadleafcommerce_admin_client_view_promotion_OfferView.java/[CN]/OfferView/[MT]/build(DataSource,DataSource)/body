@@ -87,6 +87,7 @@
   customerLayout.addMember(new PromotionQuestion("whichCustomerLabel"));
   customerLayout.addMember(whichCustomerForm);
   rawCustomerForm=new DynamicForm();
+  rawCustomerForm.setStyleName("blcPromoRawItemForm");
   rawCustomerForm.setVisible(false);
   rawCustomerTextArea=new TextAreaItem();
   rawCustomerTextArea.setHeight(70);
@@ -97,7 +98,8 @@
   customerLayout.addMember(rawCustomerForm);
   customerFilterBuilder=new BLCFilterBuilder();
   customerFilterBuilder.setDataSource(customerDataSource);
-  customerFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(customerDataSource));
+  customerFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
+  customerFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   customerFilterBuilder.setVisible(false);
   customerFilterBuilder.setLayoutBottomMargin(LAYOUT_MARGIN);
   customerFilterBuilder.setAllowEmpty(true);
@@ -125,6 +127,7 @@
   orderForm.setFields(orderRuleRadio);
   orderSectionLayout.addMember(orderForm);
   rawOrderForm=new DynamicForm();
+  rawOrderForm.setStyleName("blcPromoRawItemForm");
   rawOrderForm.setVisible(false);
   rawOrderTextArea=new TextAreaItem();
   rawOrderTextArea.setHeight(70);
@@ -135,7 +138,8 @@
   orderSectionLayout.addMember(rawOrderForm);
   orderFilterBuilder=new BLCFilterBuilder();
   orderFilterBuilder.setDataSource(orderDataSource);
-  orderFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(orderDataSource));
+  orderFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
+  orderFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   orderFilterBuilder.setVisible(false);
   orderFilterBuilder.setLayoutBottomMargin(LAYOUT_MARGIN);
   orderFilterBuilder.setAllowEmpty(true);
@@ -380,13 +384,15 @@
   fgQuestionLayout.addMember(stepFGForm);
   fulfillmentGroupFilterBuilder=new BLCFilterBuilder();
   fulfillmentGroupFilterBuilder.setDataSource(fulfillmentGroupDataSource);
-  fulfillmentGroupFilterBuilder.setFieldDataSource(new FieldDataSourceWrapper(fulfillmentGroupDataSource));
+  fulfillmentGroupFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
+  fulfillmentGroupFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   fulfillmentGroupFilterBuilder.setVisible(false);
   fulfillmentGroupFilterBuilder.setAllowEmpty(true);
   fulfillmentGroupFilterBuilder.setValidateOnChange(false);
   fgQuestionLayout.addMember(fulfillmentGroupFilterBuilder);
   fgQuestionLayout.setLayoutBottomMargin(LAYOUT_MARGIN);
   rawFGForm=new DynamicForm();
+  rawFGForm.setStyleName("blcPromoRawItemForm");
   rawFGForm.setVisible(false);
   rawFGTextArea=new TextAreaItem();
   rawFGTextArea.setHeight(70);
