@@ -1,6 +1,26 @@
 {
-  this.delegate=delegate;
-  setDataProtocol(DSProtocol.CLIENTCUSTOM);
-  setDataFormat(DSDataFormat.CUSTOM);
-  setClientOnly(false);
+  setClientOnly(true);
+  DataSourceField[] legacyFields=delegate.getFields();
+  DataSourceField[] fields=new DataSourceField[legacyFields.length];
+  Record[] records=new Record[fields.length];
+  for (int j=0; j < legacyFields.length; j++) {
+    if (legacyFields[j].getAttribute("fieldType") != null && SupportedFieldType.ID == SupportedFieldType.valueOf(legacyFields[j].getAttribute("fieldType"))) {
+      DataSourceTextField idField=new DataSourceTextField();
+      idField.setName(legacyFields[j].getName());
+      idField.setTitle(legacyFields[j].getTitle());
+      idField.setAttribute("fieldType",legacyFields[j].getAttribute("fieldType"));
+      idField.setAttribute("secondaryFieldType",legacyFields[j].getAttribute("secondaryFieldType"));
+      fields[j]=idField;
+    }
+ else {
+      fields[j]=legacyFields[j];
+    }
+    Record record=new Record();
+    for (    String attribute : fields[j].getAttributes()) {
+      record.setAttribute(attribute,fields[j].getAttribute(attribute));
+    }
+    records[j]=record;
+  }
+  setFields(fields);
+  setCacheData(records);
 }
