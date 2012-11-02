@@ -3,8 +3,7 @@
     BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
     String validationMsg;
     if (brc.getPriceList() != cart.getPriceList()) {
-      validationMsg="The cart price list [" + cart.getPriceList().getFriendlyName() + "] does not match the current price list ["+ brc.getPriceList().getFriendlyName()+ "]";
-      LOG.error(validationMsg);
+      validationMsg="The cart price list [" + cart.getPriceList() + "] does not match the current price list ["+ brc.getPriceList()+ "]";
       throw new IllegalArgumentException(validationMsg);
     }
     if (!brc.getLocale().getLocaleCode().matches(cart.getLocale().getLocaleCode())) {

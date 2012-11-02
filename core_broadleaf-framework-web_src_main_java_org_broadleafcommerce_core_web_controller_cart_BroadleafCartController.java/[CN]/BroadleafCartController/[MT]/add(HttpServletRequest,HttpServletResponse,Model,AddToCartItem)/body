@@ -9,7 +9,9 @@
       cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
     }
   }
-  updateCartService.validateCart(cart);
+  if (cart.getPriceList() != null) {
+    updateCartService.validateCart(cart);
+  }
   cart=orderService.addItem(cart.getId(),itemRequest,false);
   cart=orderService.save(cart,true);
   CartState.setCart(cart);

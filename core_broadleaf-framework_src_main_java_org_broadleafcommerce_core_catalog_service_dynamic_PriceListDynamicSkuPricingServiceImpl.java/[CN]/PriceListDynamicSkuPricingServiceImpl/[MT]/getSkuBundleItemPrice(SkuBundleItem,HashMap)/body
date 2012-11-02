@@ -3,7 +3,11 @@
   DynamicSkuPrices prices=new DynamicSkuPrices();
   ;
   PriceList priceList=brc.getPriceList();
-  if ((priceList != null)) {
+  boolean showDefaultSkuPrice=false;
+  if (priceList != null && brc.getLocale().getDefaultCurrency().getCurrencyCode().equals("USD")) {
+    showDefaultSkuPrice=true;
+  }
+  if ((priceList != null) && !showDefaultSkuPrice) {
     if (skuBundleItem.getPriceDataMap() != null) {
       SkuBundleItemPriceData priceData=skuBundleItem.getPriceDataMap().get(priceList.getPriceKey());
       if (priceData != null) {
