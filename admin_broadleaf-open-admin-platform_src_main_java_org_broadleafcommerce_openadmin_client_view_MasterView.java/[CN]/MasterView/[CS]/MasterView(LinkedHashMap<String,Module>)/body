@@ -4,6 +4,42 @@
   setWidth("81.15%");
   setZIndex(1);
   canvas=new HLayout();
+  final DynamicEntityDataSource userDS=new DynamicEntityDataSource(CeilingEntities.ADMIN_USER);
+  userDS.buildFields(null,false,new AsyncCallbackAdapter(){
+    public void onSetupSuccess(    DataSource ds){
+      AdminUser currentUser=SecurityManager.USER;
+      userRecord=new Record();
+      userRecord.setAttribute("id",currentUser.getId());
+      userRecord.setAttribute("name",currentUser.getName());
+      userRecord.setAttribute("email",currentUser.getEmail());
+      userRecord.setAttribute("phoneNumber",currentUser.getPhoneNumber());
+      userRecord.setAttribute("login",currentUser.getUserName());
+      userRecord.setAttribute("_type",new String[]{EntityImplementations.ADMIN_USER});
+    }
+  }
+);
+  editButton=new IButton("Hidden Edit Button");
+  editButton.setID("hidden_edit_button");
+  editButton.setVisible(false);
+  editButton.addClickHandler(new ClickHandler(){
+    @Override public void onClick(    ClickEvent event){
+      EntityEditDialog editDialog=new EntityEditDialog();
+      editDialog.editRecord("Edit User Information",userDS,userRecord,new ItemEditedHandler(){
+        public void onItemEdited(        ItemEdited event){
+          SecurityManager.USER.setPhoneNumber(event.getRecord().getAttribute("phoneNumber"));
+          SecurityManager.USER.setName(event.getRecord().getAttribute("name"));
+          SecurityManager.USER.setEmail(event.getRecord().getAttribute("email"));
+          String currentPage=BLCLaunch.getSelectedPage(History.getToken());
+          if ("User Management".equals(currentPage)) {
+            buildHistoryNewItem(currentPage,BLCLaunch.getSelectedModule(History.getToken()),event.getRecord().getAttribute("id"));
+          }
+        }
+      }
+,null,new String[]{"login","activeStatusFlag","password"},false);
+    }
+  }
+);
+  canvas.addMember(editButton);
   addMember(canvas);
   bind();
 }
