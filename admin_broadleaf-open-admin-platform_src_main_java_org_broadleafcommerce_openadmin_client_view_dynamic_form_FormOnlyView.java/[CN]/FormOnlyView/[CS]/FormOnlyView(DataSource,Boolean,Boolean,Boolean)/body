@@ -1,7 +1,10 @@
 {
   super();
+  setStyleName("bl-dynamic-form");
+  setLayoutMargin(0);
+  setMembersMargin(0);
   setWidth100();
-  setStyleName("bl-form");
+  setOverflow(Overflow.AUTO);
   form=new DynamicForm();
   form.setHeight(175);
   form.setWidth100();
@@ -10,12 +13,12 @@
   form.setTitleSuffix("");
   form.setRequiredTitleSuffix("");
   form.setCellPadding(6);
+  form.setNumCols(1);
   form.disable();
   if (dataSource != null) {
     buildFields(dataSource,showDisabedState == null ? true : showDisabedState,canEdit == null ? false : canEdit,showId == null ? false : showId,null);
   }
   addMember(form);
-  setOverflow(Overflow.AUTO);
   addVisibilityChangedHandler(new VisibilityChangedHandler(){
     @Override public void onVisibilityChanged(    VisibilityChangedEvent event){
       if (event.getIsVisible()) {
