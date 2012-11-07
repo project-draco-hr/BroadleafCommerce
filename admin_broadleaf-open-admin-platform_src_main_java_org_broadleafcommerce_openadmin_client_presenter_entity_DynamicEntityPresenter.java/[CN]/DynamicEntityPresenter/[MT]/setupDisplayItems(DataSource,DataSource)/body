@@ -1,5 +1,8 @@
 {
   getDisplay().build(entityDataSource,additionalDataSources);
+  for (  PresenterModifier m : modifierList) {
+    m.getDisplay().build(viewModifierDataSourceMap.get(m));
+  }
   gridHelper.traverseTreeAndAddHandlers(getDisplay().getListDisplay().getGrid());
   formPresenter=new DynamicFormPresenter(display.getDynamicFormDisplay());
   ((PresentationLayerAssociatedDataSource)entityDataSource).setAssociatedGrid(display.getListDisplay().getGrid());

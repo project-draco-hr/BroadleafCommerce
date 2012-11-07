@@ -16,6 +16,13 @@
               uiFactory.getPresenter(presenterKey,new AsyncClient(){
                 @Override public void onSuccess(                Object instance){
                   EntityPresenter presenter=(EntityPresenter)instance;
+                  List<PresenterModifier> presenterModifierList=findPresenterModifiers(presenter.getClass());
+                  if (presenterModifierList != null && presenter instanceof DynamicEntityPresenter) {
+                    for (                    PresenterModifier modifier : presenterModifierList) {
+                      modifier.setParentPresenter(((DynamicEntityPresenter)presenter));
+                    }
+                    ((DynamicEntityPresenter)presenter).getModifierList().addAll(presenterModifierList);
+                  }
                   presenter.setDefaultItemId(itemId);
                   presenter.setDisplay(view);
                   presenter.setEventBus(eventBus);
@@ -23,9 +30,15 @@
                   if (presenter.getPresenterSequenceSetupManager() != null) {
                     presenter.getPresenterSequenceSetupManager().setCanvas(container);
                     presenter.setup();
+                    for (                    PresenterModifier modifier : presenterModifierList) {
+                      modifier.setup();
+                    }
                     presenter.getPresenterSequenceSetupManager().launch();
                   }
  else {
+                    for (                    PresenterModifier modifier : presenterModifierList) {
+                      modifier.setup();
+                    }
                     presenter.setup();
                   }
                 }
