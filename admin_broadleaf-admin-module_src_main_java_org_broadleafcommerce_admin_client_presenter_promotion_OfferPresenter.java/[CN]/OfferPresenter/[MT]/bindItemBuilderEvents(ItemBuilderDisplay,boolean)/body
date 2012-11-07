@@ -22,32 +22,28 @@
 );
   display.getRawItemForm().addItemChangedHandler(new ItemChangedHandler(){
     @Override public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      setDirtyState();
       display.setDirty(true);
     }
   }
 );
   display.getItemForm().addItemChangedHandler(new ItemChangedHandler(){
     @Override public void onItemChanged(    ItemChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      setDirtyState();
       display.setDirty(true);
     }
   }
 );
   display.getItemFilterBuilder().addFilterChangedHandler(new FilterChangedHandler(){
     @Override public void onFilterChanged(    FilterChangedEvent event){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      setDirtyState();
       display.setDirty(true);
     }
   }
 );
   additionalFilterEventManager.addFilterBuilderAdditionalEventHandler(display.getItemFilterBuilder(),new FilterBuilderAdditionalEventHandler(){
     @Override public void onAdditionalChangeEvent(){
-      getDisplay().getDynamicFormDisplay().getSaveButton().enable();
-      getDisplay().getDynamicFormDisplay().getRefreshButton().enable();
+      setDirtyState();
       display.setDirty(true);
     }
   }
