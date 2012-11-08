@@ -1,7 +1,7 @@
 {
   BLCMain.NON_MODAL_PROGRESS.startProgress();
-  StructuredContentTypeFormListDataSourceFactory.createDataSource("contentTypeFormDS",new String[]{"constructForm",selectedRecord.getAttribute("structuredContentType")},new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    final DataSource dataSource){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("contentTypeFormDS",new StructuredContentTypeFormListDataSourceFactory(),null,new String[]{"constructForm",selectedRecord.getAttribute("structuredContentType")},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
       destroyContentTypeForm();
       final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);
       formOnlyView.getForm().addItemChangedHandler(new ItemChangedHandler(){
@@ -28,5 +28,5 @@
 );
     }
   }
-);
+));
 }
