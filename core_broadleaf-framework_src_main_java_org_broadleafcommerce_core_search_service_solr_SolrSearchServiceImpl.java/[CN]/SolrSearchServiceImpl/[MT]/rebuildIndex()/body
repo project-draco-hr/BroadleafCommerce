@@ -4,19 +4,12 @@
   BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
   HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
   DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
-  if (indexPriceLists) {
-    HashMap<String,String> pricingMap=new HashMap<String,String>();
-    pricingMap.put("INDEX_PRICE_LIST","true");
-    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(pricingMap);
-    SkuPricingConsiderationContext.setSkuPricingService(priceListPricingService);
-  }
   List<Product> products=readAllActiveProducts();
   List<Field> fields=fieldDao.readAllProductFields();
   List<Locale> locales=getAllLocales();
-  List<PriceList> priceLists=getAllPriceLists();
   Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
   for (  Product product : products) {
-    documents.add(buildDocument(product,fields,locales,priceLists));
+    documents.add(buildDocument(product,fields,locales));
   }
   if (LOG.isTraceEnabled()) {
     for (    SolrInputDocument document : documents) {

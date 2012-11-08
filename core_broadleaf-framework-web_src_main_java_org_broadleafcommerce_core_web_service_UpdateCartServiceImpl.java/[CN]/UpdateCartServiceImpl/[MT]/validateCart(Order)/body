@@ -2,15 +2,11 @@
   if (BroadleafRequestContext.hasLocale()) {
     BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
     String validationMsg;
-    if (brc.getPriceList() != cart.getPriceList()) {
-      validationMsg="The cart price list [" + cart.getPriceList().getFriendlyName() + "] does not match the current price list ["+ brc.getPriceList().getFriendlyName()+ "]";
-      LOG.error(validationMsg);
-      throw new IllegalArgumentException(validationMsg);
-    }
     if (!brc.getLocale().getLocaleCode().matches(cart.getLocale().getLocaleCode())) {
       validationMsg="The cart Locale [" + cart.getLocale().getLocaleCode() + "] does not match the current locale ["+ brc.getLocale().getLocaleCode()+ "]";
       LOG.error(validationMsg);
       throw new IllegalArgumentException(validationMsg);
     }
   }
+  extensionManager.validateCart(cart);
 }

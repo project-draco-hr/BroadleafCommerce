@@ -13,14 +13,13 @@
         updateCartService.validateCart(cart);
       }
  catch (      IllegalArgumentException e) {
-        if (copyCartToNewLocaleAndPricelist) {
-          UpdateCartResponse updateCartResponse=updateCartService.copyCartToNewLocaleAndPricelist(cart);
+        if (copyCartWhenSpecifiedStateChanges) {
+          UpdateCartResponse updateCartResponse=updateCartService.copyCartToCurrentContext(cart);
           request.setAttribute("updateCartResponse",updateCartResponse);
         }
  else {
-          BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
           orderService.cancelOrder(cart);
-          cart=orderService.createNewCartForCustomer(customer,brc.getPriceList(),brc.getLocale());
+          cart=orderService.createNewCartForCustomer(customer);
         }
       }
     }

@@ -3,14 +3,8 @@
   for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
     SearchFacetDTO dto=entry.getValue();
     String facetTagField=entry.getValue().isActive() ? GLOBAL_FACET_TAG_FIELD : entry.getKey();
-    List<SearchFacetRange> searchFacetRanges=null;
-    PriceList priceList=BroadleafRequestContext.getBroadleafRequestContext().getPriceList();
-    if (indexPriceLists && priceList != null && !priceList.getPriceKey().equals(getDefaultPricelist().getPriceKey())) {
-      searchFacetRanges=dto.getFacet().getSearchFacetRanges(priceList);
-    }
-    if (searchFacetRanges == null || searchFacetRanges.size() == 0) {
-      searchFacetRanges=dto.getFacet().getSearchFacetRanges();
-    }
+    List<SearchFacetRange> searchFacetRanges=dto.getFacet().getSearchFacetRanges();
+    extensionManager.filterSearchFacetRanges(dto,searchFacetRanges);
     if (searchFacetRanges != null && searchFacetRanges.size() > 0) {
       for (      SearchFacetRange range : searchFacetRanges) {
         query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),facetTagField,"ex",range));
