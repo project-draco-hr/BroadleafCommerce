@@ -6,6 +6,9 @@ case DATE:
   Date parsedDate=formatter.parse(expression.getValue());
 criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),parsedDate);
 break;
+case BOOLEAN:
+criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),Boolean.valueOf((expression.getValue())));
+break;
 default :
 criteria=new AdvancedCriteria(expression.getField(),expression.getOperator(),expression.getValue());
 break;
