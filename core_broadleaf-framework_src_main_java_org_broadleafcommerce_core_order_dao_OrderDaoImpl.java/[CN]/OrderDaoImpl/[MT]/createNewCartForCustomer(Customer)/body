@@ -10,7 +10,9 @@
   order.setCustomer(customer);
   order.setEmailAddress(customer.getEmailAddress());
   order.setStatus(OrderStatus.IN_PROCESS);
-  extensionManager.attachAdditionalDataToNewCart(customer,order);
+  if (extensionManager != null) {
+    extensionManager.attachAdditionalDataToNewCart(customer,order);
+  }
   order=save(order);
   return order;
 }

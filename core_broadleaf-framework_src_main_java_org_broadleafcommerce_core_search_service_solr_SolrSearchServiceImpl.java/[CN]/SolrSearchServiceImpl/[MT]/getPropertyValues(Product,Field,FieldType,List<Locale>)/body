@@ -7,7 +7,9 @@
   if (fieldType.equals(FieldType.PRICE)) {
     Object propertyValue=PropertyUtils.getProperty(product,propertyName);
     values.put("",propertyValue);
-    extensionManager.addPriceFieldPropertyValues(product,field,values,propertyName);
+    if (extensionManager != null) {
+      extensionManager.addPriceFieldPropertyValues(product,field,values,propertyName);
+    }
   }
  else {
     for (    Locale locale : locales) {

@@ -4,7 +4,9 @@
     SearchFacetDTO dto=entry.getValue();
     String facetTagField=entry.getValue().isActive() ? GLOBAL_FACET_TAG_FIELD : entry.getKey();
     List<SearchFacetRange> searchFacetRanges=dto.getFacet().getSearchFacetRanges();
-    extensionManager.filterSearchFacetRanges(dto,searchFacetRanges);
+    if (extensionManager != null) {
+      extensionManager.filterSearchFacetRanges(dto,searchFacetRanges);
+    }
     if (searchFacetRanges != null && searchFacetRanges.size() > 0) {
       for (      SearchFacetRange range : searchFacetRanges) {
         query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),facetTagField,"ex",range));

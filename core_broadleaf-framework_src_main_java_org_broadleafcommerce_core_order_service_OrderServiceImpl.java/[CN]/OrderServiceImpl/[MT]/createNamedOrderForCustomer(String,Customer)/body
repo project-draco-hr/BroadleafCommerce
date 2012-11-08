@@ -3,6 +3,8 @@
   namedOrder.setCustomer(customer);
   namedOrder.setName(name);
   namedOrder.setStatus(OrderStatus.NAMED);
-  extensionManager.attachAdditionalDataToNewNamedCart(customer,namedOrder);
+  if (extensionManager != null) {
+    extensionManager.attachAdditionalDataToNewNamedCart(customer,namedOrder);
+  }
   return orderDao.save(namedOrder);
 }
