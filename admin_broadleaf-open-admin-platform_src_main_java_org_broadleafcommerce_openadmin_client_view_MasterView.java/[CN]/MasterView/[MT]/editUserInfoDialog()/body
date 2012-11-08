@@ -1,25 +1,3 @@
 {
-  final DynamicEntityDataSource userDS=new DynamicEntityDataSource(CeilingEntities.ADMIN_USER);
-  userDS.buildFields(null,false,new AsyncCallbackAdapter(){
-    public void onSetupSuccess(    DataSource ds){
-      AdminUser currentUser=SecurityManager.USER;
-      Record userRecord=new Record();
-      userRecord.setAttribute("id",currentUser.getId());
-      userRecord.setAttribute("name",currentUser.getName());
-      userRecord.setAttribute("email",currentUser.getEmail());
-      userRecord.setAttribute("phoneNumber",currentUser.getPhoneNumber());
-      userRecord.setAttribute("login",currentUser.getUserName());
-      userRecord.setAttribute("_type",new String[]{EntityImplementations.ADMIN_USER});
-      EntityEditDialog ed=new EntityEditDialog();
-      ed.editRecord("Edit User Information",userDS,userRecord,new ItemEditedHandler(){
-        public void onItemEdited(        ItemEdited event){
-          SecurityManager.USER.setPhoneNumber(event.getRecord().getAttribute("phoneNumber"));
-          SecurityManager.USER.setName(event.getRecord().getAttribute("name"));
-          SecurityManager.USER.setEmail(event.getRecord().getAttribute("email"));
-        }
-      }
-,null,new String[]{"login","activeStatusFlag","password"},false);
-    }
-  }
-);
+  editButton.fireEvent(new ClickEvent(editButton.getJsObj()));
 }

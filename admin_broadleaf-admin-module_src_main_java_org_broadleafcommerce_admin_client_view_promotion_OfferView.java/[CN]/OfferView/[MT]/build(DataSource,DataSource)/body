@@ -34,10 +34,11 @@
   restrictLayout.setLayoutLeftMargin(LAYOUT_MARGIN);
   restrictLayout.addMember(new PromotionQuestion("restrictOnlyPromotionLabel"));
   restrictForm=new DynamicForm();
+  restrictForm.setStyleName(BL_PROMO_QUESTION_ANSWERS);
   LinkedHashMap<String,String> restrictMap=new LinkedHashMap<String,String>();
   restrictMap.put("YES",BLCMain.getMessageManager().getString("yesRadioChoice"));
   restrictMap.put("NO",BLCMain.getMessageManager().getString("noRadioChoice"));
-  restrictRuleRadio=new PromotionAnswerGroup(restrictMap,"NO",true);
+  restrictRuleRadio=new PromotionAnswerGroup(restrictMap,"NO",false);
   restrictForm.setFields(restrictRuleRadio);
   restrictLayout.addMember(restrictForm);
   restrictionSectionView=new SectionView(BLCMain.getMessageManager().getString("advancedRestrictionsViewTitle"));
@@ -71,7 +72,7 @@
   codeField.setWrapTitle(false);
   codeField.setVisible(false);
   codeField.setWidth(240);
-  codeField.setTitleOrientation(TitleOrientation.TOP);
+  codeField.setTitleOrientation(TitleOrientation.LEFT);
   customerObtainForm=new DynamicForm();
   customerObtainForm.setNumCols(1);
   customerObtainForm.setStyleName(BL_PROMO_QUESTION_ANSWERS);
@@ -99,7 +100,6 @@
   customerFilterBuilder=new BLCFilterBuilder();
   customerFilterBuilder.setDataSource(customerDataSource);
   customerFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
-  customerFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   customerFilterBuilder.setVisible(false);
   customerFilterBuilder.setLayoutBottomMargin(LAYOUT_MARGIN);
   customerFilterBuilder.setAllowEmpty(true);
@@ -139,7 +139,6 @@
   orderFilterBuilder=new BLCFilterBuilder();
   orderFilterBuilder.setDataSource(orderDataSource);
   orderFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
-  orderFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   orderFilterBuilder.setVisible(false);
   orderFilterBuilder.setLayoutBottomMargin(LAYOUT_MARGIN);
   orderFilterBuilder.setAllowEmpty(true);
@@ -385,7 +384,6 @@
   fulfillmentGroupFilterBuilder=new BLCFilterBuilder();
   fulfillmentGroupFilterBuilder.setDataSource(fulfillmentGroupDataSource);
   fulfillmentGroupFilterBuilder.setStyleName("blcPromoItemFilterBuilder");
-  fulfillmentGroupFilterBuilder.setFieldPickerProperties(new ComboBoxItem());
   fulfillmentGroupFilterBuilder.setVisible(false);
   fulfillmentGroupFilterBuilder.setAllowEmpty(true);
   fulfillmentGroupFilterBuilder.setValidateOnChange(false);

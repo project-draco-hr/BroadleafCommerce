@@ -1,0 +1,32 @@
+{
+  TabSet retLayout=(TabSet)parent.getMember(id);
+  Layout result;
+  if (retLayout == null) {
+    check: {
+      for (      Canvas member : parent.getMembers()) {
+        if (member instanceof Layout) {
+          result=findMemberById((Layout)member,id);
+          if (result != null) {
+            break check;
+          }
+        }
+        if (member instanceof TabSet) {
+          if (member.getID().equals(id)) {
+            return (TabSet)member;
+          }
+          for (          Tab tab : ((TabSet)member).getTabs()) {
+            if (tab.getPane().getID().equals(id)) {
+              result=(Layout)tab.getPane();
+              break check;
+            }
+            result=findMemberById((Layout)tab.getPane(),id);
+            if (result != null) {
+              break check;
+            }
+          }
+        }
+      }
+    }
+  }
+  return retLayout;
+}

@@ -53,6 +53,14 @@
       if (cb != null) {
         cb.processComplete();
       }
+      Timer timer=new Timer(){
+        @Override public void run(){
+          getDisplay().getDynamicFormDisplay().getSaveButton().disable();
+          getDisplay().getDynamicFormDisplay().getRefreshButton().disable();
+        }
+      }
+;
+      timer.schedule(500);
     }
   }
 );
