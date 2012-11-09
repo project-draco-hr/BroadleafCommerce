@@ -1,0 +1,14 @@
+{
+  if (presenter.getName().equals(DynamicEntityPresenter.class.getName())) {
+    return new ArrayList<PresenterModifier>();
+  }
+  if (ModuleFactory.getInstance().getModifiers(presenter.getName()) == null) {
+    if (presenter.getClass().getName().equals(presenter.getClass().getSuperclass().getName())) {
+      return new ArrayList<PresenterModifier>();
+    }
+    return new ArrayList<PresenterModifier>();
+  }
+ else {
+    return ModuleFactory.getInstance().getModifiers(presenter.getName());
+  }
+}

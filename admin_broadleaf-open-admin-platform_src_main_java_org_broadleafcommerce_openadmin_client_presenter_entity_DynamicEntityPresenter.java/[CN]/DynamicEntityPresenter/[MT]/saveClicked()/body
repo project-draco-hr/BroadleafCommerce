@@ -1,5 +1,8 @@
 {
   DSRequest requestProperties=new DSRequest();
+  for (  PresenterModifier modifier : modifierList) {
+    modifier.saveClicked();
+  }
   display.getDynamicFormDisplay().getFormOnlyDisplay().getForm().saveData(new DSCallback(){
     @Override public void execute(    DSResponse response,    Object rawData,    DSRequest request){
       if (response.getStatus() != RPCResponse.STATUS_VALIDATION_ERROR) {

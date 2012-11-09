@@ -1,12 +1,12 @@
 {
   String lookupPath=getUrlPathHelper().getLookupPathForRequest(request);
-  Field mapField=AbstractUrlHandlerMapping.class.getDeclaredField("handlerMap");
-  mapField.setAccessible(true);
-  Map<String,Object> handlerMap=(Map<String,Object>)mapField.get(this);
-  if (MapUtils.isEmpty(handlerMap)) {
-    afterPropertiesSet();
+  Object handler;
+synchronized (this) {
+    if (MapUtils.isEmpty(getHandlerMap())) {
+      afterPropertiesSet();
+    }
+    handler=lookupHandler(lookupPath,request);
   }
-  Object handler=lookupHandler(lookupPath,request);
   if (handler == null) {
     Object rawHandler=null;
     if ("/".equals(lookupPath)) {
