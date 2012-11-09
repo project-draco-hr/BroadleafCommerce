@@ -26,6 +26,9 @@
     }
     throw new IllegalArgumentException("Could not find SKU for :" + " productId: " + (product == null ? "null" : product.getId()) + " skuId: "+ orderItemRequestDTO.getSkuId()+ " attributes: "+ sb.toString());
   }
+ else   if (!sku.isActive()) {
+    throw new IllegalArgumentException("The requested skuId of " + sku.getId() + " is no longer active");
+  }
  else {
     request.getItemRequest().setSkuId(sku.getId());
   }
