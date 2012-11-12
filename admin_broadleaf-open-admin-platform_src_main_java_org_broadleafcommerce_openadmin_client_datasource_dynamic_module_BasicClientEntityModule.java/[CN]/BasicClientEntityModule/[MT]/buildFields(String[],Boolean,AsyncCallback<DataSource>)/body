@@ -1,6 +1,7 @@
 {
   BatchManager batchManager=BatchManager.getInstance();
   BatchPackage batchPackage=new BatchPackage();
+  batchPackage.setDataSourceUrl(dataSource.getDataURL());
   batchPackage.setPersistencePackage(new PersistencePackage(ceilingEntityFullyQualifiedClassname,null,persistencePerspective,customCriteria,BLCMain.csrfToken));
   batchPackage.setAsyncCallback(new AbstractCallback<DynamicResultSet>(){
     @Override protected void onOtherException(    Throwable exception){

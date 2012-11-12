@@ -1,5 +1,11 @@
 {
-  Object handlerWrapper=getMyHandlerInternal(request);
+  Object handlerWrapper;
+  if ("true".equalsIgnoreCase(useJRebelCompatibilityMode)) {
+    handlerWrapper=getMyHandlerInternal(request);
+  }
+ else {
+    handlerWrapper=super.getHandlerInternal(request);
+  }
   if (handlerWrapper instanceof HandlerExecutionChain) {
     final Object handler=((HandlerExecutionChain)handlerWrapper).getHandler();
     if (handler instanceof GWTRPCServiceExporter) {

@@ -2,7 +2,7 @@
   DataSourceField[] fields=getFields();
   for (  DataSourceField field : fields) {
     Boolean foundType=false;
-    if (field.getAttribute("permanentlyHidden") == null || field.getAttributeAsBoolean("permanentlyHidden") == false) {
+    if (field.getAttribute("permanentlyHidden") == null || !field.getAttributeAsBoolean("permanentlyHidden") || (field.getAttribute("formHidden") != null && FormHiddenEnum.VISIBLE == field.getAttributeAsObject("formHidden"))) {
       String[] availableTypes=field.getAttributeAsStringArray("availableToTypes");
       if (availableTypes != null) {
         for (        String singleType : type) {
@@ -15,9 +15,11 @@
     }
     if (foundType) {
       field.setHidden(false);
+      field.setAttribute("tempFormHidden",false);
     }
  else {
       field.setHidden(true);
+      field.setAttribute("tempFormHidden",true);
     }
   }
 }
