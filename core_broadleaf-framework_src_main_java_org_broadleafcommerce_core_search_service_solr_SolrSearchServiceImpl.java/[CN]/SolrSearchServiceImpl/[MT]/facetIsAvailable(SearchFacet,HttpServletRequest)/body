@@ -8,13 +8,13 @@
   }
   int requiredMatches=facet.getRequiresAllDependentFacets() ? facet.getRequiredFacets().size() : 1;
   int matchesSoFar=0;
-  for (  SearchFacet requiredFacet : facet.getRequiredFacets()) {
+  for (  RequiredFacet requiredFacet : facet.getRequiredFacets()) {
     if (requiredMatches == matchesSoFar) {
       return true;
     }
     for (    Entry<String,String[]> entry : params.entrySet()) {
       String key=entry.getKey();
-      if (key.equals(requiredFacet.getField().getAbbreviation())) {
+      if (key.equals(requiredFacet.getRequiredFacet().getField().getAbbreviation())) {
         matchesSoFar++;
         break;
       }
