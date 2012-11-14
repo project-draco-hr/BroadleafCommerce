@@ -1,5 +1,17 @@
 {
   CheckoutSeed seed=((CheckoutContext)context).getSeedData();
-  compositePaymentService.executePayment(seed.getOrder(),seed.getInfos(),seed.getPaymentResponse());
+  CompositePaymentResponse response=compositePaymentService.executePayment(seed.getOrder(),seed.getInfos(),seed.getPaymentResponse());
+  for (  Map.Entry<PaymentInfo,PaymentResponseItem> entry : response.getPaymentResponse().getResponseItems().entrySet()) {
+    checkTransactionStatus(context,entry.getValue());
+    if (context.isStopped()) {
+      String log="Stopping checkout workflow due to payment response code: ";
+      log+=entry.getValue().getProcessorResponseCode();
+      log+=" and text: ";
+      log+=entry.getValue().getProcessorResponseText();
+      log+=" for payment type: " + entry.getKey().getType().getType();
+      LOG.debug(log);
+      break;
+    }
+  }
   return context;
 }
