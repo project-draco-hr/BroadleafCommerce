@@ -18,6 +18,9 @@
                 serverMetadata=(BasicFieldMetadata)temp.get(field.getName());
                 mergedProperties.put(key,serverMetadata);
                 if (isParentExcluded) {
+                  if (LOG.isDebugEnabled()) {
+                    LOG.debug("applyMetadataOverrides:Excluding " + key + "because the parent was excluded");
+                  }
                   serverMetadata.setExcluded(true);
                 }
               }

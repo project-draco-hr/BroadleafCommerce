@@ -6,12 +6,18 @@
       String testKey=prefix + key;
       if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
         FieldMetadata metadata=mergedProperties.get(key);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("buildAdminPresentationOverride:Excluding " + key + "because an override annotation declared "+ testKey+ " to be excluded");
+        }
         metadata.setExcluded(true);
         return;
       }
       if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
         FieldMetadata metadata=mergedProperties.get(key);
         if (!isParentExcluded) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("buildAdminPresentationOverride:Showing " + key + "because an override annotation declared "+ testKey+ " to not be excluded");
+          }
           metadata.setExcluded(false);
         }
       }
@@ -42,6 +48,9 @@
           result.setMergedPropertyType(serverMetadata.getMergedPropertyType());
           mergedProperties.put(key,result);
           if (isParentExcluded) {
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("buildAdminPresentationOverride:Excluding " + key + "because the parent was excluded");
+            }
             serverMetadata.setExcluded(true);
           }
         }
