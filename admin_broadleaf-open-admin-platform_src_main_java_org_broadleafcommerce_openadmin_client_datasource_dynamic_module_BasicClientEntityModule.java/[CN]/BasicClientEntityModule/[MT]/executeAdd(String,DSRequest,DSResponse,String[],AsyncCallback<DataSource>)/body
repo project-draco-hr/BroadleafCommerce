@@ -4,7 +4,7 @@
   TreeNode record=new TreeNode(data);
   Entity entity=buildEntity(record,request);
   service.add(new PersistencePackage(ceilingEntityFullyQualifiedClassname,entity,persistencePerspective,customCriteria,BLCMain.csrfToken),new EntityServiceAsyncCallback<Entity>(EntityOperationType.ADD,requestId,request,response,dataSource){
-    public void onSuccess(    Entity result){
+    @Override public void onSuccess(    Entity result){
       super.onSuccess(result);
       if (processResult(result,requestId,response,dataSource)) {
         TreeNode record=(TreeNode)buildRecord(result,false);

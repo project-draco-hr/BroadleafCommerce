@@ -5,13 +5,13 @@
         String testKey=prefix + key;
         if (!(testKey.startsWith(include + ".") || testKey.equals(include))) {
           FieldMetadata metadata=mergedProperties.get(key);
-          LOG.debug("Excluding " + key + " because this field did not appear in the explicit includeFields list");
+          LOG.debug("applyIncludesAndExcludes:Excluding " + key + " because this field did not appear in the explicit includeFields list");
           metadata.setExcluded(true);
         }
  else {
           FieldMetadata metadata=mergedProperties.get(key);
           if (!isParentExcluded) {
-            LOG.debug("Showing " + key + " because this field appears in the explicit includeFields list");
+            LOG.debug("applyIncludesAndExcludes:Showing " + key + " because this field appears in the explicit includeFields list");
             metadata.setExcluded(false);
           }
         }
@@ -24,13 +24,13 @@
         String testKey=prefix + key;
         if (testKey.startsWith(exclude + ".") || testKey.equals(exclude)) {
           FieldMetadata metadata=mergedProperties.get(key);
-          LOG.debug("Excluding " + key + " because this field appears in the explicit excludeFields list");
+          LOG.debug("applyIncludesAndExcludes:Excluding " + key + " because this field appears in the explicit excludeFields list");
           metadata.setExcluded(true);
         }
  else {
           FieldMetadata metadata=mergedProperties.get(key);
           if (!isParentExcluded) {
-            LOG.debug("Showing " + key + " because this field did not appear in the explicit excludeFields list");
+            LOG.debug("applyIncludesAndExcludes:Showing " + key + " because this field did not appear in the explicit excludeFields list");
             metadata.setExcluded(false);
           }
         }

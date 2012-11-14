@@ -140,6 +140,14 @@
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
   }
   if (adornedTargetCollectionMetadata.getExcluded() != null) {
+    if (LOG.isDebugEnabled()) {
+      if (adornedTargetCollectionMetadata.getExcluded()) {
+        LOG.debug("buildAdornedTargetCollectionMetadata:Excluding " + field.getName() + " because it was explicitly declared in config");
+      }
+ else {
+        LOG.debug("buildAdornedTargetCollectionMetadata:Showing " + field.getName() + " because it was explicitly declared in config");
+      }
+    }
     metadata.setExcluded(adornedTargetCollectionMetadata.getExcluded());
   }
   if (adornedTargetCollectionMetadata.getFriendlyName() != null) {
