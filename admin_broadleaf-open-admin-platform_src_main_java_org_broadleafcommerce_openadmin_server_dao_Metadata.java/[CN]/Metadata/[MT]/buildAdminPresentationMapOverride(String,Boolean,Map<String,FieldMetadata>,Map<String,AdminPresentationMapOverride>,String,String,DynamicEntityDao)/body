@@ -32,7 +32,7 @@
           Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
           FieldMetadataOverride localMetadata=constructMapMetadataOverride(annot);
           Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-          buildMapMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
+          buildMapMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao,null);
           MapMetadata result=(MapMetadata)temp.get(field.getName());
           result.setInheritedFromType(serverMetadata.getInheritedFromType());
           result.setAvailableToTypes(serverMetadata.getAvailableToTypes());

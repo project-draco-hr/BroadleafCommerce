@@ -48,7 +48,13 @@
     metadata.setPersistencePerspective(persistencePerspective);
   }
   String parentObjectClass=targetClass.getName();
-  Map idMetadata=dynamicEntityDao.getIdMetadata(targetClass);
+  Map idMetadata;
+  if (parentClass != null) {
+    idMetadata=dynamicEntityDao.getIdMetadata(parentClass);
+  }
+ else {
+    idMetadata=dynamicEntityDao.getIdMetadata(targetClass);
+  }
   String parentObjectIdField=(String)idMetadata.get("name");
   String keyClassName=null;
   if (serverMetadata != null) {
