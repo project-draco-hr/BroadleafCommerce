@@ -18,6 +18,9 @@
                 serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
                 mergedProperties.put(key,serverMetadata);
                 if (isParentExcluded) {
+                  if (LOG.isDebugEnabled()) {
+                    LOG.debug("applyCollectionMetadataOverrides:Excluding " + key + "because parent is marked as excluded.");
+                  }
                   serverMetadata.setExcluded(true);
                 }
               }

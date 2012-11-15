@@ -5,9 +5,7 @@
     if (mergedProperties.get(key).getExcluded() != null && mergedProperties.get(key).getExcluded()) {
       mergedProperties.get(key).accept(new MetadataVisitorAdapter(){
         @Override public void visit(        BasicFieldMetadata metadata){
-          if (metadata.getExplicitFieldType() == null || metadata.getExplicitFieldType() != SupportedFieldType.ADDITIONAL_FOREIGN_KEY || key.contains(".")) {
-            removeKeys.add(key);
-          }
+          removeKeys.add(key);
         }
         @Override public void visit(        AdornedTargetCollectionMetadata metadata){
           removeKeys.add(key);

@@ -6,12 +6,18 @@
       String testKey=prefix + key;
       if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
         FieldMetadata metadata=mergedProperties.get(key);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("buildAdminPresentationOverride:Excluding " + key + "because an override annotation declared "+ testKey+ " to be excluded");
+        }
         metadata.setExcluded(true);
         return;
       }
       if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && !annot.excluded()) {
         FieldMetadata metadata=mergedProperties.get(key);
         if (!isParentExcluded) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("buildAdminPresentationOverride:Showing " + key + "because an override annotation declared "+ testKey+ " to not be excluded");
+          }
           metadata.setExcluded(false);
         }
       }
@@ -22,11 +28,15 @@
       if (serverMetadata.getTargetClass() != null) {
         try {
           Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+          Class<?> parentClass=null;
+          if (serverMetadata.getOwningClass() != null) {
+            parentClass=Class.forName(serverMetadata.getOwningClass());
+          }
           String fieldName=serverMetadata.getFieldName();
           Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
           FieldMetadataOverride localMetadata=constructBasicMetadataOverride(annot,null,null);
           Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
-          buildBasicMetadata(targetClass,temp,field,localMetadata,dynamicEntityDao);
+          buildBasicMetadata(parentClass,targetClass,temp,field,localMetadata,dynamicEntityDao);
           BasicFieldMetadata result=(BasicFieldMetadata)temp.get(field.getName());
           result.setInheritedFromType(serverMetadata.getInheritedFromType());
           result.setAvailableToTypes(serverMetadata.getAvailableToTypes());
@@ -42,6 +52,9 @@
           result.setMergedPropertyType(serverMetadata.getMergedPropertyType());
           mergedProperties.put(key,result);
           if (isParentExcluded) {
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("buildAdminPresentationOverride:Excluding " + key + "because the parent was excluded");
+            }
             serverMetadata.setExcluded(true);
           }
         }

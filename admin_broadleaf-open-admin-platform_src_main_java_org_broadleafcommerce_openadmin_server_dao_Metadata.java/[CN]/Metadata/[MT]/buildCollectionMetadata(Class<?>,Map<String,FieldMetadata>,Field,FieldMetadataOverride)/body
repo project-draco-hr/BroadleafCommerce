@@ -8,6 +8,13 @@
     metadata=new BasicCollectionMetadata();
   }
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   if (collectionMetadata.getReadOnly() != null) {
     metadata.setMutable(!collectionMetadata.getReadOnly());
@@ -88,6 +95,14 @@
     metadata.setCollectionCeilingEntity(ceiling);
   }
   if (collectionMetadata.getExcluded() != null) {
+    if (LOG.isDebugEnabled()) {
+      if (collectionMetadata.getExcluded()) {
+        LOG.debug("buildCollectionMetadata:Excluding " + field.getName() + " because it was explicitly declared in config");
+      }
+ else {
+        LOG.debug("buildCollectionMetadata:Showing " + field.getName() + " because it was explicitly declared in config");
+      }
+    }
     metadata.setExcluded(collectionMetadata.getExcluded());
   }
   if (collectionMetadata.getFriendlyName() != null) {
@@ -107,6 +122,9 @@
   }
   if (collectionMetadata.getCustomCriteria() != null) {
     metadata.setCustomCriteria(collectionMetadata.getCustomCriteria());
+  }
+  if (collectionMetadata.getCurrencyCodeField() != null) {
+    metadata.setCurrencyCodeField(collectionMetadata.getCurrencyCodeField());
   }
   attributes.put(field.getName(),metadata);
 }

@@ -14,6 +14,13 @@
     metadata.setShowIfProperty(map.getShowIfProperty());
   }
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
   if (map.getAddType() != null) {
@@ -199,6 +206,14 @@
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,mapStructure);
   }
   if (map.getExcluded() != null) {
+    if (LOG.isDebugEnabled()) {
+      if (map.getExcluded()) {
+        LOG.debug("buildMapMetadata:Excluding " + field.getName() + " because it was explicitly declared in config");
+      }
+ else {
+        LOG.debug("buildMapMetadata:Showing " + field.getName() + " because it was explicitly declared in config");
+      }
+    }
     metadata.setExcluded(map.getExcluded());
   }
   if (map.getFriendlyName() != null) {
@@ -218,6 +233,9 @@
   }
   if (map.getCustomCriteria() != null) {
     metadata.setCustomCriteria(map.getCustomCriteria());
+  }
+  if (map.getCurrencyCodeField() != null) {
+    metadata.setCurrencyCodeField(map.getCurrencyCodeField());
   }
   attributes.put(field.getName(),metadata);
 }
