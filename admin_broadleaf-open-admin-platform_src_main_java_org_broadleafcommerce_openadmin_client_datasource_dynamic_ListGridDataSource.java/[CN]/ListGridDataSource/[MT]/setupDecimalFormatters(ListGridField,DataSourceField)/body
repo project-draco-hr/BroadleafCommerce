@@ -29,6 +29,9 @@
  else {
           formatValue=(Number)value;
         }
+        if (CurrencyList.get().lookup(currencyCode) == null) {
+          return String.valueOf(value);
+        }
         try {
           return NumberFormat.getCurrencyFormat(currencyCode).format(formatValue);
         }
