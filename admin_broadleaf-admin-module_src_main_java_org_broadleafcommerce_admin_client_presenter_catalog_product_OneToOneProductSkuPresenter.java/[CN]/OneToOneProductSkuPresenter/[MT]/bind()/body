@@ -4,12 +4,10 @@
   productOptionsPresenter.bind();
   skusPresenter.bind();
   bundleItemsPresenter.bind();
-  priceListPresenter.bind();
   translationsPresenter.bind();
   getDisplay().getSkusDisplay().getGrid().addSelectionChangedHandler(new SelectionChangedHandler(){
     @Override public void onSelectionChanged(    SelectionEvent event){
       if (event.getState()) {
-        priceListPresenter.load(event.getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("skusDS"),null);
         translationsPresenter.load(event.getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("skusDS"),null);
       }
     }
