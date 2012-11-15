@@ -1,13 +1,13 @@
 {
   if (staticAssetsDataSouce == null) {
-    StaticAssetsTileGridDataSourceFactory factory=new StaticAssetsTileGridDataSourceFactory();
-    factory.createDataSource("staticAssetTreeDS",null,null,new AsyncCallbackAdapter(){
+    getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("staticAssetTileDS",new StaticAssetsTileGridDataSourceFactory(),new AsyncCallbackAdapter(){
       @Override public void onSetupSuccess(      DataSource dataSource){
         TileGridDataSource staticAssetTreeDS=(TileGridDataSource)dataSource;
         setAssetSearchDialogView(new AssetSearchDialog(staticAssetTreeDS));
         staticAssetsDataSouce=dataSource;
       }
     }
-);
+));
+    getPresenterSequenceSetupManager().getStandAlonePresenterSequenceSetupManager().launch();
   }
 }
