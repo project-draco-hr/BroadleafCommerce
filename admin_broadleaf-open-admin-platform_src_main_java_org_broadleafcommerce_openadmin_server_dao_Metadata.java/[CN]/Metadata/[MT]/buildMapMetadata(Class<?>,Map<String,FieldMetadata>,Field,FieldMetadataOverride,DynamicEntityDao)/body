@@ -14,6 +14,13 @@
     metadata.setShowIfProperty(map.getShowIfProperty());
   }
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
   if (map.getAddType() != null) {

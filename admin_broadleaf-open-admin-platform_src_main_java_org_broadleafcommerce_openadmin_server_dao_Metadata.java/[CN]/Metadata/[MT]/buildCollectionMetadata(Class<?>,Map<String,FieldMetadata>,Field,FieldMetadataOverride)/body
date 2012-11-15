@@ -8,6 +8,13 @@
     metadata=new BasicCollectionMetadata();
   }
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   if (collectionMetadata.getReadOnly() != null) {
     metadata.setMutable(!collectionMetadata.getReadOnly());
