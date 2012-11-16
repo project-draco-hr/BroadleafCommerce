@@ -1,0 +1,28 @@
+{
+  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+    String property=entry.getKey();
+    Property prop=new Property();
+    FieldMetadata metadata=mergedProperties.get(property);
+    prop.setName(property);
+    int pos=Collections.binarySearch(properties,prop,new Comparator<Property>(){
+      @Override public int compare(      Property o1,      Property o2){
+        return o1.getName().compareTo(o2.getName());
+      }
+    }
+);
+    if (pos >= 0) {
+      logWarn: {
+        if ((metadata instanceof BasicFieldMetadata) && SupportedFieldType.ID.equals(((BasicFieldMetadata)metadata).getFieldType())) {
+          break logWarn;
+        }
+        LOG.warn("Detected a field name collision (" + metadata.getTargetClass() + "."+ property+ ") during inspection for the inheritance line starting with ("+ inheritanceLine[0].getName()+ "). Ignoring the additional field. This can occur most commonly when using the @AdminPresentationAdornedTargetCollection and the collection type and target class have field names in common. This situation should be avoided, as the system will strip the repeated fields, which can cause unpredictable behavior.");
+      }
+      continue;
+    }
+    properties.add(prop);
+    prop.setMetadata(metadata);
+    if (isHiddenOverride && prop.getMetadata() instanceof BasicFieldMetadata) {
+      ((BasicFieldMetadata)prop.getMetadata()).setVisibility(VisibilityEnum.HIDDEN_ALL);
+    }
+  }
+}
