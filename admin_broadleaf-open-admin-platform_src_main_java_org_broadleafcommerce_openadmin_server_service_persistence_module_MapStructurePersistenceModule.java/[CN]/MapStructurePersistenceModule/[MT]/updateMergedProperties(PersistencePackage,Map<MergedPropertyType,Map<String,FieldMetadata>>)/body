@@ -22,13 +22,6 @@
         valueMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
       }
       allMergedProperties.put(MergedPropertyType.MAPSTRUCTUREVALUE,valueMergedProperties);
-      Iterator<Map.Entry<String,FieldMetadata>> itr=allMergedProperties.get(MergedPropertyType.PRIMARY).entrySet().iterator();
-      while (itr.hasNext()) {
-        Map.Entry<String,FieldMetadata> entry=itr.next();
-        if (!(entry.getValue() instanceof BasicFieldMetadata) || !SupportedFieldType.ID.equals(((BasicFieldMetadata)entry.getValue()).getFieldType())) {
-          itr.remove();
-        }
-      }
     }
   }
  catch (  Exception e) {
