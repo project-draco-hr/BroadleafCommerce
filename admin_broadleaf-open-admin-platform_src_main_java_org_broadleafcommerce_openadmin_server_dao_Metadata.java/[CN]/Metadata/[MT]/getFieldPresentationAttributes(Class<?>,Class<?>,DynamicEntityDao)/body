@@ -8,7 +8,7 @@
     AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
     if (annot != null) {
       FieldMetadataOverride override=constructBasicMetadataOverride(annot,field.getAnnotation(AdminPresentationToOneLookup.class),field.getAnnotation(AdminPresentationDataDrivenEnumeration.class));
-      buildBasicMetadata(targetClass,attributes,field,override,dynamicEntityDao);
+      buildBasicMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
     }
  else     if (annotColl != null) {
       FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annotColl);
@@ -20,7 +20,7 @@
     }
  else     if (map != null) {
       FieldMetadataOverride override=constructMapMetadataOverride(map);
-      buildMapMetadata(targetClass,attributes,field,override,dynamicEntityDao);
+      buildMapMetadata(targetClass,attributes,field,override,dynamicEntityDao,parentClass);
     }
  else {
       BasicFieldMetadata metadata=new BasicFieldMetadata();
