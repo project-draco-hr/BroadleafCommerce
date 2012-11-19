@@ -1,7 +1,7 @@
 {
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   HashMap<String,FieldMetadata> originalProps=(HashMap<String,FieldMetadata>)dynamicEntityDao.getMergedProperties(StaticAsset.class.getName(),entityClasses,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-  mergedProperties=(HashMap<String,FieldMetadata>)SerializationUtils.clone(originalProps);
+  mergedProperties=SerializationUtils.clone(originalProps);
   BasicFieldMetadata fieldMetadata=new BasicFieldMetadata();
   fieldMetadata.setFieldType(SupportedFieldType.UPLOAD);
   fieldMetadata.setMutable(true);
