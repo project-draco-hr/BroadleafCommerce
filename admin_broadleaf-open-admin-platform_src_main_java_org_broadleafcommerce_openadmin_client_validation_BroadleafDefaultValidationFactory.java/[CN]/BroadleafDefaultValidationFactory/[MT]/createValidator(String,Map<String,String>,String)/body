@@ -8,12 +8,7 @@
     ((RegExpValidator)valid).setExpression(configurationItems.get("regularExpression"));
   }
   if (configurationItems.containsKey("errorMessageKey")) {
-    String message=null;
-    try {
-      message=BLCMain.getMessageManager().getString(configurationItems.get("errorMessageKey"));
-    }
- catch (    MissingResourceException e) {
-    }
+    String message=BLCMain.getMessageManager().getString(configurationItems.get("errorMessageKey"));
     if (message != null) {
       valid.setErrorMessage(message);
     }
