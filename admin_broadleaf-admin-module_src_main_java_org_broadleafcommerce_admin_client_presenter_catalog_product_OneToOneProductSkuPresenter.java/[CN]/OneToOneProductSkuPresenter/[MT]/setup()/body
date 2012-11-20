@@ -23,7 +23,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("parentCategoriesDS",new ParentCategoryListDataSourceFactory(),new OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC),new Object[]{},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      parentCategoriesPresenter=new SimpleSearchListPresenter(getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      parentCategoriesPresenter=new SimpleSearchListPresenter("",getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
       parentCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
     }
   }
@@ -62,7 +62,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("bundleSkusDS",new SkuBundleItemsDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      bundleItemsPresenter=new EditableAdornedTargetListPresenter(getDisplay().getBundleItemsDisplay(),skuSearchView,new String[]{EntityImplementations.PRODUCT_BUNDLE},BLCMain.getMessageManager().getString("skuSelect"),BLCMain.getMessageManager().getString("editBundleItem"),new String[]{"quantity","itemSalePrice"});
+      bundleItemsPresenter=new EditableAdornedTargetListPresenter("",getDisplay().getBundleItemsDisplay(),skuSearchView,new String[]{EntityImplementations.PRODUCT_BUNDLE},BLCMain.getMessageManager().getString("skuSelect"),BLCMain.getMessageManager().getString("editBundleItem"),new String[]{"quantity","itemSalePrice"});
       bundleItemsPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","quantity","itemSalePrice"},new Boolean[]{false,false,false});
     }
   }
