@@ -24,7 +24,7 @@
     }
   }
   if (shouldLoad) {
-    String id=abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
+    String id=getRelationshipValue(associatedRecord,abstractDynamicDataSource);
     ((PresentationLayerAssociatedDataSource)display.getGrid().getDataSource()).loadAssociatedGridBasedOnRelationship(id,new DSCallback(){
       @Override public void execute(      DSResponse response,      Object rawData,      DSRequest request){
         String locked=associatedRecord.getAttribute("__locked");
