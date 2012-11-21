@@ -11,8 +11,11 @@
     viewTitle=propertyName;
   }
  else {
-    String temp=BLCMain.getMessageManager().getString(metadata.getFriendlyName());
-    if (temp == null) {
+    String temp;
+    try {
+      temp=BLCMain.getMessageManager().getString(metadata.getFriendlyName());
+    }
+ catch (    MissingResourceException e) {
       temp=metadata.getFriendlyName();
     }
     viewTitle=temp;
@@ -90,8 +93,11 @@
  else {
           LinkedHashMap<String,String> keys=new LinkedHashMap<String,String>();
           for (          String[] key : metadata.getKeys()) {
-            String temp=BLCMain.getMessageManager().getString(key[1]);
-            if (temp == null) {
+            String temp;
+            try {
+              temp=BLCMain.getMessageManager().getString(key[1]);
+            }
+ catch (            MissingResourceException e) {
               temp=key[1];
             }
             keys.put(key[0],temp);
