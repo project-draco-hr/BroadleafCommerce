@@ -1,5 +1,6 @@
 {
   BasicCollectionMetadata serverMetadata=(BasicCollectionMetadata)attributes.get(field.getName());
+  Class<?> resolvedClass=parentClass == null ? targetClass : parentClass;
   BasicCollectionMetadata metadata;
   if (serverMetadata != null) {
     metadata=serverMetadata;
@@ -8,7 +9,14 @@
     metadata=new BasicCollectionMetadata();
   }
   metadata.setTargetClass(targetClass.getName());
-  AdminPresentationClass adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  AdminPresentationClass adminPresentationClass;
+  if (parentClass != null) {
+    metadata.setOwningClass(parentClass.getName());
+    adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
+  }
+ else {
+    adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  }
   if (adminPresentationClass != null) {
     String friendlyName=adminPresentationClass.friendlyName();
     if (!StringUtils.isEmpty(friendlyName)) {
@@ -74,10 +82,10 @@
   if (serverMetadata != null) {
     ForeignKey foreignKey=(ForeignKey)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
     foreignKey.setManyToField(foreignKeyName);
-    foreignKey.setForeignKeyClass(targetClass.getName());
+    foreignKey.setForeignKeyClass(resolvedClass.getName());
   }
  else {
-    ForeignKey foreignKey=new ForeignKey(foreignKeyName,targetClass.getName(),null,ForeignKeyRestrictionType.ID_EQ);
+    ForeignKey foreignKey=new ForeignKey(foreignKeyName,resolvedClass.getName(),null,ForeignKeyRestrictionType.ID_EQ);
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
   }
   String ceiling=null;
