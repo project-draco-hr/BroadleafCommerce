@@ -1,5 +1,6 @@
 {
   MapMetadata serverMetadata=(MapMetadata)attributes.get(field.getName());
+  Class<?> resolvedClass=parentClass == null ? targetClass : parentClass;
   MapMetadata metadata;
   if (serverMetadata != null) {
     metadata=serverMetadata;
@@ -10,7 +11,22 @@
   if (map.getReadOnly() != null) {
     metadata.setMutable(!map.getReadOnly());
   }
+  metadata.setPrefix(prefix);
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass;
+  if (parentClass != null) {
+    metadata.setOwningClass(parentClass.getName());
+    adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
+  }
+ else {
+    adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  }
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
   if (map.getAddType() != null) {
@@ -37,7 +53,7 @@
     persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
     metadata.setPersistencePerspective(persistencePerspective);
   }
-  String parentObjectClass=targetClass.getName();
+  String parentObjectClass=resolvedClass.getName();
   Map idMetadata;
   if (parentClass != null) {
     idMetadata=dynamicEntityDao.getIdMetadata(parentClass);
@@ -177,7 +193,7 @@
       mapStructure.setValueClassName(metadata.getValueClassName());
       mapStructure.setValuePropertyName(valuePropertyName);
       mapStructure.setValuePropertyFriendlyName(valuePropertyFriendlyName);
-      mapStructure.setMapProperty(field.getName());
+      mapStructure.setMapProperty(prefix + field.getName());
     }
  else {
       MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
@@ -185,7 +201,7 @@
       mapStructure.setKeyPropertyName(keyPropertyName);
       mapStructure.setKeyPropertyFriendlyName(keyPropertyFriendlyName);
       mapStructure.setValueClassName(metadata.getValueClassName());
-      mapStructure.setMapProperty(field.getName());
+      mapStructure.setMapProperty(prefix + field.getName());
       mapStructure.setDeleteValueEntity(deleteEntityUponRemove);
     }
   }
@@ -194,10 +210,10 @@
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
     MapStructure mapStructure;
     if (metadata.isSimpleValue()) {
-      mapStructure=new SimpleValueMapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),valuePropertyName,valuePropertyFriendlyName,field.getName());
+      mapStructure=new SimpleValueMapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),valuePropertyName,valuePropertyFriendlyName,prefix + field.getName());
     }
  else {
-      mapStructure=new MapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),field.getName(),deleteEntityUponRemove);
+      mapStructure=new MapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),prefix + field.getName(),deleteEntityUponRemove);
     }
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,mapStructure);
   }

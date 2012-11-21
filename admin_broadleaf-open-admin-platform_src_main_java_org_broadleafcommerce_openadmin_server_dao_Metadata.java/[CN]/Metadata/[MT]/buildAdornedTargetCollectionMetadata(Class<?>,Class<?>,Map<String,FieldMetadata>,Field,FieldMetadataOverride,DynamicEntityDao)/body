@@ -1,5 +1,6 @@
 {
   AdornedTargetCollectionMetadata serverMetadata=(AdornedTargetCollectionMetadata)attributes.get(field.getName());
+  Class<?> resolvedClass=parentClass == null ? targetClass : parentClass;
   AdornedTargetCollectionMetadata metadata;
   if (serverMetadata != null) {
     metadata=serverMetadata;
@@ -8,6 +9,20 @@
     metadata=new AdornedTargetCollectionMetadata();
   }
   metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass;
+  if (parentClass != null) {
+    metadata.setOwningClass(parentClass.getName());
+    adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
+  }
+ else {
+    adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  }
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
   metadata.setFieldName(field.getName());
   if (adornedTargetCollectionMetadata.getReadOnly() != null) {
     metadata.setMutable(!adornedTargetCollectionMetadata.getReadOnly());
@@ -62,7 +77,7 @@
   if (!StringUtils.isEmpty(adornedTargetCollectionMetadata.getSortProperty())) {
     sortProperty=adornedTargetCollectionMetadata.getSortProperty();
   }
-  metadata.setParentObjectClass(targetClass.getName());
+  metadata.setParentObjectClass(resolvedClass.getName());
   if (adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields() != null) {
     metadata.setMaintainedAdornedTargetFields(adornedTargetCollectionMetadata.getMaintainedAdornedTargetFields());
   }
