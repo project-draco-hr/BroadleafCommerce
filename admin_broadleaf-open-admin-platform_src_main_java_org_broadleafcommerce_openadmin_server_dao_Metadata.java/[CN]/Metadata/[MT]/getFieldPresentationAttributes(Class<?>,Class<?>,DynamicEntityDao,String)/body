@@ -12,15 +12,15 @@
     }
  else     if (annotColl != null) {
       FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annotColl);
-      buildCollectionMetadata(targetClass,attributes,field,override);
+      buildCollectionMetadata(parentClass,targetClass,attributes,field,override);
     }
  else     if (adornedTargetCollection != null) {
       FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(adornedTargetCollection);
-      buildAdornedTargetCollectionMetadata(targetClass,attributes,field,override,dynamicEntityDao);
+      buildAdornedTargetCollectionMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
     }
  else     if (map != null) {
       FieldMetadataOverride override=constructMapMetadataOverride(map);
-      buildMapMetadata(targetClass,attributes,field,override,dynamicEntityDao,parentClass);
+      buildMapMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao,prefix);
     }
  else {
       BasicFieldMetadata metadata=new BasicFieldMetadata();

@@ -5,7 +5,10 @@
     boolean isPropertyForeignKey=testForeignProperty(foreignField,prefix,propertyName);
     int additionalForeignKeyIndexPosition=findAdditionalForeignKeyIndex(additionalForeignFields,prefix,propertyName);
     j++;
-    Field myField=FieldManager.getSingleField(targetClass,propertyName);
+    Field myField=getFieldManager().getField(targetClass,propertyName);
+    if (myField == null) {
+      myField=getFieldManager().getField(targetClass,prefix + propertyName);
+    }
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
       if (myField != null && (myField.getAnnotation(AdminPresentationCollection.class) != null || myField.getAnnotation(AdminPresentationAdornedTargetCollection.class) != null || myField.getAnnotation(AdminPresentationMap.class) != null)) {
         final CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes.get(propertyName);
