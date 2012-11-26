@@ -6,6 +6,7 @@
   Map<String,FieldMetadata> componentPresentationAttributes=metadata.getFieldPresentationAttributes(returnedClass,this);
   if (isParentExcluded) {
     for (    String key : componentPresentationAttributes.keySet()) {
+      LOG.debug("buildComponentProperties:Excluding " + key + " because the parent was excluded");
       componentPresentationAttributes.get(key).setExcluded(true);
     }
   }
