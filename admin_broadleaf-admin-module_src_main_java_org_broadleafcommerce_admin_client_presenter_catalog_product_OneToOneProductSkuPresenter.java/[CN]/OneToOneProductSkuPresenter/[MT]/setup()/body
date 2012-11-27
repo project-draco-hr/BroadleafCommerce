@@ -44,16 +44,8 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuPriceListDS",new PriceListDataSourceFactory(),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource top){
-    }
-  }
-));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuLocaleDS",new LocaleDataSourceFactory(org.broadleafcommerce.openadmin.client.datasource.CeilingEntities.LOCALE),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource top){
-    }
-  }
-));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuPriceListDS",new PriceListDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuLocaleDS",new LocaleDataSourceFactory(org.broadleafcommerce.openadmin.client.datasource.CeilingEntities.LOCALE),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("priceListMapDS",new PriceListMapDataSourceFactory(this),null,null,new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       priceListPresenter=new MapStructurePresenter("",getDisplay().getSkuPriceListDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
