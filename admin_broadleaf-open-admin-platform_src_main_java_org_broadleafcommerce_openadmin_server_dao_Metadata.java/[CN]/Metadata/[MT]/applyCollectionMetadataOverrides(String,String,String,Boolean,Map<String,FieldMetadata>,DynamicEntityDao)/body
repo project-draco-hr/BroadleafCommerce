@@ -10,11 +10,15 @@
               BasicCollectionMetadata serverMetadata=(BasicCollectionMetadata)mergedProperties.get(key);
               if (serverMetadata.getTargetClass() != null) {
                 Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+                Class<?> parentClass=null;
+                if (serverMetadata.getOwningClass() != null) {
+                  parentClass=Class.forName(serverMetadata.getOwningClass());
+                }
                 String fieldName=serverMetadata.getFieldName();
                 Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
                 Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
                 temp.put(field.getName(),serverMetadata);
-                buildCollectionMetadata(targetClass,temp,field,localMetadata);
+                buildCollectionMetadata(parentClass,targetClass,temp,field,localMetadata);
                 serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
                 mergedProperties.put(key,serverMetadata);
                 if (isParentExcluded) {

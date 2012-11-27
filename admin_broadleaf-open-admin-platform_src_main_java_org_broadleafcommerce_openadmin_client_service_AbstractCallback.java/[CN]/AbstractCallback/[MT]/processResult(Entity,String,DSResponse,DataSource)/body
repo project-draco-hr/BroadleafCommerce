@@ -3,12 +3,7 @@
     Map<String,String> errors=new HashMap<String,String>();
     if (result.getValidationErrors() != null) {
       for (      String[] error : result.getValidationErrors()) {
-        String message=null;
-        try {
-          message=BLCMain.getMessageManager().getString(error[1]);
-        }
- catch (        MissingResourceException e) {
-        }
+        String message=BLCMain.getMessageManager().getString(error[1]);
         errors.put(error[0],message == null ? error[1] : message);
       }
     }
