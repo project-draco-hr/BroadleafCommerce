@@ -1,0 +1,16 @@
+{
+  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+    String property=entry.getKey();
+    Property prop=new Property();
+    FieldMetadata metadata=mergedProperties.get(property);
+    prop.setName(property);
+    if (properties.contains(prop)) {
+      continue;
+    }
+    properties.add(prop);
+    prop.setMetadata(metadata);
+    if (isHiddenOverride && prop.getMetadata() instanceof BasicFieldMetadata) {
+      ((BasicFieldMetadata)prop.getMetadata()).setVisibility(VisibilityEnum.HIDDEN_ALL);
+    }
+  }
+}
