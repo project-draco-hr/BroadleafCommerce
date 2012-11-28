@@ -1,12 +1,28 @@
 {
+  Property currentProperty=null;
   try {
     for (    Property property : entity.getProperties()) {
+      currentProperty=property;
       property.setRawValue(property.getValue());
-      property.setValue(exploitProtectionService.cleanString(property.getValue()));
+      property.setValue(exploitProtectionService.cleanStringWithResults(property.getValue()));
       property.setUnHtmlEncodedValue(StringEscapeUtils.unescapeHtml(property.getValue()));
     }
   }
- catch (  Exception e) {
+ catch (  CleanStringException e) {
+    entity.setValidationFailure(true);
+    StringBuilder sb=new StringBuilder();
+    for (int j=0; j < e.getCleanResults().getNumberOfErrors(); j++) {
+      sb.append(j + 1);
+      sb.append(") ");
+      sb.append((String)e.getCleanResults().getErrorMessages().get(j));
+      sb.append("\n");
+    }
+    sb.append("\nNote - ");
+    sb.append(exploitProtectionService.getAntiSamyPolicyFileLocation());
+    sb.append(" policy in effect. Set a new policy file to modify validation behavior/strictness.");
+    entity.addValidationError(currentProperty.getName(),sb.toString());
+  }
+catch (  Exception e) {
     LOG.error("Unable to clean the passed in entity values",e);
     throw new ServiceException("Unable to clean the passed in entity values",e);
   }

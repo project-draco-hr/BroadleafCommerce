@@ -29,7 +29,7 @@
   dynamicFormDisplay.getToolbar().addMember(advancedButton);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).setLayoutLeftMargin(10);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).setLayoutTopMargin(10);
-  VLayout restrictLayout=new PromotionQuestionVLayout("offerRestrictLayout");
+  VLayout restrictLayout=new PromotionQuestionVLayout("offerRestrictLayout",null);
   restrictLayout.addMember(new PromotionQuestion("restrictOnlyPromotionLabel"));
   restrictForm=new DynamicForm();
   restrictForm.setStyleName(BL_PROMO_QUESTION_ANSWERS);
@@ -42,7 +42,7 @@
   restrictionSectionView=new SectionView(null,"advancedRestrictionsViewTitle");
   restrictionSectionView.getContentLayout().addMember(restrictLayout);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(restrictionSectionView);
-  customerLayout=new PromotionQuestionVLayout("offerCustomerLayout");
+  customerLayout=new PromotionQuestionVLayout("offerCustomerLayout",false);
   helpButtonType=new ImgButton();
   PromotionQuestionWithHelp questionWithHelp=new PromotionQuestionWithHelp("offerCustomerObtainHStack",new PromotionQuestion("customerObtainLabel"),helpButtonType);
   customerLayout.addMember(questionWithHelp);
@@ -97,7 +97,7 @@
   customerSection=new SectionView("offerSectionStack","customerSectionViewTitle");
   customerSection.getContentLayout().addMember(customerLayout);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(customerSection);
-  orderSectionLayout=new PromotionQuestionVLayout("offerOrderSectionLayout");
+  orderSectionLayout=new PromotionQuestionVLayout("offerOrderSectionLayout",false);
   orderSectionLayout.addMember(new PromotionQuestion("orderSectionLabel"));
   orderForm=new DynamicForm();
   orderForm.setStyleName(BL_PROMO_QUESTION_ANSWERS);
@@ -140,7 +140,7 @@
   orderSection=new SectionView("offerSectionStack2","orderQualificationSectionViewTitle");
   orderSection.getContentLayout().addMember(orderSectionLayout);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(orderSection);
-  VLayout itemSectionLayout=new PromotionQuestionVLayout("offerItemSectionLayout");
+  VLayout itemSectionLayout=new PromotionQuestionVLayout("offerItemSectionLayout",null);
   orderItemCombineLabel=new PromotionQuestion("orderItemCombineLabel");
   orderItemCombineLabel.setVisible(false);
   itemSectionLayout.addMember(orderItemCombineLabel);
@@ -265,7 +265,7 @@
   itemQualificationSectionView=new SectionView(null,"itemQualificationSectionTitle");
   itemQualificationSectionView.getContentLayout().addMember(itemSectionLayout);
   ((FormOnlyView)dynamicFormDisplay.getFormOnlyDisplay()).addMember(itemQualificationSectionView);
-  targetItemsLayout=new PromotionQuestionVLayout(null);
+  targetItemsLayout=new PromotionQuestionVLayout(null,null);
   targetItemsLabel=new PromotionQuestion("targetItemsLabel");
   targetItemsLayout.addMember(targetItemsLabel);
   targetItemBuilderViews.add(new ItemBuilderView(orderItemDataSource,true));

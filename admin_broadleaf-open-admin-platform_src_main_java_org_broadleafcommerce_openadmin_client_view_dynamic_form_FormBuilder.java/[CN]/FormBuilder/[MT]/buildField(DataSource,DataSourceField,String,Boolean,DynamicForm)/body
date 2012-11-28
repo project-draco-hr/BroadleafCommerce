@@ -70,27 +70,22 @@ break;
 case BROADLEAF_ENUMERATION:
 case EXPLICIT_ENUMERATION:
 case DATA_DRIVEN_ENUMERATION:
+if (field.getAttributeAsBoolean("canEditEnumeration")) {
 formItem=new ComboBoxItem();
-ComboBoxItem comboBoxItem=(ComboBoxItem)formItem;
-comboBoxItem.setAddUnknownValues(field.getAttributeAsBoolean("canEditEnumeration"));
-comboBoxItem.setHeight(25);
-comboBoxItem.setWidth(280);
-comboBoxItem.setPickerIconHeight(26);
-comboBoxItem.setPickerIconWidth(22);
+((ComboBoxItem)formItem).setAddUnknownValues(true);
+}
+ else {
+formItem=new SelectItem();
+}
+formItem.setHeight(25);
+formItem.setWidth(280);
+formItem.setPickerIconWidth(22);
 LinkedHashMap<String,String> valueMap=new LinkedHashMap<String,String>();
 String[][] enumerationValues=(String[][])field.getAttributeAsObject("enumerationValues");
 for (String[] enumerationValue : enumerationValues) {
 valueMap.put(enumerationValue[0],enumerationValue[1]);
 }
 formItem.setValueMap(valueMap);
-ListGrid pickListProperties=new ListGrid();
-pickListProperties.setCellFormatter(new CellFormatter(){
-@Override public String format(Object value,ListGridRecord record,int rowNum,int colNum){
-return "<div style='padding: 2px 4px; font-size: 11px;'>" + value + "</div>";
-}
-}
-);
-comboBoxItem.setPickListProperties(pickListProperties);
 break;
 case EMPTY_ENUMERATION:
 formItem=new SelectItem();

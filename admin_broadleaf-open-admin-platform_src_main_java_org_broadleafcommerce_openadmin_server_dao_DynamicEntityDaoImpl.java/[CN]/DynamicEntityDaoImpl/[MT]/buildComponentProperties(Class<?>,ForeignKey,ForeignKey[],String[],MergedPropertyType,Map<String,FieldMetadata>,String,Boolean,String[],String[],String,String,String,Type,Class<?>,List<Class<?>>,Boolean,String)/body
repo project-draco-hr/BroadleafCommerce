@@ -3,7 +3,12 @@
   List<String> componentPropertyNames=Arrays.asList(componentProperties);
   Type[] componentTypes=((ComponentType)type).getSubtypes();
   List<Type> componentPropertyTypes=Arrays.asList(componentTypes);
-  Map<String,FieldMetadata> componentPresentationAttributes=metadata.getFieldPresentationAttributes(returnedClass,this);
+  String tempPrefix="";
+  int pos=prefix.indexOf(".");
+  if (pos > 0 && pos < prefix.length() - 1) {
+    tempPrefix=prefix.substring(pos + 1,prefix.length());
+  }
+  Map<String,FieldMetadata> componentPresentationAttributes=metadata.getFieldPresentationAttributes(targetClass,returnedClass,this,tempPrefix + propertyName + ".");
   if (isParentExcluded) {
     for (    String key : componentPresentationAttributes.keySet()) {
       LOG.debug("buildComponentProperties:Excluding " + key + " because the parent was excluded");

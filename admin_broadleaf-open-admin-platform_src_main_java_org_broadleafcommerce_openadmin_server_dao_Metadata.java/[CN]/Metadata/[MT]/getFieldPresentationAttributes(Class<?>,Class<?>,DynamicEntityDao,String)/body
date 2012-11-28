@@ -1,0 +1,33 @@
+{
+  Map<String,FieldMetadata> attributes=new HashMap<String,FieldMetadata>();
+  Field[] fields=dynamicEntityDao.getAllFields(targetClass);
+  for (  Field field : fields) {
+    AdminPresentation annot=field.getAnnotation(AdminPresentation.class);
+    AdminPresentationCollection annotColl=field.getAnnotation(AdminPresentationCollection.class);
+    AdminPresentationAdornedTargetCollection adornedTargetCollection=field.getAnnotation(AdminPresentationAdornedTargetCollection.class);
+    AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
+    if (annot != null) {
+      FieldMetadataOverride override=constructBasicMetadataOverride(annot,field.getAnnotation(AdminPresentationToOneLookup.class),field.getAnnotation(AdminPresentationDataDrivenEnumeration.class));
+      buildBasicMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
+    }
+ else     if (annotColl != null) {
+      FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annotColl);
+      buildCollectionMetadata(parentClass,targetClass,attributes,field,override);
+    }
+ else     if (adornedTargetCollection != null) {
+      FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(adornedTargetCollection);
+      buildAdornedTargetCollectionMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
+    }
+ else     if (map != null) {
+      FieldMetadataOverride override=constructMapMetadataOverride(map);
+      buildMapMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao,prefix);
+    }
+ else {
+      BasicFieldMetadata metadata=new BasicFieldMetadata();
+      metadata.setName(field.getName());
+      metadata.setExcluded(false);
+      attributes.put(field.getName(),metadata);
+    }
+  }
+  return attributes;
+}

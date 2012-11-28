@@ -14,14 +14,9 @@
           ((PasswordItem)otherItem).setLength(((PasswordItem)formItem).getLength());
           otherItem.setName(otherFieldName);
           String title=field.getAttribute("friendlyName") + " Repeat";
-          try {
-            String val=BLCMain.getMessageManager().getString(title);
-            if (val != null) {
-              title=val;
-              break;
-            }
-          }
- catch (          MissingResourceException e) {
+          String val=BLCMain.getMessageManager().getString(title);
+          if (val != null) {
+            title=val;
           }
           otherItem.setTitle(title);
           otherItem.setRequired(field.getRequired());

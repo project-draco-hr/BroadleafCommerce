@@ -23,7 +23,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("parentCategoriesDS",new ParentCategoryListDataSourceFactory(),new OperationTypes(OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.ADORNEDTARGETLIST,OperationType.BASIC),new Object[]{},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      parentCategoriesPresenter=new SimpleSearchListPresenter(getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
+      parentCategoriesPresenter=new SimpleSearchListPresenter("",getDisplay().getAllCategoriesDisplay(),(EntitySearchDialog)library.get("categorySearchView"),BLCMain.getMessageManager().getString("categorySearchPrompt"));
       parentCategoriesPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","urlKey"},new Boolean[]{false,false});
     }
   }
@@ -44,19 +44,11 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuPriceListDS",new PriceListDataSourceFactory(),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource top){
-    }
-  }
-));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuLocaleDS",new LocaleDataSourceFactory(org.broadleafcommerce.openadmin.client.datasource.CeilingEntities.LOCALE),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource top){
-    }
-  }
-));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuPriceListDS",new PriceListDataSourceFactory(),new NullAsyncCallbackAdapter()));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuLocaleDS",new LocaleDataSourceFactory(org.broadleafcommerce.openadmin.client.datasource.CeilingEntities.LOCALE),new NullAsyncCallbackAdapter()));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("priceListMapDS",new PriceListMapDataSourceFactory(this),null,null,new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      priceListPresenter=new MapStructurePresenter(getDisplay().getSkuPriceListDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
+      priceListPresenter=new MapStructurePresenter("",getDisplay().getSkuPriceListDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
       priceListPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
     }
     protected MapStructureEntityEditDialog getMediaEntityView(){
@@ -70,7 +62,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuTranslationMapDS",new SkuTranslationsMapDataSourceFactory(this),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      translationsPresenter=new MapStructurePresenter(getDisplay().getTranslationsDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
+      translationsPresenter=new MapStructurePresenter("",getDisplay().getTranslationsDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
       translationsPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
     }
     protected MapStructureEntityEditDialog getMediaEntityView(){
@@ -100,7 +92,7 @@
 ));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("bundleSkusDS",new SkuBundleItemsDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
-      bundleItemsPresenter=new EditableAdornedTargetListPresenter(getDisplay().getBundleItemsDisplay(),skuSearchView,new String[]{EntityImplementations.PRODUCT_BUNDLE},BLCMain.getMessageManager().getString("skuSelect"),BLCMain.getMessageManager().getString("editBundleItem"),new String[]{"quantity","itemSalePrice"});
+      bundleItemsPresenter=new EditableAdornedTargetListPresenter("",getDisplay().getBundleItemsDisplay(),skuSearchView,new String[]{EntityImplementations.PRODUCT_BUNDLE},BLCMain.getMessageManager().getString("skuSelect"),BLCMain.getMessageManager().getString("editBundleItem"),new String[]{"quantity","itemSalePrice"});
       bundleItemsPresenter.setDataSource((ListGridDataSource)result,new String[]{"name","quantity","itemSalePrice"},new Boolean[]{false,false,false});
     }
   }

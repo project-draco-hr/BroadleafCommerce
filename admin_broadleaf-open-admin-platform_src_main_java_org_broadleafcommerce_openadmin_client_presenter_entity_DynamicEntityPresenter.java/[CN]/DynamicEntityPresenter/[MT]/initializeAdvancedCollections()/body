@@ -47,6 +47,9 @@
               if (metadata.getAddMethodType() == AddMethodType.PERSIST) {
                 FormBuilder.buildAdvancedCollectionForm(baseDS,metadata,entry.getKey(),DynamicEntityPresenter.this);
               }
+              if (metadata.getCurrencyCodeField() != null) {
+                baseDS.setAttribute("currencyCodeField",metadata.getCurrencyCodeField(),true);
+              }
             }
           }
 ));
@@ -61,7 +64,14 @@
           }
         }
         @Override public void visit(        final AdornedTargetCollectionMetadata metadata){
-          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new NullAsyncCallbackAdapter()));
+          presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(dataSourceName,new AdvancedCollectionDataSourceFactory(metadata,DynamicEntityPresenter.this),new AsyncCallbackAdapter(){
+            @Override public void onSetupSuccess(            DataSource baseDS){
+              if (metadata.getCurrencyCodeField() != null) {
+                baseDS.setAttribute("currencyCodeField",metadata.getCurrencyCodeField(),true);
+              }
+            }
+          }
+));
           String lookupDSName=dataSourceName + "Lookup";
           presenterSequenceSetupManager.addOrReplaceItem(new PresenterSetupItem(lookupDSName,new AdvancedCollectionLookupDataSourceFactory(metadata),new AsyncCallbackAdapter(){
             @Override public void onSetupSuccess(            DataSource lookupDS){
@@ -82,6 +92,9 @@
               }
  else {
                 FormBuilder.buildAdvancedCollectionForm(baseDS,presenterSequenceSetupManager.getDataSource(lookupDSName),metadata,entry.getKey(),DynamicEntityPresenter.this);
+              }
+              if (metadata.getCurrencyCodeField() != null) {
+                baseDS.setAttribute("currencyCodeField",metadata.getCurrencyCodeField(),true);
               }
             }
           }

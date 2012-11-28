@@ -1,0 +1,259 @@
+{
+  MapMetadata serverMetadata=(MapMetadata)attributes.get(field.getName());
+  Class<?> resolvedClass=parentClass == null ? targetClass : parentClass;
+  MapMetadata metadata;
+  if (serverMetadata != null) {
+    metadata=serverMetadata;
+  }
+ else {
+    metadata=new MapMetadata();
+  }
+  if (map.getReadOnly() != null) {
+    metadata.setMutable(!map.getReadOnly());
+  }
+  if (map.getShowIfProperty() != null) {
+    metadata.setShowIfProperty(map.getShowIfProperty());
+  }
+  metadata.setPrefix(prefix);
+  metadata.setTargetClass(targetClass.getName());
+  AdminPresentationClass adminPresentationClass;
+  if (parentClass != null) {
+    metadata.setOwningClass(parentClass.getName());
+    adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
+  }
+ else {
+    adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+  }
+  if (adminPresentationClass != null) {
+    String friendlyName=adminPresentationClass.friendlyName();
+    if (!StringUtils.isEmpty(friendlyName)) {
+      metadata.setOwningClassFriendlyName(friendlyName);
+    }
+  }
+  metadata.setFieldName(field.getName());
+  org.broadleafcommerce.openadmin.client.dto.OperationTypes dtoOperationTypes=new org.broadleafcommerce.openadmin.client.dto.OperationTypes(OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP,OperationType.MAP);
+  if (map.getAddType() != null) {
+    dtoOperationTypes.setAddType(map.getAddType());
+  }
+  if (map.getRemoveType() != null) {
+    dtoOperationTypes.setRemoveType(map.getRemoveType());
+  }
+  if (map.getFetchType() != null) {
+    dtoOperationTypes.setFetchType(map.getFetchType());
+  }
+  if (map.getInspectType() != null) {
+    dtoOperationTypes.setInspectType(map.getInspectType());
+  }
+  if (map.getUpdateType() != null) {
+    dtoOperationTypes.setUpdateType(map.getUpdateType());
+  }
+  PersistencePerspective persistencePerspective;
+  if (serverMetadata != null) {
+    persistencePerspective=metadata.getPersistencePerspective();
+    persistencePerspective.setOperationTypes(dtoOperationTypes);
+  }
+ else {
+    persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
+    metadata.setPersistencePerspective(persistencePerspective);
+  }
+  String parentObjectClass=resolvedClass.getName();
+  Map idMetadata;
+  if (parentClass != null) {
+    idMetadata=dynamicEntityDao.getIdMetadata(parentClass);
+  }
+ else {
+    idMetadata=dynamicEntityDao.getIdMetadata(targetClass);
+  }
+  String parentObjectIdField=(String)idMetadata.get("name");
+  String keyClassName=null;
+  if (serverMetadata != null) {
+    keyClassName=((MapStructure)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE)).getKeyClassName();
+  }
+  if (map.getKeyClass() != null && !void.class.getName().equals(map.getKeyClass())) {
+    keyClassName=map.getKeyClass();
+  }
+  if (keyClassName == null) {
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[0];
+      if (!ArrayUtils.isEmpty(dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(clazz))) {
+        throw new IllegalArgumentException("Key class for AdminPresentationMap was determined to be a JPA managed type. Only primitive types for the key type are currently supported.");
+      }
+      keyClassName=clazz.getName();
+    }
+  }
+  if (keyClassName == null) {
+    keyClassName=String.class.getName();
+  }
+  String keyPropertyName="key";
+  String keyPropertyFriendlyName=null;
+  if (serverMetadata != null) {
+    keyPropertyFriendlyName=((MapStructure)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE)).getKeyPropertyFriendlyName();
+  }
+  if (map.getKeyPropertyFriendlyName() != null) {
+    keyPropertyFriendlyName=map.getKeyPropertyFriendlyName();
+  }
+  Boolean deleteEntityUponRemove=null;
+  if (serverMetadata != null) {
+    deleteEntityUponRemove=((MapStructure)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE)).getDeleteValueEntity();
+  }
+  if (map.isDeleteEntityUponRemove() != null) {
+    deleteEntityUponRemove=map.isDeleteEntityUponRemove();
+  }
+  String valuePropertyName="value";
+  String valuePropertyFriendlyName=null;
+  if (serverMetadata != null) {
+    MapStructure structure=(MapStructure)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+    if (structure instanceof SimpleValueMapStructure) {
+      valuePropertyFriendlyName=((SimpleValueMapStructure)structure).getValuePropertyFriendlyName();
+    }
+ else {
+      valuePropertyFriendlyName="";
+    }
+  }
+  if (map.getValuePropertyFriendlyName() != null) {
+    valuePropertyFriendlyName=map.getValuePropertyFriendlyName();
+  }
+  if (map.getMediaField() != null) {
+    metadata.setMediaField(map.getMediaField());
+  }
+  if (map.getValueClass() != null && !void.class.getName().equals(map.getValueClass())) {
+    metadata.setValueClassName(map.getValueClass());
+  }
+  if (metadata.getValueClassName() == null) {
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(clazz);
+      if (!ArrayUtils.isEmpty(entities)) {
+        metadata.setValueClassName(entities[entities.length - 1].getName());
+      }
+    }
+  }
+  if (metadata.getValueClassName() == null) {
+    ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+    if (manyToMany != null && !StringUtils.isEmpty(manyToMany.targetEntity().getName())) {
+      metadata.setValueClassName(manyToMany.mappedBy());
+    }
+  }
+  if (metadata.getValueClassName() == null) {
+    metadata.setValueClassName(String.class.getName());
+  }
+  Boolean simpleValue=null;
+  if (map.getSimpleValue() != null && map.getSimpleValue() != UnspecifiedBooleanType.UNSPECIFIED) {
+    simpleValue=map.getSimpleValue() == UnspecifiedBooleanType.TRUE;
+  }
+  if (simpleValue == null) {
+    java.lang.reflect.Type type=field.getGenericType();
+    if (type instanceof ParameterizedType) {
+      ParameterizedType pType=(ParameterizedType)type;
+      Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(clazz);
+      simpleValue=ArrayUtils.isEmpty(entities);
+    }
+  }
+  if (simpleValue == null) {
+    ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+    if (manyToMany != null && !StringUtils.isEmpty(manyToMany.targetEntity().getName())) {
+      simpleValue=false;
+    }
+  }
+  if (simpleValue == null) {
+    throw new IllegalArgumentException("Unable to infer if the value for the map is of a complex or simple type based on any parameterized type or ManyToMany annotation. Please explicitly set the isSimpleValue property.");
+  }
+  metadata.setSimpleValue(simpleValue);
+  if (map.getKeys() != null) {
+    metadata.setKeys(map.getKeys());
+  }
+  if (map.getMapKeyOptionEntityClass() != null) {
+    if (!void.class.getName().equals(map.getMapKeyOptionEntityClass())) {
+      metadata.setMapKeyOptionEntityClass(map.getMapKeyOptionEntityClass());
+    }
+ else {
+      metadata.setMapKeyOptionEntityClass("");
+    }
+  }
+  if (map.getMapKeyOptionEntityDisplayField() != null) {
+    metadata.setMapKeyOptionEntityDisplayField(map.getMapKeyOptionEntityDisplayField());
+  }
+  if (map.getMapKeyOptionEntityValueField() != null) {
+    metadata.setMapKeyOptionEntityValueField(map.getMapKeyOptionEntityValueField());
+  }
+  if (ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
+    throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties");
+  }
+  if (serverMetadata != null) {
+    ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+    foreignKey.setManyToField(parentObjectIdField);
+    foreignKey.setForeignKeyClass(parentObjectClass);
+    if (metadata.isSimpleValue()) {
+      SimpleValueMapStructure mapStructure=(SimpleValueMapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+      mapStructure.setKeyClassName(keyClassName);
+      mapStructure.setKeyPropertyName(keyPropertyName);
+      mapStructure.setKeyPropertyFriendlyName(keyPropertyFriendlyName);
+      mapStructure.setValueClassName(metadata.getValueClassName());
+      mapStructure.setValuePropertyName(valuePropertyName);
+      mapStructure.setValuePropertyFriendlyName(valuePropertyFriendlyName);
+      mapStructure.setMapProperty(prefix + field.getName());
+    }
+ else {
+      MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+      mapStructure.setKeyClassName(keyClassName);
+      mapStructure.setKeyPropertyName(keyPropertyName);
+      mapStructure.setKeyPropertyFriendlyName(keyPropertyFriendlyName);
+      mapStructure.setValueClassName(metadata.getValueClassName());
+      mapStructure.setMapProperty(prefix + field.getName());
+      mapStructure.setDeleteValueEntity(deleteEntityUponRemove);
+    }
+  }
+ else {
+    ForeignKey foreignKey=new ForeignKey(parentObjectIdField,parentObjectClass);
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
+    MapStructure mapStructure;
+    if (metadata.isSimpleValue()) {
+      mapStructure=new SimpleValueMapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),valuePropertyName,valuePropertyFriendlyName,prefix + field.getName());
+    }
+ else {
+      mapStructure=new MapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),prefix + field.getName(),deleteEntityUponRemove);
+    }
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,mapStructure);
+  }
+  if (map.getExcluded() != null) {
+    if (LOG.isDebugEnabled()) {
+      if (map.getExcluded()) {
+        LOG.debug("buildMapMetadata:Excluding " + field.getName() + " because it was explicitly declared in config");
+      }
+ else {
+        LOG.debug("buildMapMetadata:Showing " + field.getName() + " because it was explicitly declared in config");
+      }
+    }
+    metadata.setExcluded(map.getExcluded());
+  }
+  if (map.getFriendlyName() != null) {
+    metadata.setFriendlyName(map.getFriendlyName());
+  }
+  if (map.getSecurityLevel() != null) {
+    metadata.setSecurityLevel(map.getSecurityLevel());
+  }
+  if (map.getOrder() != null) {
+    metadata.setOrder(map.getOrder());
+  }
+  if (map.getTargetElementId() != null) {
+    metadata.setTargetElementId(map.getTargetElementId());
+  }
+  if (map.getDataSourceName() != null) {
+    metadata.setDataSourceName(map.getDataSourceName());
+  }
+  if (map.getCustomCriteria() != null) {
+    metadata.setCustomCriteria(map.getCustomCriteria());
+  }
+  if (map.getUseServerSideInspectionCache() != null) {
+    persistencePerspective.setUseServerSideInspectionCache(map.getUseServerSideInspectionCache());
+  }
+  if (map.getCurrencyCodeField() != null) {
+    metadata.setCurrencyCodeField(map.getCurrencyCodeField());
+  }
+  attributes.put(field.getName(),metadata);
+}
