@@ -1,0 +1,10 @@
+{
+  GiftCardInfoForm giftCardInfoForm=(GiftCardInfoForm)target;
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"giftCardNumber","giftCardNumber.required");
+  ValidationUtils.rejectIfEmptyOrWhitespace(errors,"giftCardEmailAddress","giftCardEmailAddress.required");
+  if (!errors.hasErrors()) {
+    if (!GenericValidator.isEmail(giftCardInfoForm.getGiftCardEmailAddress())) {
+      errors.rejectValue("giftCardEmailAddress","giftCardEmailAddress.invalid",null,null);
+    }
+  }
+}
