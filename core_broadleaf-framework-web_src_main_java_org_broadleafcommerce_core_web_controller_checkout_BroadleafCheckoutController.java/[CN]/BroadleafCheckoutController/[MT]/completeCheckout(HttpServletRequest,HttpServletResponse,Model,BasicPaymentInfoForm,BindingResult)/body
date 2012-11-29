@@ -1,0 +1,9 @@
+{
+  if (basicPaymentInfoForm.getPaymentMethod() == null || "credit_card".equals(basicPaymentInfoForm.getPaymentMethod())) {
+    BillingInfoForm billingInfoForm=(BillingInfoForm)basicPaymentInfoForm;
+    return completeSecureCreditCardCheckout(request,response,model,billingInfoForm,result);
+  }
+ else {
+    throw new IllegalArgumentException("Complete checkout called with payment Method " + basicPaymentInfoForm.getPaymentMethod() + " which has not been implemented.");
+  }
+}
