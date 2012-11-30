@@ -1,0 +1,28 @@
+{
+  String failureUrlParam=StringUtil.cleanseUrlString(request.getParameter("failureUrl"));
+  String successUrlParam=StringUtil.cleanseUrlString(request.getParameter("successUrl"));
+  String failureUrl=failureUrlParam == null ? null : failureUrlParam.trim();
+  if (StringUtils.isEmpty(failureUrl)) {
+    failureUrl=defaultFailureUrl;
+  }
+  if (failureUrl != null) {
+    if (!StringUtils.isEmpty(successUrlParam)) {
+      if (!failureUrl.contains("?")) {
+        failureUrl+="?successUrl=" + successUrlParam;
+      }
+ else {
+        failureUrl+="&successUrl=" + successUrlParam;
+      }
+    }
+    String moduleKey=request.getParameter("moduleKey");
+    String pageKey=request.getParameter("pageKey");
+    if (moduleKey != null && pageKey != null) {
+      failureUrl+="#" + "moduleKey=" + moduleKey + "&pageKey="+ pageKey;
+    }
+    saveException(request,exception);
+    getRedirectStrategy().sendRedirect(request,response,failureUrl);
+  }
+ else {
+    super.onAuthenticationFailure(request,response,exception);
+  }
+}
