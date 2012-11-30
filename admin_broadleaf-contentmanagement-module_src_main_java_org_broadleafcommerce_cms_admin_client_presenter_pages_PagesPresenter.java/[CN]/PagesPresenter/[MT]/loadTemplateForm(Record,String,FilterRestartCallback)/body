@@ -1,7 +1,7 @@
 {
   BLCMain.NON_MODAL_PROGRESS.startProgress();
-  PageTemplateFormListDataSourceFactory.createDataSource("pageTemplateFormDS",new String[]{"constructForm",selectedRecord.getAttribute("pageTemplate")},new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    final DataSource dataSource){
+  PageTemplateFormListDataSourceFactory.createDataSource("pageTemplateFormDS",new String[]{"constructForm",pageTemplateId != null ? pageTemplateId : selectedRecord.getAttribute("pageTemplate")},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
       destroyTemplateForm();
       final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);
       formOnlyView.getForm().addItemChangedHandler(new ItemChangedHandler(){
