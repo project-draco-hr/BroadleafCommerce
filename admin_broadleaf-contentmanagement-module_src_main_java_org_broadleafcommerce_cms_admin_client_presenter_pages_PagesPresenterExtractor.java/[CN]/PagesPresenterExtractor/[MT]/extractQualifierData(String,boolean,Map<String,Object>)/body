@@ -8,7 +8,7 @@
         if (builder.getRecord() != null) {
           setData(builder.getRecord(),"quantity",quantity,dirtyValues);
           setData(builder.getRecord(),"orderItemMatchRule",mvel,dirtyValues);
-          presenter.getPresenterSequenceSetupManager().getDataSource("scItemCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
+          presenter.getPresenterSequenceSetupManager().getDataSource("pagesItemCriteriaDS").updateData(builder.getRecord(),new DSCallback(){
             @Override public void execute(            DSResponse response,            Object rawData,            DSRequest request){
               builder.setDirty(false);
               resetButtonState();
@@ -20,11 +20,11 @@
           final Record temp=new Record();
           temp.setAttribute("quantity",quantity);
           temp.setAttribute("orderItemMatchRule",mvel);
-          temp.setAttribute("_type",new String[]{presenter.getPresenterSequenceSetupManager().getDataSource("scItemCriteriaDS").getDefaultNewEntityFullyQualifiedClassname()});
-          temp.setAttribute(StructuredContentItemCriteriaListDataSourceFactory.foreignKeyName,id);
+          temp.setAttribute("_type",new String[]{presenter.getPresenterSequenceSetupManager().getDataSource("pagesItemCriteriaDS").getDefaultNewEntityFullyQualifiedClassname()});
+          temp.setAttribute(PagesItemCriteriaListDataSourceFactory.foreignKeyName,id);
           temp.setAttribute("id","");
-          presenter.getPresenterSequenceSetupManager().getDataSource("scItemCriteriaDS").setLinkedValue(id);
-          presenter.getPresenterSequenceSetupManager().getDataSource("scItemCriteriaDS").addData(temp,new DSCallback(){
+          presenter.getPresenterSequenceSetupManager().getDataSource("pagesItemCriteriaDS").setLinkedValue(id);
+          presenter.getPresenterSequenceSetupManager().getDataSource("pagesItemCriteriaDS").addData(temp,new DSCallback(){
             @Override public void execute(            DSResponse response,            Object rawData,            DSRequest request){
               builder.setDirty(false);
               builder.setRecord(temp);

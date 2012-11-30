@@ -22,6 +22,7 @@
             @Override public void execute(            DSResponse response,            Object rawData,            DSRequest request){
               if (response.getStatus() != RPCResponse.STATUS_FAILURE) {
                 try {
+                  extractQualifierData(newId,false,dirtyValues);
                   if (!presenter.currentPageId.equals(newId)) {
                     Record myRecord=getDisplay().getListDisplay().getGrid().getResultSet().find("id",presenter.currentPageId);
                     if (myRecord != null) {
