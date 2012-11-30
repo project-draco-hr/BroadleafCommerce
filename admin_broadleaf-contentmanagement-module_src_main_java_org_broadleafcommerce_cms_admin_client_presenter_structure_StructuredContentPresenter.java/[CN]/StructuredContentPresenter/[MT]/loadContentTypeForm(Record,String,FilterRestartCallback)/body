@@ -1,8 +1,8 @@
 {
   BLCMain.NON_MODAL_PROGRESS.startProgress();
-  PageTemplateFormListDataSourceFactory.createDataSource("pageTemplateFormDS",new String[]{"constructForm",selectedRecord.getAttribute("pageTemplate")},new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    final DataSource dataSource){
-      destroyTemplateForm();
+  StructuredContentTypeFormListDataSourceFactory.createDataSource("contentTypeFormDS",new String[]{"constructForm",structuredContentTypeId != null ? structuredContentTypeId : selectedRecord.getAttribute("structuredContentType")},new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource dataSource){
+      destroyContentTypeForm();
       final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);
       formOnlyView.getForm().addItemChangedHandler(new ItemChangedHandler(){
         @Override public void onItemChanged(        ItemChangedEvent event){
@@ -10,10 +10,10 @@
         }
       }
 );
-      formOnlyView.setID("pageTemplateForm");
+      formOnlyView.setID("contentTypeForm");
       formOnlyView.setOverflow(Overflow.VISIBLE);
       ((FormOnlyView)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay()).addMember(formOnlyView);
-      ((PageTemplateFormListDataSource)dataSource).setCustomCriteria(new String[]{"constructForm",selectedRecord.getAttribute("id")});
+      ((StructuredContentTypeFormListDataSource)dataSource).setCustomCriteria(new String[]{"constructForm",selectedRecord.getAttribute("id")});
       BLCMain.NON_MODAL_PROGRESS.startProgress();
       formOnlyView.getForm().fetchData(new Criteria(),new DSCallback(){
         @Override public void execute(        DSResponse response,        Object rawData,        DSRequest request){
