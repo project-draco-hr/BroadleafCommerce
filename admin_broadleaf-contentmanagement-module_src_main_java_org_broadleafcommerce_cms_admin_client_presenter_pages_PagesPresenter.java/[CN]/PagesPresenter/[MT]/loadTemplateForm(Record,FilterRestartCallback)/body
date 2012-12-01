@@ -1,6 +1,7 @@
 {
+  String pageTemplateId=(String)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getValue("pageTemplate");
   BLCMain.NON_MODAL_PROGRESS.startProgress();
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageTemplateFormDS",new PageTemplateFormListDataSourceFactory(),null,new String[]{"constructForm",pageTemplateId != null ? pageTemplateId : selectedRecord.getAttribute("pageTemplate")},new AsyncCallbackAdapter(){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageTemplateFormDS",new PageTemplateFormListDataSourceFactory(),null,new String[]{"constructForm",pageTemplateId},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       destroyTemplateForm();
       final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);

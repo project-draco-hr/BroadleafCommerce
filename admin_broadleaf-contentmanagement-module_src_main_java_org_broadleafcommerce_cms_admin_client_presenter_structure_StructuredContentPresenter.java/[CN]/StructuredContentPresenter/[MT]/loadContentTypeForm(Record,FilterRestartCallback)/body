@@ -1,6 +1,7 @@
 {
+  String structuredContentTypeId=(String)getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().getValue("structuredContentType");
   BLCMain.NON_MODAL_PROGRESS.startProgress();
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("contentTypeFormDS",new StructuredContentTypeFormListDataSourceFactory(),null,new String[]{"constructForm",structuredContentTypeId != null ? structuredContentTypeId : selectedRecord.getAttribute("structuredContentType")},new AsyncCallbackAdapter(){
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("contentTypeFormDS",new StructuredContentTypeFormListDataSourceFactory(),null,new String[]{"constructForm",structuredContentTypeId},new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource dataSource){
       destroyContentTypeForm();
       final FormOnlyView formOnlyView=new FormOnlyView(dataSource,true,true,false);
