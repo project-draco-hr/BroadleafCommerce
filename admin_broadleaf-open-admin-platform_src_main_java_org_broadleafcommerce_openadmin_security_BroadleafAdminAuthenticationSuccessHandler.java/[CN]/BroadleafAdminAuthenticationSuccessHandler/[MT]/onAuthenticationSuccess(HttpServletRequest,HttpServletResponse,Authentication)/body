@@ -1,0 +1,22 @@
+{
+  SavedRequest savedRequest=requestCache.getRequest(request,response);
+  if (savedRequest == null) {
+    super.onAuthenticationSuccess(request,response,authentication);
+    return;
+  }
+  String targetUrlParameter=getTargetUrlParameter();
+  if (isAlwaysUseDefaultTargetUrl() || (targetUrlParameter != null && StringUtils.hasText(request.getParameter(targetUrlParameter)))) {
+    requestCache.removeRequest(request,response);
+    super.onAuthenticationSuccess(request,response,authentication);
+    return;
+  }
+  clearAuthenticationAttributes(request);
+  String targetUrl=savedRequest.getRedirectUrl();
+  String moduleKey=request.getParameter("moduleKey");
+  String pageKey=request.getParameter("pageKey");
+  if (moduleKey != null && pageKey != null) {
+    targetUrl+="#" + "moduleKey=" + moduleKey + "&pageKey="+ pageKey;
+  }
+  logger.debug("Redirecting to DefaultSavedRequest Url: " + targetUrl);
+  getRedirectStrategy().sendRedirect(request,response,targetUrl);
+}

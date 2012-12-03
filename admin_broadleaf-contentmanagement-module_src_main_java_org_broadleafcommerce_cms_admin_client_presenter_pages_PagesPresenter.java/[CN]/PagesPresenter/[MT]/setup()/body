@@ -17,8 +17,6 @@
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pageDS",new PageDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource top){
       setupDisplayItems(top,getPresenterSequenceSetupManager().getDataSource("pageCustomerDS"),getPresenterSequenceSetupManager().getDataSource("pageTimeDTODS"),getPresenterSequenceSetupManager().getDataSource("pageRequestDTODS"),getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("pageProductDS"));
-      initializer=new PagesRuleBasedPresenterInitializer(PagesPresenter.this,getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"),getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"));
-      extractor=new PagesPresenterExtractor(PagesPresenter.this);
       ((ListGridDataSource)top).setupGridFields(new String[]{"locked","fullUrl","description","pageTemplate_Grid"});
     }
   }
@@ -38,6 +36,13 @@
         }
       }
 );
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("pagesItemCriteriaDS",new PagesItemCriteriaListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      initializer=new PagesRuleBasedPresenterInitializer(PagesPresenter.this,(DynamicEntityDataSource)result,getPresenterSequenceSetupManager().getDataSource("pageOrderItemDS"));
+      extractor=new PagesPresenterExtractor(PagesPresenter.this);
     }
   }
 ));

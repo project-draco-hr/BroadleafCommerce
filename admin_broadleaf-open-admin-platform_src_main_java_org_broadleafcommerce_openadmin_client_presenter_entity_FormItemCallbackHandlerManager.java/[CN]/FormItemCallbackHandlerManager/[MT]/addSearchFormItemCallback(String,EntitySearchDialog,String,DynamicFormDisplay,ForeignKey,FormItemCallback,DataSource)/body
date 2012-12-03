@@ -4,6 +4,11 @@
       searchView.search(searchDialogTitle,new SearchItemSelectedHandler(){
         public void onSearchItemSelected(        SearchItemSelected event){
           final String myId=((AbstractDynamicDataSource)event.getDataSource()).getPrimaryKeyValue(event.getRecord());
+          if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("The id of the ToOneLookup item selected is: " + myId);
+          }
+          String realFieldName=formItem.getName().substring("__display_".length(),formItem.getName().length());
+          final FormItem realFormItem=formItem.getForm().getField(realFieldName);
           String displayFieldName="name";
           if (foreignKey != null) {
             displayFieldName=foreignKey.getDisplayValueProperty();
@@ -11,14 +16,14 @@
  else {
             PersistencePerspective persistencePerspective=((DynamicEntityDataSource)dataSource).getPersistencePerspective();
             ForeignKey mainForeignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-            if (mainForeignKey != null && mainForeignKey.getManyToField().equals(formItem.getName())) {
+            if (mainForeignKey != null && mainForeignKey.getManyToField().equals(realFieldName)) {
               displayFieldName=mainForeignKey.getDisplayValueProperty();
             }
  else {
               ForeignKey[] additionalKeys=persistencePerspective.getAdditionalForeignKeys();
               if (additionalKeys != null) {
                 for (                ForeignKey foreignKey : additionalKeys) {
-                  if (foreignKey.getManyToField().equals(formItem.getName())) {
+                  if (foreignKey.getManyToField().equals(realFieldName)) {
                     displayFieldName=foreignKey.getDisplayValueProperty();
                     break;
                   }
@@ -27,15 +32,18 @@
             }
           }
           String myName=event.getRecord().getAttribute(displayFieldName);
-          formItem.getForm().getField("__display_" + formItem.getName()).setValue(myName);
+          formItem.setValue(myName);
           Timer timer=new Timer(){
             public void run(){
-              formItem.setValue(myId);
+              realFormItem.setValue(myId);
+              if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Set field " + realFormItem.getName() + " to value "+ myId);
+              }
               if (dynamicFormDisplay != null) {
                 dynamicFormDisplay.getSaveButton().enable();
                 dynamicFormDisplay.getRefreshButton().enable();
                 if (cb != null) {
-                  cb.execute(formItem);
+                  cb.execute(realFormItem);
                 }
               }
             }
