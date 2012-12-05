@@ -1,5 +1,5 @@
 {
-  if (prefix.equals("") || !prefix.contains(".")) {
+  if (prefix.equals("")) {
     return abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
   }
  else {
@@ -22,6 +22,9 @@
         }
       }
     }
+  }
+  if (!prefix.contains(".")) {
+    return abstractDynamicDataSource.getPrimaryKeyValue(associatedRecord);
   }
   throw new RuntimeException("Unable to establish a relationship value for the datasource: " + abstractDynamicDataSource.getDataURL());
 }
