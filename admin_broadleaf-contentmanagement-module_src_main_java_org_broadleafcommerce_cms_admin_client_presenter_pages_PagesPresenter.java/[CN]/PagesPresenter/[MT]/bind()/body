@@ -5,6 +5,8 @@
   refreshButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getRefreshButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+        extractor.getRemovedItemQualifiers().clear();
         changeSelection(currentPageRecord);
       }
     }
@@ -13,6 +15,8 @@
   ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
+        getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().reset();
+        extractor.getRemovedItemQualifiers().clear();
         changeSelection(currentPageRecord);
       }
     }
@@ -21,15 +25,7 @@
   saveButtonHandlerRegistration=getDisplay().getDynamicFormDisplay().getSaveButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        extractor.applyData(currentPageRecord);
-      }
-    }
-  }
-);
-  ruleRefreshButtonHandlerRegistration=getDisplay().getRulesRefreshButton().addClickHandler(new ClickHandler(){
-    @Override public void onClick(    ClickEvent event){
-      if (event.isLeftButtonDown()) {
-        extractor.getRemovedItemQualifiers().clear();
+        save();
       }
     }
   }
@@ -37,7 +33,7 @@
   ruleSaveButtonHandlerRegistration=getDisplay().getRulesSaveButton().addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       if (event.isLeftButtonDown()) {
-        extractor.applyData(currentPageRecord);
+        save();
       }
     }
   }

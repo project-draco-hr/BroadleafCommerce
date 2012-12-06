@@ -34,38 +34,8 @@ formItem=new FloatItem();
 formItem.setAttribute("type","localMoneyDecimal");
 break;
 case FOREIGN_KEY:
-formItem=new SearchFormItem();
-formItem.setWidth(235);
-formItem.setEditorValueFormatter(new FormItemValueFormatter(){
-@Override public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
-String response;
-if (value == null) {
-response="";
-}
- else {
-response=(String)form.getField("__display_" + item.getName()).getValue();
-}
-return response;
-}
-}
-);
-break;
 case ADDITIONAL_FOREIGN_KEY:
-formItem=new SearchFormItem();
-formItem.setWidth(235);
-formItem.setEditorValueFormatter(new FormItemValueFormatter(){
-@Override public String formatValue(Object value,Record record,DynamicForm form,FormItem item){
-String response;
-if (value == null) {
-response="";
-}
- else {
-response=(String)form.getField("__display_" + item.getName()).getValue();
-}
-return response;
-}
-}
-);
+formItem=new HiddenItem();
 break;
 case BROADLEAF_ENUMERATION:
 case EXPLICIT_ENUMERATION:

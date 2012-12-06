@@ -1,0 +1,45 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  removeHtmlEncoding(entity);
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageItemCriteria.class.getName(),persistencePerspective);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    PageItemCriteria adminInstance=(PageItemCriteria)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    if (adminInstance.getPage().getLockedFlag()) {
+      CriteriaBuilder criteriaBuilder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
+      CriteriaQuery<Page> query=criteriaBuilder.createQuery(Page.class);
+      Root<PageImpl> root=query.from(PageImpl.class);
+      query.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("archivedFlag"),Boolean.FALSE),criteriaBuilder.equal(root.get("originalPageId"),adminInstance.getPage().getId())));
+      query.select(root);
+      TypedQuery<Page> scQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
+      try {
+        checkCriteria: {
+          Page myContent=scQuery.getSingleResult();
+          for (          PageItemCriteria itemCriteria : myContent.getQualifyingItemCriteria()) {
+            if (itemCriteria.getOrderItemMatchRule().equals(adminInstance.getOrderItemMatchRule()) && itemCriteria.getQuantity().equals(adminInstance.getQuantity())) {
+              itemCriteria.setOrderItemMatchRule(entity.findProperty("orderItemMatchRule").getValue());
+              itemCriteria.setQuantity(Integer.parseInt(entity.findProperty("quantity").getValue()));
+              adminInstance=itemCriteria;
+              break checkCriteria;
+            }
+          }
+          throw new RuntimeException("Unable to find an item criteria to update");
+        }
+      }
+ catch (      Exception e) {
+        throw new IllegalArgumentException("Unable to update a locked record");
+      }
+    }
+ else {
+      adminInstance=(PageItemCriteria)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    }
+    adminInstance=(PageItemCriteria)dynamicEntityDao.merge(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
+  }
+}
