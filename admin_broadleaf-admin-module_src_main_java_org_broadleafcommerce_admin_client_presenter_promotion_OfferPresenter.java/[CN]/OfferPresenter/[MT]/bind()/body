@@ -125,13 +125,13 @@
     @Override public void onClick(    ClickEvent event){
       if (((ToolStripButton)event.getSource()).getSelected()) {
         getPresenterSequenceSetupManager().getDataSource("offerDS").resetPermanentFieldVisibilityBasedOnType(lastSelectedRecord.getAttributeAsStringArray("_type"));
-        getPresenterSequenceSetupManager().getDataSource("offerDS").permanentlyHideFields("deliveryType","offerItemQualifierRuleType","offerItemTargetRuleType","targetItemCriteria.id","targetItemCriteria.quantity","targetItemCriteria.orderItemMatchRule");
+        getPresenterSequenceSetupManager().getDataSource("offerDS").permanentlyHideFields(getPermanentlyHideFieldsList().toArray(new String[getPermanentlyHideFieldsList().size()]));
         getDisplay().getAdvancedItemCriteria().setVisible(true);
         getDisplay().getAdvancedItemCriteriaTarget().setVisible(true);
         getDisplay().getRestrictionSectionView().setVisible(true);
       }
  else {
-        getPresenterSequenceSetupManager().getDataSource("offerDS").resetVisibilityOnly("name","description","type","discountType","maxUsesPerCustomer","maxUsesPerOrder","value","priority","startDate","endDate");
+        getPresenterSequenceSetupManager().getDataSource("offerDS").resetVisibilityOnly(getResetVisibilityOnlyList().toArray(new String[getResetVisibilityOnlyList().size()]));
         getDisplay().getAdvancedItemCriteria().setVisible(false);
         getDisplay().getAdvancedItemCriteriaTarget().setVisible(false);
         getDisplay().getRestrictionSectionView().setVisible(false);
@@ -163,12 +163,12 @@
           }
  else {
             formPresenter.setStartState();
-            getPresenterSequenceSetupManager().getDataSource("offerDS").resetVisibilityOnly("name","description","type","discountType","maxUsesPerCustomer","maxUsesPerOrder","value","priority","startDate","endDate");
+            getPresenterSequenceSetupManager().getDataSource("offerDS").resetVisibilityOnly(getResetVisibilityOnlyList().toArray(new String[getResetVisibilityOnlyList().size()]));
             getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().buildFields(getDisplay().getListDisplay().getGrid().getDataSource(),true,true,false,selectedRecord);
             getDisplay().getDynamicFormDisplay().getFormOnlyDisplay().getForm().editRecord(selectedRecord);
             getDisplay().getListDisplay().getRemoveButton().enable();
           }
-          changeSelection(selectedRecord);
+          changeSelectionWrapper(selectedRecord);
           for (          Map.Entry<String,SubPresentable> subPresentable : subPresentables.entrySet()) {
             subPresentable.getValue().setStartState();
             subPresentable.getValue().load(selectedRecord,(DynamicEntityDataSource)display.getListDisplay().getGrid().getDataSource());
