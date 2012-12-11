@@ -1,0 +1,10 @@
+{
+  if (MapUtils.isEmpty(item.getOrderItemAttributes())) {
+    return item.getCategory() == null ? "" : item.getCategory().getName();
+  }
+  String result="";
+  for (  Map.Entry<String,OrderItemAttribute> entry : item.getOrderItemAttributes().entrySet()) {
+    result+=entry.getValue().getValue() + " ";
+  }
+  return result.substring(0,result.length() - 1);
+}
