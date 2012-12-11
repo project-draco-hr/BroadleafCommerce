@@ -1,7 +1,6 @@
 {
   Order cart=CartState.getCart();
   if (cart != null) {
-    Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
     orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
     if (billingForm.isUseShippingAddress()) {
       copyShippingAddressToBillingAddress(cart,billingForm);
@@ -14,6 +13,7 @@
     PaymentInfo ccInfo=creditCardPaymentInfoFactory.constructPaymentInfo(cart);
     ccInfo.setAddress(billingForm.getAddress());
     cart.getPaymentInfos().add(ccInfo);
+    Map<PaymentInfo,Referenced> payments=paymentInfoTypeService.getPaymentsMap(cart);
     CreditCardPaymentInfo ccReference=(CreditCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.CREDIT_CARD);
     ccReference.setNameOnCard(billingForm.getCreditCardName());
     ccReference.setReferenceNumber(ccInfo.getReferenceNumber());
