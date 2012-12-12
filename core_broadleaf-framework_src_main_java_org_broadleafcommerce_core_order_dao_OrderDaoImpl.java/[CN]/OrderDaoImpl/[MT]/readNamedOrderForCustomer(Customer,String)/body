@@ -4,6 +4,14 @@
   query.setParameter("orderStatus",OrderStatus.NAMED.getType());
   query.setParameter("orderName",name);
   List<Order> orders=query.getResultList();
+  ListIterator<Order> iter=orders.listIterator();
+  while (iter.hasNext()) {
+    Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getLocale();
+    Order order=iter.next();
+    if (locale != null && !locale.equals(order.getLocale())) {
+      iter.remove();
+    }
+  }
   if (orders != null && !orders.isEmpty() && extensionManager != null) {
     extensionManager.applyAdditionalOrderLookupFilter(customer,name,orders);
   }
