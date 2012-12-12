@@ -1,0 +1,19 @@
+{
+  Order order=((PricingContext)context).getSeedData();
+  Money unpaidTotal=order.getTotal();
+  Money totalPayments=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getCurrency());
+  for (  PaymentInfo paymentInfo : order.getPaymentInfos()) {
+    if (paymentInfo.getAmount() != null) {
+      totalPayments=totalPayments.add(paymentInfo.getAmount());
+    }
+  }
+  if (totalPayments.lessThanOrEqual(unpaidTotal)) {
+    unpaidTotal=unpaidTotal.subtract(totalPayments);
+  }
+ else {
+    unpaidTotal=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getCurrency());
+  }
+  order.setUnpaidTotal(unpaidTotal);
+  context.setSeedData(order);
+  return context;
+}
