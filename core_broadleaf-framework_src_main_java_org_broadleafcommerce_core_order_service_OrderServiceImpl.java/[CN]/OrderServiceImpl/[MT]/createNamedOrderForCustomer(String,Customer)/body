@@ -6,6 +6,8 @@
   if (extensionManager != null) {
     extensionManager.attachAdditionalDataToNewNamedCart(customer,namedOrder);
   }
-  namedOrder.setLocale(BroadleafRequestContext.getBroadleafRequestContext().getLocale());
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    namedOrder.setLocale(BroadleafRequestContext.getBroadleafRequestContext().getLocale());
+  }
   return orderDao.save(namedOrder);
 }
