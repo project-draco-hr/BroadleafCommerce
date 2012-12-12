@@ -49,20 +49,6 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skuTranslationMapDS",new SkuTranslationsMapDataSourceFactory(this),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource result){
-      translationsPresenter=new MapStructurePresenter("",getDisplay().getTranslationsDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
-      translationsPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
-    }
-    protected MapStructureEntityEditDialog getMediaEntityView(){
-      MapStructureEntityEditDialog mapEntityAdd;
-      mapEntityAdd=new MapStructureEntityEditDialog(MediaMapDataSourceFactory.MAPSTRUCTURE,getPresenterSequenceSetupManager().getDataSource("skuLocaleDS"),"friendlyName","localeCode");
-      mapEntityAdd.setShowMedia(true);
-      mapEntityAdd.setMediaField("url");
-      return mapEntityAdd;
-    }
-  }
-));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("skusDS",new ProductSkusDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       skusPresenter=new SkusPresenter(getDisplay().getSkusDisplay(),"Add Sku",null,false,true,false);

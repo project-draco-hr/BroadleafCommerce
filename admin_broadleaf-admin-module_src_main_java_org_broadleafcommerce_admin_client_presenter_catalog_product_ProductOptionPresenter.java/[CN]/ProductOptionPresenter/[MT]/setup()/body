@@ -11,19 +11,6 @@
     }
   }
 ));
-  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productOptionValueTranslationMapDS",new ProductOptionTranslationMapDataSourceFactory(this),new AsyncCallbackAdapter(){
-    @Override public void onSetupSuccess(    DataSource result){
-      translationsPresenter=new MapStructurePresenter("",getDisplay().getTranslationsDisplay(),getMediaEntityView(),BLCMain.getMessageManager().getString("newMediaTitle"));
-      translationsPresenter.setDataSource((ListGridDataSource)result,new String[]{},new Boolean[]{});
-    }
-    protected MapStructureEntityEditDialog getMediaEntityView(){
-      MapStructureEntityEditDialog mapEntityAdd2;
-      mapEntityAdd2=new MapStructureEntityEditDialog(MediaMapDataSourceFactory.MAPSTRUCTURE,getPresenterSequenceSetupManager().getDataSource("productOptionLocaleDS"),"friendlyName","localeCode");
-      mapEntityAdd2.setShowMedia(false);
-      return mapEntityAdd2;
-    }
-  }
-));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("productOptionValueDS",new ProductOptionValueDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       productOptionValuePresenter=new ProductOptionValueSubPresenter(getDisplay().getProductOptionValueDisplay(),BLCMain.getMessageManager().getString("newProductOptionValue"),null,false,true,false);
