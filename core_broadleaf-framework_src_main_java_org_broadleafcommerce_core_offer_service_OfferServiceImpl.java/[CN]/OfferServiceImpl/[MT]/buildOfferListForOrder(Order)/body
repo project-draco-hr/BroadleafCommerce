@@ -19,6 +19,8 @@
       offers.add(globalOffer);
     }
   }
-  removeNonRestrictedOffers(offers);
+  if (extensionManager != null) {
+    extensionManager.applyAdditionalFilters(offers);
+  }
   return offers;
 }

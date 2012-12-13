@@ -3,5 +3,11 @@
   namedOrder.setCustomer(customer);
   namedOrder.setName(name);
   namedOrder.setStatus(OrderStatus.NAMED);
+  if (extensionManager != null) {
+    extensionManager.attachAdditionalDataToNewNamedCart(customer,namedOrder);
+  }
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    namedOrder.setLocale(BroadleafRequestContext.getBroadleafRequestContext().getLocale());
+  }
   return orderDao.save(namedOrder);
 }

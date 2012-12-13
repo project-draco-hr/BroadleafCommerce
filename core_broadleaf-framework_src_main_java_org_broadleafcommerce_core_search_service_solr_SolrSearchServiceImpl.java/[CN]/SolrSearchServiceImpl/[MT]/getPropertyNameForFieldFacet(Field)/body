@@ -3,9 +3,11 @@
   if (fieldType == null) {
     return null;
   }
-  String prefix;
+  String prefix="";
   if (fieldType.equals(FieldType.PRICE)) {
-    prefix=getPricelistPrefix();
+    if (extensionManager != null) {
+      prefix=extensionManager.getPrefixForPriceField();
+    }
   }
  else {
     if (field.getTranslatable()) {
