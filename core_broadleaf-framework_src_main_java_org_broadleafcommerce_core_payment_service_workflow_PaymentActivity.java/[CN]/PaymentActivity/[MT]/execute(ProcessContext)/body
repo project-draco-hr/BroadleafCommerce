@@ -82,6 +82,19 @@
           replaceItems.put(info,referenced);
           throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
         }
+        if (getRollbackHandler() != null) {
+          Map<String,Object> myState;
+          if (getStateConfiguration() != null) {
+            myState=getStateConfiguration();
+          }
+ else {
+            myState=new HashMap<String,Object>();
+          }
+          myState.put(ROLLBACK_ACTIONTYPE,seed.getActionType());
+          myState.put(ROLLBACK_PAYMENTCONTEXT,paymentContext);
+          myState.put(ROLLBACK_RESPONSEITEM,paymentResponseItem);
+          ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),myState);
+        }
         if (paymentResponseItem != null) {
           if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
             throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
