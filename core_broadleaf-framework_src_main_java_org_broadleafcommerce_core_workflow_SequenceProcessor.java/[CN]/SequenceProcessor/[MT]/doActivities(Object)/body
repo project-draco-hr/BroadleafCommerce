@@ -43,7 +43,7 @@
       if (processShouldStop(context,activity)) {
         break;
       }
-      if (activity.getRollbackHandler() != null) {
+      if (activity.getRollbackHandler() != null && activity.getAutomaticallyRegisterRollbackHandler()) {
         ActivityStateManagerImpl.getStateManager().registerState(activity,context,activity.getRollbackRegion(),activity.getRollbackHandler(),activity.getStateConfiguration());
       }
     }
