@@ -82,7 +82,7 @@
           replaceItems.put(info,referenced);
           throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
         }
-        if (getRollbackHandler() != null) {
+        if (getRollbackHandler() != null && automaticallyRegisterRollbackHandlerForPayment) {
           Map<String,Object> myState;
           if (getStateConfiguration() != null) {
             myState=getStateConfiguration();
