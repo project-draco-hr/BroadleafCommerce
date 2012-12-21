@@ -30,13 +30,14 @@
  catch (    CheckoutException e) {
       processFailedOrderCheckout(cart);
       populateModelWithShippingReferenceData(request,model);
-      model.addAttribute("paymentOptionException",true);
-      return getCheckoutView();
-    }
-    if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
-      processFailedOrderCheckout(cart);
-      populateModelWithShippingReferenceData(request,model);
-      result.rejectValue("creditCardNumber","payment.exception",null,null);
+      String errorMsg=e.getRootCauseMessage();
+      if (errorMsg.contains("Credit")) {
+        result.rejectValue("creditCardNumber","payment.exception",null,null);
+        model.addAttribute("paymentException",true);
+      }
+ else {
+        model.addAttribute("paymentOptionException",true);
+      }
       return getCheckoutView();
     }
     return getConfirmationView(cart.getOrderNumber());
