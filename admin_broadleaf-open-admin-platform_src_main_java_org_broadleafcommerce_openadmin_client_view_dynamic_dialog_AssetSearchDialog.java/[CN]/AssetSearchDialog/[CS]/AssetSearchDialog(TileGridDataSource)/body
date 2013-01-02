@@ -66,12 +66,12 @@
   final DynamicForm filterForm=new DynamicForm();
   filterForm.setDataSource(staticAssetDataSource);
   filterForm.setAutoFocus(false);
-  TextItem nameFilterItem=new TextItem("name","Name");
+  TextItem nameFilterItem=new TextItem("name",BLCMain.getMessageManager().getString("assetNameFieldTitle"));
   nameFilterItem.setWrapTitle(false);
-  TextItem urlFilterItem=new TextItem("fullUrl","Url");
+  TextItem urlFilterItem=new TextItem("fullUrl",BLCMain.getMessageManager().getString("assetUrlFieldTitle"));
   nameFilterItem.setWrapTitle(false);
   filterForm.setFields(nameFilterItem,urlFilterItem);
-  IButton searchButton=new IButton("Search");
+  IButton searchButton=new IButton(BLCMain.getMessageManager().getString("assetSearchButtonTitle"));
   searchButton.addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
       Criteria valuesAsCriteria=filterForm.getValuesAsCriteria();
@@ -80,10 +80,10 @@
     }
   }
 );
-  final IButton addAssetButton=new IButton("Upload Asset");
+  final IButton addAssetButton=new IButton(BLCMain.getMessageManager().getString("uploadArtifactTitle"));
   addAssetButton.addClickHandler(new ClickHandler(){
     @Override public void onClick(    ClickEvent event){
-      addNewItem("Add a New Asset",staticAssetDataSource);
+      addNewItem(staticAssetDataSource);
     }
   }
 );
