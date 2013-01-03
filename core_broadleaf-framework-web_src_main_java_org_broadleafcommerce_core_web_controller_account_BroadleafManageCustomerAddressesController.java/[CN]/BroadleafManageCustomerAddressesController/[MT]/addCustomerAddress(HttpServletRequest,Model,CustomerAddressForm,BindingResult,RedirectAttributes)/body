@@ -6,6 +6,12 @@
   Address address=addressService.saveAddress(form.getAddress());
   CustomerAddress customerAddress=customerAddressService.create();
   customerAddress.setAddress(address);
+  if (!StringUtils.isBlank(form.getPhonePrimary().getPhoneNumber())) {
+    customerAddress.getAddress().setPhonePrimary(form.getPhonePrimary());
+  }
+ else {
+    customerAddress.getAddress().setPhonePrimary(null);
+  }
   customerAddress.setAddressName(form.getAddressName());
   customerAddress.setCustomer(CustomerState.getCustomer());
   customerAddress=customerAddressService.saveCustomerAddress(customerAddress);

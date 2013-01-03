@@ -12,8 +12,15 @@
   countryWrapper.wrap(model.getCountry(),request);
   this.country=countryWrapper;
   this.postalCode=model.getPostalCode();
-  this.primaryPhone=model.getPrimaryPhone();
-  this.secondaryPhone=model.getSecondaryPhone();
+  PhoneWrapper primaryWrapper=(PhoneWrapper)context.getBean(PhoneWrapper.class.getName());
+  primaryWrapper.wrap(model.getPhonePrimary(),request);
+  this.phonePrimary=primaryWrapper;
+  PhoneWrapper secondaryWrapper=(PhoneWrapper)context.getBean(PhoneWrapper.class.getName());
+  secondaryWrapper.wrap(model.getPhoneSecondary(),request);
+  this.phoneSecondary=secondaryWrapper;
+  PhoneWrapper faxWrapper=(PhoneWrapper)context.getBean(PhoneWrapper.class.getName());
+  faxWrapper.wrap(model.getPhoneFax(),request);
+  this.phoneFax=faxWrapper;
   this.companyName=model.getCompanyName();
   this.isBusiness=model.isBusiness();
   this.isDefault=model.isDefault();
