@@ -8,12 +8,6 @@
     throw new IllegalArgumentException("Customer Address not found with the specified customerAddressId");
   }
   customerAddress.setAddress(form.getAddress());
-  if (!StringUtils.isBlank(form.getPhonePrimary().getPhoneNumber())) {
-    customerAddress.getAddress().setPhonePrimary(form.getPhonePrimary());
-  }
- else {
-    customerAddress.getAddress().setPhonePrimary(null);
-  }
   customerAddress.setAddressName(form.getAddressName());
   customerAddress=customerAddressService.saveCustomerAddress(customerAddress);
   if (form.getAddress().isDefault()) {
