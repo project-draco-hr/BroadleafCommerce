@@ -3,7 +3,8 @@
   if (xformTemplates.containsKey(convertedClassName)) {
     String xformKey=convertedClassName;
     String xformVal=xformTemplates.get(xformKey);
-    LOG.debug(String.format("Copying into [%s] from [%s]",xformKey,xformVal));
+    logger.lifecycle(LifeCycleEvent.START,"Transform");
+    logger.lifecycle(LifeCycleEvent.TRANSFORM,String.format("Copying into [%s] from [%s]",xformKey,xformVal));
     try {
       ClassPool classPool=ClassPool.getDefault();
       CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
@@ -12,21 +13,22 @@
       CtClass template=classPool.get(xformVal);
       CtClass[] interfacesToCopy=template.getInterfaces();
       for (      CtClass i : interfacesToCopy) {
-        LOG.debug(String.format("...Attempting to copy interface [%s]",i.getName()));
+        logger.lifecycle(LifeCycleEvent.TRANSFORM,String.format("Adding interface [%s]",i.getName()));
         clazz.addInterface(i);
       }
       CtField[] fieldsToCopy=template.getDeclaredFields();
       for (      CtField field : fieldsToCopy) {
-        LOG.debug(String.format("...Attempting to copy field [%s]",field.getName()));
+        logger.lifecycle(LifeCycleEvent.TRANSFORM,String.format("Adding field [%s]",field.getName()));
         CtField copiedField=new CtField(field,clazz);
         clazz.addField(copiedField);
       }
       CtMethod[] methodsToCopy=template.getDeclaredMethods();
       for (      CtMethod method : methodsToCopy) {
-        LOG.debug(String.format("...Attempting to copy method [%s]",method.getName()));
+        logger.lifecycle(LifeCycleEvent.TRANSFORM,String.format("Adding method [%s]",method.getName()));
         CtMethod copiedMethod=new CtMethod(method,clazz,null);
         clazz.addMethod(copiedMethod);
       }
+      logger.lifecycle(LifeCycleEvent.END,"Transform");
       return clazz.toBytecode();
     }
  catch (    Exception e) {
