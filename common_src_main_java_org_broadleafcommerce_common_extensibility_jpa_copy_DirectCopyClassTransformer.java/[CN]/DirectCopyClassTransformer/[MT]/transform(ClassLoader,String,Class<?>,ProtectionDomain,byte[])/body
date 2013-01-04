@@ -1,0 +1,37 @@
+{
+  String convertedClassName=className.replace('/','.');
+  if (xformTemplates.containsKey(convertedClassName)) {
+    String xformKey=convertedClassName;
+    String xformVal=xformTemplates.get(xformKey);
+    LOG.debug(String.format("Copying into [%s] from [%s]",xformKey,xformVal));
+    try {
+      ClassPool classPool=ClassPool.getDefault();
+      CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+      clazz.defrost();
+      classPool.appendClassPath(new LoaderClassPath(Class.forName(xformVal).getClassLoader()));
+      CtClass template=classPool.get(xformVal);
+      CtClass[] interfacesToCopy=template.getInterfaces();
+      for (      CtClass i : interfacesToCopy) {
+        LOG.debug(String.format("...Attempting to copy interface [%s]",i.getName()));
+        clazz.addInterface(i);
+      }
+      CtField[] fieldsToCopy=template.getDeclaredFields();
+      for (      CtField field : fieldsToCopy) {
+        LOG.debug(String.format("...Attempting to copy field [%s]",field.getName()));
+        CtField copiedField=new CtField(field,clazz);
+        clazz.addField(copiedField);
+      }
+      CtMethod[] methodsToCopy=template.getDeclaredMethods();
+      for (      CtMethod method : methodsToCopy) {
+        LOG.debug(String.format("...Attempting to copy method [%s]",method.getName()));
+        CtMethod copiedMethod=new CtMethod(method,clazz,null);
+        clazz.addMethod(copiedMethod);
+      }
+      return clazz.toBytecode();
+    }
+ catch (    Exception e) {
+      throw new RuntimeException("Unable to transform class",e);
+    }
+  }
+  return null;
+}
