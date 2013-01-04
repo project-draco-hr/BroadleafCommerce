@@ -79,7 +79,7 @@
     for (    PersistenceUnitInfo pui : mergedPus.values()) {
       for (      BroadleafClassTransformer transformer : classTransformers) {
         try {
-          if (pui.getPersistenceUnitName().equals("blPU")) {
+          if (!(transformer instanceof NullClassTransformer) && pui.getPersistenceUnitName().equals("blPU")) {
             pui.addTransformer(transformer);
           }
         }
