@@ -25,6 +25,6 @@
       throw new IOException("Unable to open an input stream on specified application context resource: " + patchLocations[i]);
     }
   }
-  Resource[] resources=new MergeApplicationContextXmlConfigResource().getConfigResources(filteredSources,patches);
+  Resource[] resources=new MergeApplicationContextXmlConfigResource().getConfigResources(filteredSources,patches,new ImportProcessor(this));
   reader.loadBeanDefinitions(resources);
 }

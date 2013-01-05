@@ -3,16 +3,14 @@
     Document doc1=builder.parse(stream1);
     Document doc2=builder.parse(stream2);
     List<Node> exhaustedNodes=new ArrayList<Node>();
-    for (int j=0; j < this.handlers.length; j++) {
+    for (    MergeHandler handler : this.handlers) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug("Processing handler: " + this.handlers[j].getXPath());
+        LOG.debug("Processing handler: " + handler.getXPath());
       }
-      MergePoint point=new MergePoint(this.handlers[j],doc1,doc2);
+      MergePoint point=new MergePoint(handler,doc1,doc2);
       Node[] list=point.merge(exhaustedNodes);
       if (list != null) {
-        for (int x=0; x < list.length; x++) {
-          exhaustedNodes.add(list[x]);
-        }
+        Collections.addAll(exhaustedNodes,list);
       }
     }
     TransformerFactory tFactory=TransformerFactory.newInstance();

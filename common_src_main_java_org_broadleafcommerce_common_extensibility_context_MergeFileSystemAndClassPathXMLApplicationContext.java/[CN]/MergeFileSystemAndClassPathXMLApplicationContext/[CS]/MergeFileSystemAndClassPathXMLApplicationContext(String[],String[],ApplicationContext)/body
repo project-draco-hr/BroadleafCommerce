@@ -16,6 +16,6 @@
  catch (  FileNotFoundException e) {
     throw new FatalBeanException("Unable to merge context files",e);
   }
-  this.configResources=new MergeApplicationContextXmlConfigResource().getConfigResources(classPathSources,fileSystemSources);
+  this.configResources=new MergeApplicationContextXmlConfigResource().getConfigResources(classPathSources,fileSystemSources,new ImportProcessor(this));
   refresh();
 }

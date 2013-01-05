@@ -18,7 +18,7 @@
       sources[j]=new ResourceInputStream(resource.getInputStream(),resource.getURL().toString());
       j++;
     }
-    setConfigLocation(merge.getMergedConfigResource(sources));
+    setConfigLocation(merge.getMergedConfigResource(sources,new ImportProcessor(applicationContext)));
   }
  catch (  IOException e) {
     throw new FatalBeanException("Unable to merge cache locations",e);

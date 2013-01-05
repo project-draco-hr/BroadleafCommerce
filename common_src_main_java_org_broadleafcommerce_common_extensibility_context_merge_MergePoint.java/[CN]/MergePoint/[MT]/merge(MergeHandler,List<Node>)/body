@@ -4,12 +4,10 @@
   }
   if (handler.getChildren() != null) {
     MergeHandler[] children=handler.getChildren();
-    for (int j=0; j < children.length; j++) {
-      Node[] temp=merge(children[j],exhaustedNodes);
+    for (    MergeHandler aChildren : children) {
+      Node[] temp=merge(aChildren,exhaustedNodes);
       if (temp != null) {
-        for (        Node node : temp) {
-          exhaustedNodes.add(node);
-        }
+        Collections.addAll(exhaustedNodes,temp);
       }
     }
   }
