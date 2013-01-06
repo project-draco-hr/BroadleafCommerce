@@ -1,14 +1,8 @@
 {
-  Resource[] configResources=null;
+  Resource configResource=null;
   ResourceInputStream merged=null;
   try {
-    merged=merge(sources,importProcessor);
-    if (patches != null) {
-      ResourceInputStream[] patches2=new ResourceInputStream[patches.length + 1];
-      patches2[0]=merged;
-      System.arraycopy(patches,0,patches2,1,patches.length);
-      merged=merge(patches2,importProcessor);
-    }
+    merged=merge(sources);
     ByteArrayOutputStream baos=new ByteArrayOutputStream();
     boolean eof=false;
     while (!eof) {
@@ -20,9 +14,9 @@
         baos.write(temp);
       }
     }
-    configResources=new Resource[]{new ByteArrayResource(baos.toByteArray())};
+    configResource=new ByteArrayResource(baos.toByteArray());
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Merged ApplicationContext Including Patches: \n" + serialize(configResources[0]));
+      LOG.debug("Merged config: \n" + serialize(configResource));
     }
   }
  catch (  MergeException e) {
@@ -44,5 +38,5 @@ catch (  IOException e) {
       }
     }
   }
-  return configResources;
+  return configResource;
 }
