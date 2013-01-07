@@ -1,0 +1,13 @@
+{
+  String uppercaseName=modulePrefix.toUpperCase();
+  String firstCharLowerCaseName=modulePrefix.substring(0,1).toLowerCase();
+  List<String> permissions=new ArrayList<String>();
+  permissions.add("PERMISSION_CREATE_" + uppercaseName);
+  permissions.add("PERMISSION_UPDATE_" + uppercaseName);
+  permissions.add("PERMISSION_DELETE_" + uppercaseName);
+  permissions.add("PERMISSION_READ_" + uppercaseName);
+  if (modulePrefix.length() > 1) {
+    firstCharLowerCaseName=firstCharLowerCaseName + modulePrefix.substring(1);
+  }
+  setSection(BLCMain.getMessageManager().getString(modulePrefix + "MainTitle"),modulePrefix + "View",basePackageName + ".view." + firstCharLowerCaseName+ "View",modulePrefix + "Presenter",basePackageName + ".presenter." + firstCharLowerCaseName+ "Presenter",permissions);
+}
