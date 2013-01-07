@@ -1,11 +1,11 @@
 {
-  if (nodeList1 == null || nodeList2 == null || nodeList1.getLength() == 0 || nodeList2.getLength() == 0) {
+  if (CollectionUtils.isEmpty(nodeList1) || CollectionUtils.isEmpty(nodeList2)) {
     return null;
   }
   List<Node> usedNodes=new ArrayList<Node>();
-  Node node1Parent=nodeList1.item(0).getParentNode();
-  for (int j=0; j < nodeList2.getLength(); j++) {
-    Node tempNode=node1Parent.getOwnerDocument().importNode(nodeList2.item(j).cloneNode(true),true);
+  Node node1Parent=nodeList1.get(0).getParentNode();
+  for (  Node aNodeList2 : nodeList2) {
+    Node tempNode=node1Parent.getOwnerDocument().importNode(aNodeList2.cloneNode(true),true);
     if (LOG.isDebugEnabled()) {
       StringBuffer sb=new StringBuffer();
       sb.append("matching node for insertion: ");
@@ -21,7 +21,7 @@
       LOG.debug(sb.toString());
     }
     if (LOG.isDebugEnabled()) {
-      StringBuffer sb=new StringBuffer();
+      StringBuilder sb=new StringBuilder();
       sb.append("inserting into parent: ");
       sb.append(node1Parent.getNodeName());
       int attrLength=node1Parent.getAttributes().getLength();
@@ -37,6 +37,6 @@
     node1Parent.appendChild(tempNode);
     usedNodes.add(tempNode);
   }
-  Node[] response={nodeList2.item(0).getParentNode()};
+  Node[] response={nodeList2.get(0).getParentNode()};
   return response;
 }

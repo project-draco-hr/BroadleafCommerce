@@ -1,0 +1,17 @@
+{
+  if (CollectionUtils.isEmpty(nodeList1) || CollectionUtils.isEmpty(nodeList2)) {
+    return null;
+  }
+  Node[] primaryNodes=new Node[nodeList1.size()];
+  for (int j=0; j < primaryNodes.length; j++) {
+    primaryNodes[j]=nodeList1.get(j);
+  }
+  ArrayList<Node> list=new ArrayList<Node>();
+  for (int j=0; j < nodeList2.size(); j++) {
+    list.add(nodeList2.get(j));
+  }
+  List<Node> usedNodes=matchNodes(exhaustedNodes,primaryNodes,list);
+  Node[] response={};
+  response=usedNodes.toArray(response);
+  return response;
+}
