@@ -1,0 +1,9 @@
+{
+  Money amountAvailableToReverseAuthorize=getAmountAvailableToReverseAuthorize(paymentContext);
+  PaymentInfo paymentInfo=findPaymentInfoFromContext(paymentContext);
+  PaymentResponseItem responseItem=getNewResponseItem();
+  responseItem.setAmountPaid(amountAvailableToReverseAuthorize);
+  responseItem.setCurrency(paymentInfo.getCurrency());
+  paymentInfo.getPaymentInfoDetails().add(getNewReverseAuthPaymentInfoDetail(paymentInfo,amountAvailableToReverseAuthorize));
+  return processReverseAuthorize(paymentContext,amountAvailableToReverseAuthorize,responseItem);
+}
