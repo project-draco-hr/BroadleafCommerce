@@ -3,7 +3,7 @@
   PaymentInfo paymentInfo=findPaymentInfoFromContext(paymentContext);
   PaymentResponseItem responseItem=getNewResponseItem();
   responseItem.setTransactionTimestamp(SystemTime.asDate());
-  responseItem.setAmountPaid(amountAvailableToDebit);
+  responseItem.setTransactionAmount(amountAvailableToDebit);
   responseItem.setCurrency(paymentInfo.getCurrency());
   paymentInfo.getPaymentInfoDetails().add(getNewCapturePaymentInfoDetail(paymentInfo,amountAvailableToDebit));
   return processDebit(paymentContext,amountAvailableToDebit,responseItem);

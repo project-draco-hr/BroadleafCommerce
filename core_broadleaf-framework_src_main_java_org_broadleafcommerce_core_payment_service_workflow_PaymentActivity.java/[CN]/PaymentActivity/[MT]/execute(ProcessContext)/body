@@ -96,11 +96,11 @@
           ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),myState);
         }
         if (paymentResponseItem != null) {
-          if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
-            throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
+          if (paymentResponseItem.getTransactionAmount() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
+            throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: transactionAmount, transactionTimestamp or transactionSuccess");
           }
           seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
-          remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
+          remainingTotal=remainingTotal.subtract(paymentResponseItem.getTransactionAmount());
         }
       }
     }
