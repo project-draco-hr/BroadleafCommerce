@@ -1,4 +1,5 @@
 {
-  PaymentResponseItem responseItem=getNewResponseItem();
-  return processAuthorize(paymentContext,responseItem);
+  Money amountToAuthorize=paymentContext.getRemainingTransactionAmount();
+  PaymentResponseItem responseItem=getNewResponseItem(amountToAuthorize,findPaymentInfoFromContext(paymentContext).getCurrency());
+  return processAuthorize(paymentContext,amountToAuthorize,responseItem);
 }

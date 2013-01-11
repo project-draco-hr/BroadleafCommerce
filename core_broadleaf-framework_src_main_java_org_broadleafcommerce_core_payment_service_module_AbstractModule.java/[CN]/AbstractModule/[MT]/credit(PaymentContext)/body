@@ -1,10 +1,7 @@
 {
   Money amountAvailableToCredit=getAmountAvailableToCredit(paymentContext);
   PaymentInfo paymentInfo=findPaymentInfoFromContext(paymentContext);
-  PaymentResponseItem responseItem=getNewResponseItem();
-  responseItem.setTransactionTimestamp(SystemTime.asDate());
-  responseItem.setTransactionAmount(amountAvailableToCredit);
-  responseItem.setCurrency(paymentInfo.getCurrency());
+  PaymentResponseItem responseItem=getNewResponseItem(amountAvailableToCredit,paymentInfo.getCurrency());
   paymentInfo.getPaymentInfoDetails().add(getNewRefundPaymentInfoDetail(paymentInfo,amountAvailableToCredit));
   return processCredit(paymentContext,amountAvailableToCredit,responseItem);
 }
