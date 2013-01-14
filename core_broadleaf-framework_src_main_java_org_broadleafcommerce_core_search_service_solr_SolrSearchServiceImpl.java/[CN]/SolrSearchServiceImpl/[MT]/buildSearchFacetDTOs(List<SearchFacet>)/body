@@ -1,10 +1,13 @@
 {
   List<SearchFacetDTO> facets=new ArrayList<SearchFacetDTO>();
+  Map<String,String[]> requestParameters=BroadleafRequestContext.getRequestParameterMap();
   for (  SearchFacet facet : searchFacets) {
-    SearchFacetDTO dto=new SearchFacetDTO();
-    dto.setFacet(facet);
-    dto.setShowQuantity(true);
-    facets.add(dto);
+    if (facetIsAvailable(facet,requestParameters)) {
+      SearchFacetDTO dto=new SearchFacetDTO();
+      dto.setFacet(facet);
+      dto.setShowQuantity(true);
+      facets.add(dto);
+    }
   }
   return facets;
 }

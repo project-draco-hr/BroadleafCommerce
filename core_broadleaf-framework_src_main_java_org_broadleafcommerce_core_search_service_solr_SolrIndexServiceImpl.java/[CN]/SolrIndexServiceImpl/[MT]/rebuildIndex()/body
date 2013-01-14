@@ -1,0 +1,32 @@
+{
+  LOG.info("Rebuilding the solr index...");
+  StopWatch s=new StopWatch();
+  if (SolrContext.isSingleCoreMode()) {
+    deleteAllDocuments();
+  }
+  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
+  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
+  try {
+    Long numProducts=productDao.readCountAllActiveProducts(SystemTime.asDate());
+    LOG.debug("There are " + numProducts + " total products");
+    int page=0;
+    while ((page * pageSize) < numProducts) {
+      buildIncrementalIndex(page,pageSize);
+      page++;
+    }
+  }
+ catch (  ServiceException e) {
+    throw e;
+  }
+ finally {
+    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
+    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
+    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
+  }
+  shs.swapActiveCores();
+  if (!SolrContext.isSingleCoreMode()) {
+    deleteAllDocuments();
+  }
+  LOG.info(String.format("Finished building index in %s",s.toLapString()));
+}

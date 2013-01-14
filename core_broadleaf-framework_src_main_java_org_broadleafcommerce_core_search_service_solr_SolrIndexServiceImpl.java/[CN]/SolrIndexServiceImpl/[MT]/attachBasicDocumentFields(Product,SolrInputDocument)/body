@@ -1,0 +1,16 @@
+{
+  document.addField(shs.getIdFieldName(),product.getId());
+  for (  Category category : product.getAllParentCategories()) {
+    document.addField(shs.getExplicitCategoryFieldName(),category.getId());
+    String categorySortFieldName=shs.getCategorySortFieldName(category);
+    int listIndex=category.getAllProducts().indexOf(product);
+    document.addField(categorySortFieldName,listIndex);
+  }
+  Set<Category> fullCategoryHierarchy=new HashSet<Category>();
+  for (  Category category : product.getAllParentCategories()) {
+    fullCategoryHierarchy.addAll(category.buildFullCategoryHierarchy(null));
+  }
+  for (  Category category : fullCategoryHierarchy) {
+    document.addField(shs.getCategoryFieldName(),category.getId());
+  }
+}
