@@ -2,7 +2,7 @@
   query.setFacet(true);
   for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
     SearchFacetDTO dto=entry.getValue();
-    String facetTagField=entry.getValue().isActive() ? GLOBAL_FACET_TAG_FIELD : entry.getKey();
+    String facetTagField=entry.getValue().isActive() ? shs.getGlobalFacetTagField() : entry.getKey();
     List<SearchFacetRange> searchFacetRanges=dto.getFacet().getSearchFacetRanges();
     if (extensionManager != null) {
       extensionManager.filterSearchFacetRanges(dto,searchFacetRanges);

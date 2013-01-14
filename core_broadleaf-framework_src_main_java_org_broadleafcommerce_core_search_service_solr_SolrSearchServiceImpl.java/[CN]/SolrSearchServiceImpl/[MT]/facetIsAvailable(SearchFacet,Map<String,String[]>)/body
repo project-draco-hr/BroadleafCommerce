@@ -2,8 +2,7 @@
   if (CollectionUtils.isEmpty(facet.getRequiredFacets())) {
     return true;
   }
-  @SuppressWarnings("unchecked") Map<String,String[]> params=request.getParameterMap();
-  if (CollectionUtils.isEmpty(params)) {
+  if (MapUtils.isEmpty(params)) {
     return false;
   }
   int requiredMatches=facet.getRequiresAllDependentFacets() ? facet.getRequiredFacets().size() : 1;

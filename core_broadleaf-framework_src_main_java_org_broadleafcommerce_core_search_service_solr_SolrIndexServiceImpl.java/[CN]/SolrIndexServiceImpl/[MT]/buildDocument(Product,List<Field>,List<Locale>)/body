@@ -11,9 +11,9 @@
           for (          Entry<String,Object> entry : propertyValues.entrySet()) {
             String prefix=entry.getKey();
             prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
-            String solrPropertyName=getPropertyNameForFieldSearchable(field,sft,prefix);
+            String solrPropertyName=shs.getPropertyNameForFieldSearchable(field,sft,prefix);
             Object value=entry.getValue();
-            if (sft.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(getDefaultLocalePrefix())) {
+            if (sft.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
               document.addField(solrPropertyName,value);
               addedProperties.add(solrPropertyName);
             }
@@ -32,9 +32,9 @@
         for (        Entry<String,Object> entry : propertyValues.entrySet()) {
           String prefix=entry.getKey();
           prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
-          String solrFacetPropertyName=getPropertyNameForFieldFacet(field,prefix);
+          String solrFacetPropertyName=shs.getPropertyNameForFieldFacet(field,prefix);
           Object value=entry.getValue();
-          if (facetType.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(getDefaultLocalePrefix())) {
+          if (facetType.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
             if (!addedProperties.contains(solrFacetPropertyName)) {
               document.addField(solrFacetPropertyName,value);
             }
@@ -47,7 +47,7 @@
     }
   }
   for (  Entry<String,List<String>> entry : copyFieldValues.entrySet()) {
-    document.addField(getSearchableFieldName(entry.getKey()),StringUtils.join(entry.getValue()," "));
+    document.addField(shs.getSearchableFieldName(entry.getKey()),StringUtils.join(entry.getValue()," "));
   }
   return document;
 }

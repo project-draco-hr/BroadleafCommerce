@@ -1,7 +1,27 @@
 {
-  System.setProperty("solr.solr.home",solrServer);
-  CoreContainer.Initializer initializer=new CoreContainer.Initializer();
-  CoreContainer coreContainer=initializer.initialize();
-  EmbeddedSolrServer server=new EmbeddedSolrServer(coreContainer,"");
-  this.server=server;
+  if ("solrhome".equals(solrServer)) {
+    final String baseTempPath=System.getProperty("java.io.tmpdir");
+    File tempDir=new File(baseTempPath + File.separator + "solrhome");
+    if (tempDir.exists() == false) {
+      tempDir.mkdir();
+    }
+    solrServer=tempDir.getAbsolutePath();
+  }
+  File solrXml=new File(this.getClass().getResource("/solr-default.xml").getFile());
+  LOG.debug(String.format("Using [%s] as solrhome",solrServer));
+  LOG.debug(String.format("Using [%s] as solr.xml",solrXml.getAbsoluteFile()));
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Contents of solr.xml:");
+    BufferedReader br=new BufferedReader(new FileReader(solrXml));
+    String line;
+    while ((line=br.readLine()) != null) {
+      LOG.trace(line);
+    }
+    LOG.trace("Done printing solr.xml");
+  }
+  CoreContainer coreContainer=new CoreContainer(solrServer,solrXml);
+  EmbeddedSolrServer primaryServer=new EmbeddedSolrServer(coreContainer,SolrContext.PRIMARY);
+  EmbeddedSolrServer reindexServer=new EmbeddedSolrServer(coreContainer,SolrContext.REINDEX);
+  SolrContext.setPrimaryServer(primaryServer);
+  SolrContext.setReindexServer(reindexServer);
 }
