@@ -1,0 +1,22 @@
+{
+  Map<String,Entity[]> map=new HashMap<String,Entity[]>();
+  for (  Property p : metadata.getProperties()) {
+    if (p.getMetadata() instanceof BasicCollectionMetadata) {
+      BasicCollectionMetadata md=(BasicCollectionMetadata)p.getMetadata();
+      try {
+        Class<?> collectionClass=Class.forName(md.getCollectionCeilingEntity());
+        ForeignKey foreignField=(ForeignKey)md.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        FilterAndSortCriteria subFasc=new FilterAndSortCriteria(foreignField.getManyToField());
+        subFasc.setFilterValue(containingEntityId);
+        Entity[] subRecords=fetch(collectionClass,new ForeignKey[]{foreignField},subFasc).getRecords();
+        if (subRecords != null && subRecords.length > 0) {
+          map.put(p.getName(),subRecords);
+        }
+      }
+ catch (      ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  return map;
+}

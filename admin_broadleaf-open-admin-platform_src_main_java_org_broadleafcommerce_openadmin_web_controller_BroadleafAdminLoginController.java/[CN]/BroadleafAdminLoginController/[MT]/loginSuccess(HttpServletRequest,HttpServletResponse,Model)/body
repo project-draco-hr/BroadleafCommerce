@@ -4,26 +4,7 @@
     AdminModule first=modules.get(0);
     if (!first.getSections().isEmpty()) {
       AdminSection adminSection=first.getSections().get(0);
-      String redirectUrl=adminSection.getUrl();
-      if (redirectUrl.startsWith("/")) {
-        redirectUrl=redirectUrl.substring(1,redirectUrl.length());
-      }
-      Enumeration parameterNames=request.getParameterNames();
-      if (parameterNames.hasMoreElements()) {
-        redirectUrl+="?";
-      }
-      while (parameterNames.hasMoreElements()) {
-        String name=(String)parameterNames.nextElement();
-        String value=request.getParameter(name);
-        redirectUrl+=name + "=" + value;
-        if (parameterNames.hasMoreElements()) {
-          redirectUrl+="&";
-        }
-      }
-      if (adminSection.getSectionKey() != null) {
-        redirectUrl+="#moduleKey=" + first.getModuleKey() + "&pageKey="+ adminSection.getSectionKey();
-      }
-      return "redirect:" + redirectUrl;
+      return "redirect:" + adminSection.getUrl();
     }
   }
   return null;

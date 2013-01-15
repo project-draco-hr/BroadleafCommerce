@@ -13,37 +13,44 @@
     if (metadata != null) {
       Boolean mutable=metadata.getMutable();
       Boolean readOnly=metadata.getReadOnly();
+      if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN)) {
+        if (value == null) {
+          value="false";
+        }
+      }
       if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
         if (value != null) {
 switch (metadata.getFieldType()) {
 case BOOLEAN:
-            if (Character.class.isAssignableFrom(returnType)) {
-              fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value) ? 'Y' : 'N');
-            }
- else {
-              fieldManager.setFieldValue(instance,property.getName(),Boolean.valueOf(value));
-            }
-          break;
+            boolean v=Boolean.valueOf(value);
+          try {
+            fieldManager.setFieldValue(instance,property.getName(),v);
+          }
+ catch (          IllegalArgumentException e) {
+            char c=v ? 'Y' : 'N';
+            fieldManager.setFieldValue(instance,property.getName(),c);
+          }
+        break;
 case DATE:
-        fieldManager.setFieldValue(instance,property.getName(),parseDate(value));
-      break;
+      fieldManager.setFieldValue(instance,property.getName(),parseDate(value));
+    break;
 case DECIMAL:
-    if (BigDecimal.class.isAssignableFrom(returnType)) {
-      fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
-    }
+  if (BigDecimal.class.isAssignableFrom(returnType)) {
+    fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
+  }
  else {
-      fieldManager.setFieldValue(instance,property.getName(),new Double(value));
-    }
-  break;
+    fieldManager.setFieldValue(instance,property.getName(),new Double(value));
+  }
+break;
 case MONEY:
 if (BigDecimal.class.isAssignableFrom(returnType)) {
-  fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
+fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
 }
  else if (Double.class.isAssignableFrom(returnType)) {
-  fieldManager.setFieldValue(instance,property.getName(),new Double(value));
+fieldManager.setFieldValue(instance,property.getName(),new Double(value));
 }
  else {
-  fieldManager.setFieldValue(instance,property.getName(),new Money(new Double(value)));
+fieldManager.setFieldValue(instance,property.getName(),new Money(new Double(value)));
 }
 break;
 case INTEGER:

@@ -1,0 +1,10 @@
+{
+  FilterAndSortCriteria fasc=new FilterAndSortCriteria("id");
+  fasc.setFilterValue(id);
+  Entity[] entities=fetch(clazz,null,fasc).getRecords();
+  if (entities == null || entities.length > 1) {
+    throw new RuntimeException("More than one entity found with the same id");
+  }
+  Entity entity=entities[0];
+  return entity;
+}

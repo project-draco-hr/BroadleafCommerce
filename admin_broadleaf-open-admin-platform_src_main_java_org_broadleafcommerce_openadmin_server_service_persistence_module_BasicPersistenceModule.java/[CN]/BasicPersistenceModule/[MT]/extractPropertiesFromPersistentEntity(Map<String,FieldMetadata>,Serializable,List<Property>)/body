@@ -59,6 +59,9 @@
               ((BasicFieldMetadata)propertyItem.getMetadata()).setFieldType(metadata.getFieldType());
               strVal=null;
             }
+ else             if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN) && value instanceof Character) {
+              strVal=(value.equals('Y')) ? "true" : "false";
+            }
  else             if (Date.class.isAssignableFrom(value.getClass())) {
               strVal=dateFormat.format((Date)value);
             }

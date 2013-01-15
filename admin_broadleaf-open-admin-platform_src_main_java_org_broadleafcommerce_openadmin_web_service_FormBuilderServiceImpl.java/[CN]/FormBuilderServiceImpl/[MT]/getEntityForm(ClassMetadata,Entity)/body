@@ -1,0 +1,49 @@
+{
+  EntityForm ef=new EntityForm(e);
+  ef.setMetadata(cmd);
+  for (  final Property p : cmd.getProperties()) {
+    boolean entityHasProperty=BLCArrayUtils.contains(e.getProperties(),new TypedPredicate<Property>(){
+      @Override public boolean evaluate(      Property entityProperty){
+        return p.getName().equals(entityProperty.getName());
+      }
+    }
+);
+    if (!entityHasProperty) {
+      continue;
+    }
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata metadata=(BasicFieldMetadata)p.getMetadata();
+      String fieldType=metadata.getFieldType() == null ? null : metadata.getFieldType().toString();
+      if (fieldType.equalsIgnoreCase("FOREIGN_KEY")) {
+        continue;
+      }
+      if (!fieldType.equalsIgnoreCase("BOOLEAN") && !fieldType.equalsIgnoreCase("ADDITIONAL_FOREIGN_KEY")) {
+        fieldType="TEXT";
+      }
+      Field f=new Field().setName(p.getName()).setFriendlyName(p.getMetadata().getFriendlyName()).setFieldType(fieldType);
+      if (StringUtils.isBlank(f.getFriendlyName())) {
+        f.setFriendlyName(f.getName());
+      }
+      String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
+      groupName=groupName == null ? "Default" : groupName;
+      List<Field> fs=ef.getGroupedFields().get(groupName);
+      if (fs == null) {
+        fs=new ArrayList<Field>();
+        ef.getGroupedFields().put(groupName,fs);
+      }
+      fs.add(f);
+    }
+ else     if (p.getMetadata() instanceof MapMetadata) {
+      ef.getNonBasicFields().add(p);
+    }
+ else     if (p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
+      ef.getNonBasicFields().add(p);
+    }
+ else     if (p.getMetadata() instanceof BasicCollectionMetadata) {
+      ef.getNonBasicFields().add(p);
+    }
+ else {
+    }
+  }
+  return ef;
+}

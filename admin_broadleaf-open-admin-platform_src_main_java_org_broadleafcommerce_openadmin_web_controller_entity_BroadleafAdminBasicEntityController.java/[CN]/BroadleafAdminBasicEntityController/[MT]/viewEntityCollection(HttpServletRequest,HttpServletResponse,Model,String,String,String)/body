@@ -1,0 +1,17 @@
+{
+  Class<?> mainClass=getClassForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(mainClass);
+  for (  Property p : mainMetadata.getProperties()) {
+    if (p.getName().equals(collectionField)) {
+      Class<?> collectionClass=Class.forName(((BasicFieldMetadata)p.getMetadata()).getForeignKeyClass());
+      ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
+      Entity[] rows=service.getRecords(collectionClass);
+      ListGrid listGrid=formService.getListGrid(collectionMetadata,rows);
+      model.addAttribute("listGrid",listGrid);
+      model.addAttribute("viewType","modalListGrid");
+      break;
+    }
+  }
+  setModelAttributes(model,sectionKey);
+  return "modules/modalContainer";
+}

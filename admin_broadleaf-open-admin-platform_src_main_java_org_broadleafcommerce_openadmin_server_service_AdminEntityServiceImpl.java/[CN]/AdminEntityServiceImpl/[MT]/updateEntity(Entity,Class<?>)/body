@@ -1,0 +1,12 @@
+{
+  OperationTypes opTypes=getDefaultOperationTypes();
+  PersistencePerspective perspective=getPersistencePerspective(opTypes,null);
+  PersistencePackage pkg=getPersistencePackage(clazz.getName(),null,perspective);
+  for (  Entry<String,Property> entry : entity.getPMap().entrySet()) {
+    entry.getValue().setName(entry.getKey());
+  }
+  Property[] pArray=new Property[entity.getPMap().values().size()];
+  entity.setProperties(entity.getPMap().values().toArray(pArray));
+  pkg.setEntity(entity);
+  return service.update(pkg);
+}

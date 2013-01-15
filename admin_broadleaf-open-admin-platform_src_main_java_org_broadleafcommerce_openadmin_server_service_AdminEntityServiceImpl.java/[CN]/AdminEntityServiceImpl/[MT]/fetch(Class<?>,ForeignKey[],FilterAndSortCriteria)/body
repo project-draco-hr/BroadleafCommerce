@@ -1,0 +1,13 @@
+{
+  ForeignKey[] combined=(ForeignKey[])ArrayUtils.addAll(foreignKeys,null);
+  OperationTypes opTypes=getDefaultOperationTypes();
+  PersistencePerspective perspective=getPersistencePerspective(opTypes,combined);
+  PersistencePackage pkg=getPersistencePackage(clazz.getName(),null,perspective);
+  CriteriaTransferObject cto=getDefaultCto();
+  if (fascs != null) {
+    for (    FilterAndSortCriteria fasc : fascs) {
+      cto.add(fasc);
+    }
+  }
+  return service.fetch(pkg,cto);
+}
