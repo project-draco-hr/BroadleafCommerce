@@ -2,20 +2,32 @@
   if ("solrhome".equals(solrServer)) {
     final String baseTempPath=System.getProperty("java.io.tmpdir");
     File tempDir=new File(baseTempPath + File.separator + "solrhome");
-    if (tempDir.exists() == false) {
+    if (!tempDir.exists()) {
       tempDir.mkdir();
     }
     solrServer=tempDir.getAbsolutePath();
   }
-  File solrXml=new File(this.getClass().getResource("/solr-default.xml").getFile());
+  File solrXml=copyConfigToSolrHome(this.getClass().getResourceAsStream("/solr-default.xml"),solrServer,"solr-default.xml");
   LOG.debug(String.format("Using [%s] as solrhome",solrServer));
   LOG.debug(String.format("Using [%s] as solr.xml",solrXml.getAbsoluteFile()));
   if (LOG.isTraceEnabled()) {
     LOG.trace("Contents of solr.xml:");
-    BufferedReader br=new BufferedReader(new FileReader(solrXml));
-    String line;
-    while ((line=br.readLine()) != null) {
-      LOG.trace(line);
+    BufferedReader br=null;
+    try {
+      br=new BufferedReader(new FileReader(solrXml));
+      String line;
+      while ((line=br.readLine()) != null) {
+        LOG.trace(line);
+      }
+    }
+  finally {
+      if (br != null) {
+        try {
+          br.close();
+        }
+ catch (        Throwable e) {
+        }
+      }
     }
     LOG.trace("Done printing solr.xml");
   }
