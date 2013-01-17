@@ -1,0 +1,13 @@
+{
+  Map<K,List<V>> map=new HashMap<K,List<V>>();
+  for (  V value : values) {
+    K key=closure.getKey(value);
+    List<V> list=map.get(key);
+    if (list == null) {
+      list=new ArrayList<V>();
+      map.put(key,list);
+    }
+    list.add(value);
+  }
+  return map;
+}

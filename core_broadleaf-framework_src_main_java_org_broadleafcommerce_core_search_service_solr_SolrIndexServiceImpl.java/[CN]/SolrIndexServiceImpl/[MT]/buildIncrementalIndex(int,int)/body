@@ -1,0 +1,29 @@
+{
+  LOG.trace(String.format("Building index - page: [%s], pageSize: [%s]",page,pageSize));
+  StopWatch s=new StopWatch();
+  try {
+    List<Product> products=readAllActiveProducts(page,pageSize);
+    List<Field> fields=fieldDao.readAllProductFields();
+    List<Locale> locales=getAllLocales();
+    Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
+    for (    Product product : products) {
+      documents.add(buildDocument(product,fields,locales));
+    }
+    if (LOG.isTraceEnabled()) {
+      for (      SolrInputDocument document : documents) {
+        LOG.trace(document);
+      }
+    }
+    if (documents != null && documents.size() > 0) {
+      SolrContext.getReindexServer().add(documents);
+      SolrContext.getReindexServer().commit();
+    }
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not rebuild index",e);
+  }
+catch (  IOException e) {
+    throw new ServiceException("Could not rebuild index",e);
+  }
+  LOG.trace(String.format("Built index - page: [%s], pageSize: [%s] in [%s]",page,pageSize,s.toLapString()));
+}
