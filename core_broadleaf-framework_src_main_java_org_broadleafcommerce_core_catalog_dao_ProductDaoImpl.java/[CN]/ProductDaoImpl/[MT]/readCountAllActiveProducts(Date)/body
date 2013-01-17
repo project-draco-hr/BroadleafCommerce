@@ -1,0 +1,11 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Long> criteria=builder.createQuery(Long.class);
+  Root<ProductImpl> product=criteria.from(ProductImpl.class);
+  Join<Product,Sku> sku=product.join("defaultSku");
+  criteria.select(builder.count(product));
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  attachActiveRestriction(currentDate,product,sku,restrictions);
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  return em.createQuery(criteria).getSingleResult();
+}

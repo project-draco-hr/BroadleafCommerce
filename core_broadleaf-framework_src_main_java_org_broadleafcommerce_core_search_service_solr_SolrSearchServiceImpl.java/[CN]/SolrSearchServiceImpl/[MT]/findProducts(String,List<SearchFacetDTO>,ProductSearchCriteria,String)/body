@@ -1,6 +1,6 @@
 {
   Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
-  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(getIdFieldName()).setRows(searchCriteria.getPageSize()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(shs.getIdFieldName()).setRows(searchCriteria.getPageSize()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
   attachSortClause(solrQuery,searchCriteria,defaultSort);
   attachActiveFacetFilters(solrQuery,namedFacetMap,searchCriteria);
   attachFacets(solrQuery,namedFacetMap);
@@ -14,9 +14,12 @@
   }
   QueryResponse response;
   try {
-    response=server.query(solrQuery);
+    response=SolrContext.getServer().query(solrQuery);
     if (LOG.isTraceEnabled()) {
       LOG.trace(response.toString());
+      for (      SolrDocument doc : response.getResults()) {
+        LOG.trace(doc);
+      }
     }
   }
  catch (  SolrServerException e) {

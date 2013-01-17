@@ -1,0 +1,11 @@
+{
+  FieldType fieldType=field.getFacetFieldType();
+  if (fieldType == null) {
+    return null;
+  }
+  String prefix="";
+  if (!fieldType.equals(FieldType.PRICE)) {
+    prefix=getLocalePrefix();
+  }
+  return getPropertyNameForFieldFacet(field,prefix);
+}

@@ -1,0 +1,20 @@
+{
+  String propertyName=field.getPropertyName();
+  if (propertyName.contains("productAttributes.")) {
+    propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
+  }
+  Map<String,Object> values=new HashMap<String,Object>();
+  if (fieldType.equals(FieldType.PRICE)) {
+    Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+    values.put("",propertyValue);
+  }
+ else {
+    for (    Locale locale : locales) {
+      String localeCode=locale.getLocaleCode();
+      locale=shs.getDefaultLocale();
+      Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+      values.put(localeCode,propertyValue);
+    }
+  }
+  return values;
+}
