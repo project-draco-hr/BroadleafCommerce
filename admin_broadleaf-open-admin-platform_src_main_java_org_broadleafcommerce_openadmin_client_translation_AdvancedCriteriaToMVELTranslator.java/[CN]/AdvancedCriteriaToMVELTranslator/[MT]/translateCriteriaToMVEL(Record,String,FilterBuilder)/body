@@ -1,0 +1,14 @@
+{
+  String attr=record.getAttribute(fieldName);
+  Object value=null;
+  try {
+    value=createMVEL(fieldName,filterBuilder.getCriteria(),filterBuilder.getDataSource());
+  }
+ catch (  IncompatibleMVELTranslationException e) {
+    throw new RuntimeException(BLCMain.getMessageManager().getString("mvelTranslationProblem"),e);
+  }
+  String val=value == null ? null : String.valueOf(value);
+  if (attr != val && (attr == null || val == null || !attr.equals(val))) {
+    record.setAttribute(fieldName,value);
+  }
+}
