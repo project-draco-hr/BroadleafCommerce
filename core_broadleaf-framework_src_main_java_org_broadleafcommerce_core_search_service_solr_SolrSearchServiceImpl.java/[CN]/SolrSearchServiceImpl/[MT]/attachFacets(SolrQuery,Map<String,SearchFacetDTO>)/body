@@ -2,13 +2,13 @@
   query.setFacet(true);
   for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
     SearchFacetDTO dto=entry.getValue();
-    String facetTagField=entry.getValue().isActive() ? GLOBAL_FACET_TAG_FIELD : entry.getKey();
-    List<SearchFacetRange> searchFacetRanges=dto.getFacet().getSearchFacetRanges();
+    String facetTagField=entry.getValue().isActive() ? shs.getGlobalFacetTagField() : entry.getKey();
+    List<SearchFacetRange> facetRanges=new ArrayList<SearchFacetRange>(dto.getFacet().getSearchFacetRanges());
     if (extensionManager != null) {
-      extensionManager.filterSearchFacetRanges(dto,searchFacetRanges);
+      extensionManager.filterSearchFacetRanges(dto,facetRanges);
     }
-    if (searchFacetRanges != null && searchFacetRanges.size() > 0) {
-      for (      SearchFacetRange range : searchFacetRanges) {
+    if (facetRanges != null && facetRanges.size() > 0) {
+      for (      SearchFacetRange range : facetRanges) {
         query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),facetTagField,"ex",range));
       }
     }

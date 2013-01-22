@@ -16,6 +16,14 @@
  catch (  FileNotFoundException e) {
     throw new FatalBeanException("Unable to merge context files",e);
   }
+  ImportProcessor importProcessor=new ImportProcessor(this);
+  try {
+    classPathSources=importProcessor.extract(classPathSources);
+    fileSystemSources=importProcessor.extract(fileSystemSources);
+  }
+ catch (  MergeException e) {
+    throw new FatalBeanException("Unable to merge source and patch locations",e);
+  }
   this.configResources=new MergeApplicationContextXmlConfigResource().getConfigResources(classPathSources,fileSystemSources);
   refresh();
 }

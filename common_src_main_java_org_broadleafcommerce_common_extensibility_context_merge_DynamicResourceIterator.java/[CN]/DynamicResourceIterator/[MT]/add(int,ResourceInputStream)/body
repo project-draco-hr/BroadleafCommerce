@@ -1,0 +1,11 @@
+{
+  byte[] sourceArray;
+  try {
+    sourceArray=buildArrayFromStream(resourceInputStream);
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+  ResourceInputStream ris=new ResourceInputStream(new ByteArrayInputStream(sourceArray),null,resourceInputStream.getNames());
+  super.add(index,ris);
+}

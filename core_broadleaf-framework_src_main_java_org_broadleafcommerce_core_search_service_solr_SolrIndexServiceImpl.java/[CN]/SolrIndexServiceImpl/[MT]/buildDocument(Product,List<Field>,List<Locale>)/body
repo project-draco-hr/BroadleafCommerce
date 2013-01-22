@@ -1,0 +1,53 @@
+{
+  SolrInputDocument document=new SolrInputDocument();
+  attachBasicDocumentFields(product,document);
+  List<String> addedProperties=new ArrayList<String>();
+  Map<String,List<String>> copyFieldValues=new HashMap<String,List<String>>();
+  for (  Field field : fields) {
+    try {
+      if (field.getSearchable()) {
+        for (        FieldType sft : field.getSearchableFieldTypes()) {
+          Map<String,Object> propertyValues=getPropertyValues(product,field,sft,locales);
+          for (          Entry<String,Object> entry : propertyValues.entrySet()) {
+            String prefix=entry.getKey();
+            prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
+            String solrPropertyName=shs.getPropertyNameForFieldSearchable(field,sft,prefix);
+            Object value=entry.getValue();
+            if (sft.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
+              document.addField(solrPropertyName,value);
+              addedProperties.add(solrPropertyName);
+            }
+            List<String> copyFieldValue=copyFieldValues.get(prefix);
+            if (copyFieldValue == null) {
+              copyFieldValue=new ArrayList<String>();
+              copyFieldValues.put(prefix,copyFieldValue);
+            }
+            copyFieldValue.add(value.toString());
+          }
+        }
+      }
+      FieldType facetType=field.getFacetFieldType();
+      if (facetType != null) {
+        Map<String,Object> propertyValues=getPropertyValues(product,field,facetType,locales);
+        for (        Entry<String,Object> entry : propertyValues.entrySet()) {
+          String prefix=entry.getKey();
+          prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
+          String solrFacetPropertyName=shs.getPropertyNameForFieldFacet(field,prefix);
+          Object value=entry.getValue();
+          if (facetType.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
+            if (!addedProperties.contains(solrFacetPropertyName)) {
+              document.addField(solrFacetPropertyName,value);
+            }
+          }
+        }
+      }
+    }
+ catch (    Exception e) {
+      LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
+    }
+  }
+  for (  Entry<String,List<String>> entry : copyFieldValues.entrySet()) {
+    document.addField(shs.getSearchableFieldName(entry.getKey()),StringUtils.join(entry.getValue()," "));
+  }
+  return document;
+}

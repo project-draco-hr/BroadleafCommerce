@@ -1,11 +1,10 @@
 {
   ArrayList<MergeHandler> handlers=new ArrayList<MergeHandler>();
-  String[] keys={};
-  keys=props.keySet().toArray(keys);
-  for (int j=0; j < keys.length; j++) {
-    if (keys[j].startsWith("handler.")) {
-      MergeHandler temp=(MergeHandler)Class.forName(props.getProperty(keys[j])).newInstance();
-      String name=keys[j].substring(8,keys[j].length());
+  String[] keys=props.keySet().toArray(new String[props.keySet().size()]);
+  for (  String key : keys) {
+    if (key.startsWith("handler.")) {
+      MergeHandler temp=(MergeHandler)Class.forName(props.getProperty(key)).newInstance();
+      String name=key.substring(8,key.length());
       temp.setName(name);
       String priority=props.getProperty("priority." + name);
       if (priority != null) {
@@ -28,9 +27,8 @@
 ;
   Arrays.sort(explodedView,nameCompare);
   ArrayList<MergeHandler> finalHandlers=new ArrayList<MergeHandler>();
-  for (int j=0; j < explodedView.length; j++) {
-    MergeHandler temp=explodedView[j];
-    if (temp.getName().indexOf(".") >= 0) {
+  for (  MergeHandler temp : explodedView) {
+    if (temp.getName().contains(".")) {
       final String parentName=temp.getName().substring(0,temp.getName().lastIndexOf("."));
       int pos=Arrays.binarySearch(explodedView,new MergeHandlerAdapter(){
         @Override public String getName(){

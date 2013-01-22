@@ -1,38 +1,3 @@
 {
-  LOG.info("Rebuilding the solr index...");
-  StopWatch s=new StopWatch();
-  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
-  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
-  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
-  List<Product> products=readAllActiveProducts();
-  List<Field> fields=fieldDao.readAllProductFields();
-  List<Locale> locales=getAllLocales();
-  Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
-  for (  Product product : products) {
-    documents.add(buildDocument(product,fields,locales));
-  }
-  if (LOG.isTraceEnabled()) {
-    for (    SolrInputDocument document : documents) {
-      LOG.trace(document);
-    }
-  }
-  try {
-    if (documents != null && documents.size() > 0) {
-      String deleteQuery=getNamespaceFieldName() + ":" + getCurrentNamespace();
-      LOG.trace("Deleting by query: " + deleteQuery);
-      server.deleteByQuery(deleteQuery);
-      server.commit();
-      server.add(documents);
-      server.commit();
-    }
-  }
- catch (  SolrServerException e) {
-    throw new ServiceException("Could not rebuild index",e);
-  }
- finally {
-    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
-    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
-    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
-  }
-  LOG.info("Finished rebuilding the solr index in " + s.toLapString());
+  solrIndexService.rebuildIndex();
 }

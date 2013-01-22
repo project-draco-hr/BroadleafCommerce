@@ -1,0 +1,42 @@
+{
+  if (CollectionUtils.isEmpty(nodeList1) || CollectionUtils.isEmpty(nodeList2)) {
+    return null;
+  }
+  List<Node> usedNodes=new ArrayList<Node>();
+  Node node1Parent=nodeList1.get(0).getParentNode();
+  for (  Node aNodeList2 : nodeList2) {
+    Node tempNode=node1Parent.getOwnerDocument().importNode(aNodeList2.cloneNode(true),true);
+    if (LOG.isDebugEnabled()) {
+      StringBuffer sb=new StringBuffer();
+      sb.append("matching node for insertion: ");
+      sb.append(tempNode.getNodeName());
+      int attrLength=tempNode.getAttributes().getLength();
+      for (int x=0; x < attrLength; x++) {
+        sb.append(" : (");
+        sb.append(tempNode.getAttributes().item(x).getNodeName());
+        sb.append("/");
+        sb.append(tempNode.getAttributes().item(x).getNodeValue());
+        sb.append(")");
+      }
+      LOG.debug(sb.toString());
+    }
+    if (LOG.isDebugEnabled()) {
+      StringBuilder sb=new StringBuilder();
+      sb.append("inserting into parent: ");
+      sb.append(node1Parent.getNodeName());
+      int attrLength=node1Parent.getAttributes().getLength();
+      for (int x=0; x < attrLength; x++) {
+        sb.append(" : (");
+        sb.append(node1Parent.getAttributes().item(x).getNodeName());
+        sb.append("/");
+        sb.append(node1Parent.getAttributes().item(x).getNodeValue());
+        sb.append(")");
+      }
+      LOG.debug(sb.toString());
+    }
+    node1Parent.appendChild(tempNode);
+    usedNodes.add(tempNode);
+  }
+  Node[] response={nodeList2.get(0).getParentNode()};
+  return response;
+}

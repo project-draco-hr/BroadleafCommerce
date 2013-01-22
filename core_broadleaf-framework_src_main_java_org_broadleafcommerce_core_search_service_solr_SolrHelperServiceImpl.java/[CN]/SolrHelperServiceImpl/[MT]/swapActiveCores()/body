@@ -1,0 +1,20 @@
+{
+  if (SolrContext.isSingleCoreMode()) {
+    LOG.debug("In single core mode. There are no cores to swap.");
+  }
+ else {
+    LOG.debug("Swapping active cores");
+    CoreAdminRequest car=new CoreAdminRequest();
+    car.setCoreName(SolrContext.PRIMARY);
+    car.setOtherCoreName(SolrContext.REINDEX);
+    car.setAction(CoreAdminAction.SWAP);
+    try {
+      SolrContext.getServer().request(car);
+      SolrContext.getServer().commit();
+    }
+ catch (    Exception e) {
+      LOG.error(e);
+      throw new ServiceException("Unable to swap cores",e);
+    }
+  }
+}
