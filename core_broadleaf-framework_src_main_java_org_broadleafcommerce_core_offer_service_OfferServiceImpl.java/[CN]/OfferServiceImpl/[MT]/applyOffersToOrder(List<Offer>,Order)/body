@@ -1,7 +1,6 @@
 {
   OfferContext offerContext=OfferContext.getOfferContext();
   if (offerContext == null || offerContext.executePromotionCalculation) {
-    order=orderService.findOrderById(order.getId());
     PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
     orderOfferProcessor.clearOffersandAdjustments(promotableOrder);
     List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,promotableOrder.getCustomer());
@@ -24,5 +23,11 @@
       }
       orderItemMergeService.finalizeCart(promotableOrder);
     }
+    for (    DiscreteOrderItem orderItem : order.getDiscreteOrderItems()) {
+      if (orderItem.getBundleOrderItem() == null && orderItem.getOrder() == null) {
+        orderItem.setOrder(order);
+      }
+    }
+    orderService.save(order,false);
   }
 }

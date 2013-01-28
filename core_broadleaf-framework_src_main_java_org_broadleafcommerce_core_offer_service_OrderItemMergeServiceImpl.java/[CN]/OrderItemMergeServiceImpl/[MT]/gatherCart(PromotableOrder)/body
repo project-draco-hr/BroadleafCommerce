@@ -2,16 +2,17 @@
   Order order=promotableOrder.getDelegate();
   try {
     if (!CollectionUtils.isEmpty(order.getFulfillmentGroups())) {
-      gatherFulfillmentGroupLinkedDiscreteOrderItems(order,promotableOrder.getMultiShipOptions());
-      gatherFulfillmentGroupLinkedBundleOrderItems(order);
+      order=gatherFulfillmentGroupLinkedDiscreteOrderItems(order,promotableOrder.getMultiShipOptions());
+      order=gatherFulfillmentGroupLinkedBundleOrderItems(order);
     }
  else {
-      gatherOrderLinkedDiscreteOrderItems(order);
-      gatherOrderLinkedBundleOrderItems(order);
+      order=gatherOrderLinkedDiscreteOrderItems(order);
+      order=gatherOrderLinkedBundleOrderItems(order);
     }
   }
  catch (  PricingException e) {
     throw new RuntimeException("Could not gather the cart",e);
   }
+  promotableOrder.setDelegate(order);
   promotableOrder.resetDiscreteOrderItems();
 }
