@@ -1,6 +1,84 @@
 {
-  if (priceOrder) {
-    order=pricingService.executePricing(order);
+  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
+  def.setName("saveOrder");
+  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+  TransactionStatus status=transactionManager.getTransaction(def);
+  try {
+    order=persist(order);
+    finalizeTransaction(status,false);
   }
-  return persist(order);
+ catch (  RuntimeException ex) {
+    finalizeTransaction(status,true);
+    throw ex;
+  }
+  if (priceOrder) {
+    int retryCount=0;
+    boolean isValid=false;
+    while (!isValid) {
+      try {
+        order=pricingService.executePricing(order);
+        isValid=true;
+      }
+ catch (      Exception ex) {
+        boolean isValidCause=false;
+        Throwable cause=ex;
+        while (!isValidCause) {
+          if (cause.getClass().equals(LockAcquisitionException.class)) {
+            isValidCause=true;
+          }
+          cause=cause.getCause();
+          if (cause == null) {
+            break;
+          }
+        }
+        if (isValidCause) {
+          if (LOG.isInfoEnabled()) {
+            LOG.info("Problem acquiring lock during pricing call - attempting to price again.");
+          }
+          isValid=false;
+          if (retryCount >= pricingRetryCountForLockFailure) {
+            if (LOG.isInfoEnabled()) {
+              LOG.info("Problem acquiring lock during pricing call. Retry limit exceeded at (" + retryCount + "). Throwing exception.");
+            }
+            if (ex instanceof PricingException) {
+              throw (PricingException)ex;
+            }
+ else {
+              throw new PricingException(ex);
+            }
+          }
+ else {
+            order=findOrderById(order.getId());
+            retryCount++;
+          }
+          try {
+            Thread.sleep(pricingRetryWaitIntervalForLockFailure);
+          }
+ catch (          Throwable e) {
+          }
+        }
+ else {
+          if (ex instanceof PricingException) {
+            throw (PricingException)ex;
+          }
+ else {
+            throw new PricingException(ex);
+          }
+        }
+      }
+    }
+    def=new DefaultTransactionDefinition();
+    def.setName("saveOrder");
+    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    status=transactionManager.getTransaction(def);
+    try {
+      order=persist(order);
+      finalizeTransaction(status,false);
+    }
+ catch (    RuntimeException ex) {
+      finalizeTransaction(status,true);
+      throw ex;
+    }
+  }
+  return order;
 }

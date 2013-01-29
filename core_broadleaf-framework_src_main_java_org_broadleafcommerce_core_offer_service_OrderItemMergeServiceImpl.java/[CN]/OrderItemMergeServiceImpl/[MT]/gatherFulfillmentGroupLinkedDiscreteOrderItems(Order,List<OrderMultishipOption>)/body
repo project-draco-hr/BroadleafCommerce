@@ -24,7 +24,8 @@
   }
   for (  Map<String,Object[]> values : gatherMap.values()) {
     for (    Object[] item : values.values()) {
-      orderItemService.saveOrderItem((OrderItem)item[0]);
+      OrderItem temp=orderItemService.saveOrderItem((OrderItem)item[0]);
+      ((FulfillmentGroupItem)item[1]).setOrderItem(temp);
       fulfillmentGroupItemDao.save((FulfillmentGroupItem)item[1]);
     }
   }
@@ -34,7 +35,6 @@
     fulfillmentGroupItemDao.delete(fgItem);
     if (fg.getFulfillmentGroupItems().isEmpty()) {
       order.getFulfillmentGroups().remove(fg);
-      fg.setOrder(null);
     }
   }
   for (  DiscreteOrderItem orderItem : itemsToRemove) {
@@ -49,4 +49,5 @@
       orderItemService.saveOrderItem(bundleOrderItem);
     }
   }
+  return order;
 }
