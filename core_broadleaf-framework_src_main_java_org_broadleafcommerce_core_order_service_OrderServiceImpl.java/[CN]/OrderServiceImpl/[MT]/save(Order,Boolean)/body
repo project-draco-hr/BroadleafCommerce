@@ -1,6 +1,50 @@
 {
   if (priceOrder) {
-    order=pricingService.executePricing(order);
+    int retryCount=0;
+    long pauseInterval=500;
+    boolean isValid=false;
+    while (!isValid) {
+      try {
+        order=pricingService.executePricing(order);
+        isValid=true;
+      }
+ catch (      CannotAcquireLockException ex) {
+        isValid=false;
+        if (retryCount >= 3) {
+          throw ex;
+        }
+ else {
+          retryCount++;
+        }
+        try {
+          Thread.sleep(pauseInterval);
+        }
+ catch (        Throwable e) {
+        }
+      }
+    }
   }
-  return persist(order);
+  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
+  def.setName("saveOrder");
+  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+  TransactionStatus status=transactionManager.getTransaction(def);
+  try {
+    order=persist(order);
+    transactionManager.commit(status);
+  }
+ catch (  RuntimeException ex) {
+    boolean isActive=false;
+    try {
+      if (!status.isRollbackOnly()) {
+        isActive=true;
+      }
+    }
+ catch (    Exception e) {
+    }
+    if (isActive) {
+      transactionManager.rollback(status);
+    }
+    throw ex;
+  }
+  return order;
 }
