@@ -1,4 +1,5 @@
 {
+  final ThreadLocal<Order> myOrder=new ThreadLocal<Order>();
   CandidateItemOfferAnswer answer=new CandidateItemOfferAnswer();
   OrderItemAdjustmentAnswer answer2=new OrderItemAdjustmentAnswer();
   EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);
@@ -15,6 +16,12 @@
     }
   }
 ).anyTimes();
+  EasyMock.expect(orderServiceMock.findOrderById(EasyMock.isA(Long.class))).andAnswer(new IAnswer<Order>(){
+    @Override public Order answer() throws Throwable {
+      return myOrder.get();
+    }
+  }
+).anyTimes();
   multishipOptionServiceMock.deleteAllOrderMultishipOptions(EasyMock.isA(Order.class));
   EasyMock.expectLastCall().anyTimes();
   EasyMock.expect(fgServiceMock.collapseToOneFulfillmentGroup(EasyMock.isA(Order.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getSameOrderAnswer()).anyTimes();
@@ -23,6 +30,7 @@
   EasyMock.expectLastCall().anyTimes();
   replay();
   Order order=dataProvider.createBasicOrder().getDelegate();
+  myOrder.set(order);
   List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offerService.applyOffersToOrder(offers,order);
   int adjustmentCount=0;
@@ -33,6 +41,7 @@
   }
   assertTrue(adjustmentCount == 2);
   order=dataProvider.createBasicOrder().getDelegate();
+  myOrder.set(order);
   offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offerService.applyOffersToOrder(offers,order);
   adjustmentCount=0;
