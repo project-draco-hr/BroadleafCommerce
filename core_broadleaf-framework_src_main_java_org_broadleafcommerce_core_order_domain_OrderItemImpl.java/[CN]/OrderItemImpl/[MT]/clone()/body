@@ -8,31 +8,31 @@
  catch (    CloneNotSupportedException e) {
       LOG.warn("Clone implementation missing in inheritance hierarchy outside of Broadleaf: " + clonedOrderItem.getClass().getName(),e);
     }
-    if (getCandidateItemOffers() != null) {
-      for (      CandidateItemOffer candidate : getCandidateItemOffers()) {
+    if (candidateItemOffers != null) {
+      for (      CandidateItemOffer candidate : candidateItemOffers) {
         CandidateItemOffer clone=candidate.clone();
         clone.setOrderItem(clonedOrderItem);
         clonedOrderItem.getCandidateItemOffers().add(clone);
       }
     }
-    if (getOrderItemAttributes() != null && !getOrderItemAttributes().isEmpty()) {
-      for (      OrderItemAttribute attribute : getOrderItemAttributes().values()) {
+    if (orderItemAttributeMap != null && !orderItemAttributeMap.isEmpty()) {
+      for (      OrderItemAttribute attribute : orderItemAttributeMap.values()) {
         OrderItemAttribute clone=attribute.clone();
         clone.setOrderItem(clonedOrderItem);
         clonedOrderItem.getOrderItemAttributes().put(clone.getName(),clone);
       }
     }
-    clonedOrderItem.setCategory(getCategory());
-    clonedOrderItem.setGiftWrapOrderItem(getGiftWrapOrderItem());
-    clonedOrderItem.setName(getName());
-    clonedOrderItem.setOrder(getOrder());
-    clonedOrderItem.setOrderItemType(getOrderItemType());
-    clonedOrderItem.setPersonalMessage(getPersonalMessage());
-    clonedOrderItem.setQuantity(getQuantity());
-    clonedOrderItem.setRetailPrice(getRetailPrice());
-    clonedOrderItem.setSalePrice(getSalePrice());
-    clonedOrderItem.setPrice(getPrice());
-    clonedOrderItem.setSplitParentItemId(getSplitParentItemId());
+    clonedOrderItem.setCategory(category);
+    clonedOrderItem.setGiftWrapOrderItem(giftWrapOrderItem);
+    clonedOrderItem.setName(name);
+    clonedOrderItem.setOrder(order);
+    clonedOrderItem.setOrderItemType(convertOrderItemType(orderItemType));
+    clonedOrderItem.setPersonalMessage(personalMessage);
+    clonedOrderItem.setQuantity(quantity);
+    clonedOrderItem.setRetailPrice(convertToMoney(retailPrice));
+    clonedOrderItem.setSalePrice(convertToMoney(salePrice));
+    clonedOrderItem.setPrice(convertToMoney(price));
+    clonedOrderItem.setSplitParentItemId(splitParentItemId);
   }
  catch (  Exception e) {
     throw new RuntimeException(e);
