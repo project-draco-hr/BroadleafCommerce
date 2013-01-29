@@ -1,0 +1,10 @@
+{
+  Customer customer;
+  customer=(Customer)request.getAttribute(getAnonymousCustomerAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+  if (customer == null) {
+    customer=customerService.createNewCustomer();
+    customer.setAnonymous(true);
+    request.setAttribute(getAnonymousCustomerAttributeName(),customer,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
+  return customer;
+}
