@@ -1,10 +1,10 @@
 {
   Class<?> sectionClass=getClassForSection(sectionKey);
   ClassMetadata cmd=service.getClassMetadata(sectionClass);
-  Entity[] rows=service.getRecords(sectionClass,null);
-  ListGrid listGrid=formService.getListGrid(cmd,rows);
+  Entity[] rows=service.getRecords(sectionClass);
+  ListGrid listGrid=formService.buildListGrid(cmd,rows);
   model.addAttribute("listGrid",listGrid);
-  model.addAttribute("viewType","listGridForm");
+  model.addAttribute("viewType","listGrid");
   setModelAttributes(model,sectionKey);
   return "modules/dynamicModule";
 }

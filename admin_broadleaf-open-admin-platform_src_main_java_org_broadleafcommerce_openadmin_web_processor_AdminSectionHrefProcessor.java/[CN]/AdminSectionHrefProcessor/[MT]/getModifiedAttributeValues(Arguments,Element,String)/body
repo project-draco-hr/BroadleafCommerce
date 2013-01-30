@@ -3,16 +3,7 @@
   AdminSection section=(AdminSection)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
   if (section != null) {
     HttpServletRequest request=((SpringWebContext)arguments.getContext()).getHttpServletRequest();
-    href=section.getUrl();
-    if (href.startsWith("/")) {
-      href=href.substring(1,href.length());
-    }
-    if (section.getUseDefaultHandler()) {
-      if (request.getParameter("gwt.codesvr") != null) {
-        href+="?gwt.codesvr=" + request.getParameter("gwt.codesvr");
-      }
-      href+="#moduleKey=" + section.getModule().getModuleKey() + "&pageKey="+ section.getSectionKey();
-    }
+    href=request.getContextPath() + section.getUrl();
   }
   Map<String,String> attrs=new HashMap<String,String>();
   attrs.put("href",href);

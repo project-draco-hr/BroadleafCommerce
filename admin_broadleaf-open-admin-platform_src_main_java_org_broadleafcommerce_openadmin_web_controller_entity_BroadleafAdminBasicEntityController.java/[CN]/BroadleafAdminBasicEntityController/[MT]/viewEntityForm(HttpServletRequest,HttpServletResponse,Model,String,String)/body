@@ -1,15 +1,11 @@
 {
-  ClassMetadata cmd=service.getClassMetadata(getClassForSection(sectionKey));
-  Entity e=service.getRecord(getClassForSection(sectionKey),id);
-  EntityForm ef=formService.getEntityForm(cmd,e);
-  Map<String,Entity[]> subRecordsMap=service.getSubRecords(getClassForSection(sectionKey),id,cmd);
-  for (  Entry<String,Entity[]> entry : subRecordsMap.entrySet()) {
-    Class<?> clazz=Class.forName(entry.getValue()[0].getType()[0]);
-    ClassMetadata subCmd=service.getClassMetadata(clazz);
-    ListGrid listGrid=formService.getListGrid(subCmd,entry.getValue());
-    ef.getSubordinateListGrids().put(entry.getKey(),listGrid);
-  }
-  model.addAttribute("ef",ef);
+  Class<?> sectionClass=getClassForSection(sectionKey);
+  ClassMetadata cmd=service.getClassMetadata(sectionClass);
+  Entity entity=service.getRecord(sectionClass,id);
+  Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(sectionClass,id);
+  EntityForm entityForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
+  model.addAttribute("entityForm",entityForm);
+  model.addAttribute("viewType","entityForm");
   setModelAttributes(model,sectionKey);
-  return "views/entityForm";
+  return "modules/dynamicModule";
 }

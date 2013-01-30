@@ -1,0 +1,53 @@
+{
+  final EntityForm ef=new EntityForm();
+  ef.setId(entity.findProperty("id").getValue());
+  ef.setEntityType(entity.getType()[0]);
+  for (  final Property p : cmd.getProperties()) {
+    p.getMetadata().accept(new MetadataVisitor(){
+      @Override public void visit(      BasicFieldMetadata fmd){
+        boolean entityHasProperty=entity.findProperty(p.getName()) != null;
+        if (entityHasProperty) {
+          String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+          Field f=new Field();
+          f.setName(p.getName());
+          f.setFieldType(fieldType);
+          f.setFriendlyName(p.getMetadata().getFriendlyName());
+          if (StringUtils.isBlank(f.getFriendlyName())) {
+            f.setFriendlyName(f.getName());
+          }
+          Property entityProp=entity.findProperty(p.getName());
+          f.setValue(entityProp.getValue());
+          f.setDisplayValue(entityProp.getDisplayValue());
+          f.setForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+          String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
+          groupName=groupName == null ? "Default" : groupName;
+          FieldGroup fieldGroup=ef.getGroups().get(groupName);
+          if (fieldGroup == null) {
+            fieldGroup=new FieldGroup();
+            fieldGroup.setTitle(groupName);
+            ef.getGroups().put(groupName,fieldGroup);
+          }
+          fieldGroup.getFields().add(f);
+        }
+      }
+      @Override public void visit(      BasicCollectionMetadata fmd){
+        try {
+          Entity[] subCollectionEntities=subCollections.get(p.getName());
+          Class<?> subCollectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(subCollectionClass);
+          ListGrid subCollectionGrid=buildListGrid(subCollectionMd,subCollectionEntities);
+          ef.getCollectionListGrids().add(subCollectionGrid);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+      @Override public void visit(      MapMetadata fmd){
+      }
+      @Override public void visit(      AdornedTargetCollectionMetadata fmd){
+      }
+    }
+);
+  }
+  return ef;
+}

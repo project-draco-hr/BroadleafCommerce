@@ -6,7 +6,7 @@
       Class<?> collectionClass=Class.forName(((BasicFieldMetadata)p.getMetadata()).getForeignKeyClass());
       ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
       Entity[] rows=service.getRecords(collectionClass);
-      ListGrid listGrid=formService.getListGrid(collectionMetadata,rows);
+      ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
       model.addAttribute("listGrid",listGrid);
       model.addAttribute("viewType","modalListGrid");
       break;

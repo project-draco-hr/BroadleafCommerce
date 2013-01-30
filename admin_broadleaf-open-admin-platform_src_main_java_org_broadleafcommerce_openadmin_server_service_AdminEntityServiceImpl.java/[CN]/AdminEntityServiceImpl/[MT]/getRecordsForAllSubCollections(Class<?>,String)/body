@@ -1,0 +1,11 @@
+{
+  Map<String,Entity[]> map=new HashMap<String,Entity[]>();
+  ClassMetadata cmd=getClassMetadata(containingClass);
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicCollectionMetadata) {
+      Entity[] rows=getRecordsForCollection(containingClass,containingEntityId,p.getName());
+      map.put(p.getName(),rows);
+    }
+  }
+  return map;
+}

@@ -1,0 +1,19 @@
+{
+  ClassMetadata cmd=getClassMetadata(containingClass);
+  Property prop=cmd.getPMap().get(collectionField);
+  if (!(prop.getMetadata() instanceof BasicCollectionMetadata)) {
+    throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionField,containingClass.getName()));
+  }
+  BasicCollectionMetadata fmd=(BasicCollectionMetadata)prop.getMetadata();
+  try {
+    Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+    ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+    FilterAndSortCriteria fasc=new FilterAndSortCriteria(foreignField.getManyToField());
+    fasc.setFilterValue(containingEntityId);
+    Entity[] subRecords=fetch(collectionClass,new ForeignKey[]{foreignField},fasc).getRecords();
+    return subRecords;
+  }
+ catch (  ClassNotFoundException e) {
+    throw new IllegalArgumentException(e);
+  }
+}
