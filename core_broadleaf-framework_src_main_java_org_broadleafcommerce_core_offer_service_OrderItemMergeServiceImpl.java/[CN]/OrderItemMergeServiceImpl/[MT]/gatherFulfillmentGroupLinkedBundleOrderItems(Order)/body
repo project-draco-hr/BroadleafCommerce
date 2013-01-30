@@ -24,7 +24,8 @@
   }
   for (  Map<String,Object[]> values : gatherBundle.values()) {
     for (    Object[] item : values.values()) {
-      orderItemService.saveOrderItem((OrderItem)item[0]);
+      OrderItem temp=orderItemService.saveOrderItem((OrderItem)item[0]);
+      ((FulfillmentGroupItem)item[1]).setOrderItem(temp);
       fulfillmentGroupItemDao.save((FulfillmentGroupItem)item[1]);
     }
   }
@@ -36,4 +37,5 @@
       throw new PricingException("Item could not be removed",e);
     }
   }
+  return order;
 }

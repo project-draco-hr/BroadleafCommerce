@@ -1,7 +1,7 @@
 {
-  Money price=new Money(BankersRounding.zeroAmount());
+  Money price=new Money(BigDecimal.ZERO);
   for (  SkuBundleItem item : getSkuBundleItems()) {
-    if (price.isZero()) {
+    if (item.getSalePrice() != null) {
       price=price.add(item.getSalePrice().multiply(item.getQuantity()));
     }
  else {

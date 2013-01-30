@@ -55,9 +55,7 @@
       fulfillmentGroupItemDao.delete(item);
       if (fg.getFulfillmentGroupItems().size() == 0) {
         order.getDelegate().getFulfillmentGroups().remove(fg);
-        fg.setOrder(null);
         fulfillmentGroupService.delete(fg);
-        orderService.save(order.getDelegate(),false);
       }
     }
   }

@@ -23,7 +23,27 @@
  else {
           logger.debug(String.format("Adding field [%s]",field.getName()));
           CtField copiedField=new CtField(field,clazz);
-          clazz.addField(copiedField);
+          boolean defaultConstructorFound=false;
+          String implClass=getImplementationType(field.getType().getName());
+          try {
+            CtConstructor[] implConstructors=classPool.get(implClass).getConstructors();
+            if (implConstructors != null) {
+              for (              CtConstructor cons : implConstructors) {
+                if (cons.getParameterTypes().length == 0) {
+                  defaultConstructorFound=true;
+                  break;
+                }
+              }
+            }
+          }
+ catch (          NotFoundException e) {
+          }
+          if (defaultConstructorFound) {
+            clazz.addField(copiedField,"new " + implClass + "()");
+          }
+ else {
+            clazz.addField(copiedField);
+          }
         }
       }
       CtMethod[] methodsToCopy=template.getDeclaredMethods();
