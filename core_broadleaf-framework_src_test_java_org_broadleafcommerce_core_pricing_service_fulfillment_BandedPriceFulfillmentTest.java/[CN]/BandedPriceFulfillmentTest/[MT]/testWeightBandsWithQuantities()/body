@@ -1,0 +1,6 @@
+{
+  BandedWeightFulfillmentOption option=createWeightBands(new String[]{"50","100","65"},new String[]{"30","20","10"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE});
+  assertEquals(new Money("30"),calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),3,null,new int[]{2,3,5},option)));
+  assertEquals(new Money("10"),calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),6,null,new int[]{4,1,2,5,5,5},option)));
+  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("60.00"),3,null,new int[]{2,3,2},option)));
+}

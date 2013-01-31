@@ -1,0 +1,17 @@
+{
+  if ((minimumAmounts.length != resultAmounts.length) || (resultAmounts.length != resultAmountTypes.length)) {
+    throw new IllegalStateException("All lists should be the same length");
+  }
+  List<FulfillmentWeightBand> bands=new ArrayList<FulfillmentWeightBand>();
+  for (int i=0; i < minimumAmounts.length; i++) {
+    FulfillmentWeightBand band=new FulfillmentWeightBandImpl();
+    band.setMinimumWeight(new BigDecimal(minimumAmounts[i]));
+    band.setWeightUnitOfMeasure(WeightUnitOfMeasureType.POUNDS);
+    band.setResultAmount(new BigDecimal(resultAmounts[i]));
+    band.setResultAmountType(resultAmountTypes[i]);
+    bands.add(band);
+  }
+  BandedWeightFulfillmentOption option=new BandedWeightFulfillmentOptionImpl();
+  option.setBands(bands);
+  return option;
+}
