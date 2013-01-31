@@ -1,0 +1,45 @@
+{
+  if (flatRates != null && flatRates.length > orderItemsToCreate) {
+    throw new IllegalStateException("Flat rates for Skus should be less than or equal to the number of order items being created");
+  }
+  if (quantities != null && quantities.length != orderItemsToCreate) {
+    throw new IllegalStateException("Quantities for Skus should be less than or equal to the number of order items being created");
+  }
+  Order result=new OrderImpl();
+  List<FulfillmentGroupItem> fulfillmentItems=new ArrayList<FulfillmentGroupItem>();
+  for (int i=0; i < orderItemsToCreate; i++) {
+    DiscreteOrderItem orderItem=new DiscreteOrderItemImpl();
+    Sku sku=new SkuImpl();
+    orderItem.setSku(sku);
+    if (flatRates != null && i < flatRates.length) {
+      sku.getFulfillmentFlatRates().put(option,new BigDecimal(flatRates[i]));
+    }
+    if (option instanceof BandedPriceFulfillmentOption) {
+      orderItem.setPrice(new Money(total.divide(new BigDecimal(orderItemsToCreate))));
+    }
+ else     if (option instanceof BandedWeightFulfillmentOption) {
+      Weight weight=new Weight();
+      weight.setWeight(total.divide(new BigDecimal(orderItemsToCreate)));
+      weight.setWeightUnitOfMeasure(WeightUnitOfMeasureType.POUNDS);
+      orderItem.getSku().setWeight(weight);
+      orderItem.setPrice(new Money(BigDecimal.ZERO));
+    }
+    orderItem.setOrder(result);
+    FulfillmentGroupItem fulfillmentItem=new FulfillmentGroupItemImpl();
+    fulfillmentItem.setOrderItem(orderItem);
+    if (quantities == null) {
+      fulfillmentItem.setQuantity(1);
+    }
+ else {
+      fulfillmentItem.setQuantity(quantities[i]);
+    }
+    fulfillmentItems.add(fulfillmentItem);
+  }
+  FulfillmentGroup group=new FulfillmentGroupImpl();
+  group.setOrder(result);
+  group.setFulfillmentGroupItems(fulfillmentItems);
+  List<FulfillmentGroup> groups=new ArrayList<FulfillmentGroup>();
+  groups.add(group);
+  result.setFulfillmentGroups(groups);
+  return result;
+}
