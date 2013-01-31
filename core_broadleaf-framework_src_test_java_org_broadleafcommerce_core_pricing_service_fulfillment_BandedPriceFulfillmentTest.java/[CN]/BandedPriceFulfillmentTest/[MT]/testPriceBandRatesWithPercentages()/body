@@ -1,11 +1,11 @@
 {
-  BandedPriceFulfillmentOption option=createBands(new String[]{"150","30","20","150","10","9","80"},new String[]{"50","20",".30","20",".10","5",".5"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE});
-  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("35.00"),5)));
-  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("9999.00"),9)));
-  assertEquals(new Money("7.50"),calculationResponse(option,createCandidateOrder(new BigDecimal("25.00"),5)));
-  assertEquals(new Money("1.80"),calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),6)));
-  assertEquals(new Money("50"),calculationResponse(option,createCandidateOrder(new BigDecimal("100.00"),5)));
-  assertEquals(new Money("5"),calculationResponse(option,createCandidateOrder(new BigDecimal("9.00"),3)));
-  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("66"),6)));
-  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("150"),5)));
+  BandedPriceFulfillmentOption option=createPriceBands(new String[]{"150","30","20","150","10","9","80"},new String[]{"50","20",".30","20",".10","5",".5"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.PERCENTAGE});
+  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("35.00"),5,option)));
+  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("9999.00"),9,option)));
+  assertEquals(new Money("7.50"),calculationResponse(option,createCandidateOrder(new BigDecimal("25.00"),5,option)));
+  assertEquals(new Money("1.80"),calculationResponse(option,createCandidateOrder(new BigDecimal("18.00"),6,option)));
+  assertEquals(new Money("50"),calculationResponse(option,createCandidateOrder(new BigDecimal("100.00"),5,option)));
+  assertEquals(new Money("5"),calculationResponse(option,createCandidateOrder(new BigDecimal("9.00"),3,option)));
+  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("66"),6,option)));
+  assertEquals(new Money("20"),calculationResponse(option,createCandidateOrder(new BigDecimal("150"),5,option)));
 }
