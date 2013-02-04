@@ -1,7 +1,7 @@
 {
-  OrderItem clonedOrderItem;
+  OrderItemImpl clonedOrderItem;
   try {
-    clonedOrderItem=(OrderItem)Class.forName(this.getClass().getName()).newInstance();
+    clonedOrderItem=(OrderItemImpl)Class.forName(this.getClass().getName()).newInstance();
     try {
       checkCloneable(clonedOrderItem);
     }
@@ -29,10 +29,9 @@
     clonedOrderItem.setOrderItemType(convertOrderItemType(orderItemType));
     clonedOrderItem.setPersonalMessage(personalMessage);
     clonedOrderItem.setQuantity(quantity);
-    clonedOrderItem.setRetailPrice(convertToMoney(retailPrice));
-    clonedOrderItem.setSalePrice(convertToMoney(salePrice));
-    clonedOrderItem.setPrice(convertToMoney(price));
-    clonedOrderItem.setSplitParentItemId(splitParentItemId);
+    clonedOrderItem.retailPrice=retailPrice;
+    clonedOrderItem.salePrice=salePrice;
+    clonedOrderItem.discountsAllowed=discountsAllowed;
   }
  catch (  Exception e) {
     throw new RuntimeException(e);

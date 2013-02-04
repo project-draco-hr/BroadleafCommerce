@@ -1,0 +1,12 @@
+{
+  Money returnValue=convertToMoney(BigDecimal.ZERO);
+  if (orderItemPriceDetails != null) {
+    for (    OrderItemPriceDetail oipd : orderItemPriceDetails) {
+      returnValue=returnValue.add(oipd.getTotalAdjustedPrice());
+    }
+  }
+ else {
+    returnValue=getPrice();
+  }
+  return returnValue;
+}

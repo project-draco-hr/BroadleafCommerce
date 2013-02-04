@@ -2,7 +2,7 @@
   boolean isNewFormat=!CollectionUtils.isEmpty(offer.getQualifyingItemCriteria()) || !CollectionUtils.isEmpty(offer.getTargetItemCriteria());
   boolean itemLevelQualification=false;
   boolean offerCreated=false;
-  for (  PromotableOrderItem promotableOrderItem : order.getDiscountableDiscreteOrderItems(offer.getApplyDiscountToSalePrice())) {
+  for (  PromotableOrderItem promotableOrderItem : order.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice())) {
     if (couldOfferApplyToOrder(offer,order,promotableOrderItem)) {
       if (!isNewFormat) {
         PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem);
@@ -31,7 +31,7 @@
     }
   }
   if (itemLevelQualification && !offerCreated) {
-    CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,order.getDiscountableDiscreteOrderItems(offer.getApplyDiscountToSalePrice()));
+    CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,order.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice()));
     PromotableCandidateItemOffer candidateOffer=null;
     if (candidates.isMatchedQualifier()) {
       candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null);

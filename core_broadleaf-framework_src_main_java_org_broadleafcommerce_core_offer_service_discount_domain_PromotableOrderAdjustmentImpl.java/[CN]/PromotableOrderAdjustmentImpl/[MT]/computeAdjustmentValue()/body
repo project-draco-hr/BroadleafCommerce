@@ -1,8 +1,8 @@
 {
-  if (delegate.getOffer() != null && order != null) {
-    Money adjustmentPrice=order.getAdjustmentPrice();
+  if (getOffer() != null && promotableOrder != null) {
+    Money adjustmentPrice=promotableOrder.get();
     if (adjustmentPrice == null) {
-      adjustmentPrice=order.getSubTotal();
+      adjustmentPrice=promotableOrder.getSubTotal();
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
       delegate.setValue(new Money(delegate.getOffer().getValue(),adjustmentPrice.getCurrency(),5));

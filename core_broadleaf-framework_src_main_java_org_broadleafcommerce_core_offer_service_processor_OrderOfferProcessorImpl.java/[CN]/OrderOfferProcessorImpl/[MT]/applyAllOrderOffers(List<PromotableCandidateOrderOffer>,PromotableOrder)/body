@@ -4,12 +4,12 @@
   while (orderOfferIterator.hasNext()) {
     PromotableCandidateOrderOffer orderOffer=orderOfferIterator.next();
     if (orderOffer.getOffer().getTreatAsNewFormat() == null || !orderOffer.getOffer().getTreatAsNewFormat()) {
-      if ((orderOffer.getOffer().isStackable()) || !order.isHasOrderAdjustments()) {
-        boolean alreadyContainsNotCombinableOfferAtAnyLevel=order.isNotCombinableOfferAppliedAtAnyLevel();
-        applyOrderOffer(order,orderOffer);
+      if ((orderOffer.getOffer().isStackable()) || !promotableOrder.isHasOrderAdjustments()) {
+        boolean alreadyContainsNotCombinableOfferAtAnyLevel=promotableOrder.isNotCombinableOfferAppliedAtAnyLevel();
+        applyOrderOffer(promotableOrder,orderOffer);
         orderOffersApplied=true;
         if (!orderOffer.getOffer().isCombinableWithOtherOffers() || alreadyContainsNotCombinableOfferAtAnyLevel) {
-          orderOffersApplied=compareAndAdjustOrderAndItemOffers(order,orderOffersApplied);
+          orderOffersApplied=compareAndAdjustOrderAndItemOffers(promotableOrder,orderOffersApplied);
           if (orderOffersApplied) {
             break;
           }
@@ -20,12 +20,12 @@
       }
     }
  else {
-      if (!order.containsNotStackableOrderOffer() || !order.isHasOrderAdjustments()) {
-        boolean alreadyContainsTotalitarianOffer=order.isTotalitarianOfferApplied();
+      if (!promotableOrder.containsNotStackableOrderOffer() || !promotableOrder.isHasOrderAdjustments()) {
+        boolean alreadyContainsTotalitarianOffer=promotableOrder.isTotalitarianOfferApplied();
         applyOrderOffer(order,orderOffer);
         orderOffersApplied=true;
         if ((orderOffer.getOffer().isTotalitarianOffer() != null && orderOffer.getOffer().isTotalitarianOffer()) || alreadyContainsTotalitarianOffer) {
-          orderOffersApplied=compareAndAdjustOrderAndItemOffers(order,orderOffersApplied);
+          orderOffersApplied=compareAndAdjustOrderAndItemOffers(promotableOrder,orderOffersApplied);
           if (orderOffersApplied) {
             break;
           }

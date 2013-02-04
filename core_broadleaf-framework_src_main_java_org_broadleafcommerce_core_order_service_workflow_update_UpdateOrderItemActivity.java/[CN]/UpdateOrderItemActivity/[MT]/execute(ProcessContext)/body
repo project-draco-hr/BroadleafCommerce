@@ -2,7 +2,6 @@
   CartOperationRequest request=((CartOperationContext)context).getSeedData();
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
-  orderItemMergeService.gatherSplitItemsInBundles(order);
   OrderItem orderItem=null;
   for (  OrderItem oi : order.getOrderItems()) {
     if (oi.getId().equals(orderItemRequestDTO.getOrderItemId())) {
@@ -13,28 +12,12 @@
     throw new ItemNotFoundException("Order Item (" + orderItem.getId() + ") not found in Order ("+ order.getId()+ ")");
   }
   OrderItem itemFromOrder=order.getOrderItems().get(order.getOrderItems().indexOf(orderItem));
-  request.setOrderItemQuantityDelta(orderItemRequestDTO.getQuantity() - itemFromOrder.getQuantity());
-  Integer oldQuantity=itemFromOrder.getQuantity();
-  itemFromOrder.setQuantity(orderItemRequestDTO.getQuantity());
-  if (itemFromOrder instanceof BundleOrderItem) {
-    Map<Sku,Integer> libraryQty=new HashMap<Sku,Integer>();
-    for (    DiscreteOrderItem doi : ((BundleOrderItem)itemFromOrder).getDiscreteOrderItems()) {
-      if (!libraryQty.containsKey(doi.getSku())) {
-        libraryQty.put(doi.getSku(),0);
-      }
-      libraryQty.put(doi.getSku(),libraryQty.get(doi.getSku()) + doi.getQuantity());
-    }
-    for (    Map.Entry<Sku,Integer> entry : libraryQty.entrySet()) {
-      entry.setValue((entry.getValue() / oldQuantity) * orderItemRequestDTO.getQuantity());
-    }
-    for (    DiscreteOrderItem doi : ((BundleOrderItem)itemFromOrder).getDiscreteOrderItems()) {
-      Integer newQty=libraryQty.get(doi.getSku());
-      doi.setQuantity(newQty);
-      libraryQty.put(doi.getSku(),0);
-    }
+  if (orderItemRequestDTO.getQuantity() >= 0) {
+    request.setOrderItemQuantityDelta(orderItemRequestDTO.getQuantity() - itemFromOrder.getQuantity());
+    itemFromOrder.setQuantity(orderItemRequestDTO.getQuantity());
+    order=orderService.save(order,false);
+    request.setAddedOrderItem(itemFromOrder);
+    request.setOrder(order);
   }
-  order=orderService.save(order,false);
-  request.setAddedOrderItem(itemFromOrder);
-  request.setOrder(order);
   return context;
 }

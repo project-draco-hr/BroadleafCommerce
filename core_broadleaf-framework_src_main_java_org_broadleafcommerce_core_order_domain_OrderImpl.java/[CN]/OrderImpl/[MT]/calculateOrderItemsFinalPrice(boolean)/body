@@ -1,19 +1,8 @@
 {
-  Money calculatedSubTotal=BroadleafCurrencyUtils.getMoney(getCurrency());
-  for (  OrderItem orderItem : orderItems) {
-    Money price;
-    if (includeNonTaxableItems) {
-      price=orderItem.getPrice();
-    }
- else {
-      price=orderItem.getTaxablePrice();
-    }
-    if (orderItem instanceof BundleOrderItem) {
-      calculatedSubTotal=calculatedSubTotal.add(price);
-    }
- else {
-      calculatedSubTotal=calculatedSubTotal.add(price.multiply(orderItem.getQuantity()));
-    }
+  if (includeNonTaxableItems) {
+    return calculateTaxableItemTotal();
   }
-  return calculatedSubTotal;
+ else {
+    return calculateSubTotal();
+  }
 }

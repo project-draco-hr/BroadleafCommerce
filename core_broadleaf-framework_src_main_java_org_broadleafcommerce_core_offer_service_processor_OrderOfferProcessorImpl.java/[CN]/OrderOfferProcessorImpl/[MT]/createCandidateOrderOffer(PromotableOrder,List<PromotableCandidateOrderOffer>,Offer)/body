@@ -1,8 +1,6 @@
 {
-  CandidateOrderOffer candidateOffer=offerDao.createCandidateOrderOffer();
-  candidateOffer.setOrder(order.getDelegate());
-  candidateOffer.setOffer(offer);
-  PromotableCandidateOrderOffer promotableCandidateOrderOffer=promotableItemFactory.createPromotableCandidateOrderOffer(candidateOffer,order);
+  CandidateOrderOffer candidateOffer=new CandidateOrderOfferDTO(promotableOrder.getOrder(),offer);
+  PromotableCandidateOrderOffer promotableCandidateOrderOffer=promotableItemFactory.createPromotableCandidateOrderOffer(candidateOffer,promotableOrder);
   qualifiedOrderOffers.add(promotableCandidateOrderOffer);
   return promotableCandidateOrderOffer;
 }

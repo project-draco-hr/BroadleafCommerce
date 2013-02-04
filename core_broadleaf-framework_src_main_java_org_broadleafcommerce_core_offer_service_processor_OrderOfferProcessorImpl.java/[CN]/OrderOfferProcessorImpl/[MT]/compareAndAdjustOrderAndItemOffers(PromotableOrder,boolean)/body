@@ -1,12 +1,10 @@
 {
-  if (order.getAdjustmentPrice().greaterThanOrEqual(order.calculateOrderItemsCurrentPrice())) {
-    order.removeAllOrderAdjustments();
+  if (promotableOrder.getAdjustmentPrice().greaterThanOrEqual(promotableOrder.calculateOrderItemsCurrentPrice())) {
+    promotableOrder.removeAllOrderAdjustments();
     orderOffersApplied=false;
   }
  else {
-    order.removeAllItemAdjustments();
-    orderItemMergeService.gatherCart(order);
-    orderItemMergeService.initializeSplitItems(order);
+    promotableOrder.removeAllItemAdjustments();
   }
   return orderOffersApplied;
 }

@@ -5,27 +5,27 @@
   }
   boolean orderLevelQualification=false;
   orderQualification: {
-    if (couldOfferApplyToOrder(offer,order)) {
+    if (couldOfferApplyToOrder(offer,promotableOrder)) {
       orderLevelQualification=true;
       break orderQualification;
     }
-    for (    PromotableOrderItem discreteOrderItem : order.getDiscountableDiscreteOrderItems(offer.getApplyDiscountToSalePrice())) {
-      if (couldOfferApplyToOrder(offer,order,discreteOrderItem)) {
+    for (    PromotableOrderItem orderItem : promotableOrder.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice())) {
+      if (couldOfferApplyToOrder(offer,promotableOrder,orderItem)) {
         orderLevelQualification=true;
         break orderQualification;
       }
     }
-    for (    PromotableFulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
-      if (couldOfferApplyToOrder(offer,order,fulfillmentGroup)) {
+    for (    PromotableFulfillmentGroup fulfillmentGroup : promotableOrder.getFulfillmentGroups()) {
+      if (couldOfferApplyToOrder(offer,promotableOrder,fulfillmentGroup)) {
         orderLevelQualification=true;
         break orderQualification;
       }
     }
   }
   if (orderLevelQualification) {
-    CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,order.getDiscountableDiscreteOrderItems(offer.getApplyDiscountToSalePrice()));
+    CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,promotableOrder.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice()));
     if (candidates.isMatchedQualifier()) {
-      PromotableCandidateOrderOffer candidateOffer=createCandidateOrderOffer(order,qualifiedOrderOffers,offer);
+      PromotableCandidateOrderOffer candidateOffer=createCandidateOrderOffer(promotableOrder,qualifiedOrderOffers,offer);
       candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
     }
   }

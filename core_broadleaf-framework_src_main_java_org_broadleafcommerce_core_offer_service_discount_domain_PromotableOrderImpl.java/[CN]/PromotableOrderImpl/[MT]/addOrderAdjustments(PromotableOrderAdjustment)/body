@@ -1,12 +1,11 @@
 {
-  if (delegate.getOrderAdjustments().size() == 0) {
-    adjustmentPrice=delegate.getSubTotal().getAmount();
+  if (orderSubTotalWithOfferAdjustments == null) {
+    orderSubTotalWithOfferAdjustments=calculateOrderSubTotalWithoutOrderAdjustments();
   }
-  adjustmentPrice=adjustmentPrice.subtract(orderAdjustment.getValue().getAmount());
-  delegate.getOrderAdjustments().add(orderAdjustment.getDelegate());
+  orderSubTotalWithOfferAdjustments=orderSubTotalWithOfferAdjustments.subtract(orderAdjustment.getValue());
+  candidateOrderOfferAdjustments.add(orderAdjustment);
   if (!orderAdjustment.getDelegate().getOffer().isCombinableWithOtherOffers()) {
     notCombinableOfferApplied=true;
   }
   resetTotalitarianOfferApplied();
-  hasOrderAdjustments=true;
 }
