@@ -1,0 +1,36 @@
+{
+  final EntityForm ef=new EntityForm();
+  ef.setEntityType(cmd.getCeilingType());
+  for (  final Property p : cmd.getProperties()) {
+    p.getMetadata().accept(new MetadataVisitor(){
+      @Override public void visit(      BasicFieldMetadata fmd){
+        String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+        Field f=new Field();
+        f.setName(p.getName());
+        f.setFieldType(fieldType);
+        f.setFriendlyName(p.getMetadata().getFriendlyName());
+        if (StringUtils.isBlank(f.getFriendlyName())) {
+          f.setFriendlyName(f.getName());
+        }
+        f.setForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+        String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
+        groupName=groupName == null ? "Default" : groupName;
+        FieldGroup fieldGroup=ef.getGroups().get(groupName);
+        if (fieldGroup == null) {
+          fieldGroup=new FieldGroup();
+          fieldGroup.setTitle(groupName);
+          ef.getGroups().put(groupName,fieldGroup);
+        }
+        fieldGroup.getFields().add(f);
+      }
+      @Override public void visit(      BasicCollectionMetadata fmd){
+      }
+      @Override public void visit(      MapMetadata fmd){
+      }
+      @Override public void visit(      AdornedTargetCollectionMetadata fmd){
+      }
+    }
+);
+  }
+  return ef;
+}
