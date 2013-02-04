@@ -1,8 +1,8 @@
 {
-  BandedPriceFulfillmentOption option=createBands(new String[]{"10","20","30"},new String[]{"10","20","30"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE});
-  assertEquals(new Money("20.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("20.00"),2)));
-  assertEquals(Money.ZERO,calculationResponse(option,createCandidateOrder(new BigDecimal("9.00"),3)));
-  assertEquals(new Money("30.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("30.00"),3)));
-  assertEquals(new Money("20.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("25.00"),5)));
-  assertEquals(new Money("30.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("100.00"),5)));
+  BandedPriceFulfillmentOption option=createPriceBands(new String[]{"10","20","30"},new String[]{"10","20","30"},new FulfillmentBandResultAmountType[]{FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE,FulfillmentBandResultAmountType.RATE});
+  assertEquals(new Money("20.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("20.00"),2,option)));
+  assertEquals(Money.ZERO,calculationResponse(option,createCandidateOrder(new BigDecimal("9.00"),3,option)));
+  assertEquals(new Money("30.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("30.00"),3,option)));
+  assertEquals(new Money("20.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("25.00"),5,option)));
+  assertEquals(new Money("30.00"),calculationResponse(option,createCandidateOrder(new BigDecimal("100.00"),5,option)));
 }

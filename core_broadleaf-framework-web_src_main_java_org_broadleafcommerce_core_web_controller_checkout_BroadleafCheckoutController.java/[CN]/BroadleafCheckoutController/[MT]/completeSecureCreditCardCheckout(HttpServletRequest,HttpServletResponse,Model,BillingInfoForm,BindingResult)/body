@@ -1,7 +1,6 @@
 {
   Order cart=CartState.getCart();
   if (cart != null) {
-    Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
     orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
     if (billingForm.isUseShippingAddress()) {
       copyShippingAddressToBillingAddress(cart,billingForm);
@@ -14,6 +13,7 @@
     PaymentInfo ccInfo=creditCardPaymentInfoFactory.constructPaymentInfo(cart);
     ccInfo.setAddress(billingForm.getAddress());
     cart.getPaymentInfos().add(ccInfo);
+    Map<PaymentInfo,Referenced> payments=paymentInfoTypeService.getPaymentsMap(cart);
     CreditCardPaymentInfo ccReference=(CreditCardPaymentInfo)securePaymentInfoService.create(PaymentInfoType.CREDIT_CARD);
     ccReference.setNameOnCard(billingForm.getCreditCardName());
     ccReference.setReferenceNumber(ccInfo.getReferenceNumber());
@@ -23,11 +23,21 @@
     ccReference.setExpirationYear(Integer.parseInt(billingForm.getCreditCardExpYear()));
     payments.put(ccInfo,ccReference);
     initializeOrderForCheckout(cart);
-    CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
-    if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
+    CheckoutResponse checkoutResponse=null;
+    try {
+      checkoutResponse=checkoutService.performCheckout(cart,payments);
+    }
+ catch (    CheckoutException e) {
       processFailedOrderCheckout(cart);
       populateModelWithShippingReferenceData(request,model);
-      result.rejectValue("creditCardNumber","payment.exception",null,null);
+      String errorMsg=e.getRootCauseMessage();
+      if (errorMsg.contains("Credit")) {
+        result.rejectValue("creditCardNumber","payment.exception",null,null);
+        model.addAttribute("paymentException",true);
+      }
+ else {
+        model.addAttribute("paymentOptionException",true);
+      }
       return getCheckoutView();
     }
     return getConfirmationView(cart.getOrderNumber());

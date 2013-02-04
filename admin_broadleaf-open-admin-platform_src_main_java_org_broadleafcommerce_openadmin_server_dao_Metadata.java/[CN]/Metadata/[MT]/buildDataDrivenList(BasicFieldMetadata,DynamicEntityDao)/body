@@ -4,17 +4,19 @@
     if (metadata.getOptionListEntity().equals(DataDrivenEnumerationValueImpl.class.getName())) {
       criteria.add(Restrictions.eq("hidden",false));
     }
-    for (    String[] param : metadata.getOptionFilterParams()) {
-      Criteria current=criteria;
-      String key=param[0];
-      if (!key.equals(".ignore")) {
-        if (key.contains(".")) {
-          String[] parts=key.split("\\.");
-          for (int j=0; j < parts.length - 1; j++) {
-            current=current.createCriteria(parts[j],parts[j]);
+    if (metadata.getOptionFilterParams() != null) {
+      for (      String[] param : metadata.getOptionFilterParams()) {
+        Criteria current=criteria;
+        String key=param[0];
+        if (!key.equals(".ignore")) {
+          if (key.contains(".")) {
+            String[] parts=key.split("\\.");
+            for (int j=0; j < parts.length - 1; j++) {
+              current=current.createCriteria(parts[j],parts[j]);
+            }
           }
+          current.add(Restrictions.eq(key,convertType(param[1],OptionFilterParamType.valueOf(param[2]))));
         }
-        current.add(Restrictions.eq(key,convertType(param[1],OptionFilterParamType.valueOf(param[2]))));
       }
     }
     List results=criteria.list();

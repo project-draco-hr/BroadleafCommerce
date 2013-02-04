@@ -1,0 +1,14 @@
+{
+  Money amountToDebit=paymentContext.getRemainingTransactionAmount();
+  PaymentInfo paymentInfo=findPaymentInfoFromContext(paymentContext);
+  Money amountCaptured=paymentInfo.getPaymentCapturedAmount();
+  Money amountAlreadyReversed=paymentInfo.getReverseAuthAmount();
+  Money amount=paymentInfo.getAmount();
+  Money amountAvailableToDebit=amount.subtract(amountCaptured).subtract(amountAlreadyReversed);
+  if (amountAvailableToDebit.lessThan(amountToDebit)) {
+    return amountAvailableToDebit;
+  }
+ else {
+    return amountToDebit;
+  }
+}

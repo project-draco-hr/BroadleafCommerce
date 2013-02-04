@@ -13,4 +13,17 @@
     }
   }
 );
+  binder.registerCustomEditor(Phone.class,"address.phonePrimary",new PropertyEditorSupport(){
+    @Override public void setAsText(    String text){
+      if (!StringUtils.isBlank(text)) {
+        Phone phone=new PhoneImpl();
+        phone.setPhoneNumber(text);
+        setValue(phone);
+      }
+ else {
+        setValue(null);
+      }
+    }
+  }
+);
 }

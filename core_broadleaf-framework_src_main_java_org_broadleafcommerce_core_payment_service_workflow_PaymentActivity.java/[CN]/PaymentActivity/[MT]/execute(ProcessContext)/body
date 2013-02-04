@@ -1,8 +1,15 @@
 {
   CombinedPaymentContextSeed seed=((WorkflowPaymentContext)context).getSeedData();
   Map<PaymentInfo,Referenced> infos=seed.getInfos();
-  Money orderTotal=seed.getOrderTotal();
-  Money remainingTotal=seed.getOrderTotal();
+  Money transactionTotal, remainingTotal;
+  if (seed.getTransactionAmount() != null) {
+    transactionTotal=seed.getTransactionAmount();
+    remainingTotal=seed.getTransactionAmount();
+  }
+ else {
+    transactionTotal=seed.getOrderTotal();
+    remainingTotal=seed.getOrderTotal();
+  }
   Map<PaymentInfo,Referenced> replaceItems=new HashMap<PaymentInfo,Referenced>();
   try {
     Iterator<PaymentInfo> itr=infos.keySet().iterator();
@@ -12,7 +19,7 @@
         Referenced referenced=infos.get(info);
         itr.remove();
         infos.remove(info);
-        PaymentContextImpl paymentContext=new PaymentContextImpl(orderTotal,remainingTotal,info,referenced,userName);
+        PaymentContextImpl paymentContext=new PaymentContextImpl(transactionTotal,remainingTotal,info,referenced,userName);
         PaymentResponseItem paymentResponseItem;
         if (seed.getActionType().equals(PaymentActionType.AUTHORIZE)) {
           try {
@@ -82,12 +89,22 @@
           replaceItems.put(info,referenced);
           throw new PaymentException("Module (" + paymentService.getClass().getName() + ") does not support payment type of: "+ seed.getActionType().toString());
         }
+        if (getRollbackHandler() != null && automaticallyRegisterRollbackHandlerForPayment) {
+          Map<String,Object> myState=new HashMap<String,Object>();
+          if (getStateConfiguration() != null && !getStateConfiguration().isEmpty()) {
+            myState.putAll(getStateConfiguration());
+          }
+          myState.put(ROLLBACK_ACTIONTYPE,seed.getActionType());
+          myState.put(ROLLBACK_PAYMENTCONTEXT,paymentContext);
+          myState.put(ROLLBACK_RESPONSEITEM,paymentResponseItem);
+          ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),myState);
+        }
         if (paymentResponseItem != null) {
-          if (paymentResponseItem.getAmountPaid() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
-            throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: amountPaid, transactionTimestamp or transactionSuccess");
+          if (paymentResponseItem.getTransactionAmount() == null || paymentResponseItem.getTransactionTimestamp() == null || paymentResponseItem.getTransactionSuccess() == null) {
+            throw new PaymentException("The PaymentResponseItem instance did not contain one or more of the following: transactionAmount, transactionTimestamp or transactionSuccess");
           }
           seed.getPaymentResponse().addPaymentResponseItem(info,paymentResponseItem);
-          remainingTotal=remainingTotal.subtract(paymentResponseItem.getAmountPaid());
+          remainingTotal=remainingTotal.subtract(paymentResponseItem.getTransactionAmount());
         }
       }
     }

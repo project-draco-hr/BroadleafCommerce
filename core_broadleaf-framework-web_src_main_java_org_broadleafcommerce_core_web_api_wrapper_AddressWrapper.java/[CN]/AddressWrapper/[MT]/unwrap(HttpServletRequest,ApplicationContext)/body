@@ -14,8 +14,15 @@
     address.setCountry(this.country.unwrap(request,appContext));
   }
   address.setPostalCode(this.postalCode);
-  address.setPrimaryPhone(this.primaryPhone);
-  address.setSecondaryPhone(this.secondaryPhone);
+  if (this.phonePrimary != null) {
+    address.setPhonePrimary(this.phonePrimary.unwrap(request,appContext));
+  }
+  if (this.phoneSecondary != null) {
+    address.setPhoneSecondary(this.phoneSecondary.unwrap(request,appContext));
+  }
+  if (this.phoneFax != null) {
+    address.setPhoneFax(this.phoneFax.unwrap(request,appContext));
+  }
   address.setCompanyName(this.companyName);
   address.setBusiness(this.isBusiness);
   address.setDefault(this.isDefault);

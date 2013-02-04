@@ -1,0 +1,13 @@
+{
+  Query query=em.createNamedQuery("BC_READ_MAX_FULFILLMENT_GROUP_SEQUENCE");
+  query.setParameter("orderId",order.getId());
+  List<Integer> max=query.getResultList();
+  if (max != null && !max.isEmpty()) {
+    Integer maxNumber=max.get(0);
+    if (maxNumber == null) {
+      return 1;
+    }
+    return maxNumber + 1;
+  }
+  return 1;
+}

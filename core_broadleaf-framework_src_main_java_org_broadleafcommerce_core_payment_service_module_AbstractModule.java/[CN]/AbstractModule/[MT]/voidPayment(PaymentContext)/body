@@ -1,0 +1,6 @@
+{
+  PaymentInfo paymentInfo=findPaymentInfoFromContext(paymentContext);
+  Money amountAlreadyCaptured=paymentInfo.getPaymentCapturedAmount();
+  PaymentResponseItem responseItem=getNewResponseItem(amountAlreadyCaptured,paymentInfo.getCurrency());
+  return processVoidPayment(paymentContext,amountAlreadyCaptured,responseItem);
+}
