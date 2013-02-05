@@ -19,10 +19,14 @@
           Entity[] subCollectionEntities=subCollections.get(p.getName());
           Class<?> subCollectionClass=Class.forName(fmd.getCollectionCeilingEntity());
           ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(subCollectionClass);
-          ListGrid subCollectionGrid=buildListGrid(subCollectionMd,subCollectionEntities);
-          subCollectionGrid.setSubCollectionFieldName(p.getName());
-          subCollectionGrid.setAddMethodType(fmd.getAddMethodType());
-          ef.getCollectionListGrids().add(subCollectionGrid);
+          if (fmd.getRuleBuilderVars().length > 0) {
+            RuleBuilder subCollectionRuleBuilder=buildRuleBuilder(subCollectionMd,subCollectionEntities,fmd.getRuleBuilderVars(),fmd.getRuleBuilderConfigKeys());
+            ef.getCollectionRuleBuilders().add(subCollectionRuleBuilder);
+          }
+ else {
+            ListGrid subCollectionGrid=buildListGrid(subCollectionMd,subCollectionEntities);
+            ef.getCollectionListGrids().add(subCollectionGrid);
+          }
         }
  catch (        Exception e) {
           throw new RuntimeException(e);

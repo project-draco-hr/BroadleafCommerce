@@ -1,0 +1,55 @@
+{
+  boolean eol=false;
+  int startPos=0;
+  while (!eol) {
+    int subgroupStartIndex=-1;
+    boolean isNegation=false;
+    subgroupStartIndex=findGroupStart(segment,startPos);
+    if (subgroupStartIndex == startPos || subgroupStartIndex == startPos + 1) {
+      Group subGroup=new Group();
+      myGroup.getSubGroups().add(subGroup);
+      int subgroupEndIndex=findGroupEnd(segment,subgroupStartIndex);
+      if (subgroupStartIndex > 0 && segment.charAt(subgroupStartIndex - 1) == '!') {
+        if (myGroup.getIsTopGroup()) {
+          myGroup.setOperatorType(BLCOperator.NOT);
+        }
+ else {
+          subGroup.setOperatorType(BLCOperator.NOT);
+        }
+      }
+      parseGroups(subGroup,segment.substring(subgroupStartIndex + 1,subgroupEndIndex - 1).trim());
+      startPos=subgroupEndIndex;
+      if (startPos == segment.length()) {
+        eol=true;
+      }
+ else {
+        boolean isAnd=false;
+        boolean isOr=false;
+        if (segment.charAt(startPos) == '&') {
+          isAnd=true;
+        }
+ else         if (segment.charAt(startPos) == '|') {
+          isOr=true;
+        }
+        if (myGroup.getOperatorType() == null) {
+          setGroupOperator(segment,myGroup,isAnd,isOr,false);
+        }
+        if (isAnd || isOr) {
+          startPos+=2;
+        }
+      }
+      continue;
+    }
+ else {
+      if (subgroupStartIndex < 0) {
+        compilePhrases(segment.substring(startPos,segment.length()).trim(),myGroup,isNegation);
+        eol=true;
+        continue;
+      }
+      String temp=segment.substring(startPos,subgroupStartIndex);
+      compilePhrases(temp.trim(),myGroup,isNegation);
+      startPos=subgroupStartIndex;
+      continue;
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  if (operator.equals("==") && value.equals("null")) {
+    return BLCOperator.IS_NULL;
+  }
+ else   if (operator.equals("==") && isFieldComparison) {
+    return BLCOperator.EQUALS_FIELD;
+  }
+ else   if (isIgnoreCase && operator.equals("==")) {
+    return BLCOperator.IEQUALS;
+  }
+ else   if (operator.equals("==")) {
+    return BLCOperator.EQUALS;
+  }
+ else   if (operator.equals("!=") && value.equals("null")) {
+    return BLCOperator.NOT_NULL;
+  }
+ else   if (operator.equals("!=") && isFieldComparison) {
+    return BLCOperator.NOT_EQUAL_FIELD;
+  }
+ else   if (isIgnoreCase && operator.equals("!=")) {
+    return BLCOperator.INOT_EQUAL;
+  }
+ else   if (operator.equals("!=")) {
+    return BLCOperator.NOT_EQUAL;
+  }
+ else   if (operator.equals(">") && isFieldComparison) {
+    return BLCOperator.GREATER_THAN_FIELD;
+  }
+ else   if (operator.equals(">")) {
+    return BLCOperator.GREATER_THAN;
+  }
+ else   if (operator.equals("<") && isFieldComparison) {
+    return BLCOperator.LESS_THAN_FIELD;
+  }
+ else   if (operator.equals("<")) {
+    return BLCOperator.LESS_THAN;
+  }
+ else   if (operator.equals(">=") && isFieldComparison) {
+    return BLCOperator.GREATER_OR_EQUAL_FIELD;
+  }
+ else   if (operator.equals(">=")) {
+    return BLCOperator.GREATER_OR_EQUAL;
+  }
+ else   if (operator.equals("<=") && isFieldComparison) {
+    return BLCOperator.LESS_OR_EQUAL_FIELD;
+  }
+ else   if (operator.equals("<=")) {
+    return BLCOperator.LESS_OR_EQUAL;
+  }
+ else   if (isIgnoreCase && operator.equals("contains") && isNegation) {
+    return BLCOperator.INOT_CONTAINS;
+  }
+ else   if (operator.equals("contains") && isNegation) {
+    return BLCOperator.NOT_CONTAINS;
+  }
+ else   if (isIgnoreCase && operator.equals("contains")) {
+    return BLCOperator.ICONTAINS;
+  }
+ else   if (operator.equals("contains") && isFieldComparison) {
+    return BLCOperator.CONTAINS_FIELD;
+  }
+ else   if (operator.equals("contains")) {
+    return BLCOperator.CONTAINS;
+  }
+ else   if (isIgnoreCase && operator.equals("startsWith") && isNegation) {
+    return BLCOperator.INOT_STARTS_WITH;
+  }
+ else   if (operator.equals("startsWith") && isNegation) {
+    return BLCOperator.NOT_STARTS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("startsWith")) {
+    return BLCOperator.ISTARTS_WITH;
+  }
+ else   if (operator.equals("startsWith") && isFieldComparison) {
+    return BLCOperator.STARTS_WITH_FIELD;
+  }
+ else   if (operator.equals("startsWith")) {
+    return BLCOperator.STARTS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("endsWith") && isNegation) {
+    return BLCOperator.INOT_ENDS_WITH;
+  }
+ else   if (operator.equals("endsWith") && isNegation) {
+    return BLCOperator.NOT_ENDS_WITH;
+  }
+ else   if (isIgnoreCase && operator.equals("endsWith")) {
+    return BLCOperator.IENDS_WITH;
+  }
+ else   if (operator.equals("endsWith") && isFieldComparison) {
+    return BLCOperator.ENDS_WITH_FIELD;
+  }
+ else   if (operator.equals("endsWith")) {
+    return BLCOperator.ENDS_WITH;
+  }
+  throw new MVELTranslationException("Unable to identify an operator compatible with the " + "rules builder: (" + (isNegation ? "!" : "" + field + operator+ value) + ")");
+}

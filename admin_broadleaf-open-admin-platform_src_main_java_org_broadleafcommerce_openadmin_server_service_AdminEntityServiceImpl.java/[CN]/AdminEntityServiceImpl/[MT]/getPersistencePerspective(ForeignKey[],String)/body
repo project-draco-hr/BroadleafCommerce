@@ -1,0 +1,15 @@
+{
+  PersistencePerspective persistencePerspective=new PersistencePerspective();
+  persistencePerspective.setOperationTypes(getDefaultOperationTypes());
+  persistencePerspective.setAdditionalForeignKeys(new ForeignKey[]{});
+  persistencePerspective.setAdditionalNonPersistentProperties(new String[]{});
+  if (foreignKeys != null) {
+    for (    ForeignKey fk : foreignKeys) {
+      persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,fk);
+    }
+  }
+  if (configurationKey != null) {
+    persistencePerspective.setConfigurationKey(configurationKey);
+  }
+  return persistencePerspective;
+}

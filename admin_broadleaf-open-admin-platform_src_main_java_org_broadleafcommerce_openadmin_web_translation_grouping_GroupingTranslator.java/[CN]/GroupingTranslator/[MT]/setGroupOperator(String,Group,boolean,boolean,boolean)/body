@@ -1,0 +1,18 @@
+{
+  if (myGroup.getOperatorType() == null) {
+    if (isAnd) {
+      myGroup.setOperatorType(BLCOperator.AND);
+    }
+ else     if (isOr) {
+      myGroup.setOperatorType(BLCOperator.OR);
+    }
+ else     if (isNot) {
+      myGroup.setOperatorType(BLCOperator.NOT);
+    }
+  }
+ else {
+    if ((isOr && !myGroup.getOperatorType().toString().equals(BLCOperator.OR.toString()))) {
+      throw new MVELTranslationException("Segment logical operator is not compatible with the group " + "logical operator: (" + segment + ")");
+    }
+  }
+}

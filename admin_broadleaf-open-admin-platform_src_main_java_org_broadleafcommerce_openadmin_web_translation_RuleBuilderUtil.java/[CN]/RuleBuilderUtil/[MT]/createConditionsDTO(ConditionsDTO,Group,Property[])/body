@@ -1,0 +1,21 @@
+{
+  ConditionsDTO conditions=new ConditionsDTO();
+  for (  Property p : properties) {
+    appendField(conditions,p);
+  }
+  if (group.getOperatorType() == null) {
+    group.setOperatorType(BLCOperator.AND);
+  }
+  BLCOperator operator=group.getOperatorType();
+  DataDTO data=new DataDTO();
+  data.setGroupOperator(operator.name());
+  ArrayList<DataDTO> expressionDTOList=new ArrayList<DataDTO>();
+  int j=0;
+  for (  String phrase : group.getPhrases()) {
+    appendExpression(phrase,expressionDTOList);
+    j++;
+  }
+  data.setGroups(expressionDTOList);
+  conditions.setData(data);
+  return conditions;
+}

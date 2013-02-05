@@ -1,0 +1,38 @@
+{
+  if (segment.trim().length() == 0) {
+    return;
+  }
+  String[] andTokens=segment.split("&&");
+  String[] orTokens=segment.split("\\|\\|");
+  if (andTokens.length > 1 && orTokens.length > 1) {
+    throw new MVELTranslationException("Segments that mix logical operators are not compatible with " + "the rules builder: (" + segment + ")");
+  }
+  boolean isAnd=false;
+  boolean isOr=false;
+  boolean isNot=false;
+  if (andTokens.length > 1 || segment.indexOf("&&") >= 0) {
+    isAnd=true;
+  }
+ else   if (orTokens.length > 1 || segment.indexOf("||") >= 0) {
+    isOr=true;
+  }
+  if (isAnd && isNegation) {
+    isNot=true;
+  }
+  if (!isAnd && !isOr && !isNot) {
+    isAnd=true;
+  }
+  setGroupOperator(segment,myGroup,isAnd,isOr,isNot);
+  String[] tokens;
+  if (isAnd || isNot) {
+    tokens=andTokens;
+  }
+ else {
+    tokens=orTokens;
+  }
+  for (  String token : tokens) {
+    if (token.length() > 0) {
+      myGroup.getPhrases().add(token);
+    }
+  }
+}

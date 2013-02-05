@@ -1,0 +1,18 @@
+{
+  if (property.getMetadata() instanceof BasicFieldMetadata) {
+    BasicFieldMetadata metadata=(BasicFieldMetadata)property.getMetadata();
+    FieldDTO fieldDTO=new FieldDTO();
+    String friendlyName=metadata.getOwningClassFriendlyName();
+    if (friendlyName == null || friendlyName.equals("")) {
+      String fqcn=metadata.getInheritedFromType();
+    }
+    if (!property.getName().startsWith(friendlyName) && !friendlyName.contains("DTO")) {
+      friendlyName=friendlyName + " - " + property.getName();
+    }
+    fieldDTO.setLabel(friendlyName);
+    fieldDTO.setName(property.getName());
+    fieldDTO.setOptions(fetchSupportedOptions(metadata));
+    fieldDTO.setOperators(fetchSupportedFieldType(metadata.getFieldType()));
+    dto.getFields().add(fieldDTO);
+  }
+}

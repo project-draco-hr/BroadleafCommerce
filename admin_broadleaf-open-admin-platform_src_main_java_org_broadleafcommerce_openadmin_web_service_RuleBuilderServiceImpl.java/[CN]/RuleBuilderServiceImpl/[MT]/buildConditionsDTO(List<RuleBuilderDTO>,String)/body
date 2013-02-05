@@ -1,0 +1,9 @@
+{
+  ConditionsDTO conditions=null;
+  for (  RuleBuilderDTO dto : dtoList) {
+    ClassMetadata cmd=adminEntityService.getClassMetadata(dto.getCeilingEntity(),dto.getForeignKeys(),dto.getConfigKey());
+    RuleBuilderUtil ruleBuilderUtil=new RuleBuilderUtil();
+    conditions=ruleBuilderUtil.createConditionsDTO(mvel,cmd.getProperties());
+  }
+  return conditions;
+}
