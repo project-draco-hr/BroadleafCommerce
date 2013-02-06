@@ -1,11 +1,32 @@
 {
-  Map<String,Entity[]> map=new HashMap<String,Entity[]>();
-  ClassMetadata cmd=getClassMetadata(containingClass);
-  for (  Property p : cmd.getProperties()) {
-    if (p.getMetadata() instanceof BasicCollectionMetadata) {
-      Entity[] rows=getRecordsForCollection(containingClass,containingEntityId,p.getName());
-      map.put(p.getName(),rows);
+  final Map<String,Entity[]> map=new HashMap<String,Entity[]>();
+  final ClassMetadata cmd=getClassMetadata(containingClass);
+  for (  final Property p : cmd.getProperties()) {
+    p.getMetadata().accept(new MetadataVisitor(){
+      @Override public void visit(      BasicCollectionMetadata fmd){
+        try {
+          Entity[] rows=getRecordsForCollection(cmd,containingEntityId,p);
+          map.put(p.getName(),rows);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+      @Override public void visit(      AdornedTargetCollectionMetadata fmd){
+        try {
+          Entity[] rows=getRecordsForCollection(cmd,containingEntityId,p);
+          map.put(p.getName(),rows);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+      @Override public void visit(      MapMetadata fmd){
+      }
+      @Override public void visit(      BasicFieldMetadata fmd){
+      }
     }
+);
   }
   return map;
 }

@@ -8,8 +8,12 @@
       persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,fk);
     }
   }
-  if (configurationKey != null) {
-    persistencePerspective.setConfigurationKey(configurationKey);
-  }
-  return persistencePerspective;
+  PersistencePackage pp=new PersistencePackage();
+  pp.setCeilingEntityFullyQualifiedClassname(className);
+  pp.setFetchTypeFullyQualifiedClassname(null);
+  pp.setPersistencePerspective(persistencePerspective);
+  pp.setCustomCriteria(customCriteria);
+  pp.setEntity(null);
+  pp.setCsrfToken(null);
+  return pp;
 }

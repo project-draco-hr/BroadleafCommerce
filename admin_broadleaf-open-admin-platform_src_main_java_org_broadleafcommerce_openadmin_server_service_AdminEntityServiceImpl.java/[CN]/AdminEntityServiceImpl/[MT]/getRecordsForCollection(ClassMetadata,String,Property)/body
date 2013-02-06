@@ -1,0 +1,35 @@
+{
+  final Entity[][] recordContainer=new Entity[1][];
+  collectionProperty.getMetadata().accept(new MetadataVisitor(){
+    @Override public void visit(    MapMetadata fmd){
+    }
+    @Override public void visit(    AdornedTargetCollectionMetadata fmd){
+      try {
+        Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+        AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+        recordContainer[0]=fetch(collectionClass,adornedList).getRecords();
+        System.out.println("hi");
+      }
+ catch (      Exception e) {
+        throw new IllegalArgumentException(e);
+      }
+    }
+    @Override public void visit(    BasicCollectionMetadata fmd){
+      try {
+        Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+        ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        FilterAndSortCriteria fasc=new FilterAndSortCriteria(foreignField.getManyToField());
+        fasc.setFilterValue(containingEntityId);
+        recordContainer[0]=fetch(collectionClass,new ForeignKey[]{foreignField},fasc).getRecords();
+      }
+ catch (      Exception e) {
+        throw new IllegalArgumentException(e);
+      }
+    }
+    @Override public void visit(    BasicFieldMetadata fmd){
+      throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
+    }
+  }
+);
+  return recordContainer[0];
+}

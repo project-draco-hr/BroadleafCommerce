@@ -25,6 +25,8 @@
           }
  else {
             ListGrid subCollectionGrid=buildListGrid(subCollectionMd,subCollectionEntities);
+            subCollectionGrid.setSubCollectionFieldName(p.getName());
+            subCollectionGrid.setAddMethodType(fmd.getAddMethodType());
             ef.getCollectionListGrids().add(subCollectionGrid);
           }
         }
@@ -35,6 +37,18 @@
       @Override public void visit(      MapMetadata fmd){
       }
       @Override public void visit(      AdornedTargetCollectionMetadata fmd){
+        try {
+          AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+          Entity[] subCollectionEntities=subCollections.get(p.getName());
+          Class<?> subCollectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(subCollectionClass,adornedList);
+          ListGrid subCollectionGrid=buildAdornedListGrid(fmd,subCollectionMd,subCollectionEntities);
+          subCollectionGrid.setSubCollectionFieldName(p.getName());
+          ef.getCollectionListGrids().add(subCollectionGrid);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
       }
     }
 );

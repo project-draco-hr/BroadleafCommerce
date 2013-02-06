@@ -1,17 +1,54 @@
 {
   Class<?> mainClass=getClassForSection(sectionKey);
   ClassMetadata mainMetadata=service.getClassMetadata(mainClass);
-  for (  Property p : mainMetadata.getProperties()) {
+  for (  final Property p : mainMetadata.getProperties()) {
     if (p.getName().equals(collectionField)) {
-      Class<?> collectionClass=Class.forName(((BasicCollectionMetadata)p.getMetadata()).getCollectionCeilingEntity());
-      ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
-      EntityForm entityForm=formService.buildEntityForm(collectionMetadata);
-      model.addAttribute("currentUrl",request.getRequestURL().toString());
-      model.addAttribute("entityForm",entityForm);
-      model.addAttribute("viewType","modalEntityForm");
-      break;
+      p.getMetadata().accept(new MetadataVisitor(){
+        @Override public void visit(        BasicFieldMetadata fmd){
+        }
+        @Override public void visit(        BasicCollectionMetadata fmd){
+          try {
+            Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+            ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
+            if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
+              EntityForm entityForm=formService.buildEntityForm(collectionMetadata);
+              model.addAttribute("entityForm",entityForm);
+              model.addAttribute("viewType","modalEntityForm");
+            }
+ else {
+              Entity[] rows=service.getRecords(collectionClass);
+              ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
+              model.addAttribute("listGrid",listGrid);
+              model.addAttribute("listGridType","basicCollection");
+              model.addAttribute("viewType","modalListGrid");
+            }
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+        @Override public void visit(        AdornedTargetCollectionMetadata fmd){
+          try {
+            Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
+            AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+            ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass,adornedList);
+            Entity[] rows=service.getRecords(collectionClass);
+            ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
+            model.addAttribute("listGrid",listGrid);
+            model.addAttribute("listGridType","adornedTarget");
+            model.addAttribute("viewType","modalListGrid");
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
+        }
+        @Override public void visit(        MapMetadata fmd){
+        }
+      }
+);
     }
   }
+  model.addAttribute("currentUrl",request.getRequestURL().toString());
   setModelAttributes(model,sectionKey);
   return "modules/modalContainer";
 }
