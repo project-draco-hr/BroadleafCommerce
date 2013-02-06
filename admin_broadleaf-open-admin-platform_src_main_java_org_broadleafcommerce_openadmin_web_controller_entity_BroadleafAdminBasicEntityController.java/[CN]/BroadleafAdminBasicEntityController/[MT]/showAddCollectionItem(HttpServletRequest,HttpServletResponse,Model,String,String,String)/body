@@ -1,6 +1,6 @@
 {
-  Class<?> mainClass=getClassForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(mainClass);
+  String mainClassName=getClassNameForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(mainClassName);
   for (  final Property p : mainMetadata.getProperties()) {
     if (p.getName().equals(collectionField)) {
       p.getMetadata().accept(new MetadataVisitor(){
@@ -8,15 +8,15 @@
         }
         @Override public void visit(        BasicCollectionMetadata fmd){
           try {
-            Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
-            ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
+            ForeignKey[] foreignKeys=new ForeignKey[]{(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)};
+            ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),foreignKeys,null);
             if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
               EntityForm entityForm=formService.buildEntityForm(collectionMetadata);
               model.addAttribute("entityForm",entityForm);
               model.addAttribute("viewType","modalEntityForm");
             }
  else {
-              Entity[] rows=service.getRecords(collectionClass);
+              Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),foreignKeys);
               ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
               model.addAttribute("listGrid",listGrid);
               model.addAttribute("listGridType","basicCollection");
@@ -29,10 +29,9 @@
         }
         @Override public void visit(        AdornedTargetCollectionMetadata fmd){
           try {
-            Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
             AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-            ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass,adornedList);
-            Entity[] rows=service.getRecords(collectionClass);
+            ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),adornedList);
+            Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),null);
             ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
             model.addAttribute("listGrid",listGrid);
             model.addAttribute("listGridType","adornedTarget");

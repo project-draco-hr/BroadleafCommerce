@@ -1,11 +1,11 @@
 {
-  Class<?> mainClass=getClassForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(mainClass);
+  String mainClassName=getClassNameForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(mainClassName);
   for (  Property p : mainMetadata.getProperties()) {
     if (p.getName().equals(collectionField)) {
-      Class<?> collectionClass=Class.forName(((BasicFieldMetadata)p.getMetadata()).getForeignKeyClass());
-      ClassMetadata collectionMetadata=service.getClassMetadata(collectionClass);
-      Entity[] rows=service.getRecords(collectionClass);
+      String collectionClassName=((BasicFieldMetadata)p.getMetadata()).getForeignKeyClass();
+      ClassMetadata collectionMetadata=service.getClassMetadata(collectionClassName);
+      Entity[] rows=service.getRecords(collectionClassName,null);
       ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
       model.addAttribute("listGrid",listGrid);
       model.addAttribute("listGridType","toOne");

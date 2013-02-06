@@ -1,7 +1,7 @@
 {
-  Class<?> sectionClass=getClassForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(sectionClass);
-  Entity[] rows=service.getRecords(sectionClass);
+  String sectionClassName=getClassNameForSection(sectionKey);
+  ClassMetadata cmd=service.getClassMetadata(sectionClassName);
+  Entity[] rows=service.getRecords(sectionClassName,null);
   ListGrid listGrid=formService.buildListGrid(cmd,rows);
   model.addAttribute("listGrid",listGrid);
   model.addAttribute("viewType","listGrid");

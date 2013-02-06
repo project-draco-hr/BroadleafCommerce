@@ -1,8 +1,8 @@
 {
-  Class<?> sectionClass=getClassForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(sectionClass);
-  Entity entity=service.getRecord(sectionClass,id);
-  Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(sectionClass,id);
+  String sectionClassName=getClassNameForSection(sectionKey);
+  ClassMetadata cmd=service.getClassMetadata(sectionClassName);
+  Entity entity=service.getRecord(sectionClassName,id);
+  Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(sectionClassName,id);
   EntityForm entityForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("viewType","entityForm");

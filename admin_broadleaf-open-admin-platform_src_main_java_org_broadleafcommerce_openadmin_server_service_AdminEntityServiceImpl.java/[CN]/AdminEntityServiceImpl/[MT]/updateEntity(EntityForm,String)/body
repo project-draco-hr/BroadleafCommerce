@@ -1,0 +1,14 @@
+{
+  Property[] properties=new Property[entityForm.getFields().size()];
+  int i=0;
+  for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
+    Property p=new Property();
+    p.setName(entry.getKey());
+    p.setValue(entry.getValue().getValue());
+    properties[i++]=p;
+  }
+  Entity entity=new Entity();
+  entity.setProperties(properties);
+  entity.setType(new String[]{entityForm.getEntityType()});
+  return update(entity,className,null,null);
+}

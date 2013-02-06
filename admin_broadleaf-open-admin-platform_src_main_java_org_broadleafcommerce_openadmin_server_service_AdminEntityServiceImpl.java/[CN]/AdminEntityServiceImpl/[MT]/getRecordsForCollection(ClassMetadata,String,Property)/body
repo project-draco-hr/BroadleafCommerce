@@ -5,10 +5,8 @@
     }
     @Override public void visit(    AdornedTargetCollectionMetadata fmd){
       try {
-        Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
         AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-        recordContainer[0]=fetch(collectionClass,adornedList).getRecords();
-        System.out.println("hi");
+        recordContainer[0]=fetch(fmd.getCollectionCeilingEntity(),adornedList).getRecords();
       }
  catch (      Exception e) {
         throw new IllegalArgumentException(e);
@@ -16,11 +14,10 @@
     }
     @Override public void visit(    BasicCollectionMetadata fmd){
       try {
-        Class<?> collectionClass=Class.forName(fmd.getCollectionCeilingEntity());
         ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
         FilterAndSortCriteria fasc=new FilterAndSortCriteria(foreignField.getManyToField());
         fasc.setFilterValue(containingEntityId);
-        recordContainer[0]=fetch(collectionClass,new ForeignKey[]{foreignField},fasc).getRecords();
+        recordContainer[0]=fetch(fmd.getCollectionCeilingEntity(),new ForeignKey[]{foreignField},null,fasc).getRecords();
       }
  catch (      Exception e) {
         throw new IllegalArgumentException(e);
