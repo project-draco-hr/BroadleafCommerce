@@ -1,5 +1,18 @@
 {
   String mainClassName=getClassNameForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(mainClassName);
   service.addSubCollectionEntity(entityForm,mainClassName,collectionField,id);
-  return "redirect:/" + sectionKey + "/"+ id;
+  for (  Property p : mainMetadata.getProperties()) {
+    if (p.getName().equals(collectionField)) {
+      Entity[] rows=service.getRecordsForCollection(mainMetadata,id,p);
+      ClassMetadata subCollectionMd=service.getClassMetadata(((BasicCollectionMetadata)p.getMetadata()).getCollectionCeilingEntity());
+      ListGrid listGrid=formService.buildListGrid(subCollectionMd,rows);
+      listGrid.setSubCollectionFieldName(collectionField);
+      model.addAttribute("listGrid",listGrid);
+      model.addAttribute("listGridType","inline");
+      break;
+    }
+  }
+  setModelAttributes(model,sectionKey);
+  return "views/modalListGrid";
 }
