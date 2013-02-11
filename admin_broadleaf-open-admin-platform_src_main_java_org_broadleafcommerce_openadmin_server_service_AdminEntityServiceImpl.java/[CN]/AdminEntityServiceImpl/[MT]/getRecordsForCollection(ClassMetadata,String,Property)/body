@@ -6,7 +6,10 @@
     @Override public void visit(    AdornedTargetCollectionMetadata fmd){
       try {
         AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-        recordContainer[0]=fetch(fmd.getCollectionCeilingEntity(),adornedList).getRecords();
+        String manyToField=adornedList.getCollectionFieldName();
+        FilterAndSortCriteria fasc=new FilterAndSortCriteria(manyToField);
+        fasc.setFilterValue(containingEntityId);
+        recordContainer[0]=fetch(fmd.getCollectionCeilingEntity(),adornedList,fasc).getRecords();
       }
  catch (      Exception e) {
         throw new IllegalArgumentException(e);

@@ -5,11 +5,20 @@
   for (  Property p : mainMetadata.getProperties()) {
     if (p.getName().equals(collectionField)) {
       Entity[] rows=service.getRecordsForCollection(mainMetadata,id,p);
-      ClassMetadata subCollectionMd=service.getClassMetadata(((BasicCollectionMetadata)p.getMetadata()).getCollectionCeilingEntity());
+      ClassMetadata subCollectionMd;
+      if (p.getMetadata() instanceof BasicCollectionMetadata) {
+        subCollectionMd=service.getClassMetadata(((BasicCollectionMetadata)p.getMetadata()).getCollectionCeilingEntity());
+      }
+ else       if (p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
+        subCollectionMd=service.getClassMetadata(((AdornedTargetCollectionMetadata)p.getMetadata()).getCollectionCeilingEntity());
+      }
+ else {
+        subCollectionMd=null;
+      }
       ListGrid listGrid=formService.buildListGrid(subCollectionMd,rows);
       listGrid.setSubCollectionFieldName(collectionField);
+      listGrid.setListGridType("inline");
       model.addAttribute("listGrid",listGrid);
-      model.addAttribute("listGridType","inline");
       break;
     }
   }

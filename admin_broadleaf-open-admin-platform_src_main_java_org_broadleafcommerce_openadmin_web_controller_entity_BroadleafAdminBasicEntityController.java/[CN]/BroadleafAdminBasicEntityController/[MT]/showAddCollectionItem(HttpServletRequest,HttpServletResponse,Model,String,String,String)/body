@@ -5,6 +5,18 @@
     if (p.getName().equals(collectionField)) {
       p.getMetadata().accept(new MetadataVisitor(){
         @Override public void visit(        BasicFieldMetadata fmd){
+          try {
+            String collectionClassName=fmd.getForeignKeyClass();
+            ClassMetadata collectionMetadata=service.getClassMetadata(collectionClassName);
+            Entity[] rows=service.getRecords(collectionClassName,null);
+            ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
+            listGrid.setListGridType("toOne");
+            model.addAttribute("listGrid",listGrid);
+            model.addAttribute("viewType","modalListGrid");
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
         }
         @Override public void visit(        BasicCollectionMetadata fmd){
           try {
@@ -18,8 +30,8 @@
  else {
               Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),foreignKeys);
               ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
+              listGrid.setListGridType("basicCollection");
               model.addAttribute("listGrid",listGrid);
-              model.addAttribute("listGridType","basicCollection");
               model.addAttribute("viewType","modalListGrid");
             }
           }
@@ -33,9 +45,11 @@
             ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),adornedList);
             Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),null);
             ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
+            listGrid.setListGridType("adornedTarget");
+            EntityForm entityForm=formService.buildAdornedListForm(fmd,adornedList,id);
             model.addAttribute("listGrid",listGrid);
-            model.addAttribute("listGridType","adornedTarget");
-            model.addAttribute("viewType","modalListGrid");
+            model.addAttribute("entityForm",entityForm);
+            model.addAttribute("viewType","modalAdornedListGrid");
           }
  catch (          Exception e) {
             throw new RuntimeException(e);

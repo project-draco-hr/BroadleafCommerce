@@ -1,0 +1,38 @@
+{
+  final EntityForm ef=new EntityForm();
+  ef.setEntityType(adornedList.getAdornedTargetEntityClassname());
+  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(adornedMd.getCollectionCeilingEntity(),adornedList);
+  for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
+    Property p=collectionMetadata.getPMap().get(targetFieldName);
+    BasicFieldMetadata fmd=((BasicFieldMetadata)p.getMetadata());
+    String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+    Field f=new Field();
+    f.setName(p.getName());
+    f.setFieldType(fieldType);
+    f.setFriendlyName(p.getMetadata().getFriendlyName());
+    if (StringUtils.isBlank(f.getFriendlyName())) {
+      f.setFriendlyName(f.getName());
+    }
+    f.setForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+    String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
+    groupName=groupName == null ? "Default" : groupName;
+    FieldGroup fieldGroup=ef.getGroups().get(groupName);
+    if (fieldGroup == null) {
+      fieldGroup=new FieldGroup();
+      fieldGroup.setTitle(groupName);
+      ef.getGroups().put(groupName,fieldGroup);
+    }
+    fieldGroup.getFields().add(f);
+    f=new Field();
+    f.setName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty());
+    f.setFieldType(SupportedFieldType.HIDDEN.toString());
+    f.setValue(parentId);
+    fieldGroup.getFields().add(f);
+    f=new Field();
+    f.setName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty());
+    f.setFieldType(SupportedFieldType.HIDDEN.toString());
+    f.setIdOverride("adornedTargetIdProperty");
+    fieldGroup.getFields().add(f);
+  }
+  return ef;
+}

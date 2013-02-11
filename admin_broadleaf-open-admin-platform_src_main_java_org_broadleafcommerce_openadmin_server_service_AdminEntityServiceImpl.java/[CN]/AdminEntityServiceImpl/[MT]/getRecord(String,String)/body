@@ -1,7 +1,7 @@
 {
   FilterAndSortCriteria fasc=new FilterAndSortCriteria("id");
   fasc.setFilterValue(id);
-  Entity[] entities=fetch(className,null,null,fasc).getRecords();
+  Entity[] entities=fetch(className,new ForeignKey[]{},null,fasc).getRecords();
   if (entities == null || entities.length > 1) {
     throw new RuntimeException("More than one entity found with the same id");
   }

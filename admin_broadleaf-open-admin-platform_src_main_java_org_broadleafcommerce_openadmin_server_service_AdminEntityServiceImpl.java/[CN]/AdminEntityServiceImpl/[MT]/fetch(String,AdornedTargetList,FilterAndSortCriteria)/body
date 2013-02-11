@@ -1,5 +1,10 @@
 {
   PersistencePackage pkg=persistencePackageFactory.adornedTarget(className,null,adornedList);
   CriteriaTransferObject cto=getDefaultCto();
+  if (fascs != null) {
+    for (    FilterAndSortCriteria fasc : fascs) {
+      cto.add(fasc);
+    }
+  }
   return service.fetch(pkg,cto);
 }

@@ -1,26 +1,52 @@
 {
   ClassMetadata cmd=getClassMetadata(className);
-  BasicCollectionMetadata fmd=null;
-  for (  Property p : cmd.getProperties()) {
-    if (p.getName().equals(fieldName) && p.getMetadata() instanceof BasicCollectionMetadata) {
-      fmd=(BasicCollectionMetadata)p.getMetadata();
-    }
-  }
-  Property[] properties=new Property[entityForm.getFields().size() + 1];
-  int i=0;
+  final List<Property> properties=new ArrayList<Property>();
   for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
     Property p=new Property();
     p.setName(entry.getKey());
     p.setValue(entry.getValue().getValue());
-    properties[i++]=p;
+    properties.add(p);
   }
-  ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-  Property p=new Property();
-  p.setName(foreignField.getManyToField());
-  p.setValue(parentId);
-  properties[i++]=p;
-  Entity entity=new Entity();
-  entity.setProperties(properties);
-  entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
-  return add(entity,fmd.getCollectionCeilingEntity(),new ForeignKey[]{foreignField},null);
+  final Entity entity=new Entity();
+  final List<ForeignKey> additionalForeignKeys=new ArrayList<ForeignKey>();
+  final AdornedTargetList[] adornedListContainer=new AdornedTargetList[1];
+  for (  Property p : cmd.getProperties()) {
+    if (p.getName().equals(fieldName)) {
+      p.getMetadata().accept(new MetadataVisitor(){
+        @Override public void visit(        MapMetadata fmd){
+        }
+        @Override public void visit(        AdornedTargetCollectionMetadata fmd){
+          AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+          entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
+          adornedListContainer[0]=adornedList;
+        }
+        @Override public void visit(        BasicCollectionMetadata fmd){
+          ForeignKey foreignField=null;
+          if (fmd != null) {
+            foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+            Property p=new Property();
+            p.setName(foreignField.getManyToField());
+            p.setValue(parentId);
+            properties.add(p);
+          }
+          additionalForeignKeys.add(foreignField);
+          entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
+        }
+        @Override public void visit(        BasicFieldMetadata fmd){
+        }
+      }
+);
+    }
+  }
+  Property[] propArr=new Property[properties.size()];
+  properties.toArray(propArr);
+  entity.setProperties(propArr);
+  ForeignKey[] additionalKeys=new ForeignKey[additionalForeignKeys.size()];
+  additionalKeys=additionalForeignKeys.toArray(additionalKeys);
+  if (adornedListContainer[0] != null) {
+    return add(entity,entity.getType()[0],null,adornedListContainer[0]);
+  }
+ else {
+    return add(entity,entity.getType()[0],additionalKeys,null);
+  }
 }
