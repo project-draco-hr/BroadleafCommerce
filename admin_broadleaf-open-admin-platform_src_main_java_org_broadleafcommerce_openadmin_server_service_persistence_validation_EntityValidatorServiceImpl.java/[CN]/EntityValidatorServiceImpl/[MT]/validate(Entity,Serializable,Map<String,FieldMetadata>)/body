@@ -1,0 +1,18 @@
+{
+  for (  Property property : entity.getProperties()) {
+    FieldMetadata metadata=mergedProperties.get(property.getName());
+    if (metadata instanceof BasicFieldMetadata) {
+      Map<String,Map<String,String>> validations=((BasicFieldMetadata)metadata).getValidationConfigurations();
+      for (      Map.Entry<String,Map<String,String>> validation : validations.entrySet()) {
+        String validatorClassname=validation.getKey();
+        Map<String,String> configuration=validation.getValue();
+        PropertyValidator validator=(PropertyValidator)Class.forName(validatorClassname).newInstance();
+        boolean validationResult=validator.validate(entity,configuration,instance,property.getValue());
+        if (!validationResult) {
+          entity.addValidationError(property.getName(),configuration.get(ConfigurationItem.ERROR_MESSAGE));
+          entity.setValidationFailure(true);
+        }
+      }
+    }
+  }
+}

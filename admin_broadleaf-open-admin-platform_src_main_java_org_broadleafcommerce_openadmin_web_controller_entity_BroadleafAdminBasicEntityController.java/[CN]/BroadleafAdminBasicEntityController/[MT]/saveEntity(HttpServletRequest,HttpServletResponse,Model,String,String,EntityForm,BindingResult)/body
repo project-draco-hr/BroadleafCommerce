@@ -1,0 +1,14 @@
+{
+  String sectionClassName=getClassNameForSection(sectionKey);
+  Entity entity=service.updateEntity(entityForm,sectionClassName);
+  entityValidator.validate(entityForm,entity,result);
+  if (result.hasErrors()) {
+    ClassMetadata cmd=service.getClassMetadata(sectionClassName);
+    Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(sectionClassName,id);
+    formService.buildEntityForm(entityForm,cmd,entity,subRecordsMap);
+    model.addAttribute("viewType","entityForm");
+    setModelAttributes(model,sectionKey);
+    return "modules/dynamicModule";
+  }
+  return "redirect:/" + sectionKey + "/"+ id;
+}

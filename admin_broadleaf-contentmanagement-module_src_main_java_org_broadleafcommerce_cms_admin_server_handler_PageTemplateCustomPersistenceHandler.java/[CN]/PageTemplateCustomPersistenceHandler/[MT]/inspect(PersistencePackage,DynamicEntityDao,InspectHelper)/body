@@ -52,8 +52,8 @@
         if (definition.getValidationRegEx() != null) {
           Map<String,String> itemMap=new HashMap<String,String>();
           itemMap.put("regularExpression",definition.getValidationRegEx());
-          itemMap.put("errorMessageKey",definition.getValidationErrorMesageKey());
-          fieldMetadata.getValidationConfigurations().put("com.smartgwt.client.widgets.form.validator.RegExpValidator",itemMap);
+          itemMap.put(ConfigurationItem.ERROR_MESSAGE,definition.getValidationErrorMesageKey());
+          fieldMetadata.getValidationConfigurations().put("org.broadleafcommerce.openadmin.server.service.persistence.validation.RegexPropertyValidator",itemMap);
         }
         propertiesList.add(property);
       }
@@ -85,7 +85,7 @@
     Property[] properties=new Property[propertiesList.size()];
     properties=propertiesList.toArray(properties);
     Arrays.sort(properties,new Comparator<Property>(){
-      public int compare(      Property o1,      Property o2){
+      @Override public int compare(      Property o1,      Property o2){
         if (o1.getMetadata().getOrder() != null && o2.getMetadata().getOrder() != null) {
           return o1.getMetadata().getOrder().compareTo(o2.getMetadata().getOrder());
         }

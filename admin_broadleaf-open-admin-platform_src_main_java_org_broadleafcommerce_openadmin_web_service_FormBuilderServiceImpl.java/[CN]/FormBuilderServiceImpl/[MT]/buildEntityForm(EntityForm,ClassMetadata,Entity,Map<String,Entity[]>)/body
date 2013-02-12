@@ -1,6 +1,5 @@
 {
-  final EntityForm ef=buildEntityForm(cmd);
-  ef.setId(entity.findProperty("id").getValue());
+  buildFormMetadata(cmd,ef);
   for (  final Property p : cmd.getProperties()) {
     p.getMetadata().accept(new MetadataVisitor(){
       @Override public void visit(      BasicFieldMetadata fmd){

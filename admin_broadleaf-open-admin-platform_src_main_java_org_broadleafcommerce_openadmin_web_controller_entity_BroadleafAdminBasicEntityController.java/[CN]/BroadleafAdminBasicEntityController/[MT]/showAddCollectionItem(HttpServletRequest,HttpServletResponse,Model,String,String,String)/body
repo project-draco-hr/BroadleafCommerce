@@ -23,7 +23,7 @@
             ForeignKey[] foreignKeys=new ForeignKey[]{(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)};
             ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),foreignKeys,null);
             if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
-              EntityForm entityForm=formService.buildEntityForm(collectionMetadata);
+              EntityForm entityForm=formService.createEntityForm(collectionMetadata);
               model.addAttribute("entityForm",entityForm);
               model.addAttribute("viewType","modalEntityForm");
             }

@@ -38,12 +38,12 @@
         property.setValue(entity.findProperty("pageTemplate").getValue());
         entity.addProperty(property);
       }
+      Property lockedProperty=new Property();
+      lockedProperty.setName("locked");
       if ("true".equals(entity.findProperty("lockedFlag").getValue())) {
-        Property property=new Property();
-        property.setName("locked");
-        property.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
-        entity.addProperty(property);
+        lockedProperty.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
       }
+      entity.addProperty(lockedProperty);
     }
     for (int j=0; j < pageEntities.length; j++) {
       addRulesToEntity(pages.get(j),pageEntities[j]);

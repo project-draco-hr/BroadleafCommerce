@@ -24,13 +24,16 @@
       if (!entity.findProperty("priorKey").getValue().equals(entity.findProperty(mapStructure.getKeyPropertyName()).getValue())) {
         map.remove(entity.findProperty("priorKey").getValue());
       }
-      valueInstance=createPopulatedInstance(valueInstance,entity,(Map<String,FieldMetadata>)valueMergedProperties,false);
+      valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
       map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
     }
  else {
       map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
     }
-    instance=persistenceManager.getDynamicEntityDao().merge(instance);
+    validate(entity,instance,null);
+    if (!entity.isValidationFailure()) {
+      instance=persistenceManager.getDynamicEntityDao().merge(instance);
+    }
     return getMapRecords(instance,mapStructure,valueMergedProperties,entity.findProperty("symbolicId"))[0];
   }
  catch (  Exception e) {

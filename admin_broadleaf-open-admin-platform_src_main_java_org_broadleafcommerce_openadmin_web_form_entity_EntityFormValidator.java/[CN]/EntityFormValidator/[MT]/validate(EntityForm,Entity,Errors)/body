@@ -1,0 +1,10 @@
+{
+  boolean result=true;
+  if (entity.isValidationFailure()) {
+    result=false;
+    for (    String[] validationError : entity.getValidationErrors()) {
+      errors.rejectValue(String.format("fields[%s].value",validationError[0]),validationError[1],validationError[1]);
+    }
+  }
+  return result;
+}

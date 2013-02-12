@@ -9,10 +9,16 @@
     }
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
     instance=createPopulatedInstance(instance,entity,mergedProperties,false);
-    instance=persistenceManager.getDynamicEntityDao().merge(instance);
-    List<Serializable> entityList=new ArrayList<Serializable>(1);
-    entityList.add(instance);
-    return getRecords(mergedProperties,entityList,null,null)[0];
+    boolean validated=validate(entity,instance,mergedProperties);
+    if (validated) {
+      instance=persistenceManager.getDynamicEntityDao().merge(instance);
+      List<Serializable> entityList=new ArrayList<Serializable>(1);
+      entityList.add(instance);
+      return getRecords(mergedProperties,entityList,null,null)[0];
+    }
+ else {
+      return entity;
+    }
   }
  catch (  Exception e) {
     LOG.error("Problem editing entity",e);
