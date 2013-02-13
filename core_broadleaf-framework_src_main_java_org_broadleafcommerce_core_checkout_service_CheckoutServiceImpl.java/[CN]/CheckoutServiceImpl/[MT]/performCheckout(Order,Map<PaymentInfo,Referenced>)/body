@@ -13,16 +13,11 @@
   }
   CheckoutSeed seed=null;
   try {
-    order.setSubmitDate(SystemTime.asDate());
-    order=orderService.save(order,false);
     seed=new CheckoutSeed(order,payments,new HashMap<String,Object>());
     checkoutWorkflow.doActivities(seed);
     return seed;
   }
- catch (  PricingException e) {
-    throw new CheckoutException("Unable to checkout order -- id: " + order.getId(),e,seed);
-  }
-catch (  WorkflowException e) {
+ catch (  WorkflowException e) {
     Throwable cause=e;
     while (e.getCause() != null) {
       if (cause.equals(e.getCause())) {

@@ -22,10 +22,8 @@
     ccReference.setExpirationMonth(Integer.parseInt(billingForm.getCreditCardExpMonth()));
     ccReference.setExpirationYear(Integer.parseInt(billingForm.getCreditCardExpYear()));
     payments.put(ccInfo,ccReference);
-    initializeOrderForCheckout(cart);
     CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
     if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
-      processFailedOrderCheckout(cart);
       populateModelWithShippingReferenceData(request,model);
       result.rejectValue("creditCardNumber","payment.exception",null,null);
       return getCheckoutView();
