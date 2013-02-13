@@ -16,6 +16,8 @@
     order=orderService.save(order,false);
     seed=new CheckoutSeed(order,payments,new HashMap<String,Object>());
     checkoutWorkflow.doActivities(seed);
+    order=orderService.save(seed.getOrder(),false);
+    seed.setOrder(order);
     return seed;
   }
  catch (  PricingException e) {
