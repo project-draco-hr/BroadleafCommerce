@@ -2,9 +2,7 @@
   PersistencePackage pkg=persistencePackageFactory.create(request);
   CriteriaTransferObject cto=getDefaultCto();
   if (request.getFilterAndSortCriteria() != null) {
-    for (    FilterAndSortCriteria fasc : request.getFilterAndSortCriteria()) {
-      cto.add(fasc);
-    }
+    cto.addAll(request.getFilterAndSortCriteria());
   }
   return service.fetch(pkg,cto);
 }
