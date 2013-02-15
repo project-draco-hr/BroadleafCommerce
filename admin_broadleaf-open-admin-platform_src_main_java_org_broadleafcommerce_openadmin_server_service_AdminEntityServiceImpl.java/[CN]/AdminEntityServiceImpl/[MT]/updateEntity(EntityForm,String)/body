@@ -10,5 +10,6 @@
   Entity entity=new Entity();
   entity.setProperties(properties);
   entity.setType(new String[]{entityForm.getEntityType()});
-  return update(entity,className,null,null);
+  PersistencePackageRequest request=PersistencePackageRequest.standard().withEntity(entity).withClassName(className);
+  return update(request);
 }

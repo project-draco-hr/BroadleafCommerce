@@ -1,0 +1,10 @@
+{
+  PersistencePackage pkg=persistencePackageFactory.create(request);
+  CriteriaTransferObject cto=getDefaultCto();
+  if (request.getFilterAndSortCriteria() != null) {
+    for (    FilterAndSortCriteria fasc : request.getFilterAndSortCriteria()) {
+      cto.add(fasc);
+    }
+  }
+  return service.fetch(pkg,cto);
+}

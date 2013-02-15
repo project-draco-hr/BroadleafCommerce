@@ -4,27 +4,10 @@
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
       if (fmd.isProminent() != null && fmd.isProminent()) {
-        Field hf=new Field();
-        hf.setName(p.getName());
-        hf.setFriendlyName(fmd.getFriendlyName());
+        Field hf=new Field().withName(p.getName()).withFriendlyName(fmd.getFriendlyName());
         hfs.add(hf);
       }
     }
   }
-  ListGrid lg=new ListGrid();
-  lg.setClassName(cmd.getCeilingType());
-  lg.setHeaderFields(hfs);
-  for (  Entity e : entities) {
-    ListGridRecord record=new ListGridRecord();
-    record.setId(e.findProperty("id").getValue());
-    for (    Field headerField : hfs) {
-      Property p=e.findProperty(headerField.getName());
-      Field recordField=new Field();
-      recordField.setName(headerField.getName());
-      recordField.setValue(p.getValue());
-      record.getFields().add(recordField);
-    }
-    lg.getRecords().add(record);
-  }
-  return lg;
+  return buildListGrid(cmd,entities,hfs);
 }

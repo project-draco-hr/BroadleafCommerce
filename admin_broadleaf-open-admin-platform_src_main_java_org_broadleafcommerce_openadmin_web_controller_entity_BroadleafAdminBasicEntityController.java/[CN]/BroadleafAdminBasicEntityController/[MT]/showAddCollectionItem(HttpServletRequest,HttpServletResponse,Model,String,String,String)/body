@@ -8,7 +8,8 @@
           try {
             String collectionClassName=fmd.getForeignKeyClass();
             ClassMetadata collectionMetadata=service.getClassMetadata(collectionClassName);
-            Entity[] rows=service.getRecords(collectionClassName,null);
+            PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(collectionClassName);
+            Entity[] rows=service.getRecords(request);
             ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
             listGrid.setListGridType("toOne");
             model.addAttribute("listGrid",listGrid);
@@ -20,15 +21,16 @@
         }
         @Override public void visit(        BasicCollectionMetadata fmd){
           try {
-            ForeignKey[] foreignKeys=new ForeignKey[]{(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)};
-            ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),foreignKeys,null);
+            ForeignKey foreignKey=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+            PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(fmd.getCollectionCeilingEntity()).addForeignKey(foreignKey);
+            ClassMetadata collectionMetadata=service.getClassMetadata(request);
             if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
               EntityForm entityForm=formService.createEntityForm(collectionMetadata);
               model.addAttribute("entityForm",entityForm);
               model.addAttribute("viewType","modalEntityForm");
             }
  else {
-              Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),foreignKeys);
+              Entity[] rows=service.getRecords(request);
               ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
               listGrid.setListGridType("basicCollection");
               model.addAttribute("listGrid",listGrid);
@@ -42,8 +44,9 @@
         @Override public void visit(        AdornedTargetCollectionMetadata fmd){
           try {
             AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-            ClassMetadata collectionMetadata=service.getClassMetadata(fmd.getCollectionCeilingEntity(),adornedList);
-            Entity[] rows=service.getRecords(fmd.getCollectionCeilingEntity(),null);
+            PersistencePackageRequest request=PersistencePackageRequest.adorned().withClassName(fmd.getCollectionCeilingEntity()).withAdornedList(adornedList);
+            ClassMetadata collectionMetadata=service.getClassMetadata(request);
+            Entity[] rows=service.getRecords(request);
             ListGrid listGrid=formService.buildListGrid(collectionMetadata,rows);
             EntityForm entityForm=formService.buildAdornedListForm(fmd,adornedList,id);
             model.addAttribute("listGrid",listGrid);

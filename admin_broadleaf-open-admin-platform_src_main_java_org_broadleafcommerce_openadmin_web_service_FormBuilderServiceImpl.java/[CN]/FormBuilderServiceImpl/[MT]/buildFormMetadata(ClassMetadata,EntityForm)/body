@@ -1,33 +1,13 @@
 {
   for (  final Property p : cmd.getProperties()) {
-    p.getMetadata().accept(new MetadataVisitor(){
-      @Override public void visit(      BasicFieldMetadata fmd){
-        String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-        Field f=new Field();
-        f.setName(p.getName());
-        f.setFieldType(fieldType);
-        f.setFriendlyName(p.getMetadata().getFriendlyName());
-        if (StringUtils.isBlank(f.getFriendlyName())) {
-          f.setFriendlyName(f.getName());
-        }
-        f.setForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-        String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
-        groupName=groupName == null ? "Default" : groupName;
-        FieldGroup fieldGroup=ef.getGroups().get(groupName);
-        if (fieldGroup == null) {
-          fieldGroup=new FieldGroup();
-          fieldGroup.setTitle(groupName);
-          ef.getGroups().put(groupName,fieldGroup);
-        }
-        fieldGroup.getFields().add(f);
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
+      String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+      Field f=new Field().withName(p.getName()).withFieldType(fieldType).withFriendlyName(p.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+      if (StringUtils.isBlank(f.getFriendlyName())) {
+        f.setFriendlyName(f.getName());
       }
-      @Override public void visit(      BasicCollectionMetadata fmd){
-      }
-      @Override public void visit(      MapMetadata fmd){
-      }
-      @Override public void visit(      AdornedTargetCollectionMetadata fmd){
-      }
+      ef.addField(f,fmd.getGroup());
     }
-);
   }
 }

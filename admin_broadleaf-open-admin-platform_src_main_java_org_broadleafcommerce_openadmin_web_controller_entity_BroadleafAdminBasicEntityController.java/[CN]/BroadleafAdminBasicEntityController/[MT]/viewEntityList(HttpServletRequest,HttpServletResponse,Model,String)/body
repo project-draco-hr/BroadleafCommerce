@@ -1,7 +1,8 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(sectionClassName);
-  Entity[] rows=service.getRecords(sectionClassName,null);
+  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(sectionClassName);
+  ClassMetadata cmd=service.getClassMetadata(ppr);
+  Entity[] rows=service.getRecords(ppr);
   ListGrid listGrid=formService.buildListGrid(cmd,rows);
   listGrid.setListGridType("main");
   model.addAttribute("listGrid",listGrid);

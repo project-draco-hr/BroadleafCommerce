@@ -1,5 +1,5 @@
 {
-  ClassMetadata cmd=getClassMetadata(className);
+  final ClassMetadata cmd=getClassMetadata(className);
   final List<Property> properties=new ArrayList<Property>();
   for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
     Property p=new Property();
@@ -7,46 +7,38 @@
     p.setValue(entry.getValue().getValue());
     properties.add(p);
   }
-  final Entity entity=new Entity();
-  final List<ForeignKey> additionalForeignKeys=new ArrayList<ForeignKey>();
-  final AdornedTargetList[] adornedListContainer=new AdornedTargetList[1];
-  for (  Property p : cmd.getProperties()) {
-    if (p.getName().equals(fieldName)) {
-      p.getMetadata().accept(new MetadataVisitor(){
-        @Override public void visit(        MapMetadata fmd){
-        }
-        @Override public void visit(        AdornedTargetCollectionMetadata fmd){
-          AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-          entity.setType(new String[]{adornedList.getAdornedTargetEntityClassname()});
-          adornedListContainer[0]=adornedList;
-        }
-        @Override public void visit(        BasicCollectionMetadata fmd){
-          ForeignKey foreignField=null;
-          if (fmd != null) {
-            foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-            Property p=new Property();
-            p.setName(foreignField.getManyToField());
-            p.setValue(parentId);
-            properties.add(p);
-          }
-          additionalForeignKeys.add(foreignField);
-          entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
-        }
-        @Override public void visit(        BasicFieldMetadata fmd){
-        }
+  final PersistencePackageRequest request=new PersistencePackageRequest().withEntity(new Entity());
+  cmd.getPMap().get(fieldName).getMetadata().accept(new MetadataVisitor(){
+    @Override public void visit(    MapMetadata fmd){
+      request.setType(PersistencePackageRequest.Type.MAP);
+    }
+    @Override public void visit(    AdornedTargetCollectionMetadata fmd){
+      AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+      request.setType(PersistencePackageRequest.Type.ADORNED);
+      request.getEntity().setType(new String[]{adornedList.getAdornedTargetEntityClassname()});
+      request.setAdornedList(adornedList);
+    }
+    @Override public void visit(    BasicCollectionMetadata fmd){
+      ForeignKey foreignField=null;
+      if (fmd != null) {
+        foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        Property fp=new Property();
+        fp.setName(foreignField.getManyToField());
+        fp.setValue(parentId);
+        properties.add(fp);
       }
-);
+      request.setType(PersistencePackageRequest.Type.STANDARD);
+      request.getEntity().setType(new String[]{fmd.getCollectionCeilingEntity()});
+      request.addForeignKey(foreignField);
+    }
+    @Override public void visit(    BasicFieldMetadata fmd){
+      throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was" + " not a collection field.",fieldName,cmd.getCeilingType()));
     }
   }
+);
   Property[] propArr=new Property[properties.size()];
   properties.toArray(propArr);
-  entity.setProperties(propArr);
-  ForeignKey[] additionalKeys=new ForeignKey[additionalForeignKeys.size()];
-  additionalKeys=additionalForeignKeys.toArray(additionalKeys);
-  if (adornedListContainer[0] != null) {
-    return add(entity,entity.getType()[0],null,adornedListContainer[0]);
-  }
- else {
-    return add(entity,entity.getType()[0],additionalKeys,null);
-  }
+  request.getEntity().setProperties(propArr);
+  request.withClassName(request.getEntity().getType()[0]);
+  return add(request);
 }

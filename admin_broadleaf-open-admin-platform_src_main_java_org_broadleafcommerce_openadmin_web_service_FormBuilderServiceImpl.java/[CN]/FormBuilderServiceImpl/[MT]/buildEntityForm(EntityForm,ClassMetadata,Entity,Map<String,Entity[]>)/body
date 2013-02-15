@@ -16,13 +16,13 @@
       @Override public void visit(      BasicCollectionMetadata fmd){
         try {
           Entity[] subCollectionEntities=subCollections.get(p.getName());
-          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(fmd.getCollectionCeilingEntity());
+          ClassMetadata subCollMd=adminEntityService.getClassMetadata(fmd.getCollectionCeilingEntity());
           if (fmd.getRuleBuilderVars().length > 0) {
-            RuleBuilder subCollectionRuleBuilder=buildRuleBuilder(subCollectionMd,subCollectionEntities,fmd.getRuleBuilderVars(),fmd.getRuleBuilderConfigKeys());
+            RuleBuilder subCollectionRuleBuilder=buildRuleBuilder(subCollMd,subCollectionEntities,fmd.getRuleBuilderVars(),fmd.getRuleBuilderConfigKeys());
             ef.getCollectionRuleBuilders().add(subCollectionRuleBuilder);
           }
  else {
-            ListGrid subCollectionGrid=buildListGrid(subCollectionMd,subCollectionEntities);
+            ListGrid subCollectionGrid=buildListGrid(subCollMd,subCollectionEntities);
             subCollectionGrid.setSubCollectionFieldName(p.getName());
             subCollectionGrid.setAddMethodType(fmd.getAddMethodType());
             subCollectionGrid.setListGridType("inline");
@@ -34,12 +34,26 @@
         }
       }
       @Override public void visit(      MapMetadata fmd){
+        try {
+          ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+          MapStructure map=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+          Entity[] subCollectionEntities=subCollections.get(p.getName());
+          PersistencePackageRequest request=PersistencePackageRequest.map().withClassName(fmd.getTargetClass()).withMapStructure(map).addForeignKey(foreignField);
+          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(request);
+          ListGrid subCollectionGrid=buildMapListGrid(fmd,subCollectionMd,subCollectionEntities);
+          subCollectionGrid.setSubCollectionFieldName(p.getName());
+          ef.getCollectionListGrids().add(subCollectionGrid);
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
       }
       @Override public void visit(      AdornedTargetCollectionMetadata fmd){
         try {
           AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
           Entity[] subCollectionEntities=subCollections.get(p.getName());
-          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(fmd.getCollectionCeilingEntity(),adornedList);
+          PersistencePackageRequest request=PersistencePackageRequest.adorned().withClassName(fmd.getCollectionCeilingEntity()).withAdornedList(adornedList);
+          ClassMetadata subCollectionMd=adminEntityService.getClassMetadata(request);
           ListGrid subCollectionGrid=buildAdornedListGrid(fmd,subCollectionMd,subCollectionEntities);
           subCollectionGrid.setSubCollectionFieldName(p.getName());
           ef.getCollectionListGrids().add(subCollectionGrid);

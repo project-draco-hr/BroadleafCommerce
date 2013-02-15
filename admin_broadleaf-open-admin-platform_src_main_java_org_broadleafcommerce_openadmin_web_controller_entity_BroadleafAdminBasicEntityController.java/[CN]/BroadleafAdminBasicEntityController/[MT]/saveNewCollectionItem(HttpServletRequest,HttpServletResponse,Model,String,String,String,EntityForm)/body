@@ -14,7 +14,8 @@
  else       if (p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
         AdornedTargetCollectionMetadata fmd=((AdornedTargetCollectionMetadata)p.getMetadata());
         AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-        subCollectionMd=service.getClassMetadata(fmd.getCollectionCeilingEntity(),adornedList);
+        PersistencePackageRequest ppr=PersistencePackageRequest.adorned().withClassName(fmd.getCollectionCeilingEntity()).withAdornedList(adornedList);
+        subCollectionMd=service.getClassMetadata(ppr);
         listGrid=formService.buildAdornedListGrid(fmd,subCollectionMd,rows);
       }
  else {

@@ -1,43 +1,21 @@
 {
   final EntityForm ef=new EntityForm();
   ef.setEntityType(adornedList.getAdornedTargetEntityClassname());
-  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(adornedMd.getCollectionCeilingEntity(),adornedList);
+  PersistencePackageRequest request=PersistencePackageRequest.adorned().withClassName(adornedMd.getCollectionCeilingEntity()).withAdornedList(adornedList);
+  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(request);
   for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
     Property p=collectionMetadata.getPMap().get(targetFieldName);
     BasicFieldMetadata fmd=((BasicFieldMetadata)p.getMetadata());
     String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-    Field f=new Field();
-    f.setName(p.getName());
-    f.setFieldType(fieldType);
-    f.setFriendlyName(p.getMetadata().getFriendlyName());
+    Field f=new Field().withName(p.getName()).withFieldType(fieldType).withFriendlyName(p.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
     if (StringUtils.isBlank(f.getFriendlyName())) {
       f.setFriendlyName(f.getName());
     }
-    f.setForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-    String groupName=((BasicFieldMetadata)p.getMetadata()).getGroup();
-    groupName=groupName == null ? "Default" : groupName;
-    FieldGroup fieldGroup=ef.getGroups().get(groupName);
-    if (fieldGroup == null) {
-      fieldGroup=new FieldGroup();
-      fieldGroup.setTitle(groupName);
-      ef.getGroups().put(groupName,fieldGroup);
-    }
-    fieldGroup.getFields().add(f);
+    ef.addField(f,fmd.getGroup());
   }
-  FieldGroup fieldGroup=ef.getGroups().get(EntityForm.HIDDEN_GROUP);
-  if (fieldGroup == null) {
-    fieldGroup=new FieldGroup();
-    ef.getGroups().put(EntityForm.HIDDEN_GROUP,fieldGroup);
-  }
-  Field f=new Field();
-  f.setName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty());
-  f.setFieldType(SupportedFieldType.HIDDEN.toString());
-  f.setValue(parentId);
-  fieldGroup.getFields().add(f);
-  f=new Field();
-  f.setName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty());
-  f.setFieldType(SupportedFieldType.HIDDEN.toString());
-  f.setIdOverride("adornedTargetIdProperty");
-  fieldGroup.getFields().add(f);
+  Field f=new Field().withName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
+  ef.addField(f,EntityForm.HIDDEN_GROUP);
+  f=new Field().withName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withIdOverride("adornedTargetIdProperty");
+  ef.addField(f,EntityForm.HIDDEN_GROUP);
   return ef;
 }

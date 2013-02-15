@@ -1,7 +1,8 @@
 {
   ConditionsDTO conditions=null;
   for (  RuleBuilderDTO dto : dtoList) {
-    ClassMetadata cmd=adminEntityService.getClassMetadata(dto.getCeilingEntity(),dto.getForeignKeys(),dto.getConfigKey());
+    PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(dto.getCeilingEntity()).withForeignKeys(dto.getForeignKeys()).withConfigKey(dto.getConfigKey());
+    ClassMetadata cmd=adminEntityService.getClassMetadata(request);
     RuleBuilderUtil ruleBuilderUtil=new RuleBuilderUtil();
     conditions=ruleBuilderUtil.createConditionsDTO(mvel,cmd.getProperties());
   }
