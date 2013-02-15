@@ -6,7 +6,7 @@
         fgLevelQualification=true;
         break fgQualification;
       }
-      for (      PromotableOrderItem discreteOrderItem : order.getDiscountableDiscreteOrderItems()) {
+      for (      PromotableOrderItem discreteOrderItem : order.getAllOrderItems()) {
         if (couldOfferApplyToOrder(offer,order,discreteOrderItem,fulfillmentGroup)) {
           fgLevelQualification=true;
           break fgQualification;
@@ -20,7 +20,7 @@
       }
     }
     if (fgLevelQualification) {
-      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,fulfillmentGroup.getDiscountableDiscreteOrderItems());
+      CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,fulfillmentGroup.getDiscountableOrderItems());
       if (candidates.isMatchedQualifier()) {
         PromotableCandidateFulfillmentGroupOffer candidateOffer=createCandidateFulfillmentGroupOffer(offer,qualifiedFGOffers,fulfillmentGroup);
         candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());

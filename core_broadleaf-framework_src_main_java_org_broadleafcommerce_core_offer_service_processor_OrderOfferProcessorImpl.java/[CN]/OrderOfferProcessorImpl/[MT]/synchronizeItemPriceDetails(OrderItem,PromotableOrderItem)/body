@@ -1,0 +1,33 @@
+{
+  Map<String,PromotableOrderItemPriceDetail> promotableDetailsMap=buildPromotableDetailsMap(promotableOrderItem);
+  Map<Long,OrderItemPriceDetail> unmatchedDetailsMap=new HashMap<Long,OrderItemPriceDetail>();
+  for (  OrderItemPriceDetail orderItemPriceDetail : orderItem.getOrderItemPriceDetails()) {
+    String detailKey=buildItemPriceDetailKey(orderItemPriceDetail);
+    PromotableOrderItemPriceDetail promotableDetail=promotableDetailsMap.remove(detailKey);
+    if (promotableDetail != null) {
+      processMatchingDetails(orderItemPriceDetail,promotableDetail);
+    }
+ else {
+      unmatchedDetailsMap.put(orderItemPriceDetail.getId(),orderItemPriceDetail);
+    }
+  }
+  Iterator<OrderItemPriceDetail> unmatchedDetailsIterator=unmatchedDetailsMap.values().iterator();
+  for (  PromotableOrderItemPriceDetail priceDetail : promotableDetailsMap.values()) {
+    if (unmatchedDetailsIterator.hasNext()) {
+      OrderItemPriceDetail existingDetail=unmatchedDetailsIterator.next();
+      updatePriceDetail(existingDetail,priceDetail);
+      unmatchedDetailsIterator.remove();
+    }
+ else {
+      OrderItemPriceDetail newPriceDetail=orderItemDao.createOrderItemPriceDetail();
+      updatePriceDetail(newPriceDetail,priceDetail);
+    }
+  }
+  Iterator<OrderItemPriceDetail> pdIterator=orderItem.getOrderItemPriceDetails().iterator();
+  while (pdIterator.hasNext()) {
+    OrderItemPriceDetail currentDetail=pdIterator.next();
+    if (unmatchedDetailsMap.containsKey(currentDetail.getId())) {
+      pdIterator.remove();
+    }
+  }
+}

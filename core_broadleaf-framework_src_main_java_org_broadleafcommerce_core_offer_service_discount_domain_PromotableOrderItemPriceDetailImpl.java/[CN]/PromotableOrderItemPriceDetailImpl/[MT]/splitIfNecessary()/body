@@ -1,0 +1,10 @@
+{
+  PromotableOrderItemPriceDetail returnDetail=null;
+  for (  PromotionDiscount discount : promotionDiscounts) {
+    if (discount.getQuantity() != quantity) {
+      Long offerId=discount.getCandidateItemOffer().getOffer().getId();
+      return this.split(discount.getQuantity(),offerId);
+    }
+  }
+  return returnDetail;
+}

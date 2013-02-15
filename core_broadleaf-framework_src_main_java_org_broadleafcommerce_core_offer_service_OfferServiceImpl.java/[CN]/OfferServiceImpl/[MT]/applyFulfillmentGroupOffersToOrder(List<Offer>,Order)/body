@@ -1,9 +1,7 @@
 {
   OfferContext offerContext=OfferContext.getOfferContext();
   if (offerContext == null || offerContext.executePromotionCalculation) {
-    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
-    promotableOrder.removeAllCandidateFulfillmentGroupOffers();
-    promotableOrder.removeAllFulfillmentAdjustments();
+    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order,true);
     List<Offer> possibleFGOffers=new ArrayList<Offer>();
     for (    Offer offer : offers) {
       if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {

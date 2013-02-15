@@ -1,0 +1,15 @@
+{
+  PromotionDiscount returnDiscount=copy();
+  int originalQty=finalizedQuantity;
+  setFinalizedQuantity(splitQty);
+  setQuantity(splitQty);
+  int newDiscountQty=originalQty - splitQty;
+  if (newDiscountQty == 0) {
+    return null;
+  }
+ else {
+    returnDiscount.setQuantity(newDiscountQty);
+    returnDiscount.setFinalizedQuantity(newDiscountQty);
+  }
+  return returnDiscount;
+}

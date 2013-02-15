@@ -2,14 +2,14 @@
   List<PromotableOrderItem> discountableOrderItems=new ArrayList<PromotableOrderItem>();
   for (  PromotableOrderItem promotableOrderItem : getAllOrderItems()) {
     if (promotableOrderItem.isDiscountingAllowed()) {
-      addPromotableOrderItem(orderItem,discountableOrderItems);
+      discountableOrderItems.add(promotableOrderItem);
     }
  else {
       if (promotableOrderItem.isOrderItemContainer()) {
-        OrderItemContainer orderItemContainer=(OrderItemContainer)orderItem;
+        OrderItemContainer orderItemContainer=promotableOrderItem.getOrderItemContainer();
         if (orderItemContainer.getAllowDiscountsOnChildItems()) {
           for (          OrderItem containedOrderItem : orderItemContainer.getOrderItems()) {
-            if (!containedOrderItem.isDiscountingAllowed()) {
+            if (containedOrderItem.isDiscountingAllowed()) {
               addPromotableOrderItem(containedOrderItem,discountableOrderItems);
             }
           }

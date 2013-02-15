@@ -2,7 +2,7 @@
   EasyMock.expect(customerOfferDaoMock.readCustomerOffersByCustomer(EasyMock.isA(Customer.class))).andReturn(new ArrayList<CustomerOffer>());
   EasyMock.expect(offerDaoMock.readOffersByAutomaticDeliveryType()).andReturn(dataProvider.createCustomerBasedOffer(null,dataProvider.yesterday(),dataProvider.tomorrow(),OfferDiscountType.PERCENT_OFF));
   replay();
-  Order order=dataProvider.createBasicOrder().getDelegate();
+  Order order=dataProvider.createBasicOrder().getOrder();
   List<Offer> offers=offerService.buildOfferListForOrder(order);
   assertTrue(offers.size() == 1);
   verify();

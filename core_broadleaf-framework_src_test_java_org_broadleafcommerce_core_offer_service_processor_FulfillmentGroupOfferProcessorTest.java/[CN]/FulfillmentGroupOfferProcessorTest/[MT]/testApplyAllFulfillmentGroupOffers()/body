@@ -1,8 +1,4 @@
 {
-  CandidateFulfillmentGroupOfferAnswer answer=new CandidateFulfillmentGroupOfferAnswer();
-  EasyMock.expect(offerDaoMock.createCandidateFulfillmentGroupOffer()).andAnswer(answer).times(5);
-  FulfillmentGroupAdjustmentAnswer answer2=new FulfillmentGroupAdjustmentAnswer();
-  EasyMock.expect(offerDaoMock.createFulfillmentGroupAdjustment()).andAnswer(answer2).times(5);
   replay();
   PromotableOrder order=dataProvider.createBasicOrder();
   List<PromotableCandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
@@ -21,7 +17,7 @@
   assertTrue(offerApplied);
   int fgAdjustmentCount=0;
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
-    fgAdjustmentCount+=fg.getDelegate().getFulfillmentGroupAdjustments().size();
+    fgAdjustmentCount+=fg.getCandidateFulfillmentGroupAdjustments().size();
   }
   assertTrue(fgAdjustmentCount == 3);
   verify();

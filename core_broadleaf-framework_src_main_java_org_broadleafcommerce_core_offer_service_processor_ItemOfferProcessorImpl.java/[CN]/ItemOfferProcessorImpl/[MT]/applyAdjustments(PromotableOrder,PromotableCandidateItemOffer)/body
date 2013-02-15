@@ -1,0 +1,11 @@
+{
+  List<PromotableOrderItemPriceDetail> itemPriceDetails=order.getAllPromotableOrderItemPriceDetails();
+  for (  PromotableOrderItemPriceDetail itemPriceDetail : itemPriceDetails) {
+    for (    PromotionDiscount discount : itemPriceDetail.getPromotionDiscounts()) {
+      if (discount.getPromotion().equals(itemOffer.getOffer())) {
+        applyOrderItemAdjustment(itemOffer,itemPriceDetail);
+        break;
+      }
+    }
+  }
+}

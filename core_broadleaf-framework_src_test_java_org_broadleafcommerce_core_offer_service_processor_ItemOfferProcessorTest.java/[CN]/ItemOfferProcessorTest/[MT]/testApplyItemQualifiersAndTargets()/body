@@ -19,53 +19,48 @@
   itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer3);
   assertTrue(qualifiedOffers.size() == 3 && qualifiedOffers.get(2).getOffer().equals(offer3) && qualifiedOffers.get(2).getCandidateQualifiersMap().size() == 1);
   itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(1),order);
-  List<PromotableOrderItem> orderItems=new ArrayList<PromotableOrderItem>();
-  for (  PromotableOrderItem orderItem : order.getDiscountableDiscreteOrderItems()) {
-    orderItems.add(orderItem);
-  }
   int qualCount=0;
   int targetCount=0;
-  for (  PromotableOrderItem orderItem : orderItems) {
-    for (    PromotionDiscount discount : orderItem.getPromotionDiscounts()) {
+  for (  PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
+    for (    PromotionDiscount discount : detail.getPromotionDiscounts()) {
       targetCount+=discount.getQuantity();
     }
-    for (    PromotionQualifier qual : orderItem.getPromotionQualifiers()) {
+    for (    PromotionQualifier qual : detail.getPromotionQualifiers()) {
       qualCount+=qual.getQuantity();
     }
   }
   assertTrue(qualCount == 0 && targetCount == 4);
-  assertTrue(order.getAllSplitItems().size() == 3);
+  assertTrue(order.getAllPromotableOrderItemPriceDetails().size() == 3);
   itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(0),order);
   qualCount=0;
   targetCount=0;
-  for (  PromotableOrderItem orderItem : orderItems) {
-    for (    PromotionDiscount discount : orderItem.getPromotionDiscounts()) {
+  for (  PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
+    for (    PromotionDiscount discount : detail.getPromotionDiscounts()) {
       targetCount+=discount.getQuantity();
     }
-    for (    PromotionQualifier qual : orderItem.getPromotionQualifiers()) {
+    for (    PromotionQualifier qual : detail.getPromotionQualifiers()) {
       qualCount+=qual.getQuantity();
     }
   }
   assertTrue(qualCount == 1 && targetCount == 5);
-  assertTrue(order.getSplitItems().size() == 2 && order.getSplitItems().get(0).getSplitItems().size() == 2 && order.getSplitItems().get(1).getSplitItems().size() == 2);
+  assertTrue(order.getAllPromotableOrderItemPriceDetails().size() == 2);
   itemProcessor.applyItemQualifiersAndTargets(qualifiedOffers.get(2),order);
   qualCount=0;
   targetCount=0;
-  for (  PromotableOrderItem orderItem : orderItems) {
-    for (    PromotionDiscount discount : orderItem.getPromotionDiscounts()) {
+  for (  PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
+    for (    PromotionDiscount discount : detail.getPromotionDiscounts()) {
       targetCount+=discount.getQuantity();
     }
-    for (    PromotionQualifier qual : orderItem.getPromotionQualifiers()) {
+    for (    PromotionQualifier qual : detail.getPromotionQualifiers()) {
       qualCount+=qual.getQuantity();
     }
   }
   int promoCount=0;
-  List<PromotableOrderItem> allSplitItems=order.getAllSplitItems();
-  for (  PromotableOrderItem item : allSplitItems) {
-    promoCount+=item.getPromotionDiscounts().size();
+  for (  PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
+    promoCount+=detail.getPromotionDiscounts().size();
   }
   assertTrue(qualCount == 1 && targetCount == 5);
-  assertTrue(order.getSplitItems().size() == 2 && order.getSplitItems().get(0).getSplitItems().size() == 2 && order.getSplitItems().get(1).getSplitItems().size() == 2);
+  assertTrue(order.getAllPromotableOrderItemPriceDetails().size() == 2);
   assertTrue(promoCount == 4);
   verify();
 }

@@ -1,50 +1,27 @@
 {
-  boolean isNewFormat=!CollectionUtils.isEmpty(offer.getQualifyingItemCriteria()) || !CollectionUtils.isEmpty(offer.getTargetItemCriteria());
   boolean itemLevelQualification=false;
-  boolean offerCreated=false;
   for (  PromotableOrderItem promotableOrderItem : order.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice())) {
     if (couldOfferApplyToOrder(offer,order,promotableOrderItem)) {
-      if (!isNewFormat) {
-        PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem);
-        if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
-          candidate.getCandidateTargets().add(promotableOrderItem);
-        }
-        offerCreated=true;
-        continue;
-      }
       itemLevelQualification=true;
       break;
     }
     for (    PromotableFulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
       if (couldOfferApplyToOrder(offer,order,promotableOrderItem,fulfillmentGroup)) {
-        if (!isNewFormat) {
-          PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem);
-          if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
-            candidate.getCandidateTargets().add(promotableOrderItem);
-          }
-          offerCreated=true;
-          continue;
-        }
         itemLevelQualification=true;
         break;
       }
     }
   }
-  if (itemLevelQualification && !offerCreated) {
+  if (itemLevelQualification) {
     CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,order.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice()));
     PromotableCandidateItemOffer candidateOffer=null;
     if (candidates.isMatchedQualifier()) {
-      candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null);
+      candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null,order);
       candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
     }
     if (candidates.isMatchedTarget() && candidates.isMatchedQualifier()) {
       if (candidateOffer == null) {
-        candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null);
-      }
-      for (      PromotableOrderItem candidateItem : candidates.getCandidateTargets()) {
-        PromotableCandidateItemOffer itemOffer=candidateOffer.clone();
-        itemOffer.setOrderItem(candidateItem);
-        candidateItem.addCandidateItemOffer(itemOffer);
+        candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null,order);
       }
       candidateOffer.getCandidateTargets().addAll(candidates.getCandidateTargets());
     }

@@ -1,43 +1,22 @@
 {
-  boolean orderOffersApplied=false;
   Iterator<PromotableCandidateOrderOffer> orderOfferIterator=orderOffers.iterator();
   while (orderOfferIterator.hasNext()) {
     PromotableCandidateOrderOffer orderOffer=orderOfferIterator.next();
-    if (orderOffer.getOffer().getTreatAsNewFormat() == null || !orderOffer.getOffer().getTreatAsNewFormat()) {
-      if ((orderOffer.getOffer().isStackable()) || !promotableOrder.isHasOrderAdjustments()) {
-        boolean alreadyContainsNotCombinableOfferAtAnyLevel=promotableOrder.isNotCombinableOfferAppliedAtAnyLevel();
-        applyOrderOffer(promotableOrder,orderOffer);
-        orderOffersApplied=true;
-        if (!orderOffer.getOffer().isCombinableWithOtherOffers() || alreadyContainsNotCombinableOfferAtAnyLevel) {
-          orderOffersApplied=compareAndAdjustOrderAndItemOffers(promotableOrder,orderOffersApplied);
-          if (orderOffersApplied) {
-            break;
-          }
- else {
-            orderOfferIterator.remove();
-          }
+    if (promotableOrder.canApplyOrderOffer(orderOffer)) {
+      applyOrderOffer(promotableOrder,orderOffer);
+      if (orderOffer.isTotalitarian()) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Totalitarian Order Offer Applied.   Comparing order and item offers for best outcome.");
         }
+        compareAndAdjustOrderAndItemOffers(promotableOrder);
+        break;
       }
-    }
- else {
-      if (!promotableOrder.containsNotStackableOrderOffer() || !promotableOrder.isHasOrderAdjustments()) {
-        boolean alreadyContainsTotalitarianOffer=promotableOrder.isTotalitarianOfferApplied();
-        applyOrderOffer(order,orderOffer);
-        orderOffersApplied=true;
-        if ((orderOffer.getOffer().isTotalitarianOffer() != null && orderOffer.getOffer().isTotalitarianOffer()) || alreadyContainsTotalitarianOffer) {
-          orderOffersApplied=compareAndAdjustOrderAndItemOffers(promotableOrder,orderOffersApplied);
-          if (orderOffersApplied) {
-            break;
-          }
- else {
-            orderOfferIterator.remove();
-          }
+      if (!orderOffer.isCombinable()) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Non-Combinable Order Offer Applied with id=[" + orderOffer.getOffer().getId() + "].  No other order offers can be applied");
         }
- else         if (!orderOffer.getOffer().isCombinableWithOtherOffers()) {
-          break;
-        }
+        break;
       }
     }
   }
-  return orderOffersApplied;
 }

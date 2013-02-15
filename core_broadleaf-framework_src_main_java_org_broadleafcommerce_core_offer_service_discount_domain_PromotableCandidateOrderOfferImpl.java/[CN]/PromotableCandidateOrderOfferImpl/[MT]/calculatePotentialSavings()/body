@@ -1,0 +1,16 @@
+{
+  Money amountBeforeAdjustments=promotableOrder.calculateSubtotalWithoutAdjustments();
+  potentialSavings=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,getCurrency());
+  if (getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
+    potentialSavings=BroadleafCurrencyUtils.getMoney(getOffer().getValue(),getCurrency());
+  }
+ else   if (getOffer().getDiscountType().equals(OfferDiscountType.FIX_PRICE)) {
+    potentialSavings=amountBeforeAdjustments.subtract(BroadleafCurrencyUtils.getMoney(getOffer().getValue(),getCurrency()));
+  }
+ else   if (getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
+    potentialSavings=amountBeforeAdjustments.multiply(getOffer().getValue().divide(new BigDecimal("100")));
+  }
+  if (potentialSavings.greaterThan(amountBeforeAdjustments)) {
+    potentialSavings=amountBeforeAdjustments;
+  }
+}

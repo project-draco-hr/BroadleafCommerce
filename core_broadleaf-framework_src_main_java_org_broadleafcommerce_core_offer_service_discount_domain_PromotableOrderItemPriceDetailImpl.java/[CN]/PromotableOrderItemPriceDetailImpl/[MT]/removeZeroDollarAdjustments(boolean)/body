@@ -1,0 +1,16 @@
+{
+  Iterator<PromotableOrderItemPriceDetailAdjustment> adjustments=promotableOrderItemPriceDetailAdjustments.iterator();
+  while (adjustments.hasNext()) {
+    PromotableOrderItemPriceDetailAdjustment adjustment=adjustments.next();
+    if (useSalePrice) {
+      if (adjustment.getSaleAdjustmentValue().isZero()) {
+        adjustments.remove();
+      }
+    }
+ else {
+      if (adjustment.getRetailAdjustmentValue().isZero()) {
+        adjustments.remove();
+      }
+    }
+  }
+}

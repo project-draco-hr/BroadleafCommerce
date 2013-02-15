@@ -1,6 +1,7 @@
 {
   OfferDataItemProvider dataProvider=new OfferDataItemProvider();
   offer=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
+  candidateOffer=new PromotableCandidateItemOfferImpl(promotableOrder,offer);
   CandidateItemOfferImpl candidate=new CandidateItemOfferImpl();
   Category category1=new CategoryImpl();
   category1.setName("test1");
@@ -33,10 +34,14 @@
   orderItem1.setPrice(new Money(19.99D));
   Order order=new OrderImpl();
   orderItem1.setOrder(order);
-  promotableOrderItem=new PromotableOrderItemImpl(orderItem1,null,new PromotableItemFactoryImpl());
+  promotableOrder=new PromotableOrderImpl(order,new PromotableItemFactoryImpl(),false);
+  promotableOrderItem=new PromotableOrderItemImpl(orderItem1,null,new PromotableItemFactoryImpl(),false);
+  OrderItemPriceDetail pdetail=new OrderItemPriceDetailImpl();
+  pdetail.setOrderItem(orderItem1);
+  pdetail.setQuantity(2);
+  priceDetail=new PromotableOrderItemPriceDetailImpl(promotableOrderItem,2);
   List<PromotableOrderItem> items=new ArrayList<PromotableOrderItem>();
   items.add(promotableOrderItem);
-  promotableCandidate=new PromotableCandidateItemOfferImpl(candidate);
+  promotableCandidate=new PromotableCandidateItemOfferImpl(promotableOrder,offer);
   promotableCandidate.getCandidateTargets().addAll(items);
-  promotableCandidate.setOffer(offer);
 }

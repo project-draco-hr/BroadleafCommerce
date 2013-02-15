@@ -29,7 +29,7 @@
   fgItemDaoMock.delete(EasyMock.isA(FulfillmentGroupItem.class));
   EasyMock.expectLastCall().anyTimes();
   replay();
-  Order order=dataProvider.createBasicOrder().getDelegate();
+  Order order=dataProvider.createBasicOrder().getOrder();
   myOrder.set(order);
   List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offerService.applyOffersToOrder(offers,order);
@@ -40,7 +40,7 @@
     }
   }
   assertTrue(adjustmentCount == 2);
-  order=dataProvider.createBasicOrder().getDelegate();
+  order=dataProvider.createBasicOrder().getOrder();
   myOrder.set(order);
   offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offerService.applyOffersToOrder(offers,order);

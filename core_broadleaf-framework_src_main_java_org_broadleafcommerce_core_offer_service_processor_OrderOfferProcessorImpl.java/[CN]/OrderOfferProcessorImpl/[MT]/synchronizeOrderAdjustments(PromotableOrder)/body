@@ -1,0 +1,32 @@
+{
+  Order order=promotableOrder.getOrder();
+  if (order.getOrderAdjustments().isEmpty() && promotableOrder.getCandidateOrderAdjustments().isEmpty()) {
+    return;
+  }
+  Map<Long,PromotableOrderAdjustment> newAdjustmentsMap=buildPromotableOrderAdjustmentsMap(promotableOrder);
+  Iterator<OrderAdjustment> orderAdjIterator=order.getOrderAdjustments().iterator();
+  while (orderAdjIterator.hasNext()) {
+    OrderAdjustment adjustment=orderAdjIterator.next();
+    if (adjustment.getOffer() != null) {
+      Long offerId=adjustment.getOffer().getId();
+      PromotableOrderAdjustment promotableAdjustment=newAdjustmentsMap.remove(offerId);
+      if (promotableAdjustment != null) {
+        if (!adjustment.getValue().equals(promotableAdjustment.getAdjustmentValue())) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Updating value for order adjustment with offer Id " + offerId + " to "+ promotableAdjustment.getAdjustmentValue());
+          }
+          adjustment.setValue(promotableAdjustment.getAdjustmentValue());
+        }
+      }
+ else {
+        orderAdjIterator.remove();
+      }
+    }
+  }
+  for (  PromotableOrderAdjustment promotableOrderAdjustment : newAdjustmentsMap.values()) {
+    Offer offer=promotableOrderAdjustment.getOffer();
+    OrderAdjustment orderAdjustment=offerDao.createOrderAdjustment();
+    orderAdjustment.init(order,offer,offer.getName());
+    order.getOrderAdjustments().add(orderAdjustment);
+  }
+}

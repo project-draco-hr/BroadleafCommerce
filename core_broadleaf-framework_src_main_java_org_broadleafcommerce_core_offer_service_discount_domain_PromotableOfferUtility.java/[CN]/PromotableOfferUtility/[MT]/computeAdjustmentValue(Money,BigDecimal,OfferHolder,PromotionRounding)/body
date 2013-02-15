@@ -1,0 +1,29 @@
+{
+  Offer offer=offerHolder.getOffer();
+  BroadleafCurrency currency=offerHolder.getCurrency();
+  OfferDiscountType discountType=offer.getDiscountType();
+  Money adjustmentValue;
+  if (currency != null) {
+    adjustmentValue=new Money(currency);
+  }
+ else {
+    adjustmentValue=new Money();
+  }
+  if (OfferDiscountType.AMOUNT_OFF.equals(discountType)) {
+    adjustmentValue=new Money(offerUnitValue,currency);
+  }
+  if (OfferDiscountType.FIX_PRICE.equals(discountType)) {
+    adjustmentValue=currentPriceDetailValue.subtract(new Money(offerUnitValue,currency));
+  }
+  if (OfferDiscountType.PERCENT_OFF.equals(discountType)) {
+    BigDecimal offerValue=currentPriceDetailValue.getAmount().multiply(offerUnitValue.divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
+    if (rounding.isRoundOfferValues()) {
+      offerValue=offerValue.setScale(rounding.getRoundingScale(),rounding.getRoundingMode());
+    }
+    adjustmentValue=new Money(offerValue,currency);
+  }
+  if (currentPriceDetailValue.lessThan(adjustmentValue)) {
+    adjustmentValue=currentPriceDetailValue;
+  }
+  return adjustmentValue;
+}

@@ -1,0 +1,8 @@
+{
+  Money calculatedSubTotal=BroadleafCurrencyUtils.getMoney(order.getCurrency());
+  for (  PromotableOrderItem orderItem : getAllOrderItems()) {
+    calculatedSubTotal=calculatedSubTotal.add(orderItem.calculateTotalWithAdjustments());
+  }
+  calculatedSubTotal=calculatedSubTotal.subtract(calculateOrderAdjustmentTotal());
+  return calculatedSubTotal;
+}

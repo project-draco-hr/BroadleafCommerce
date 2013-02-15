@@ -2,9 +2,7 @@
   boolean appliesToItem=false;
   if (criteria.getOrderItemMatchRule() != null && criteria.getOrderItemMatchRule().trim().length() != 0) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
-    vars.put("discreteOrderItem",orderItem.getDelegate());
-    vars.put("orderItem",orderItem.getDelegate());
-    vars.put("bundleOrderItem",orderItem.getDelegate());
+    orderItem.updateRuleVariables(vars);
     Boolean expressionOutcome=executeExpression(criteria.getOrderItemMatchRule(),vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToItem=true;

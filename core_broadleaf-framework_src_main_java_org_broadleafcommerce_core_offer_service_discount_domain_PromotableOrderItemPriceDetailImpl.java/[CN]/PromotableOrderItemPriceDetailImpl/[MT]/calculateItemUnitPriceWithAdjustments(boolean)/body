@@ -1,0 +1,13 @@
+{
+  Money priceWithAdjustments=null;
+  if (allowSalePrice) {
+    priceWithAdjustments=promotableOrderItem.getSalePriceBeforeAdjustments();
+  }
+ else {
+    priceWithAdjustments=promotableOrderItem.getRetailPriceBeforeAdjustments();
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableOrderItemPriceDetailAdjustments) {
+    priceWithAdjustments=priceWithAdjustments.subtract(adjustment.getAdjustmentValue());
+  }
+  return priceWithAdjustments;
+}

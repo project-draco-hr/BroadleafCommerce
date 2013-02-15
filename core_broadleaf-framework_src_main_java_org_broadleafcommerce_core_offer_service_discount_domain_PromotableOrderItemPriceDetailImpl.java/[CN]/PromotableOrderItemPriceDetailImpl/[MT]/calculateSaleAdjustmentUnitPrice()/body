@@ -1,0 +1,10 @@
+{
+  Money returnPrice=promotableOrderItem.getSalePriceBeforeAdjustments();
+  if (returnPrice == null) {
+    returnPrice=promotableOrderItem.getRetailPriceBeforeAdjustments();
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableOrderItemPriceDetailAdjustments) {
+    returnPrice=returnPrice.subtract(adjustment.getSaleAdjustmentValue());
+  }
+  return returnPrice;
+}

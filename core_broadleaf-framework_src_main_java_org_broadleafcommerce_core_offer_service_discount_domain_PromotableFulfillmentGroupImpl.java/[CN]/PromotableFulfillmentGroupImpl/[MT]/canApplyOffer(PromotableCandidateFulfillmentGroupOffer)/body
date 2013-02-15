@@ -1,0 +1,13 @@
+{
+  if (candidateFulfillmentGroupAdjustments.size() > 0) {
+    if (!fulfillmentGroupOffer.getOffer().isCombinableWithOtherOffers()) {
+      return false;
+    }
+    for (    PromotableFulfillmentGroupAdjustment adjustment : candidateFulfillmentGroupAdjustments) {
+      if (!adjustment.isCombinable()) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

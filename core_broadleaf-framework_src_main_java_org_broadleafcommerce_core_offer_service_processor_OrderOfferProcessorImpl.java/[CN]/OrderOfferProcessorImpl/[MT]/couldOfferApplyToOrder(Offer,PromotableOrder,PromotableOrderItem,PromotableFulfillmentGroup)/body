@@ -1,21 +1,16 @@
 {
   boolean appliesToItem=false;
   String rule=null;
-  if (offer.getAppliesToOrderRules() != null && offer.getAppliesToOrderRules().trim().length() != 0) {
-    rule=offer.getAppliesToOrderRules();
-  }
- else {
-    OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
-    if (orderRule != null) {
-      rule=orderRule.getMatchRule();
-    }
+  OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
+  if (orderRule != null) {
+    rule=orderRule.getMatchRule();
   }
   if (rule != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
     promotableOrder.updateRuleVariables(vars);
     vars.put("offer",offer);
     if (promotableFulfillmentGroup != null) {
-      vars.put("fulfillmentGroup",promotableFulfillmentGroup.getDelegate());
+      promotableFulfillmentGroup.updateRuleVariables(vars);
     }
     if (promotableOrderItem != null) {
       promotableOrderItem.updateRuleVariables(vars);
