@@ -1,8 +1,5 @@
 {
-  Answer answer=new Answer();
-  Answer2 answer2=new Answer2();
-  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);
-  EasyMock.expect(offerDaoMock.createOrderItemAdjustment()).andAnswer(answer2).times(4);
+  EasyMock.expect(offerDaoMock.createOrderItemPriceDetailAdjustment()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAdjustmentAnswer()).anyTimes();
   EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
   EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Long.class),EasyMock.isA(Long.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
   EasyMock.expect(orderServiceMock.save(EasyMock.isA(Order.class),EasyMock.isA(Boolean.class))).andAnswer(OfferDataItemProvider.getSaveOrderAnswer()).anyTimes();
@@ -25,17 +22,17 @@
   PromotableOrder order=dataProvider.createBasicOrder();
   Offer offer1=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
   offer1.setId(1L);
+  List<Offer> offers=new ArrayList<Offer>();
+  offers.add(offer1);
   List<PromotableCandidateItemOffer> qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
-  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer1);
-  itemProcessor.applyAllItemOffers(qualifiedOffers,order);
+  offerService.applyOffersToOrder(offers,order.getOrder());
   assertTrue(order.getOrder().getTotalAdjustmentsValue().getAmount().doubleValue() > 0);
   order=dataProvider.createBasicOrder();
   qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
   offer1.setApplyDiscountToSalePrice(false);
   order.getDiscountableOrderItems().get(0).getOrderItem().setSalePrice(new Money(1D));
   order.getDiscountableOrderItems().get(1).getOrderItem().setSalePrice(new Money(1D));
-  itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offer1);
-  itemProcessor.applyAllItemOffers(qualifiedOffers,order);
-  assertFalse(checkOrderItemOfferApplied(order));
+  offerService.applyOffersToOrder(offers,order.getOrder());
+  assertTrue(order.getOrder().getTotalAdjustmentsValue().getAmount().doubleValue() == 0);
   verify();
 }

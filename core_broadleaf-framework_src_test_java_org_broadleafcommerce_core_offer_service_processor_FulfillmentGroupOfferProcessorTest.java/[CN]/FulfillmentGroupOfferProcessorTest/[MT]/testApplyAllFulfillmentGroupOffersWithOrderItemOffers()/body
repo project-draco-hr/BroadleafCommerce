@@ -7,6 +7,7 @@
   EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
   EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
   EasyMock.expect(offerDaoMock.createOrderItemPriceDetailAdjustment()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAdjustmentAnswer()).anyTimes();
+  EasyMock.expect(offerDaoMock.createFulfillmentGroupAdjustment()).andAnswer(OfferDataItemProvider.getCreateFulfillmentGroupAdjustmentAnswer()).anyTimes();
   EasyMock.expect(orderServiceMock.findOrderById(EasyMock.isA(Long.class))).andAnswer(new IAnswer<Order>(){
     @Override public Order answer() throws Throwable {
       return myOrder.get();
@@ -70,10 +71,7 @@
   offerService.applyOffersToOrder(offers,promotableOrder.getOrder());
   offerService.applyFulfillmentGroupOffersToOrder(offers,promotableOrder.getOrder());
   fgAdjustmentCount=0;
-  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    fgAdjustmentCount+=fg.getFulfillmentGroupAdjustments().size();
-  }
-  fgAdjustmentCount=0;
+  order=promotableOrder.getOrder();
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
     fgAdjustmentCount+=fg.getFulfillmentGroupAdjustments().size();
   }
