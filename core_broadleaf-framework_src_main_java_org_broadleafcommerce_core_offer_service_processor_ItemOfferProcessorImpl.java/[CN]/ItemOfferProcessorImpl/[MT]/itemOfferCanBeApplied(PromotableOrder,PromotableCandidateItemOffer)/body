@@ -1,0 +1,15 @@
+{
+  for (  PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
+    for (    PromotableOrderItemPriceDetailAdjustment adjustment : detail.getCandidateItemAdjustments()) {
+      if (adjustment.isTotalitarian() || !adjustment.isCombinable()) {
+        return false;
+      }
+ else {
+        if (itemOffer.getOffer().isTotalitarianOffer() || !itemOffer.getOffer().isCombinableWithOtherOffers()) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}

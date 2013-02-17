@@ -1,5 +1,6 @@
 {
   final ThreadLocal<Order> myOrder=new ThreadLocal<Order>();
+  EasyMock.expect(offerDaoMock.createOrderItemPriceDetailAdjustment()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAdjustmentAnswer()).anyTimes();
   CandidateItemOfferAnswer answer=new CandidateItemOfferAnswer();
   OrderItemAdjustmentAnswer answer2=new OrderItemAdjustmentAnswer();
   EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andAnswer(answer).times(2);

@@ -1,5 +1,6 @@
 {
   final ThreadLocal<Order> myOrder=new ThreadLocal<Order>();
+  EasyMock.expect(offerDaoMock.createOrderItemPriceDetailAdjustment()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAdjustmentAnswer()).anyTimes();
   CandidateOrderOfferAnswer candidateOrderOfferAnswer=new CandidateOrderOfferAnswer();
   OrderAdjustmentAnswer orderAdjustmentAnswer=new OrderAdjustmentAnswer();
   EasyMock.expect(offerDaoMock.createCandidateOrderOffer()).andAnswer(candidateOrderOfferAnswer).atLeastOnce();
@@ -48,12 +49,7 @@
   List<Offer> offers2=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offers.addAll(offers2);
   offerService.applyOffersToOrder(offers,order);
-  adjustmentCount=0;
-  for (  OrderItem item : order.getOrderItems()) {
-    if (item.getOrderItemAdjustments() != null) {
-      adjustmentCount+=item.getOrderItemAdjustments().size();
-    }
-  }
+  adjustmentCount=countItemAdjustments(order,adjustmentCount);
   assertTrue(adjustmentCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 0);
@@ -64,12 +60,7 @@
   orderRule.setMatchRule("order.subTotal.getAmount()>124");
   offers.get(0).getOfferMatchRules().put(OfferRuleType.ORDER.getType(),orderRule);
   offerService.applyOffersToOrder(offers,order);
-  adjustmentCount=0;
-  for (  OrderItem item : order.getOrderItems()) {
-    if (item.getOrderItemAdjustments() != null) {
-      adjustmentCount+=item.getOrderItemAdjustments().size();
-    }
-  }
+  adjustmentCount=countItemAdjustments(order,adjustmentCount);
   assertTrue(adjustmentCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 1);
