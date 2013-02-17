@@ -1,0 +1,13 @@
+{
+  if (!itemOffer.getOffer().getApplyDiscountToSalePrice()) {
+    Money salePrice=detail.getPromotableOrderItem().getSalePriceBeforeAdjustments();
+    Money retailPrice=detail.getPromotableOrderItem().getRetailPriceBeforeAdjustments();
+    Money savings=itemOffer.calculateSavingsForOrderItem(detail.getPromotableOrderItem(),1);
+    if (salePrice != null) {
+      if (salePrice.lessThan(retailPrice.subtract(savings))) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
