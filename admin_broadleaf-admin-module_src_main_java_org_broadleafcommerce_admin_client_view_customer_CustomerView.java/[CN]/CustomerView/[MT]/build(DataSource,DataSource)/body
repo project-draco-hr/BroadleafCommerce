@@ -6,8 +6,16 @@
   leftVerticalLayout.setShowResizeBar(true);
   listDisplay=new DynamicEntityListView(BLCMain.getMessageManager().getString("customerListTitle"),entityDataSource,false);
   leftVerticalLayout.addMember(listDisplay);
+  TabSet topTabSet=new TabSet();
+  topTabSet.setID("customerTopTabSet");
+  topTabSet.setTabBarPosition(Side.TOP);
+  topTabSet.setPaneContainerOverflow(Overflow.HIDDEN);
+  topTabSet.setWidth100();
+  topTabSet.setHeight100();
+  topTabSet.setPaneMargin(0);
+  Tab detailsTab=new Tab(BLCMain.getMessageManager().getString("detailsTabTitle"));
+  detailsTab.setID("customerDetailsTab");
   dynamicFormDisplay=new DynamicFormView(BLCMain.getMessageManager().getString("customerDetailsTitle"),entityDataSource);
-  dynamicFormDisplay.setWidth("50%");
   ToolStrip toolbar=dynamicFormDisplay.getToolbar();
   toolbar.addFill();
   customerAddressDisplay=new GridStructureView(BLCMain.getMessageManager().getString("customerAddressListTitle"),false,false);
@@ -19,7 +27,9 @@
   updateLoginButton.setOverflow(Overflow.VISIBLE);
   toolbar.addButton(updateLoginButton);
   toolbar.addSpacer(6);
+  detailsTab.setPane(dynamicFormDisplay);
+  topTabSet.addTab(detailsTab);
   leftVerticalLayout.setParentElement(this);
   addMember(leftVerticalLayout);
-  addMember(dynamicFormDisplay);
+  addMember(topTabSet);
 }

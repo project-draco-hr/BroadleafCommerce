@@ -14,16 +14,7 @@
       payments.put(paymentInfo,referenceInfo);
     }
     if (PaymentInfoType.CREDIT_CARD.equals(paymentInfo.getType())) {
-      Referenced referenceInfo=null;
-      try {
-        referenceInfo=securePaymentInfoService.findSecurePaymentInfo(paymentInfo.getReferenceNumber(),PaymentInfoType.CREDIT_CARD);
-      }
- catch (      WorkflowException e) {
-        e.printStackTrace();
-      }
-      if (referenceInfo == null) {
-        referenceInfo=createCreditCardReferenceInfo(paymentInfo);
-      }
+      Referenced referenceInfo=createCreditCardReferenceInfo(paymentInfo);
       payments.put(paymentInfo,referenceInfo);
     }
     if (PaymentInfoType.CUSTOMER_CREDIT.equals(paymentInfo.getType())) {

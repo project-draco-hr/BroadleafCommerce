@@ -1,0 +1,12 @@
+{
+  if (customer == null) {
+    return null;
+  }
+  List<CustomerPayment> payments=readCustomerPaymentsByCustomerId(customer.getId());
+  for (  CustomerPayment payment : payments) {
+    if (payment.isDefault()) {
+      return payment;
+    }
+  }
+  return null;
+}

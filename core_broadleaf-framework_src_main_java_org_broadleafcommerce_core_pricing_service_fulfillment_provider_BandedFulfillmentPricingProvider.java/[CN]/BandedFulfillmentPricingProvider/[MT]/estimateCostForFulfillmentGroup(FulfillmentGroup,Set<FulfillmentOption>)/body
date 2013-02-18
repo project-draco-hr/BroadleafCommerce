@@ -17,6 +17,7 @@
       BigDecimal retailTotal=BigDecimal.ZERO;
       BigDecimal flatTotal=BigDecimal.ZERO;
       BigDecimal weightTotal=BigDecimal.ZERO;
+      boolean foundCandidateForBand=false;
       for (      FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
         boolean addToTotal=true;
         Sku sku=null;
@@ -34,60 +35,63 @@
           }
         }
         if (addToTotal) {
+          foundCandidateForBand=true;
           BigDecimal price=(fulfillmentGroupItem.getPrice() != null) ? fulfillmentGroupItem.getPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity())) : null;
           if (price == null) {
             price=fulfillmentGroupItem.getOrderItem().getPrice().getAmount().multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity()));
           }
           retailTotal=retailTotal.add(price);
           if (sku != null && sku.getWeight() != null && sku.getWeight().getWeight() != null) {
-            BigDecimal convertedWeight=convertWeight(sku.getWeight().getWeight(),sku.getWeight().getWeightUnitOfMeasure());
+            BigDecimal convertedWeight=convertWeight(sku.getWeight().getWeight(),sku.getWeight().getWeightUnitOfMeasure()).multiply(BigDecimal.valueOf(fulfillmentGroupItem.getQuantity()));
             weightTotal=weightTotal.add(convertedWeight);
           }
         }
       }
       BigDecimal lowestBandFulfillmentPrice=null;
       BigDecimal lowestBandFulfillmentPriceMinimumAmount=BigDecimal.ZERO;
-      for (      FulfillmentBand band : bands) {
-        BigDecimal bandMinimumAmount=BigDecimal.ZERO;
-        boolean foundMatch=false;
-        if (band instanceof FulfillmentPriceBand) {
-          bandMinimumAmount=((FulfillmentPriceBand)band).getRetailPriceMinimumAmount();
-          foundMatch=retailTotal.compareTo(bandMinimumAmount) >= 0;
-        }
- else         if (band instanceof FulfillmentWeightBand) {
-          bandMinimumAmount=((FulfillmentWeightBand)band).getMinimumWeight();
-          foundMatch=weightTotal.compareTo(bandMinimumAmount) >= 0;
-        }
-        if (foundMatch) {
-          FulfillmentBandResultAmountType resultAmountType=band.getResultAmountType();
-          BigDecimal bandFulfillmentPrice=null;
-          if (FulfillmentBandResultAmountType.RATE.equals(resultAmountType)) {
-            bandFulfillmentPrice=band.getResultAmount();
+      if (foundCandidateForBand) {
+        for (        FulfillmentBand band : bands) {
+          BigDecimal bandMinimumAmount=BigDecimal.ZERO;
+          boolean foundMatch=false;
+          if (band instanceof FulfillmentPriceBand) {
+            bandMinimumAmount=((FulfillmentPriceBand)band).getRetailPriceMinimumAmount();
+            foundMatch=retailTotal.compareTo(bandMinimumAmount) >= 0;
           }
- else           if (FulfillmentBandResultAmountType.PERCENTAGE.equals(resultAmountType)) {
-            bandFulfillmentPrice=retailTotal.multiply(band.getResultAmount());
+ else           if (band instanceof FulfillmentWeightBand) {
+            bandMinimumAmount=((FulfillmentWeightBand)band).getMinimumWeight();
+            foundMatch=weightTotal.compareTo(bandMinimumAmount) >= 0;
           }
- else {
-            LOG.warn("Unknown FulfillmentBandResultAmountType: " + resultAmountType.getType() + " Should be RATE or PERCENTAGE. Ignoring.");
-          }
-          if (bandFulfillmentPrice != null) {
-            if (lowestBandFulfillmentPrice == null) {
-              lowestBandFulfillmentPrice=bandFulfillmentPrice;
-              lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
+          if (foundMatch) {
+            FulfillmentBandResultAmountType resultAmountType=band.getResultAmountType();
+            BigDecimal bandFulfillmentPrice=null;
+            if (FulfillmentBandResultAmountType.RATE.equals(resultAmountType)) {
+              bandFulfillmentPrice=band.getResultAmount();
             }
-            if (lowestBandFulfillmentPriceMinimumAmount.compareTo(bandMinimumAmount) == 0) {
-              if (bandFulfillmentPrice.compareTo(lowestBandFulfillmentPrice) <= 0) {
+ else             if (FulfillmentBandResultAmountType.PERCENTAGE.equals(resultAmountType)) {
+              bandFulfillmentPrice=retailTotal.multiply(band.getResultAmount());
+            }
+ else {
+              LOG.warn("Unknown FulfillmentBandResultAmountType: " + resultAmountType.getType() + " Should be RATE or PERCENTAGE. Ignoring.");
+            }
+            if (bandFulfillmentPrice != null) {
+              if (lowestBandFulfillmentPrice == null) {
+                lowestBandFulfillmentPrice=bandFulfillmentPrice;
+                lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
+              }
+              if (lowestBandFulfillmentPriceMinimumAmount.compareTo(bandMinimumAmount) == 0) {
+                if (bandFulfillmentPrice.compareTo(lowestBandFulfillmentPrice) <= 0) {
+                  lowestBandFulfillmentPrice=bandFulfillmentPrice;
+                  lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
+                }
+              }
+ else               if (bandMinimumAmount.compareTo(lowestBandFulfillmentPriceMinimumAmount) > 0) {
                 lowestBandFulfillmentPrice=bandFulfillmentPrice;
                 lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
               }
             }
- else             if (bandMinimumAmount.compareTo(lowestBandFulfillmentPriceMinimumAmount) > 0) {
-              lowestBandFulfillmentPrice=bandFulfillmentPrice;
-              lowestBandFulfillmentPriceMinimumAmount=bandMinimumAmount;
-            }
-          }
  else {
-            throw new IllegalStateException("Bands must have a non-null fulfillment price");
+              throw new IllegalStateException("Bands must have a non-null fulfillment price");
+            }
           }
         }
       }

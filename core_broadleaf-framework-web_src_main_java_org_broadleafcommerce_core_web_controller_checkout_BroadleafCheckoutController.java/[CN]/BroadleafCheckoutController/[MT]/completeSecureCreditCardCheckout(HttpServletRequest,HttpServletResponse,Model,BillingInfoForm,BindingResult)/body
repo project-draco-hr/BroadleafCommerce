@@ -22,13 +22,11 @@
     ccReference.setExpirationMonth(Integer.parseInt(billingForm.getCreditCardExpMonth()));
     ccReference.setExpirationYear(Integer.parseInt(billingForm.getCreditCardExpYear()));
     payments.put(ccInfo,ccReference);
-    initializeOrderForCheckout(cart);
     CheckoutResponse checkoutResponse=null;
     try {
       checkoutResponse=checkoutService.performCheckout(cart,payments);
     }
  catch (    CheckoutException e) {
-      processFailedOrderCheckout(cart);
       populateModelWithShippingReferenceData(request,model);
       String errorMsg=e.getRootCauseMessage();
       if (errorMsg.contains("Credit")) {
