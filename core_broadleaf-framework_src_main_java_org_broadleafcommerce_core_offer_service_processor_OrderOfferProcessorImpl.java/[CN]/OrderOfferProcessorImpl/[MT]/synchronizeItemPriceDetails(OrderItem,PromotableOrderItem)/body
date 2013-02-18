@@ -20,7 +20,9 @@
     }
  else {
       OrderItemPriceDetail newPriceDetail=orderItemDao.createOrderItemPriceDetail();
+      newPriceDetail.setOrderItem(orderItem);
       updatePriceDetail(newPriceDetail,priceDetail);
+      orderItem.getOrderItemPriceDetails().add(newPriceDetail);
     }
   }
   Iterator<OrderItemPriceDetail> pdIterator=orderItem.getOrderItemPriceDetails().iterator();

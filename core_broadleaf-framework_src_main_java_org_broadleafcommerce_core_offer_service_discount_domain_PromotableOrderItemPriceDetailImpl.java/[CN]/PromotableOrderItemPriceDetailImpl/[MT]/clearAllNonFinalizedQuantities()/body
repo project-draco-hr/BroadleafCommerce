@@ -9,4 +9,14 @@
       promotionQualifier.setQuantity(promotionQualifier.getFinalizedQuantity());
     }
   }
+  Iterator<PromotionDiscount> promotionDiscountIterator=promotionDiscounts.iterator();
+  while (promotionDiscountIterator.hasNext()) {
+    PromotionDiscount promotionDiscount=promotionDiscountIterator.next();
+    if (promotionDiscount.getFinalizedQuantity() == 0) {
+      promotionDiscountIterator.remove();
+    }
+ else {
+      promotionDiscount.setQuantity(promotionDiscount.getFinalizedQuantity());
+    }
+  }
 }

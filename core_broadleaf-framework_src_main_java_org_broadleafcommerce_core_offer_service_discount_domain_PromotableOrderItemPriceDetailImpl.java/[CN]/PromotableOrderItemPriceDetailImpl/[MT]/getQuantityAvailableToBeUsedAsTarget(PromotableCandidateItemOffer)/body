@@ -6,23 +6,21 @@
     return 0;
   }
   for (  PromotionDiscount promotionDiscount : promotionDiscounts) {
-    if (promotionDiscount.getPromotion().equals(promotion)) {
+    if (promotionDiscount.getPromotion().equals(promotion) || restrictTarget(promotion,true)) {
       qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
     }
  else {
-      OfferItemRestrictionRuleType qualifierType=promotionDiscount.getPromotion().getOfferItemTargetRuleType();
-      if (OfferItemRestrictionRuleType.NONE.equals(qualifierType) || OfferItemRestrictionRuleType.QUALIFIER.equals(qualifierType)) {
+      if (restrictTarget(promotionDiscount.getPromotion(),true)) {
         qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
       }
     }
   }
   for (  PromotionQualifier promotionQualifier : promotionQualifiers) {
-    if (promotionQualifier.getPromotion().equals(promotion)) {
+    if (promotionQualifier.getPromotion().equals(promotion) || restrictQualifier(promotion,true)) {
       qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
     }
  else {
-      OfferItemRestrictionRuleType qualifierType=promotionQualifier.getPromotion().getOfferItemQualifierRuleType();
-      if (OfferItemRestrictionRuleType.NONE.equals(qualifierType) || OfferItemRestrictionRuleType.QUALIFIER.equals(qualifierType)) {
+      if (restrictTarget(promotionQualifier.getPromotion(),false)) {
         qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
       }
     }

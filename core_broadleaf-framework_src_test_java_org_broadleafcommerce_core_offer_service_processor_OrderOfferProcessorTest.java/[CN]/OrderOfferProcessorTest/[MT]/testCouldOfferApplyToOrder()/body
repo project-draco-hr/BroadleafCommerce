@@ -1,6 +1,6 @@
 {
   replay();
-  PromotableOrder order=dataProvider.createBasicOrder();
+  PromotableOrder order=dataProvider.createBasicPromotableOrder();
   List<Offer> offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF);
   boolean couldApply=orderProcessor.couldOfferApplyToOrder(offers.get(0),order,order.getDiscountableOrderItems().get(0),order.getFulfillmentGroups().get(0));
   assertTrue(couldApply);

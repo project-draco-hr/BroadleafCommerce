@@ -4,7 +4,7 @@
   int appliedCount=0;
   for (  PromotableOrderItem chgItem : candidateTargets) {
     int qtyToReceiveSavings=Math.min(chgItem.getQuantity(),maxUses);
-    savings=calculateSavingsForOrderItem(chgItem,qtyToReceiveSavings);
+    savings=savings.add(calculateSavingsForOrderItem(chgItem,qtyToReceiveSavings));
     appliedCount=appliedCount + qtyToReceiveSavings;
     if (appliedCount >= maxUses) {
       return savings;

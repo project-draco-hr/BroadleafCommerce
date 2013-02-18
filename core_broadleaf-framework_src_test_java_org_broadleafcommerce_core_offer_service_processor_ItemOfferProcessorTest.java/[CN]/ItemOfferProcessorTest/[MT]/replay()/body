@@ -1,5 +1,26 @@
 {
+  EasyMock.expect(orderItemDaoMock.createOrderItemPriceDetail()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAnswer()).anyTimes();
+  EasyMock.expect(offerDaoMock.createOrderItemPriceDetailAdjustment()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAdjustmentAnswer()).anyTimes();
+  EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Long.class),EasyMock.isA(Long.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.save(EasyMock.isA(Order.class),EasyMock.isA(Boolean.class))).andAnswer(OfferDataItemProvider.getSaveOrderAnswer()).anyTimes();
+  EasyMock.expect(orderServiceMock.getAutomaticallyMergeLikeItems()).andReturn(true).anyTimes();
+  EasyMock.expect(orderItemServiceMock.saveOrderItem(EasyMock.isA(OrderItem.class))).andAnswer(OfferDataItemProvider.getSaveOrderItemAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.save(EasyMock.isA(FulfillmentGroupItem.class))).andAnswer(OfferDataItemProvider.getSaveFulfillmentGroupItemAnswer()).anyTimes();
+  EasyMock.expect(multishipOptionServiceMock.findOrderMultishipOptions(EasyMock.isA(Long.class))).andAnswer(new IAnswer<List<OrderMultishipOption>>(){
+    @Override public List<OrderMultishipOption> answer() throws Throwable {
+      return new ArrayList<OrderMultishipOption>();
+    }
+  }
+).anyTimes();
+  multishipOptionServiceMock.deleteAllOrderMultishipOptions(EasyMock.isA(Order.class));
+  EasyMock.expectLastCall().anyTimes();
+  EasyMock.expect(fgServiceMock.collapseToOneFulfillmentGroup(EasyMock.isA(Order.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getSameOrderAnswer()).anyTimes();
+  EasyMock.expect(fgItemDaoMock.create()).andAnswer(OfferDataItemProvider.getCreateFulfillmentGroupItemAnswer()).anyTimes();
+  fgItemDaoMock.delete(EasyMock.isA(FulfillmentGroupItem.class));
+  EasyMock.expectLastCall().anyTimes();
   EasyMock.replay(offerDaoMock);
+  EasyMock.replay(orderItemDaoMock);
   EasyMock.replay(orderServiceMock);
   EasyMock.replay(orderItemServiceMock);
   EasyMock.replay(fgItemDaoMock);

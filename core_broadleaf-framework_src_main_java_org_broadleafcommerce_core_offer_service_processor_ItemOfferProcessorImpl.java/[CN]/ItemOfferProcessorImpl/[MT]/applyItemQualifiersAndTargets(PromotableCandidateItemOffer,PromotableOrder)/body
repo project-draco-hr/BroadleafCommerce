@@ -1,17 +1,4 @@
 {
-  boolean matchFound=false;
-  do {
-    boolean qualifiersFound=markQualifiers(itemOffer,order);
-    boolean targetsFound=markTargets(itemOffer,order);
-    if (qualifiersFound && targetsFound) {
-      finalizeQuantities(order.getAllPromotableOrderItemPriceDetails());
-    }
- else {
-      clearAllNonFinalizedQuantities(order.getAllPromotableOrderItemPriceDetails());
-      matchFound=false;
-      break;
-    }
-  }
- while (matchFound);
+  markQualifiersAndTargets(order,itemOffer);
   splitDetailsIfNecessary(order.getAllPromotableOrderItemPriceDetails());
 }

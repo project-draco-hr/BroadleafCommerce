@@ -4,13 +4,13 @@
     List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
     Collections.sort(priceDetails,getQualifierItemComparator(itemOffer.getOffer().getApplyDiscountToSalePrice()));
     int qualifierQtyNeeded=itemCriteria.getQuantity();
-    for (    PromotableOrderItemPriceDetail priceDetail : priceDetails) {
+    for (    PromotableOrderItemPriceDetail detail : priceDetails) {
       if (qualifierQtyNeeded > 0) {
-        int itemQtyAvailableToBeUsedAsQualifier=priceDetail.getQuantityAvailableToBeUsedAsQualifier(itemOffer);
+        int itemQtyAvailableToBeUsedAsQualifier=detail.getQuantityAvailableToBeUsedAsQualifier(itemOffer);
         if (itemQtyAvailableToBeUsedAsQualifier > 0) {
           int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
           qualifierQtyNeeded-=qtyToMarkAsQualifier;
-          priceDetail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
+          detail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
         }
       }
       if (qualifierQtyNeeded == 0) {

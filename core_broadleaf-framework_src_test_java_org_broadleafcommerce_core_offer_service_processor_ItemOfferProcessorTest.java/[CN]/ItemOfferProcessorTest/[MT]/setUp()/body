@@ -2,6 +2,7 @@
   CustomerOfferDao customerOfferDaoMock=EasyMock.createMock(CustomerOfferDao.class);
   OfferCodeDao offerCodeDaoMock=EasyMock.createMock(OfferCodeDao.class);
   offerDaoMock=EasyMock.createMock(OfferDao.class);
+  orderItemDaoMock=EasyMock.createMock(OrderItemDao.class);
   orderServiceMock=EasyMock.createMock(OrderService.class);
   orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
   fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
@@ -9,11 +10,13 @@
   multishipOptionServiceMock=EasyMock.createMock(OrderMultishipOptionService.class);
   itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
+  itemProcessor.setOrderItemDao(orderItemDaoMock);
   itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
   offerService=new OfferServiceImpl();
   OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
   orderProcessor.setOfferDao(offerDaoMock);
   orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  orderProcessor.setOrderItemDao(orderItemDaoMock);
   offerService.setCustomerOfferDao(customerOfferDaoMock);
   offerService.setOfferCodeDao(offerCodeDaoMock);
   offerService.setOfferDao(offerDaoMock);

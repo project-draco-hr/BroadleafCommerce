@@ -1,0 +1,13 @@
+{
+  int count=0;
+  for (  OrderItem item : order.getOrderItems()) {
+    for (    OrderItemPriceDetail detail : item.getOrderItemPriceDetails()) {
+      for (      OrderItemPriceDetailAdjustment adjustment : detail.getOrderItemPriceDetailAdjustments()) {
+        if (adjustment.getOffer().getId().equals(offer.getId())) {
+          count+=detail.getQuantity();
+        }
+      }
+    }
+  }
+  return count;
+}

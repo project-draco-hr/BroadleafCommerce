@@ -9,7 +9,7 @@
           LOG.trace("Totalitarian Order Offer Applied.   Comparing order and item offers for best outcome.");
         }
         compareAndAdjustOrderAndItemOffers(promotableOrder);
-        break;
+        continue;
       }
       if (!orderOffer.isCombinable()) {
         if (LOG.isTraceEnabled()) {
@@ -19,4 +19,5 @@
       }
     }
   }
+  promotableOrder.getOrder().setSubTotal(promotableOrder.calculateSubtotalWithAdjustments());
 }

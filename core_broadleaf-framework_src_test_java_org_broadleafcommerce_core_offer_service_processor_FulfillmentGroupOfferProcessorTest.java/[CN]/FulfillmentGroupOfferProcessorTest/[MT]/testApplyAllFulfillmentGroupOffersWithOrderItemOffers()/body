@@ -1,5 +1,6 @@
 {
   final ThreadLocal<Order> myOrder=new ThreadLocal<Order>();
+  EasyMock.expect(orderItemDaoMock.createOrderItemPriceDetail()).andAnswer(OfferDataItemProvider.getCreateOrderItemPriceDetailAnswer()).anyTimes();
   EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
   EasyMock.expect(orderServiceMock.removeItem(EasyMock.isA(Long.class),EasyMock.isA(Long.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getRemoveItemFromOrderAnswer()).anyTimes();
   EasyMock.expect(orderServiceMock.save(EasyMock.isA(Order.class),EasyMock.isA(Boolean.class))).andAnswer(OfferDataItemProvider.getSaveOrderAnswer()).anyTimes();
@@ -17,7 +18,7 @@
   EasyMock.expect(multishipOptionServiceMock.findOrderMultishipOptions(EasyMock.isA(Long.class))).andAnswer(new IAnswer<List<OrderMultishipOption>>(){
     @Override public List<OrderMultishipOption> answer() throws Throwable {
       List<OrderMultishipOption> options=new ArrayList<OrderMultishipOption>();
-      PromotableOrder order=dataProvider.createBasicOrder();
+      PromotableOrder order=dataProvider.createBasicPromotableOrder();
       for (      FulfillmentGroup fg : order.getOrder().getFulfillmentGroups()) {
         Address address=fg.getAddress();
         for (        FulfillmentGroupItem fgItem : fg.getFulfillmentGroupItems()) {
@@ -49,23 +50,23 @@
   fgItemDaoMock.delete(EasyMock.isA(FulfillmentGroupItem.class));
   EasyMock.expectLastCall().anyTimes();
   replay();
-  PromotableOrder promotableOrder=dataProvider.createBasicOrder();
+  PromotableOrder promotableOrder=dataProvider.createBasicPromotableOrder();
   Order order=promotableOrder.getOrder();
   myOrder.set(promotableOrder.getOrder());
   List<PromotableCandidateFulfillmentGroupOffer> qualifiedOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
   List<Offer> offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
   offers.addAll(dataProvider.createFGBasedOfferWithItemCriteria("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offers.get(1).setName("secondOffer");
-  offers.get(0).setTotalitarianOffer(true);
   offers.addAll(dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offerService.applyOffersToOrder(offers,promotableOrder.getOrder());
+  offers.get(0).setTotalitarianOffer(true);
   offerService.applyFulfillmentGroupOffersToOrder(offers,promotableOrder.getOrder());
   int fgAdjustmentCount=0;
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
     fgAdjustmentCount+=fg.getFulfillmentGroupAdjustments().size();
   }
   assertTrue(fgAdjustmentCount == 1);
-  promotableOrder=dataProvider.createBasicOrder();
+  promotableOrder=dataProvider.createBasicPromotableOrder();
   myOrder.set(promotableOrder.getOrder());
   offers.get(2).setValue(new BigDecimal("1"));
   offerService.applyOffersToOrder(offers,promotableOrder.getOrder());
