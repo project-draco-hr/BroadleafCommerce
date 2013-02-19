@@ -65,6 +65,18 @@
           }
         }
         @Override public void visit(        MapMetadata fmd){
+          try {
+            MapStructure mapStructure=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+            ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+            PersistencePackageRequest request=PersistencePackageRequest.map().withClassName(fmd.getTargetClass()).withMapStructure(mapStructure).addForeignKey(foreignField);
+            ClassMetadata collectionMetadata=service.getClassMetadata(request);
+            EntityForm entityForm=formService.buildMapForm(fmd,mapStructure,collectionMetadata,id);
+            model.addAttribute("entityForm",entityForm);
+            model.addAttribute("viewType","modalMapEntityForm");
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
         }
       }
 );

@@ -1,0 +1,14 @@
+{
+  Object component=StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  String id="";
+  if (component instanceof ListGrid) {
+    ListGrid lg=(ListGrid)component;
+    String fieldName=lg.getSubCollectionFieldName();
+    if (StringUtils.isNotBlank(fieldName)) {
+      id=cleanCssIdString("listGrid-" + fieldName);
+    }
+  }
+  Map<String,String> attrs=new HashMap<String,String>();
+  attrs.put("id",id);
+  return attrs;
+}

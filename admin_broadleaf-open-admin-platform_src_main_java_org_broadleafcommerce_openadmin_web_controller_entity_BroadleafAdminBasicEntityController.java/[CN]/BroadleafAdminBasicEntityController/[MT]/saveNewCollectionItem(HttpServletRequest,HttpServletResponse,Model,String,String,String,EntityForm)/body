@@ -12,11 +12,19 @@
         listGrid=formService.buildListGrid(subCollectionMd,rows);
       }
  else       if (p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
-        AdornedTargetCollectionMetadata fmd=((AdornedTargetCollectionMetadata)p.getMetadata());
+        AdornedTargetCollectionMetadata fmd=(AdornedTargetCollectionMetadata)p.getMetadata();
         AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
         PersistencePackageRequest ppr=PersistencePackageRequest.adorned().withClassName(fmd.getCollectionCeilingEntity()).withAdornedList(adornedList);
         subCollectionMd=service.getClassMetadata(ppr);
         listGrid=formService.buildAdornedListGrid(fmd,subCollectionMd,rows);
+      }
+ else       if (p.getMetadata() instanceof MapMetadata) {
+        MapMetadata fmd=(MapMetadata)p.getMetadata();
+        ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+        MapStructure map=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+        PersistencePackageRequest ppr=PersistencePackageRequest.map().withClassName(fmd.getTargetClass()).withMapStructure(map).addForeignKey(foreignField);
+        subCollectionMd=service.getClassMetadata(ppr);
+        listGrid=formService.buildMapListGrid(fmd,subCollectionMd,rows);
       }
  else {
         subCollectionMd=null;

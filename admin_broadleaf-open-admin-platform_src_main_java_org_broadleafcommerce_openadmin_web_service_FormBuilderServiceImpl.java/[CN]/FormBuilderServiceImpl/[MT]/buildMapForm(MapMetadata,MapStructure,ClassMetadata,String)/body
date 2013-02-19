@@ -1,0 +1,35 @@
+{
+  final EntityForm ef=new EntityForm();
+  ef.setEntityType(mapMd.getTargetClass());
+  ComboField keyField=new ComboField();
+  keyField.withName("key").withFieldType("combo_field").withFriendlyName("Key");
+  if (mapMd.getKeys() != null) {
+    for (    String[] key : mapMd.getKeys()) {
+      keyField.putOption(key[0],key[1]);
+    }
+  }
+ else {
+    PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(mapMd.getMapKeyOptionEntityClass());
+    Entity[] rows=adminEntityService.getRecords(ppr);
+    for (    Entity entity : rows) {
+      String keyValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityValueField()).getValue();
+      String keyDisplayValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityDisplayField()).getValue();
+      keyField.putOption(keyValue,keyDisplayValue);
+    }
+  }
+  ef.addField(keyField,EntityForm.MAP_KEY_GROUP);
+  for (  Property p : cmd.getProperties()) {
+    if (ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),mapStructure.getValueClassName())) {
+      BasicFieldMetadata fmd=((BasicFieldMetadata)p.getMetadata());
+      String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+      Field f=new Field().withName(p.getName()).withFieldType(fieldType).withFriendlyName(p.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+      if (StringUtils.isBlank(f.getFriendlyName())) {
+        f.setFriendlyName(f.getName());
+      }
+      ef.addField(f,fmd.getGroup());
+    }
+  }
+  Field f=new Field().withName("symbolicId").withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
+  ef.addField(f,EntityForm.HIDDEN_GROUP);
+  return ef;
+}

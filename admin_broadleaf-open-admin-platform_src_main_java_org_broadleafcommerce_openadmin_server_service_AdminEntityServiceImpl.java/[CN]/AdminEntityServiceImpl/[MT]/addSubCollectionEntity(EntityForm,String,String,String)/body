@@ -10,7 +10,12 @@
   final PersistencePackageRequest request=new PersistencePackageRequest().withEntity(new Entity());
   cmd.getPMap().get(fieldName).getMetadata().accept(new MetadataVisitor(){
     @Override public void visit(    MapMetadata fmd){
+      ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+      MapStructure map=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
       request.setType(PersistencePackageRequest.Type.MAP);
+      request.getEntity().setType(new String[]{entityForm.getEntityType()});
+      request.setMapStructure(map);
+      request.addForeignKey(foreignField);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata fmd){
       AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
