@@ -1,0 +1,12 @@
+{
+  if (shouldSumItems()) {
+    Money proratedOrderAdjustment=BroadleafCurrencyUtils.getMoney(getOrder().getCurrency());
+    for (    DiscreteOrderItem discreteOrderItem : discreteOrderItems) {
+      proratedOrderAdjustment=proratedOrderAdjustment.add(discreteOrderItem.getProratedOrderAdjustment());
+    }
+    return proratedOrderAdjustment;
+  }
+ else {
+    return super.getProratedOrderAdjustment();
+  }
+}

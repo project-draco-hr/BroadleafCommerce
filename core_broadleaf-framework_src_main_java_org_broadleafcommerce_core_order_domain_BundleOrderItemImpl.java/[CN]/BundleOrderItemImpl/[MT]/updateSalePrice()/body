@@ -1,0 +1,13 @@
+{
+  if (isSalePriceOverride()) {
+    return false;
+  }
+  if (!shouldSumItems()) {
+    if (getSku() != null && !getSku().getSalePrice().equals(salePrice)) {
+      baseSalePrice=getSku().getSalePrice().getAmount();
+      salePrice=getSku().getSalePrice().getAmount();
+      return true;
+    }
+  }
+  return false;
+}

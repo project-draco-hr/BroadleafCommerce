@@ -1,0 +1,24 @@
+{
+  if (orderItem instanceof OrderItemContainer) {
+    OrderItemContainer container=(OrderItemContainer)orderItem;
+    if (!container.isPricingAtContainerLevel()) {
+      Money returnSavings=new Money(orderItem.getOrder().getCurrency());
+      for (      OrderItem containedItem : container.getOrderItems()) {
+        Money prorataOrderSavings=updateOrderItemSavingsTotal(containedItem,subTotal,orderSavings);
+        containedItem.setProratedOrderAdjustment(prorataOrderSavings.multiply(orderItem.getQuantity()));
+        returnSavings=returnSavings.add(containedItem.getProratedOrderAdjustment());
+      }
+      return returnSavings;
+    }
+  }
+  Money itemTotal=orderItem.getTotalPrice();
+  Money prorataOrderSavings=new Money(orderSavings.getCurrency());
+  if (orderSavings.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+    orderItem.setProratedOrderAdjustment(new Money(orderSavings.getCurrency()));
+  }
+ else {
+    prorataOrderSavings=itemTotal.divide(subTotal.getAmount()).multiply(orderSavings.getAmount());
+    orderItem.setProratedOrderAdjustment(prorataOrderSavings);
+  }
+  return prorataOrderSavings;
+}

@@ -1,0 +1,13 @@
+{
+  if (isRetailPriceOverride()) {
+    return false;
+  }
+  if (!shouldSumItems()) {
+    if (getSku() != null && !getSku().getRetailPrice().equals(retailPrice)) {
+      baseRetailPrice=getSku().getRetailPrice().getAmount();
+      retailPrice=getSku().getRetailPrice().getAmount();
+      return true;
+    }
+  }
+  return false;
+}

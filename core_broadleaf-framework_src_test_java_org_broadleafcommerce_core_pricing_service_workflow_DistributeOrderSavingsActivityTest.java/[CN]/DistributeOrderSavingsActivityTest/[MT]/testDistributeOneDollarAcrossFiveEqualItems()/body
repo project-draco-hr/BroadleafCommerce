@@ -1,0 +1,21 @@
+{
+  Order order=dataProvider.createBasicOrder();
+  Money subTotal=new Money(order.getCurrency());
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    orderItem.setSalePrice(new Money(10D));
+    orderItem.getOrderItemPriceDetails().clear();
+    subTotal=subTotal.add(orderItem.getTotalPrice());
+  }
+  OrderAdjustment adjustment=new OrderAdjustmentImpl();
+  adjustment.setValue(new Money(new BigDecimal("1"),order.getCurrency()));
+  order.getOrderAdjustments().add(adjustment);
+  adjustment.setOrder(order);
+  order.setSubTotal(subTotal);
+  PricingContext context=new PricingContext();
+  context.setSeedData(order);
+  distributeSavingsActivity.execute(context);
+  Money proratedAdjustment=new Money(".20");
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    assertTrue(orderItem.getProratedOrderAdjustment().compareTo(proratedAdjustment.multiply(orderItem.getQuantity())) == 0);
+  }
+}

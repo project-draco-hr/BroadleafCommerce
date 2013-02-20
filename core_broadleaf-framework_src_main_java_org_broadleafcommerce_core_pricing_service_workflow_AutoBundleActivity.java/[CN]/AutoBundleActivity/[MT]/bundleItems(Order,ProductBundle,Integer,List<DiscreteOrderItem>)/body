@@ -49,7 +49,7 @@
       newOrderItem.setQuantity(skuMatches - skusRequired);
       newOrderItem=(DiscreteOrderItem)orderItemDao.save(newOrderItem);
       newOrderItem.setOrder(order);
-      newOrderItem.updateSaleAndRetailBasePrices();
+      newOrderItem.updateSaleAndRetailPrices();
       FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
       if (fulfillmentGroupItem != null) {
         FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
@@ -65,7 +65,7 @@
       order.getOrderItems().add(newOrderItem);
     }
   }
-  bundleOrderItem.updateSaleAndRetailBasePrices();
+  bundleOrderItem.updateSaleAndRetailPrices();
   order.getOrderItems().add(bundleOrderItem);
   order=orderService.save(order,false);
   for (  OrderItem orderItem : order.getOrderItems()) {

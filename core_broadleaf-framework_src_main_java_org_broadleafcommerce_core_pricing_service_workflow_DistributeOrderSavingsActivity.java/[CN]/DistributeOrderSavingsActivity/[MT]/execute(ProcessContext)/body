@@ -1,0 +1,30 @@
+{
+  Order order=((PricingContext)context).getSeedData();
+  Money orderSavings=order.getOrderAdjustmentsValue();
+  if (orderSavings == null) {
+    orderSavings=new Money(order.getCurrency());
+  }
+  Money orderSubTotal=order.getSubTotal();
+  if (orderSubTotal == null || orderSubTotal.lessThan(orderSavings)) {
+    if (LOG.isWarnEnabled()) {
+      LOG.warn("Subtotal is null or less than orderSavings in DistributeOrderSavingsActivity.java.  " + "Resetting orderSavings to match subTotal");
+    }
+    orderSavings=orderSubTotal;
+  }
+  Money savingsDistributed=new Money(order.getCurrency());
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    savingsDistributed=savingsDistributed.add(updateOrderItemSavingsTotal(orderItem,orderSubTotal,orderSavings));
+  }
+  Money difference=orderSavings.subtract(savingsDistributed);
+  if (!(difference.getAmount().compareTo(BigDecimal.ZERO) == 0)) {
+    long numApplicationsNeeded=countNumberOfUnits(difference);
+    Money unitAmount=getUnitAmount(difference);
+    for (    OrderItem orderItem : order.getOrderItems()) {
+      numApplicationsNeeded=numApplicationsNeeded - applyDifference(orderItem,numApplicationsNeeded,unitAmount);
+      if (numApplicationsNeeded == 0) {
+        break;
+      }
+    }
+  }
+  return context;
+}
