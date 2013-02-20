@@ -3,8 +3,7 @@
   PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(sectionClassName);
   ClassMetadata cmd=service.getClassMetadata(ppr);
   Entity[] rows=service.getRecords(ppr);
-  ListGrid listGrid=formService.buildListGrid(cmd,rows);
-  listGrid.setListGridType("main");
+  ListGrid listGrid=formService.buildMainListGrid(rows,cmd);
   model.addAttribute("listGrid",listGrid);
   model.addAttribute("viewType","listGrid");
   setModelAttributes(model,sectionKey);

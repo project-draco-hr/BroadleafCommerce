@@ -3,9 +3,7 @@
   fasc.setFilterValue(id);
   PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(className).addFilterAndSortCriteria(fasc);
   Entity[] entities=fetch(request).getRecords();
-  if (entities == null || entities.length > 1) {
-    throw new RuntimeException("More than one entity found with the same id");
-  }
+  Assert.isTrue(entities != null && entities.length == 1);
   Entity entity=entities[0];
   return entity;
 }

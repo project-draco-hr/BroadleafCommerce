@@ -1,18 +1,14 @@
 {
-  final EntityForm ef=new EntityForm();
+  EntityForm ef=new EntityForm();
   ef.setEntityType(adornedList.getAdornedTargetEntityClassname());
   PersistencePackageRequest request=PersistencePackageRequest.adorned().withClassName(adornedMd.getCollectionCeilingEntity()).withAdornedList(adornedList);
   ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(request);
+  List<Property> entityFormProperties=new ArrayList<Property>();
   for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
     Property p=collectionMetadata.getPMap().get(targetFieldName);
-    BasicFieldMetadata fmd=((BasicFieldMetadata)p.getMetadata());
-    String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-    Field f=new Field().withName(p.getName()).withFieldType(fieldType).withFriendlyName(p.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-    if (StringUtils.isBlank(f.getFriendlyName())) {
-      f.setFriendlyName(f.getName());
-    }
-    ef.addField(f,fmd.getGroup());
+    entityFormProperties.add(p);
   }
+  setEntityFormFields(ef,entityFormProperties);
   Field f=new Field().withName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
   ef.addField(f,EntityForm.HIDDEN_GROUP);
   f=new Field().withName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withIdOverride("adornedTargetIdProperty");

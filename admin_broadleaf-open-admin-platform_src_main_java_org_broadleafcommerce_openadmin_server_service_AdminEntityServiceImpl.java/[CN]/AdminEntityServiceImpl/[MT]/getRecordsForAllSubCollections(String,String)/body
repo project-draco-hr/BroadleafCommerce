@@ -1,15 +1,10 @@
 {
-  final Map<String,Entity[]> map=new HashMap<String,Entity[]>();
-  final ClassMetadata cmd=getClassMetadata(containingClassName);
-  for (  final Property p : cmd.getProperties()) {
+  Map<String,Entity[]> map=new HashMap<String,Entity[]>();
+  ClassMetadata cmd=getClassMetadata(containingClassName);
+  for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof CollectionMetadata) {
-      try {
-        Entity[] rows=getRecordsForCollection(cmd,containingEntityId,p);
-        map.put(p.getName(),rows);
-      }
- catch (      Exception e) {
-        throw new RuntimeException(e);
-      }
+      Entity[] rows=getRecordsForCollection(cmd,containingEntityId,p);
+      map.put(p.getName(),rows);
     }
   }
   return map;

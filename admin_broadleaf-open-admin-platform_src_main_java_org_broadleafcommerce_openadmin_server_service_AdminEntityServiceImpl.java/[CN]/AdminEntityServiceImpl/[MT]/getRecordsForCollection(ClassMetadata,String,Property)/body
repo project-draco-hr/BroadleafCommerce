@@ -1,34 +1,20 @@
 {
-  final PersistencePackageRequest request=new PersistencePackageRequest();
-  collectionProperty.getMetadata().accept(new MetadataVisitor(){
-    @Override public void visit(    MapMetadata fmd){
-      ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-      MapStructure mapStructure=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
-      FilterAndSortCriteria fasc=new FilterAndSortCriteria(foreignField.getManyToField());
-      fasc.setFilterValue(containingEntityId);
-      request.withType(PersistencePackageRequest.Type.MAP).withClassName(fmd.getTargetClass()).withMapStructure(mapStructure).addForeignKey(foreignField).addFilterAndSortCriteria(fasc);
-    }
-    @Override public void visit(    AdornedTargetCollectionMetadata fmd){
-      AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
-      FilterAndSortCriteria fasc=new FilterAndSortCriteria(adornedList.getCollectionFieldName());
-      fasc.setFilterValue(containingEntityId);
-      request.withType(PersistencePackageRequest.Type.ADORNED).withClassName(fmd.getCollectionCeilingEntity()).withAdornedList(adornedList).addFilterAndSortCriteria(fasc);
-    }
-    @Override public void visit(    BasicCollectionMetadata fmd){
-      ForeignKey foreignField=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
-      FilterAndSortCriteria fasc=new FilterAndSortCriteria(foreignField.getManyToField());
-      fasc.setFilterValue(containingEntityId);
-      request.withType(PersistencePackageRequest.Type.STANDARD).withClassName(fmd.getCollectionCeilingEntity()).addForeignKey(foreignField).addFilterAndSortCriteria(fasc);
-    }
-    @Override public void visit(    BasicFieldMetadata fmd){
-      throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
-    }
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata());
+  FilterAndSortCriteria fasc;
+  FieldMetadata md=collectionProperty.getMetadata();
+  if (md instanceof BasicCollectionMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getForeignKeys()[0].getManyToField());
   }
-);
-  try {
-    return fetch(request).getRecords();
+ else   if (md instanceof AdornedTargetCollectionMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName());
   }
- catch (  Exception e) {
-    throw new IllegalArgumentException(e);
+ else   if (md instanceof MapMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getForeignKeys()[0].getManyToField());
   }
+ else {
+    throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
+  }
+  fasc.setFilterValue(containingEntityId);
+  ppr.addFilterAndSortCriteria(fasc);
+  return fetch(ppr).getRecords();
 }

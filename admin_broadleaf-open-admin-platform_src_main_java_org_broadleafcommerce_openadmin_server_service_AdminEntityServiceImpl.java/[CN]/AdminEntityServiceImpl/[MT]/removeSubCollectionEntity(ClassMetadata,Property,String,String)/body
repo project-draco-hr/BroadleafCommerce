@@ -1,0 +1,16 @@
+{
+  Property p=new Property();
+  p.setName("id");
+  p.setValue(itemId);
+  Entity entity=new Entity();
+  entity.setProperties(new Property[]{p});
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(field.getMetadata()).withEntity(entity);
+  if (field.getMetadata() instanceof BasicCollectionMetadata) {
+    BasicCollectionMetadata fmd=(BasicCollectionMetadata)field.getMetadata();
+    entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
+  }
+ else {
+    throw new RuntimeException("not yet");
+  }
+  remove(ppr);
+}

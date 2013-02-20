@@ -1,0 +1,17 @@
+{
+  ListGrid listGrid=new ListGrid();
+  listGrid.setClassName(className);
+  listGrid.setHeaderFields(headerFields);
+  listGrid.setListGridType(type);
+  for (  Entity e : entities) {
+    ListGridRecord record=new ListGridRecord();
+    record.setId(e.findProperty("id").getValue());
+    for (    Field headerField : headerFields) {
+      Property p=e.findProperty(headerField.getName());
+      Field recordField=new Field().withName(headerField.getName()).withValue(p.getValue());
+      record.getFields().add(recordField);
+    }
+    listGrid.getRecords().add(record);
+  }
+  return listGrid;
+}

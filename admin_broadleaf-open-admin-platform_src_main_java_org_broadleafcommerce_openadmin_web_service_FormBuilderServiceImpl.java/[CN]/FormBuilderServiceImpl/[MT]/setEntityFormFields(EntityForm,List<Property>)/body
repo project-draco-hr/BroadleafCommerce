@@ -1,0 +1,13 @@
+{
+  for (  Property property : properties) {
+    if (property.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata fmd=(BasicFieldMetadata)property.getMetadata();
+      String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+      Field f=new Field().withName(property.getName()).withFieldType(fieldType).withFriendlyName(property.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+      if (StringUtils.isBlank(f.getFriendlyName())) {
+        f.setFriendlyName(f.getName());
+      }
+      ef.addField(f,fmd.getGroup());
+    }
+  }
+}

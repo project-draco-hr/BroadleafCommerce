@@ -1,5 +1,5 @@
 {
-  final EntityForm ef=new EntityForm();
+  EntityForm ef=new EntityForm();
   ef.setEntityType(mapMd.getTargetClass());
   ComboField keyField=new ComboField();
   keyField.withName("key").withFieldType("combo_field").withFriendlyName("Key");
@@ -18,17 +18,15 @@
     }
   }
   ef.addField(keyField,EntityForm.MAP_KEY_GROUP);
-  for (  Property p : cmd.getProperties()) {
-    if (ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),mapStructure.getValueClassName())) {
-      BasicFieldMetadata fmd=((BasicFieldMetadata)p.getMetadata());
-      String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-      Field f=new Field().withName(p.getName()).withFieldType(fieldType).withFriendlyName(p.getMetadata().getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-      if (StringUtils.isBlank(f.getFriendlyName())) {
-        f.setFriendlyName(f.getName());
-      }
-      ef.addField(f,fmd.getGroup());
+  List<Property> mapFormProperties=new ArrayList<Property>(Arrays.asList(cmd.getProperties()));
+  CollectionUtils.filter(mapFormProperties,new Predicate(){
+    @Override public boolean evaluate(    Object object){
+      Property p=(Property)object;
+      return ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),mapStructure.getValueClassName());
     }
   }
+);
+  setEntityFormFields(ef,mapFormProperties);
   Field f=new Field().withName("symbolicId").withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
   ef.addField(f,EntityForm.HIDDEN_GROUP);
   return ef;

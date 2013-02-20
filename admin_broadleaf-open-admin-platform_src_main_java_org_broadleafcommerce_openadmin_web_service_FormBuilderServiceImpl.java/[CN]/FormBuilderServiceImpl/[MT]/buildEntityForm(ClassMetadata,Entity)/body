@@ -1,0 +1,19 @@
+{
+  EntityForm ef=buildEntityForm(cmd);
+  ef.setId(entity.findProperty("id").getValue());
+  ef.setEntityType(entity.getType()[0]);
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      Property entityProp=entity.findProperty(p.getName());
+      if (entityProp == null) {
+        ef.removeField(p.getName());
+      }
+ else {
+        Field field=ef.findField(p.getName());
+        field.setValue(entityProp.getValue());
+        field.setDisplayValue(entityProp.getDisplayValue());
+      }
+    }
+  }
+  return ef;
+}
