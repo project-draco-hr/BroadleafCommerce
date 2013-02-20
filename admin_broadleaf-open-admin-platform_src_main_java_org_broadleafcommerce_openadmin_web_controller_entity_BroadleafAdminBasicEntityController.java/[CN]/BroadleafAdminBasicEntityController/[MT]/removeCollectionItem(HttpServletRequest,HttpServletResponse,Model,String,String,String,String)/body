@@ -2,7 +2,8 @@
   String mainClassName=getClassNameForSection(sectionKey);
   ClassMetadata mainMetadata=service.getClassMetadata(mainClassName);
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  service.removeSubCollectionEntity(mainMetadata,collectionProperty,id,collectionItemId);
+  String priorKey=request.getParameter("key");
+  service.removeSubCollectionEntity(mainMetadata,collectionProperty,id,collectionItemId,priorKey);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);

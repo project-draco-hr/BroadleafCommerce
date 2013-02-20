@@ -9,12 +9,14 @@
       ForeignKey foreignKey=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
       request.setType(Type.STANDARD);
       request.setClassName(fmd.getCollectionCeilingEntity());
+      request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.addForeignKey(foreignKey);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata fmd){
       AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
       request.setType(Type.ADORNED);
       request.setClassName(fmd.getCollectionCeilingEntity());
+      request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.setAdornedList(adornedList);
     }
     @Override public void visit(    MapMetadata fmd){
@@ -22,6 +24,7 @@
       ForeignKey foreignKey=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
       request.setType(Type.MAP);
       request.setClassName(fmd.getTargetClass());
+      request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.setMapStructure(mapStructure);
       request.addForeignKey(foreignKey);
     }

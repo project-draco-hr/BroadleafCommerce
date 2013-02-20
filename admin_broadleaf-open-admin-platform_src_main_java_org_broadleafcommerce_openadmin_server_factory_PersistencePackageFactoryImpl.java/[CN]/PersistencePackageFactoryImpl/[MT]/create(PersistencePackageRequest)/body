@@ -26,6 +26,9 @@ persistencePerspective.setOperationTypes(getOperationTypes(OperationType.MAP));
 persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,request.getMapStructure());
 break;
 }
+if (request.getOperationTypesOverride() != null) {
+persistencePerspective.setOperationTypes(request.getOperationTypesOverride());
+}
 PersistencePackage pp=new PersistencePackage();
 pp.setCeilingEntityFullyQualifiedClassname(request.getClassName());
 pp.setFetchTypeFullyQualifiedClassname(null);
