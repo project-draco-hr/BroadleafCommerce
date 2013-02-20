@@ -4,7 +4,7 @@
     PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(dto.getCeilingEntity()).withForeignKeys(dto.getForeignKeys()).withConfigKey(dto.getConfigKey());
     ClassMetadata cmd=adminEntityService.getClassMetadata(request);
     RuleBuilderUtil ruleBuilderUtil=new RuleBuilderUtil();
-    conditions=ruleBuilderUtil.createConditionsDTO(mvel,cmd.getProperties());
+    conditions=ruleBuilderUtil.createConditionsDTO(mvel,cmd.getProperties(),cmd.getPolymorphicEntities());
   }
   return conditions;
 }

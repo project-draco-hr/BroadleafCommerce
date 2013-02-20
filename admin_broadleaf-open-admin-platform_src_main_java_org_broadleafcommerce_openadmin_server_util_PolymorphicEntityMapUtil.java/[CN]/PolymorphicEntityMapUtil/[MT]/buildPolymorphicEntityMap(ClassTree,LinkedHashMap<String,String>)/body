@@ -1,0 +1,9 @@
+{
+  String friendlyName=entity.getFriendlyName();
+  if (friendlyName != null && !friendlyName.equals("")) {
+  }
+  map.put(entity.getFullyQualifiedClassname(),friendlyName != null ? friendlyName : entity.getName());
+  for (  ClassTree child : entity.getChildren()) {
+    buildPolymorphicEntityMap(child,map);
+  }
+}

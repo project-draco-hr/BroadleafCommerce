@@ -5,8 +5,15 @@
     String friendlyName=metadata.getOwningClassFriendlyName();
     if (friendlyName == null || friendlyName.equals("")) {
       String fqcn=metadata.getInheritedFromType();
+      PolymorphicEntityMapUtil mapUtil=new PolymorphicEntityMapUtil();
+      if (fqcn != null) {
+        friendlyName=mapUtil.convertClassTreeToMap(polymorphicEntities).get(fqcn);
+      }
+      if (friendlyName == null) {
+        friendlyName=mapUtil.convertClassTreeToMap(polymorphicEntities).get(fqcn);
+      }
     }
-    if (!property.getName().startsWith(friendlyName) && !friendlyName.contains("DTO")) {
+    if (friendlyName != null && !property.getName().startsWith(friendlyName) && !friendlyName.contains("DTO")) {
       friendlyName=friendlyName + " - " + property.getName();
     }
     fieldDTO.setLabel(friendlyName);
