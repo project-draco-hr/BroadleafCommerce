@@ -1,7 +1,7 @@
 {
   BigDecimal value=new BigDecimal(amount);
   if (value.scale() < 2) {
-    value=value.setScale(BankersRounding.DEFAULT_SCALE,RoundingMode.HALF_EVEN);
+    value=value.setScale(BankersRounding.getScaleForCurrency(defaultCurrency()),RoundingMode.HALF_EVEN);
   }
   return value;
 }
