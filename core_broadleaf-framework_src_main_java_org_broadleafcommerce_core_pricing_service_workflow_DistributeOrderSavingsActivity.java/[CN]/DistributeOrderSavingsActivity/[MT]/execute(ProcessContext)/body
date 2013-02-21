@@ -2,16 +2,16 @@
   Order order=((PricingContext)context).getSeedData();
   Money orderSavings=order.getOrderAdjustmentsValue();
   if (orderSavings == null) {
-    orderSavings=new Money(order.getCurrency());
+    orderSavings=new Money(BroadleafCurrencyUtils.getCurrency(order.getCurrency()));
   }
   Money orderSubTotal=order.getSubTotal();
   if (orderSubTotal == null || orderSubTotal.lessThan(orderSavings)) {
     if (LOG.isWarnEnabled()) {
-      LOG.warn("Subtotal is null or less than orderSavings in DistributeOrderSavingsActivity.java.  " + "Resetting orderSavings to match subTotal");
+      LOG.warn("Subtotal is null or less than orderSavings in DistributeOrderSavingsActivity.java.  " + "No distribution is taking place.");
     }
-    orderSavings=orderSubTotal;
+    return context;
   }
-  Money savingsDistributed=new Money(order.getCurrency());
+  Money savingsDistributed=new Money(BroadleafCurrencyUtils.getCurrency(order.getCurrency()));
   for (  OrderItem orderItem : order.getOrderItems()) {
     savingsDistributed=savingsDistributed.add(updateOrderItemSavingsTotal(orderItem,orderSubTotal,orderSavings));
   }
