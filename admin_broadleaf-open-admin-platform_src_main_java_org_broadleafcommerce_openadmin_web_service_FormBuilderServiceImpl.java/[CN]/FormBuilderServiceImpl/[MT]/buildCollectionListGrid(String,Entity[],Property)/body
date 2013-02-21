@@ -4,6 +4,7 @@
   ClassMetadata cmd=adminEntityService.getClassMetadata(ppr);
   List<Field> headerFields=new ArrayList<Field>();
   ListGrid.Type type=null;
+  boolean editable=false;
   if (fmd instanceof BasicFieldMetadata) {
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
@@ -27,6 +28,9 @@
       }
     }
     type=ListGrid.Type.BASIC;
+    if (((BasicCollectionMetadata)fmd).getAddMethodType().equals(AddMethodType.PERSIST)) {
+      editable=true;
+    }
   }
  else   if (fmd instanceof AdornedTargetCollectionMetadata) {
     AdornedTargetCollectionMetadata atcmd=(AdornedTargetCollectionMetadata)fmd;
@@ -36,6 +40,9 @@
       headerFields.add(hf);
     }
     type=ListGrid.Type.ADORNED;
+    if (((AdornedTargetCollectionMetadata)fmd).getMaintainedAdornedTargetFields().length > 0) {
+      editable=true;
+    }
   }
  else   if (fmd instanceof MapMetadata) {
     MapMetadata mmd=(MapMetadata)fmd;
@@ -54,9 +61,11 @@
       }
     }
     type=ListGrid.Type.MAP;
+    editable=true;
   }
   ListGrid listGrid=createListGrid(cmd.getCeilingType(),headerFields,type,entities);
   listGrid.setSubCollectionFieldName(field.getName());
   listGrid.setContainingEntityId(containingEntityId);
+  listGrid.setEditable(editable);
   return listGrid;
 }
