@@ -1,8 +1,11 @@
 {
   Order order=promotableOrder.getOrder();
-  Map<Long,PromotableOrderItem> promotableItemMap=buildPromotableItemMap(promotableOrder);
+  Map<OrderItem,PromotableOrderItem> promotableItemMap=buildPromotableItemMap(promotableOrder);
   for (  OrderItem orderItem : order.getOrderItems()) {
-    PromotableOrderItem promotableItem=promotableItemMap.get(orderItem.getId());
+    PromotableOrderItem promotableItem=promotableItemMap.get(orderItem);
+    if (promotableItem == null) {
+      continue;
+    }
     synchronizeItemPriceDetails(orderItem,promotableItem);
   }
 }
