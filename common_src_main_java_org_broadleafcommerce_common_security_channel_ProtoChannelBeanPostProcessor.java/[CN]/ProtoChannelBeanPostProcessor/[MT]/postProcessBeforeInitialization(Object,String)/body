@@ -1,0 +1,20 @@
+{
+  if (bean instanceof ChannelDecisionManagerImpl) {
+    try {
+      ChannelDecisionManagerImpl manager=(ChannelDecisionManagerImpl)bean;
+      Field channelProcessors=manager.getClass().getDeclaredField("channelProcessors");
+      channelProcessors.setAccessible(true);
+      List<ChannelProcessor> list=(List<ChannelProcessor>)channelProcessors.get(manager);
+      list.clear();
+      List<ChannelProcessor> myProcessors=new ArrayList<ChannelProcessor>();
+      myProcessors.add(new ProtoInsecureChannelProcessor());
+      myProcessors.add(new ProtoSecureChannelProcessor());
+      manager.setChannelProcessors(myProcessors);
+      LOG.info("Replacing the standard Spring Security channel processors with custom processors that look for a 'X-Forwarded-Proto' request header. This allows Spring Security to sit behind a load balancer with SSL termination.");
+    }
+ catch (    Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+  return bean;
+}
