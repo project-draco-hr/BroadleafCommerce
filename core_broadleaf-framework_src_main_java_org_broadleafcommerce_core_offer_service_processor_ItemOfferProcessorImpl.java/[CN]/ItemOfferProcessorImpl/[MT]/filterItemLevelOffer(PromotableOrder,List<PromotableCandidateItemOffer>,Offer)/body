@@ -6,6 +6,7 @@
     if (couldOfferApplyToOrder(offer,order,promotableOrderItem)) {
       if (!isNewFormat) {
         PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem,order);
+        candidate.setLegacyOffer(true);
         if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
           candidate.getCandidateTargets().add(promotableOrderItem);
         }

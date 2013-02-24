@@ -1,4 +1,9 @@
 {
-  markQualifiersAndTargets(order,itemOffer);
-  splitDetailsIfNecessary(order.getAllPromotableOrderItemPriceDetails());
+  if (itemOffer.isLegacyOffer()) {
+    return;
+  }
+ else {
+    markQualifiersAndTargets(order,itemOffer);
+    splitDetailsIfNecessary(order.getAllPromotableOrderItemPriceDetails());
+  }
 }
