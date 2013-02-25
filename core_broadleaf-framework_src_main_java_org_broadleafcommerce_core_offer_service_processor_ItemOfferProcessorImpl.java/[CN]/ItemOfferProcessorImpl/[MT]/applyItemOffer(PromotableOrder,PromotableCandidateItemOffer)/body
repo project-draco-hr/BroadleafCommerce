@@ -1,6 +1,11 @@
 {
   if (itemOfferCanBeApplied(order,itemOffer)) {
     applyItemQualifiersAndTargets(itemOffer,order);
-    applyAdjustments(order,itemOffer);
+    if (itemOffer.isLegacyOffer()) {
+      applyLegacyAdjustments(order,itemOffer);
+    }
+ else {
+      applyAdjustments(order,itemOffer);
+    }
   }
 }

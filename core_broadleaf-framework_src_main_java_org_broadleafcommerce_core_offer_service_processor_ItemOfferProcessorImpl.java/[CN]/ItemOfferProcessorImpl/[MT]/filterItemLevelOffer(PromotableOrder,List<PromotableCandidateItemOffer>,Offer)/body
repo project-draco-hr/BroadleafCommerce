@@ -5,8 +5,7 @@
   for (  PromotableOrderItem promotableOrderItem : order.getDiscountableOrderItems()) {
     if (couldOfferApplyToOrder(offer,order,promotableOrderItem)) {
       if (!isNewFormat) {
-        PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem,order);
-        candidate.setLegacyOffer(true);
+        PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,order);
         if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
           candidate.getCandidateTargets().add(promotableOrderItem);
         }
@@ -19,7 +18,7 @@
     for (    PromotableFulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
       if (couldOfferApplyToOrder(offer,order,promotableOrderItem,fulfillmentGroup)) {
         if (!isNewFormat) {
-          PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,promotableOrderItem,order);
+          PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,order);
           if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
             candidate.getCandidateTargets().add(promotableOrderItem);
           }
@@ -35,12 +34,12 @@
     CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,order.getDiscountableOrderItems(offer.getApplyDiscountToSalePrice()));
     PromotableCandidateItemOffer candidateOffer=null;
     if (candidates.isMatchedQualifier()) {
-      candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null,order);
+      candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,order);
       candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
     }
     if (candidates.isMatchedTarget() && candidates.isMatchedQualifier()) {
       if (candidateOffer == null) {
-        candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,null,order);
+        candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,order);
       }
       candidateOffer.getCandidateTargets().addAll(candidates.getCandidateTargets());
     }

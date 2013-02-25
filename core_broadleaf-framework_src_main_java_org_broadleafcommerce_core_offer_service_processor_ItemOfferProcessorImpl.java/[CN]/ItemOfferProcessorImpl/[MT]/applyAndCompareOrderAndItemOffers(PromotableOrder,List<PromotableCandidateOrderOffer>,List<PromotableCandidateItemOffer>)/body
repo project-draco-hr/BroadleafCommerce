@@ -2,7 +2,12 @@
   if (!qualifiedItemOffers.isEmpty()) {
     calculatePotentialSavings(qualifiedItemOffers,order);
     Collections.sort(qualifiedItemOffers,ItemOfferComparator.INSTANCE);
-    applyAllItemOffers(qualifiedItemOffers,order);
+    if (qualifiedItemOffers.size() > 1) {
+      determineBestPermutation(qualifiedItemOffers,order);
+    }
+ else {
+      applyAllItemOffers(qualifiedItemOffers,order);
+    }
   }
   chooseSaleOrRetailAdjustments(order);
   order.setOrderSubTotalToPriceWithAdjustments();
