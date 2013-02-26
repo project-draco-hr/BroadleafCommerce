@@ -5,7 +5,9 @@
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
     BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
+    applyAdditionalFetchCriteria(queryCriteria,persistencePackage);
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
+    records=filterFetchList(records,persistencePackage);
     Entity[] payload=helper.getRecords(originalProps,records);
     int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
     ClassMetadata metadata=new ClassMetadata();
@@ -23,6 +25,41 @@
     for (int i=0; i < records.size(); i++) {
       Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
+      for (      Property property : entity.getProperties()) {
+        if (StringUtils.isEmpty(property.getValue())) {
+          String propertyName=property.getName();
+          if (propertyName.contains(".")) {
+            StringTokenizer tokens=new StringTokenizer(propertyName,".");
+            propertyName=tokens.nextToken();
+          }
+          Object value=PropertyUtils.getProperty(sku,propertyName);
+          String strVal;
+          if (value == null) {
+            strVal=null;
+          }
+ else {
+            if (Date.class.isAssignableFrom(value.getClass())) {
+              strVal=helper.getDateFormatter().format((Date)value);
+            }
+ else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
+              strVal=helper.getDateFormatter().format(new Date(((Timestamp)value).getTime()));
+            }
+ else             if (Calendar.class.isAssignableFrom(value.getClass())) {
+              strVal=helper.getDateFormatter().format(((Calendar)value).getTime());
+            }
+ else             if (Double.class.isAssignableFrom(value.getClass())) {
+              strVal=helper.getDecimalFormatter().format(value);
+            }
+ else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+              strVal=helper.getDecimalFormatter().format(((BigDecimal)value).doubleValue());
+            }
+ else {
+              strVal=value.toString();
+            }
+          }
+          property.setValue(strVal);
+        }
+      }
       List<ProductOptionValue> optionValues=sku.getProductOptionValues();
       for (      ProductOptionValue value : optionValues) {
         Property optionProperty=new Property();
