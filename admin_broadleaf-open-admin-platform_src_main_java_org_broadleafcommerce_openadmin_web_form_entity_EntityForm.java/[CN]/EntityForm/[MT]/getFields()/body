@@ -1,9 +1,11 @@
 {
   if (fields == null) {
-    Map<String,Field> map=new HashMap<String,Field>();
-    for (    Entry<String,FieldGroup> entry : groups.entrySet()) {
-      for (      Field field : entry.getValue().getFields()) {
-        map.put(field.getName(),field);
+    Map<String,Field> map=new LinkedHashMap<String,Field>();
+    for (    Entry<String,Tab> entry : tabs.entrySet()) {
+      for (      FieldGroup group : entry.getValue().getFieldGroups()) {
+        for (        Field field : group.getFields()) {
+          map.put(field.getName(),field);
+        }
       }
     }
     fields=map;
