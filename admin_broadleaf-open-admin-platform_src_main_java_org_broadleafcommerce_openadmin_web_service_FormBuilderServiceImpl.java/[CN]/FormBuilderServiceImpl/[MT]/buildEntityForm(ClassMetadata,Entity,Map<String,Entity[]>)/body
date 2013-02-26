@@ -16,7 +16,8 @@
     String containingEntityId=entity.getPMap().get("id").getValue();
     ListGrid listGrid=buildCollectionListGrid(containingEntityId,subCollectionEntities,p);
     listGrid.setListGridType(ListGrid.Type.INLINE);
-    ef.addListGrid(listGrid,((CollectionMetadata)p.getMetadata()).getTab());
+    CollectionMetadata md=((CollectionMetadata)p.getMetadata());
+    ef.addListGrid(listGrid,md.getTab(),md.getTabOrder());
   }
   return ef;
 }

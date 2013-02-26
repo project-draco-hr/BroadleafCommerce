@@ -1,0 +1,21 @@
+{
+  groupName=groupName == null ? DEFAULT_GROUP_NAME : groupName;
+  groupOrder=groupOrder == null ? DEFAULT_GROUP_ORDER : groupOrder;
+  tabName=tabName == null ? DEFAULT_TAB_NAME : tabName;
+  tabOrder=tabOrder == null ? DEFAULT_TAB_ORDER : tabOrder;
+  Tab tab=findTab(tabName);
+  if (tab == null) {
+    tab=new Tab();
+    tab.setTitle(tabName);
+    tab.setOrder(tabOrder);
+    tabs.add(tab);
+  }
+  FieldGroup fieldGroup=tab.findGroup(groupName);
+  if (fieldGroup == null) {
+    fieldGroup=new FieldGroup();
+    fieldGroup.setTitle(groupName);
+    fieldGroup.setOrder(groupOrder);
+    tab.getFieldGroups().add(fieldGroup);
+  }
+  fieldGroup.getFields().add(field);
+}

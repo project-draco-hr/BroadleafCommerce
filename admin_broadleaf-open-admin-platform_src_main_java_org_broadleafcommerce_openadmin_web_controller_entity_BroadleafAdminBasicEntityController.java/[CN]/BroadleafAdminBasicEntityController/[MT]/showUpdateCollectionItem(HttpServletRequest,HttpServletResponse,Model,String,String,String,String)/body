@@ -10,7 +10,7 @@
     Entity entity=service.getRecord(fmd.getCollectionCeilingEntity(),collectionItemId);
     EntityForm entityForm=formService.buildEntityForm(collectionMetadata,entity);
     model.addAttribute("entityForm",entityForm);
-    model.addAttribute("viewType","modalEntityForm");
+    model.addAttribute("viewType","modal/simpleEditEntity");
   }
  else   if (md instanceof AdornedTargetCollectionMetadata && ((AdornedTargetCollectionMetadata)md).getMaintainedAdornedTargetFields().length > 0) {
     AdornedTargetCollectionMetadata fmd=(AdornedTargetCollectionMetadata)md;
@@ -19,7 +19,7 @@
     formService.populateEntityFormFields(entityForm,entity);
     formService.populateAdornedEntityFormFields(entityForm,entity,ppr.getAdornedList());
     model.addAttribute("entityForm",entityForm);
-    model.addAttribute("viewType","modalAdornedFormOnly");
+    model.addAttribute("viewType","modal/adornedEditEntity");
   }
  else   if (md instanceof MapMetadata) {
     MapMetadata fmd=(MapMetadata)md;
@@ -29,7 +29,7 @@
     formService.populateEntityFormFields(entityForm,entity);
     formService.populateMapEntityFormFields(entityForm,entity);
     model.addAttribute("entityForm",entityForm);
-    model.addAttribute("viewType","modalMapEntityForm");
+    model.addAttribute("viewType","modal/mapEditEntity");
   }
   model.addAttribute("currentUrl",request.getRequestURL().toString());
   model.addAttribute("modalHeaderType","updateCollectionItem");

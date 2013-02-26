@@ -1,11 +1,20 @@
 {
-  for (  Entry<String,FieldGroup> entry : getGroups().entrySet()) {
-    Iterator<Field> it=entry.getValue().getFields().listIterator();
-    while (it.hasNext()) {
-      Field field=it.next();
-      if (field.getName().equals(fieldName)) {
-        it.remove();
+  Field fieldToRemove=null;
+  FieldGroup containingGroup=null;
+  findField: {
+    for (    Tab tab : tabs) {
+      for (      FieldGroup fieldGroup : tab.getFieldGroups()) {
+        for (        Field field : fieldGroup.getFields()) {
+          if (field.getName().equals(fieldName)) {
+            fieldToRemove=field;
+            containingGroup=fieldGroup;
+            break findField;
+          }
+        }
       }
     }
+  }
+  if (fieldToRemove != null) {
+    containingGroup.getFields().remove(fieldToRemove);
   }
 }
