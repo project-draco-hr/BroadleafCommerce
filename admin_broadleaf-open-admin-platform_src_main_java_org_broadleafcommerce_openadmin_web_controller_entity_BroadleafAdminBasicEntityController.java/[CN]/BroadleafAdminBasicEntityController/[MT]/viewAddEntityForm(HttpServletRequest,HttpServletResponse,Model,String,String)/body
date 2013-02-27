@@ -1,6 +1,6 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(sectionClassName);
+  ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(sectionClassName));
   if (StringUtils.isBlank(entityType)) {
     if (cmd.getPolymorphicEntities().getChildren().length == 0) {
       entityType=cmd.getPolymorphicEntities().getFullyQualifiedClassname();
@@ -18,7 +18,7 @@
     model.addAttribute("viewType","entityTypeSelection");
   }
  else {
-    ClassMetadata specificTypeMd=service.getClassMetadata(entityType);
+    ClassMetadata specificTypeMd=service.getClassMetadata(getSectionPersistencePackageRequest(entityType));
     EntityForm entityForm=formService.buildEntityForm(specificTypeMd);
     formService.removeNonApplicableFields(cmd,entityForm,entityType);
     model.addAttribute("entityForm",entityForm);

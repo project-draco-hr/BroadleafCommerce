@@ -1,10 +1,11 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   Entity entity=service.updateEntity(entityForm);
   entityValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
-    ClassMetadata cmd=service.getClassMetadata(sectionClassName);
-    Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(sectionClassName,id);
+    ClassMetadata cmd=service.getClassMetadata(ppr);
+    Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(ppr,id);
     EntityForm newForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
     formService.copyEntityFormValues(newForm,entityForm);
     model.addAttribute("entityForm",newForm);

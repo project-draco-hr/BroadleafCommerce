@@ -1,7 +1,7 @@
 {
   FilterAndSortCriteria fasc=new FilterAndSortCriteria("id");
   fasc.setFilterValue(id);
-  PersistencePackageRequest request=PersistencePackageRequest.standard().withClassName(className).addFilterAndSortCriteria(fasc);
+  request.addFilterAndSortCriteria(fasc);
   Entity[] entities=fetch(request).getRecords();
   Assert.isTrue(entities != null && entities.length == 1);
   Entity entity=entities[0];
