@@ -1,17 +1,14 @@
 {
   String view=super.viewEntityForm(request,response,model,"offer",id);
   EntityForm entityForm=(EntityForm)model.asMap().get("entityForm");
-  List<RuleBuilder> ruleBuilders=entityForm.getCollectionRuleBuilders();
-  for (  RuleBuilder builder : ruleBuilders) {
-    if (ITEM_DISCOUNT_TARGET_FIELD_NAME.equals(builder.getFieldName())) {
-      builder.setConfigKey(ITEM_DISCOUNT_TARGET_CONFIG_KEY);
-      builder.setCeilingEntity(ITEM_DISCOUNT_TARGET_CEILING_ENTITY);
-      builder.setMvelProperty(ITEM_DISCOUNT_TARGET_MVEL);
-    }
-    if (ITEM_QUALIFICATION_FIELD_NAME.equals(builder.getFieldName())) {
-      builder.setConfigKey(ITEM_QUALIFICATION_CONFIG_KEY);
-      builder.setCeilingEntity(ITEM_QUALIFICATION_CEILING_ENTITY);
-      builder.setMvelProperty(ITEM_QUALIFICATION_MVEL);
+  for (  Tab tab : entityForm.getTabs()) {
+    Set<RuleBuilder> ruleBuilders=tab.getRuleBuilders();
+    for (    RuleBuilder builder : ruleBuilders) {
+      if (ITEM_DISCOUNT_TARGET_FIELD_NAME.equals(builder.getFieldName())) {
+        builder.setFieldBuilder(ITEM_DISCOUNT_TARGET_FIELD_BUILDER);
+        builder.setMvelProperty(ITEM_DISCOUNT_TARGET_MVEL);
+        builder.setQuantityProperty(ITEM_DISCOUNT_TARGET_QUANTITY);
+      }
     }
   }
   return view;

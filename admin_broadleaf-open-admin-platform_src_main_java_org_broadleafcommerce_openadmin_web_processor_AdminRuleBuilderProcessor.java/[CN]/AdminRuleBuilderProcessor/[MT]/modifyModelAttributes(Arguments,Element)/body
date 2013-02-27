@@ -1,46 +1,15 @@
 {
-  String resultVar=element.getAttributeValue("resultVar");
-  List<OutputWrapper> wrappers=new ArrayList<OutputWrapper>();
-  initServices(arguments);
-  try {
-    String fieldName=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("fieldName"));
-    String ceilingEntity=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("ceilingEntity"));
-    String configKey=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("configKey"));
-    String mvelProperty=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("mvelProperty"));
-    Entity[] entities=(Entity[])StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("entities"));
-    if (entities != null && mvelProperty != null && ceilingEntity != null && configKey != null && fieldName != null) {
-      int i=0;
-      for (      Entity e : entities) {
-        String mvel=null;
-        for (        Property p : e.getProperties()) {
-          if (mvelProperty.equals(p.getName())) {
-            mvel=p.getValue();
-          }
-        }
-        if (mvel != null) {
-          RuleBuilderDTO dtoOrderItem=new RuleBuilderDTO(ceilingEntity,configKey,null);
-          List<RuleBuilderDTO> dtoList=new ArrayList<RuleBuilderDTO>();
-          dtoList.add(dtoOrderItem);
-          OutputWrapper wrapper=new OutputWrapper();
-          wrapper.setConditions(ruleBuilderService.buildConditionsDTO(dtoList,mvel));
-          wrapper.setContainerId(fieldName + i);
-          wrappers.add(wrapper);
-        }
-        i++;
-      }
+  DataWrapper dataWrapper=new DataWrapper();
+  String mvelProperty=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("mvelProperty"));
+  String quantityProperty=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("quantityProperty"));
+  Entity[] entities=(Entity[])StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("entities"));
+  if (entities != null && mvelProperty != null) {
+    RuleBuilderUtil ruleBuilderUtil=new RuleBuilderUtil();
+    try {
+      dataWrapper=ruleBuilderUtil.createRuleData(entities,mvelProperty,quantityProperty);
+    }
+ catch (    MVELTranslationException e) {
     }
   }
- catch (  ServiceException e) {
-    e.printStackTrace();
-  }
-catch (  ApplicationSecurityException e) {
-    e.printStackTrace();
-  }
-catch (  MVELTranslationException e) {
-    e.printStackTrace();
-  }
-catch (  IOException e) {
-    e.printStackTrace();
-  }
-  addToModel(arguments,resultVar,wrappers);
+  addToModel(arguments,"dataWrapper",dataWrapper);
 }

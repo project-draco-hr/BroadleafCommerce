@@ -1,0 +1,12 @@
+{
+  initServices(arguments);
+  FieldWrapper fieldWrapper=new FieldWrapper();
+  String fieldBuilder=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("fieldBuilder"));
+  if (fieldBuilder != null) {
+    RuleBuilderFieldService ruleBuilderFieldService=ruleBuilderFieldServiceFactory.createInstance(fieldBuilder);
+    if (ruleBuilderFieldService != null) {
+      fieldWrapper=ruleBuilderFieldService.buildFields();
+    }
+  }
+  addToModel(arguments,"fieldWrapper",fieldWrapper);
+}
