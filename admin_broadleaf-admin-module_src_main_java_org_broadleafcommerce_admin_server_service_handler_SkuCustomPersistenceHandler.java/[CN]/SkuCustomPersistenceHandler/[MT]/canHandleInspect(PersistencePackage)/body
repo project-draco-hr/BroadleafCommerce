@@ -1,5 +1,10 @@
 {
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
-  String[] customCriteria=persistencePackage.getCustomCriteria();
-  return !ArrayUtils.isEmpty(customCriteria) && "productSkuList".equals(customCriteria[0]) && Sku.class.getName().equals(ceilingEntityFullyQualifiedClassname);
+  try {
+    Class testClass=Class.forName(ceilingEntityFullyQualifiedClassname);
+    return Sku.class.isAssignableFrom(testClass) && ArrayUtils.isEmpty(persistencePackage.getCustomCriteria());
+  }
+ catch (  ClassNotFoundException e) {
+    return false;
+  }
 }

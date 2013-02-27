@@ -5,11 +5,11 @@
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
     BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
-    applyAdditionalFetchCriteria(queryCriteria,persistencePackage);
+    applyAdditionalFetchCriteria(queryCriteria,cto,persistencePackage);
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
-    records=filterFetchList(records,persistencePackage);
+    records=filterFetchList(records,cto,persistencePackage);
     Entity[] payload=helper.getRecords(originalProps,records);
-    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
+    int totalRecords=records.size();
     ClassMetadata metadata=new ClassMetadata();
     if (cto.get("product").getFilterValues().length > 0) {
       Long productId=Long.parseLong(cto.get("product").getFilterValues()[0]);
