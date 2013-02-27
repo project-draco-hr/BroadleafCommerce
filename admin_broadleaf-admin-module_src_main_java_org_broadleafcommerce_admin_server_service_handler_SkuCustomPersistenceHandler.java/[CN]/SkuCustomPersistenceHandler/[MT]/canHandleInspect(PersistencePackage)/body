@@ -1,10 +1,3 @@
 {
-  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
-  try {
-    Class testClass=Class.forName(ceilingEntityFullyQualifiedClassname);
-    return Sku.class.isAssignableFrom(testClass) && ArrayUtils.isEmpty(persistencePackage.getCustomCriteria());
-  }
- catch (  ClassNotFoundException e) {
-    return false;
-  }
+  return canHandle(persistencePackage,persistencePackage.getPersistencePerspective().getOperationTypes().getInspectType());
 }
