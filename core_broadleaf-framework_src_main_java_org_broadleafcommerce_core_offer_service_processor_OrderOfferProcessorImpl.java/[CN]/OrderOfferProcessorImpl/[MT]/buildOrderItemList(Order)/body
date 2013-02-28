@@ -1,0 +1,20 @@
+{
+  List<OrderItem> orderItemList=new ArrayList<OrderItem>();
+  for (  OrderItem currentItem : order.getOrderItems()) {
+    if (currentItem instanceof OrderItemContainer) {
+      OrderItemContainer container=(OrderItemContainer)currentItem;
+      if (container.isPricingAtContainerLevel()) {
+        orderItemList.add(currentItem);
+      }
+ else {
+        for (        OrderItem containedItem : container.getOrderItems()) {
+          orderItemList.add(containedItem);
+        }
+      }
+    }
+ else {
+      orderItemList.add(currentItem);
+    }
+  }
+  return orderItemList;
+}

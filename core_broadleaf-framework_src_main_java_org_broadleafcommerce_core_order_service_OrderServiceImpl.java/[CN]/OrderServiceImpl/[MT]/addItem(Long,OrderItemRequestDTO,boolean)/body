@@ -1,6 +1,23 @@
 {
+  Order order=findOrderById(orderId);
+  if (automaticallyMergeLikeItems) {
+    OrderItem item=findMatchingItem(order,orderItemRequestDTO);
+    if (item != null) {
+      orderItemRequestDTO.setQuantity(item.getQuantity() + orderItemRequestDTO.getQuantity());
+      orderItemRequestDTO.setOrderItemId(item.getId());
+      try {
+        return updateItemQuantity(orderId,orderItemRequestDTO,priceOrder);
+      }
+ catch (      RemoveFromCartException e) {
+        throw new AddToCartException("Unexpected error - system tried to remove item while adding to cart",e);
+      }
+catch (      UpdateCartException e) {
+        throw new AddToCartException("Could not update quantity for matched item",e);
+      }
+    }
+  }
   try {
-    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    CartOperationRequest cartOpRequest=new CartOperationRequest(order,orderItemRequestDTO,priceOrder);
     CartOperationContext context=(CartOperationContext)addItemWorkflow.doActivities(cartOpRequest);
     return context.getSeedData().getOrder();
   }

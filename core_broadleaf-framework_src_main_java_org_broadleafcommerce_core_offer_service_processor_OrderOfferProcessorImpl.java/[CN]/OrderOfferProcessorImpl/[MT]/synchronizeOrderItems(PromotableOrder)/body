@@ -1,7 +1,8 @@
 {
   Order order=promotableOrder.getOrder();
   Map<OrderItem,PromotableOrderItem> promotableItemMap=buildPromotableItemMap(promotableOrder);
-  for (  OrderItem orderItem : order.getOrderItems()) {
+  List<OrderItem> orderItemList=buildOrderItemList(order);
+  for (  OrderItem orderItem : orderItemList) {
     PromotableOrderItem promotableItem=promotableItemMap.get(orderItem);
     if (promotableItem == null) {
       continue;

@@ -13,7 +13,11 @@
           partialOrderItemMap.put(orderItem,fgItemList);
         }
         fgItemList.add(fgItem);
-        Money totalItemAmount=orderItem.getTotalPrice().subtract(orderItem.getProratedOrderAdjustment());
+        Money totalItemAmount=orderItem.getTotalPrice();
+        Money proratedOrderAdjustment=orderItem.getProratedOrderAdjustment();
+        if (proratedOrderAdjustment != null) {
+          totalItemAmount=totalItemAmount.subtract(orderItem.getProratedOrderAdjustment());
+        }
         fgItem.setTotalItemAmount(totalItemAmount.multiply(fgItemQty).divide(orderItemQty));
         if (orderItem.isTaxable()) {
           Money totalTaxAmount=orderItem.getTotalTaxableAmount();
@@ -24,7 +28,12 @@
         }
       }
  else {
-        fgItem.setTotalItemAmount(orderItem.getTotalPrice().subtract(orderItem.getProratedOrderAdjustment()));
+        Money totalItemAmount=orderItem.getTotalPrice();
+        Money proratedOrderAdjustment=orderItem.getProratedOrderAdjustment();
+        if (proratedOrderAdjustment != null) {
+          totalItemAmount=totalItemAmount.subtract(orderItem.getProratedOrderAdjustment());
+        }
+        fgItem.setTotalItemAmount(totalItemAmount);
         if (orderItem.isTaxable()) {
           fgItem.setTotalItemTaxableAmount(orderItem.getTotalTaxableAmount());
         }
