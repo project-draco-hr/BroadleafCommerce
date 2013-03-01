@@ -1,12 +1,17 @@
 {
+  initServices(arguments);
   DataWrapper dataWrapper=new DataWrapper();
   String mvelProperty=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("mvelProperty"));
   String quantityProperty=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("quantityProperty"));
   Entity[] entities=(Entity[])StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("entities"));
-  if (entities != null && mvelProperty != null) {
-    RuleBuilderUtil ruleBuilderUtil=new RuleBuilderUtil();
+  String fieldBuilder=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("fieldBuilder"));
+  if (entities != null && mvelProperty != null && fieldBuilder != null) {
+    MVELToDataWrapperTranslator mvelToDataWrapperTranslator=new MVELToDataWrapperTranslator();
     try {
-      dataWrapper=ruleBuilderUtil.createRuleData(entities,mvelProperty,quantityProperty);
+      RuleBuilderFieldService ruleBuilderFieldService=ruleBuilderFieldServiceFactory.createInstance(fieldBuilder);
+      if (ruleBuilderFieldService != null) {
+        dataWrapper=mvelToDataWrapperTranslator.createRuleData(entities,mvelProperty,quantityProperty,ruleBuilderFieldService);
+      }
     }
  catch (    MVELTranslationException e) {
     }

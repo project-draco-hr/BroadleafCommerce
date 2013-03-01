@@ -1,12 +1,11 @@
 {
   FieldWrapper wrapper=new FieldWrapper();
-  for (  String field : fields) {
-    String[] values=field.split("\\|");
+  for (  FieldData field : fields) {
     FieldDTO fieldDTO=new FieldDTO();
-    fieldDTO.setLabel(values[0]);
-    fieldDTO.setName(values[1]);
-    fieldDTO.setOperators(values[2]);
-    fieldDTO.setOptions(values[3]);
+    fieldDTO.setLabel(field.getFieldLabel());
+    fieldDTO.setName(field.getFieldName());
+    fieldDTO.setOperators(field.getOperators());
+    fieldDTO.setOptions(field.getOptions());
     wrapper.getFields().add(fieldDTO);
   }
   return wrapper;

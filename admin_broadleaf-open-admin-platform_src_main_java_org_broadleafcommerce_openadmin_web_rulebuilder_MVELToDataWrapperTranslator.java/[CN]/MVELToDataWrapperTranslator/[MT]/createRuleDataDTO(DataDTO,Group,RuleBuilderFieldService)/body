@@ -1,0 +1,30 @@
+{
+  DataDTO data=new DataDTO();
+  if (group.getOperatorType() == null) {
+    group.setOperatorType(BLCOperator.AND);
+  }
+  BLCOperator operator=group.getOperatorType();
+  data.setGroupOperator(operator.name());
+  List<ExpressionDTO> myCriteriaList=new ArrayList<ExpressionDTO>();
+  if (BLCOperator.NOT.equals(group.getOperatorType()) && group.getIsTopGroup()) {
+    group=group.getSubGroups().get(0);
+    group.setOperatorType(operator);
+  }
+  int j=0;
+  for (  String phrase : group.getPhrases()) {
+    appendExpression(phrase,fieldService,j,parentDTO,myCriteriaList);
+    j++;
+  }
+  if (myCriteriaList.size() > 0) {
+    List<DataDTO> converted=new ArrayList<DataDTO>();
+    for (    ExpressionDTO e : myCriteriaList) {
+      converted.add(e);
+    }
+    data.getGroups().addAll(converted);
+  }
+  for (  Group subgroup : group.getSubGroups()) {
+    DataDTO subCriteria=createRuleDataDTO(data,subgroup,fieldService);
+    data.getGroups().add(subCriteria);
+  }
+  return data;
+}

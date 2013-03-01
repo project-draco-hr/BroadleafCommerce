@@ -1,0 +1,117 @@
+{
+  StringBuffer response=new StringBuffer();
+  if (isFieldComparison) {
+switch (type) {
+case MONEY:
+      response.append(entityKey);
+    response.append(".");
+  response.append(value[0]);
+response.append(".getAmount()");
+break;
+case STRING:
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+response.append(entityKey);
+response.append(".");
+response.append(value[0]);
+if (ignoreCase) {
+response.append(")");
+}
+break;
+default :
+response.append(entityKey);
+response.append(".");
+response.append(value[0]);
+break;
+}
+}
+ else {
+for (int j=0; j < value.length; j++) {
+switch (type) {
+case BOOLEAN:
+response.append(value[j]);
+break;
+case DECIMAL:
+try {
+Double.parseDouble(value[j].toString());
+}
+ catch (Exception e) {
+throw new IncompatibleMVELTranslationException("Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Decimal, "+ "and you entered: ("+ value[j]+ ")");
+}
+response.append(value[j]);
+break;
+case ID:
+if (secondaryType != null && secondaryType.toString().equals(SupportedFieldType.STRING.toString())) {
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+if (!ignoreQuotes) {
+response.append("\"");
+}
+response.append(value[j]);
+if (!ignoreQuotes) {
+response.append("\"");
+}
+if (ignoreCase) {
+response.append(")");
+}
+}
+ else {
+try {
+Integer.parseInt(value[j].toString());
+}
+ catch (Exception e) {
+throw new IncompatibleMVELTranslationException("Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Integer, "+ "and you entered: ("+ value[j]+ ")");
+}
+response.append(value[j]);
+}
+break;
+case INTEGER:
+try {
+Integer.parseInt(value[j].toString());
+}
+ catch (Exception e) {
+throw new IncompatibleMVELTranslationException("Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Integer, "+ "and you entered: ("+ value[j]+ ")");
+}
+response.append(value[j]);
+break;
+case MONEY:
+try {
+Double.parseDouble(value[j].toString());
+}
+ catch (Exception e) {
+throw new IncompatibleMVELTranslationException("Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Money, "+ "and you entered: ("+ value[j]+ ")");
+}
+response.append(value[j]);
+break;
+case DATE:
+DateTimeFormat formatter=DateTimeFormat.getFormat("MM/dd/yy H:mm a Z");
+String formattedDate=formatter.format((Date)value[0]);
+response.append("java.text.DateFormat.getDateTimeInstance(3,3).parse(\"");
+response.append(formattedDate);
+response.append("\")");
+break;
+default :
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+if (!ignoreQuotes) {
+response.append("\"");
+}
+response.append(value[j]);
+if (!ignoreQuotes) {
+response.append("\"");
+}
+if (ignoreCase) {
+response.append(")");
+}
+break;
+}
+if (j < value.length - 1) {
+response.append(",");
+}
+}
+}
+return response.toString();
+}
