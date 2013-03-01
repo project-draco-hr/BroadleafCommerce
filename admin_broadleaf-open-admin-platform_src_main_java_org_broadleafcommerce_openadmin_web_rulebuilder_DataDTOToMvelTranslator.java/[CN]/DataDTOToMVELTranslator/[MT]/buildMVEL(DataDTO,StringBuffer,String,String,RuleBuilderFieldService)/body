@@ -1,5 +1,8 @@
 {
-  BLCOperator operator=BLCOperator.valueOf(dataDTO.getGroupOperator());
+  BLCOperator operator=null;
+  if (dataDTO instanceof ExpressionDTO) {
+    operator=BLCOperator.valueOf(((ExpressionDTO)dataDTO).getOperator());
+  }
   ArrayList<DataDTO> groups=dataDTO.getGroups();
   if (sb.length() != 0 && sb.charAt(sb.length() - 1) != '(' && groupOperator != null) {
     BLCOperator groupOp=BLCOperator.valueOf(groupOperator);
@@ -11,11 +14,8 @@ case OR:
   sb.append("||");
 }
 }
-if (groups.size() == 1) {
-DataDTO criteria=groups.get(0);
-if (criteria instanceof ExpressionDTO) {
+if (dataDTO instanceof ExpressionDTO) {
 buildExpression((ExpressionDTO)dataDTO,sb,entityKey,operator,fieldService);
-}
 }
  else {
 boolean includeTopLevelParenthesis=false;

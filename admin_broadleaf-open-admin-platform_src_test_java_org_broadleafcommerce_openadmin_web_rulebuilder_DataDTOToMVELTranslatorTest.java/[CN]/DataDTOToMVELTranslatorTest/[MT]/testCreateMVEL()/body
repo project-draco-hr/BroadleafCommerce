@@ -1,0 +1,10 @@
+{
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  ExpressionDTO expressionDTO=new ExpressionDTO();
+  expressionDTO.setName("category.name");
+  expressionDTO.setOperator(BLCOperator.IEQUALS.name());
+  expressionDTO.setValue("merchandise");
+  String translated=translator.createMVEL("discreteOrderItem",expressionDTO,orderItemFieldService);
+  String mvel="MVEL.eval(\"toUpperCase()\",discreteOrderItem.category.name)==MVEL.eval(\"toUpperCase()\",\"merchandise\")";
+  assert(mvel.equals(translated));
+}

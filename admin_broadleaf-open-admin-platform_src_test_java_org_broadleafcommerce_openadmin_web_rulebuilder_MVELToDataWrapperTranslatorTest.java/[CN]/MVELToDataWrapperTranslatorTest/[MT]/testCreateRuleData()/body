@@ -1,0 +1,25 @@
+{
+  MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
+  Property[] properties=new Property[2];
+  Property mvelProperty=new Property();
+  mvelProperty.setName("orderItemMatchRule");
+  mvelProperty.setValue("MVEL.eval(\"toUpperCase()\",discreteOrderItem.category.name)==MVEL.eval(\"toUpperCase()\",\"merchandise\")");
+  Property quantityProperty=new Property();
+  quantityProperty.setName("quantity");
+  quantityProperty.setValue("1");
+  properties[0]=mvelProperty;
+  properties[1]=quantityProperty;
+  Entity[] entities=new Entity[1];
+  Entity entity=new Entity();
+  entity.setProperties(properties);
+  entities[0]=entity;
+  DataWrapper dataWrapper=translator.createRuleData(entities,"orderItemMatchRule","quantity",orderItemFieldService);
+  assert(dataWrapper.getData().size() == 1);
+  assert(dataWrapper.getData().get(0).getQuantity() == 1);
+  assert(dataWrapper.getData().get(0).getGroups().size() == 1);
+  assert(dataWrapper.getData().get(0).getGroups().get(0) instanceof ExpressionDTO);
+  ExpressionDTO exp=(ExpressionDTO)dataWrapper.getData().get(0).getGroups().get(0);
+  assert(exp.getName().equals("category.name"));
+  assert(exp.getOperator().equals(BLCOperator.IEQUALS.name()));
+  assert(exp.getValue().equals("merchandise"));
+}
