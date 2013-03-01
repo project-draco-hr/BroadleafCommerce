@@ -6,6 +6,8 @@
   EasyMock.expect(offerDaoMock.createOrderAdjustment()).andAnswer(orderAdjustmentAnswer).atLeastOnce();
   OrderItemPriceDetailAnswer orderItemPriceDetailAnswer=new OrderItemPriceDetailAnswer();
   EasyMock.expect(orderItemDaoMock.createOrderItemPriceDetail()).andAnswer(orderItemPriceDetailAnswer).atLeastOnce();
+  OrderItemQualifierAnswer orderItemQualifierAnswer=new OrderItemQualifierAnswer();
+  EasyMock.expect(orderItemDaoMock.createOrderItemQualifier()).andAnswer(orderItemQualifierAnswer).atLeastOnce();
   CandidateItemOfferAnswer candidateItemOfferAnswer=new CandidateItemOfferAnswer();
   OrderItemAdjustmentAnswer orderItemAdjustmentAnswer=new OrderItemAdjustmentAnswer();
   EasyMock.expect(fgServiceMock.addItemToFulfillmentGroup(EasyMock.isA(FulfillmentGroupItemRequest.class),EasyMock.eq(false))).andAnswer(OfferDataItemProvider.getAddItemToFulfillmentGroupAnswer()).anyTimes();
@@ -47,7 +49,9 @@
   offers.addAll(offers2);
   offerService.applyOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
+  int qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
+  assertTrue(qualifierCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 0);
   order=dataProvider.createBasicOrder();
@@ -57,7 +61,9 @@
   offers.get(0).getOfferMatchRules().put(OfferRuleType.ORDER.getType(),orderRule);
   offerService.applyOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
+  qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
+  assertTrue(qualifierCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 1);
   assertTrue(order.getSubTotal().subtract(order.getOrderAdjustmentsValue()).equals(new Money(112.45D)));
@@ -74,7 +80,9 @@
   offers.get(0).setCombinableWithOtherOffers(false);
   offerService.applyOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
+  qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
+  assertTrue(qualifierCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 1);
   assertTrue(order.getSubTotal().subtract(order.getOrderAdjustmentsValue()).equals(new Money(112.45D)));
@@ -84,7 +92,9 @@
   offers.get(0).setTotalitarianOffer(true);
   offerService.applyOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
+  qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 0);
+  assertTrue(qualifierCount == 0);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 1);
   assertTrue(order.getSubTotal().subtract(order.getOrderAdjustmentsValue()).equals(new Money(116.95D)));
