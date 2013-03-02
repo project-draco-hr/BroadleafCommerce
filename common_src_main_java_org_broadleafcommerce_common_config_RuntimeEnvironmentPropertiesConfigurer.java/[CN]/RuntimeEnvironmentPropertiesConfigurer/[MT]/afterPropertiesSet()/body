@@ -3,8 +3,11 @@
     environments=defaultEnvironments;
   }
   Set<Resource> combinedLocations=new LinkedHashSet<Resource>();
+  if (!CollectionUtils.isEmpty(overridableProperyLocations)) {
+    combinedLocations.addAll(overridableProperyLocations);
+  }
   combinedLocations.addAll(defaultPropertyLocations);
-  if (propertyLocations != null && propertyLocations.size() > 0) {
+  if (!CollectionUtils.isEmpty(propertyLocations)) {
     combinedLocations.addAll(propertyLocations);
   }
   propertyLocations=combinedLocations;
