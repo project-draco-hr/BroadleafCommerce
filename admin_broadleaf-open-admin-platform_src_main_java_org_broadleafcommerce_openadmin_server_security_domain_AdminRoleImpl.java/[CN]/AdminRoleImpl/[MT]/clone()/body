@@ -1,0 +1,25 @@
+{
+  AdminRole clone;
+  try {
+    clone=(AdminRole)Class.forName(this.getClass().getName()).newInstance();
+    try {
+      checkCloneable(clone);
+    }
+ catch (    CloneNotSupportedException e) {
+      LOG.warn("Clone implementation missing in inheritance hierarchy outside of Broadleaf: " + clone.getClass().getName(),e);
+    }
+    clone.setId(id);
+    clone.setName(name);
+    clone.setDescription(description);
+    if (allPermissions != null) {
+      for (      AdminPermission permission : allPermissions) {
+        AdminPermission permissionClone=permission.clone();
+        clone.getAllPermissions().add(permissionClone);
+      }
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return clone;
+}

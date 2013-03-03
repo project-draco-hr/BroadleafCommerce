@@ -1,0 +1,18 @@
+{
+  AdminPermissionQualifiedEntity clone;
+  try {
+    clone=(AdminPermissionQualifiedEntity)Class.forName(this.getClass().getName()).newInstance();
+    try {
+      checkCloneable(clone);
+    }
+ catch (    CloneNotSupportedException e) {
+      LOG.warn("Clone implementation missing in inheritance hierarchy outside of Broadleaf: " + clone.getClass().getName(),e);
+    }
+    clone.setId(id);
+    clone.setCeilingEntityFullyQualifiedName(ceilingEntityFullyQualifiedName);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return clone;
+}
