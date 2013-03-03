@@ -38,7 +38,7 @@
         fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
         order.getFulfillmentGroups().add(fulfillmentGroup);
       }
-      fulfillmentGroup=addItemToFulfillmentGroup(order,doi,fulfillmentGroup);
+      fulfillmentGroup=addItemToFulfillmentGroup(order,doi,doi.getQuantity() * orderItem.getQuantity(),fulfillmentGroup);
       order=fulfillmentGroup.getOrder();
     }
   }
