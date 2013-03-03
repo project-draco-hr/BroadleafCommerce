@@ -1,16 +1,4 @@
 {
-  if (orderItem instanceof OrderItemContainer) {
-    OrderItemContainer container=(OrderItemContainer)orderItem;
-    if (!container.isPricingAtContainerLevel()) {
-      Money returnSavings=new Money(BroadleafCurrencyUtils.getCurrency(orderItem.getOrder().getCurrency()));
-      for (      OrderItem containedItem : container.getOrderItems()) {
-        Money prorataOrderSavings=updateOrderItemSavingsTotal(containedItem,subTotal,orderSavings);
-        containedItem.setProratedOrderAdjustment(prorataOrderSavings.multiply(orderItem.getQuantity()));
-        returnSavings=returnSavings.add(containedItem.getProratedOrderAdjustment());
-      }
-      return returnSavings;
-    }
-  }
   Money itemTotal=orderItem.getTotalPrice();
   Money prorataOrderSavings=new Money(BroadleafCurrencyUtils.getCurrency(orderSavings));
   if (orderSavings == null || (orderSavings.getAmount().compareTo(BigDecimal.ZERO) == 0)) {
