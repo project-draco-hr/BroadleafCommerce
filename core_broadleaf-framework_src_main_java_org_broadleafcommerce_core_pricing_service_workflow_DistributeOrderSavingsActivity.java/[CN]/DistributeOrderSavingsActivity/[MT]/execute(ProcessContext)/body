@@ -18,7 +18,7 @@
   Money difference=orderSavings.subtract(savingsDistributed);
   if (!(difference.getAmount().compareTo(BigDecimal.ZERO) == 0)) {
     long numApplicationsNeeded=countNumberOfUnits(difference);
-    Money unitAmount=getUnitAmount(difference);
+    Money unitAmount=BroadleafCurrencyUtils.getUnitAmount(difference);
     for (    OrderItem orderItem : order.getOrderItems()) {
       numApplicationsNeeded=numApplicationsNeeded - applyDifference(orderItem,numApplicationsNeeded,unitAmount);
       if (numApplicationsNeeded == 0) {
