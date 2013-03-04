@@ -1,0 +1,32 @@
+{
+  if (propertyName.contains(".")) {
+    StringTokenizer tokens=new StringTokenizer(propertyName,".");
+    propertyName=tokens.nextToken();
+  }
+  Object value=PropertyUtils.getProperty(sku,propertyName);
+  String strVal;
+  if (value == null) {
+    strVal=null;
+  }
+ else {
+    if (Date.class.isAssignableFrom(value.getClass())) {
+      strVal=helper.getDateFormatter().format((Date)value);
+    }
+ else     if (Timestamp.class.isAssignableFrom(value.getClass())) {
+      strVal=helper.getDateFormatter().format(new Date(((Timestamp)value).getTime()));
+    }
+ else     if (Calendar.class.isAssignableFrom(value.getClass())) {
+      strVal=helper.getDateFormatter().format(((Calendar)value).getTime());
+    }
+ else     if (Double.class.isAssignableFrom(value.getClass())) {
+      strVal=helper.getDecimalFormatter().format(value);
+    }
+ else     if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+      strVal=helper.getDecimalFormatter().format(((BigDecimal)value).doubleValue());
+    }
+ else {
+      strVal=value.toString();
+    }
+  }
+  return strVal;
+}

@@ -1,0 +1,13 @@
+{
+  Property optionValueProperty=new Property();
+  optionValueProperty.setName(CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME);
+  ArrayList<String> stringValues=new ArrayList<String>();
+  CollectionUtils.collect(values,new Transformer(){
+    @Override public Object transform(    Object input){
+      return ((ProductOptionValue)input).getAttributeValue();
+    }
+  }
+,stringValues);
+  optionValueProperty.setValue(StringUtils.join(stringValues,"; "));
+  return optionValueProperty;
+}
