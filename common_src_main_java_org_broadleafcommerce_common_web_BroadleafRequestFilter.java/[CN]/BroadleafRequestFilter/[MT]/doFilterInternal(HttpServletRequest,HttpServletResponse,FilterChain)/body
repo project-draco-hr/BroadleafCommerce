@@ -23,11 +23,14 @@
   if (request.getAttribute(REQUEST_DTO) == null) {
     request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
   }
-  requestProcessor.process(new ServletWebRequest(request,response));
   try {
+    requestProcessor.process(new ServletWebRequest(request,response));
     filterChain.doFilter(request,response);
   }
-  finally {
+ catch (  SiteNotFoundException e) {
+    response.setStatus(HttpServletResponse.SC_FOUND);
+  }
+ finally {
     SandBoxContext.setSandBoxContext(null);
   }
 }
