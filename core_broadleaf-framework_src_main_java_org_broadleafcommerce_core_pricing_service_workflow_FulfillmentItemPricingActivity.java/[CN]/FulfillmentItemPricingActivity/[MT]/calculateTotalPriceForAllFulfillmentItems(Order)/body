@@ -1,0 +1,9 @@
+{
+  Money totalAllItemsAmount=new Money(order.getCurrency());
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+      totalAllItemsAmount=totalAllItemsAmount.add(fgItem.getTotalItemAmount());
+    }
+  }
+  return totalAllItemsAmount;
+}

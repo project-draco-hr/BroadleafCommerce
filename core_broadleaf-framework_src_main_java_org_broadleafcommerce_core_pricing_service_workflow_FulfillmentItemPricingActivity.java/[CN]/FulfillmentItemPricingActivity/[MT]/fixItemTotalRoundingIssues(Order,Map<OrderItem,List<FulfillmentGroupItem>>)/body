@@ -1,0 +1,17 @@
+{
+  for (  OrderItem orderItem : partialOrderItemMap.keySet()) {
+    Money totalItemAmount=orderItem.getTotalPrice();
+    Money totalFGItemAmount=sumItemAmount(partialOrderItemMap.get(orderItem),order);
+    Money amountDiff=totalItemAmount.subtract(totalFGItemAmount);
+    if (!(amountDiff.getAmount().compareTo(BigDecimal.ZERO) == 0)) {
+      long numApplicationsNeeded=countNumberOfUnits(amountDiff);
+      Money unitAmount=getUnitAmount(amountDiff);
+      for (      FulfillmentGroupItem fgItem : partialOrderItemMap.get(orderItem)) {
+        numApplicationsNeeded=numApplicationsNeeded - applyDifferenceToAmount(fgItem,numApplicationsNeeded,unitAmount);
+        if (numApplicationsNeeded == 0) {
+          break;
+        }
+      }
+    }
+  }
+}
