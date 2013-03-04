@@ -1,0 +1,31 @@
+{
+  Site site=siteResolver.resolveSite(request);
+  Locale locale=localeResolver.resolveLocale(request);
+  BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
+  Theme theme=themeResolver.resolveTheme(request,site);
+  SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
+  if (currentSandbox != null) {
+    SandBoxContext previewSandBoxContext=new SandBoxContext();
+    previewSandBoxContext.setSandBoxId(currentSandbox.getId());
+    previewSandBoxContext.setPreviewMode(true);
+    SandBoxContext.setSandBoxContext(previewSandBoxContext);
+  }
+  BroadleafRequestContext brc=new BroadleafRequestContext();
+  brc.setSite(site);
+  brc.setLocale(locale);
+  brc.setBroadleafCurrency(currency);
+  brc.setWebRequest(request);
+  brc.setSandbox(currentSandbox);
+  brc.setTheme(theme);
+  BroadleafRequestContext.setBroadleafRequestContext(brc);
+  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap",WebRequest.SCOPE_REQUEST);
+  if (ruleMap == null) {
+    LOG.trace("Creating ruleMap and adding in Locale.");
+    ruleMap=new HashMap<String,Object>();
+    request.setAttribute("blRuleMap",ruleMap,WebRequest.SCOPE_REQUEST);
+  }
+ else {
+    LOG.trace("Using pre-existing ruleMap - added by non standard BLC process.");
+  }
+  ruleMap.put("locale",locale);
+}
