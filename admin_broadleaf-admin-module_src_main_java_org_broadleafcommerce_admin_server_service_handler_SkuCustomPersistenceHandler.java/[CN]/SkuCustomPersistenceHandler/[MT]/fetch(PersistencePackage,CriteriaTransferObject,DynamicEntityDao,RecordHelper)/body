@@ -8,8 +8,39 @@
     applyProductOptionValueCriteria(queryCriteria,cto,persistencePackage);
     applyAdditionalFetchCriteria(queryCriteria,cto,persistencePackage);
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
-    Entity[] payload=helper.getRecords(originalProps,records);
-    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
+    List<Sku> result=new ArrayList<Sku>();
+    int additionalSkusAdded=0;
+    int skusRemoved=0;
+    for (    Serializable serialSku : records) {
+      Sku sku=(Sku)serialSku;
+      if (sku.getProduct().getDefaultSku().getId().equals(sku.getId())) {
+        if (CollectionUtils.isNotEmpty(sku.getProduct().getAdditionalSkus())) {
+          if (sku.getProduct().getCanSellWithoutOptions()) {
+            result.add(sku);
+          }
+ else {
+            skusRemoved++;
+          }
+        }
+ else {
+          result.add(sku);
+        }
+        if (CollectionUtils.isNotEmpty(cto.getPropertyIdSet())) {
+          if (CollectionUtils.isNotEmpty(sku.getProduct().getAdditionalSkus())) {
+            result.addAll(sku.getProduct().getAdditionalSkus());
+            additionalSkusAdded+=sku.getProduct().getAdditionalSkus().size();
+          }
+        }
+      }
+ else {
+        result.add(sku);
+      }
+    }
+    Entity[] payload=helper.getRecords(originalProps,result);
+    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter) + additionalSkusAdded - skusRemoved;
+    if (result.size() == 0) {
+      totalRecords=cto.getFirstResult() - 1;
+    }
     ClassMetadata metadata=new ClassMetadata();
     if (cto.get("product").getFilterValues().length > 0) {
       Long productId=Long.parseLong(cto.get("product").getFilterValues()[0]);
@@ -22,42 +53,14 @@
       }
       metadata.setProperties(properties.toArray(new Property[0]));
     }
-    for (int i=0; i < records.size(); i++) {
-      Sku sku=(Sku)records.get(i);
+    for (int i=0; i < result.size(); i++) {
+      Sku sku=result.get(i);
       Entity entity=payload[i];
       for (      Property property : entity.getProperties()) {
         if (StringUtils.isEmpty(property.getValue())) {
           String propertyName=property.getName();
-          if (propertyName.contains(".")) {
-            StringTokenizer tokens=new StringTokenizer(propertyName,".");
-            propertyName=tokens.nextToken();
-          }
-          Object value=PropertyUtils.getProperty(sku,propertyName);
-          String strVal;
-          if (value == null) {
-            strVal=null;
-          }
- else {
-            if (Date.class.isAssignableFrom(value.getClass())) {
-              strVal=helper.getDateFormatter().format((Date)value);
-            }
- else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
-              strVal=helper.getDateFormatter().format(new Date(((Timestamp)value).getTime()));
-            }
- else             if (Calendar.class.isAssignableFrom(value.getClass())) {
-              strVal=helper.getDateFormatter().format(((Calendar)value).getTime());
-            }
- else             if (Double.class.isAssignableFrom(value.getClass())) {
-              strVal=helper.getDecimalFormatter().format(value);
-            }
- else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-              strVal=helper.getDecimalFormatter().format(((BigDecimal)value).doubleValue());
-            }
- else {
-              strVal=value.toString();
-            }
-          }
-          property.setValue(strVal);
+          String strValue=SkuCustomPersistenceHandler.getStringValueFromGetter(propertyName,sku,helper);
+          property.setValue(strValue);
         }
       }
       List<ProductOptionValue> optionValues=sku.getProductOptionValues();
@@ -66,6 +69,9 @@
         optionProperty.setName(PRODUCT_OPTION_FIELD_PREFIX + value.getProductOption().getId());
         optionProperty.setValue(value.getId().toString());
         entity.addProperty(optionProperty);
+      }
+      if (CollectionUtils.isNotEmpty(optionValues)) {
+        entity.addProperty(getConsolidatedOptionProperty(optionValues));
       }
     }
     return new DynamicResultSet(metadata,payload,totalRecords);
