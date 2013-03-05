@@ -3,6 +3,9 @@
   if (dataDTO instanceof ExpressionDTO) {
     operator=BLCOperator.valueOf(((ExpressionDTO)dataDTO).getOperator());
   }
+ else {
+    operator=BLCOperator.valueOf(dataDTO.getGroupOperator());
+  }
   ArrayList<DataDTO> groups=dataDTO.getGroups();
   if (sb.length() != 0 && sb.charAt(sb.length() - 1) != '(' && groupOperator != null) {
     BLCOperator groupOp=BLCOperator.valueOf(groupOperator);
