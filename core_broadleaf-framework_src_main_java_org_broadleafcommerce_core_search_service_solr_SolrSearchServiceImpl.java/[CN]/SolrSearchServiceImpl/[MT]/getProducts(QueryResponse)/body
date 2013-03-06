@@ -2,13 +2,7 @@
   final List<Long> productIds=new ArrayList<Long>();
   SolrDocumentList docs=response.getResults();
   for (  SolrDocument doc : docs) {
-    Object temp=doc.getFieldValue(shs.getIdFieldName());
-    if (temp instanceof String) {
-      productIds.add(Long.parseLong((String)temp));
-    }
- else {
-      productIds.add((Long)temp);
-    }
+    productIds.add((Long)doc.getFieldValue(shs.getIdFieldName()));
   }
   List<Product> products=productDao.readProductsByIds(productIds);
   if (products != null) {
