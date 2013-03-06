@@ -24,7 +24,14 @@
   }
   for (  Group subgroup : group.getSubGroups()) {
     DataDTO subCriteria=createRuleDataDTO(data,subgroup,fieldService);
-    data.getGroups().add(subCriteria);
+    if (subCriteria != null && !subCriteria.getGroups().isEmpty()) {
+      data.getGroups().add(subCriteria);
+    }
   }
-  return data;
+  if (data.getGroups() != null && !data.getGroups().isEmpty()) {
+    return data;
+  }
+ else {
+    return null;
+  }
 }

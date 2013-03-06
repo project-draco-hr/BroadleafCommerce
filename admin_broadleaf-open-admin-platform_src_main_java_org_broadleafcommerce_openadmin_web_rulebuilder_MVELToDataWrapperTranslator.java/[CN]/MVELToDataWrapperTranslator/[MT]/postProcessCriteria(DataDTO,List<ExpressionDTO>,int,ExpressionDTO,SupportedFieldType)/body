@@ -13,12 +13,9 @@
     }
     myCriteriaList.get(count - 1).setStart(start);
     myCriteriaList.get(count - 1).setEnd(end);
+    myCriteriaList.get(count - 1).setValue(null);
     if (parentDTO != null) {
-      List<DataDTO> converted=new ArrayList<DataDTO>();
-      for (      ExpressionDTO e : myCriteriaList) {
-        converted.add(e);
-      }
-      parentDTO.getGroups().add(converted.remove(count - 1));
+      parentDTO.getGroups().add(myCriteriaList.remove(count - 1));
     }
   }
  else   if (count > 0 && temp.getName().equals(myCriteriaList.get(count - 1).getName()) && myCriteriaList.get(count - 1).getOperator().equals(BLCOperator.GREATER_OR_EQUAL.name()) && temp.getOperator().equals(BLCOperator.LESS_OR_EQUAL.name())) {
@@ -35,12 +32,9 @@
     }
     myCriteriaList.get(count - 1).setStart(start);
     myCriteriaList.get(count - 1).setEnd(end);
+    myCriteriaList.get(count - 1).setValue(null);
     if (parentDTO != null) {
-      List<DataDTO> converted=new ArrayList<DataDTO>();
-      for (      ExpressionDTO e : myCriteriaList) {
-        converted.add(e);
-      }
-      parentDTO.getGroups().add(converted.remove(count - 1));
+      parentDTO.getGroups().add(myCriteriaList.remove(count - 1));
     }
   }
  else   if (isProjection(temp.getValue())) {

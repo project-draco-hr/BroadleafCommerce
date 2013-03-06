@@ -17,8 +17,10 @@
     if (mvel != null) {
       Group group=groupingTranslator.createGroups(mvel);
       DataDTO dataDTO=createRuleDataDTO(null,group,fieldService);
-      dataDTO.setQuantity(qty);
-      dataWrapper.getData().add(dataDTO);
+      if (dataDTO != null) {
+        dataDTO.setQuantity(qty);
+        dataWrapper.getData().add(dataDTO);
+      }
     }
   }
   return dataWrapper;
