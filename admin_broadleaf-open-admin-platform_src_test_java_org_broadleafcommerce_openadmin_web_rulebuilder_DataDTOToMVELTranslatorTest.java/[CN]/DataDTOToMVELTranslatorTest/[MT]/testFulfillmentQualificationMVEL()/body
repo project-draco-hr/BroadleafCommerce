@@ -1,0 +1,19 @@
+{
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  DataDTO dataDTO=new DataDTO();
+  dataDTO.setGroupOperator(BLCOperator.AND.name());
+  ExpressionDTO e1=new ExpressionDTO();
+  e1.setName("address.state.name");
+  e1.setOperator(BLCOperator.EQUALS.name());
+  e1.setValue("Texas");
+  ExpressionDTO e2=new ExpressionDTO();
+  e2.setName("retailShippingPrice");
+  e2.setOperator(BLCOperator.BETWEEN_INCLUSIVE.name());
+  e2.setStart("99");
+  e2.setEnd("199");
+  dataDTO.getGroups().add(e1);
+  dataDTO.getGroups().add(e2);
+  String translated=translator.createMVEL("fulfillmentGroup",dataDTO,fulfillmentGroupFieldService);
+  String mvel="fulfillmentGroup.address.state.name==\"Texas\"&&(fulfillmentGroup.retailShippingPrice.getAmount()>=99&&fulfillmentGroup.retailShippingPrice.getAmount()<=199)";
+  assert(mvel.equals(translated));
+}
