@@ -1,0 +1,11 @@
+{
+  Order cart=CartState.getCart();
+  if (cart == null || cart instanceof NullOrderImpl) {
+    cart=orderService.createNewCartForCustomer(CustomerState.getCustomer(request));
+  }
+  updateCartService.validateCart(cart);
+  cart=orderService.addItemWithPriceOverrides(cart.getId(),itemRequest,false);
+  cart=orderService.save(cart,true);
+  CartState.setCart(cart);
+  return isAjaxRequest(request) ? getCartView() : getCartPageRedirect();
+}

@@ -1,10 +1,5 @@
 {
-  try {
-    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
-    CartOperationContext context=(CartOperationContext)addItemWorkflow.doActivities(cartOpRequest);
-    return context.getSeedData().getOrder();
-  }
- catch (  WorkflowException e) {
-    throw new AddToCartException("Could not add to cart",getCartOperationExceptionRootCause(e));
-  }
+  orderItemRequestDTO.setOverrideRetailPrice(null);
+  orderItemRequestDTO.setOverrideSalePrice(null);
+  return addItemWithPriceOverrides(orderId,orderItemRequestDTO,priceOrder);
 }

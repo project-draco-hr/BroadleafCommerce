@@ -2,14 +2,18 @@
   boolean updated=false;
   if (!shouldSumItems()) {
     if (getSku() != null && !getSku().getRetailPrice().equals(getRetailPrice())) {
-      setBaseRetailPrice(getSku().getRetailPrice());
-      setRetailPrice(getSku().getRetailPrice());
-      updated=true;
+      if (!isRetailPriceOverride()) {
+        setBaseRetailPrice(getSku().getRetailPrice());
+        setRetailPrice(getSku().getRetailPrice());
+        updated=true;
+      }
     }
     if (getSku() != null && getSku().getSalePrice() != null && !getSku().getSalePrice().equals(getSalePrice())) {
-      setBaseSalePrice(getSku().getSalePrice());
-      setSalePrice(getSku().getSalePrice());
-      updated=true;
+      if (!isSalePriceOverride()) {
+        setBaseSalePrice(getSku().getSalePrice());
+        setSalePrice(getSku().getSalePrice());
+        updated=true;
+      }
     }
   }
   return updated;
