@@ -1,0 +1,49 @@
+{
+  ObjectMapper mapper=(ObjectMapper)jp.getCodec();
+  ObjectNode root=(ObjectNode)mapper.readTree(jp);
+  Iterator<Map.Entry<String,JsonNode>> elementsIterator=root.getFields();
+  DataDTO dataDTO=new DataDTO();
+  ExpressionDTO expressionDTO=new ExpressionDTO();
+  boolean isExpression=false;
+  while (elementsIterator.hasNext()) {
+    Map.Entry<String,JsonNode> element=elementsIterator.next();
+    String name=element.getKey();
+    if ("name".equals(name)) {
+      expressionDTO.setName(element.getValue().asText());
+      isExpression=true;
+    }
+    if ("operator".equals(name)) {
+      expressionDTO.setOperator(element.getValue().asText());
+      isExpression=true;
+    }
+    if ("value".equals(name)) {
+      expressionDTO.setValue(element.getValue().asText());
+      isExpression=true;
+    }
+    if ("start".equals(name)) {
+      expressionDTO.setStart(element.getValue().asText());
+      isExpression=true;
+    }
+    if ("end".equals(name)) {
+      expressionDTO.setEnd(element.getValue().asText());
+      isExpression=true;
+    }
+    if ("quantity".equals(name)) {
+      dataDTO.setQuantity(element.getValue().asInt());
+    }
+    if ("groupOperator".equals(name)) {
+      dataDTO.setGroupOperator(element.getValue().asText());
+    }
+    if ("groups".equals(name)) {
+      dataDTO.setGroups((ArrayList<DataDTO>)mapper.readValue(element.getValue(),new TypeReference<ArrayList<DataDTO>>(){
+      }
+));
+    }
+  }
+  if (isExpression) {
+    return expressionDTO;
+  }
+ else {
+    return dataDTO;
+  }
+}

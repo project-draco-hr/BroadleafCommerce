@@ -34,6 +34,31 @@
         prop.setValue(fgRule.getMatchRule());
         entities[j].addProperty(prop);
       }
+      int k=0;
+      Entity[] targetItemCriterias=new Entity[offer.getTargetItemCriteria().size()];
+      for (      OfferItemCriteria oic : offer.getTargetItemCriteria()) {
+        Property[] properties=new Property[2];
+        Property mvelProperty=new Property();
+        mvelProperty.setName("orderItemMatchRule");
+        mvelProperty.setValue(oic.getOrderItemMatchRule());
+        Property quantityProperty=new Property();
+        quantityProperty.setName("quantity");
+        quantityProperty.setValue(oic.getQuantity().toString());
+        properties[0]=mvelProperty;
+        properties[1]=quantityProperty;
+        Entity criteria=new Entity();
+        criteria.setProperties(properties);
+        targetItemCriterias[k]=criteria;
+        k++;
+      }
+      MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
+      DataWrapper wrapper=translator.createRuleData(targetItemCriterias,"orderItemMatchRule","quantity",ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS"));
+      ObjectMapper mapper=new ObjectMapper();
+      String targetItemCriteriaJson=mapper.writeValueAsString(wrapper);
+      Property targetItemCriteriaJsonProp=new Property();
+      targetItemCriteriaJsonProp.setName("targetItemCriteriaJson");
+      targetItemCriteriaJsonProp.setValue(targetItemCriteriaJson);
+      entities[j].addProperty(targetItemCriteriaJsonProp);
     }
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
