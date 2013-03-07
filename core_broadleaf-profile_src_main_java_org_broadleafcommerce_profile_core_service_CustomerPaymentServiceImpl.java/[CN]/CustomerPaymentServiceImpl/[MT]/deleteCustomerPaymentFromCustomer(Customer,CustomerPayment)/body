@@ -1,0 +1,10 @@
+{
+  List<CustomerPayment> payments=customer.getCustomerPayments();
+  for (  CustomerPayment customerPayment : payments) {
+    if (customerPayment.getId().equals(payment.getId())) {
+      customer.getCustomerPayments().remove(customerPayment);
+      break;
+    }
+  }
+  return customerService.saveCustomer(customer);
+}

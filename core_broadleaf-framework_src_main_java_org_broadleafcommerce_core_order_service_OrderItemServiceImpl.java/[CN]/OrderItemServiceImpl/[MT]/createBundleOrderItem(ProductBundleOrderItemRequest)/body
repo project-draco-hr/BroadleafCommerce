@@ -7,6 +7,16 @@
   bundleOrderItem.setName(itemRequest.getName());
   bundleOrderItem.setProductBundle(productBundle);
   bundleOrderItem.setOrder(itemRequest.getOrder());
+  if (itemRequest.getSalePriceOverride() != null) {
+    bundleOrderItem.setSalePriceOverride(Boolean.TRUE);
+    bundleOrderItem.setSalePrice(itemRequest.getSalePriceOverride());
+    bundleOrderItem.setBaseSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    bundleOrderItem.setRetailPriceOverride(Boolean.TRUE);
+    bundleOrderItem.setRetailPrice(itemRequest.getRetailPriceOverride());
+    bundleOrderItem.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
+  }
   for (  SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
     Product bundleProduct=skuBundleItem.getBundle();
     Sku bundleSku=skuBundleItem.getSku();

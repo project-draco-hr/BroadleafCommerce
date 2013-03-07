@@ -1,0 +1,7 @@
+{
+  RollbackStateLocal rollbackStateLocal=RollbackStateLocal.getRollbackStateLocal();
+  if (rollbackStateLocal == null) {
+    throw new IllegalThreadStateException("Unable to perform ActivityStateManager operation, as the RollbackStateLocal instance is not set on the current thread! ActivityStateManager methods may not be called outside the scope of workflow execution.");
+  }
+  return rollbackStateLocal;
+}

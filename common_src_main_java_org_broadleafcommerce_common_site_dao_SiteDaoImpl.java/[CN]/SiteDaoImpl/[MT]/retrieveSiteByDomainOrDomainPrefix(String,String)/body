@@ -1,0 +1,24 @@
+{
+  if (domain == null) {
+    return null;
+  }
+  List<String> siteIdentifiers=new ArrayList<String>();
+  siteIdentifiers.add(domain);
+  siteIdentifiers.add(domainPrefix);
+  TypedQuery<Site> query=em.createQuery("from Site s where s.siteIdentifierValue in (:siteIdentifiers)",Site.class);
+  query.setParameter("siteIdentifiers",siteIdentifiers);
+  List<Site> results=query.getResultList();
+  for (  Site currentSite : results) {
+    if (SiteResolutionType.DOMAIN.equals(currentSite.getSiteResolutionType())) {
+      if (domain.equals(currentSite.getSiteIdentifierValue())) {
+        return currentSite;
+      }
+    }
+    if (SiteResolutionType.DOMAIN_PREFIX.equals(currentSite.getSiteResolutionType())) {
+      if (domainPrefix.equals(currentSite.getSiteIdentifierValue())) {
+        return currentSite;
+      }
+    }
+  }
+  return null;
+}

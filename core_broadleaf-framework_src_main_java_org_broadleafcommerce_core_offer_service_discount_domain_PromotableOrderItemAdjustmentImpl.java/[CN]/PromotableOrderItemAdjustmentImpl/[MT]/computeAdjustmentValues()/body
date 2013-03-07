@@ -9,7 +9,11 @@
       salesAdjustmentPrice=orderItem.getSalePrice();
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
-      Money amountOff=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),5);
+      BigDecimal offerItemValue=delegate.getOffer().getValue();
+      if (delegate.getOffer() instanceof AdvancedOffer && ((AdvancedOffer)delegate.getOffer()).isTieredOffer()) {
+        offerItemValue=retriveTierForItem((long)orderItem.getQuantity());
+      }
+      Money amountOff=new Money(offerItemValue,retailAdjustmentPrice.getCurrency(),5);
       if (delegate.getOffer().getApplyDiscountToSalePrice() && delegate.getOrderItem().getIsOnSale()) {
         if (amountOff.lessThan(salesAdjustmentPrice)) {
           delegate.setSalesPriceValue(amountOff);
@@ -29,7 +33,11 @@
       }
     }
     if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.FIX_PRICE)) {
-      Money fixPriceAmount=new Money(delegate.getOffer().getValue(),retailAdjustmentPrice.getCurrency(),5);
+      BigDecimal offerItemValue=delegate.getOffer().getValue();
+      if (delegate.getOffer() instanceof AdvancedOffer && ((AdvancedOffer)delegate.getOffer()).isTieredOffer()) {
+        offerItemValue=retriveTierForItem((long)orderItem.getQuantity());
+      }
+      Money fixPriceAmount=new Money(offerItemValue,retailAdjustmentPrice.getCurrency(),5);
       if (fixPriceAmount.lessThan(retailAdjustmentPrice)) {
         BigDecimal offerValue=retailAdjustmentPrice.getAmount().subtract(fixPriceAmount.getAmount());
         delegate.setRetailPriceValue(new Money(offerValue,retailAdjustmentPrice.getCurrency(),5));
@@ -57,7 +65,11 @@
  else {
         delegate.setSalesPriceValue(Money.ZERO);
       }
-      BigDecimal offerValue=retailAdjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
+      BigDecimal offerValue=delegate.getOffer().getValue();
+      if (delegate.getOffer() instanceof AdvancedOffer && ((AdvancedOffer)delegate.getOffer()).isTieredOffer()) {
+        offerValue=retriveTierForItem((long)orderItem.getQuantity());
+      }
+      offerValue=retailAdjustmentPrice.getAmount().multiply(offerValue.divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
       if (isRoundOfferValues()) {
         offerValue=offerValue.setScale(roundingScale,roundingMode);
       }
