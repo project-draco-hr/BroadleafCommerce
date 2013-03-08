@@ -17,15 +17,19 @@
     }
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Offer.class);
     Entity[] entities=helper.getRecords(offerProperties,records,null,null);
+    MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
+    ObjectMapper mapper=new ObjectMapper();
     for (int j=0; j < entities.length; j++) {
       Offer offer=(Offer)records.get(j);
       OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
       if (orderRule != null) {
         entities[j].findProperty("appliesToOrderRules").setValue(orderRule.getMatchRule());
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToOrderRulesJson","appliesToOrderRulesFieldService","ORDER_FIELDS");
       }
       OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
       if (customerRule != null) {
         entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToCustomerRulesJson","appliesToCustomerRulesFieldService","CUSTOMER_FIELDS");
       }
       OfferRule fgRule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
       if (fgRule != null) {
@@ -33,32 +37,10 @@
         prop.setName("appliesToFulfillmentGroupRules");
         prop.setValue(fgRule.getMatchRule());
         entities[j].addProperty(prop);
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToFulfillmentGroupRulesJson","appliesToFulfillmentGroupRulesFieldService","FULFILLMENT_GROUP_FIELDS");
       }
-      int k=0;
-      Entity[] targetItemCriterias=new Entity[offer.getTargetItemCriteria().size()];
-      for (      OfferItemCriteria oic : offer.getTargetItemCriteria()) {
-        Property[] properties=new Property[2];
-        Property mvelProperty=new Property();
-        mvelProperty.setName("orderItemMatchRule");
-        mvelProperty.setValue(oic.getOrderItemMatchRule());
-        Property quantityProperty=new Property();
-        quantityProperty.setName("quantity");
-        quantityProperty.setValue(oic.getQuantity().toString());
-        properties[0]=mvelProperty;
-        properties[1]=quantityProperty;
-        Entity criteria=new Entity();
-        criteria.setProperties(properties);
-        targetItemCriterias[k]=criteria;
-        k++;
-      }
-      MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
-      DataWrapper wrapper=translator.createRuleData(targetItemCriterias,"orderItemMatchRule","quantity",ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS"));
-      ObjectMapper mapper=new ObjectMapper();
-      String targetItemCriteriaJson=mapper.writeValueAsString(wrapper);
-      Property targetItemCriteriaJsonProp=new Property();
-      targetItemCriteriaJsonProp.setName("targetItemCriteriaJson");
-      targetItemCriteriaJsonProp.setValue(targetItemCriteriaJson);
-      entities[j].addProperty(targetItemCriteriaJsonProp);
+      convertItemCriteriaToJson(entities[j],translator,mapper,offer.getTargetItemCriteria(),"targetItemCriteriaJson","targetItemCriteriaFieldService");
+      convertItemCriteriaToJson(entities[j],translator,mapper,offer.getQualifyingItemCriteria(),"qualifyingItemCriteriaJson","qualifyingItemCriteriaFieldService");
     }
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);

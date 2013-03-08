@@ -6,15 +6,10 @@
     Set<RuleBuilder> ruleBuilders=tab.getRuleBuilders();
     for (    RuleBuilder builder : ruleBuilders) {
       if (ITEM_DISCOUNT_TARGET_FIELD_NAME.equals(builder.getFieldName())) {
-        builder.setFieldBuilder(ITEM_DISCOUNT_TARGET_FIELD_BUILDER);
+        builder.setFieldBuilder(entity.getPMap().get("targetItemCriteriaFieldService").getValue());
         String json=entity.getPMap().get("targetItemCriteriaJson").getValue();
         builder.setJson(json);
-        ObjectMapper mapper=new ObjectMapper();
-        DataDTODeserializer dtoDeserializer=new DataDTODeserializer();
-        SimpleModule module=new SimpleModule("DataDTODeserializerModule",new Version(1,0,0,null));
-        module.addDeserializer(DataDTO.class,dtoDeserializer);
-        mapper.registerModule(module);
-        builder.setDataWrapper(mapper.readValue(json,DataWrapper.class));
+        builder.setDataWrapper(convertJsonToDataWrapper(json));
       }
     }
   }
