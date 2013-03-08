@@ -1,7 +1,7 @@
 {
-  Site clone;
+  Catalog clone;
   try {
-    clone=(Site)Class.forName(this.getClass().getName()).newInstance();
+    clone=(Catalog)Class.forName(this.getClass().getName()).newInstance();
     try {
       checkCloneable(clone);
     }
@@ -10,12 +10,6 @@
     }
     clone.setId(id);
     clone.setName(name);
-    for (    Catalog catalog : getCatalogs()) {
-      Catalog cloneCatalog=new CatalogImpl();
-      cloneCatalog.setId(catalog.getId());
-      cloneCatalog.setName(catalog.getName());
-      clone.getCatalogs().add(cloneCatalog);
-    }
   }
  catch (  Exception e) {
     throw new RuntimeException(e);

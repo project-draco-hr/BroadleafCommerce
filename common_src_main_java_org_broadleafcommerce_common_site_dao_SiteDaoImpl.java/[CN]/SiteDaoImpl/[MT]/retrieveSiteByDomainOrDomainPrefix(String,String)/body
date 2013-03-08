@@ -5,8 +5,13 @@
   List<String> siteIdentifiers=new ArrayList<String>();
   siteIdentifiers.add(domain);
   siteIdentifiers.add(domainPrefix);
-  TypedQuery<Site> query=em.createQuery("from org.broadleafcommerce.common.site.domain.Site s where s.siteIdentifierValue in (:siteIdentifiers)",Site.class);
-  query.setParameter("siteIdentifiers",siteIdentifiers);
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Site> criteria=builder.createQuery(Site.class);
+  Root<SiteImpl> site=criteria.from(SiteImpl.class);
+  criteria.select(site);
+  criteria.where(site.get("siteIdentifierValue").as(String.class).in(siteIdentifiers));
+  TypedQuery<Site> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   List<Site> results=query.getResultList();
   for (  Site currentSite : results) {
     if (SiteResolutionType.DOMAIN.equals(currentSite.getSiteResolutionType())) {
