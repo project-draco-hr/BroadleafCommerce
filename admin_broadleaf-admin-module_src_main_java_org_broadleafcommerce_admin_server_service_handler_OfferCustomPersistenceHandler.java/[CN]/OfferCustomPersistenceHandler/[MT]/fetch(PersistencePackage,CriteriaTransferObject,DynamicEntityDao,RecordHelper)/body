@@ -24,21 +24,33 @@
       OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
       if (orderRule != null) {
         entities[j].findProperty("appliesToOrderRules").setValue(orderRule.getMatchRule());
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToOrderRulesJson","appliesToOrderRulesFieldService","ORDER_FIELDS");
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToOrderRulesJson","ORDER_FIELDS");
       }
+      Property appliesToOrderRulesFieldService=new Property();
+      appliesToOrderRulesFieldService.setName("appliesToOrderRulesFieldService");
+      appliesToOrderRulesFieldService.setValue("ORDER_FIELDS");
+      entities[j].addProperty(appliesToOrderRulesFieldService);
       OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
       if (customerRule != null) {
         entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToCustomerRulesJson","appliesToCustomerRulesFieldService","CUSTOMER_FIELDS");
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToCustomerRulesJson","CUSTOMER_FIELDS");
       }
+      Property appliesToCustomerRulesFieldService=new Property();
+      appliesToCustomerRulesFieldService.setName("appliesToCustomerRulesFieldService");
+      appliesToCustomerRulesFieldService.setValue("CUSTOMER_FIELDS");
+      entities[j].addProperty(appliesToCustomerRulesFieldService);
       OfferRule fgRule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
       if (fgRule != null) {
         Property prop=new Property();
         prop.setName("appliesToFulfillmentGroupRules");
         prop.setValue(fgRule.getMatchRule());
         entities[j].addProperty(prop);
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToFulfillmentGroupRulesJson","appliesToFulfillmentGroupRulesFieldService","FULFILLMENT_GROUP_FIELDS");
+        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToFulfillmentGroupRulesJson","FULFILLMENT_GROUP_FIELDS");
       }
+      Property appliesToFulfillmentGroupRulesFieldService=new Property();
+      appliesToFulfillmentGroupRulesFieldService.setName("appliesToFulfillmentGroupRulesFieldService");
+      appliesToFulfillmentGroupRulesFieldService.setValue("FULFILLMENT_GROUP_FIELDS");
+      entities[j].addProperty(appliesToFulfillmentGroupRulesFieldService);
       convertItemCriteriaToJson(entities[j],translator,mapper,offer.getTargetItemCriteria(),"targetItemCriteriaJson","targetItemCriteriaFieldService");
       convertItemCriteriaToJson(entities[j],translator,mapper,offer.getQualifyingItemCriteria(),"qualifyingItemCriteriaJson","qualifyingItemCriteriaFieldService");
     }

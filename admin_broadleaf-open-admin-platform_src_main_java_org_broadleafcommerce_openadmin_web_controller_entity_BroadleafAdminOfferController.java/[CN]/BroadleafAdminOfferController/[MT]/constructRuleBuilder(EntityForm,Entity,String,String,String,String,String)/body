@@ -1,0 +1,16 @@
+{
+  RuleBuilder ruleBuilder=new RuleBuilder();
+  ruleBuilder.setFieldName(fieldName);
+  ruleBuilder.setFriendlyName(friendlyName);
+  ruleBuilder.setStyleClass(styleClass);
+  ruleBuilder.setFieldBuilder(entity.getPMap().get(fieldService).getValue());
+  ruleBuilder.setJsonFieldName(fieldJson);
+  ruleBuilder.setDataWrapper(new DataWrapper());
+  if (entity.getPMap().get(fieldJson) != null) {
+    String json=entity.getPMap().get(fieldJson).getValue();
+    ruleBuilder.setJson(json);
+    DataWrapper dw=(convertJsonToDataWrapper(json) != null) ? convertJsonToDataWrapper(json) : new DataWrapper();
+    ruleBuilder.setDataWrapper(dw);
+  }
+  entityForm.addRuleBuilder(ruleBuilder,null,null);
+}

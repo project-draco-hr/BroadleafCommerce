@@ -5,22 +5,6 @@
       continue;
     }
     Entity[] subCollectionEntities=collectionRecords.get(p.getName());
-    if (p.getMetadata() instanceof BasicCollectionMetadata) {
-      BasicCollectionMetadata fmd=(BasicCollectionMetadata)p.getMetadata();
-      if (fmd.isRuleBuilder()) {
-        RuleBuilder subCollectionRuleBuilder=buildRuleBuilder(p.getName(),fmd.getFriendlyName(),subCollectionEntities);
-        ef.addRuleBuilder(subCollectionRuleBuilder,null,null);
-        continue;
-      }
-    }
-    if (p.getMetadata() instanceof MapMetadata) {
-      MapMetadata fmd=(MapMetadata)p.getMetadata();
-      if (fmd.isRuleBuilder()) {
-        RuleBuilder subCollectionRuleBuilder=buildRuleBuilder(p.getName(),fmd.getFriendlyName(),subCollectionEntities);
-        ef.addRuleBuilder(subCollectionRuleBuilder,null,null);
-        continue;
-      }
-    }
     String containingEntityId=entity.getPMap().get("id").getValue();
     ListGrid listGrid=buildCollectionListGrid(containingEntityId,subCollectionEntities,p);
     listGrid.setListGridType(ListGrid.Type.INLINE);
