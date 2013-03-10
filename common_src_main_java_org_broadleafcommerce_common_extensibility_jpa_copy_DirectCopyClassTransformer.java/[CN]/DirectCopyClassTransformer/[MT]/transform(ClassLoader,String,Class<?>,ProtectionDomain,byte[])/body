@@ -2,77 +2,80 @@
   String convertedClassName=className.replace('/','.');
   if (xformTemplates.containsKey(convertedClassName)) {
     String xformKey=convertedClassName;
-    String xformVal=xformTemplates.get(xformKey);
-    logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,xformVal));
+    String[] xformVals=xformTemplates.get(xformKey).split(",");
+    logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
     try {
       ClassPool classPool=ClassPool.getDefault();
       CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
       clazz.defrost();
-      classPool.appendClassPath(new LoaderClassPath(Class.forName(xformVal).getClassLoader()));
-      CtClass template=classPool.get(xformVal);
-      CtClass[] interfacesToCopy=template.getInterfaces();
-      for (      CtClass i : interfacesToCopy) {
-        logger.debug(String.format("Adding interface [%s]",i.getName()));
-        clazz.addInterface(i);
-      }
-      CtField[] fieldsToCopy=template.getDeclaredFields();
-      for (      CtField field : fieldsToCopy) {
-        if (field.hasAnnotation(NonCopied.class)) {
-          logger.debug(String.format("Not adding field [%s]",field.getName()));
+      for (      String xformVal : xformVals) {
+        String trimmed=xformVal.trim();
+        classPool.appendClassPath(new LoaderClassPath(Class.forName(trimmed).getClassLoader()));
+        CtClass template=classPool.get(trimmed);
+        CtClass[] interfacesToCopy=template.getInterfaces();
+        for (        CtClass i : interfacesToCopy) {
+          logger.debug(String.format("Adding interface [%s]",i.getName()));
+          clazz.addInterface(i);
         }
+        CtField[] fieldsToCopy=template.getDeclaredFields();
+        for (        CtField field : fieldsToCopy) {
+          if (field.hasAnnotation(NonCopied.class)) {
+            logger.debug(String.format("Not adding field [%s]",field.getName()));
+          }
  else {
-          logger.debug(String.format("Adding field [%s]",field.getName()));
-          CtField copiedField=new CtField(field,clazz);
-          boolean defaultConstructorFound=false;
-          String implClass=getImplementationType(field.getType().getName());
-          try {
-            CtConstructor[] implConstructors=classPool.get(implClass).getConstructors();
-            if (implConstructors != null) {
-              for (              CtConstructor cons : implConstructors) {
-                if (cons.getParameterTypes().length == 0) {
-                  defaultConstructorFound=true;
-                  break;
+            logger.debug(String.format("Adding field [%s]",field.getName()));
+            CtField copiedField=new CtField(field,clazz);
+            boolean defaultConstructorFound=false;
+            String implClass=getImplementationType(field.getType().getName());
+            try {
+              CtConstructor[] implConstructors=classPool.get(implClass).getConstructors();
+              if (implConstructors != null) {
+                for (                CtConstructor cons : implConstructors) {
+                  if (cons.getParameterTypes().length == 0) {
+                    defaultConstructorFound=true;
+                    break;
+                  }
                 }
               }
             }
+ catch (            NotFoundException e) {
+            }
+            if (defaultConstructorFound) {
+              clazz.addField(copiedField,"new " + implClass + "()");
+            }
+ else {
+              clazz.addField(copiedField);
+            }
           }
- catch (          NotFoundException e) {
-          }
-          if (defaultConstructorFound) {
-            clazz.addField(copiedField,"new " + implClass + "()");
+        }
+        CtMethod[] methodsToCopy=template.getDeclaredMethods();
+        for (        CtMethod method : methodsToCopy) {
+          if (method.hasAnnotation(NonCopied.class)) {
+            logger.debug(String.format("Not adding method [%s]",method.getName()));
           }
  else {
-            clazz.addField(copiedField);
+            try {
+              CtClass[] paramTypes=method.getParameterTypes();
+              CtMethod originalMethod=clazz.getDeclaredMethod(method.getName(),paramTypes);
+              if (transformedMethods.contains(methodDescription(originalMethod))) {
+                throw new RuntimeException("Method already replaced " + methodDescription(originalMethod));
+              }
+ else {
+                logger.debug(String.format("Marking as replaced [%s]",methodDescription(originalMethod)));
+                transformedMethods.add(methodDescription(originalMethod));
+              }
+              logger.debug(String.format("Removing method [%s]",method.getName()));
+              clazz.removeMethod(originalMethod);
+            }
+ catch (            NotFoundException e) {
+            }
+            logger.debug(String.format("Adding method [%s]",method.getName()));
+            CtMethod copiedMethod=new CtMethod(method,clazz,null);
+            clazz.addMethod(copiedMethod);
           }
         }
       }
-      CtMethod[] methodsToCopy=template.getDeclaredMethods();
-      for (      CtMethod method : methodsToCopy) {
-        if (method.hasAnnotation(NonCopied.class)) {
-          logger.debug(String.format("Not adding method [%s]",method.getName()));
-        }
- else {
-          try {
-            CtClass[] paramTypes=method.getParameterTypes();
-            CtMethod originalMethod=clazz.getDeclaredMethod(method.getName(),paramTypes);
-            if (transformedMethods.contains(methodDescription(originalMethod))) {
-              throw new RuntimeException("Method already replaced " + methodDescription(originalMethod));
-            }
- else {
-              logger.debug(String.format("Marking as replaced [%s]",methodDescription(originalMethod)));
-              transformedMethods.add(methodDescription(originalMethod));
-            }
-            logger.debug(String.format("Removing method [%s]",method.getName()));
-            clazz.removeMethod(originalMethod);
-          }
- catch (          NotFoundException e) {
-          }
-          logger.debug(String.format("Adding method [%s]",method.getName()));
-          CtMethod copiedMethod=new CtMethod(method,clazz,null);
-          clazz.addMethod(copiedMethod);
-        }
-      }
-      logger.debug(String.format("END - Transform - Copying into [%s] from [%s]",xformKey,xformVal));
+      logger.lifecycle(LifeCycleEvent.END,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
       return clazz.toBytecode();
     }
  catch (    Exception e) {
