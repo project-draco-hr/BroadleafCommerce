@@ -1,13 +1,14 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
-  Entity entity=service.updateEntity(entityForm);
+  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
   entityValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     ClassMetadata cmd=service.getClassMetadata(ppr);
     Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(ppr,id);
     EntityForm newForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
     formService.copyEntityFormValues(newForm,entityForm);
+    model.addAttribute("entity",entity);
     model.addAttribute("entityForm",newForm);
     model.addAttribute("viewType","entityEdit");
     setModelAttributes(model,sectionKey);

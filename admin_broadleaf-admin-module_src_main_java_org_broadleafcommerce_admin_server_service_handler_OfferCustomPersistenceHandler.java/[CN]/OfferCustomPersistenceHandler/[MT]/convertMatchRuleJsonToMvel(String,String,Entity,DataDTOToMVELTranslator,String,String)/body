@@ -1,0 +1,14 @@
+{
+  Property appliesToJson=entity.findProperty(jsonProperty);
+  Property appliesToRule=entity.findProperty(ruleProperty);
+  if (appliesToJson != null && appliesToRule != null) {
+    DataWrapper dw=convertJsonToDataWrapper(appliesToJson.getValue());
+    if (dw != null && dw.getData().size() == 1) {
+      DataDTO dto=dw.getData().get(0);
+      String mvel=translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService));
+      if (mvel != null) {
+        appliesToRule.setValue(mvel);
+      }
+    }
+  }
+}

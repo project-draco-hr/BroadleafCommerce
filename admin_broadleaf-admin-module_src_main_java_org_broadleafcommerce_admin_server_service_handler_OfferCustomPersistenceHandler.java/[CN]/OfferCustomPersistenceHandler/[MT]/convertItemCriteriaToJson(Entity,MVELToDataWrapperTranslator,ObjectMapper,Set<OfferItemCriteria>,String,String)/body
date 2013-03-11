@@ -2,21 +2,25 @@
   int k=0;
   Entity[] targetItemCriterias=new Entity[offerItemCriteria.size()];
   for (  OfferItemCriteria oic : offerItemCriteria) {
-    Property[] properties=new Property[2];
+    Property[] properties=new Property[3];
     Property mvelProperty=new Property();
     mvelProperty.setName("orderItemMatchRule");
     mvelProperty.setValue(oic.getOrderItemMatchRule());
     Property quantityProperty=new Property();
     quantityProperty.setName("quantity");
     quantityProperty.setValue(oic.getQuantity().toString());
+    Property idProperty=new Property();
+    idProperty.setName("id");
+    idProperty.setValue(oic.getId().toString());
     properties[0]=mvelProperty;
     properties[1]=quantityProperty;
+    properties[2]=idProperty;
     Entity criteria=new Entity();
     criteria.setProperties(properties);
     targetItemCriterias[k]=criteria;
     k++;
   }
-  DataWrapper oiWrapper=translator.createRuleData(targetItemCriterias,"orderItemMatchRule","quantity",ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS"));
+  DataWrapper oiWrapper=translator.createRuleData(targetItemCriterias,"orderItemMatchRule","quantity","id",ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS"));
   String json=mapper.writeValueAsString(oiWrapper);
   Property jsonP=new Property();
   jsonP.setName(jsonProp);

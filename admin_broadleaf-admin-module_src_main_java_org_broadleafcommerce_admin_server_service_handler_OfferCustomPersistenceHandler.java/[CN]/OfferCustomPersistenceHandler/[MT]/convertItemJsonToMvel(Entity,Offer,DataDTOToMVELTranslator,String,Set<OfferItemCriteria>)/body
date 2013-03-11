@@ -1,0 +1,29 @@
+{
+  Property jsonProp=entity.findProperty(itemCriteriaJson);
+  if (jsonProp != null && !StringUtils.isEmpty(jsonProp.getValue())) {
+    DataWrapper dw=convertJsonToDataWrapper(jsonProp.getValue());
+    if (dw != null && !dw.getData().isEmpty()) {
+      Set<OfferItemCriteria> updatedSet=new HashSet<OfferItemCriteria>();
+      for (      DataDTO dto : dw.getData()) {
+        if (dto.getId() != null) {
+          for (          OfferItemCriteria oic : criteriaList) {
+            if (dto.getId().equals(oic.getId())) {
+              oic.setQuantity(dto.getQuantity());
+              oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
+              updatedSet.add(oic);
+            }
+          }
+        }
+ else {
+          OfferItemCriteria oic=(OfferItemCriteria)entityConfiguration.createEntityInstance(OfferItemCriteria.class.getName());
+          oic.setQuantity(dto.getQuantity());
+          oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
+          oic.setTargetOffer(offerInstance);
+          updatedSet.add(oic);
+        }
+      }
+      criteriaList.clear();
+      criteriaList.addAll(updatedSet);
+    }
+  }
+}
