@@ -103,7 +103,7 @@ break;
 case ADDITIONAL_FOREIGN_KEY:
 if (cto.get(propertyName).getFilterValues().length > 0) {
 int additionalForeignKeyIndexPosition=Arrays.binarySearch(persistencePerspective.getAdditionalForeignKeys(),new ForeignKey(propertyName,null,null),new Comparator<ForeignKey>(){
-public int compare(ForeignKey o1,ForeignKey o2){
+@Override public int compare(ForeignKey o1,ForeignKey o2){
 return o1.getManyToField().compareTo(o2.getManyToField());
 }
 }
