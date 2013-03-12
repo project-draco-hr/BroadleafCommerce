@@ -14,8 +14,14 @@
     updateRule(entity,offerInstance,"appliesToOrderRules",OfferRuleType.ORDER);
     updateRule(entity,offerInstance,"appliesToCustomerRules",OfferRuleType.CUSTOMER);
     updateRule(entity,offerInstance,"appliesToFulfillmentGroupRules",OfferRuleType.FULFILLMENT_GROUP);
-    convertItemJsonToMvel(entity,offerInstance,translator,"targetItemCriteriaJson",offerInstance.getTargetItemCriteria());
-    convertItemJsonToMvel(entity,offerInstance,translator,"qualifyingItemCriteriaJson",offerInstance.getQualifyingItemCriteria());
+    Set<OfferItemCriteria> netNewTargetCriteria=convertItemJsonToMvel(entity,offerInstance,translator,"targetItemCriteriaJson",offerInstance.getTargetItemCriteria());
+    for (    OfferItemCriteria oic : netNewTargetCriteria) {
+      dynamicEntityDao.persist(oic);
+    }
+    Set<OfferItemCriteria> netNewQualifyCriteria=convertItemJsonToMvel(entity,offerInstance,translator,"qualifyingItemCriteriaJson",offerInstance.getQualifyingItemCriteria());
+    for (    OfferItemCriteria oic : netNewQualifyCriteria) {
+      dynamicEntityDao.persist(oic);
+    }
     dynamicEntityDao.merge(offerInstance);
     Property offerCodeId=entity.findProperty("offerCode.id");
     OfferCode offerCode=null;

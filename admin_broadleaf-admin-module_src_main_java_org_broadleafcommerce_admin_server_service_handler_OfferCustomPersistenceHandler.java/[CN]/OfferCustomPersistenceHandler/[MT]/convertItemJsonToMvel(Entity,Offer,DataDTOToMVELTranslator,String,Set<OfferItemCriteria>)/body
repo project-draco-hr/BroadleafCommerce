@@ -1,16 +1,17 @@
 {
+  Set<OfferItemCriteria> netNew=new HashSet<OfferItemCriteria>();
   Property jsonProp=entity.findProperty(itemCriteriaJson);
   if (jsonProp != null && !StringUtils.isEmpty(jsonProp.getValue())) {
     DataWrapper dw=convertJsonToDataWrapper(jsonProp.getValue());
     if (dw != null && !dw.getData().isEmpty()) {
-      Set<OfferItemCriteria> updatedSet=new HashSet<OfferItemCriteria>();
+      ArrayList<Long> updated=new ArrayList<Long>();
       for (      DataDTO dto : dw.getData()) {
         if (dto.getId() != null) {
           for (          OfferItemCriteria oic : criteriaList) {
             if (dto.getId().equals(oic.getId())) {
               oic.setQuantity(dto.getQuantity());
               oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
-              updatedSet.add(oic);
+              updated.add(oic.getId());
             }
           }
         }
@@ -18,12 +19,23 @@
           OfferItemCriteria oic=(OfferItemCriteria)entityConfiguration.createEntityInstance(OfferItemCriteria.class.getName());
           oic.setQuantity(dto.getQuantity());
           oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
-          oic.setTargetOffer(offerInstance);
-          updatedSet.add(oic);
+          if ("targetItemCriteriaJson".equals(itemCriteriaJson)) {
+            oic.setTargetOffer(offerInstance);
+          }
+ else           if ("qualifyingItemCriteriaJson".equals(itemCriteriaJson)) {
+            oic.setQualifyingOffer(offerInstance);
+          }
+          netNew.add(oic);
+        }
+        Iterator<OfferItemCriteria> itr=criteriaList.iterator();
+        while (itr.hasNext()) {
+          OfferItemCriteria oic=itr.next();
+          if (oic.getId() != null && !updated.contains(oic.getId())) {
+            itr.remove();
+          }
         }
       }
-      criteriaList.clear();
-      criteriaList.addAll(updatedSet);
     }
   }
+  return netNew;
 }
