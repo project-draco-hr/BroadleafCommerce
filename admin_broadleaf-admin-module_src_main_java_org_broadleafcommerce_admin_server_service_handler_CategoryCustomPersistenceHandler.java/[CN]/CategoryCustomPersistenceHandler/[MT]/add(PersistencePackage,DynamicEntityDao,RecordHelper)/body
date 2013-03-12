@@ -6,7 +6,10 @@
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Category.class.getName(),persistencePerspective);
     adminInstance=(Category)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     if (adminInstance.getDefaultParentCategory() != null && !adminInstance.getAllParentCategories().contains(adminInstance.getDefaultParentCategory())) {
-      adminInstance.getAllParentCategories().add(adminInstance.getDefaultParentCategory());
+      CategoryXref categoryXref=new CategoryXrefImpl();
+      categoryXref.setCategory(adminInstance.getDefaultParentCategory());
+      categoryXref.setSubCategory(adminInstance);
+      adminInstance.getAllParentCategories().add(categoryXref);
     }
     adminInstance=(Category)dynamicEntityDao.merge(adminInstance);
     return helper.getRecord(adminProperties,adminInstance,null,null);

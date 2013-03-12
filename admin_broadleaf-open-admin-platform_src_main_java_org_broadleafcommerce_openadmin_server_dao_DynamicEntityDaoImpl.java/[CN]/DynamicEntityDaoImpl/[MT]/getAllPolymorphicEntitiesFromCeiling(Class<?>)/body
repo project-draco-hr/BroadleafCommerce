@@ -8,7 +8,10 @@ synchronized (LOCK_OBJECT) {
         ClassMetadata metadata=(ClassMetadata)item;
         Class<?> mappedClass=metadata.getMappedClass();
         if (mappedClass != null && ceilingClass.isAssignableFrom(mappedClass)) {
-          entities.add(mappedClass);
+          AdminPresentationClass adminPresentationClass=mappedClass.getAnnotation(AdminPresentationClass.class);
+          if (adminPresentationClass == null || !adminPresentationClass.excludeFromPolymorphism()) {
+            entities.add(mappedClass);
+          }
         }
       }
       Class<?>[] sortedEntities=sortEntities(ceilingClass,entities);

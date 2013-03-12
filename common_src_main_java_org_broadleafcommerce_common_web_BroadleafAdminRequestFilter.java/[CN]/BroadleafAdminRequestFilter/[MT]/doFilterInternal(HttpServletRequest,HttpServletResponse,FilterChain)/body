@@ -1,0 +1,12 @@
+{
+  try {
+    requestProcessor.process(new ServletWebRequest(request,response));
+    filterChain.doFilter(request,response);
+  }
+ catch (  SiteNotFoundException e) {
+    response.setStatus(HttpServletResponse.SC_FOUND);
+  }
+ finally {
+    SandBoxContext.setSandBoxContext(null);
+  }
+}

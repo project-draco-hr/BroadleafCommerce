@@ -9,5 +9,9 @@
       domainPrefix=domainName;
     }
   }
-  return siteDao.retrieveSiteByDomainOrDomainPrefix(domainName,domainPrefix);
+  Site response=siteDao.retrieveSiteByDomainOrDomainPrefix(domainName,domainPrefix);
+  if (response != null) {
+    response=response.clone();
+  }
+  return response;
 }

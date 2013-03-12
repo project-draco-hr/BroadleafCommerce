@@ -8,7 +8,9 @@
     myParentCategories.add(defaultParentCategory);
   }
   if (allParentCategories != null && allParentCategories.size() > 0) {
-    myParentCategories.addAll(allParentCategories);
+    for (    CategoryXref parent : allParentCategories) {
+      myParentCategories.add(parent.getCategory());
+    }
   }
   for (  Category category : myParentCategories) {
     if (!currentHierarchy.contains(category)) {
