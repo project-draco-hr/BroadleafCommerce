@@ -1,16 +1,3 @@
 {
-  Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(mergedUnfilteredProperties);
-  BaseCtoConverter ctoConverter=(BaseCtoConverter)applicationContext.getBean("blBaseCtoConverter");
-  for (  String propertyId : cto.getPropertyIdSet()) {
-    if (mergedProperties.containsKey(propertyId)) {
-      buildProperty(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId);
-    }
- else {
-      ctoConverter.addEmptyMapping(ceilingEntityFullyQualifiedClassname,propertyId);
-    }
-  }
-  if (cto.getPropertyIdSet().isEmpty()) {
-    ctoConverter.addEmptyMapping(ceilingEntityFullyQualifiedClassname,"");
-  }
-  return ctoConverter;
+  return getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedUnfilteredProperties,null);
 }

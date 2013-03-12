@@ -3,44 +3,18 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
-    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
+    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps,new SkuPropertiesFilterCriterionProvider());
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
     applyProductOptionValueCriteria(queryCriteria,cto,persistencePackage);
     applyAdditionalFetchCriteria(queryCriteria,cto,persistencePackage);
-    List<Serializable> records=dynamicEntityDao.query(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
-    List<Sku> result=new ArrayList<Sku>();
-    int additionalSkusAdded=0;
-    int skusRemoved=0;
-    for (    Serializable serialSku : records) {
-      Sku sku=(Sku)serialSku;
-      if (sku.getProduct().getDefaultSku().getId().equals(sku.getId())) {
-        if (CollectionUtils.isNotEmpty(sku.getProduct().getAdditionalSkus())) {
-          if (sku.getProduct().getCanSellWithoutOptions()) {
-            result.add(sku);
-          }
- else {
-            skusRemoved++;
-          }
-        }
- else {
-          result.add(sku);
-        }
-        if (CollectionUtils.isNotEmpty(cto.getPropertyIdSet())) {
-          if (CollectionUtils.isNotEmpty(sku.getProduct().getAdditionalSkus())) {
-            result.addAll(sku.getProduct().getAdditionalSkus());
-            additionalSkusAdded+=sku.getProduct().getAdditionalSkus().size();
-          }
-        }
-      }
- else {
-        result.add(sku);
-      }
-    }
-    Entity[] payload=helper.getRecords(originalProps,result);
-    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter) + additionalSkusAdded - skusRemoved;
-    if (result.size() == 0) {
-      totalRecords=cto.getFirstResult() - 1;
-    }
+    Criteria skuListCriteria=getSkuCriteria(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao);
+    List<Serializable> records=skuListCriteria.list();
+    Entity[] payload=helper.getRecords(originalProps,records);
+    PersistentEntityCriteria countCriteria=helper.getCountCriteria(persistencePackage,cto,ctoConverter);
+    applyProductOptionValueCriteria(countCriteria,cto,persistencePackage);
+    applyAdditionalFetchCriteria(countCriteria,cto,persistencePackage);
+    Criteria skuCountCriteria=getSkuCriteria(countCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao);
+    int totalRecords=dynamicEntityDao.rowCount(skuCountCriteria);
     ClassMetadata metadata=new ClassMetadata();
     if (cto.get("product").getFilterValues().length > 0) {
       Long productId=Long.parseLong(cto.get("product").getFilterValues()[0]);
@@ -53,8 +27,8 @@
       }
       metadata.setProperties(properties.toArray(new Property[0]));
     }
-    for (int i=0; i < result.size(); i++) {
-      Sku sku=result.get(i);
+    for (int i=0; i < records.size(); i++) {
+      Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
       for (      Property property : entity.getProperties()) {
         if (StringUtils.isEmpty(property.getValue())) {

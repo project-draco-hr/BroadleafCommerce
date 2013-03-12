@@ -20,7 +20,7 @@
     }
     if (isArchivable && !persistencePerspective.getShowArchivedFields()) {
       SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
-        public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
+        @Override public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
           return Restrictions.or(Restrictions.eq(targetPropertyName,'N'),Restrictions.isNull(targetPropertyName));
         }
       }

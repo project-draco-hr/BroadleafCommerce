@@ -1,0 +1,8 @@
+{
+  return new SimpleFilterCriterionProvider(FilterDataStrategy.NONE,1){
+    @Override public Criterion getCriterion(    String targetPropertyName,    Object[] filterObjectValues,    Object[] directValues){
+      return buildCriterion(targetPropertyName,Restrictions.eq(targetPropertyName,directValues[0]),Restrictions.eq(skuPropertyPrefix + DEFAULT_SKU_PATH_PREFIX + targetPropertyName,directValues[0]));
+    }
+  }
+;
+}
