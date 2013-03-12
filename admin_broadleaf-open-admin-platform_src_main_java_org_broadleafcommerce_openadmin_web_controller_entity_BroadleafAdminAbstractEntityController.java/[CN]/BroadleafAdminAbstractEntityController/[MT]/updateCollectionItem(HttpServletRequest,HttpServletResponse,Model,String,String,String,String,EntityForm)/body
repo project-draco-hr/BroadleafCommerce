@@ -1,0 +1,10 @@
+{
+  String mainClassName=getClassNameForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  Property collectionProperty=mainMetadata.getPMap().get(collectionField);
+  service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,id,collectionItemId);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty);
+  model.addAttribute("listGrid",listGrid);
+  setModelAttributes(model,sectionKey);
+  return "views/standaloneListGrid";
+}

@@ -1,11 +1,3 @@
 {
-  String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
-  Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  String priorKey=request.getParameter("key");
-  service.removeSubCollectionEntity(mainMetadata,collectionProperty,id,collectionItemId,priorKey);
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty);
-  model.addAttribute("listGrid",listGrid);
-  setModelAttributes(model,sectionKey);
-  return "views/standaloneListGrid";
+  return super.removeCollectionItem(request,response,model,sectionKey,id,collectionField,collectionItemId);
 }

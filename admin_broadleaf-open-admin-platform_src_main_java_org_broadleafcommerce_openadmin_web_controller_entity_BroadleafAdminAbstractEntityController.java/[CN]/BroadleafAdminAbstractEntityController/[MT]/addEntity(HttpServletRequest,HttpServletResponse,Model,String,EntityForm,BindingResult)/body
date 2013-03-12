@@ -1,0 +1,6 @@
+{
+  String sectionClassName=getClassNameForSection(sectionKey);
+  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria());
+  entityValidator.validate(entityForm,entity,result);
+  return "ajaxredirect:/" + sectionKey + "/"+ entity.getPMap().get("id").getValue();
+}

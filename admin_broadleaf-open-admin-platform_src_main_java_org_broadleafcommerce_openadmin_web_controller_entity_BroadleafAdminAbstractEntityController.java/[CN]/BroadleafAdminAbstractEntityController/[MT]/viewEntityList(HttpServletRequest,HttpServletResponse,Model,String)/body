@@ -1,0 +1,11 @@
+{
+  String sectionClassName=getClassNameForSection(sectionKey);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
+  ClassMetadata cmd=service.getClassMetadata(ppr);
+  Entity[] rows=service.getRecords(ppr);
+  ListGrid listGrid=formService.buildMainListGrid(rows,cmd);
+  model.addAttribute("listGrid",listGrid);
+  model.addAttribute("viewType","entityList");
+  setModelAttributes(model,sectionKey);
+  return "modules/defaultContainer";
+}
