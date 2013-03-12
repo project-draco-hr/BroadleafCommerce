@@ -33,7 +33,7 @@
       OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
       if (customerRule != null) {
         entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToCustomerRulesJson","CUSTOMER_FIELDS");
+        convertMatchRuleToJson(entities[j],translator,mapper,customerRule,"appliesToCustomerRulesJson","CUSTOMER_FIELDS");
       }
       Property appliesToCustomerRulesFieldService=new Property();
       appliesToCustomerRulesFieldService.setName("appliesToCustomerRulesFieldService");
@@ -45,7 +45,7 @@
         prop.setName("appliesToFulfillmentGroupRules");
         prop.setValue(fgRule.getMatchRule());
         entities[j].addProperty(prop);
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToFulfillmentGroupRulesJson","FULFILLMENT_GROUP_FIELDS");
+        convertMatchRuleToJson(entities[j],translator,mapper,fgRule,"appliesToFulfillmentGroupRulesJson","FULFILLMENT_GROUP_FIELDS");
       }
       Property appliesToFulfillmentGroupRulesFieldService=new Property();
       appliesToFulfillmentGroupRulesFieldService.setName("appliesToFulfillmentGroupRulesFieldService");
