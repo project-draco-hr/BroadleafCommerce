@@ -10,19 +10,19 @@
   }
  else {
     if (Date.class.isAssignableFrom(value.getClass())) {
-      strVal=helper.getDateFormatter().format((Date)value);
+      strVal=dateFormat.format((Date)value);
     }
  else     if (Timestamp.class.isAssignableFrom(value.getClass())) {
-      strVal=helper.getDateFormatter().format(new Date(((Timestamp)value).getTime()));
+      strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
     }
  else     if (Calendar.class.isAssignableFrom(value.getClass())) {
-      strVal=helper.getDateFormatter().format(((Calendar)value).getTime());
+      strVal=dateFormat.format(((Calendar)value).getTime());
     }
  else     if (Double.class.isAssignableFrom(value.getClass())) {
-      strVal=helper.getDecimalFormatter().format(value);
+      strVal=dateFormat.format(value);
     }
  else     if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-      strVal=helper.getDecimalFormatter().format(((BigDecimal)value).doubleValue());
+      strVal=dateFormat.format(((BigDecimal)value).doubleValue());
     }
  else {
       strVal=value.toString();
