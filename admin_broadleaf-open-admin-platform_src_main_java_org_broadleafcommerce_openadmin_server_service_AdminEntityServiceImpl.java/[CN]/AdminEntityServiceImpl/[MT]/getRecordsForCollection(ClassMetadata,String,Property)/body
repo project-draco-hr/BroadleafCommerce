@@ -3,13 +3,13 @@
   FilterAndSortCriteria fasc;
   FieldMetadata md=collectionProperty.getMetadata();
   if (md instanceof BasicCollectionMetadata) {
-    fasc=new FilterAndSortCriteria(ppr.getForeignKeys()[0].getManyToField());
+    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
   }
  else   if (md instanceof AdornedTargetCollectionMetadata) {
     fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName());
   }
  else   if (md instanceof MapMetadata) {
-    fasc=new FilterAndSortCriteria(ppr.getForeignKeys()[0].getManyToField());
+    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
   }
  else {
     throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));

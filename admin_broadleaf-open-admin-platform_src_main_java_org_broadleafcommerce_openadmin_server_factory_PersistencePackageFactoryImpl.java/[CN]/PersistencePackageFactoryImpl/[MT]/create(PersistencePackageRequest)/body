@@ -1,11 +1,9 @@
 {
   PersistencePerspective persistencePerspective=new PersistencePerspective();
-  persistencePerspective.setAdditionalForeignKeys(new ForeignKey[]{});
+  persistencePerspective.setAdditionalForeignKeys(request.getAdditionalForeignKeys());
   persistencePerspective.setAdditionalNonPersistentProperties(new String[]{});
-  if (request.getForeignKeys() != null) {
-    for (    ForeignKey fk : request.getForeignKeys()) {
-      persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,fk);
-    }
+  if (request.getForeignKey() != null) {
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,request.getForeignKey());
   }
 switch (request.getType()) {
 case STANDARD:
