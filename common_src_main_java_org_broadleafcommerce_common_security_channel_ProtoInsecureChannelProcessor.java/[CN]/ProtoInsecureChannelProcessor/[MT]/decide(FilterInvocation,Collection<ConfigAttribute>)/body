@@ -1,0 +1,12 @@
+{
+  if ((invocation == null) || (config == null)) {
+    throw new IllegalArgumentException("Nulls cannot be provided");
+  }
+  for (  ConfigAttribute attribute : config) {
+    if (supports(attribute)) {
+      if (invocation.getHttpRequest().getHeader("X-Forwarded-Proto").equals("https")) {
+        getEntryPoint().commence(invocation.getRequest(),invocation.getResponse());
+      }
+    }
+  }
+}

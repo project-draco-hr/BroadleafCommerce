@@ -6,12 +6,14 @@
   OfferCode offerCode2=createOfferUtility.createOfferCode("30 Dollars Off Item Offer",OfferType.ORDER_ITEM,OfferDiscountType.AMOUNT_OFF,30,null,null,true,false,1);
   order.addOfferCode(offerCode1);
   order.addOfferCode(offerCode2);
+  order=orderService.save(order,false);
   OfferInfo info1=offerDao.createOfferInfo();
   info1.getFieldValues().put("key1","value1");
   order.getAdditionalOfferInformation().put(offerCode1.getOffer(),info1);
   OfferInfo info2=offerDao.createOfferInfo();
   info2.getFieldValues().put("key2","value2");
   order.getAdditionalOfferInformation().put(offerCode2.getOffer(),info2);
+  order=orderService.save(order,false);
   order=orderService.save(order,true);
   assert(order.getSubTotal().equals(new Money(240D)));
   order=orderService.findOrderById(order.getId());

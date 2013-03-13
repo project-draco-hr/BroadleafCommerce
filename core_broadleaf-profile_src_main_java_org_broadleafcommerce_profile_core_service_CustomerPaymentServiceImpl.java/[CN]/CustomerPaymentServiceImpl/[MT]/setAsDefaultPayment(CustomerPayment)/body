@@ -1,7 +1,9 @@
 {
   CustomerPayment oldDefault=findDefaultPaymentForCustomer(payment.getCustomer());
-  oldDefault.setDefault(false);
-  saveCustomerPayment(oldDefault);
+  if (oldDefault != null) {
+    oldDefault.setDefault(false);
+    saveCustomerPayment(oldDefault);
+  }
   payment.setDefault(true);
   return saveCustomerPayment(payment);
 }

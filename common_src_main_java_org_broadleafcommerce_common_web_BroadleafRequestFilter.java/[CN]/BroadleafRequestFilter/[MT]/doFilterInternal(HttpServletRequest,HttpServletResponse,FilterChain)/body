@@ -6,57 +6,31 @@
     filterChain.doFilter(request,response);
     return;
   }
-  String requestURIWithoutContext;
-  if (request.getContextPath() != null) {
-    requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
-  }
- else {
-    requestURIWithoutContext=request.getRequestURI();
-  }
-  int pos=requestURIWithoutContext.indexOf(";");
-  if (pos >= 0) {
-    requestURIWithoutContext=requestURIWithoutContext.substring(0,pos);
-  }
   if (LOG.isTraceEnabled()) {
+    String requestURIWithoutContext;
+    if (request.getContextPath() != null) {
+      requestURIWithoutContext=request.getRequestURI().substring(request.getContextPath().length());
+    }
+ else {
+      requestURIWithoutContext=request.getRequestURI();
+    }
+    int pos=requestURIWithoutContext.indexOf(";");
+    if (pos >= 0) {
+      requestURIWithoutContext=requestURIWithoutContext.substring(0,pos);
+    }
     LOG.trace("Process URL Filter Begin " + requestURIWithoutContext);
   }
   if (request.getAttribute(REQUEST_DTO) == null) {
     request.setAttribute(REQUEST_DTO,new RequestDTOImpl(request));
   }
-  Site site=siteResolver.resolveSite(request);
-  Locale locale=localeResolver.resolveLocale(request);
-  BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
-  Theme theme=themeResolver.resolveTheme(request,site);
-  SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
-  if (currentSandbox != null) {
-    SandBoxContext previewSandBoxContext=new SandBoxContext();
-    previewSandBoxContext.setSandBoxId(currentSandbox.getId());
-    previewSandBoxContext.setPreviewMode(true);
-    SandBoxContext.setSandBoxContext(previewSandBoxContext);
-  }
-  BroadleafRequestContext brc=new BroadleafRequestContext();
-  brc.setSite(site);
-  brc.setLocale(locale);
-  brc.setBroadleafCurrency(currency);
-  brc.setRequest(request);
-  brc.setSandbox(currentSandbox);
-  brc.setResponse(response);
-  brc.setTheme(theme);
-  BroadleafRequestContext.setBroadleafRequestContext(brc);
-  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap");
-  if (ruleMap == null) {
-    LOG.trace("Creating ruleMap and adding in Locale.");
-    ruleMap=new HashMap<String,Object>();
-    request.setAttribute("blRuleMap",ruleMap);
-  }
- else {
-    LOG.trace("Using pre-existing ruleMap - added by non standard BLC process.");
-  }
-  ruleMap.put("locale",locale);
   try {
+    requestProcessor.process(new ServletWebRequest(request,response));
     filterChain.doFilter(request,response);
   }
-  finally {
+ catch (  SiteNotFoundException e) {
+    response.setStatus(HttpServletResponse.SC_FOUND);
+  }
+ finally {
     SandBoxContext.setSandBoxContext(null);
   }
 }

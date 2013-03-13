@@ -5,7 +5,7 @@
   String unparsedMaxResults=element.getAttributeValue("maxResults");
   List<Category> categories=catalogService.findCategoriesByName(parentCategory);
   if (categories != null && categories.size() > 0) {
-    List<Category> subcategories=categories.get(0).getChildCategories();
+    List<CategoryXref> subcategories=categories.get(0).getChildCategories();
     if (subcategories != null && !subcategories.isEmpty()) {
       if (StringUtils.isNotEmpty(unparsedMaxResults)) {
         int maxResults=Integer.parseInt(unparsedMaxResults);

@@ -11,19 +11,27 @@
   }
   boolean updated=false;
   if (!skuRetailPrice.equals(getRetailPrice())) {
-    setBaseRetailPrice(skuRetailPrice);
-    setRetailPrice(skuRetailPrice);
-    updated=true;
+    if (!isRetailPriceOverride()) {
+      setBaseRetailPrice(skuRetailPrice);
+      setRetailPrice(skuRetailPrice);
+      updated=true;
+    }
   }
   if (skuSalePrice != null && !skuSalePrice.equals(getSalePrice())) {
-    setBaseSalePrice(skuSalePrice);
-    setSalePrice(skuSalePrice);
-    updated=true;
+    if (!isSalePriceOverride()) {
+      setBaseSalePrice(skuSalePrice);
+      setSalePrice(skuSalePrice);
+      updated=true;
+    }
   }
   if (getDiscreteOrderItemFeePrices() != null) {
     for (    DiscreteOrderItemFeePrice fee : getDiscreteOrderItemFeePrices()) {
-      setSalePrice(getSalePrice().add(fee.getAmount()));
-      setRetailPrice(getRetailPrice().add(fee.getAmount()));
+      if (!isSalePriceOverride()) {
+        setSalePrice(getSalePrice().add(fee.getAmount()));
+      }
+      if (!isRetailPriceOverride()) {
+        setRetailPrice(getRetailPrice().add(fee.getAmount()));
+      }
     }
   }
   return updated;

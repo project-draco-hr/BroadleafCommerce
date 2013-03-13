@@ -24,15 +24,14 @@
       metadata.setFriendlyName(option.getLabel());
       metadata.setGroup("");
       metadata.setOrder(order);
-      metadata.setTab("General");
-      metadata.setTabOrder(99999);
       metadata.setExplicitFieldType(SupportedFieldType.UNKNOWN);
       metadata.setProminent(true);
       metadata.setBroadleafEnumeration("");
       metadata.setReadOnly(false);
       metadata.setRequiredOverride(BooleanUtils.isFalse(option.getRequired()));
-      properties.put("productOption" + option.getId(),metadata);
+      properties.put("productOption" + option.getId(),createIndividualOptionField(option,order));
     }
+    properties.put(CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME,createConsolidatedOptionField(SkuImpl.class));
     allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);

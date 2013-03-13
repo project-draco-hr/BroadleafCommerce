@@ -5,6 +5,16 @@
   item.setName(itemRequest.getName());
   item.setBundleOrderItemFeePrices(itemRequest.getBundleOrderItemFeePrices());
   item.setOrder(itemRequest.getOrder());
+  if (itemRequest.getSalePriceOverride() != null) {
+    item.setSalePriceOverride(Boolean.TRUE);
+    item.setSalePrice(itemRequest.getSalePriceOverride());
+    item.setBaseSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    item.setRetailPriceOverride(Boolean.TRUE);
+    item.setRetailPrice(itemRequest.getRetailPriceOverride());
+    item.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
+  }
   for (  DiscreteOrderItemRequest discreteItemRequest : itemRequest.getDiscreteOrderItems()) {
     discreteItemRequest.setBundleOrderItem(item);
     DiscreteOrderItem discreteOrderItem;
