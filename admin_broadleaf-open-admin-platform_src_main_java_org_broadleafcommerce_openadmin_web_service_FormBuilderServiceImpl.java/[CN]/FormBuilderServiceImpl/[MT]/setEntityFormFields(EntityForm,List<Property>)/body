@@ -2,22 +2,24 @@
   for (  Property property : properties) {
     if (property.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)property.getMetadata();
-      String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-      Field f;
-      if (fieldType.equals(SupportedFieldType.BROADLEAF_ENUMERATION.toString())) {
-        f=new ComboField();
-        for (        String[] option : fmd.getEnumerationValues()) {
-          ((ComboField)f).putOption(option[0],option[1]);
+      if (!(fmd.getVisibility().compareTo(VisibilityEnum.HIDDEN_ALL) == 0 || fmd.getVisibility().compareTo(VisibilityEnum.FORM_HIDDEN) == 0)) {
+        String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
+        Field f;
+        if (fieldType.equals(SupportedFieldType.BROADLEAF_ENUMERATION.toString())) {
+          f=new ComboField();
+          for (          String[] option : fmd.getEnumerationValues()) {
+            ((ComboField)f).putOption(option[0],option[1]);
+          }
         }
-      }
  else {
-        f=new Field();
+          f=new Field();
+        }
+        f.withName(property.getName()).withFieldType(fieldType).withOrder(fmd.getOrder()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+        if (StringUtils.isBlank(f.getFriendlyName())) {
+          f.setFriendlyName(f.getName());
+        }
+        ef.addField(f,fmd.getGroup(),fmd.getGroupOrder(),fmd.getTab(),fmd.getTabOrder());
       }
-      f.withName(property.getName()).withFieldType(fieldType).withOrder(fmd.getOrder()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-      if (StringUtils.isBlank(f.getFriendlyName())) {
-        f.setFriendlyName(f.getName());
-      }
-      ef.addField(f,fmd.getGroup(),fmd.getGroupOrder(),fmd.getTab(),fmd.getTabOrder());
     }
   }
 }
