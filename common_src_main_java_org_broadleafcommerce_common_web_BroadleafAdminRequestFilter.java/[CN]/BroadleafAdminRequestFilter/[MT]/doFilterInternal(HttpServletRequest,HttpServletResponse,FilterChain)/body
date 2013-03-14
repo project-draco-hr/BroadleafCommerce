@@ -6,9 +6,11 @@
     filterChain.doFilter(request,response);
     return;
   }
-  BroadleafRequestContext brc=new BroadleafRequestContext();
-  brc.setRequest(request);
-  brc.setResponse(response);
-  BroadleafRequestContext.setBroadleafRequestContext(brc);
-  filterChain.doFilter(request,response);
+  try {
+    requestProcessor.process(new ServletWebRequest(request,response));
+    filterChain.doFilter(request,response);
+  }
+ catch (  SiteNotFoundException e) {
+    response.setStatus(HttpServletResponse.SC_FOUND);
+  }
 }
