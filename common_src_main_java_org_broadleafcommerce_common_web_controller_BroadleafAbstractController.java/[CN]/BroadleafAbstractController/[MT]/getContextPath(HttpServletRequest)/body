@@ -1,0 +1,15 @@
+{
+  String ctxPath=request.getContextPath();
+  if (StringUtils.isBlank(ctxPath)) {
+    return "/";
+  }
+ else {
+    if (ctxPath.charAt(0) != '/') {
+      ctxPath='/' + ctxPath;
+    }
+    if (ctxPath.charAt(ctxPath.length() - 1) != '/') {
+      ctxPath=ctxPath + '/';
+    }
+    return ctxPath;
+  }
+}
