@@ -4,7 +4,8 @@
   ef.setEntityType(entity.getType()[0]);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
-      if (!(((BasicFieldMetadata)p.getMetadata()).getVisibility().compareTo(VisibilityEnum.HIDDEN_ALL) == 0 || ((BasicFieldMetadata)p.getMetadata()).getVisibility().compareTo(VisibilityEnum.HIDDEN_ALL) == 0)) {
+      BasicFieldMetadata bFM=(BasicFieldMetadata)p.getMetadata();
+      if ((!(VisibilityEnum.HIDDEN_ALL.equals(bFM.getVisibility())) || (VisibilityEnum.FORM_HIDDEN.equals(bFM.getVisibility())))) {
         Property entityProp=entity.findProperty(p.getName());
         if (entityProp == null) {
           ef.removeField(p.getName());
