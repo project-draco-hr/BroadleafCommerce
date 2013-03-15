@@ -24,6 +24,16 @@
     if (alternateMergedProperties != null) {
       extractPropertiesFromPersistentEntity(alternateMergedProperties,recordEntity,props);
     }
+    try {
+      Property p=new Property();
+      p.setName(MAIN_ENTITY_NAME_PROPERTY);
+      String mainEntityName=(String)MethodUtils.invokeMethod(entity,"getMainEntityName");
+      p.setValue(mainEntityName);
+      props.add(p);
+    }
+ catch (    Exception e) {
+      LOG.debug(String.format("Could not execute the getMainEntityName() method for [%s]",entity.getClass().getName()),e);
+    }
     Property[] properties=new Property[props.size()];
     properties=props.toArray(properties);
     entityItem.setProperties(properties);
