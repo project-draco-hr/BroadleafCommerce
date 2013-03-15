@@ -1,4 +1,11 @@
 {
+  Field idField=entityForm.findField("id");
+  if (idField == null) {
+    idField=new Field();
+    idField.setName("id");
+    idField.setValue(entityForm.getId());
+    entityForm.getFields().put("id",idField);
+  }
   Property[] properties=new Property[entityForm.getFields().size()];
   int i=0;
   for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
