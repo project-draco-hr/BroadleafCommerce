@@ -1,12 +1,11 @@
 {
-  String criteriaName="constructForm";
-  String ceilingClassName=StructuredContentType.class.getName();
   EntityForm blankFormContainer=new EntityForm();
-  EntityForm dynamicForm=getBlankDynamicFieldTemplateForm(criteriaName,propertyName,ceilingClassName,propertyTypeId);
-  blankFormContainer.putDynamicForm(propertyName,dynamicForm);
+  EntityForm dynamicForm=getBlankDynamicFieldTemplateForm(info);
+  blankFormContainer.putDynamicForm(info.getPropertyName(),dynamicForm);
   model.addAttribute("entityForm",blankFormContainer);
   String reqUrl=request.getRequestURL().toString();
   reqUrl=reqUrl.substring(0,reqUrl.indexOf("/dynamicForm"));
   model.addAttribute("currentUrl",reqUrl);
+  setModelAttributes(model,sectionKey);
   return "views/dynamicFormPartial";
 }

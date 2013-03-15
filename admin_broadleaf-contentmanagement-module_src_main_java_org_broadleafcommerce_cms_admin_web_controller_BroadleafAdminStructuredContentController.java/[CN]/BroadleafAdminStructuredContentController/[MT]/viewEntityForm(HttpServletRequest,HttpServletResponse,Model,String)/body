@@ -1,11 +1,10 @@
 {
-  String criteriaName="constructForm";
-  String propertyName="structuredContentType";
-  String ceilingClassName=StructuredContentType.class.getName();
   String returnPath=super.viewEntityForm(request,response,model,SECTION_KEY,id);
   EntityForm ef=(EntityForm)model.asMap().get("entityForm");
-  EntityForm dynamicForm=getDynamicFieldTemplateForm(criteriaName,propertyName,ceilingClassName,ef.findField(propertyName).getValue(),id);
-  ef.findField(propertyName).setOnChangeTrigger("dynamicForm-" + propertyName);
-  ef.putDynamicForm(propertyName,dynamicForm);
+  DynamicEntityFormInfo info=new DynamicEntityFormInfo().withCeilingClassName(StructuredContentType.class.getName()).withCriteriaName("constructForm").withPropertyName("structuredContentType").withPropertyValue(ef.findField("structuredContentType").getValue());
+  EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+  ef.putDynamicFormInfo("structuredContentType",info);
+  ef.putDynamicForm("structuredContentType",dynamicForm);
+  ef.findField("structuredContentType").setOnChangeTrigger("dynamicForm-structuredContentType");
   return returnPath;
 }

@@ -1,19 +1,28 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
-  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
-  entityValidator.validate(entityForm,entity,result);
-  if (result.hasErrors()) {
-    ClassMetadata cmd=service.getClassMetadata(ppr);
-    Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(ppr,id);
-    EntityForm newForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
-    formService.copyEntityFormValues(newForm,entityForm);
-    model.addAttribute("entity",entity);
-    model.addAttribute("entityForm",newForm);
-    model.addAttribute("viewType","entityEdit");
-    setModelAttributes(model,sectionKey);
-    return "modules/defaultContainer";
+  Map<String,Field> dynamicFields=new HashMap<String,Field>();
+  for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
+    if (entry.getKey().contains("|")) {
+      dynamicFields.put(entry.getKey(),entry.getValue());
+    }
   }
+  for (  Entry<String,Field> entry : dynamicFields.entrySet()) {
+    entityForm.removeField(entry.getKey());
+  }
+  for (  Entry<String,Field> entry : dynamicFields.entrySet()) {
+    String[] fieldName=entry.getKey().split("\\|");
+    DynamicEntityFormInfo info=entityForm.getDynamicFormInfo(fieldName[0]);
+    EntityForm dynamicForm=entityForm.getDynamicForm(fieldName[0]);
+    if (dynamicForm == null) {
+      dynamicForm=new EntityForm();
+      dynamicForm.setEntityType(info.getCeilingClassName());
+      entityForm.putDynamicForm(fieldName[0],dynamicForm);
+    }
+    entry.getValue().setName(fieldName[1]);
+    dynamicForm.addField(entry.getValue());
+  }
+  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
   ra.addFlashAttribute("headerFlash","save.successful");
   return "redirect:/" + sectionKey + "/"+ id;
 }
