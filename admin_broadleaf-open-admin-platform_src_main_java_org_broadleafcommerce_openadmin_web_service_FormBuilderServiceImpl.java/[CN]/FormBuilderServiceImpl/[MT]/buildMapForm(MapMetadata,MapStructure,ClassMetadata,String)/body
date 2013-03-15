@@ -4,9 +4,7 @@
   ComboField keyField=new ComboField();
   keyField.withName("key").withFieldType("combo_field").withFriendlyName("Key");
   if (mapMd.getKeys() != null) {
-    for (    String[] key : mapMd.getKeys()) {
-      keyField.putOption(key[0],key[1]);
-    }
+    keyField.setOptions(mapMd.getKeys());
   }
  else {
     PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(mapMd.getMapKeyOptionEntityClass());

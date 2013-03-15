@@ -1,0 +1,16 @@
+{
+  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(ceilingClassName).withCustomCriteria(new String[]{criteriaName,propertyTypeId});
+  ClassMetadata cmd=service.getClassMetadata(ppr);
+  ppr.setCustomCriteria(new String[]{criteriaName,entityId});
+  Entity entity=service.getRecord(ppr,entityId);
+  EntityForm dynamicForm=formService.buildEntityForm(cmd,entity);
+  dynamicForm.clearFieldsMap();
+  for (  Tab tab : dynamicForm.getTabs()) {
+    for (    FieldGroup group : tab.getFieldGroups()) {
+      for (      Field field : group.getFields()) {
+        field.setName(propertyName + "|" + field.getName());
+      }
+    }
+  }
+  return dynamicForm;
+}

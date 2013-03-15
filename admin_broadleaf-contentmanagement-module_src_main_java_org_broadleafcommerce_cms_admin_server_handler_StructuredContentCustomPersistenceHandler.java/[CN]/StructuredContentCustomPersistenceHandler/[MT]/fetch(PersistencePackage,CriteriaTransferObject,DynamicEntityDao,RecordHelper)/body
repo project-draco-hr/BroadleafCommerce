@@ -1,24 +1,6 @@
 {
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
-    if (cto.get("structuredContentType_Grid").getFilterValues().length > 0) {
-      CriteriaTransferObject ctoCopy=new CriteriaTransferObject();
-      for (      String prop : cto.getPropertyIdSet()) {
-        String propertyId;
-        if (prop.equals("structuredContentType_Grid")) {
-          propertyId="structuredContentType";
-        }
- else {
-          propertyId=prop;
-        }
-        FilterAndSortCriteria criteria=ctoCopy.get(propertyId);
-        FilterAndSortCriteria oldCriteria=cto.get(prop);
-        criteria.setFilterValue(oldCriteria.getFilterValues()[0]);
-        criteria.setIgnoreCase(oldCriteria.getIgnoreCase());
-        criteria.setSortAscending(oldCriteria.getIgnoreCase());
-      }
-      cto=ctoCopy;
-    }
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(StructuredContent.class.getName(),persistencePerspective);
     BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,StructuredContent.class.getName(),originalProps);
@@ -38,10 +20,10 @@
         property.setValue("[ISOMORPHIC]/../admin/images/lock_page.png");
         entity.addProperty(property);
       }
-      if (entity.findProperty("structuredContentType") != null) {
+ else {
         Property property=new Property();
-        property.setName("structuredContentType_Grid");
-        property.setValue(entity.findProperty("structuredContentType").getValue());
+        property.setName("locked");
+        property.setValue(entity.findProperty("lockedFlag").getValue());
         entity.addProperty(property);
       }
     }

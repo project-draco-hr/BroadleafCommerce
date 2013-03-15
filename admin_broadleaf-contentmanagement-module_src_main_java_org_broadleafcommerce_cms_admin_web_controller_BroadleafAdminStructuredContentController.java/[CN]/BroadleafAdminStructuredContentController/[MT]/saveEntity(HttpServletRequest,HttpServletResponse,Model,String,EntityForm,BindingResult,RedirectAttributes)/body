@@ -1,0 +1,27 @@
+{
+  String returnPath=super.saveEntity(request,response,model,SECTION_KEY,id,entityForm,result,ra);
+  String criteriaName="constructForm";
+  String propertyName="structuredContentType";
+  String ceilingClassName=StructuredContentType.class.getName();
+  Map<String,Field> dynamicFields=new HashMap<String,Field>();
+  for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
+    if (entry.getKey().contains("|")) {
+      dynamicFields.put(entry.getKey(),entry.getValue());
+    }
+  }
+  for (  Entry<String,Field> entry : dynamicFields.entrySet()) {
+    entityForm.removeField(entry.getKey());
+  }
+  EntityForm dynamicForm=new EntityForm();
+  dynamicForm.setEntityType(ceilingClassName);
+  for (  Entry<String,Field> entry : dynamicFields.entrySet()) {
+    String[] fieldName=entry.getKey().split("\\|");
+    if (!fieldName[0].equals(propertyName)) {
+      throw new RuntimeException("Unknown field - we only support one dynamic form per page currently.");
+    }
+    entry.getValue().setName(fieldName[1]);
+    dynamicForm.addField(entry.getValue());
+  }
+  service.updateEntity(dynamicForm,new String[]{criteriaName,id});
+  return returnPath;
+}
