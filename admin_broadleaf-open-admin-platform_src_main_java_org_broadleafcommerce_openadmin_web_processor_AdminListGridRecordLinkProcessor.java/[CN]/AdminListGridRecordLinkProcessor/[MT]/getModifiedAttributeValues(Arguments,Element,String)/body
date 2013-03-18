@@ -1,0 +1,15 @@
+{
+  String[] expressions=element.getAttributeValue(attributeName).split(",");
+  ListGrid listGrid=(ListGrid)StandardExpressionProcessor.processExpression(arguments,expressions[0]);
+  ListGridRecord record=(ListGridRecord)StandardExpressionProcessor.processExpression(arguments,expressions[1]);
+  String attr=(String)StandardExpressionProcessor.processExpression(arguments,expressions[2]);
+  String link=listGrid.getSectionUrl() + "/";
+  link=(String)StandardExpressionProcessor.processExpression(arguments,"@{" + link + "}");
+  if (record != null) {
+    link+=record.getId();
+  }
+  link+="/view";
+  Map<String,String> attrs=new HashMap<String,String>();
+  attrs.put(attr,link);
+  return attrs;
+}

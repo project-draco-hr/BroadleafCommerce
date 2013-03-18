@@ -3,6 +3,10 @@
   listGrid.setClassName(className);
   listGrid.setHeaderFields(headerFields);
   listGrid.setListGridType(type);
+  AdminSection section=navigationService.findAdminSectionByClass(className);
+  if (section != null) {
+    listGrid.setSectionUrl(section.getUrl());
+  }
   for (  Entity e : entities) {
     ListGridRecord record=new ListGridRecord();
     if (e.findProperty("id") != null) {
