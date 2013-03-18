@@ -2,9 +2,11 @@
   String mainClassName=getClassNameForSection(sectionKey);
   ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,id,collectionItemId);
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty,null);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]));
   model.addAttribute("listGrid",listGrid);
+  EntityForm entityForm=new EntityForm();
+  entityForm.setId(id);
+  model.addAttribute("entityForm",entityForm);
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";
 }
