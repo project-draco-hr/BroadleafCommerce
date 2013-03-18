@@ -3,7 +3,7 @@
   ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,id,collectionItemId);
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty,null);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,id,collectionProperty,null,sectionKey);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";

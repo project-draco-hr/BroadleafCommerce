@@ -1,0 +1,33 @@
+{
+  ListGrid listGrid=new ListGrid();
+  listGrid.setClassName(className);
+  listGrid.setHeaderFields(headerFields);
+  listGrid.setListGridType(type);
+  listGrid.setSectionKey(sectionKey);
+  AdminSection section=navigationService.findAdminSectionByClass(className);
+  if (section != null) {
+    listGrid.setExternalEntitySectionKey(section.getUrl());
+  }
+  for (  Entity e : entities) {
+    ListGridRecord record=new ListGridRecord();
+    record.setListGrid(listGrid);
+    if (e.findProperty("id") != null) {
+      record.setId(e.findProperty("id").getValue());
+    }
+    for (    Field headerField : headerFields) {
+      Property p=e.findProperty(headerField.getName());
+      if (p != null) {
+        Field recordField=new Field().withName(headerField.getName());
+        if (headerField instanceof ComboField) {
+          recordField.setValue(((ComboField)headerField).getOption(p.getValue()));
+        }
+ else {
+          recordField.setValue(p.getValue());
+        }
+        record.getFields().add(recordField);
+      }
+    }
+    listGrid.getRecords().add(record);
+  }
+  return listGrid;
+}

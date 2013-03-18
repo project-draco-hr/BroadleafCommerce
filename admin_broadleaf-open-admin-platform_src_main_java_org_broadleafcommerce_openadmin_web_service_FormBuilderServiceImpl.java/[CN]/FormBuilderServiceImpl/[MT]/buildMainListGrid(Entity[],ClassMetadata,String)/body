@@ -1,0 +1,23 @@
+{
+  List<Field> headerFields=new ArrayList<Field>();
+  ListGrid.Type type=ListGrid.Type.MAIN;
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
+      if (fmd.isProminent() != null && fmd.isProminent()) {
+        Field hf;
+        if (fmd.getFieldType().equals(SupportedFieldType.EXPLICIT_ENUMERATION)) {
+          hf=new ComboField();
+          ((ComboField)hf).setOptions(fmd.getEnumerationValues());
+        }
+ else {
+          hf=new Field();
+        }
+        hf.setName(p.getName());
+        hf.setFriendlyName(fmd.getFriendlyName());
+        headerFields.add(hf);
+      }
+    }
+  }
+  return createListGrid(cmd.getCeilingType(),headerFields,type,entities,sectionKey);
+}

@@ -1,0 +1,11 @@
+{
+  StringBuilder sb=new StringBuilder();
+  if (!getSectionKey().startsWith("/")) {
+    sb.append("/");
+  }
+  sb.append(getSectionKey());
+  if (getContainingEntityId() != null && StringUtils.isNotBlank(getSubCollectionFieldName())) {
+    sb.append("/").append(getContainingEntityId()).append("/").append(getSubCollectionFieldName());
+  }
+  return sb.toString();
+}

@@ -3,7 +3,7 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]));
   ClassMetadata cmd=service.getClassMetadata(ppr);
   Entity[] rows=service.getRecords(ppr);
-  ListGrid listGrid=formService.buildMainListGrid(rows,cmd);
+  ListGrid listGrid=formService.buildMainListGrid(rows,cmd,sectionKey);
   model.addAttribute("currentUrl",request.getRequestURL().toString());
   model.addAttribute("listGrid",listGrid);
   model.addAttribute("viewType","entityList");
