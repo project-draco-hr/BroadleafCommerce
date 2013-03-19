@@ -1,19 +1,27 @@
 {
-  HttpSession session=request.getSession();
-  AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
-  if (adminUser == null) {
-    session.removeAttribute(SANDBOX_ADMIN_ID_VAR);
-    SandBoxContext.setSandBoxContext(null);
-  }
+  checkIgnore: {
+    String uri=request.getRequestURI();
+    for (    String pattern : ignoreRegexPatterns) {
+      if (uri.matches(pattern)) {
+        break checkIgnore;
+      }
+    }
+    HttpSession session=request.getSession();
+    AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
+    if (adminUser == null) {
+      session.removeAttribute(SANDBOX_ADMIN_ID_VAR);
+      SandBoxContext.setSandBoxContext(null);
+    }
  else {
-    SandBox sandBox=sandBoxService.retrieveUserSandBox(null,adminUser);
-    session.setAttribute(SANDBOX_ADMIN_ID_VAR,sandBox.getId());
-    session.removeAttribute(SANDBOX_ID_VAR);
-    AdminSandBoxContext context=new AdminSandBoxContext();
-    context.setSandBoxId(sandBox.getId());
-    context.setSandBoxMode(SandBoxMode.IMMEDIATE_COMMIT);
-    context.setAdminUser(adminUser);
-    SandBoxContext.setSandBoxContext(context);
+      SandBox sandBox=sandBoxService.retrieveUserSandBox(null,adminUser);
+      session.setAttribute(SANDBOX_ADMIN_ID_VAR,sandBox.getId());
+      session.removeAttribute(SANDBOX_ID_VAR);
+      AdminSandBoxContext context=new AdminSandBoxContext();
+      context.setSandBoxId(sandBox.getId());
+      context.setSandBoxMode(SandBoxMode.IMMEDIATE_COMMIT);
+      context.setAdminUser(adminUser);
+      SandBoxContext.setSandBoxContext(context);
+    }
   }
   try {
     filterChain.doFilter(request,response);
