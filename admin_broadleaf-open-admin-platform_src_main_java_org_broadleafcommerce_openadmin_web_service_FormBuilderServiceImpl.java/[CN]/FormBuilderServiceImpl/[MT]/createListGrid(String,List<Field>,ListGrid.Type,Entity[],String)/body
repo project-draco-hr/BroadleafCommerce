@@ -1,7 +1,7 @@
 {
   ListGrid listGrid=new ListGrid();
   listGrid.setClassName(className);
-  listGrid.setHeaderFields(headerFields);
+  listGrid.getHeaderFields().addAll(headerFields);
   listGrid.setListGridType(type);
   listGrid.setSectionKey(sectionKey);
   AdminSection section=navigationService.findAdminSectionByClass(className);
@@ -17,7 +17,7 @@
     for (    Field headerField : headerFields) {
       Property p=e.findProperty(headerField.getName());
       if (p != null) {
-        Field recordField=new Field().withName(headerField.getName());
+        Field recordField=new Field().withName(headerField.getName()).withFriendlyName(headerField.getFriendlyName()).withOrder(p.getMetadata().getOrder());
         if (headerField instanceof ComboField) {
           recordField.setValue(((ComboField)headerField).getOption(p.getValue()));
         }
