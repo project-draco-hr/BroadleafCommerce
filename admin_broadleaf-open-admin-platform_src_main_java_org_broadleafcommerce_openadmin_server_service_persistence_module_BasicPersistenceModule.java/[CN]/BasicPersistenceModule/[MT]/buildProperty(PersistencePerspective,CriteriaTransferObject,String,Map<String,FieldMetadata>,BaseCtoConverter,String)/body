@@ -108,9 +108,12 @@ return o1.getManyToField().compareTo(o2.getManyToField());
 }
 }
 );
-ForeignKey foreignKey=persistencePerspective.getAdditionalForeignKeys()[additionalForeignKeyIndexPosition];
+ForeignKey foreignKey=null;
+if (additionalForeignKeyIndexPosition >= 0) {
+foreignKey=persistencePerspective.getAdditionalForeignKeys()[additionalForeignKeyIndexPosition];
+}
 if (metadata.getForeignKeyCollection()) {
-if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
+if (foreignKey != null && ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
 ctoConverter.addCollectionSizeEqMapping(ceilingEntityFullyQualifiedClassname,propertyName,AssociationPath.ROOT,propertyName);
 }
  else {

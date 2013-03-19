@@ -10,7 +10,9 @@
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
         if (md.isProminent() != null && md.isProminent()) {
-          Field hf=new Field().withName(p.getName()).withFriendlyName(fmd.getFriendlyName());
+          Field hf=new Field().withName(p.getName()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(md.getForeignKeyDisplayValueProperty());
+          String fieldType=md.getFieldType() == null ? null : md.getFieldType().toString();
+          hf.setFieldType(fieldType);
           headerFields.add(hf);
         }
       }
@@ -23,6 +25,8 @@
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
         if (md.isProminent() != null && md.isProminent()) {
           Field hf=new Field().withName(p.getName()).withFriendlyName(md.getFriendlyName());
+          String fieldType=md.getFieldType() == null ? null : md.getFieldType().toString();
+          hf.setFieldType(fieldType);
           headerFields.add(hf);
         }
       }
@@ -37,6 +41,8 @@
     for (    String fieldName : atcmd.getGridVisibleFields()) {
       Property p=cmd.getPMap().get(fieldName);
       Field hf=new Field().withName(p.getName()).withFriendlyName(p.getMetadata().getFriendlyName());
+      String fieldType="default";
+      hf.setFieldType(fieldType);
       headerFields.add(hf);
     }
     type=ListGrid.Type.ADORNED;
@@ -48,6 +54,8 @@
     MapMetadata mmd=(MapMetadata)fmd;
     Property p2=cmd.getPMap().get("key");
     Field hf=new Field().withName(p2.getName()).withFriendlyName(p2.getMetadata().getFriendlyName());
+    String fieldType="default";
+    hf.setFieldType(fieldType);
     headerFields.add(hf);
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
@@ -55,6 +63,8 @@
         if (md.getTargetClass().equals(mmd.getValueClassName())) {
           if (md.isProminent() != null && md.isProminent()) {
             hf=new Field().withName(p.getName()).withFriendlyName(md.getFriendlyName());
+            fieldType="default";
+            hf.setFieldType(fieldType);
             headerFields.add(hf);
           }
         }
