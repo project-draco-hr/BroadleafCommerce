@@ -6,6 +6,7 @@
   List<Property> entityFormProperties=new ArrayList<Property>();
   for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
     Property p=collectionMetadata.getPMap().get(targetFieldName);
+    ((BasicFieldMetadata)p.getMetadata()).setVisibility(VisibilityEnum.VISIBLE_ALL);
     entityFormProperties.add(p);
   }
   setEntityFormFields(ef,entityFormProperties);

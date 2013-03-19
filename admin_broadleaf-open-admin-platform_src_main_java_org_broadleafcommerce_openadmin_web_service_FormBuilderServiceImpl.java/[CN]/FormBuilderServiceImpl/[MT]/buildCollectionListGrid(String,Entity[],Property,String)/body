@@ -83,6 +83,9 @@
     listGrid.setFriendlyName(field.getName());
   }
   listGrid.setContainingEntityId(containingEntityId);
-  listGrid.setEditable(editable);
+  listGrid.getRowActions().add(DefaultListGridActions.REMOVE);
+  if (editable) {
+    listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
+  }
   return listGrid;
 }
