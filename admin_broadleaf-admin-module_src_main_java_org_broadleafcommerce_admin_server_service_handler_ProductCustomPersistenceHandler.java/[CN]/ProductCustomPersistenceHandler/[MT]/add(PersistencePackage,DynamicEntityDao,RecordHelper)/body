@@ -5,8 +5,11 @@
     Product adminInstance=(Product)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Product.class.getName(),persistencePerspective);
     adminInstance=(Product)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    if (adminInstance.getDefaultCategory() != null && !adminInstance.getAllParentCategories().contains(adminInstance.getDefaultCategory())) {
-      adminInstance.getAllParentCategories().add(adminInstance.getDefaultCategory());
+    CategoryProductXref categoryXref=new CategoryProductXrefImpl();
+    categoryXref.setCategory(adminInstance.getDefaultCategory());
+    categoryXref.setProduct(adminInstance);
+    if (adminInstance.getDefaultCategory() != null && !adminInstance.getAllParentCategories().contains(categoryXref)) {
+      adminInstance.getAllParentCategoryXrefs().add(categoryXref);
     }
     adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
     if (adminInstance.getDefaultSku() == null) {

@@ -1,3 +1,7 @@
 {
-  return allParentCategories;
+  List<Category> parents=new ArrayList<Category>();
+  for (  CategoryProductXref xref : allParentCategoryXrefs) {
+    parents.add(xref.getCategory());
+  }
+  return Collections.unmodifiableList(parents);
 }

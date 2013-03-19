@@ -5,7 +5,7 @@
   String unparsedMaxResults=element.getAttributeValue("maxResults");
   List<Category> categories=catalogService.findCategoriesByName(parentCategory);
   if (categories != null && categories.size() > 0) {
-    List<CategoryXref> subcategories=categories.get(0).getChildCategories();
+    List<CategoryXref> subcategories=categories.get(0).getChildCategoryXrefs();
     if (subcategories != null && !subcategories.isEmpty()) {
       if (StringUtils.isNotEmpty(unparsedMaxResults)) {
         int maxResults=Integer.parseInt(unparsedMaxResults);
@@ -14,6 +14,10 @@
         }
       }
     }
-    addToModel(arguments,resultVar,subcategories);
+    List<Category> results=new ArrayList<Category>(subcategories.size());
+    for (    CategoryXref xref : subcategories) {
+      results.add(xref.getSubCategory());
+    }
+    addToModel(arguments,resultVar,results);
   }
 }

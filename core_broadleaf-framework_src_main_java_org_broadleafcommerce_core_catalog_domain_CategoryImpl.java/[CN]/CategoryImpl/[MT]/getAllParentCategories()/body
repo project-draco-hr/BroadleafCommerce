@@ -1,6 +1,7 @@
 {
-  for (  CategoryXref xref : allParentCategories) {
-    ((CategoryXrefImpl)xref).setChildOriented(false);
+  List<Category> parents=new ArrayList<Category>(allParentCategoryXrefs.size());
+  for (  CategoryXref xref : allParentCategoryXrefs) {
+    parents.add(xref.getCategory());
   }
-  return allParentCategories;
+  return Collections.unmodifiableList(parents);
 }

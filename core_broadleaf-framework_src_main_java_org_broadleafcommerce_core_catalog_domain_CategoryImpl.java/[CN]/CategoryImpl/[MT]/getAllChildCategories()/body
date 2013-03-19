@@ -1,3 +1,8 @@
 {
-  return allChildCategories;
+  if (allLegacyChildCategories.isEmpty()) {
+    for (    CategoryXref category : allChildCategoryXrefs) {
+      allLegacyChildCategories.add(category.getSubCategory());
+    }
+  }
+  return Collections.unmodifiableList(allLegacyChildCategories);
 }

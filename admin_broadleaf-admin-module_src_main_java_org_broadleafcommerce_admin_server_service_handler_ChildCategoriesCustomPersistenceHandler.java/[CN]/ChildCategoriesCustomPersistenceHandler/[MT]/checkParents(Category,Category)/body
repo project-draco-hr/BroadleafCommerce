@@ -2,8 +2,8 @@
   if (child.getId().equals(parent.getId())) {
     throw new ServiceException("Add unsuccessful. Cannot add a category to itself.");
   }
-  for (  CategoryXref category : parent.getAllParentCategories()) {
-    if (!CollectionUtils.isEmpty(category.getCategory().getAllParentCategories())) {
+  for (  CategoryXref category : parent.getAllParentCategoryXrefs()) {
+    if (!CollectionUtils.isEmpty(category.getCategory().getAllParentCategoryXrefs())) {
       checkParents(child,category.getCategory());
     }
   }

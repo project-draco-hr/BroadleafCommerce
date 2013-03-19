@@ -6,7 +6,10 @@
   Long childId=Long.parseLong(persistencePackage.getEntity().findProperty(targetPath).getValue());
   Category parent=(Category)dynamicEntityDao.retrieve(CategoryImpl.class,parentId);
   Category child=(Category)dynamicEntityDao.retrieve(CategoryImpl.class,childId);
-  if (parent.getAllChildCategories().contains(child)) {
+  CategoryXref categoryXref=new CategoryXrefImpl();
+  categoryXref.setSubCategory(child);
+  categoryXref.setCategory(parent);
+  if (parent.getAllChildCategoryXrefs().contains(categoryXref)) {
     throw new ServiceException("Add unsuccessful. Cannot add a duplicate child category.");
   }
   checkParents(child,parent);
