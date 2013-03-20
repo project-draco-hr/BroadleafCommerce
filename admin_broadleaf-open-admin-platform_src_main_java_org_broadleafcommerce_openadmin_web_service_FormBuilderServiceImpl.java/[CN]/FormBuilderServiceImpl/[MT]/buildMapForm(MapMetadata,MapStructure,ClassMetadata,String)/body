@@ -7,7 +7,7 @@
     keyField.setOptions(mapMd.getKeys());
   }
  else {
-    PersistencePackageRequest ppr=PersistencePackageRequest.standard().withClassName(mapMd.getMapKeyOptionEntityClass());
+    PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(mapMd.getMapKeyOptionEntityClass());
     Entity[] rows=adminEntityService.getRecords(ppr);
     for (    Entity entity : rows) {
       String keyValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityValueField()).getValue();
@@ -25,9 +25,7 @@
   }
 );
   setEntityFormFields(ef,mapFormProperties);
-  Field f=new Field().withName("symbolicId").withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
-  ef.addHiddenField(f);
-  f=new Field().withName("priorKey").withFieldType(SupportedFieldType.HIDDEN.toString());
+  Field f=new Field().withName("priorKey").withFieldType(SupportedFieldType.HIDDEN.toString());
   ef.addHiddenField(f);
   return ef;
 }

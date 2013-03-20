@@ -20,6 +20,8 @@
  else {
     ClassMetadata specificTypeMd=service.getClassMetadata(getSectionPersistencePackageRequest(entityType));
     EntityForm entityForm=formService.buildEntityForm(specificTypeMd);
+    entityForm.setCeilingEntityClassname(cmd.getCeilingType());
+    entityForm.setEntityType(specificTypeMd.getCeilingType());
     formService.removeNonApplicableFields(cmd,entityForm,entityType);
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/entityAdd");

@@ -3,19 +3,19 @@
   md.accept(new MetadataVisitor(){
     @Override public void visit(    BasicFieldMetadata fmd){
       request.setType(Type.STANDARD);
-      request.setClassName(fmd.getForeignKeyClass());
+      request.setCeilingEntityClassname(fmd.getForeignKeyClass());
     }
     @Override public void visit(    BasicCollectionMetadata fmd){
       ForeignKey foreignKey=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
       request.setType(Type.STANDARD);
-      request.setClassName(fmd.getCollectionCeilingEntity());
+      request.setCeilingEntityClassname(fmd.getCollectionCeilingEntity());
       request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.setForeignKey(foreignKey);
     }
     @Override public void visit(    AdornedTargetCollectionMetadata fmd){
       AdornedTargetList adornedList=(AdornedTargetList)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
       request.setType(Type.ADORNED);
-      request.setClassName(fmd.getCollectionCeilingEntity());
+      request.setCeilingEntityClassname(fmd.getCollectionCeilingEntity());
       request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.setAdornedList(adornedList);
     }
@@ -23,7 +23,7 @@
       MapStructure mapStructure=(MapStructure)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
       ForeignKey foreignKey=(ForeignKey)fmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
       request.setType(Type.MAP);
-      request.setClassName(fmd.getTargetClass());
+      request.setCeilingEntityClassname(fmd.getTargetClass());
       request.setOperationTypesOverride(fmd.getPersistencePerspective().getOperationTypes());
       request.setMapStructure(mapStructure);
       request.setForeignKey(foreignKey);

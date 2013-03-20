@@ -1,0 +1,34 @@
+{
+  String prefix;
+  if (propertyName.contains(".")) {
+    prefix=propertyName.substring(0,propertyName.lastIndexOf("."));
+  }
+ else {
+    prefix="";
+  }
+  if (prefix.equals("")) {
+    return entity.findProperty("id").getValue();
+  }
+ else {
+    String[] prefixParts=prefix.split("\\.");
+    for (int j=0; j < prefixParts.length; j++) {
+      StringBuilder sb=new StringBuilder();
+      for (int x=0; x < prefixParts.length - j; x++) {
+        sb.append(prefixParts[x]);
+        if (x < prefixParts.length - j - 1) {
+          sb.append(".");
+        }
+      }
+      String tempPrefix=sb.toString();
+      for (      Property property : entity.getProperties()) {
+        if (property.getName().startsWith(tempPrefix)) {
+          BasicFieldMetadata md=(BasicFieldMetadata)cmd.getPMap().get(property.getName()).getMetadata();
+          if (md.getFieldType().equals(SupportedFieldType.ID)) {
+            return property.getValue();
+          }
+        }
+      }
+    }
+  }
+  throw new RuntimeException("Unable to establish a relationship id");
+}
