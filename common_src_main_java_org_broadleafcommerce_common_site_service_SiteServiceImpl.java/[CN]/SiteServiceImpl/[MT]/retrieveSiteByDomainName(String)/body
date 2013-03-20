@@ -1,0 +1,13 @@
+{
+  String domainPrefix=null;
+  if (domainName != null) {
+    int pos=domainName.indexOf('.');
+    if (pos >= 0) {
+      domainPrefix=domainName.substring(0,pos);
+    }
+ else {
+      domainPrefix=domainName;
+    }
+  }
+  return siteDao.retrieveSiteByDomainOrDomainPrefix(domainName,domainPrefix);
+}

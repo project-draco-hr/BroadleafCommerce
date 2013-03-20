@@ -9,7 +9,18 @@
   item.setBaseSalePrice(itemRequest.getSku().getSalePrice());
   item.setBaseRetailPrice(itemRequest.getSku().getRetailPrice());
   item.setDiscreteOrderItemFeePrices(itemRequest.getDiscreteOrderItemFeePrices());
+  if (itemRequest.getSalePriceOverride() != null) {
+    item.setSalePriceOverride(Boolean.TRUE);
+    item.setSalePrice(itemRequest.getSalePriceOverride());
+    item.setBaseSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    item.setRetailPriceOverride(Boolean.TRUE);
+    item.setRetailPrice(itemRequest.getRetailPriceOverride());
+    item.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
+  }
   item.updateSaleAndRetailPrices();
+  item.assignFinalPrice();
   item.getWrappedItems().addAll(itemRequest.getWrappedItems());
   for (  OrderItem orderItem : item.getWrappedItems()) {
     orderItem.setGiftWrapOrderItem(item);

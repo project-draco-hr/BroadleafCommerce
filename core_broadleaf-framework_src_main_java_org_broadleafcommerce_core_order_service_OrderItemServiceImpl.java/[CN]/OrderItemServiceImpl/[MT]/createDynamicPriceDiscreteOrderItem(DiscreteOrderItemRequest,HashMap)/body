@@ -7,6 +7,16 @@
   item.setBaseSalePrice(prices.getSalePrice());
   item.setSalePrice(prices.getSalePrice());
   item.setRetailPrice(prices.getRetailPrice());
+  if (itemRequest.getSalePriceOverride() != null) {
+    item.setSalePriceOverride(Boolean.TRUE);
+    item.setSalePrice(itemRequest.getSalePriceOverride());
+    item.setBaseSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    item.setRetailPriceOverride(Boolean.TRUE);
+    item.setRetailPrice(itemRequest.getRetailPriceOverride());
+    item.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
+  }
   item.setDiscreteOrderItemFeePrices(itemRequest.getDiscreteOrderItemFeePrices());
   for (  DiscreteOrderItemFeePrice fee : itemRequest.getDiscreteOrderItemFeePrices()) {
     item.setSalePrice(item.getSalePrice().add(fee.getAmount()));
