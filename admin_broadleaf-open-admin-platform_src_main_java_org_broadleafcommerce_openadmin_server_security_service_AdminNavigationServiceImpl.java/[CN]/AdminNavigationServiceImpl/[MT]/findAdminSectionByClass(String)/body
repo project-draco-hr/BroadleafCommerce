@@ -1,3 +1,9 @@
 {
-  return adminNavigationDao.readAdminSectionByClass(className);
+  try {
+    return findAdminSectionByClass(Class.forName(className));
+  }
+ catch (  ClassNotFoundException e) {
+    LOG.warn("Invalid classname received. This likely points to a configuration error.");
+    return null;
+  }
 }
