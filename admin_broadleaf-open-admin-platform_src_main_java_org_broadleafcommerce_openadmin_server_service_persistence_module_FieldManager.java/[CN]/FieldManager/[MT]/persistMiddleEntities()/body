@@ -1,6 +1,9 @@
 {
+  Map<String,Serializable> persistedEntities=new HashMap<String,Serializable>();
   Collections.sort(middleFields);
   for (  SortableValue val : middleFields) {
-    dynamicEntityDao.merge(val.entity);
+    Serializable s=dynamicEntityDao.merge(val.entity);
+    persistedEntities.put(val.getContainingPropertyName(),s);
   }
+  return persistedEntities;
 }

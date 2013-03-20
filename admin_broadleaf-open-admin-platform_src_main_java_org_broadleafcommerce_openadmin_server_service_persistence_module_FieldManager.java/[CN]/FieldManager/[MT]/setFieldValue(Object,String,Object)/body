@@ -20,7 +20,7 @@
  else {
         try {
           Object newEntity=entityConfiguration.createEntityInstance(field.getType().getName());
-          SortableValue val=new SortableValue((Serializable)newEntity,j);
+          SortableValue val=new SortableValue((Serializable)newEntity,j,field.getName());
           middleFields.add(val);
           field.set(value,newEntity);
           componentClass=newEntity.getClass();
@@ -30,7 +30,7 @@
           Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
           if (!ArrayUtils.isEmpty(entities)) {
             Object newEntity=entities[0].newInstance();
-            SortableValue val=new SortableValue((Serializable)newEntity,j);
+            SortableValue val=new SortableValue((Serializable)newEntity,j,field.getName());
             middleFields.add(val);
             field.set(value,newEntity);
             componentClass=newEntity.getClass();

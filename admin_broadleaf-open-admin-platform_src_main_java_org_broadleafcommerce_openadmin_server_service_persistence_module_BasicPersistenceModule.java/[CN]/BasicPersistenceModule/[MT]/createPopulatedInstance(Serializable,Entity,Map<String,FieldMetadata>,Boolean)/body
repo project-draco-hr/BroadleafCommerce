@@ -168,6 +168,9 @@ throw new IllegalArgumentException(e);
 }
 }
 }
-fieldManager.persistMiddleEntities();
+Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();
+for (Entry<String,Serializable> entry : persistedEntities.entrySet()) {
+fieldManager.setFieldValue(instance,entry.getKey(),entry.getValue());
+}
 return instance;
 }
