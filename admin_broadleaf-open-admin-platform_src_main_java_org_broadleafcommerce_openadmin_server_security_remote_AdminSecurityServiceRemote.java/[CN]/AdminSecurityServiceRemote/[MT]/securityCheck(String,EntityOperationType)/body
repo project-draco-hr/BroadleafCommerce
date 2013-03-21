@@ -1,6 +1,6 @@
 {
   if (ceilingEntityFullyQualifiedName == null) {
-    throw new ServiceException("Security Check Failed: ceilingEntityFullyQualifiedName not specified");
+    throw new SecurityServiceException("Security Check Failed: ceilingEntityFullyQualifiedName not specified");
   }
   AdminUser persistentAdminUser=getPersistentAdminUser();
   PermissionType permissionType;
@@ -27,7 +27,7 @@ break;
 boolean isQualified=securityService.isUserQualifiedForOperationOnCeilingEntity(persistentAdminUser,permissionType,ceilingEntityFullyQualifiedName);
 if (!isQualified) {
 if (isEntitySecurityExplicit() || securityService.doesOperationExistForCeilingEntity(permissionType,ceilingEntityFullyQualifiedName)) {
-throw new ServiceException("Security Check Failed for entity operation: " + operationType.toString() + " ("+ ceilingEntityFullyQualifiedName+ ")");
+throw new SecurityServiceException("Security Check Failed for entity operation: " + operationType.toString() + " ("+ ceilingEntityFullyQualifiedName+ ")");
 }
 }
 }

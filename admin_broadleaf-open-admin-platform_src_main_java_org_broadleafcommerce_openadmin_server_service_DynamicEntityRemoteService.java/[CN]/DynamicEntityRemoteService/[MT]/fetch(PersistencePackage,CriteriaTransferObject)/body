@@ -8,11 +8,6 @@
   }
  catch (  ServiceException e) {
     String message=exploitProtectionService.cleanString(e.getMessage());
-    if (e.getCause() == null) {
-      throw new ServiceException(message);
-    }
- else {
-      throw new ServiceException(message,e.getCause());
-    }
+    throw recreateSpecificServiceException(e,message,e.getCause());
   }
 }

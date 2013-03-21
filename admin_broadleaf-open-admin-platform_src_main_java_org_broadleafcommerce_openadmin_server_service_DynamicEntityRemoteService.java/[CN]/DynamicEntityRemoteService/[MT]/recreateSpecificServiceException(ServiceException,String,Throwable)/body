@@ -1,0 +1,17 @@
+{
+  try {
+    ServiceException newException;
+    if (cause == null) {
+      Constructor constructor=e.getClass().getConstructor(String.class);
+      newException=(ServiceException)constructor.newInstance(message);
+    }
+ else {
+      Constructor constructor=e.getClass().getConstructor(String.class,Throwable.class);
+      newException=(ServiceException)constructor.newInstance(message,cause);
+    }
+    return newException;
+  }
+ catch (  Exception e1) {
+    throw new RuntimeException(e1);
+  }
+}
