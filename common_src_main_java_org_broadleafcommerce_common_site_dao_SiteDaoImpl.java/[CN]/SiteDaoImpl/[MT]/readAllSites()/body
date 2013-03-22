@@ -1,0 +1,9 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Site> criteria=builder.createQuery(Site.class);
+  Root<SiteImpl> site=criteria.from(SiteImpl.class);
+  criteria.select(site);
+  TypedQuery<Site> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  return query.getResultList();
+}
