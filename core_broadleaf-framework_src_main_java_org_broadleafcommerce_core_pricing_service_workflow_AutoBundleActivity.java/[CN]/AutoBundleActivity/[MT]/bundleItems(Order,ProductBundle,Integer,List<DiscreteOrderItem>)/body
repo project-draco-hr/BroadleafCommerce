@@ -7,7 +7,6 @@
   bundleOrderItem.setProductBundle(productBundle);
   bundleOrderItem.setOrder(order);
   Map<Long,FulfillmentGroupItem> skuIdFulfillmentGroupMap=new HashMap<Long,FulfillmentGroupItem>();
-  List<FulfillmentGroupItem> fulfillmentGroupItems=new ArrayList<FulfillmentGroupItem>();
   for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
     for (    FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
       if (fulfillmentGroupItem.getOrderItem() instanceof DiscreteOrderItem) {
@@ -50,8 +49,7 @@
       newOrderItem.setQuantity(skuMatches - skusRequired);
       newOrderItem=(DiscreteOrderItem)orderItemDao.save(newOrderItem);
       newOrderItem.setOrder(order);
-      newOrderItem.updatePrices();
-      newOrderItem.assignFinalPrice();
+      newOrderItem.updateSaleAndRetailPrices();
       FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
       if (fulfillmentGroupItem != null) {
         FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
@@ -67,8 +65,7 @@
       order.getOrderItems().add(newOrderItem);
     }
   }
-  bundleOrderItem.updatePrices();
-  bundleOrderItem.assignFinalPrice();
+  bundleOrderItem.updateSaleAndRetailPrices();
   order.getOrderItems().add(bundleOrderItem);
   order=orderService.save(order,false);
   for (  OrderItem orderItem : order.getOrderItems()) {

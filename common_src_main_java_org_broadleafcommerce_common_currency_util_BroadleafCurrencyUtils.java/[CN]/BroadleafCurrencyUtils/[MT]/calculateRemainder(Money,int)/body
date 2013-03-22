@@ -1,0 +1,9 @@
+{
+  if (totalAmount == null || totalAmount.isZero() || quantity == 0) {
+    return 0;
+  }
+  BigDecimal multiplier=new BigDecimal(10).pow(totalAmount.getAmount().scale());
+  BigDecimal amount=totalAmount.getAmount().multiply(multiplier);
+  BigDecimal remainder=amount.remainder(new BigDecimal(quantity),ROUND_FLOOR_MATH_CONTEXT);
+  return remainder.toBigInteger().intValue();
+}

@@ -1,0 +1,12 @@
+{
+  PromotionQualifier returnQualifier=copy();
+  int newQty=finalizedQuantity - splitItemQty;
+  if (newQty <= 0) {
+    throw new IllegalArgumentException("Splitting PromotionQualifier resulted in a negative quantity");
+  }
+  setFinalizedQuantity(newQty);
+  setQuantity(newQty);
+  returnQualifier.setQuantity(splitItemQty);
+  returnQualifier.setFinalizedQuantity(splitItemQty);
+  return returnQualifier;
+}

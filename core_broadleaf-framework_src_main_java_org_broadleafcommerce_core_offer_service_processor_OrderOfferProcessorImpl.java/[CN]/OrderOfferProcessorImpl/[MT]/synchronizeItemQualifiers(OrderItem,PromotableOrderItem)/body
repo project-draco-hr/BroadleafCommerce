@@ -1,0 +1,38 @@
+{
+  Map<Long,PromotionQualifier> qualifiersMap=buildPromotableQualifiersMap(promotableOrderItem);
+  Map<Long,OrderItemQualifier> unmatchedQualifiersMap=new HashMap<Long,OrderItemQualifier>();
+  for (  OrderItemQualifier orderItemQualifier : orderItem.getOrderItemQualifiers()) {
+    PromotionQualifier promotableQualifier=qualifiersMap.remove(orderItemQualifier.getOffer().getId());
+    if (promotableQualifier != null) {
+      if (orderItemQualifier.getQuantity() != promotableQualifier.getQuantity()) {
+        orderItemQualifier.setQuantity(new Long(promotableQualifier.getQuantity()));
+      }
+    }
+ else {
+      unmatchedQualifiersMap.put(orderItemQualifier.getId(),orderItemQualifier);
+    }
+  }
+  Iterator<OrderItemQualifier> unmatchedQualifiersIterator=unmatchedQualifiersMap.values().iterator();
+  for (  PromotionQualifier qualifier : qualifiersMap.values()) {
+    if (unmatchedQualifiersIterator.hasNext()) {
+      OrderItemQualifier existingQualifier=unmatchedQualifiersIterator.next();
+      existingQualifier.setOffer(qualifier.getPromotion());
+      existingQualifier.setQuantity(Long.valueOf(qualifier.getQuantity()));
+      unmatchedQualifiersIterator.remove();
+    }
+ else {
+      OrderItemQualifier newQualifier=orderItemDao.createOrderItemQualifier();
+      newQualifier.setOrderItem(orderItem);
+      newQualifier.setOffer(qualifier.getPromotion());
+      newQualifier.setQuantity(Long.valueOf(qualifier.getQuantity()));
+      orderItem.getOrderItemQualifiers().add(newQualifier);
+    }
+  }
+  Iterator<OrderItemQualifier> qIterator=orderItem.getOrderItemQualifiers().iterator();
+  while (qIterator.hasNext()) {
+    OrderItemQualifier currentQualifier=qIterator.next();
+    if (unmatchedQualifiersMap.containsKey(currentQualifier.getId())) {
+      qIterator.remove();
+    }
+  }
+}

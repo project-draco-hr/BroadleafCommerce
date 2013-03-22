@@ -1,3 +1,17 @@
 {
-  return convertToMoney(salePrice);
+  if (salePrice == null) {
+    updateSaleAndRetailPrices();
+  }
+  if (salePrice != null) {
+    Money returnPrice=convertToMoney(salePrice);
+    if (retailPrice != null && returnPrice.greaterThan(getRetailPrice())) {
+      return getRetailPrice();
+    }
+ else {
+      return returnPrice;
+    }
+  }
+ else {
+    return getRetailPrice();
+  }
 }

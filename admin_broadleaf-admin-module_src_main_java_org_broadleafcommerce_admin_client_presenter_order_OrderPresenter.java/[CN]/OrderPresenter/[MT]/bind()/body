@@ -7,6 +7,7 @@
   offerCodePresenter.bind();
   orderAdjustmentPresenter.bind();
   orderItemAdjustmentPresenter.bind();
+  orderItemPriceDetailPresenter.bind();
   fulfillmentGroupAdjustmentPresenter.bind();
   feesPresenter.bind();
   paymentResponsePresenter.bind();
@@ -68,6 +69,7 @@
       if (event.getState()) {
         orderItemAdjustmentPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("orderItemDS"),null);
         feesPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("discreteOrderItemFeePriceDS"),null);
+        orderItemPriceDetailPresenter.load(selectedRecord,getPresenterSequenceSetupManager().getDataSource("orderItemDS"),null);
       }
     }
   }
@@ -105,6 +107,23 @@
       for (      SubPresentable sp : subPresentables) {
         sp.disable();
       }
+    }
+  }
+);
+  orderItemPriceDetailPresenter.getRowDoubleClickedHandlerRegistration().removeHandler();
+  GridStructureDisplay detailPresenterView=getDisplay().getOrderItemPriceDetailDisplay();
+  detailPresenterView.getGrid().addCellDoubleClickHandler(new CellDoubleClickHandler(){
+    @Override public void onCellDoubleClick(    CellDoubleClickEvent cellDoubleClickEvent){
+      OrderItemPriceDetailDialog dialog=new OrderItemPriceDetailDialog();
+      GridStructureDisplay display=((GridStructureDisplay)((CreateBasedListStructurePresenter)orderItemPriceDetailPresenter).getDisplay());
+      CreateBasedListStructurePresenter orderItemPriceDetailAdjustment=new CreateBasedListStructurePresenter("",dialog.getOrderItemPriceDetailAdjustmentDisplay(),BLCMain.getMessageManager().getString("newOrderItemPriceDetailTitle"));
+      orderItemPriceDetailAdjustment.setDataSource((ListGridDataSource)getPresenterSequenceSetupManager().getDataSource("orderItemPriceDetailAdjustmentDS"),new String[]{"offerName","reason","value","appliedToSalePrice"},new Boolean[]{false,false,false,false});
+      orderItemPriceDetailAdjustment.setReadOnly(true);
+      dialog.editRecord("View of Price Details",(DynamicEntityDataSource)display.getGrid().getDataSource(),display.getGrid().getSelectedRecord(),null,null,null,true);
+      orderItemPriceDetailAdjustment.bind();
+      orderItemPriceDetailAdjustment.load(display.getGrid().getSelectedRecord(),getPresenterSequenceSetupManager().getDataSource("orderItemPriceDetailDS"));
+      dialog.getCancelButton().setTitle("Close");
+      orderItemPriceDetailAdjustment.setReadOnly(true);
     }
   }
 );

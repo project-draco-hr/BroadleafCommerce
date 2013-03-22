@@ -3,7 +3,7 @@
   OfferRule rule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
   if (rule != null && rule.getMatchRule() != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
-    vars.put("fulfillmentGroup",fulfillmentGroup.getDelegate());
+    fulfillmentGroup.updateRuleVariables(vars);
     Boolean expressionOutcome=executeExpression(rule.getMatchRule(),vars);
     if (expressionOutcome != null && expressionOutcome) {
       appliesToItem=true;

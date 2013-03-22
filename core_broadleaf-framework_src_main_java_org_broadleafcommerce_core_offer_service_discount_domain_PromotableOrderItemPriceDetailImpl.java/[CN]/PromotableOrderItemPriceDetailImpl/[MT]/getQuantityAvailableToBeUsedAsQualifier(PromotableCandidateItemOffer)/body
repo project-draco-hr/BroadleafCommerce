@@ -1,0 +1,25 @@
+{
+  int qtyAvailable=quantity;
+  Offer promotion=itemOffer.getOffer();
+  for (  PromotionDiscount promotionDiscount : promotionDiscounts) {
+    if (promotionDiscount.getPromotion().equals(promotion) || restrictTarget(promotion,false)) {
+      qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
+    }
+ else {
+      if (restrictQualifier(promotionDiscount.getPromotion(),true)) {
+        qtyAvailable=qtyAvailable - promotionDiscount.getQuantity();
+      }
+    }
+  }
+  for (  PromotionQualifier promotionQualifier : promotionQualifiers) {
+    if (promotionQualifier.getPromotion().equals(promotion) || restrictQualifier(promotion,false)) {
+      qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
+    }
+ else {
+      if (restrictQualifier(promotionQualifier.getPromotion(),false)) {
+        qtyAvailable=qtyAvailable - promotionQualifier.getQuantity();
+      }
+    }
+  }
+  return qtyAvailable;
+}

@@ -1,0 +1,21 @@
+{
+  Money priceWithAdjustments=null;
+  if (allowSalePrice) {
+    priceWithAdjustments=promotableOrderItem.getSalePriceBeforeAdjustments();
+    if (priceWithAdjustments == null) {
+      return promotableOrderItem.getRetailPriceBeforeAdjustments();
+    }
+  }
+ else {
+    priceWithAdjustments=promotableOrderItem.getRetailPriceBeforeAdjustments();
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableOrderItemPriceDetailAdjustments) {
+    if (allowSalePrice) {
+      priceWithAdjustments=priceWithAdjustments.subtract(adjustment.getSaleAdjustmentValue());
+    }
+ else {
+      priceWithAdjustments=priceWithAdjustments.subtract(adjustment.getRetailAdjustmentValue());
+    }
+  }
+  return priceWithAdjustments;
+}

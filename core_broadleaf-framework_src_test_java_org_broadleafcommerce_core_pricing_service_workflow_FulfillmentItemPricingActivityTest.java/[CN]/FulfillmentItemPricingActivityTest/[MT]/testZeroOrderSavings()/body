@@ -1,0 +1,7 @@
+{
+  Order order=dataProvider.createBasicOrder();
+  PricingContext context=new PricingContext();
+  context.setSeedData(order);
+  fulfillmentItemPricingActivity.execute(context);
+  assertTrue(sumProratedOfferAdjustments(order).getAmount().compareTo(BigDecimal.ZERO) == 0);
+}

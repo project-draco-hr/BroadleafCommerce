@@ -1,0 +1,23 @@
+{
+  Order order=dataProvider.createBasicOrder();
+  Money subTotal=new Money(order.getCurrency());
+  for (  OrderItem orderItem : order.getOrderItems()) {
+    orderItem.setSalePrice(new Money(10D));
+    orderItem.getOrderItemPriceDetails().clear();
+    subTotal=subTotal.add(orderItem.getTotalPrice());
+  }
+  OrderAdjustment adjustment=new OrderAdjustmentImpl();
+  adjustment.setValue(new Money(new BigDecimal("1"),order.getCurrency()));
+  order.getOrderAdjustments().add(adjustment);
+  adjustment.setOrder(order);
+  order.setSubTotal(subTotal);
+  PricingContext context=new PricingContext();
+  context.setSeedData(order);
+  fulfillmentItemPricingActivity.execute(context);
+  Money proratedAdjustment=new Money(".20");
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fulfillmentGroupItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+      assertTrue(fulfillmentGroupItem.getProratedOrderAdjustmentAmount().compareTo(proratedAdjustment.multiply(fulfillmentGroupItem.getQuantity())) == 0);
+    }
+  }
+}

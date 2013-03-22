@@ -1,0 +1,24 @@
+{
+  if (offer instanceof AdvancedOffer) {
+    AdvancedOffer advancedOffer=(AdvancedOffer)offer;
+    if (advancedOffer.isTieredOffer()) {
+      int quantity=promotableCandidateItemOffer.calculateTargetQuantityForTieredOffer();
+      List<OfferTier> offerTiers=advancedOffer.getOfferTiers();
+      Collections.sort(offerTiers,new BeanComparator("minQuantity"));
+      OfferTier maxTier=null;
+      for (      OfferTier currentTier : offerTiers) {
+        if (quantity >= currentTier.getMinQuantity()) {
+          maxTier=currentTier;
+        }
+ else {
+          break;
+        }
+      }
+      if (maxTier != null) {
+        return maxTier.getAmount();
+      }
+      return BigDecimal.ZERO;
+    }
+  }
+  return offer.getValue();
+}

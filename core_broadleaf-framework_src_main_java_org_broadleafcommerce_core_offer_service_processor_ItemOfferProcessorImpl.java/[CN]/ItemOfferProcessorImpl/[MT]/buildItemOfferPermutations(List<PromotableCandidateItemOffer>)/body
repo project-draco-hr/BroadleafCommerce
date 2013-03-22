@@ -1,0 +1,18 @@
+{
+  List<List<PromotableCandidateItemOffer>> listOfOfferLists=new ArrayList<List<PromotableCandidateItemOffer>>();
+  listOfOfferLists.add(offers);
+  if (offerListStartsWithNonCombinable(offers)) {
+    List<PromotableCandidateItemOffer> listWithoutTotalitarianOrNonCombinables=new ArrayList<PromotableCandidateItemOffer>(offers);
+    Iterator<PromotableCandidateItemOffer> offerIterator=listWithoutTotalitarianOrNonCombinables.iterator();
+    while (offerIterator.hasNext()) {
+      PromotableCandidateItemOffer offer=offerIterator.next();
+      if (offer.getOffer().isTotalitarianOffer() || !offer.getOffer().isCombinableWithOtherOffers()) {
+        offerIterator.remove();
+      }
+    }
+    if (listWithoutTotalitarianOrNonCombinables.size() > 0) {
+      listOfOfferLists.add(listWithoutTotalitarianOrNonCombinables);
+    }
+  }
+  return listOfOfferLists;
+}

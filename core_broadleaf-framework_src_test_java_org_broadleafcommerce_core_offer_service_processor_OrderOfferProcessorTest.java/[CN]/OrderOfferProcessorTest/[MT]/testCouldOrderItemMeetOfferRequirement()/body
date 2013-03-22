@@ -1,11 +1,11 @@
 {
   replay();
-  PromotableOrder order=dataProvider.createBasicOrder();
+  PromotableOrder order=dataProvider.createBasicPromotableOrder();
   List<Offer> offers=dataProvider.createOrderBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
-  boolean couldApply=orderProcessor.couldOrderItemMeetOfferRequirement(offers.get(0).getQualifyingItemCriteria().iterator().next(),order.getDiscreteOrderItems().get(0));
+  boolean couldApply=orderProcessor.couldOrderItemMeetOfferRequirement(offers.get(0).getQualifyingItemCriteria().iterator().next(),order.getDiscountableOrderItems().get(0));
   assertTrue(couldApply);
   offers=dataProvider.createOrderBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
-  couldApply=orderProcessor.couldOrderItemMeetOfferRequirement(offers.get(0).getQualifyingItemCriteria().iterator().next(),order.getDiscreteOrderItems().get(0));
+  couldApply=orderProcessor.couldOrderItemMeetOfferRequirement(offers.get(0).getQualifyingItemCriteria().iterator().next(),order.getDiscountableOrderItems().get(0));
   assertFalse(couldApply);
   verify();
 }

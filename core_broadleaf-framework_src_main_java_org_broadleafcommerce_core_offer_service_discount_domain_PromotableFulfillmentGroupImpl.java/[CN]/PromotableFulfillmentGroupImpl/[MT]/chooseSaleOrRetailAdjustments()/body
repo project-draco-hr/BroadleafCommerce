@@ -1,0 +1,17 @@
+{
+  this.useSaleAdjustments=Boolean.FALSE;
+  Money saleAdjustmentPrice=calculateSaleAdjustmentPrice();
+  Money retailAdjustmentPrice=calculateRetailAdjustmentPrice();
+  if (saleAdjustmentPrice.lessThan(retailAdjustmentPrice)) {
+    this.useSaleAdjustments=Boolean.TRUE;
+    adjustedPrice=saleAdjustmentPrice;
+  }
+ else {
+    adjustedPrice=retailAdjustmentPrice;
+  }
+  if (useSaleAdjustments) {
+    removeRetailOnlyAdjustments();
+  }
+  removeZeroDollarAdjustments(useSaleAdjustments);
+  finalizeAdjustments(useSaleAdjustments);
+}

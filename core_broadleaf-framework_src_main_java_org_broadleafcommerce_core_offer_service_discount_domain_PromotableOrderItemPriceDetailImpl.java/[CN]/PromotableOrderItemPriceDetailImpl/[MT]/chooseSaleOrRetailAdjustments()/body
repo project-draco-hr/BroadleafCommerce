@@ -1,0 +1,48 @@
+{
+  adjustmentsFinalized=true;
+  adjustedTotal=null;
+  this.useSaleAdjustments=Boolean.FALSE;
+  Money salePriceBeforeAdjustments=promotableOrderItem.getSalePriceBeforeAdjustments();
+  Money retailPriceBeforeAdjustments=promotableOrderItem.getRetailPriceBeforeAdjustments();
+  if (hasOrderItemAdjustments()) {
+    Money saleAdjustmentPrice=calculateSaleAdjustmentUnitPrice();
+    Money retailAdjustmentPrice=calculateRetailAdjustmentUnitPrice();
+    if (promotableOrderItem.isOnSale()) {
+      if (saleAdjustmentPrice.lessThan(retailAdjustmentPrice)) {
+        this.useSaleAdjustments=Boolean.TRUE;
+        adjustedTotal=saleAdjustmentPrice;
+      }
+ else {
+        adjustedTotal=retailAdjustmentPrice;
+      }
+      if (!adjustedTotal.lessThan(salePriceBeforeAdjustments)) {
+        promotableOrderItemPriceDetailAdjustments.clear();
+        adjustedTotal=salePriceBeforeAdjustments;
+      }
+    }
+ else {
+      if (!retailAdjustmentPrice.lessThan(promotableOrderItem.getRetailPriceBeforeAdjustments())) {
+        promotableOrderItemPriceDetailAdjustments.clear();
+        adjustedTotal=retailPriceBeforeAdjustments;
+      }
+ else {
+        adjustedTotal=retailAdjustmentPrice;
+      }
+    }
+    if (useSaleAdjustments) {
+      removeRetailOnlyAdjustments();
+    }
+    removeZeroDollarAdjustments(useSaleAdjustments);
+    finalizeAdjustments(useSaleAdjustments);
+  }
+  if (adjustedTotal == null) {
+    if (salePriceBeforeAdjustments != null) {
+      this.useSaleAdjustments=true;
+      adjustedTotal=salePriceBeforeAdjustments;
+    }
+ else {
+      adjustedTotal=retailPriceBeforeAdjustments;
+    }
+  }
+  adjustedTotal=adjustedTotal.multiply(quantity);
+}

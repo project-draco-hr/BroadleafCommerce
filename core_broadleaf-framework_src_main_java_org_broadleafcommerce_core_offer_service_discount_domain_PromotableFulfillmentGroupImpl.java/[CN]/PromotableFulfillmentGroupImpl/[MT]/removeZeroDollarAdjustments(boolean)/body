@@ -1,0 +1,16 @@
+{
+  Iterator<PromotableFulfillmentGroupAdjustment> adjustments=candidateFulfillmentGroupAdjustments.iterator();
+  while (adjustments.hasNext()) {
+    PromotableFulfillmentGroupAdjustment adjustment=adjustments.next();
+    if (useSalePrice) {
+      if (adjustment.getSaleAdjustmentValue().isZero()) {
+        adjustments.remove();
+      }
+    }
+ else {
+      if (adjustment.getRetailAdjustmentValue().isZero()) {
+        adjustments.remove();
+      }
+    }
+  }
+}

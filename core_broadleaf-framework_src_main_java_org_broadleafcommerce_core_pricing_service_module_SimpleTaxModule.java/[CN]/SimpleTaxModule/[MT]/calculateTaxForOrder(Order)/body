@@ -17,7 +17,7 @@
             fgItem.getTaxes().add(tax);
           }
           tax.setRate(new BigDecimal(factor));
-          tax.setAmount(fgItem.getPrice().multiply(fgItem.getQuantity()).multiply(factor));
+          tax.setAmount(fgItem.getTotalItemTaxableAmount().multiply(factor));
         }
       }
     }
@@ -57,7 +57,7 @@
         fulfillmentGroup.getTaxes().add(tax);
       }
       tax.setRate(new BigDecimal(factor));
-      tax.setAmount(fulfillmentGroup.getShippingPrice().multiply(factor));
+      tax.setAmount(fulfillmentGroup.getFulfillmentPrice().multiply(factor));
     }
   }
   return order;

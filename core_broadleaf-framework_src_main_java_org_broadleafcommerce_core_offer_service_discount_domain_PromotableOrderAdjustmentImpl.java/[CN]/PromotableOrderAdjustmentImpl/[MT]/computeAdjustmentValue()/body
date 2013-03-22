@@ -1,25 +1,17 @@
 {
-  if (delegate.getOffer() != null && order != null) {
-    Money adjustmentPrice=order.getAdjustmentPrice();
-    if (adjustmentPrice == null) {
-      adjustmentPrice=order.getSubTotal();
+  adjustmentValue=new Money(promotableOrder.getOrderCurrency());
+  Money currentOrderValue=promotableOrder.calculateSubtotalWithAdjustments();
+  if (offer.getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
+    adjustmentValue=new Money(offer.getValue(),promotableOrder.getOrderCurrency());
+  }
+ else   if (offer.getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
+    BigDecimal offerValue=currentOrderValue.getAmount().multiply(offer.getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
+    if (isRoundOfferValues()) {
+      offerValue=offerValue.setScale(roundingScale,roundingMode);
     }
-    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
-      delegate.setValue(new Money(delegate.getOffer().getValue(),adjustmentPrice.getCurrency(),5));
-    }
-    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.FIX_PRICE)) {
-      BigDecimal offerValue=adjustmentPrice.getAmount().subtract(delegate.getOffer().getValue());
-      delegate.setValue(new Money(offerValue,adjustmentPrice.getCurrency(),5));
-    }
-    if (delegate.getOffer().getDiscountType().equals(OfferDiscountType.PERCENT_OFF)) {
-      BigDecimal offerValue=adjustmentPrice.getAmount().multiply(delegate.getOffer().getValue().divide(new BigDecimal("100"),5,RoundingMode.HALF_EVEN));
-      if (isRoundOfferValues()) {
-        offerValue=offerValue.setScale(roundingScale,roundingMode);
-      }
-      delegate.setValue(new Money(offerValue,adjustmentPrice.getCurrency(),5));
-    }
-    if (adjustmentPrice.lessThan(delegate.getValue())) {
-      delegate.setValue(adjustmentPrice);
-    }
+    adjustmentValue=new Money(offerValue,promotableOrder.getOrderCurrency(),5);
+  }
+  if (currentOrderValue.lessThan(adjustmentValue)) {
+    adjustmentValue=currentOrderValue;
   }
 }

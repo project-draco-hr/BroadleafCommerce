@@ -1,0 +1,22 @@
+{
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+      OrderItem orderItem=fgItem.getOrderItem();
+      int fgItemQty=fgItem.getQuantity();
+      int orderItemQty=orderItem.getQuantity();
+      Money totalItemAmount=orderItem.getTotalPrice();
+      if (fgItemQty != orderItemQty) {
+        List<FulfillmentGroupItem> fgItemList=partialOrderItemMap.get(orderItem);
+        if (fgItemList == null) {
+          fgItemList=new ArrayList<FulfillmentGroupItem>();
+          partialOrderItemMap.put(orderItem,fgItemList);
+        }
+        fgItemList.add(fgItem);
+        fgItem.setTotalItemAmount(totalItemAmount.multiply(fgItemQty).divide(orderItemQty));
+      }
+ else {
+        fgItem.setTotalItemAmount(totalItemAmount);
+      }
+    }
+  }
+}

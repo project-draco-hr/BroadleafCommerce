@@ -1,0 +1,11 @@
+{
+  saleAdjustmentValue=new Money(getCurrency());
+  retailAdjustmentValue=new Money(getCurrency());
+  Offer offer=promotableCandidateFulfillmentGroupOffer.getOffer();
+  Money currentPriceDetailSalesValue=promotableFulfillmentGroup.calculatePriceWithAdjustments(true);
+  Money currentPriceDetailRetailValue=promotableFulfillmentGroup.calculatePriceWithAdjustments(false);
+  retailAdjustmentValue=PromotableOfferUtility.computeAdjustmentValue(currentPriceDetailRetailValue,offer.getValue(),this,this);
+  if (offer.getApplyDiscountToSalePrice() == true) {
+    saleAdjustmentValue=PromotableOfferUtility.computeAdjustmentValue(currentPriceDetailSalesValue,offer.getValue(),this,this);
+  }
+}

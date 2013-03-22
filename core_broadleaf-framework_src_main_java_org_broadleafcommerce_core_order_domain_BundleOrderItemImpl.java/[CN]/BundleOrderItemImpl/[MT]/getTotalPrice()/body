@@ -1,0 +1,12 @@
+{
+  Money returnValue=convertToMoney(BigDecimal.ZERO);
+  if (shouldSumItems()) {
+    for (    OrderItem containedItem : getOrderItems()) {
+      returnValue=returnValue.add(containedItem.getTotalPrice());
+    }
+  }
+ else {
+    returnValue=super.getTotalPrice();
+  }
+  return returnValue;
+}

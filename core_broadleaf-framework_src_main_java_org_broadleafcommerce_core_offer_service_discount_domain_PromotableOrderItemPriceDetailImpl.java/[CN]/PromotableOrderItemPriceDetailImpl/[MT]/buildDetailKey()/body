@@ -1,0 +1,9 @@
+{
+  List<Long> offerIds=new ArrayList<Long>();
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableOrderItemPriceDetailAdjustments) {
+    Long offerId=adjustment.getOffer().getId();
+    offerIds.add(offerId);
+  }
+  Collections.sort(offerIds);
+  return promotableOrderItem.getOrderItem().toString() + offerIds.toString() + useSaleAdjustments;
+}

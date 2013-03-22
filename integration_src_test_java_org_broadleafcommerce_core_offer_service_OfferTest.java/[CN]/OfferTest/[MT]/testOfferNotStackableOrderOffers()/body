@@ -1,2 +1,11 @@
 {
+  Order order=orderService.createNewCartForCustomer(createCustomer());
+  order.addOrderItem(createDiscreteOrderItem(sku1,100D,null,true,2,order));
+  order.addOrderItem(createDiscreteOrderItem(sku2,100D,null,true,2,order));
+  order.addOfferCode(createOfferUtility.createOfferCode("20 Percent Off Order Offer",OfferType.ORDER,OfferDiscountType.PERCENT_OFF,20,null,"order.subTotal.getAmount() >= 400",true,true,1));
+  order.addOfferCode(createOfferUtility.createOfferCode("50 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,50,null,"order.subTotal.getAmount() >= 400",false,true,1));
+  order.addOfferCode(createOfferUtility.createOfferCode("100 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,100,null,"order.subTotal.getAmount() >= 400",false,true,1));
+  order.addOfferCode(createOfferUtility.createOfferCode("30 Dollars Off Order Offer",OfferType.ORDER,OfferDiscountType.AMOUNT_OFF,30,null,"order.subTotal.getAmount() < 400",false,true,1));
+  List<Offer> offers=offerService.buildOfferListForOrder(order);
+  offerService.applyOffersToOrder(offers,order);
 }

@@ -1,0 +1,7 @@
+{
+  BigDecimal numTimesToApply=new BigDecimal(Math.min(numApplicationsNeeded,fgItem.getQuantity()));
+  Money oldAmount=fgItem.getTotalItemAmount();
+  Money changeToAmount=unitAmount.multiply(numTimesToApply);
+  fgItem.setTotalItemAmount(oldAmount.add(changeToAmount));
+  return numTimesToApply.longValue();
+}

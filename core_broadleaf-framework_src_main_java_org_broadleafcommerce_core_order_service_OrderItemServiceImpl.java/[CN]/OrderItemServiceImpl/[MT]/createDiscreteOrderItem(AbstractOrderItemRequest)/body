@@ -3,17 +3,7 @@
   populateDiscreteOrderItem(item,itemRequest);
   item.setBaseSalePrice(itemRequest.getSku().getSalePrice());
   item.setBaseRetailPrice(itemRequest.getSku().getRetailPrice());
-  if (itemRequest.getSalePriceOverride() != null) {
-    item.setSalePriceOverride(Boolean.TRUE);
-    item.setSalePrice(itemRequest.getSalePriceOverride());
-    item.setBaseSalePrice(itemRequest.getSalePriceOverride());
-  }
-  if (itemRequest.getRetailPriceOverride() != null) {
-    item.setRetailPriceOverride(Boolean.TRUE);
-    item.setRetailPrice(itemRequest.getRetailPriceOverride());
-    item.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
-  }
-  item.updatePrices();
+  item.updateSaleAndRetailPrices();
   item.assignFinalPrice();
   item.setPersonalMessage(itemRequest.getPersonalMessage());
   return item;
