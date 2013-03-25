@@ -4,8 +4,14 @@
     sb.append("/");
   }
   sb.append(getSectionKey());
-  if (getContainingEntityId() != null && StringUtils.isNotBlank(getSubCollectionFieldName())) {
-    sb.append("/").append(getContainingEntityId()).append("/").append(getSubCollectionFieldName());
+  if (getContainingEntityId() != null) {
+    sb.append("/").append(getContainingEntityId());
+  }
+  if (StringUtils.isNotBlank(getSubCollectionFieldName())) {
+    sb.append("/").append(getSubCollectionFieldName());
+  }
+  if (Type.TO_ONE.toString().toLowerCase().equals(listGridType)) {
+    sb.append("/select");
   }
   return sb.toString();
 }
