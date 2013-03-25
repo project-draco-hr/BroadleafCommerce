@@ -2,7 +2,6 @@
   Site site=siteResolver.resolveSite(request);
   Locale locale=localeResolver.resolveLocale(request);
   BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
-  Theme theme=themeResolver.resolveTheme(request,site);
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   if (currentSandbox != null) {
     SandBoxContext previewSandBoxContext=new SandBoxContext();
@@ -16,11 +15,12 @@
   brc.setBroadleafCurrency(currency);
   brc.setWebRequest(request);
   brc.setSandbox(currentSandbox);
-  brc.setTheme(theme);
   if (site == null) {
     brc.setIgnoreSite(true);
   }
   BroadleafRequestContext.setBroadleafRequestContext(brc);
+  Theme theme=themeResolver.resolveTheme(request);
+  brc.setTheme(theme);
   Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap",WebRequest.SCOPE_REQUEST);
   if (ruleMap == null) {
     LOG.trace("Creating ruleMap and adding in Locale.");
