@@ -1,6 +1,12 @@
 {
   String sectionClassName=getClassNameForSection(sectionKey);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]));
+  PersistencePackageRequest ppr;
+  if (criteriaForm == null) {
+    ppr=getSectionPersistencePackageRequest(sectionClassName);
+  }
+ else {
+    ppr=getSectionPersistencePackageRequest(sectionClassName,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]));
+  }
   ClassMetadata cmd=service.getClassMetadata(ppr);
   Entity[] rows=service.getRecords(ppr);
   ListGrid listGrid=formService.buildMainListGrid(rows,cmd,sectionKey);
