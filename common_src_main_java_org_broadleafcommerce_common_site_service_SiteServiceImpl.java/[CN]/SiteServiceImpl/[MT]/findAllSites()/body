@@ -1,3 +1,8 @@
 {
-  return siteDao.readAllSites();
+  List<Site> response=new ArrayList<Site>();
+  List<Site> sites=siteDao.readAllSites();
+  for (  Site site : sites) {
+    response.add(site.clone());
+  }
+  return response;
 }
