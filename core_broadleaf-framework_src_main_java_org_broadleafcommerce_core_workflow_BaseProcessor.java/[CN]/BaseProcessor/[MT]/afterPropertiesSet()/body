@@ -5,8 +5,8 @@
   if (activities == null || activities.isEmpty()) {
     throw new UnsatisfiedDependencyException(getBeanDesc(),beanName,"activities","No activities were wired for this workflow");
   }
-  for (Iterator<Activity> iter=activities.iterator(); iter.hasNext(); ) {
-    Activity activitiy=iter.next();
-    if (!supports(activitiy))     throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activitiy.getClass().getName());
+  for (Iterator<Activity<ProcessContext>> iter=activities.iterator(); iter.hasNext(); ) {
+    Activity<? extends ProcessContext> activity=iter.next();
+    if (!supports(activity))     throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activity.getClass().getName());
   }
 }
