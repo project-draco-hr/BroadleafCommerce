@@ -2,9 +2,10 @@
   if (!(beanFactory instanceof ListableBeanFactory)) {
     throw new BeanInitializationException("The workflow processor [" + beanName + "] "+ "is not managed by a ListableBeanFactory, please re-deploy using some derivative of ListableBeanFactory such as"+ "ClassPathXmlApplicationContext ");
   }
-  if (activities == null || activities.isEmpty()) {
+  if (CollectionUtils.isEmpty(activities) && !isAllowEmptyActivities()) {
     throw new UnsatisfiedDependencyException(getBeanDesc(),beanName,"activities","No activities were wired for this workflow");
   }
+  OrderComparator.sort(activities);
   for (Iterator<Activity<ProcessContext>> iter=activities.iterator(); iter.hasNext(); ) {
     Activity<? extends ProcessContext> activity=iter.next();
     if (!supports(activity))     throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activity.getClass().getName());
