@@ -1,0 +1,11 @@
+{
+  if (LOG.isDebugEnabled()) {
+    if (isDeactivated()) {
+      LOG.debug("site, " + id + ", inactive due to deactivated property");
+    }
+    if ('Y' == getArchived()) {
+      LOG.debug("site, " + id + ", inactive due to archived status");
+    }
+  }
+  return !isDeactivated() && 'Y' != getArchived();
+}

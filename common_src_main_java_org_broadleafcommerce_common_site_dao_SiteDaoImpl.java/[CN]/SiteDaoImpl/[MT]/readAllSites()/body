@@ -3,6 +3,7 @@
   CriteriaQuery<Site> criteria=builder.createQuery(Site.class);
   Root<SiteImpl> site=criteria.from(SiteImpl.class);
   criteria.select(site);
+  criteria.where(builder.and(builder.or(builder.isNull(site.get("archiveStatus").get("archived").as(String.class)),builder.notEqual(site.get("archiveStatus").get("archived").as(Character.class),'Y')),builder.or(builder.isNull(site.get("deactivated").as(Boolean.class)),builder.notEqual(site.get("deactivated").as(Boolean.class),true))));
   TypedQuery<Site> query=em.createQuery(criteria);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   return query.getResultList();
