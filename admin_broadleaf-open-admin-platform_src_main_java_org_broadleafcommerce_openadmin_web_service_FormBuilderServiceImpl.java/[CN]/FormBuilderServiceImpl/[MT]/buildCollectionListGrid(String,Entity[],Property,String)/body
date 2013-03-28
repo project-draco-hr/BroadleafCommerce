@@ -9,7 +9,7 @@
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
-        if (md.isProminent() != null && md.isProminent()) {
+        if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
           Field hf=new Field().withName(p.getName()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(md.getForeignKeyDisplayValueProperty()).withOrder(md.getGridOrder());
           String fieldType=md.getFieldType() == null ? null : md.getFieldType().toString();
           hf.setFieldType(fieldType);
@@ -23,7 +23,7 @@
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
-        if (md.isProminent() != null && md.isProminent()) {
+        if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
           Field hf=new Field().withName(p.getName()).withFriendlyName(md.getFriendlyName()).withOrder(md.getGridOrder());
           String fieldType=md.getFieldType() == null ? null : md.getFieldType().toString();
           hf.setFieldType(fieldType);
@@ -64,7 +64,7 @@
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
         if (md.getTargetClass().equals(mmd.getValueClassName())) {
-          if (md.isProminent() != null && md.isProminent()) {
+          if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
             hf=new Field().withName(p.getName()).withFriendlyName(md.getFriendlyName()).withOrder(md.getGridOrder());
             fieldType="default";
             hf.setFieldType(fieldType);
