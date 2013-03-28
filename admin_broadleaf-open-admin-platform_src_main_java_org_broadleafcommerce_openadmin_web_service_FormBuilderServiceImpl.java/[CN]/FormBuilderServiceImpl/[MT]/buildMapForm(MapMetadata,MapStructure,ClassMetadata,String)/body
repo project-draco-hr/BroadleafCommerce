@@ -1,6 +1,7 @@
 {
-  EntityForm ef=new EntityForm();
-  ef.setEntityType(mapMd.getTargetClass());
+  EntityForm ef=createStandardEntityForm();
+  ForeignKey foreignKey=(ForeignKey)mapMd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+  ef.setEntityType(foreignKey.getForeignKeyClass());
   ComboField keyField=new ComboField();
   keyField.withName("key").withFieldType("combo_field").withFriendlyName("Key");
   if (mapMd.getKeys() != null) {
