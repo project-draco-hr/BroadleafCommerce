@@ -1,0 +1,18 @@
+{
+  if (perm1.size() == perm2.size()) {
+    Collection perm1Ids=CollectionUtils.collect(perm1,new Transformer(){
+      @Override public Object transform(      Object input){
+        return ((ProductOptionValue)input).getId();
+      }
+    }
+);
+    Collection perm2Ids=CollectionUtils.collect(perm2,new Transformer(){
+      @Override public Object transform(      Object input){
+        return ((ProductOptionValue)input).getId();
+      }
+    }
+);
+    return perm1Ids.containsAll(perm2Ids);
+  }
+  return false;
+}
