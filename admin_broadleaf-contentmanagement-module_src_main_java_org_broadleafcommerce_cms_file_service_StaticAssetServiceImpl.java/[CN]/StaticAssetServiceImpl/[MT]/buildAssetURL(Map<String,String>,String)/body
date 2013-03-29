@@ -1,0 +1,25 @@
+{
+  StringBuilder path=new StringBuilder("/");
+  String entityType=assetProperties.get("entityType");
+  String entityId=assetProperties.get("entityId");
+  String fileName=assetProperties.get("fileName");
+  if (entityType != null) {
+    path=path.append(entityType).append("/");
+  }
+  if (entityId != null) {
+    path=path.append(entityId).append("/");
+  }
+  if (fileName != null) {
+    int pos=fileName.indexOf(":");
+    if (pos > 0) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Removing protocol from URL name" + fileName);
+      }
+      fileName=fileName.substring(pos + 1);
+    }
+  }
+ else {
+    fileName=originalFilename;
+  }
+  return path.append(fileName).toString();
+}
