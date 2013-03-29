@@ -13,16 +13,15 @@
   }
   Iterator<OrderItemPriceDetail> unmatchedDetailsIterator=unmatchedDetailsMap.values().iterator();
   for (  PromotableOrderItemPriceDetail priceDetail : promotableDetailsMap.values()) {
+    priceDetail.chooseSaleOrRetailAdjustments();
     if (unmatchedDetailsIterator.hasNext()) {
       OrderItemPriceDetail existingDetail=unmatchedDetailsIterator.next();
       updatePriceDetail(existingDetail,priceDetail);
       unmatchedDetailsIterator.remove();
     }
  else {
-      OrderItemPriceDetail newPriceDetail=orderItemDao.createOrderItemPriceDetail();
-      newPriceDetail.setOrderItem(orderItem);
+      OrderItemPriceDetail newPriceDetail=orderItemDao.initializeOrderItemPriceDetails(orderItem);
       updatePriceDetail(newPriceDetail,priceDetail);
-      orderItem.getOrderItemPriceDetails().add(newPriceDetail);
     }
   }
   Iterator<OrderItemPriceDetail> pdIterator=orderItem.getOrderItemPriceDetails().iterator();
