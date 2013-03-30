@@ -1,0 +1,17 @@
+{
+  String view=super.viewEntityForm(request,response,model,pathVars,id);
+  EntityForm entityForm=(EntityForm)model.asMap().get("entityForm");
+  Entity entity=(Entity)model.asMap().get("entity");
+  String additionalClasses=(String)model.asMap().get("additionalClasses");
+  if (additionalClasses == null) {
+    additionalClasses="";
+  }
+  additionalClasses=additionalClasses.concat(" rulebuilder-form ");
+  model.addAttribute("additionalClasses",additionalClasses);
+  constructRuleBuilder(entityForm,entity,"appliesToOrderRules","Order Qualification","rule-builder-simple","appliesToOrderRulesFieldService","appliesToOrderRulesJson");
+  constructRuleBuilder(entityForm,entity,"appliesToCustomerRules","Customer Qualification","rule-builder-simple","appliesToCustomerRulesFieldService","appliesToCustomerRulesJson");
+  constructRuleBuilder(entityForm,entity,"appliesToFulfillmentGroupRules","Fulfillment Group Qualification","rule-builder-simple","appliesToFulfillmentGroupRulesFieldService","appliesToFulfillmentGroupRulesJson");
+  constructRuleBuilder(entityForm,entity,"qualifyingItemCriteria","Qualifying Item Criteria","rule-builder-complex","qualifyingItemCriteriaFieldService","qualifyingItemCriteriaJson");
+  constructRuleBuilder(entityForm,entity,"targetItemCriteria","Target Item Criteria","rule-builder-complex","targetItemCriteriaFieldService","targetItemCriteriaJson");
+  return view;
+}

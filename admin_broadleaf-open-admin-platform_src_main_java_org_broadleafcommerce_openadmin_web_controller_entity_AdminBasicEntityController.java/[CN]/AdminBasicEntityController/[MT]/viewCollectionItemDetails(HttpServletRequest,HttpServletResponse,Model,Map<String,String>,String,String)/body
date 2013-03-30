@@ -1,0 +1,12 @@
+{
+  String sectionKey=getSectionKey(pathVars);
+  String mainClassName=getClassNameForSection(sectionKey);
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  Property collectionProperty=mainMetadata.getPMap().get(collectionField);
+  BasicFieldMetadata md=(BasicFieldMetadata)collectionProperty.getMetadata();
+  AdminSection section=adminNavigationService.findAdminSectionByClass(md.getForeignKeyClass());
+  String sectionUrlKey=(section.getUrl().startsWith("/")) ? section.getUrl().substring(1) : section.getUrl();
+  Map<String,String> varsForField=new HashMap<String,String>();
+  varsForField.put("sectionKey",sectionUrlKey);
+  return viewEntityForm(request,response,model,varsForField,id);
+}
