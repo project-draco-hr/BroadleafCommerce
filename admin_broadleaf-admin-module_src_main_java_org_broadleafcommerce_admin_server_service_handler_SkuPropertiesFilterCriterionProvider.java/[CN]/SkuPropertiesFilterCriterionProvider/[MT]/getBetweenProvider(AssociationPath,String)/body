@@ -1,0 +1,18 @@
+{
+  if ((StringUtils.isNotEmpty(skuPropertyPrefix) && propertyId.startsWith(skuPropertyPrefix)) || path.equals(AssociationPath.ROOT)) {
+    return new SimpleFilterCriterionProvider(FilterDataStrategy.NONE,2){
+      @Override public Criterion getCriterion(      String targetPropertyName,      Object[] filterObjectValues,      Object[] directValues){
+        if (directValues.length > 1) {
+          return buildCriterion(targetPropertyName,Restrictions.between(targetPropertyName,directValues[0],directValues[1]),Restrictions.between(DEFAULT_SKU_PATH_PREFIX + targetPropertyName,directValues[0],directValues[1]));
+        }
+ else {
+          return buildCriterion(targetPropertyName,Restrictions.eq(targetPropertyName,directValues[0]),Restrictions.eq(DEFAULT_SKU_PATH_PREFIX + targetPropertyName,directValues[0]));
+        }
+      }
+    }
+;
+  }
+ else {
+    return super.getBetweenProvider(path,propertyId);
+  }
+}
