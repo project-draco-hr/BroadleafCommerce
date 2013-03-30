@@ -5,15 +5,15 @@
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
     BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps,new SkuPropertiesFilterCriterionProvider());
     PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
-    applyProductOptionValueCriteria(queryCriteria,cto,persistencePackage);
+    applyProductOptionValueCriteria(queryCriteria,cto,persistencePackage,null);
     applyAdditionalFetchCriteria(queryCriteria,cto,persistencePackage);
-    Criteria skuListCriteria=getSkuCriteria(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao);
+    Criteria skuListCriteria=getSkuCriteria(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao,null);
     List<Serializable> records=skuListCriteria.list();
     Entity[] payload=helper.getRecords(originalProps,records);
     PersistentEntityCriteria countCriteria=helper.getCountCriteria(persistencePackage,cto,ctoConverter);
-    applyProductOptionValueCriteria(countCriteria,cto,persistencePackage);
+    applyProductOptionValueCriteria(countCriteria,cto,persistencePackage,null);
     applyAdditionalFetchCriteria(countCriteria,cto,persistencePackage);
-    Criteria skuCountCriteria=getSkuCriteria(countCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao);
+    Criteria skuCountCriteria=getSkuCriteria(countCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao,null);
     int totalRecords=dynamicEntityDao.rowCount(skuCountCriteria);
     ClassMetadata metadata=new ClassMetadata();
     if (cto.get("product").getFilterValues().length > 0) {
