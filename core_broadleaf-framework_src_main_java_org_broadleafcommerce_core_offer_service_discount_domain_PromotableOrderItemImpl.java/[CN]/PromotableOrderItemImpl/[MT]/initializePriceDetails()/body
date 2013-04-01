@@ -1,0 +1,17 @@
+{
+  if (includeAdjustments) {
+    for (    OrderItemPriceDetail detail : orderItem.getOrderItemPriceDetails()) {
+      PromotableOrderItemPriceDetail poid=itemFactory.createPromotableOrderItemPriceDetail(this,detail.getQuantity());
+      itemPriceDetails.add(poid);
+      poid.chooseSaleOrRetailAdjustments();
+      for (      OrderItemPriceDetailAdjustment adjustment : detail.getOrderItemPriceDetailAdjustments()) {
+        PromotableOrderItemPriceDetailAdjustment poidAdj=new PromotableOrderItemPriceDetailAdjustmentImpl(adjustment,poid);
+        poid.addCandidateItemPriceDetailAdjustment(poidAdj);
+      }
+    }
+  }
+ else {
+    PromotableOrderItemPriceDetail poid=itemFactory.createPromotableOrderItemPriceDetail(this,orderItem.getQuantity());
+    itemPriceDetails.add(poid);
+  }
+}

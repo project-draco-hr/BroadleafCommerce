@@ -1,0 +1,18 @@
+{
+  String currentLine;
+  List<Dependency> dependencyList=new ArrayList<Dependency>();
+  while (forwardToTag("<dependency",br)) {
+    Dependency current=new Dependency();
+    while ((currentLine=br.readLine()) != null) {
+      if (currentLine.contains("</dependency>")) {
+        break;
+      }
+      current.scope=getTagValue("<scope>",currentLine,current.scope);
+      current.groupId=getTagValue("<groupId>",currentLine,current.groupId);
+      current.artifactId=getTagValue("<artifactId>",currentLine,current.artifactId);
+      current.version=getTagValue("<version>",currentLine,current.version);
+    }
+    dependencyList.add(current);
+  }
+  return dependencyList;
+}

@@ -5,24 +5,4 @@
     maxItemCriteriaUses=Math.min(maxItemCriteriaUses,temp);
   }
   assertTrue(maxItemCriteriaUses == 2);
-  PromotionQualifier qualifier=new PromotionQualifier();
-  qualifier.setPromotion(offer);
-  qualifier.setQuantity(1);
-  promotableOrderItem.getPromotionQualifiers().add(qualifier);
-  maxItemCriteriaUses=9999;
-  for (  OfferItemCriteria targetCriteria : offer.getTargetItemCriteria()) {
-    int temp=promotableCandidate.calculateMaxUsesForItemCriteria(targetCriteria,offer);
-    maxItemCriteriaUses=Math.min(maxItemCriteriaUses,temp);
-  }
-  assertTrue(maxItemCriteriaUses == 1);
-  PromotionDiscount discount=new PromotionDiscount();
-  discount.setPromotion(offer);
-  discount.setQuantity(1);
-  promotableOrderItem.getPromotionDiscounts().add(discount);
-  maxItemCriteriaUses=9999;
-  for (  OfferItemCriteria targetCriteria : offer.getTargetItemCriteria()) {
-    int temp=promotableCandidate.calculateMaxUsesForItemCriteria(targetCriteria,offer);
-    maxItemCriteriaUses=Math.min(maxItemCriteriaUses,temp);
-  }
-  assertTrue(maxItemCriteriaUses == 0);
 }

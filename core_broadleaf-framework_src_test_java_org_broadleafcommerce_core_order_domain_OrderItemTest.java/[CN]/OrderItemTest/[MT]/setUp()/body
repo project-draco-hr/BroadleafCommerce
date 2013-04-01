@@ -1,11 +1,16 @@
 {
+  PromotableOrder promotableOrder=new PromotableOrderImpl(new OrderImpl(),new PromotableItemFactoryImpl(),false);
   DiscreteOrderItemImpl discreteOrderItem1=new DiscreteOrderItemImpl();
   discreteOrderItem1.setName("test1");
   discreteOrderItem1.setOrderItemType(OrderItemType.DISCRETE);
   discreteOrderItem1.setQuantity(2);
   discreteOrderItem1.setRetailPrice(new Money(19.99D));
-  discreteOrderItem1.setPrice(new Money(19.99D));
-  orderItem1=new PromotableOrderItemImpl(discreteOrderItem1,null,new PromotableItemFactoryImpl());
+  OrderItemPriceDetail pdetail=new OrderItemPriceDetailImpl();
+  pdetail.setOrderItem(discreteOrderItem1);
+  pdetail.setQuantity(2);
+  PromotableOrderItem orderItem1=new PromotableOrderItemImpl(discreteOrderItem1,null,new PromotableItemFactoryImpl(),false);
+  priceDetail1=new PromotableOrderItemPriceDetailImpl(orderItem1,2);
   OfferDataItemProvider dataProvider=new OfferDataItemProvider();
   offer=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
+  candidateOffer=new PromotableCandidateItemOfferImpl(promotableOrder,offer);
 }

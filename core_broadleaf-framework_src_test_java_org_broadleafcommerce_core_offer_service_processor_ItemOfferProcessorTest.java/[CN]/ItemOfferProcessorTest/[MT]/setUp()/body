@@ -1,19 +1,27 @@
 {
+  CustomerOfferDao customerOfferDaoMock=EasyMock.createMock(CustomerOfferDao.class);
+  OfferCodeDao offerCodeDaoMock=EasyMock.createMock(OfferCodeDao.class);
   offerDaoMock=EasyMock.createMock(OfferDao.class);
+  orderItemDaoMock=EasyMock.createMock(OrderItemDao.class);
   orderServiceMock=EasyMock.createMock(OrderService.class);
   orderItemServiceMock=EasyMock.createMock(OrderItemService.class);
   fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
   fgServiceMock=EasyMock.createMock(FulfillmentGroupService.class);
   multishipOptionServiceMock=EasyMock.createMock(OrderMultishipOptionService.class);
-  OrderItemMergeService orderItemMergeService=new OrderItemMergeServiceImpl();
-  orderItemMergeService.setOrderService(orderServiceMock);
-  orderItemMergeService.setFulfillmentGroupItemDao(fgItemDaoMock);
-  orderItemMergeService.setFulfillmentGroupService(fgServiceMock);
-  orderItemMergeService.setOrderItemService(orderItemServiceMock);
-  orderItemMergeService.setOrderMultishipOptionService(multishipOptionServiceMock);
-  orderItemMergeService.setPromotableItemFactory(new PromotableItemFactoryImpl());
   itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
+  itemProcessor.setOrderItemDao(orderItemDaoMock);
   itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
-  itemProcessor.setOrderItemMergeService(orderItemMergeService);
+  offerService=new OfferServiceImpl();
+  OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
+  orderProcessor.setOfferDao(offerDaoMock);
+  orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  orderProcessor.setOrderItemDao(orderItemDaoMock);
+  offerService.setCustomerOfferDao(customerOfferDaoMock);
+  offerService.setOfferCodeDao(offerCodeDaoMock);
+  offerService.setOfferDao(offerDaoMock);
+  offerService.setOrderOfferProcessor(orderProcessor);
+  offerService.setItemOfferProcessor(itemProcessor);
+  offerService.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  offerService.setOrderService(orderServiceMock);
 }

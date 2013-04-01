@@ -1,0 +1,23 @@
+{
+  List<List<PromotableCandidateItemOffer>> permutations=buildItemOfferPermutations(itemOffers);
+  List<PromotableCandidateItemOffer> bestOfferList=null;
+  Money lowestSubtotal=null;
+  if (permutations.size() > 1) {
+    for (    List<PromotableCandidateItemOffer> offerList : permutations) {
+      applyAllItemOffers(offerList,order);
+      chooseSaleOrRetailAdjustments(order);
+      Money testSubtotal=order.calculateSubtotalWithAdjustments();
+      if (lowestSubtotal == null || testSubtotal.lessThan(lowestSubtotal)) {
+        lowestSubtotal=testSubtotal;
+        bestOfferList=offerList;
+      }
+      for (      PromotableOrderItem item : order.getDiscountableOrderItems()) {
+        item.resetPriceDetails();
+      }
+    }
+  }
+ else {
+    bestOfferList=permutations.get(0);
+  }
+  applyAllItemOffers(bestOfferList,order);
+}

@@ -1,0 +1,17 @@
+{
+  Money returnValue=convertToMoney(BigDecimal.ZERO);
+  if (orderItemPriceDetails != null && orderItemPriceDetails.size() > 0) {
+    for (    OrderItemPriceDetail oipd : orderItemPriceDetails) {
+      returnValue=returnValue.add(oipd.getTotalAdjustedPrice());
+    }
+  }
+ else {
+    if (price != null) {
+      returnValue=convertToMoney(price).multiply(quantity);
+    }
+ else {
+      return getSalePrice().multiply(quantity);
+    }
+  }
+  return returnValue;
+}

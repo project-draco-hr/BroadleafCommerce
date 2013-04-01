@@ -1,0 +1,7 @@
+{
+  Order order=promotableOrder.getOrder();
+  Map<Long,PromotableFulfillmentGroup> fgMap=buildPromotableFulfillmentGroupMap(promotableOrder);
+  for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
+    synchronizeFulfillmentGroupAdjustments(fg,fgMap.get(fg.getId()));
+  }
+}

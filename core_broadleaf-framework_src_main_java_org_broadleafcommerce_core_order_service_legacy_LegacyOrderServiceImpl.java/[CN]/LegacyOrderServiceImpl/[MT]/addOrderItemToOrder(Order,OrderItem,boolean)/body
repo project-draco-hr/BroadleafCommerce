@@ -1,7 +1,20 @@
 {
+  if (automaticallyMergeLikeItems) {
+    OrderItem item=findMatchingItem(order,newOrderItem);
+    if (item != null) {
+      item.setQuantity(item.getQuantity() + newOrderItem.getQuantity());
+      try {
+        updateItemQuantity(order,item,priceOrder);
+      }
+ catch (      ItemNotFoundException e) {
+        LOG.error(e);
+      }
+      return findMatchingItem(order,newOrderItem);
+    }
+  }
   List<OrderItem> orderItems=order.getOrderItems();
   orderItems.add(newOrderItem);
   newOrderItem.setOrder(order);
   order=updateOrder(order,priceOrder);
-  return findLastMatchingItem(order,newOrderItem);
+  return findMatchingItem(order,newOrderItem);
 }

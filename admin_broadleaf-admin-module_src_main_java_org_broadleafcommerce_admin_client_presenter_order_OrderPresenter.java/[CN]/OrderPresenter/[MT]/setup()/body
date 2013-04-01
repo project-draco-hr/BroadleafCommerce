@@ -88,6 +88,19 @@
     }
   }
 ));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemPriceDetailAdjustmentDS",new OrderItemPriceDetailAdjustmentListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    final DataSource result){
+    }
+  }
+));
+  getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("orderItemPriceDetailDS",new OrderItemPriceDetailListDataSourceFactory(),new AsyncCallbackAdapter(){
+    @Override public void onSetupSuccess(    DataSource result){
+      orderItemPriceDetailPresenter=new CreateBasedListStructurePresenter("",getDisplay().getOrderItemPriceDetailDisplay(),BLCMain.getMessageManager().getString("newOrderItemPriceDetailTitle"));
+      orderItemPriceDetailPresenter.setDataSource((ListGridDataSource)result,new String[]{"quantity","useSalePrice"},new Boolean[]{false,false});
+      orderItemPriceDetailPresenter.setReadOnly(true);
+    }
+  }
+));
   getPresenterSequenceSetupManager().addOrReplaceItem(new PresenterSetupItem("fulfillmentGroupAdjustmentDS",new FulfillmentGroupAdjustmentListDataSourceFactory(),new AsyncCallbackAdapter(){
     @Override public void onSetupSuccess(    DataSource result){
       fulfillmentGroupAdjustmentPresenter=new CreateBasedListStructurePresenter("",getDisplay().getFulfillmentGroupAdjustmentDisplay(),BLCMain.getMessageManager().getString("newFGAdjustmentTitle"));

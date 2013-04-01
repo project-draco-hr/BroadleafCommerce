@@ -12,13 +12,13 @@
   }
   if (rule != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
-    vars.put("order",order.getDelegate());
+    promotableOrder.updateRuleVariables(vars);
     vars.put("offer",offer);
-    if (fulfillmentGroup != null) {
-      vars.put("fulfillmentGroup",fulfillmentGroup.getDelegate());
+    if (promotableFulfillmentGroup != null) {
+      promotableFulfillmentGroup.updateRuleVariables(vars);
     }
-    if (discreteOrderItem != null) {
-      vars.put("discreteOrderItem",discreteOrderItem.getDelegate());
+    if (promotableOrderItem != null) {
+      promotableOrderItem.updateRuleVariables(vars);
     }
     Boolean expressionOutcome=executeExpression(rule,vars);
     if (expressionOutcome != null && expressionOutcome) {

@@ -1,0 +1,7 @@
+{
+  Money returnPrice=getSalePriceBeforeAdjustments();
+  for (  PromotableFulfillmentGroupAdjustment adjustment : candidateFulfillmentGroupAdjustments) {
+    returnPrice=returnPrice.subtract(adjustment.getSaleAdjustmentValue());
+  }
+  return returnPrice;
+}

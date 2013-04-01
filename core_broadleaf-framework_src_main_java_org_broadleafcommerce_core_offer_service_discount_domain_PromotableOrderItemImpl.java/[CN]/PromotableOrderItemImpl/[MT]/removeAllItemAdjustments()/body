@@ -1,0 +1,17 @@
+{
+  Iterator<PromotableOrderItemPriceDetail> detailIterator=itemPriceDetails.iterator();
+  boolean first=true;
+  while (detailIterator.hasNext()) {
+    PromotableOrderItemPriceDetail detail=detailIterator.next();
+    if (first) {
+      detail.setQuantity(getQuantity());
+      detail.getPromotionDiscounts().clear();
+      detail.getPromotionQualifiers().clear();
+      detail.removeAllAdjustments();
+      first=false;
+    }
+ else {
+      detailIterator.remove();
+    }
+  }
+}

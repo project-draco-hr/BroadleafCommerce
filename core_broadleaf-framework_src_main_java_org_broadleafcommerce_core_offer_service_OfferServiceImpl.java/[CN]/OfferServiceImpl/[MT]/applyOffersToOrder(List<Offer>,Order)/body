@@ -1,33 +1,25 @@
 {
   OfferContext offerContext=OfferContext.getOfferContext();
   if (offerContext == null || offerContext.executePromotionCalculation) {
-    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order);
-    orderOfferProcessor.clearOffersandAdjustments(promotableOrder);
-    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,promotableOrder.getCustomer());
+    order.updatePrices();
+    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order,false);
+    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,order.getCustomer());
     if ((filteredOffers == null) || (filteredOffers.isEmpty())) {
-      orderOfferProcessor.compileOrderTotal(promotableOrder);
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("No offers applicable to this order.");
+      }
     }
  else {
-      orderItemMergeService.prepareCart(promotableOrder);
-      orderItemMergeService.gatherCart(promotableOrder);
-      orderItemMergeService.initializeBundleSplitItems(promotableOrder);
       List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
       List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
       itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
-      if ((qualifiedItemOffers.isEmpty()) && (qualifiedOrderOffers.isEmpty())) {
-        orderOfferProcessor.compileOrderTotal(promotableOrder);
-      }
- else {
+      if (!(qualifiedItemOffers.isEmpty() && qualifiedOrderOffers.isEmpty())) {
         itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
-        orderItemMergeService.gatherCart(promotableOrder);
-      }
-      orderItemMergeService.finalizeCart(promotableOrder);
-    }
-    for (    DiscreteOrderItem orderItem : order.getDiscreteOrderItems()) {
-      if (orderItem.getBundleOrderItem() == null && orderItem.getOrder() == null) {
-        orderItem.setOrder(order);
       }
     }
+    orderOfferProcessor.synchronizeAdjustmentsAndPrices(promotableOrder);
+    order.setSubTotal(order.calculateSubTotal());
+    order.finalizeItemPrices();
     orderService.save(order,false);
   }
 }

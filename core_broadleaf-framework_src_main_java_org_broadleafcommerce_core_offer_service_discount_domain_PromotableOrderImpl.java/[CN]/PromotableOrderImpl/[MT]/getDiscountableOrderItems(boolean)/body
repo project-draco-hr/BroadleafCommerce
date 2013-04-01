@@ -1,0 +1,14 @@
+{
+  if (discountableOrderItems == null || discountableOrderItems.isEmpty()) {
+    discountableOrderItems=buildPromotableOrderItemsList();
+    OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(applyDiscountToSalePrice);
+    Collections.sort(discountableOrderItems,priceComparator);
+    currentSortParam=applyDiscountToSalePrice;
+  }
+  if (currentSortParam != applyDiscountToSalePrice) {
+    OrderItemPriceComparator priceComparator=new OrderItemPriceComparator(applyDiscountToSalePrice);
+    Collections.sort(discountableOrderItems,priceComparator);
+    currentSortParam=applyDiscountToSalePrice;
+  }
+  return discountableOrderItems;
+}

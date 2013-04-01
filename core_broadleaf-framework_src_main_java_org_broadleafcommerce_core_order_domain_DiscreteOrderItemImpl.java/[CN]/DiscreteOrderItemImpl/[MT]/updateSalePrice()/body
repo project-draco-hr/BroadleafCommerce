@@ -1,0 +1,24 @@
+{
+  if (isSalePriceOverride()) {
+    return false;
+  }
+  Money skuSalePrice=(getSku().getSalePrice() == null ? null : getSku().getSalePrice());
+  if (skuBundleItem != null) {
+    if (skuBundleItem.getSalePrice() != null) {
+      skuSalePrice=skuBundleItem.getSalePrice();
+    }
+  }
+  boolean updated=false;
+  if (skuSalePrice != null && !skuSalePrice.equals(salePrice)) {
+    baseSalePrice=skuSalePrice.getAmount();
+    salePrice=skuSalePrice.getAmount();
+    updated=true;
+  }
+  if (getDiscreteOrderItemFeePrices() != null) {
+    for (    DiscreteOrderItemFeePrice fee : getDiscreteOrderItemFeePrices()) {
+      Money returnPrice=convertToMoney(salePrice);
+      salePrice=returnPrice.add(fee.getAmount()).getAmount();
+    }
+  }
+  return updated;
+}

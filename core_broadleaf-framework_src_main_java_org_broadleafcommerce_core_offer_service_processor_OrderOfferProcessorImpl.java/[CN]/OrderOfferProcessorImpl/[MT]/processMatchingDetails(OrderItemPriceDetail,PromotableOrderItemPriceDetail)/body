@@ -1,0 +1,13 @@
+{
+  Map<Long,OrderItemPriceDetailAdjustment> itemAdjustmentMap=buildItemDetailAdjustmentMap(itemDetail);
+  if (itemDetail.getQuantity() != promotableItemDetail.getQuantity()) {
+    itemDetail.setQuantity(promotableItemDetail.getQuantity());
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableItemDetail.getCandidateItemAdjustments()) {
+    OrderItemPriceDetailAdjustment itemAdjustment=itemAdjustmentMap.get(adjustment.getOfferId());
+    if (!itemAdjustment.getValue().equals(adjustment.getAdjustmentValue())) {
+      itemAdjustment.setValue(adjustment.getAdjustmentValue());
+      itemAdjustment.setAppliedToSalePrice(adjustment.isAppliedToSalePrice());
+    }
+  }
+}

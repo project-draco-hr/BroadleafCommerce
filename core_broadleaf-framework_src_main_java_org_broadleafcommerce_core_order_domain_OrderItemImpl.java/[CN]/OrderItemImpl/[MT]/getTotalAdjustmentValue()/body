@@ -1,0 +1,10 @@
+{
+  Money totalAdjustmentValue=BroadleafCurrencyUtils.getMoney(order.getCurrency());
+  List<OrderItemPriceDetail> priceDetails=getOrderItemPriceDetails();
+  if (priceDetails != null) {
+    for (    OrderItemPriceDetail priceDetail : getOrderItemPriceDetails()) {
+      totalAdjustmentValue=totalAdjustmentValue.add(priceDetail.getTotalAdjustmentValue());
+    }
+  }
+  return totalAdjustmentValue;
+}

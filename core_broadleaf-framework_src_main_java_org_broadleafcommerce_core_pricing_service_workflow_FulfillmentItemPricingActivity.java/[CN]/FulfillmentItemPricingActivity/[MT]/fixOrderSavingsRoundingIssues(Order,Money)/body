@@ -1,0 +1,19 @@
+{
+  if (!order.getHasOrderAdjustments()) {
+    return;
+  }
+  Money orderAdjustmentTotal=order.getOrderAdjustmentsValue();
+  Money amountDiff=totalOrderAdjustmentDistributed.subtract(orderAdjustmentTotal);
+  if (!(amountDiff.getAmount().compareTo(BigDecimal.ZERO) == 0)) {
+    long numApplicationsNeeded=countNumberOfUnits(amountDiff);
+    Money unitAmount=getUnitAmount(amountDiff);
+    for (    FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+      for (      FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+        numApplicationsNeeded=numApplicationsNeeded - applyDifferenceToProratedAdj(fgItem,numApplicationsNeeded,unitAmount);
+        if (numApplicationsNeeded == 0) {
+          break;
+        }
+      }
+    }
+  }
+}

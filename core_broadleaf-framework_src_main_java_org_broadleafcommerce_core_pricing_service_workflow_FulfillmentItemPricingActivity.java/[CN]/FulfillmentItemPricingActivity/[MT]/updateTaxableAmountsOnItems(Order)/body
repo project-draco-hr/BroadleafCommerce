@@ -1,0 +1,19 @@
+{
+  Money zero=new Money(order.getCurrency());
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    for (    FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+      if (fgItem.getOrderItem().isTaxable()) {
+        Money proratedOrderAdjAmt=fgItem.getProratedOrderAdjustmentAmount();
+        if (proratedOrderAdjAmt != null) {
+          fgItem.setTotalItemTaxableAmount(fgItem.getTotalItemAmount().subtract(proratedOrderAdjAmt));
+        }
+ else {
+          fgItem.setTotalItemTaxableAmount(fgItem.getTotalItemAmount());
+        }
+      }
+ else {
+        fgItem.setTotalItemTaxableAmount(zero);
+      }
+    }
+  }
+}

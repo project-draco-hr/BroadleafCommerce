@@ -1,0 +1,16 @@
+{
+  if (order.getOrderAdjustmentsValue() == null) {
+    return new Money(order.getCurrency());
+  }
+ else {
+    Money adjustmentValue=order.getOrderAdjustmentsValue();
+    Money orderSubTotal=order.getSubTotal();
+    if (orderSubTotal == null || orderSubTotal.lessThan(adjustmentValue)) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Subtotal is null or less than orderSavings in DistributeOrderSavingsActivity.java.  " + "No distribution is taking place.");
+      }
+      return new Money(order.getCurrency());
+    }
+    return adjustmentValue;
+  }
+}

@@ -1,0 +1,50 @@
+{
+  initializeKnownLibraries();
+  BufferedReader br=null;
+  try {
+    String fileName="/Users/brianpolster/blc-workspace/BroadleafCommerce/pom.xml";
+    if (args.length > 0) {
+      fileName=args[0];
+    }
+    br=new BufferedReader(new FileReader(fileName));
+    forwardToTag("<dependencies>",br);
+    List<Dependency> dependencies=populateDependencies(br);
+    for (    Dependency dependency : dependencies) {
+      Category category=knownLibraries.get(dependency.groupId);
+      if (category != null) {
+        category.dependencyList.add(dependency);
+        List<Dependency> licenseDependencyList=licenseDependencyMap.get(category.licenseType);
+        if (licenseDependencyList == null) {
+          licenseDependencyList=new ArrayList<Dependency>();
+          licenseDependencyList.add(dependency);
+          licenseDependencyMap.put(category.licenseType,licenseDependencyList);
+        }
+      }
+ else {
+        if (dependency.scope.equals("test") || dependency.scope.equals("provided")) {
+          continue;
+        }
+        OTHER.dependencyList.add(dependency);
+      }
+    }
+    Set<Category> categoryList=new HashSet<Category>(knownLibraries.values());
+    System.out.println("Related Software Report\r");
+    for (    Category category : categoryList) {
+      printOutDependencies(category,category.dependencyList);
+    }
+    if (OTHER.dependencyList.size() > 0) {
+      printOutDependencies(OTHER,OTHER.dependencyList);
+    }
+  }
+ catch (  IOException e) {
+    e.printStackTrace();
+  }
+ finally {
+    try {
+      if (br != null)       br.close();
+    }
+ catch (    IOException ex) {
+      ex.printStackTrace();
+    }
+  }
+}

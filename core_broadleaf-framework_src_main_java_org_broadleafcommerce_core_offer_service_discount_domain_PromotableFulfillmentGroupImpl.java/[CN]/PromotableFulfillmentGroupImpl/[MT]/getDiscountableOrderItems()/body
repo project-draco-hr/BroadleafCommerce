@@ -1,0 +1,31 @@
+{
+  if (discountableOrderItems != null) {
+    return discountableOrderItems;
+  }
+  discountableOrderItems=new ArrayList<PromotableOrderItem>();
+  List<Long> discountableOrderItemIds=new ArrayList<Long>();
+  for (  FulfillmentGroupItem fgItem : fulfillmentGroup.getFulfillmentGroupItems()) {
+    OrderItem orderItem=fgItem.getOrderItem();
+    if (orderItem.isDiscountingAllowed()) {
+      discountableOrderItemIds.add(fgItem.getOrderItem().getId());
+    }
+ else {
+      if (orderItem instanceof OrderItemContainer) {
+        OrderItemContainer orderItemContainer=(OrderItemContainer)orderItem;
+        if (orderItemContainer.getAllowDiscountsOnChildItems()) {
+          for (          OrderItem containedOrderItem : orderItemContainer.getOrderItems()) {
+            if (!containedOrderItem.isDiscountingAllowed()) {
+              discountableOrderItemIds.add(containedOrderItem.getId());
+            }
+          }
+        }
+      }
+    }
+  }
+  for (  PromotableOrderItem item : promotableOrder.getDiscountableOrderItems()) {
+    if (discountableOrderItemIds.contains(item.getOrderItemId())) {
+      discountableOrderItems.add(item);
+    }
+  }
+  return discountableOrderItems;
+}

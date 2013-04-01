@@ -1,17 +1,10 @@
 {
-  Money totalShipping=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getDelegate().getCurrency());
+  Money totalFulfillmentCharges=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getOrderCurrency());
   for (  PromotableFulfillmentGroup fulfillmentGroupMember : order.getFulfillmentGroups()) {
     PromotableFulfillmentGroup fulfillmentGroup=fulfillmentGroupMember;
-    if (fulfillmentGroup.getAdjustmentPrice() != null) {
-      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getAdjustmentPrice());
-    }
- else     if (fulfillmentGroup.getSaleShippingPrice() != null) {
-      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getSaleShippingPrice());
-    }
- else {
-      fulfillmentGroup.setShippingPrice(fulfillmentGroup.getRetailShippingPrice());
-    }
-    totalShipping=totalShipping.add(fulfillmentGroup.getShippingPrice());
+    Money fulfillmentCharges=fulfillmentGroup.getFinalizedPriceWithAdjustments();
+    fulfillmentGroup.getFulfillmentGroup().setFulfillmentPrice(fulfillmentCharges);
+    totalFulfillmentCharges=totalFulfillmentCharges.add(fulfillmentCharges);
   }
-  order.setTotalShipping(totalShipping);
+  order.setTotalFufillmentCharges(totalFulfillmentCharges);
 }

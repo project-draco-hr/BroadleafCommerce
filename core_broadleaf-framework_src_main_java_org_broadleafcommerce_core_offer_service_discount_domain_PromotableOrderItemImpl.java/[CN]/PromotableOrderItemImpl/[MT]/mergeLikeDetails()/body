@@ -1,0 +1,18 @@
+{
+  if (itemPriceDetails.size() > 1) {
+    Iterator<PromotableOrderItemPriceDetail> detailIterator=itemPriceDetails.iterator();
+    Map<String,PromotableOrderItemPriceDetail> detailMap=new HashMap<String,PromotableOrderItemPriceDetail>();
+    while (detailIterator.hasNext()) {
+      PromotableOrderItemPriceDetail currentDetail=detailIterator.next();
+      String detailKey=currentDetail.buildDetailKey();
+      if (detailMap.containsKey(detailKey)) {
+        PromotableOrderItemPriceDetail firstDetail=detailMap.get(detailKey);
+        mergeDetails(firstDetail,currentDetail);
+        detailIterator.remove();
+      }
+ else {
+        detailMap.put(detailKey,currentDetail);
+      }
+    }
+  }
+}

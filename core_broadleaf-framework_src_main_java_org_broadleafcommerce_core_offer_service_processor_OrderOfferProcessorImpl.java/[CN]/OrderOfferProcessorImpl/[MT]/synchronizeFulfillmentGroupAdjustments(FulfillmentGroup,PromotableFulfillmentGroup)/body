@@ -1,0 +1,23 @@
+{
+  Iterator<FulfillmentGroupAdjustment> adjustmentIterator=fg.getFulfillmentGroupAdjustments().iterator();
+  Map<Long,PromotableFulfillmentGroupAdjustment> promotableAdjMap=buildPromFulfillmentAdjMap(promotableFG);
+  while (adjustmentIterator.hasNext()) {
+    FulfillmentGroupAdjustment currentAdj=adjustmentIterator.next();
+    PromotableFulfillmentGroupAdjustment newAdj=promotableAdjMap.remove(currentAdj.getOffer().getId());
+    if (newAdj != null) {
+      if (!currentAdj.getValue().equals(newAdj.getAdjustmentValue())) {
+        currentAdj.setValue(newAdj.getAdjustmentValue());
+      }
+    }
+ else {
+      adjustmentIterator.remove();
+    }
+  }
+  for (  PromotableFulfillmentGroupAdjustment newAdj : promotableAdjMap.values()) {
+    FulfillmentGroupAdjustment fa=offerDao.createFulfillmentGroupAdjustment();
+    fa.setFulfillmentGroup(fg);
+    fa.init(fg,newAdj.getPromotableCandidateFulfillmentGroupOffer().getOffer(),null);
+    fa.setValue(newAdj.getAdjustmentValue());
+    fg.getFulfillmentGroupAdjustments().add(fa);
+  }
+}

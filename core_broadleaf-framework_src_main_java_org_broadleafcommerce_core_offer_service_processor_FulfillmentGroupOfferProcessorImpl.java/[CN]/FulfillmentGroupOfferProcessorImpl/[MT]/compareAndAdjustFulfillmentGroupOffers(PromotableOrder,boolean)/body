@@ -1,23 +1,21 @@
 {
-  Money regularOrderDiscountShippingTotal=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getDelegate().getCurrency());
-  regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(order.calculateOrderItemsPriceWithoutAdjustments());
+  Money regularOrderDiscountShippingTotal=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getOrderCurrency());
+  regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(order.calculateSubtotalWithoutAdjustments());
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
-    regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(fg.getAdjustmentPrice());
+    regularOrderDiscountShippingTotal=regularOrderDiscountShippingTotal.add(fg.getFinalizedPriceWithAdjustments());
   }
-  Money discountOrderRegularShippingTotal=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getDelegate().getCurrency());
-  discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(order.getSubTotal());
+  Money discountOrderRegularShippingTotal=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,order.getOrderCurrency());
+  discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(order.calculateSubtotalWithAdjustments());
   for (  PromotableFulfillmentGroup fg : order.getFulfillmentGroups()) {
-    discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(fg.getPriceBeforeAdjustments(true));
+    discountOrderRegularShippingTotal=discountOrderRegularShippingTotal.add(fg.calculatePriceWithoutAdjustments());
   }
   if (discountOrderRegularShippingTotal.lessThan(regularOrderDiscountShippingTotal)) {
-    order.removeAllFulfillmentAdjustments();
+    order.removeAllCandidateFulfillmentOfferAdjustments();
     fgOfferApplied=false;
   }
  else {
-    order.removeAllOrderAdjustments();
-    order.removeAllItemAdjustments();
-    orderItemMergeService.gatherCart(order);
-    orderItemMergeService.initializeSplitItems(order);
+    order.removeAllCandidateOrderOfferAdjustments();
+    order.removeAllCandidateItemOfferAdjustments();
   }
   return fgOfferApplied;
 }

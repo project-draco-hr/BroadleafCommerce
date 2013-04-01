@@ -1,9 +1,8 @@
 {
-  EasyMock.expect(offerDaoMock.createCandidateItemOffer()).andReturn(new CandidateItemOfferImpl()).times(4);
   replay();
-  PromotableOrder order=dataProvider.createBasicOrder();
   List<PromotableCandidateItemOffer> qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
   List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,null,null);
+  PromotableOrder order=dataProvider.createBasicPromotableOrder();
   itemProcessor.filterItemLevelOffer(order,qualifiedOffers,offers.get(0));
   assertTrue(qualifiedOffers.size() == 2 && qualifiedOffers.get(0).getOffer().equals(offers.get(0)) && qualifiedOffers.get(1).getOffer().equals(offers.get(0)));
   qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();

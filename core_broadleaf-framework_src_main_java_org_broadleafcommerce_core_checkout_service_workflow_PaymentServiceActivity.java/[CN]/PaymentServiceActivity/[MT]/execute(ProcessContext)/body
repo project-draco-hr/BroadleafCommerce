@@ -19,8 +19,8 @@
       paidAmount=paidAmount.add(entry.getValue().getTransactionAmount());
     }
   }
-  if (paidAmount.lessThan(seed.getOrder().getTotal())) {
-    throw new InsufficientFundsException(String.format("Order total was [%s] but paid amount was [%s]",seed.getOrder().getTotal(),paidAmount));
+  if (paidAmount.lessThan(seed.getOrder().getRemainingTotal())) {
+    throw new InsufficientFundsException(String.format("Order remaining total was [%s] but paid amount was [%s]",seed.getOrder().getTotal(),paidAmount));
   }
   return context;
 }

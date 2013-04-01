@@ -1,6 +1,4 @@
 {
-  OrderAdjustment orderAdjustment=offerDao.createOrderAdjustment();
-  orderAdjustment.init(order.getDelegate(),orderOffer.getOffer(),orderOffer.getOffer().getName());
-  PromotableOrderAdjustment promotableOrderAdjustment=promotableItemFactory.createPromotableOrderAdjustment(orderAdjustment,order);
-  order.addOrderAdjustments(promotableOrderAdjustment);
+  PromotableOrderAdjustment promotableOrderAdjustment=promotableItemFactory.createPromotableOrderAdjustment(orderOffer,promotableOrder);
+  promotableOrder.addCandidateOrderAdjustment(promotableOrderAdjustment);
 }

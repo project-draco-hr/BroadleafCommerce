@@ -1,0 +1,15 @@
+{
+  Map<Long,PromotionQualifier> qualifiersMap=new HashMap<Long,PromotionQualifier>();
+  for (  PromotableOrderItemPriceDetail detail : item.getPromotableOrderItemPriceDetails()) {
+    for (    PromotionQualifier qualifier : detail.getPromotionQualifiers()) {
+      PromotionQualifier existingQualifier=qualifiersMap.get(qualifier.getPromotion().getId());
+      if (existingQualifier != null) {
+        existingQualifier.setQuantity(existingQualifier.getQuantity() + qualifier.getQuantity());
+      }
+ else {
+        qualifiersMap.put(qualifier.getPromotion().getId(),qualifier);
+      }
+    }
+  }
+  return qualifiersMap;
+}
