@@ -1,0 +1,47 @@
+{
+  if (StorageType.DATABASE.equals(staticAsset.getStorageType())) {
+    StaticAssetStorage storage=staticAssetStorageDao.create();
+    storage.setStaticAssetId(staticAsset.getId());
+    Blob uploadBlob=staticAssetStorageDao.createBlob(file);
+    storage.setFileData(uploadBlob);
+    staticAssetStorageDao.save(storage);
+  }
+ else   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType())) {
+    InputStream input=file.getInputStream();
+    byte[] buffer=new byte[fileBufferSize];
+    String destFileName=generateStorageFileName(staticAsset.getFullUrl());
+    String tempFileName=destFileName.substring(0,destFileName.lastIndexOf("/") + 1) + UUID.randomUUID().toString();
+    File tmpFile=new File(tempFileName);
+    if (!tmpFile.getParentFile().exists()) {
+      if (!tmpFile.getParentFile().mkdirs()) {
+        throw new RuntimeException("Unable to create parent directories for file: " + destFileName);
+      }
+    }
+    OutputStream output=new FileOutputStream(tmpFile);
+    boolean deleteFile=false;
+    try {
+      int bytesRead;
+      int totalBytesRead=0;
+      while ((bytesRead=input.read(buffer)) != -1) {
+        totalBytesRead+=bytesRead;
+        if (totalBytesRead > maxUploadableFileSize) {
+          deleteFile=true;
+          throw new IOException("Maximum Upload File Size Exceeded");
+        }
+        output.write(buffer,0,bytesRead);
+      }
+    }
+  finally {
+      output.close();
+      if (deleteFile && tmpFile.exists()) {
+        tmpFile.delete();
+      }
+    }
+    File newFile=new File(destFileName);
+    if (!tmpFile.renameTo(newFile)) {
+      if (!newFile.exists()) {
+        throw new RuntimeException("Unable to rename temp file to create file named: " + destFileName);
+      }
+    }
+  }
+}

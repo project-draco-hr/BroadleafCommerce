@@ -1,0 +1,33 @@
+{
+  String fullUrl=buildAssetURL(properties,file.getOriginalFilename());
+  StaticAsset newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl,null);
+  int count=0;
+  while (newAsset != null) {
+    count++;
+    newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl + "-" + count,null);
+  }
+  if (count > 0) {
+    fullUrl=fullUrl + "-" + count;
+  }
+  try {
+    ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(file.getInputStream());
+    newAsset=new ImageStaticAssetImpl();
+    ((ImageStaticAsset)newAsset).setWidth(metadata.getWidth());
+    ((ImageStaticAsset)newAsset).setHeight(metadata.getHeight());
+  }
+ catch (  Exception e) {
+    newAsset=new StaticAssetImpl();
+  }
+  if (storeAssetsOnFileSystem) {
+    newAsset.setStorageType(StorageType.FILESYSTEM);
+  }
+ else {
+    newAsset.setStorageType(StorageType.DATABASE);
+  }
+  newAsset.setName(file.getOriginalFilename());
+  newAsset.setMimeType(getMimeType(file));
+  newAsset.setFileExtension(getFileExtension(file.getOriginalFilename()));
+  newAsset.setFileSize(file.getSize());
+  newAsset.setFullUrl(fullUrl);
+  return staticAssetDao.addOrUpdateStaticAsset(newAsset,false);
+}
