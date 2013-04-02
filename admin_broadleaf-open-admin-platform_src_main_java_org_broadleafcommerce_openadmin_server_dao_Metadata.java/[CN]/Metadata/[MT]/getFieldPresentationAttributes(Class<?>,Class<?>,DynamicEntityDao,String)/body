@@ -6,21 +6,34 @@
     AdminPresentationCollection annotColl=field.getAnnotation(AdminPresentationCollection.class);
     AdminPresentationAdornedTargetCollection adornedTargetCollection=field.getAnnotation(AdminPresentationAdornedTargetCollection.class);
     AdminPresentationMap map=field.getAnnotation(AdminPresentationMap.class);
+    FieldInfo info=buildFieldInfo(field);
     if (annot != null) {
       FieldMetadataOverride override=constructBasicMetadataOverride(annot,field.getAnnotation(AdminPresentationToOneLookup.class),field.getAnnotation(AdminPresentationDataDrivenEnumeration.class));
-      buildBasicMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
+      buildBasicMetadata(parentClass,targetClass,attributes,info,override,dynamicEntityDao);
     }
  else     if (annotColl != null) {
       FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annotColl);
-      buildCollectionMetadata(parentClass,targetClass,attributes,field,override);
+      buildCollectionMetadata(parentClass,targetClass,attributes,info,override);
     }
  else     if (adornedTargetCollection != null) {
       FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(adornedTargetCollection);
-      buildAdornedTargetCollectionMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao);
+      buildAdornedTargetCollectionMetadata(parentClass,targetClass,attributes,info,override,dynamicEntityDao);
     }
  else     if (map != null) {
-      FieldMetadataOverride override=constructMapMetadataOverride(map);
-      buildMapMetadata(parentClass,targetClass,attributes,field,override,dynamicEntityDao,prefix);
+      if (!ArrayUtils.isEmpty(map.mapDisplayFields())) {
+        for (        AdminPresentationMapField mapField : map.mapDisplayFields()) {
+          FieldMetadataOverride override=constructBasicMetadataOverride(mapField.fieldPresentation(),null,null);
+          override.setFriendlyName(mapField.fieldName().friendlyKeyName());
+          FieldInfo myInfo=new FieldInfo();
+          myInfo.setName(field.getName() + "/" + mapField.fieldName().keyName());
+          buildBasicMetadata(parentClass,targetClass,attributes,myInfo,override,dynamicEntityDao);
+          setClassOwnership(parentClass,targetClass,attributes,myInfo);
+        }
+      }
+      if (ArrayUtils.isEmpty(map.mapDisplayFields()) || map.allowMapFieldOverflowPresentation()) {
+        FieldMetadataOverride override=constructMapMetadataOverride(map);
+        buildMapMetadata(parentClass,targetClass,attributes,info,override,dynamicEntityDao,prefix);
+      }
     }
  else {
       BasicFieldMetadata metadata=new BasicFieldMetadata();
@@ -28,21 +41,7 @@
       metadata.setExcluded(false);
       attributes.put(field.getName(),metadata);
     }
-    FieldMetadata metadata=attributes.get(field.getName());
-    AdminPresentationClass adminPresentationClass;
-    if (parentClass != null) {
-      metadata.setOwningClass(parentClass.getName());
-      adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
-    }
- else {
-      adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
-    }
-    if (adminPresentationClass != null) {
-      String friendlyName=adminPresentationClass.friendlyName();
-      if (!StringUtils.isEmpty(friendlyName) && StringUtils.isEmpty(metadata.getOwningClassFriendlyName())) {
-        metadata.setOwningClassFriendlyName(friendlyName);
-      }
-    }
+    setClassOwnership(parentClass,targetClass,attributes,info);
   }
   return attributes;
 }

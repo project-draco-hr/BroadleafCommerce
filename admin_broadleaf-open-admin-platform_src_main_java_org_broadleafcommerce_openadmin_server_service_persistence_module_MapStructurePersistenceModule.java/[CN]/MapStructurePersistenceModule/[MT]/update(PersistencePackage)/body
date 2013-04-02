@@ -7,6 +7,11 @@
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Entity entity=persistencePackage.getEntity();
     MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+    Map<String,FieldMetadata> ceilingMergedProperties=getSimpleMergedProperties(entity.getType()[0],persistencePerspective);
+    String mapKey=entity.findProperty(mapStructure.getKeyPropertyName()).getValue();
+    if (ceilingMergedProperties.containsKey(mapStructure.getMapProperty() + "/" + mapKey)) {
+      throw new ServiceException("\"" + mapKey + "\" is a reserved property name.");
+    }
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),Long.valueOf(entity.findProperty("symbolicId").getValue()));
     FieldManager fieldManager=getFieldManager();
     Map map=(Map)fieldManager.getFieldValue(instance,mapStructure.getMapProperty());
@@ -33,7 +38,7 @@
     if (!entity.isValidationFailure()) {
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
     }
-    return getMapRecords(instance,mapStructure,valueMergedProperties,entity.findProperty("symbolicId"))[0];
+    return getMapRecords(instance,mapStructure,ceilingMergedProperties,valueMergedProperties,entity.findProperty("symbolicId"))[0];
   }
  catch (  Exception e) {
     LOG.error("Problem editing entity",e);

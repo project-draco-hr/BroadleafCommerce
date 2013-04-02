@@ -2,14 +2,35 @@
   Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(unfilteredProperties);
   FieldManager fieldManager=getFieldManager();
   for (  Property property : entity.getProperties()) {
-    Field field=fieldManager.getField(instance.getClass(),property.getName());
-    if (field == null) {
-      LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");
-      continue;
-    }
-    Class<?> returnType=field.getType();
-    String value=property.getValue();
     BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
+    Class<?> returnType;
+    if (!property.getName().contains("/")) {
+      Field field=fieldManager.getField(instance.getClass(),property.getName());
+      if (field == null) {
+        LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");
+        continue;
+      }
+      returnType=field.getType();
+    }
+ else {
+      returnType=getBasicBroadleafType(metadata.getFieldType());
+      if (returnType == null) {
+        Field field=fieldManager.getField(instance.getClass(),property.getName().substring(0,property.getName().indexOf("/")));
+        java.lang.reflect.Type type=field.getGenericType();
+        if (type instanceof ParameterizedType) {
+          ParameterizedType pType=(ParameterizedType)type;
+          Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+          Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(clazz);
+          if (!ArrayUtils.isEmpty(entities)) {
+            returnType=entities[entities.length - 1];
+          }
+        }
+      }
+    }
+    if (returnType == null) {
+      throw new IllegalAccessException("Unable to determine the value type for the property (" + property.getName() + ")");
+    }
+    String value=property.getValue();
     if (metadata != null) {
       Boolean mutable=metadata.getMutable();
       Boolean readOnly=metadata.getReadOnly();

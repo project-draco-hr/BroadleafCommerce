@@ -1,0 +1,19 @@
+{
+  FieldMetadata metadata=attributes.get(field.getName());
+  if (metadata != null) {
+    AdminPresentationClass adminPresentationClass;
+    if (parentClass != null) {
+      metadata.setOwningClass(parentClass.getName());
+      adminPresentationClass=parentClass.getAnnotation(AdminPresentationClass.class);
+    }
+ else {
+      adminPresentationClass=targetClass.getAnnotation(AdminPresentationClass.class);
+    }
+    if (adminPresentationClass != null) {
+      String friendlyName=adminPresentationClass.friendlyName();
+      if (!StringUtils.isEmpty(friendlyName) && StringUtils.isEmpty(metadata.getOwningClassFriendlyName())) {
+        metadata.setOwningClassFriendlyName(friendlyName);
+      }
+    }
+  }
+}

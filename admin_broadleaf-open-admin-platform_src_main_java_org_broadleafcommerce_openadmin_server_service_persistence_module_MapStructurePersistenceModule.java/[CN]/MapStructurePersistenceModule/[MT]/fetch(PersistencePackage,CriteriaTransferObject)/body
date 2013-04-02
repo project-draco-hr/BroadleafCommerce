@@ -26,7 +26,8 @@
       throw new ServiceException("Queries to retrieve an entity containing a MapStructure must return only 1 entity. Your query returned (" + totalRecords + ") values.");
     }
     List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
-    payload=getMapRecords(records.get(0),mapStructure,valueMergedProperties,null);
+    Map<String,FieldMetadata> ceilingMergedProperties=getSimpleMergedProperties(records.get(0).getClass().getName(),persistencePerspective);
+    payload=getMapRecords(records.get(0),mapStructure,ceilingMergedProperties,valueMergedProperties,null);
   }
  catch (  ServiceException e) {
     LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);

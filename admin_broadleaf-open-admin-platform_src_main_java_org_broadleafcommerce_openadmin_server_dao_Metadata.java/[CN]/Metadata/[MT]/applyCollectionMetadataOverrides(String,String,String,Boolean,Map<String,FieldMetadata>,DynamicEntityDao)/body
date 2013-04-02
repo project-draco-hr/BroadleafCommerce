@@ -18,7 +18,8 @@
                 Field field=dynamicEntityDao.getFieldManager().getField(targetClass,fieldName);
                 Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
                 temp.put(field.getName(),serverMetadata);
-                buildCollectionMetadata(parentClass,targetClass,temp,field,localMetadata);
+                FieldInfo info=buildFieldInfo(field);
+                buildCollectionMetadata(parentClass,targetClass,temp,info,localMetadata);
                 serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
                 mergedProperties.put(key,serverMetadata);
                 if (isParentExcluded) {

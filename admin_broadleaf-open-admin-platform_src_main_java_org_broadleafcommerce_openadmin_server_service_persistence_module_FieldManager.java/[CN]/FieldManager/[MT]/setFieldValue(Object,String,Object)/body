@@ -1,15 +1,32 @@
 {
   StringTokenizer tokens=new StringTokenizer(fieldName,".");
   Class<?> componentClass=bean.getClass();
-  Field field=null;
+  Field field;
   Object value=bean;
   int count=tokens.countTokens();
   int j=0;
   while (tokens.hasMoreTokens()) {
-    field=getSingleField(componentClass,tokens.nextToken());
+    String fieldNamePart=tokens.nextToken();
+    String mapKey=null;
+    if (fieldNamePart.contains("/")) {
+      mapKey=fieldNamePart.substring(fieldNamePart.indexOf("/") + 1,fieldNamePart.length());
+      fieldNamePart=fieldNamePart.substring(0,fieldNamePart.indexOf("/"));
+    }
+    field=getSingleField(componentClass,fieldNamePart);
     field.setAccessible(true);
     if (j == count - 1) {
-      field.set(value,newValue);
+      if (mapKey != null) {
+        Map map=(Map)field.get(value);
+        if (newValue == null) {
+          map.remove(mapKey);
+        }
+ else {
+          map.put(mapKey,newValue);
+        }
+      }
+ else {
+        field.set(value,newValue);
+      }
     }
  else {
       Object myValue=field.get(value);

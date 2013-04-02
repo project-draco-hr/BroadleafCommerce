@@ -1,5 +1,16 @@
 {
   int j=0;
+  Comparator<String> propertyComparator=new Comparator<String>(){
+    @Override public int compare(    String o1,    String o2){
+      if (o1.equals(o2) || o1.startsWith(o2 + "/") || o2.startsWith(o1 + "/")) {
+        return 0;
+      }
+      return o1.compareTo(o2);
+    }
+  }
+;
+  List<String> presentationKeyList=new ArrayList<String>(presentationAttributes.keySet());
+  Collections.sort(presentationKeyList);
   for (  String propertyName : propertyNames) {
     final Type type=propertyTypes.get(j);
     boolean isPropertyForeignKey=testForeignProperty(foreignField,prefix,propertyName);
@@ -9,49 +20,44 @@
     if (myField == null) {
       myField=getFieldManager().getField(targetClass,prefix + propertyName);
     }
-    if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || presentationAttributes.containsKey(propertyName)) {
-      if (myField != null && (myField.getAnnotation(AdminPresentationCollection.class) != null || myField.getAnnotation(AdminPresentationAdornedTargetCollection.class) != null || myField.getAnnotation(AdminPresentationMap.class) != null)) {
-        final CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes.get(propertyName);
-        setExcludedBasedOnShowIfProperty(fieldMetadata);
-        fieldMetadata.setInheritedFromType(targetClass.getName());
-        fieldMetadata.setAvailableToTypes(new String[]{targetClass.getName()});
-        fields.put(propertyName,fieldMetadata);
-        fieldMetadata.accept(new MetadataVisitorAdapter(){
-          @Override public void visit(          AdornedTargetCollectionMetadata metadata){
-            if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
-              fieldMetadata.setCollectionCeilingEntity(type.getReturnedClass().getName());
-              AdornedTargetList targetList=((AdornedTargetList)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST));
-              targetList.setAdornedTargetEntityClassname(metadata.getCollectionCeilingEntity());
+    if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || Collections.binarySearch(presentationKeyList,propertyName,propertyComparator) >= 0) {
+      if (myField != null) {
+        AdminPresentationMap map=myField.getAnnotation(AdminPresentationMap.class);
+        AdminPresentationAdornedTargetCollection adornedTargetCollection=myField.getAnnotation(AdminPresentationAdornedTargetCollection.class);
+        AdminPresentationCollection collection=myField.getAnnotation(AdminPresentationCollection.class);
+        if (map != null && !ArrayUtils.isEmpty(map.mapDisplayFields())) {
+          for (          Map.Entry<String,FieldMetadata> entry : presentationAttributes.entrySet()) {
+            if (entry.getKey().startsWith(propertyName + "/")) {
+              TypeLocatorImpl typeLocator=new TypeLocatorImpl(new TypeResolver());
+              Type myType=null;
+              SupportedFieldType fieldType=((BasicFieldMetadata)entry.getValue()).getExplicitFieldType();
+              Class<?> basicJavaType=getBasicJavaType(fieldType);
+              if (basicJavaType != null) {
+                myType=typeLocator.basic(basicJavaType);
+              }
+              if (myType == null) {
+                java.lang.reflect.Type genericType=myField.getGenericType();
+                if (genericType instanceof ParameterizedType) {
+                  ParameterizedType pType=(ParameterizedType)genericType;
+                  Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+                  Class<?>[] entities=getAllPolymorphicEntitiesFromCeiling(clazz);
+                  if (!ArrayUtils.isEmpty(entities)) {
+                    myType=typeLocator.entity(entities[entities.length - 1]);
+                  }
+                }
+              }
+              if (myType == null) {
+                throw new IllegalArgumentException("Unable to establish the type for the property (" + entry.getKey() + ")");
+              }
+              buildBasicProperty(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,componentProperties,fields,idProperty,false,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded,entry.getKey(),myType,isPropertyForeignKey,additionalForeignKeyIndexPosition);
             }
           }
-          @Override public void visit(          BasicCollectionMetadata metadata){
-          }
-          @Override public void visit(          MapMetadata metadata){
-          }
         }
-);
-      }
- else {
-        FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
-        Boolean amIExcluded=isParentExcluded || !testPropertyInclusion(presentationAttribute);
-        Boolean includeField=testPropertyRecursion(prefix,parentClasses,propertyName,targetClass,ceilingEntityFullyQualifiedClassname);
-        SupportedFieldType explicitType=null;
-        if (presentationAttribute != null && presentationAttribute instanceof BasicFieldMetadata) {
-          explicitType=((BasicFieldMetadata)presentationAttribute).getExplicitFieldType();
+        if (adornedTargetCollection != null || collection != null || (map != null && (ArrayUtils.isEmpty(map.mapDisplayFields()) || map.allowMapFieldOverflowPresentation()))) {
+          handleAdvancedField(targetClass,presentationAttributes,fields,propertyName,type);
         }
-        Class<?> returnedClass=type.getReturnedClass();
-        checkProp: {
-          if (type.isComponentType() && includeField) {
-            buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,type,returnedClass,parentClasses,amIExcluded,prefix);
-            break checkProp;
-          }
-          if (type.isEntityType() && !returnedClass.isAssignableFrom(targetClass) && populateManyToOneFields&& includeField) {
-            buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,returnedClass,targetClass,parentClasses,prefix,amIExcluded);
-            break checkProp;
-          }
-        }
-        if (includeField || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0) {
-          buildProperty(targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttribute,explicitType,returnedClass);
+ else         if (map == null) {
+          buildBasicProperty(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,componentProperties,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition);
         }
       }
     }
