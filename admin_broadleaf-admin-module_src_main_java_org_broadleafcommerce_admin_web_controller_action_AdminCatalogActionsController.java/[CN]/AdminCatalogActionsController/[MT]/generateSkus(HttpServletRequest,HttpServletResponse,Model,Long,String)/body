@@ -1,7 +1,18 @@
 {
   HashMap<String,Object> result=new HashMap<String,Object>();
   Integer skusGenerated=adminCatalogService.generateSkusFromProduct(productId);
+  if (skusGenerated == 0) {
+    result.put("message","No Skus were generated. It is likely that each product option value permutation " + "already has a Sku associated with it");
+  }
+ else   if (skusGenerated == -1) {
+    result.put("message","This product has no Product Options configured to generate Skus from");
+  }
+ else {
+    result.put("message",skusGenerated + " Skus have been generated from the configured product options");
+  }
+  String url=request.getRequestURL().toString();
+  url=url.substring(0,url.indexOf("/generate-skus"));
   result.put("skusGenerated",skusGenerated);
-  result.put("error",(skusGenerated == -1));
+  result.put("listGridUrl",url);
   return result;
 }
