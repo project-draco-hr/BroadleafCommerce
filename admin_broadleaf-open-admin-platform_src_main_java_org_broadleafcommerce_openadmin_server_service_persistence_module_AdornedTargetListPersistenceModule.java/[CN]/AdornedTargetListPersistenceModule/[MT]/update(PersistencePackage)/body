@@ -13,19 +13,23 @@
     Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
     FieldManager fieldManager=getFieldManager();
     if (adornedTargetList.getSortField() != null && entity.findProperty(adornedTargetList.getSortField()).getValue() != null) {
-      Serializable myRecord=records.remove(index);
-      myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
-      Integer newPos=Integer.valueOf(entity.findProperty(adornedTargetList.getSortField()).getValue());
-      if (CollectionUtils.isEmpty(records)) {
-        records.add(myRecord);
-      }
+      Serializable myRecord=records.get(index);
+      Integer requestedSequence=Integer.valueOf(entity.findProperty(adornedTargetList.getSortField()).getValue());
+      Integer previousSequence=Integer.parseInt(String.valueOf(getFieldManager().getFieldValue(myRecord,adornedTargetList.getSortField())));
+      if (!previousSequence.equals(requestedSequence)) {
+        myRecord=records.remove(index);
+        myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
+        if (CollectionUtils.isEmpty(records)) {
+          records.add(myRecord);
+        }
  else {
-        records.add(newPos,myRecord);
-      }
-      index=1;
-      for (      Serializable record : records) {
-        fieldManager.setFieldValue(record,adornedTargetList.getSortField(),Long.valueOf(index));
-        index++;
+          records.add(requestedSequence - 1,myRecord);
+        }
+        index=1;
+        for (        Serializable record : records) {
+          fieldManager.setFieldValue(record,adornedTargetList.getSortField(),Long.valueOf(index));
+          index++;
+        }
       }
     }
  else {
