@@ -11,6 +11,7 @@
     String decryptedActiveIdValue=encryptionModule.decrypt(activeIdCookieValue);
     if (!activeIdSessionValue.equals(decryptedActiveIdValue)) {
       abortUser(request,response);
+      LOG.info("Session has been terminated. ActiveID did not match expected value.");
       return;
     }
   }
