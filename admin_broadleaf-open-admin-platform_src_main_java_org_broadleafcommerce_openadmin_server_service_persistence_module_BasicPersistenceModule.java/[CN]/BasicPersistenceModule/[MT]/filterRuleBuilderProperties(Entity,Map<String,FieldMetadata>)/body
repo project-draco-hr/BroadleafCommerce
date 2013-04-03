@@ -1,0 +1,30 @@
+{
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  List<Property> propertyList=new ArrayList<Property>();
+  propertyList.addAll(Arrays.asList(entity.getProperties()));
+  Iterator<Property> itr=propertyList.iterator();
+  List<Property> additionalProperties=new ArrayList<Property>();
+  while (itr.hasNext()) {
+    Property prop=itr.next();
+    if (prop.getName().endsWith("Json")) {
+      for (      Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+        if (prop.getName().startsWith(entry.getKey())) {
+          BasicFieldMetadata originalFM=(BasicFieldMetadata)entry.getValue();
+          if (originalFM.getFieldType() == SupportedFieldType.RULE_SIMPLE) {
+            Property orginalProp=entity.findProperty(originalFM.getName());
+            if (orginalProp == null) {
+              orginalProp=new Property();
+              orginalProp.setName(originalFM.getName());
+              additionalProperties.add(orginalProp);
+            }
+            convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(originalFM.getRuleIdentifier()),originalFM.getRuleIdentifier(),prop,orginalProp);
+            itr.remove();
+            break;
+          }
+        }
+      }
+    }
+  }
+  propertyList.addAll(additionalProperties);
+  entity.setProperties(propertyList.toArray(new Property[propertyList.size()]));
+}

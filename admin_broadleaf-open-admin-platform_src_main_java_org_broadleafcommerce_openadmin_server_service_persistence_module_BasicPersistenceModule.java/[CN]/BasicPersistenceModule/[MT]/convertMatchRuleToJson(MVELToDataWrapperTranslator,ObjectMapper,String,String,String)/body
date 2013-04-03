@@ -1,0 +1,23 @@
+{
+  Entity[] matchCriteria=new Entity[1];
+  Property[] properties=new Property[1];
+  Property mvelProperty=new Property();
+  mvelProperty.setName("matchRule");
+  mvelProperty.setValue(matchRule == null ? "" : matchRule);
+  properties[0]=mvelProperty;
+  Entity criteria=new Entity();
+  criteria.setProperties(properties);
+  matchCriteria[0]=criteria;
+  String json;
+  try {
+    DataWrapper orderWrapper=translator.createRuleData(matchCriteria,"matchRule",null,null,ruleBuilderFieldServiceFactory.createInstance(fieldService));
+    json=mapper.writeValueAsString(orderWrapper);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  Property p=new Property();
+  p.setName(jsonProp);
+  p.setValue(json);
+  return p;
+}

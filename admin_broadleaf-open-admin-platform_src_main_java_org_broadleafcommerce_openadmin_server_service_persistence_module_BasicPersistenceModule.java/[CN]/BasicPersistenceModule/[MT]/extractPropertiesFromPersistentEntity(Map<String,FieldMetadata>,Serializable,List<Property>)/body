@@ -1,5 +1,7 @@
 {
   FieldManager fieldManager=getFieldManager();
+  MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
+  ObjectMapper mapper=new ObjectMapper();
   for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
     String property=entry.getKey();
     BasicFieldMetadata metadata=(BasicFieldMetadata)entry.getValue();
@@ -44,7 +46,7 @@
  catch (      FieldNotAvailableException e) {
         isFieldAccessible=false;
       }
-      String strVal;
+      String strVal=null;
       checkField: {
         if (isFieldAccessible) {
           Property propertyItem=new Property();
@@ -54,6 +56,30 @@
           }
           props.add(propertyItem);
           String displayVal=null;
+          if (metadata.getFieldType() == SupportedFieldType.RULE_SIMPLE) {
+            if (value != null) {
+              if (value instanceof String) {
+                strVal=(String)value;
+                propertyItem.setValue(strVal);
+                propertyItem.setDisplayValue(displayVal);
+              }
+              if (value instanceof SimpleRule) {
+                SimpleRule simpleRule=(SimpleRule)value;
+                if (value != null) {
+                  strVal=simpleRule.getMatchRule();
+                  propertyItem.setValue(strVal);
+                  propertyItem.setDisplayValue(displayVal);
+                }
+              }
+            }
+            Property jsonProperty=convertMatchRuleToJson(translator,mapper,strVal,metadata.getName() + "Json",metadata.getRuleIdentifier());
+            props.add(jsonProperty);
+            Property fieldServiceProperty=new Property();
+            fieldServiceProperty.setName(metadata.getName() + "FieldService");
+            fieldServiceProperty.setValue(metadata.getRuleIdentifier());
+            props.add(fieldServiceProperty);
+            break checkField;
+          }
           if (value != null) {
             if (metadata.getForeignKeyCollection()) {
               ((BasicFieldMetadata)propertyItem.getMetadata()).setFieldType(metadata.getFieldType());

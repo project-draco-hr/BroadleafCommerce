@@ -2,6 +2,9 @@
   for (  Property property : properties) {
     if (property.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)property.getMetadata();
+      if (fmd.getFieldType() == SupportedFieldType.RULE_SIMPLE || fmd.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
+        continue;
+      }
       if (!(VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) || VisibilityEnum.FORM_HIDDEN.equals(fmd.getVisibility()))) {
         String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
         Field f;

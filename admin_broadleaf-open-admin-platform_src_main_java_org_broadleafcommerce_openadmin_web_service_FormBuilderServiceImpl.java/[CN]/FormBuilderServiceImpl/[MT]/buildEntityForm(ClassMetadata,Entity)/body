@@ -4,6 +4,10 @@
   ef.setEntityType(entity.getType()[0]);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata basicFM=(BasicFieldMetadata)p.getMetadata();
+      if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
+        continue;
+      }
       Property entityProp=entity.findProperty(p.getName());
       if (entityProp == null) {
         ef.removeField(p.getName());

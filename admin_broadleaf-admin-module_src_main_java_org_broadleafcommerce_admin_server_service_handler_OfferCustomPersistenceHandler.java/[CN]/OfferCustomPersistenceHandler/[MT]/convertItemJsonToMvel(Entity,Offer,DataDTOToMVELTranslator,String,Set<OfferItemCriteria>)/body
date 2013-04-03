@@ -10,7 +10,7 @@
           for (          OfferItemCriteria oic : criteriaList) {
             if (dto.getId().equals(oic.getId())) {
               oic.setQuantity(dto.getQuantity());
-              oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
+              oic.setMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
               updated.add(oic.getId());
             }
           }
@@ -18,7 +18,7 @@
  else {
           OfferItemCriteria oic=(OfferItemCriteria)entityConfiguration.createEntityInstance(OfferItemCriteria.class.getName());
           oic.setQuantity(dto.getQuantity());
-          oic.setOrderItemMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
+          oic.setMatchRule(translator.createMVEL("discreteOrderItem",dto,ruleBuilderFieldServiceFactory.createInstance("ORDER_ITEM_FIELDS")));
           if ("targetItemCriteriaJson".equals(itemCriteriaJson)) {
             oic.setTargetOffer(offerInstance);
           }

@@ -1,10 +1,11 @@
 {
   Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(unfilteredProperties);
   FieldManager fieldManager=getFieldManager();
+  filterRuleBuilderProperties(entity,mergedProperties);
   for (  Property property : entity.getProperties()) {
     BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
     Class<?> returnType;
-    if (!property.getName().contains("/")) {
+    if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
       Field field=fieldManager.getField(instance.getClass(),property.getName());
       if (field == null) {
         LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");
@@ -13,18 +14,13 @@
       returnType=field.getType();
     }
  else {
+      if (metadata == null) {
+        LOG.debug("Unable to find a metadata property for the reported property: " + property.getName() + ". Ignoring property.");
+        continue;
+      }
       returnType=getBasicBroadleafType(metadata.getFieldType());
       if (returnType == null) {
-        Field field=fieldManager.getField(instance.getClass(),property.getName().substring(0,property.getName().indexOf("/")));
-        java.lang.reflect.Type type=field.getGenericType();
-        if (type instanceof ParameterizedType) {
-          ParameterizedType pType=(ParameterizedType)type;
-          Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
-          Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(clazz);
-          if (!ArrayUtils.isEmpty(entities)) {
-            returnType=entities[entities.length - 1];
-          }
-        }
+        returnType=getMapFieldType(instance,fieldManager,property);
       }
     }
     if (returnType == null) {
@@ -121,7 +117,7 @@ collection.add(foreignInstance);
 }
 }
  else if (Map.class.isAssignableFrom(returnType)) {
-throw new RuntimeException("Map structures are not supported for foreign key fields.");
+throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
 }
  else {
 fieldManager.setFieldValue(instance,property.getName(),foreignInstance);
@@ -143,7 +139,7 @@ foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(
 }
 }
 if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection=null;
+Collection collection;
 try {
 collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
 }
@@ -155,7 +151,7 @@ collection.add(foreignInstance);
 }
 }
  else if (Map.class.isAssignableFrom(returnType)) {
-throw new RuntimeException("Map structures are not supported for foreign key fields.");
+throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
 }
  else {
 fieldManager.setFieldValue(instance,property.getName(),foreignInstance);
@@ -171,6 +167,46 @@ break;
 case STRING:
 fieldManager.setFieldValue(instance,property.getName(),value);
 break;
+}
+}
+break;
+case RULE_WITH_QUANTITY:
+case RULE_SIMPLE:
+Class<?> valueType=null;
+if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+valueType=returnType;
+}
+ else {
+String valueClassName=metadata.getMapFieldValueClass();
+if (valueClassName != null) {
+valueType=Class.forName(valueClassName);
+}
+if (valueType == null) {
+valueType=getMapFieldType(instance,fieldManager,property);
+}
+}
+if (valueType == null) {
+throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + property.getName() + ")");
+}
+if (String.class.isAssignableFrom(valueType)) {
+fieldManager.setFieldValue(instance,property.getName(),value);
+}
+if (SimpleRule.class.isAssignableFrom(valueType)) {
+SimpleRule rule;
+try {
+rule=(SimpleRule)fieldManager.getFieldValue(instance,property.getName());
+}
+ catch (FieldNotAvailableException e) {
+throw new IllegalArgumentException(e);
+}
+if (rule != null) {
+rule.setMatchRule(value);
+}
+ else {
+rule=(SimpleRule)valueType.newInstance();
+rule.setMatchRule(value);
+persistenceManager.getDynamicEntityDao().persist(rule);
+fieldManager.setFieldValue(instance,property.getName(),rule);
 }
 }
 break;

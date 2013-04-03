@@ -1,0 +1,14 @@
+{
+  Class<?> returnType=null;
+  Field field=fieldManager.getField(instance.getClass(),property.getName().substring(0,property.getName().indexOf(FieldManager.MAPFIELDSEPARATOR)));
+  java.lang.reflect.Type type=field.getGenericType();
+  if (type instanceof ParameterizedType) {
+    ParameterizedType pType=(ParameterizedType)type;
+    Class<?> clazz=(Class<?>)pType.getActualTypeArguments()[1];
+    Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(clazz);
+    if (!ArrayUtils.isEmpty(entities)) {
+      returnType=entities[entities.length - 1];
+    }
+  }
+  return returnType;
+}

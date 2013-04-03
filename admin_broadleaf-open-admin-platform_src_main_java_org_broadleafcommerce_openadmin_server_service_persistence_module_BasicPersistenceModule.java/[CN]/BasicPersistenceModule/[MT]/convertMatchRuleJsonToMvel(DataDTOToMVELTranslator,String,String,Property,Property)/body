@@ -1,0 +1,18 @@
+{
+  if (jsonProperty != null && originalProperty != null) {
+    DataWrapper dw=convertJsonToDataWrapper(jsonProperty.getValue());
+    if (dw != null && dw.getData().size() == 1) {
+      DataDTO dto=dw.getData().get(0);
+      String mvel;
+      try {
+        mvel=translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService));
+      }
+ catch (      MVELTranslationException e) {
+        throw new RuntimeException(e);
+      }
+      if (mvel != null) {
+        originalProperty.setValue(mvel);
+      }
+    }
+  }
+}
