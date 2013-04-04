@@ -22,6 +22,9 @@
  else     if (map != null) {
       if (!ArrayUtils.isEmpty(map.mapDisplayFields())) {
         for (        AdminPresentationMapField mapField : map.mapDisplayFields()) {
+          if (mapField.fieldPresentation().fieldType() == SupportedFieldType.UNKNOWN) {
+            throw new IllegalArgumentException("fieldType property on AdminPresentation must be set for AdminPresentationMapField");
+          }
           FieldMetadataOverride override=constructBasicMetadataOverride(mapField.fieldPresentation(),null,null);
           override.setFriendlyName(mapField.fieldName().friendlyKeyName());
           FieldInfo myInfo=new FieldInfo();

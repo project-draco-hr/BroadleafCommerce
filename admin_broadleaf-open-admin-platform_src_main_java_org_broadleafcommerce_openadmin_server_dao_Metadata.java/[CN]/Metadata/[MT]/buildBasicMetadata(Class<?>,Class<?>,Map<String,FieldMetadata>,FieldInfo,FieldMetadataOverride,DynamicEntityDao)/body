@@ -154,6 +154,9 @@
   if (basicFieldMetadata.getValidationConfigurations() != null) {
     metadata.setValidationConfigurations(basicFieldMetadata.getValidationConfigurations());
   }
+  if ((basicFieldMetadata.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFieldMetadata.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) && basicFieldMetadata.getRuleIdentifier() == null) {
+    throw new IllegalArgumentException("ruleIdentifier property must be set on AdminPresentation when the fieldType is RULE_SIMPLE or RULE_WITH_QUANTITY");
+  }
   if (basicFieldMetadata.getRuleIdentifier() != null) {
     metadata.setRuleIdentifier(basicFieldMetadata.getRuleIdentifier());
   }
