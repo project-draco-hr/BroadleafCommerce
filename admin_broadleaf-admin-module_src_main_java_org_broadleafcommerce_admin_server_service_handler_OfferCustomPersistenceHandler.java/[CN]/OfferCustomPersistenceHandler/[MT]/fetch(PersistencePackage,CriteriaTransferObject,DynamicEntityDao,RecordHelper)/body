@@ -16,61 +16,8 @@
       ((NestedPropertyCriteria)queryCriteria).add(filterCriterion);
     }
     List<Serializable> records=dynamicEntityDao.query(queryCriteria,Offer.class);
-    Entity[] entities=helper.getRecords(offerProperties,records,null,null);
-    MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
-    ObjectMapper mapper=new ObjectMapper();
-    for (int j=0; j < entities.length; j++) {
-      Offer offer=(Offer)records.get(j);
-      OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
-      if (orderRule != null) {
-        entities[j].findProperty("appliesToOrderRules").setValue(orderRule.getMatchRule());
-        convertMatchRuleToJson(entities[j],translator,mapper,orderRule,"appliesToOrderRulesJson","ORDER_FIELDS");
-      }
-      Property appliesToOrderRulesFieldService=new Property();
-      appliesToOrderRulesFieldService.setName("appliesToOrderRulesFieldService");
-      appliesToOrderRulesFieldService.setValue("ORDER_FIELDS");
-      entities[j].addProperty(appliesToOrderRulesFieldService);
-      OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.CUSTOMER.getType());
-      if (customerRule != null) {
-        entities[j].findProperty("appliesToCustomerRules").setValue(customerRule.getMatchRule());
-        convertMatchRuleToJson(entities[j],translator,mapper,customerRule,"appliesToCustomerRulesJson","CUSTOMER_FIELDS");
-      }
-      Property appliesToCustomerRulesFieldService=new Property();
-      appliesToCustomerRulesFieldService.setName("appliesToCustomerRulesFieldService");
-      appliesToCustomerRulesFieldService.setValue("CUSTOMER_FIELDS");
-      entities[j].addProperty(appliesToCustomerRulesFieldService);
-      OfferRule fgRule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
-      if (fgRule != null) {
-        Property prop=new Property();
-        prop.setName("appliesToFulfillmentGroupRules");
-        prop.setValue(fgRule.getMatchRule());
-        entities[j].addProperty(prop);
-        convertMatchRuleToJson(entities[j],translator,mapper,fgRule,"appliesToFulfillmentGroupRulesJson","FULFILLMENT_GROUP_FIELDS");
-      }
-      Property appliesToFulfillmentGroupRulesFieldService=new Property();
-      appliesToFulfillmentGroupRulesFieldService.setName("appliesToFulfillmentGroupRulesFieldService");
-      appliesToFulfillmentGroupRulesFieldService.setValue("FULFILLMENT_GROUP_FIELDS");
-      entities[j].addProperty(appliesToFulfillmentGroupRulesFieldService);
-      convertItemCriteriaToJson(entities[j],translator,mapper,offer.getTargetItemCriteria(),"targetItemCriteriaJson","targetItemCriteriaFieldService");
-      convertItemCriteriaToJson(entities[j],translator,mapper,offer.getQualifyingItemCriteria(),"qualifyingItemCriteriaJson","qualifyingItemCriteriaFieldService");
-    }
-    PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
-    Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
-    for (    Entity record : entities) {
-      CriteriaTransferObject offerCodeCto=new CriteriaTransferObject();
-      FilterAndSortCriteria filterCriteria=offerCodeCto.get("offer");
-      filterCriteria.setFilterValue(record.findProperty("id").getValue());
-      BaseCtoConverter offerCodeCtoConverter=helper.getCtoConverter(offerCodePersistencePerspective,offerCodeCto,OfferCode.class.getName(),offerCodeMergedProperties);
-      PersistentEntityCriteria offerCodeQueryCriteria=offerCodeCtoConverter.convert(offerCodeCto,OfferCode.class.getName());
-      List<Serializable> offerCodes=dynamicEntityDao.query(offerCodeQueryCriteria,OfferCode.class);
-      Entity[] offerCodeEntities=helper.getRecords(offerCodeMergedProperties,offerCodes,null,null);
-      if (offerCodeEntities.length > 0) {
-        Entity temp=new Entity();
-        temp.setType(offerCodeEntities[0].getType());
-        temp.setProperties(new Property[]{offerCodeEntities[0].findProperty("offerCode"),offerCodeEntities[0].findProperty("id")});
-        record.mergeProperties("offerCode",temp);
-      }
-    }
+    Entity[] entities=helper.getRecords(offerProperties,records);
+    addAssociatedOfferCodes(dynamicEntityDao,helper,entities);
     int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
     DynamicResultSet response=new DynamicResultSet(null,entities,totalRecords);
     return response;

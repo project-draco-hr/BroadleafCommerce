@@ -1,0 +1,19 @@
+{
+  PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
+  Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
+  for (  Entity record : entities) {
+    CriteriaTransferObject offerCodeCto=new CriteriaTransferObject();
+    FilterAndSortCriteria filterCriteria=offerCodeCto.get("offer");
+    filterCriteria.setFilterValue(record.findProperty("id").getValue());
+    BaseCtoConverter offerCodeCtoConverter=helper.getCtoConverter(offerCodePersistencePerspective,offerCodeCto,OfferCode.class.getName(),offerCodeMergedProperties);
+    PersistentEntityCriteria offerCodeQueryCriteria=offerCodeCtoConverter.convert(offerCodeCto,OfferCode.class.getName());
+    List<Serializable> offerCodes=dynamicEntityDao.query(offerCodeQueryCriteria,OfferCode.class);
+    Entity[] offerCodeEntities=helper.getRecords(offerCodeMergedProperties,offerCodes,null,null);
+    if (offerCodeEntities.length > 0) {
+      Entity temp=new Entity();
+      temp.setType(offerCodeEntities[0].getType());
+      temp.setProperties(new Property[]{offerCodeEntities[0].findProperty("offerCode"),offerCodeEntities[0].findProperty("id")});
+      record.mergeProperties("offerCode",temp);
+    }
+  }
+}

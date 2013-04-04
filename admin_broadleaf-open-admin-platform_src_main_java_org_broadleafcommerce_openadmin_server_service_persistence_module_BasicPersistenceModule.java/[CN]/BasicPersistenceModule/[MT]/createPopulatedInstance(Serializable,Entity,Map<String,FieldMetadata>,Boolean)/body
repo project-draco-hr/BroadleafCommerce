@@ -171,7 +171,26 @@ break;
 }
 break;
 case RULE_WITH_QUANTITY:
+{
+Class<?> valueType=getListFieldType(instance,fieldManager,property);
+if (valueType == null) {
+throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + property.getName() + ")");
+}
+DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+Collection<QuantityBasedRule> rules;
+try {
+rules=(Collection<QuantityBasedRule>)fieldManager.getFieldValue(instance,property.getName());
+}
+ catch (FieldNotAvailableException e) {
+throw new IllegalArgumentException(e);
+}
+populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(metadata.getRuleIdentifier()),metadata.getRuleIdentifier(),value,rules,valueType);
+break;
+}
 case RULE_SIMPLE:
+{
+DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(metadata.getRuleIdentifier()),metadata.getRuleIdentifier(),value);
 Class<?> valueType=null;
 if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
 valueType=returnType;
@@ -189,7 +208,7 @@ if (valueType == null) {
 throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + property.getName() + ")");
 }
 if (String.class.isAssignableFrom(valueType)) {
-fieldManager.setFieldValue(instance,property.getName(),value);
+fieldManager.setFieldValue(instance,property.getName(),mvel);
 }
 if (SimpleRule.class.isAssignableFrom(valueType)) {
 SimpleRule rule;
@@ -200,16 +219,17 @@ rule=(SimpleRule)fieldManager.getFieldValue(instance,property.getName());
 throw new IllegalArgumentException(e);
 }
 if (rule != null) {
-rule.setMatchRule(value);
+rule.setMatchRule(mvel);
 }
  else {
 rule=(SimpleRule)valueType.newInstance();
-rule.setMatchRule(value);
+rule.setMatchRule(mvel);
 persistenceManager.getDynamicEntityDao().persist(rule);
 fieldManager.setFieldValue(instance,property.getName(),rule);
 }
 }
 break;
+}
 }
 }
  else {

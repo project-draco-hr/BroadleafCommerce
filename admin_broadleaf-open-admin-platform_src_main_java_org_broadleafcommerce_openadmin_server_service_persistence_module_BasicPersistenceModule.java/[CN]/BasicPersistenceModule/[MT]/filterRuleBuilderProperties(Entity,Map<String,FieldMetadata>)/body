@@ -10,14 +10,14 @@
       for (      Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
         if (prop.getName().startsWith(entry.getKey())) {
           BasicFieldMetadata originalFM=(BasicFieldMetadata)entry.getValue();
-          if (originalFM.getFieldType() == SupportedFieldType.RULE_SIMPLE) {
+          if (originalFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || originalFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
             Property orginalProp=entity.findProperty(originalFM.getName());
             if (orginalProp == null) {
               orginalProp=new Property();
               orginalProp.setName(originalFM.getName());
               additionalProperties.add(orginalProp);
             }
-            convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(originalFM.getRuleIdentifier()),originalFM.getRuleIdentifier(),prop,orginalProp);
+            orginalProp.setValue(prop.getValue());
             itr.remove();
             break;
           }

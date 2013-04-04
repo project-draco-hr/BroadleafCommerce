@@ -1,0 +1,35 @@
+{
+  int k=0;
+  Entity[] targetItemCriterias=new Entity[quantityBasedRules.size()];
+  for (  QuantityBasedRule quantityBasedRule : quantityBasedRules) {
+    Property[] properties=new Property[3];
+    Property mvelProperty=new Property();
+    mvelProperty.setName("matchRule");
+    mvelProperty.setValue(quantityBasedRule.getMatchRule());
+    Property quantityProperty=new Property();
+    quantityProperty.setName("quantity");
+    quantityProperty.setValue(quantityBasedRule.getQuantity().toString());
+    Property idProperty=new Property();
+    idProperty.setName("id");
+    idProperty.setValue(quantityBasedRule.getId().toString());
+    properties[0]=mvelProperty;
+    properties[1]=quantityProperty;
+    properties[2]=idProperty;
+    Entity criteria=new Entity();
+    criteria.setProperties(properties);
+    targetItemCriterias[k]=criteria;
+    k++;
+  }
+  String json;
+  try {
+    DataWrapper oiWrapper=translator.createRuleData(targetItemCriterias,"matchRule","quantity","id",ruleBuilderFieldServiceFactory.createInstance(fieldService));
+    json=mapper.writeValueAsString(oiWrapper);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  Property p=new Property();
+  p.setName(jsonProp);
+  p.setValue(json);
+  return p;
+}

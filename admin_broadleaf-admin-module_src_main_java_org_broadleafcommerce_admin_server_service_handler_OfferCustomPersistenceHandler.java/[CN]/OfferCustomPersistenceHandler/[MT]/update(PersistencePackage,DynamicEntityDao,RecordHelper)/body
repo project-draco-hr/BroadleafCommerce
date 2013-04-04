@@ -1,27 +1,11 @@
 {
   Entity entity=persistencePackage.getEntity();
-  removeHTMLEncoding(entity);
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> offerProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,offerProperties);
     Offer offerInstance=(Offer)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     offerInstance=(Offer)helper.createPopulatedInstance(offerInstance,entity,offerProperties,false);
-    DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-    convertMatchRuleJsonToMvel("appliesToOrderRulesJson","appliesToOrderRules",entity,translator,"order","ORDER_FIELDS");
-    convertMatchRuleJsonToMvel("appliesToCustomerRulesJson","appliesToCustomerRules",entity,translator,"customer","CUSTOMER_FIELDS");
-    convertMatchRuleJsonToMvel("appliesToFulfillmentGroupRulesJson","appliesToFulfillmentGroupRules",entity,translator,"fulfillmentGroup","FULFILLMENT_GROUP_FIELDS");
-    updateRule(entity,offerInstance,"appliesToOrderRules",OfferRuleType.ORDER);
-    updateRule(entity,offerInstance,"appliesToCustomerRules",OfferRuleType.CUSTOMER);
-    updateRule(entity,offerInstance,"appliesToFulfillmentGroupRules",OfferRuleType.FULFILLMENT_GROUP);
-    Set<OfferItemCriteria> netNewTargetCriteria=convertItemJsonToMvel(entity,offerInstance,translator,"targetItemCriteriaJson",offerInstance.getTargetItemCriteria());
-    for (    OfferItemCriteria oic : netNewTargetCriteria) {
-      dynamicEntityDao.persist(oic);
-    }
-    Set<OfferItemCriteria> netNewQualifyCriteria=convertItemJsonToMvel(entity,offerInstance,translator,"qualifyingItemCriteriaJson",offerInstance.getQualifyingItemCriteria());
-    for (    OfferItemCriteria oic : netNewQualifyCriteria) {
-      dynamicEntityDao.persist(oic);
-    }
     dynamicEntityDao.merge(offerInstance);
     Property offerCodeId=entity.findProperty("offerCode.id");
     OfferCode offerCode=null;
@@ -54,10 +38,6 @@
       temp.setType(offerCodeEntity.getType());
       temp.setProperties(new Property[]{offerCodeEntity.findProperty("offerCode"),offerCodeEntity.findProperty("id")});
       offerEntity.mergeProperties("offerCode",temp);
-    }
-    Property fgProperty=entity.findProperty("appliesToFulfillmentGroupRules");
-    if (fgProperty != null) {
-      offerEntity.addProperty(fgProperty);
     }
     return offerEntity;
   }
