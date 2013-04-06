@@ -7,10 +7,11 @@
   }
   String activeIdSessionValue=(String)session.getAttribute(SESSION_ATTR);
   if (StringUtils.isNotBlank(activeIdSessionValue) && request.isSecure()) {
-    String activeIdCookieValue=SessionFixationProtectionCookie.readActiveID();
+    String activeIdCookieValue=SessionFixationProtectionCookie.readActiveID(request);
     String decryptedActiveIdValue=encryptionModule.decrypt(activeIdCookieValue);
     if (!activeIdSessionValue.equals(decryptedActiveIdValue)) {
       abortUser(request,response);
+      LOG.info("Session has been terminated. ActiveID did not match expected value.");
       return;
     }
   }

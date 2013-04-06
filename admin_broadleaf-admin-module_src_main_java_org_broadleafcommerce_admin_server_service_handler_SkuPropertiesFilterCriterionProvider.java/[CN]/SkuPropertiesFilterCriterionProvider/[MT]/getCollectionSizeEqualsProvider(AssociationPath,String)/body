@@ -1,0 +1,13 @@
+{
+  if ((StringUtils.isNotEmpty(skuPropertyPrefix) && propertyId.startsWith(skuPropertyPrefix)) || path.equals(AssociationPath.ROOT)) {
+    return new SimpleFilterCriterionProvider(FilterDataStrategy.DIRECT,1){
+      @Override public Criterion getCriterion(      String targetPropertyName,      Object[] filterObjectValues,      Object[] directValues){
+        return buildCriterion(targetPropertyName,Restrictions.sizeEq(targetPropertyName,(Integer)directValues[0]),Restrictions.sizeEq(DEFAULT_SKU_PATH_PREFIX + targetPropertyName,(Integer)directValues[0]));
+      }
+    }
+;
+  }
+ else {
+    return super.getCollectionSizeEqualsProvider(path,propertyId);
+  }
+}
