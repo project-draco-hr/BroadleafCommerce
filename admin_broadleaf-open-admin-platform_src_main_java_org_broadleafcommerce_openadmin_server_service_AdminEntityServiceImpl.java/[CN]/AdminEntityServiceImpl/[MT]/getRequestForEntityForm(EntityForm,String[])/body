@@ -6,14 +6,9 @@
     idField.setValue(entityForm.getId());
     entityForm.getFields().put("id",idField);
   }
-  Property[] properties=new Property[entityForm.getFields().size()];
-  int i=0;
-  for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
-    Property p=new Property();
-    p.setName(entry.getKey());
-    p.setValue(entry.getValue().getValue());
-    properties[i++]=p;
-  }
+  List<Property> propList=getPropertiesFromEntityForm(entityForm);
+  Property[] properties=new Property[propList.size()];
+  properties=propList.toArray(properties);
   Entity entity=new Entity();
   entity.setProperties(properties);
   entity.setType(new String[]{entityForm.getEntityType()});
