@@ -2,15 +2,24 @@
   for (  Property property : properties) {
     if (property.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)property.getMetadata();
-      if (fmd.getFieldType() == SupportedFieldType.RULE_SIMPLE || fmd.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-        continue;
-      }
       if (!(VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) || VisibilityEnum.FORM_HIDDEN.equals(fmd.getVisibility()))) {
         String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
         Field f;
         if (fieldType.equals(SupportedFieldType.BROADLEAF_ENUMERATION.toString()) || fieldType.equals(SupportedFieldType.EXPLICIT_ENUMERATION.toString()) || fieldType.equals(SupportedFieldType.EMPTY_ENUMERATION.toString())) {
           f=new ComboField();
           ((ComboField)f).setOptions(fmd.getEnumerationValues());
+        }
+ else         if (fieldType.equals(SupportedFieldType.RULE_SIMPLE.toString()) || fieldType.equals(SupportedFieldType.RULE_WITH_QUANTITY.toString())) {
+          f=new RuleBuilderField();
+          ((RuleBuilderField)f).setFieldService(fmd.getName() + "FieldService");
+          ((RuleBuilderField)f).setJsonFieldName(fmd.getName() + "Json");
+          ((RuleBuilderField)f).setDataWrapper(new DataWrapper());
+          if (fieldType.equals(SupportedFieldType.RULE_SIMPLE.toString())) {
+            ((RuleBuilderField)f).setStyleClass("rule-builder-simple");
+          }
+ else           if (fieldType.equals(SupportedFieldType.RULE_WITH_QUANTITY.toString())) {
+            ((RuleBuilderField)f).setStyleClass("rule-builder-complex");
+          }
         }
  else {
           f=new Field();

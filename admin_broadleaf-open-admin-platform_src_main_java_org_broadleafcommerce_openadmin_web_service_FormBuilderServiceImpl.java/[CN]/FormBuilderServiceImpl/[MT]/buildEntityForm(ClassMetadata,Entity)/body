@@ -5,9 +5,6 @@
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata basicFM=(BasicFieldMetadata)p.getMetadata();
-      if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-        continue;
-      }
       Property entityProp=entity.findProperty(p.getName());
       if (entityProp == null) {
         ef.removeField(p.getName());
@@ -15,8 +12,20 @@
  else {
         Field field=ef.findField(p.getName());
         if (field != null) {
-          field.setValue(entityProp.getValue());
-          field.setDisplayValue(entityProp.getDisplayValue());
+          if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
+            RuleBuilderField rbf=(RuleBuilderField)field;
+            String json=entity.getPMap().get(rbf.getJsonFieldName()).getValue();
+            rbf.setJson(json);
+            DataWrapper dw=convertJsonToDataWrapper(json);
+            if (dw != null) {
+              rbf.setDataWrapper(dw);
+            }
+            rbf.setFieldBuilder(entity.getPMap().get(rbf.getFieldService()).getValue());
+          }
+ else {
+            field.setValue(entityProp.getValue());
+            field.setDisplayValue(entityProp.getDisplayValue());
+          }
         }
       }
     }

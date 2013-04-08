@@ -2,13 +2,6 @@
   EntityForm ef=buildEntityForm(cmd,entity);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
-      BasicFieldMetadata basicFieldMetadata=(BasicFieldMetadata)p.getMetadata();
-      if (basicFieldMetadata.getFieldType() == SupportedFieldType.RULE_SIMPLE) {
-        constructRuleBuilder(ef,entity,basicFieldMetadata.getName(),basicFieldMetadata.getFriendlyName(),"rule-builder-simple",basicFieldMetadata.getName() + "FieldService",basicFieldMetadata.getName() + "Json",basicFieldMetadata.getTab(),basicFieldMetadata.getTabOrder());
-      }
-      if (basicFieldMetadata.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-        constructRuleBuilder(ef,entity,basicFieldMetadata.getName(),basicFieldMetadata.getFriendlyName(),"rule-builder-complex",basicFieldMetadata.getName() + "FieldService",basicFieldMetadata.getName() + "Json",basicFieldMetadata.getTab(),basicFieldMetadata.getTabOrder());
-      }
       continue;
     }
     Entity[] subCollectionEntities=collectionRecords.get(p.getName());
