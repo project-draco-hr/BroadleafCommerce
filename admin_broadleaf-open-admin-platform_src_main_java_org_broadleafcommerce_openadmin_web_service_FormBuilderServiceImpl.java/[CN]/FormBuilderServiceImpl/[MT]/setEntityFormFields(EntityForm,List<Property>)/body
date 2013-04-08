@@ -24,7 +24,11 @@
  else {
           f=new Field();
         }
-        f.withName(property.getName()).withFieldType(fieldType).withOrder(fmd.getOrder()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
+        Boolean required=fmd.getRequiredOverride();
+        if (required == null) {
+          required=fmd.getRequired();
+        }
+        f.withName(property.getName()).withFieldType(fieldType).withOrder(fmd.getOrder()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty()).withRequired(required);
         if (StringUtils.isBlank(f.getFriendlyName())) {
           f.setFriendlyName(f.getName());
         }
