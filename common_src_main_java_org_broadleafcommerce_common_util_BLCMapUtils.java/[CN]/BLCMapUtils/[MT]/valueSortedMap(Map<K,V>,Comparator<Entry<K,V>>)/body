@@ -1,0 +1,11 @@
+{
+  Set<Entry<K,V>> valueSortedEntries=new TreeSet<Entry<K,V>>(comparator);
+  for (  Entry<K,V> entry : map.entrySet()) {
+    valueSortedEntries.add(entry);
+  }
+  Map<K,V> sortedMap=new LinkedHashMap<K,V>(map.size());
+  for (  Entry<K,V> entry : valueSortedEntries) {
+    sortedMap.put(entry.getKey(),entry.getValue());
+  }
+  return sortedMap;
+}
