@@ -1,9 +1,13 @@
 {
   List<Field> headerFields=new ArrayList<Field>();
   ListGrid.Type type=ListGrid.Type.MAIN;
+  String idProperty="id";
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
+      if (SupportedFieldType.ID.equals(fmd.getFieldType())) {
+        idProperty=fmd.getName();
+      }
       if (fmd.isProminent() != null && fmd.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(fmd.getVisibility())) {
         Field hf;
         if (fmd.getFieldType().equals(SupportedFieldType.EXPLICIT_ENUMERATION) || fmd.getFieldType().equals(SupportedFieldType.BROADLEAF_ENUMERATION) || fmd.getFieldType().equals(SupportedFieldType.EMPTY_ENUMERATION)) {
@@ -20,5 +24,6 @@
       }
     }
   }
-  return createListGrid(cmd.getCeilingType(),headerFields,type,entities,sectionKey,0);
+  ListGrid listGrid=createListGrid(cmd.getCeilingType(),headerFields,type,entities,sectionKey,0,idProperty);
+  return listGrid;
 }
