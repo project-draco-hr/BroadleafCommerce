@@ -74,10 +74,6 @@
             }
             Property jsonProperty=convertSimpleRuleToJson(translator,mapper,strVal,metadata.getName() + "Json",metadata.getRuleIdentifier());
             props.add(jsonProperty);
-            Property fieldServiceProperty=new Property();
-            fieldServiceProperty.setName(metadata.getName() + "FieldService");
-            fieldServiceProperty.setValue(metadata.getRuleIdentifier());
-            props.add(fieldServiceProperty);
             break checkField;
           }
           if (metadata.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
@@ -85,10 +81,6 @@
               if (value instanceof Collection) {
                 Property jsonProperty=convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)value,metadata.getName() + "Json",metadata.getRuleIdentifier());
                 props.add(jsonProperty);
-                Property fieldServiceProperty=new Property();
-                fieldServiceProperty.setName(metadata.getName() + "FieldService");
-                fieldServiceProperty.setValue(metadata.getRuleIdentifier());
-                props.add(fieldServiceProperty);
               }
  else {
                 throw new UnsupportedOperationException("RULE_WITH_QUANTITY type is currently only supported" + "on collection fields. A single field with this type is not currently supported.");
