@@ -17,8 +17,8 @@
         checkCriteria: {
           Page myContent=scQuery.getSingleResult();
           for (          PageItemCriteria itemCriteria : myContent.getQualifyingItemCriteria()) {
-            if (itemCriteria.getOrderItemMatchRule().equals(adminInstance.getOrderItemMatchRule()) && itemCriteria.getQuantity().equals(adminInstance.getQuantity())) {
-              itemCriteria.setOrderItemMatchRule(entity.findProperty("orderItemMatchRule").getValue());
+            if (itemCriteria.getMatchRule().equals(adminInstance.getMatchRule()) && itemCriteria.getQuantity().equals(adminInstance.getQuantity())) {
+              itemCriteria.setMatchRule(entity.findProperty("orderItemMatchRule").getValue());
               itemCriteria.setQuantity(Integer.parseInt(entity.findProperty("quantity").getValue()));
               adminInstance=itemCriteria;
               break checkCriteria;
