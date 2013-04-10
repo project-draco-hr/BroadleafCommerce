@@ -74,6 +74,17 @@
   }
   String ceiling=null;
   checkCeiling: {
+    if (field.getGenericType() instanceof ParameterizedType) {
+      try {
+        ParameterizedType pt=(ParameterizedType)field.getGenericType();
+        java.lang.reflect.Type collectionType=pt.getActualTypeArguments()[0];
+        String ceilingEntityName=((Class<?>)collectionType).getName();
+        ceiling=entityConfiguration.lookupEntityClass(ceilingEntityName).getName();
+        break checkCeiling;
+      }
+ catch (      NoSuchBeanDefinitionException e) {
+      }
+    }
     if (!StringUtils.isEmpty(field.getOneToManyTargetEntity()) && !void.class.getName().equals(field.getOneToManyTargetEntity())) {
       ceiling=field.getOneToManyTargetEntity();
       break checkCeiling;
