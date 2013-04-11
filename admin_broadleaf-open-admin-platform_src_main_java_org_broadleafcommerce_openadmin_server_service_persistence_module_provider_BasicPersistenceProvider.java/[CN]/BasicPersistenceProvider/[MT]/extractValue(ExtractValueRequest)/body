@@ -1,0 +1,53 @@
+{
+  try {
+    if (extractValueRequest.getRequestedValue() != null) {
+      String val=null;
+      if (extractValueRequest.getMetadata().getForeignKeyCollection()) {
+        ((BasicFieldMetadata)extractValueRequest.getRequestedProperty().getMetadata()).setFieldType(extractValueRequest.getMetadata().getFieldType());
+      }
+ else       if (extractValueRequest.getMetadata().getFieldType().equals(SupportedFieldType.BOOLEAN) && extractValueRequest.getRequestedValue() instanceof Character) {
+        val=(extractValueRequest.getRequestedValue().equals('Y')) ? "true" : "false";
+      }
+ else       if (Date.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
+        val=extractValueRequest.getDataFormatProvider().getSimpleDateFormatter().format((Date)extractValueRequest.getRequestedValue());
+      }
+ else       if (Timestamp.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
+        val=extractValueRequest.getDataFormatProvider().getSimpleDateFormatter().format(new Date(((Timestamp)extractValueRequest.getRequestedValue()).getTime()));
+      }
+ else       if (Calendar.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
+        val=extractValueRequest.getDataFormatProvider().getSimpleDateFormatter().format(((Calendar)extractValueRequest.getRequestedValue()).getTime());
+      }
+ else       if (Double.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
+        val=extractValueRequest.getDataFormatProvider().getDecimalFormatter().format(extractValueRequest.getRequestedValue());
+      }
+ else       if (BigDecimal.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
+        val=extractValueRequest.getDataFormatProvider().getDecimalFormatter().format(((BigDecimal)extractValueRequest.getRequestedValue()).doubleValue());
+      }
+ else       if (extractValueRequest.getMetadata().getForeignKeyClass() != null) {
+        try {
+          val=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyProperty()).toString();
+          Object temp=null;
+          try {
+            temp=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty());
+          }
+ catch (          FieldNotAvailableException e) {
+          }
+          if (temp != null) {
+            extractValueRequest.setDisplayVal(temp.toString());
+          }
+        }
+ catch (        FieldNotAvailableException e) {
+          throw new IllegalArgumentException(e);
+        }
+      }
+ else {
+        val=extractValueRequest.getRequestedValue().toString();
+      }
+      extractValueRequest.getRequestedProperty().setValue(val);
+      extractValueRequest.getRequestedProperty().setDisplayValue(extractValueRequest.getDisplayVal());
+    }
+  }
+ catch (  IllegalAccessException e) {
+    throw new PersistenceException(e);
+  }
+}

@@ -1,7 +1,5 @@
 {
   FieldManager fieldManager=getFieldManager();
-  MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
-  ObjectMapper mapper=new ObjectMapper();
   try {
     for (    Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
       String property=entry.getKey();
@@ -47,7 +45,6 @@
  catch (        FieldNotAvailableException e) {
           isFieldAccessible=false;
         }
-        String strVal=null;
         checkField: {
           if (isFieldAccessible) {
             Property propertyItem=new Property();
@@ -59,17 +56,18 @@
             String displayVal=null;
             boolean handled=false;
             for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              if (persistenceProvider.canHandlePersistence(value,metadata)) {
-                persistenceProvider.extractValue(props,fieldManager,translator,mapper,metadata,value,strVal,propertyItem,displayVal,persistenceManager,this);
+              if (persistenceProvider.canHandlePersistence(value,propertyItem,metadata)) {
+                persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
                 handled=true;
               }
             }
             if (!handled) {
-              defaultPersistenceProvider.extractValue(props,fieldManager,translator,mapper,metadata,value,strVal,propertyItem,displayVal,persistenceManager,this);
+              defaultPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
             }
             break checkField;
           }
           try {
+            String strVal=null;
             Method method;
             try {
               String temp="get" + property.substring(0,1).toUpperCase() + property.substring(1,property.length());

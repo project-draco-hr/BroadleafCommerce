@@ -3,13 +3,13 @@
   FieldManager fieldManager=getFieldManager();
   boolean handled=false;
   for (  PersistenceProvider persistenceProvider : persistenceProviders) {
-    if (persistenceProvider.canHandleFilterProperties(entity,unfilteredProperties)) {
-      persistenceProvider.filterProperties(entity,unfilteredProperties);
+    if (persistenceProvider.canHandlePropertyFiltering(entity,unfilteredProperties)) {
+      persistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity,unfilteredProperties));
       handled=true;
     }
   }
   if (!handled) {
-    defaultPersistenceProvider.filterProperties(entity,unfilteredProperties);
+    defaultPersistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity,unfilteredProperties));
   }
   try {
     for (    Property property : entity.getProperties()) {
@@ -49,13 +49,13 @@
           if (value != null) {
             handled=false;
             for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              if (persistenceProvider.canHandlePersistence(instance,metadata)) {
-                persistenceProvider.populateValue(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this);
+              if (persistenceProvider.canHandlePersistence(instance,property,metadata)) {
+                persistenceProvider.populateValue(new PopulateValueRequest(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this));
                 handled=true;
               }
             }
             if (!handled) {
-              defaultPersistenceProvider.populateValue(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this);
+              defaultPersistenceProvider.populateValue(new PopulateValueRequest(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this));
             }
           }
  else {

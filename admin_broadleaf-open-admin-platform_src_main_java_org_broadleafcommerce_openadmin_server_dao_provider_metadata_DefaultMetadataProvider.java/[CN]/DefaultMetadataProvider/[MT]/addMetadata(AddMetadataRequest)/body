@@ -1,0 +1,8 @@
+{
+  FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+  BasicFieldMetadata metadata=new BasicFieldMetadata();
+  metadata.setName(addMetadataRequest.getRequestedField().getName());
+  metadata.setExcluded(false);
+  addMetadataRequest.getRequestedMetadata().put(addMetadataRequest.getRequestedField().getName(),metadata);
+  setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),info);
+}

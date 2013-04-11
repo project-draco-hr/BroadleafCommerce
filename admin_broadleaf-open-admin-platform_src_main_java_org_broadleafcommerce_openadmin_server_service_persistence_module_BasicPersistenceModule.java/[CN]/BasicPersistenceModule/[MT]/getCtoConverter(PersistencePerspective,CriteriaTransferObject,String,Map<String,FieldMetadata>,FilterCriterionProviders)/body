@@ -8,13 +8,13 @@
     if (mergedProperties.containsKey(propertyId)) {
       boolean handled=false;
       for (      PersistenceProvider persistenceProvider : persistenceProviders) {
-        if (persistenceProvider.canHandleFilterMapping((BasicFieldMetadata)mergedProperties.get(propertyId))) {
-          persistenceProvider.addFilterMapping(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager());
+        if (persistenceProvider.canHandleSearchMapping((BasicFieldMetadata)mergedProperties.get(propertyId))) {
+          persistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager()));
           handled=true;
         }
       }
       if (!handled) {
-        defaultPersistenceProvider.addFilterMapping(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager());
+        defaultPersistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager()));
       }
     }
  else {

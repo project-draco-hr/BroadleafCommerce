@@ -1,0 +1,17 @@
+{
+  CollectionMetadata fieldMetadata=(CollectionMetadata)propertyRequest.getPresentationAttribute();
+  if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+    ParameterizedType listType=(ParameterizedType)propertyRequest.getRequestedField().getGenericType();
+    Class<?> listClass=(Class<?>)listType.getActualTypeArguments()[0];
+    fieldMetadata.setCollectionCeilingEntity(listClass.getName());
+  }
+  if (propertyRequest.getTargetClass() != null) {
+    if (StringUtils.isEmpty(fieldMetadata.getInheritedFromType())) {
+      fieldMetadata.setInheritedFromType(propertyRequest.getTargetClass().getName());
+    }
+    if (ArrayUtils.isEmpty(fieldMetadata.getAvailableToTypes())) {
+      fieldMetadata.setAvailableToTypes(new String[]{propertyRequest.getTargetClass().getName()});
+    }
+  }
+  propertyRequest.getRequestedProperties().put(propertyRequest.getRequestedPropertyName(),fieldMetadata);
+}

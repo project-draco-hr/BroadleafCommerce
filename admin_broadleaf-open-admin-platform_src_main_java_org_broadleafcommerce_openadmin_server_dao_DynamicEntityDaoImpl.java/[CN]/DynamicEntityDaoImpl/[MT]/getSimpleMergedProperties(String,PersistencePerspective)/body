@@ -27,12 +27,12 @@
           boolean handled=false;
           for (          PropertyProvider provider : propertyProviders) {
             if (provider.canHandleField(field)) {
-              provider.buildProperty(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this);
+              provider.buildProperty(new PropertyRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
               handled=true;
             }
           }
           if (!handled) {
-            defaultPropertyProvider.buildProperty(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this);
+            defaultPropertyProvider.buildProperty(new PropertyRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
           }
         }
       }

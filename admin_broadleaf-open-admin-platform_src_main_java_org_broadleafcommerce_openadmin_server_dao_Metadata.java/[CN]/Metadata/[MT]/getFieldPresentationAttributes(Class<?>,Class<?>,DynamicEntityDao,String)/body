@@ -5,14 +5,14 @@
     boolean foundOneOrMoreHandlers=false;
     for (    MetadataProvider metadataProvider : metadataProviders) {
       if (metadataProvider.canHandleField(field)) {
-        metadataProvider.addMetadata(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix);
+        metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
         if (!foundOneOrMoreHandlers) {
           foundOneOrMoreHandlers=true;
         }
       }
     }
     if (!foundOneOrMoreHandlers) {
-      defaultMetadataProvider.addMetadata(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix);
+      defaultMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
     }
   }
   return attributes;
