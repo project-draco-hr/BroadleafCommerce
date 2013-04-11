@@ -1,0 +1,35 @@
+{
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
+      if (LookupType.DROPDOWN.equals(fmd.getLookupType())) {
+        PersistencePackageRequest toOnePpr=PersistencePackageRequest.standard().withCeilingEntityClassname(fmd.getForeignKeyClass());
+        Entity[] rows=adminEntityService.getRecords(toOnePpr);
+        String idProp=null;
+        ClassMetadata foreignClassMd=adminEntityService.getClassMetadata(toOnePpr);
+        for (        Property foreignP : foreignClassMd.getProperties()) {
+          if (foreignP.getMetadata() instanceof BasicFieldMetadata) {
+            BasicFieldMetadata foreignFmd=(BasicFieldMetadata)foreignP.getMetadata();
+            if (SupportedFieldType.ID.equals(foreignFmd.getFieldType())) {
+              idProp=foreignP.getName();
+            }
+          }
+        }
+        if (idProp == null) {
+          throw new RuntimeException("Could not determine ID property for " + fmd.getForeignKeyClass());
+        }
+        String displayProp=fmd.getLookupDisplayProperty();
+        Map<String,String> options=new HashMap<String,String>();
+        for (        Entity row : rows) {
+          String displayValue=row.findProperty(displayProp).getDisplayValue();
+          if (StringUtils.isBlank(displayValue)) {
+            displayValue=row.findProperty(displayProp).getValue();
+          }
+          options.put(row.findProperty(idProp).getValue(),displayValue);
+        }
+        ComboField cf=(ComboField)ef.findField(p.getName());
+        cf.setOptions(options);
+      }
+    }
+  }
+}
