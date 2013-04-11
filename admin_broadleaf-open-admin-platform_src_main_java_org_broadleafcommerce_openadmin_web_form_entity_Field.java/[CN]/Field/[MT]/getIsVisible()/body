@@ -1,3 +1,4 @@
 {
-  return !(fieldType.equals(SupportedFieldType.ID.toString()) || fieldType.equals(SupportedFieldType.HIDDEN.toString()) || fieldType.equals(SupportedFieldType.FOREIGN_KEY.toString()));
+  String[] invisibleTypes=new String[]{SupportedFieldType.ID.toString(),SupportedFieldType.HIDDEN.toString(),SupportedFieldType.FOREIGN_KEY.toString()};
+  return isVisible == null ? !ArrayUtils.contains(invisibleTypes,fieldType) : isVisible;
 }
