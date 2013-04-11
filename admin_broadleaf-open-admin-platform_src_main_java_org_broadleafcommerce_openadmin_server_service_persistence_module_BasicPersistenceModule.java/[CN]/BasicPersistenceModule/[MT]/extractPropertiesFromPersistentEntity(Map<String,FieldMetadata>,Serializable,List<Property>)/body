@@ -2,185 +2,128 @@
   FieldManager fieldManager=getFieldManager();
   MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
   ObjectMapper mapper=new ObjectMapper();
-  for (  Map.Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
-    String property=entry.getKey();
-    BasicFieldMetadata metadata=(BasicFieldMetadata)entry.getValue();
-    if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(entity.getClass()) || entity.getClass().isAssignableFrom(Class.forName(metadata.getInheritedFromType()))) {
-      boolean proceed=true;
-      if (property.contains(".")) {
-        StringTokenizer tokens=new StringTokenizer(property,".");
-        Object testObject=entity;
-        while (tokens.hasMoreTokens()) {
-          String token=tokens.nextToken();
-          if (tokens.hasMoreTokens()) {
-            try {
-              testObject=fieldManager.getFieldValue(testObject,token);
-            }
- catch (            FieldNotAvailableException e) {
-              proceed=false;
-              break;
-            }
-            if (testObject == null) {
-              Property propertyItem=new Property();
-              propertyItem.setName(property);
-              if (props.contains(propertyItem)) {
+  try {
+    for (    Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
+      String property=entry.getKey();
+      BasicFieldMetadata metadata=(BasicFieldMetadata)entry.getValue();
+      if (Class.forName(metadata.getInheritedFromType()).isAssignableFrom(entity.getClass()) || entity.getClass().isAssignableFrom(Class.forName(metadata.getInheritedFromType()))) {
+        boolean proceed=true;
+        if (property.contains(".")) {
+          StringTokenizer tokens=new StringTokenizer(property,".");
+          Object testObject=entity;
+          while (tokens.hasMoreTokens()) {
+            String token=tokens.nextToken();
+            if (tokens.hasMoreTokens()) {
+              try {
+                testObject=fieldManager.getFieldValue(testObject,token);
+              }
+ catch (              FieldNotAvailableException e) {
                 proceed=false;
                 break;
               }
-              propertyItem.setValue(null);
-              props.add(propertyItem);
-              proceed=false;
-              break;
+              if (testObject == null) {
+                Property propertyItem=new Property();
+                propertyItem.setName(property);
+                if (props.contains(propertyItem)) {
+                  proceed=false;
+                  break;
+                }
+                propertyItem.setValue(null);
+                props.add(propertyItem);
+                proceed=false;
+                break;
+              }
             }
           }
         }
-      }
-      if (!proceed) {
-        continue;
-      }
-      boolean isFieldAccessible=true;
-      Object value=null;
-      try {
-        value=fieldManager.getFieldValue(entity,property);
-      }
- catch (      FieldNotAvailableException e) {
-        isFieldAccessible=false;
-      }
-      String strVal=null;
-      checkField: {
-        if (isFieldAccessible) {
-          Property propertyItem=new Property();
-          propertyItem.setName(property);
-          if (props.contains(propertyItem)) {
-            continue;
-          }
-          props.add(propertyItem);
-          String displayVal=null;
-          if (metadata.getFieldType() == SupportedFieldType.RULE_SIMPLE) {
-            if (value != null) {
-              if (value instanceof String) {
-                strVal=(String)value;
-                propertyItem.setValue(strVal);
-                propertyItem.setDisplayValue(displayVal);
-              }
-              if (value instanceof SimpleRule) {
-                SimpleRule simpleRule=(SimpleRule)value;
-                if (simpleRule != null) {
-                  strVal=simpleRule.getMatchRule();
-                  propertyItem.setValue(strVal);
-                  propertyItem.setDisplayValue(displayVal);
-                }
+        if (!proceed) {
+          continue;
+        }
+        boolean isFieldAccessible=true;
+        Object value=null;
+        try {
+          value=fieldManager.getFieldValue(entity,property);
+        }
+ catch (        FieldNotAvailableException e) {
+          isFieldAccessible=false;
+        }
+        String strVal=null;
+        checkField: {
+          if (isFieldAccessible) {
+            Property propertyItem=new Property();
+            propertyItem.setName(property);
+            if (props.contains(propertyItem)) {
+              continue;
+            }
+            props.add(propertyItem);
+            String displayVal=null;
+            boolean handled=false;
+            for (            PersistenceProvider persistenceProvider : persistenceProviders) {
+              if (persistenceProvider.canHandlePersistence(value,metadata)) {
+                persistenceProvider.extractValue(props,fieldManager,translator,mapper,metadata,value,strVal,propertyItem,displayVal,persistenceManager,this);
+                handled=true;
               }
             }
-            Property jsonProperty=convertSimpleRuleToJson(translator,mapper,strVal,metadata.getName() + "Json",metadata.getRuleIdentifier());
-            props.add(jsonProperty);
-            break checkField;
-          }
-          if (metadata.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-            if (value != null) {
-              if (value instanceof Collection) {
-                Property jsonProperty=convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)value,metadata.getName() + "Json",metadata.getRuleIdentifier());
-                props.add(jsonProperty);
-              }
- else {
-                throw new UnsupportedOperationException("RULE_WITH_QUANTITY type is currently only supported" + "on collection fields. A single field with this type is not currently supported.");
-              }
+            if (!handled) {
+              defaultPersistenceProvider.extractValue(props,fieldManager,translator,mapper,metadata,value,strVal,propertyItem,displayVal,persistenceManager,this);
             }
             break checkField;
           }
-          if (value != null) {
-            if (metadata.getForeignKeyCollection()) {
-              ((BasicFieldMetadata)propertyItem.getMetadata()).setFieldType(metadata.getFieldType());
+          try {
+            Method method;
+            try {
+              String temp="get" + property.substring(0,1).toUpperCase() + property.substring(1,property.length());
+              method=entity.getClass().getMethod(temp,new Class[]{});
+            }
+ catch (            NoSuchMethodException e) {
+              method=entity.getClass().getMethod(property,new Class[]{});
+            }
+            value=method.invoke(entity,new String[]{});
+            Property propertyItem=new Property();
+            propertyItem.setName(property);
+            if (props.contains(propertyItem)) {
+              continue;
+            }
+            props.add(propertyItem);
+            if (value == null) {
               strVal=null;
             }
- else             if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN) && value instanceof Character) {
-              strVal=(value.equals('Y')) ? "true" : "false";
-            }
- else             if (Date.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format((Date)value);
-            }
- else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
-            }
- else             if (Calendar.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format(((Calendar)value).getTime());
-            }
- else             if (Double.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format(value);
-            }
- else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
-            }
- else             if (metadata.getForeignKeyClass() != null) {
-              try {
-                strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
-                Object temp=null;
-                try {
-                  temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
-                }
- catch (                FieldNotAvailableException e) {
-                }
-                if (temp != null) {
-                  displayVal=temp.toString();
-                }
-              }
- catch (              FieldNotAvailableException e) {
-                throw new IllegalArgumentException(e);
-              }
-            }
  else {
-              strVal=value.toString();
+              if (Date.class.isAssignableFrom(value.getClass())) {
+                strVal=dateFormat.format((Date)value);
+              }
+ else               if (Timestamp.class.isAssignableFrom(value.getClass())) {
+                strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
+              }
+ else               if (Calendar.class.isAssignableFrom(value.getClass())) {
+                strVal=dateFormat.format(((Calendar)value).getTime());
+              }
+ else               if (Double.class.isAssignableFrom(value.getClass())) {
+                strVal=decimalFormat.format(value);
+              }
+ else               if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+                strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
+              }
+ else {
+                strVal=value.toString();
+              }
             }
             propertyItem.setValue(strVal);
-            propertyItem.setDisplayValue(displayVal);
-            break checkField;
-          }
-        }
-        try {
-          Method method;
-          try {
-            String temp="get" + property.substring(0,1).toUpperCase() + property.substring(1,property.length());
-            method=entity.getClass().getMethod(temp,new Class[]{});
           }
  catch (          NoSuchMethodException e) {
-            method=entity.getClass().getMethod(property,new Class[]{});
+            LOG.debug("Unable to find a specified property in the entity: " + property);
           }
-          value=method.invoke(entity,new String[]{});
-          Property propertyItem=new Property();
-          propertyItem.setName(property);
-          if (props.contains(propertyItem)) {
-            continue;
-          }
-          props.add(propertyItem);
-          if (value == null) {
-            strVal=null;
-          }
- else {
-            if (Date.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format((Date)value);
-            }
- else             if (Timestamp.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format(new Date(((Timestamp)value).getTime()));
-            }
- else             if (Calendar.class.isAssignableFrom(value.getClass())) {
-              strVal=dateFormat.format(((Calendar)value).getTime());
-            }
- else             if (Double.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format(value);
-            }
- else             if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-              strVal=decimalFormat.format(((BigDecimal)value).doubleValue());
-            }
- else {
-              strVal=value.toString();
-            }
-          }
-          propertyItem.setValue(strVal);
-        }
- catch (        NoSuchMethodException e) {
-          LOG.debug("Unable to find a specified property in the entity: " + property);
         }
       }
     }
+  }
+ catch (  ClassNotFoundException e) {
+    throw new PersistenceException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new PersistenceException(e);
+  }
+catch (  InvocationTargetException e) {
+    throw new PersistenceException(e);
   }
 }

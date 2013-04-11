@@ -3,21 +3,7 @@
   final List<String> removeKeys=new ArrayList<String>();
   for (  final String key : mergedProperties.keySet()) {
     if (mergedProperties.get(key).getExcluded() != null && mergedProperties.get(key).getExcluded()) {
-      mergedProperties.get(key).accept(new MetadataVisitorAdapter(){
-        @Override public void visit(        BasicFieldMetadata metadata){
-          removeKeys.add(key);
-        }
-        @Override public void visit(        AdornedTargetCollectionMetadata metadata){
-          removeKeys.add(key);
-        }
-        @Override public void visit(        BasicCollectionMetadata metadata){
-          removeKeys.add(key);
-        }
-        @Override public void visit(        MapMetadata metadata){
-          removeKeys.add(key);
-        }
-      }
-);
+      removeKeys.add(key);
     }
   }
   for (  String removeKey : removeKeys) {

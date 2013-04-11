@@ -1,0 +1,53 @@
+{
+  try {
+    if (value != null) {
+      if (metadata.getForeignKeyCollection()) {
+        ((BasicFieldMetadata)propertyItem.getMetadata()).setFieldType(metadata.getFieldType());
+        strVal=null;
+      }
+ else       if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN) && value instanceof Character) {
+        strVal=(value.equals('Y')) ? "true" : "false";
+      }
+ else       if (Date.class.isAssignableFrom(value.getClass())) {
+        strVal=dataFormatProvider.getSimpleDateFormatter().format((Date)value);
+      }
+ else       if (Timestamp.class.isAssignableFrom(value.getClass())) {
+        strVal=dataFormatProvider.getSimpleDateFormatter().format(new Date(((Timestamp)value).getTime()));
+      }
+ else       if (Calendar.class.isAssignableFrom(value.getClass())) {
+        strVal=dataFormatProvider.getSimpleDateFormatter().format(((Calendar)value).getTime());
+      }
+ else       if (Double.class.isAssignableFrom(value.getClass())) {
+        strVal=dataFormatProvider.getDecimalFormatter().format(value);
+      }
+ else       if (BigDecimal.class.isAssignableFrom(value.getClass())) {
+        strVal=dataFormatProvider.getDecimalFormatter().format(((BigDecimal)value).doubleValue());
+      }
+ else       if (metadata.getForeignKeyClass() != null) {
+        try {
+          strVal=fieldManager.getFieldValue(value,metadata.getForeignKeyProperty()).toString();
+          Object temp=null;
+          try {
+            temp=fieldManager.getFieldValue(value,metadata.getForeignKeyDisplayValueProperty());
+          }
+ catch (          FieldNotAvailableException e) {
+          }
+          if (temp != null) {
+            displayVal=temp.toString();
+          }
+        }
+ catch (        FieldNotAvailableException e) {
+          throw new IllegalArgumentException(e);
+        }
+      }
+ else {
+        strVal=value.toString();
+      }
+      propertyItem.setValue(strVal);
+      propertyItem.setDisplayValue(displayVal);
+    }
+  }
+ catch (  IllegalAccessException e) {
+    throw new PersistenceException(e);
+  }
+}

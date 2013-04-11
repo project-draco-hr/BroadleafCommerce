@@ -5,49 +5,8 @@
   }
   presentationAttribute.setInheritedFromType(targetClass.getName());
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
-  presentationAttribute.accept(new MetadataVisitorAdapter(){
-    @Override public void visit(    BasicFieldMetadata metadata){
-      BasicFieldMetadata fieldMetadata=(BasicFieldMetadata)presentationAttribute;
-      fieldMetadata.setFieldType(type);
-      fieldMetadata.setSecondaryType(secondaryType);
-      if (entityType != null && !entityType.isCollectionType()) {
-        Column column=null;
-        for (        Property property : componentProperties) {
-          if (property.getName().equals(propertyName)) {
-            column=(Column)property.getColumnIterator().next();
-            break;
-          }
-        }
-        if (column != null) {
-          fieldMetadata.setLength(column.getLength());
-          fieldMetadata.setScale(column.getScale());
-          fieldMetadata.setPrecision(column.getPrecision());
-          fieldMetadata.setRequired(!column.isNullable());
-          fieldMetadata.setUnique(column.isUnique());
-        }
-        fieldMetadata.setForeignKeyCollection(false);
-      }
- else {
-        fieldMetadata.setForeignKeyCollection(true);
-      }
-      fieldMetadata.setMutable(true);
-      fieldMetadata.setMergedPropertyType(mergedPropertyType);
-      if (SupportedFieldType.BROADLEAF_ENUMERATION.equals(type)) {
-        try {
-          setupBroadleafEnumeration(fieldMetadata.getBroadleafEnumeration(),fieldMetadata,dynamicEntityDao);
-        }
- catch (        Exception e) {
-          throw new RuntimeException(e);
-        }
-      }
-    }
-    @Override public void visit(    BasicCollectionMetadata metadata){
-    }
-    @Override public void visit(    AdornedTargetCollectionMetadata metadata){
-    }
-    @Override public void visit(    MapMetadata metadata){
-    }
+  for (  MetadataProvider metadataProvider : metadataProviders) {
+    metadataProvider.addMetadataFromMappingData(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao);
   }
-);
   return presentationAttribute;
 }

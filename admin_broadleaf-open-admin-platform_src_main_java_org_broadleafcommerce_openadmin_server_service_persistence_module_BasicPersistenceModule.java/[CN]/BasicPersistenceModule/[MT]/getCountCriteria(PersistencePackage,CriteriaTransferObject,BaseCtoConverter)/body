@@ -1,6 +1,12 @@
 {
   PersistentEntityCriteria countCriteria=ctoConverter.convert(new CriteriaTransferObjectCountWrapper(cto).wrap(),persistencePackage.getCeilingEntityFullyQualifiedClassname());
-  Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
+  Class<?>[] entities;
+  try {
+    entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
+  }
+ catch (  ClassNotFoundException e) {
+    throw new PersistenceException(e);
+  }
   boolean isArchivable=false;
   for (  Class<?> entity : entities) {
     if (Status.class.isAssignableFrom(entity)) {

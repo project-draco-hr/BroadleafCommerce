@@ -1,253 +1,86 @@
 {
   Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(unfilteredProperties);
   FieldManager fieldManager=getFieldManager();
-  filterRuleBuilderProperties(entity,mergedProperties);
-  for (  Property property : entity.getProperties()) {
-    BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
-    Class<?> returnType;
-    if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
-      Field field=fieldManager.getField(instance.getClass(),property.getName());
-      if (field == null) {
-        LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");
-        continue;
-      }
-      returnType=field.getType();
+  boolean handled=false;
+  for (  PersistenceProvider persistenceProvider : persistenceProviders) {
+    if (persistenceProvider.canHandleFilterProperties(entity,unfilteredProperties)) {
+      persistenceProvider.filterProperties(entity,unfilteredProperties);
+      handled=true;
     }
+  }
+  if (!handled) {
+    defaultPersistenceProvider.filterProperties(entity,unfilteredProperties);
+  }
+  try {
+    for (    Property property : entity.getProperties()) {
+      BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
+      Class<?> returnType;
+      if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+        Field field=fieldManager.getField(instance.getClass(),property.getName());
+        if (field == null) {
+          LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");
+          continue;
+        }
+        returnType=field.getType();
+      }
  else {
-      if (metadata == null) {
-        LOG.debug("Unable to find a metadata property for the reported property: " + property.getName() + ". Ignoring property.");
-        continue;
-      }
-      returnType=getBasicBroadleafType(metadata.getFieldType());
-      if (returnType == null) {
+        if (metadata == null) {
+          LOG.debug("Unable to find a metadata property for the reported property: " + property.getName() + ". Ignoring property.");
+          continue;
+        }
         returnType=getMapFieldType(instance,fieldManager,property);
-      }
-    }
-    if (returnType == null) {
-      throw new IllegalAccessException("Unable to determine the value type for the property (" + property.getName() + ")");
-    }
-    String value=property.getValue();
-    if (metadata != null) {
-      Boolean mutable=metadata.getMutable();
-      Boolean readOnly=metadata.getReadOnly();
-      if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN)) {
-        if (value == null) {
-          value="false";
+        if (returnType == null) {
+          returnType=getBasicBroadleafType(metadata.getFieldType());
         }
       }
-      if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
-        if (value != null) {
-switch (metadata.getFieldType()) {
-case BOOLEAN:
-            boolean v=Boolean.valueOf(value);
-          try {
-            fieldManager.setFieldValue(instance,property.getName(),v);
+      if (returnType == null) {
+        throw new IllegalAccessException("Unable to determine the value type for the property (" + property.getName() + ")");
+      }
+      String value=property.getValue();
+      if (metadata != null) {
+        Boolean mutable=metadata.getMutable();
+        Boolean readOnly=metadata.getReadOnly();
+        if (metadata.getFieldType().equals(SupportedFieldType.BOOLEAN)) {
+          if (value == null) {
+            value="false";
           }
- catch (          IllegalArgumentException e) {
-            char c=v ? 'Y' : 'N';
-            fieldManager.setFieldValue(instance,property.getName(),c);
+        }
+        if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
+          if (value != null) {
+            handled=false;
+            for (            PersistenceProvider persistenceProvider : persistenceProviders) {
+              if (persistenceProvider.canHandlePersistence(instance,metadata)) {
+                persistenceProvider.populateValue(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this);
+                handled=true;
+              }
+            }
+            if (!handled) {
+              defaultPersistenceProvider.populateValue(instance,setId,fieldManager,property,metadata,returnType,value,persistenceManager,this);
+            }
           }
-        break;
-case DATE:
-      fieldManager.setFieldValue(instance,property.getName(),parseDate(value));
-    break;
-case DECIMAL:
-  if (BigDecimal.class.isAssignableFrom(returnType)) {
-    fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
+ else {
+            try {
+              if (fieldManager.getFieldValue(instance,property.getName()) != null && (metadata.getFieldType() != SupportedFieldType.ID || setId)) {
+                fieldManager.setFieldValue(instance,property.getName(),null);
+              }
+            }
+ catch (            FieldNotAvailableException e) {
+              throw new IllegalArgumentException(e);
+            }
+          }
+        }
+      }
+    }
+    Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();
+    for (    Entry<String,Serializable> entry : persistedEntities.entrySet()) {
+      fieldManager.setFieldValue(instance,entry.getKey(),entry.getValue());
+    }
   }
- else {
-    fieldManager.setFieldValue(instance,property.getName(),new Double(value));
+ catch (  IllegalAccessException e) {
+    throw new PersistenceException(e);
   }
-break;
-case MONEY:
-if (BigDecimal.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),new BigDecimal(new Double(value)));
-}
- else if (Double.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),new Double(value));
-}
- else {
-fieldManager.setFieldValue(instance,property.getName(),new Money(new Double(value)));
-}
-break;
-case INTEGER:
-if (int.class.isAssignableFrom(returnType) || Integer.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),Integer.valueOf(value));
-}
- else if (byte.class.isAssignableFrom(returnType) || Byte.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),Byte.valueOf(value));
-}
- else if (short.class.isAssignableFrom(returnType) || Short.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),Short.valueOf(value));
-}
- else if (long.class.isAssignableFrom(returnType) || Long.class.isAssignableFrom(returnType)) {
-fieldManager.setFieldValue(instance,property.getName(),Long.valueOf(value));
-}
-break;
-default :
-fieldManager.setFieldValue(instance,property.getName(),value);
-break;
-case EMAIL:
-fieldManager.setFieldValue(instance,property.getName(),value);
-break;
-case FOREIGN_KEY:
-{
-Serializable foreignInstance;
-if (StringUtils.isEmpty(value)) {
-foreignInstance=null;
-}
- else {
-if (SupportedFieldType.INTEGER.toString().equals(metadata.getSecondaryType().toString())) {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),Long.valueOf(value));
-}
- else {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),value);
-}
-}
-if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection;
-try {
-collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
-}
- catch (FieldNotAvailableException e) {
-throw new IllegalArgumentException(e);
-}
-if (!collection.contains(foreignInstance)) {
-collection.add(foreignInstance);
-}
-}
- else if (Map.class.isAssignableFrom(returnType)) {
-throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
-}
- else {
-fieldManager.setFieldValue(instance,property.getName(),foreignInstance);
-}
-break;
-}
-case ADDITIONAL_FOREIGN_KEY:
-{
-Serializable foreignInstance;
-if (StringUtils.isEmpty(value)) {
-foreignInstance=null;
-}
- else {
-if (SupportedFieldType.INTEGER.toString().equals(metadata.getSecondaryType().toString())) {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),Long.valueOf(value));
-}
- else {
-foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(metadata.getForeignKeyClass()),value);
-}
-}
-if (Collection.class.isAssignableFrom(returnType)) {
-Collection collection;
-try {
-collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
-}
- catch (FieldNotAvailableException e) {
-throw new IllegalArgumentException(e);
-}
-if (!collection.contains(foreignInstance)) {
-collection.add(foreignInstance);
-}
-}
- else if (Map.class.isAssignableFrom(returnType)) {
-throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
-}
- else {
-fieldManager.setFieldValue(instance,property.getName(),foreignInstance);
-}
-break;
-}
-case ID:
-if (setId) {
-switch (metadata.getSecondaryType()) {
-case INTEGER:
-fieldManager.setFieldValue(instance,property.getName(),Long.valueOf(value));
-break;
-case STRING:
-fieldManager.setFieldValue(instance,property.getName(),value);
-break;
-}
-}
-break;
-case RULE_WITH_QUANTITY:
-{
-Class<?> valueType=getListFieldType(instance,fieldManager,property);
-if (valueType == null) {
-throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + property.getName() + ")");
-}
-DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-Collection<QuantityBasedRule> rules;
-try {
-rules=(Collection<QuantityBasedRule>)fieldManager.getFieldValue(instance,property.getName());
-}
- catch (FieldNotAvailableException e) {
-throw new IllegalArgumentException(e);
-}
-populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(metadata.getRuleIdentifier()),metadata.getRuleIdentifier(),value,rules,valueType);
-break;
-}
-case RULE_SIMPLE:
-{
-DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(metadata.getRuleIdentifier()),metadata.getRuleIdentifier(),value);
-Class<?> valueType=null;
-if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
-valueType=returnType;
-}
- else {
-String valueClassName=metadata.getMapFieldValueClass();
-if (valueClassName != null) {
-valueType=Class.forName(valueClassName);
-}
-if (valueType == null) {
-valueType=getMapFieldType(instance,fieldManager,property);
-}
-}
-if (valueType == null) {
-throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + property.getName() + ")");
-}
-if (String.class.isAssignableFrom(valueType)) {
-fieldManager.setFieldValue(instance,property.getName(),mvel);
-}
-if (SimpleRule.class.isAssignableFrom(valueType)) {
-SimpleRule rule;
-try {
-rule=(SimpleRule)fieldManager.getFieldValue(instance,property.getName());
-}
- catch (FieldNotAvailableException e) {
-throw new IllegalArgumentException(e);
-}
-if (rule != null) {
-rule.setMatchRule(mvel);
-}
- else {
-rule=(SimpleRule)valueType.newInstance();
-rule.setMatchRule(mvel);
-persistenceManager.getDynamicEntityDao().persist(rule);
-fieldManager.setFieldValue(instance,property.getName(),rule);
-}
-}
-break;
-}
-}
-}
- else {
-try {
-if (fieldManager.getFieldValue(instance,property.getName()) != null && (metadata.getFieldType() != SupportedFieldType.ID || setId)) {
-fieldManager.setFieldValue(instance,property.getName(),null);
-}
-}
- catch (FieldNotAvailableException e) {
-throw new IllegalArgumentException(e);
-}
-}
-}
-}
-}
-Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();
-for (Entry<String,Serializable> entry : persistedEntities.entrySet()) {
-fieldManager.setFieldValue(instance,entry.getKey(),entry.getValue());
-}
-return instance;
+catch (  InstantiationException e) {
+    throw new PersistenceException(e);
+  }
+  return instance;
 }

@@ -6,7 +6,13 @@
       for (      Map.Entry<String,Map<String,String>> validation : validations.entrySet()) {
         String validatorClassname=validation.getKey();
         Map<String,String> configuration=validation.getValue();
-        PropertyValidator validator=(PropertyValidator)Class.forName(validatorClassname).newInstance();
+        PropertyValidator validator=null;
+        try {
+          validator=(PropertyValidator)Class.forName(validatorClassname).newInstance();
+        }
+ catch (        Exception e) {
+          throw new PersistenceException(e);
+        }
         boolean validationResult=validator.validate(entity,configuration,instance,property.getValue());
         if (!validationResult) {
           entity.addValidationError(property.getName(),configuration.get(ConfigurationItem.ERROR_MESSAGE));

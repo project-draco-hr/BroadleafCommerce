@@ -6,7 +6,16 @@
   }
   for (  String propertyId : cto.getPropertyIdSet()) {
     if (mergedProperties.containsKey(propertyId)) {
-      buildProperty(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId);
+      boolean handled=false;
+      for (      PersistenceProvider persistenceProvider : persistenceProviders) {
+        if (persistenceProvider.canHandleFilterMapping((BasicFieldMetadata)mergedProperties.get(propertyId))) {
+          persistenceProvider.addFilterMapping(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager());
+          handled=true;
+        }
+      }
+      if (!handled) {
+        defaultPersistenceProvider.addFilterMapping(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager());
+      }
     }
  else {
       ctoConverter.addEmptyMapping(ceilingEntityFullyQualifiedClassname,propertyId);

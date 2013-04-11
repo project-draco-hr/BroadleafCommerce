@@ -1,0 +1,16 @@
+{
+  Map<String,AdminPresentationAdornedTargetCollectionOverride> presentationAdornedTargetCollectionOverrides=new HashMap<String,AdminPresentationAdornedTargetCollectionOverride>();
+  AdminPresentationOverrides myOverrides=entity.getAnnotation(AdminPresentationOverrides.class);
+  if (myOverrides != null) {
+    for (    AdminPresentationAdornedTargetCollectionOverride myOverride : myOverrides.adornedTargetCollections()) {
+      presentationAdornedTargetCollectionOverrides.put(myOverride.name(),myOverride);
+    }
+  }
+  for (  String propertyName : presentationAdornedTargetCollectionOverrides.keySet()) {
+    for (    String key : mergedProperties.keySet()) {
+      if (key.startsWith(propertyName)) {
+        buildAdminPresentationAdornedTargetCollectionOverride(prefix,isParentExcluded,mergedProperties,presentationAdornedTargetCollectionOverrides,propertyName,key,dynamicEntityDao);
+      }
+    }
+  }
+}

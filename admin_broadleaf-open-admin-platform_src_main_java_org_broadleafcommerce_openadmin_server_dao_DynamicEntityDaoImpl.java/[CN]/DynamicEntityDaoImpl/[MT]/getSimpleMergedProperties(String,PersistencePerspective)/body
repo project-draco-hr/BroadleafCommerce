@@ -20,21 +20,19 @@
     }
     Map<String,FieldMetadata> attributesMap=metadata.getFieldPresentationAttributes(null,targetClass,this,"");
     for (    String property : attributesMap.keySet()) {
-      FieldMetadata presentationAttributes=attributesMap.get(property);
-      if (!presentationAttributes.getExcluded()) {
+      FieldMetadata presentationAttribute=attributesMap.get(property);
+      if (!presentationAttribute.getExcluded()) {
         Field field=FieldManager.getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
-          if (field.getAnnotation(AdminPresentationCollection.class) == null && field.getAnnotation(AdminPresentationAdornedTargetCollection.class) == null && field.getAnnotation(AdminPresentationMap.class) == null) {
-            buildProperty(targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,presentationAttributes,((BasicFieldMetadata)presentationAttributes).getExplicitFieldType(),field.getType());
-          }
- else {
-            CollectionMetadata fieldMetadata=(CollectionMetadata)presentationAttributes;
-            if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity()) && field.getAnnotation(AdminPresentationMap.class) == null) {
-              ParameterizedType listType=(ParameterizedType)field.getGenericType();
-              Class<?> listClass=(Class<?>)listType.getActualTypeArguments()[0];
-              fieldMetadata.setCollectionCeilingEntity(listClass.getName());
+          boolean handled=false;
+          for (          PropertyProvider provider : propertyProviders) {
+            if (provider.canHandleField(field)) {
+              provider.buildProperty(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this);
+              handled=true;
             }
-            mergedProperties.put(property,fieldMetadata);
+          }
+          if (!handled) {
+            defaultPropertyProvider.buildProperty(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this);
           }
         }
       }
