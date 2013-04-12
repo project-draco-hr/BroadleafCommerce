@@ -1,0 +1,13 @@
+{
+  if (throwable == null) {
+    return;
+  }
+  StackTraceElement[] st=throwable.getStackTrace();
+  if (st != null && st.length > 0) {
+    sb.append("\r\n\r\n");
+    sb.append(throwable.toString());
+    sb.append("\r\n");
+    sb.append(st[0].toString());
+  }
+  appendStackTrace(throwable.getCause(),sb);
+}
