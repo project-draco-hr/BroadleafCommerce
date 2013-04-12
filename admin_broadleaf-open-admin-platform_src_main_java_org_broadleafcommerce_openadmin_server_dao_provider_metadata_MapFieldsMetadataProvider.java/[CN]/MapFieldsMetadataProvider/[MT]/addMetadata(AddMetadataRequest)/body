@@ -8,13 +8,20 @@
     override.setFriendlyName(mapField.fieldPresentation().friendlyName());
     FieldInfo myInfo=new FieldInfo();
     myInfo.setName(addMetadataRequest.getRequestedField().getName() + FieldManager.MAPFIELDSEPARATOR + mapField.fieldName());
+    buildBasicMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo,override,addMetadataRequest.getDynamicEntityDao());
+    setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo);
+    BasicFieldMetadata metadata=(BasicFieldMetadata)addMetadataRequest.getRequestedMetadata().get(addMetadataRequest.getRequestedField().getName());
     if (!mapField.targetClass().equals(Void.class)) {
       if (mapField.targetClass().isInterface()) {
         throw new IllegalArgumentException("targetClass on @AdminPresentationMapField must be a concrete class");
       }
-      override.setValueClass(mapField.targetClass().getName());
+      metadata.setMapFieldValueClass(mapField.targetClass().getName());
     }
-    buildBasicMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo,override,addMetadataRequest.getDynamicEntityDao());
-    setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo);
+    if (mapField.searchable() != CustomFieldSearchableTypes.NOT_SPECIFIED) {
+      metadata.setSearchable(mapField.searchable() == CustomFieldSearchableTypes.YES);
+    }
+    if (!StringUtils.isEmpty(mapField.manyToField())) {
+      metadata.setManyToField(mapField.manyToField());
+    }
   }
 }

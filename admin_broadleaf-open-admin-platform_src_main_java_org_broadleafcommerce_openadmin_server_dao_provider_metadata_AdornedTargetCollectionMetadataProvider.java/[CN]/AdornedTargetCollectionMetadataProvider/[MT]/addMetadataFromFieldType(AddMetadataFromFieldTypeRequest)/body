@@ -1,0 +1,9 @@
+{
+  super.addMetadataFromFieldType(addMetadataFromFieldTypeRequest);
+  AdornedTargetCollectionMetadata fieldMetadata=(AdornedTargetCollectionMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute();
+  if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+    fieldMetadata.setCollectionCeilingEntity(addMetadataFromFieldTypeRequest.getType().getReturnedClass().getName());
+    AdornedTargetList targetList=((AdornedTargetList)fieldMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST));
+    targetList.setAdornedTargetEntityClassname(fieldMetadata.getCollectionCeilingEntity());
+  }
+}

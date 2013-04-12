@@ -23,13 +23,13 @@
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || Collections.binarySearch(presentationKeyList,propertyName,propertyComparator) >= 0) {
       if (myField != null) {
         boolean handled=false;
-        for (        PropertyProvider provider : propertyProviders) {
-          if (provider.canHandleField(myField)) {
+        for (        MetadataProvider provider : metadataProviders) {
+          if (provider.canHandleFieldForTypeMetadata(myField)) {
             FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
             if (presentationAttribute != null) {
               setExcludedBasedOnShowIfProperty(presentationAttribute);
             }
-            provider.buildProperty(new PropertyRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this));
+            provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this));
             handled=true;
           }
         }

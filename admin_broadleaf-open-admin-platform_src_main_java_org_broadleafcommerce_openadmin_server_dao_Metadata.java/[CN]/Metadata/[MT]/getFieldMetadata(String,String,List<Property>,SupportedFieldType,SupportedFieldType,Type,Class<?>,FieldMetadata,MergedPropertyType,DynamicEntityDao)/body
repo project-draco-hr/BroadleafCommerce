@@ -5,8 +5,15 @@
   }
   presentationAttribute.setInheritedFromType(targetClass.getName());
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
+  boolean handled=false;
   for (  MetadataProvider metadataProvider : metadataProviders) {
-    metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+    if (metadataProvider.canHandleMappingForTypeMetadata(propertyName,componentProperties,entityType)) {
+      metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+      handled=true;
+    }
+  }
+  if (!handled) {
+    defaultMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
   }
   return presentationAttribute;
 }

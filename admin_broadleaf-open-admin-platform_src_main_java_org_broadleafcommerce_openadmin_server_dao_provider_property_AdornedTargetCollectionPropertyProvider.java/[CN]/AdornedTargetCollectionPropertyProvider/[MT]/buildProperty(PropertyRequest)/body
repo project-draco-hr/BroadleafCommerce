@@ -1,9 +1,0 @@
-{
-  super.buildProperty(propertyRequest);
-  AdornedTargetCollectionMetadata fieldMetadata=(AdornedTargetCollectionMetadata)propertyRequest.getPresentationAttribute();
-  if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
-    fieldMetadata.setCollectionCeilingEntity(propertyRequest.getType().getReturnedClass().getName());
-    AdornedTargetList targetList=((AdornedTargetList)fieldMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST));
-    targetList.setAdornedTargetEntityClassname(fieldMetadata.getCollectionCeilingEntity());
-  }
-}

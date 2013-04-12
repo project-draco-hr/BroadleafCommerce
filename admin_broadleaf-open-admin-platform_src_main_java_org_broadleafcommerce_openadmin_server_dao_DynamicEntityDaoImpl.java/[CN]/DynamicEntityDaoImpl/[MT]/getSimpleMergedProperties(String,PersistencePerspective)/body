@@ -25,14 +25,14 @@
         Field field=FieldManager.getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
           boolean handled=false;
-          for (          PropertyProvider provider : propertyProviders) {
-            if (provider.canHandleField(field)) {
-              provider.buildProperty(new PropertyRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
+          for (          MetadataProvider provider : metadataProviders) {
+            if (provider.canHandleFieldForTypeMetadata(field)) {
+              provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
               handled=true;
             }
           }
           if (!handled) {
-            defaultPropertyProvider.buildProperty(new PropertyRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
+            defaultMetadataProvider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
           }
         }
       }
