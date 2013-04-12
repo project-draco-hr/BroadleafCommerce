@@ -5,6 +5,7 @@
   List<Field> headerFields=new ArrayList<Field>();
   ListGrid.Type type=null;
   boolean editable=false;
+  boolean sortable=false;
   String idProperty="id";
   if (fmd instanceof BasicFieldMetadata) {
     for (    Property p : cmd.getProperties()) {
@@ -53,9 +54,11 @@
       headerFields.add(hf);
     }
     type=ListGrid.Type.ADORNED;
-    if (((AdornedTargetCollectionMetadata)fmd).getMaintainedAdornedTargetFields().length > 0) {
+    if (atcmd.getMaintainedAdornedTargetFields().length > 0) {
       editable=true;
     }
+    AdornedTargetList adornedList=(AdornedTargetList)atcmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+    sortable=StringUtils.isNotBlank(adornedList.getSortField());
   }
  else   if (fmd instanceof MapMetadata) {
     MapMetadata mmd=(MapMetadata)fmd;
@@ -89,6 +92,9 @@
   listGrid.setContainingEntityId(containingEntityId);
   if (editable) {
     listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
+  }
+  if (sortable) {
+    listGrid.getToolbarActions().add(DefaultListGridActions.REORDER);
   }
   listGrid.getRowActions().add(DefaultListGridActions.REMOVE);
   return listGrid;
