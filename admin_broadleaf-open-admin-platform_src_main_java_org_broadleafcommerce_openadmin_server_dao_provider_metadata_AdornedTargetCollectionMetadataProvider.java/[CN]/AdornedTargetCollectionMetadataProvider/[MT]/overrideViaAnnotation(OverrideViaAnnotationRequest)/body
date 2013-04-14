@@ -1,4 +1,7 @@
 {
+  if (!canHandleAnnotationOverride(overrideViaAnnotationRequest.getRequestedEntity())) {
+    return false;
+  }
   Map<String,AdminPresentationAdornedTargetCollectionOverride> presentationAdornedTargetCollectionOverrides=new HashMap<String,AdminPresentationAdornedTargetCollectionOverride>();
   AdminPresentationOverrides myOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationOverrides.class);
   if (myOverrides != null) {
@@ -13,4 +16,5 @@
       }
     }
   }
+  return true;
 }

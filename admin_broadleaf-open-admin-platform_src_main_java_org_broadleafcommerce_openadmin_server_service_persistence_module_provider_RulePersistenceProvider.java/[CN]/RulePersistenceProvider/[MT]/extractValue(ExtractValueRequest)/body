@@ -1,4 +1,7 @@
 {
+  if (!canHandlePersistence(extractValueRequest.getRequestedValue(),extractValueRequest.getRequestedProperty(),extractValueRequest.getMetadata())) {
+    return false;
+  }
   String val=null;
   ObjectMapper mapper=new ObjectMapper();
   MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
@@ -32,4 +35,5 @@
       }
     }
   }
+  return true;
 }

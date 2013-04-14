@@ -1,4 +1,7 @@
 {
+  if (!canHandleFieldForTypeMetadata(addMetadataFromFieldTypeRequest.getRequestedField())) {
+    return false;
+  }
   CollectionMetadata fieldMetadata=(CollectionMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute();
   if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
     ParameterizedType listType=(ParameterizedType)addMetadataFromFieldTypeRequest.getRequestedField().getGenericType();
@@ -14,4 +17,5 @@
     }
   }
   addMetadataFromFieldTypeRequest.getRequestedProperties().put(addMetadataFromFieldTypeRequest.getRequestedPropertyName(),fieldMetadata);
+  return true;
 }

@@ -56,8 +56,8 @@
             String displayVal=null;
             boolean handled=false;
             for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              if (persistenceProvider.canHandlePersistence(value,propertyItem,metadata)) {
-                persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
+              boolean response=persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
+              if (response) {
                 handled=true;
               }
             }

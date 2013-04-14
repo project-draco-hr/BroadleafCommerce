@@ -26,8 +26,8 @@
         if (!Modifier.isStatic(field.getModifiers())) {
           boolean handled=false;
           for (          MetadataProvider provider : metadataProviders) {
-            if (provider.canHandleFieldForTypeMetadata(field)) {
-              provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
+            boolean response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,mergedProperties,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this));
+            if (response) {
               handled=true;
             }
           }

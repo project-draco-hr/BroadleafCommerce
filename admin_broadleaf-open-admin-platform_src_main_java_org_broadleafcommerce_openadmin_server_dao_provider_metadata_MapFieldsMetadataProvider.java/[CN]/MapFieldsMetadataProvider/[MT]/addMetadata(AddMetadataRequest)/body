@@ -1,4 +1,7 @@
 {
+  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest.getRequestedField())) {
+    return false;
+  }
   AdminPresentationMapFields annot=addMetadataRequest.getRequestedField().getAnnotation(AdminPresentationMapFields.class);
   for (  AdminPresentationMapField mapField : annot.mapDisplayFields()) {
     if (mapField.fieldPresentation().fieldType() == SupportedFieldType.UNKNOWN) {
@@ -24,4 +27,5 @@
       metadata.setManyToField(mapField.manyToField());
     }
   }
+  return true;
 }

@@ -1,4 +1,7 @@
 {
+  if (!canHandlePersistence(populateValueRequest.getRequestedInstance(),populateValueRequest.getProperty(),populateValueRequest.getMetadata())) {
+    return false;
+  }
   try {
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case RULE_WITH_QUANTITY:
@@ -66,4 +69,5 @@ case RULE_SIMPLE:
  catch (Exception e) {
 throw new PersistenceException(e);
 }
+return true;
 }

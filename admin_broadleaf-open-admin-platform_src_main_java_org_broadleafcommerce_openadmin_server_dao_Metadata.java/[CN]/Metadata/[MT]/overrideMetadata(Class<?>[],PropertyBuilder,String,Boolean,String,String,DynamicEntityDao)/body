@@ -9,18 +9,27 @@
   }
   Map<String,FieldMetadata> mergedProperties=propertyBuilder.execute(classAnnotatedPopulateManyToOneFields);
   for (int i=entities.length - 1; i >= 0; i--) {
+    boolean handled=false;
     for (    MetadataProvider metadataProvider : metadataProviders) {
-      if (metadataProvider.canHandleAnnotationOverride(entities[i])) {
-        metadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],mergedProperties,isParentExcluded,dynamicEntityDao,prefix));
+      boolean response=metadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],mergedProperties,isParentExcluded,dynamicEntityDao,prefix));
+      if (response) {
+        handled=true;
       }
+    }
+    if (!handled) {
       defaultMetadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],mergedProperties,isParentExcluded,dynamicEntityDao,prefix));
     }
   }
-  defaultMetadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao));
+  ((DefaultMetadataProvider)defaultMetadataProvider).overrideExclusionsFromXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao));
+  boolean handled=false;
   for (  MetadataProvider metadataProvider : metadataProviders) {
-    if (metadataProvider.canHandleXmlOverride(ceilingEntityFullyQualifiedClassname,configurationKey)) {
-      metadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao));
+    boolean response=metadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao));
+    if (response) {
+      handled=true;
     }
+  }
+  if (!handled) {
+    defaultMetadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,mergedProperties,dynamicEntityDao));
   }
   return mergedProperties;
 }

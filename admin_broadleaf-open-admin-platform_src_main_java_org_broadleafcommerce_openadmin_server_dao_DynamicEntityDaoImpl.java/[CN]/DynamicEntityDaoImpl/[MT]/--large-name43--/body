@@ -24,12 +24,12 @@
       if (myField != null) {
         boolean handled=false;
         for (        MetadataProvider provider : metadataProviders) {
-          if (provider.canHandleFieldForTypeMetadata(myField)) {
-            FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
-            if (presentationAttribute != null) {
-              setExcludedBasedOnShowIfProperty(presentationAttribute);
-            }
-            provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this));
+          FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
+          if (presentationAttribute != null) {
+            setExcludedBasedOnShowIfProperty(presentationAttribute);
+          }
+          boolean response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,fields,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this));
+          if (response) {
             handled=true;
           }
         }

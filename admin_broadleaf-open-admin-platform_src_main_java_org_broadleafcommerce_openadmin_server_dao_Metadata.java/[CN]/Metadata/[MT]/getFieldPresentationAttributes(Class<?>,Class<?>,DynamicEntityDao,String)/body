@@ -4,11 +4,9 @@
   for (  Field field : fields) {
     boolean foundOneOrMoreHandlers=false;
     for (    MetadataProvider metadataProvider : metadataProviders) {
-      if (metadataProvider.canHandleFieldForConfiguredMetadata(field)) {
-        metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
-        if (!foundOneOrMoreHandlers) {
-          foundOneOrMoreHandlers=true;
-        }
+      boolean response=metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
+      if (response) {
+        foundOneOrMoreHandlers=true;
       }
     }
     if (!foundOneOrMoreHandlers) {

@@ -1,4 +1,7 @@
 {
+  if (!canHandleSearchMapping((BasicFieldMetadata)addSearchMappingRequest.getMergedProperties().get(addSearchMappingRequest.getPropertyName()))) {
+    return false;
+  }
   AssociationPath associationPath;
   int dotIndex=addSearchMappingRequest.getPropertyName().lastIndexOf('.');
   StringBuilder property;
@@ -154,4 +157,5 @@ break;
 }
 break;
 }
+return true;
 }

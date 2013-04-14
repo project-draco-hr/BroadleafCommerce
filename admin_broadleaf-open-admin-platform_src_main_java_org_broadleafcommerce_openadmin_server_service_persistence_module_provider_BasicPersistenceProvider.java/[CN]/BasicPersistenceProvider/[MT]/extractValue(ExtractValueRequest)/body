@@ -1,4 +1,7 @@
 {
+  if (!canHandlePersistence(extractValueRequest.getRequestedValue(),extractValueRequest.getRequestedProperty(),extractValueRequest.getMetadata())) {
+    return false;
+  }
   try {
     if (extractValueRequest.getRequestedValue() != null) {
       String val=null;
@@ -50,4 +53,5 @@
  catch (  IllegalAccessException e) {
     throw new PersistenceException(e);
   }
+  return true;
 }

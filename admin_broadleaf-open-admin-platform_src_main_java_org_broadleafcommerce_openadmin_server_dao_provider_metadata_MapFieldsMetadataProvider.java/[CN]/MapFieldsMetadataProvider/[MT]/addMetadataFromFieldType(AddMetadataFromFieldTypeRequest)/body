@@ -1,4 +1,7 @@
 {
+  if (!canHandleFieldForTypeMetadata(addMetadataFromFieldTypeRequest.getRequestedField())) {
+    return false;
+  }
   for (  Map.Entry<String,FieldMetadata> entry : addMetadataFromFieldTypeRequest.getPresentationAttributes().entrySet()) {
     if (entry.getKey().startsWith(addMetadataFromFieldTypeRequest.getRequestedPropertyName() + FieldManager.MAPFIELDSEPARATOR)) {
       TypeLocatorImpl typeLocator=new TypeLocatorImpl(new TypeResolver());
@@ -31,4 +34,5 @@
       super.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(addMetadataFromFieldTypeRequest.getRequestedField(),addMetadataFromFieldTypeRequest.getTargetClass(),addMetadataFromFieldTypeRequest.getForeignField(),addMetadataFromFieldTypeRequest.getAdditionalForeignFields(),addMetadataFromFieldTypeRequest.getMergedPropertyType(),addMetadataFromFieldTypeRequest.getComponentProperties(),addMetadataFromFieldTypeRequest.getRequestedProperties(),addMetadataFromFieldTypeRequest.getIdProperty(),addMetadataFromFieldTypeRequest.getPrefix(),entry.getKey(),myType,addMetadataFromFieldTypeRequest.isPropertyForeignKey(),addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition(),addMetadataFromFieldTypeRequest.getPresentationAttributes(),entry.getValue(),((BasicFieldMetadata)entry.getValue()).getExplicitFieldType(),myType.getReturnedClass(),addMetadataFromFieldTypeRequest.getDynamicEntityDao()));
     }
   }
+  return true;
 }

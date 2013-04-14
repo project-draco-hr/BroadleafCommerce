@@ -7,8 +7,8 @@
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
   boolean handled=false;
   for (  MetadataProvider metadataProvider : metadataProviders) {
-    if (metadataProvider.canHandleMappingForTypeMetadata(propertyName,componentProperties,entityType)) {
-      metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+    boolean response=metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+    if (response) {
       handled=true;
     }
   }

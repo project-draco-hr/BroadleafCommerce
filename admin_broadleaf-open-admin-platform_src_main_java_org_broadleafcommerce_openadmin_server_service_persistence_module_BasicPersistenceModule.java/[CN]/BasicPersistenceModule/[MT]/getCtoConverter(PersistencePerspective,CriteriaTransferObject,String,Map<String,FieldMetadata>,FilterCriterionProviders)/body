@@ -8,8 +8,8 @@
     if (mergedProperties.containsKey(propertyId)) {
       boolean handled=false;
       for (      PersistenceProvider persistenceProvider : persistenceProviders) {
-        if (persistenceProvider.canHandleSearchMapping((BasicFieldMetadata)mergedProperties.get(propertyId))) {
-          persistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager()));
+        boolean response=persistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,ctoConverter,propertyId,getFieldManager()));
+        if (response) {
           handled=true;
         }
       }
