@@ -4,7 +4,7 @@
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
       if (LookupType.DROPDOWN.equals(fmd.getLookupType())) {
         PersistencePackageRequest toOnePpr=PersistencePackageRequest.standard().withCeilingEntityClassname(fmd.getForeignKeyClass());
-        Entity[] rows=adminEntityService.getRecords(toOnePpr);
+        Entity[] rows=adminEntityService.getRecords(toOnePpr).getRecords();
         String idProp=null;
         ClassMetadata foreignClassMd=adminEntityService.getClassMetadata(toOnePpr);
         for (        Property foreignP : foreignClassMd.getProperties()) {

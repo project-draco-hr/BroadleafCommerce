@@ -1,10 +1,10 @@
 {
-  Map<String,Entity[]> map=new HashMap<String,Entity[]>();
+  Map<String,DynamicResultSet> map=new HashMap<String,DynamicResultSet>();
   ClassMetadata cmd=getClassMetadata(ppr);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof CollectionMetadata) {
-      Entity[] rows=getRecordsForCollection(cmd,containingEntity,p,null);
-      map.put(p.getName(),rows);
+      DynamicResultSet drs=getRecordsForCollection(cmd,containingEntity,p,null);
+      map.put(p.getName(),drs);
     }
   }
   return map;

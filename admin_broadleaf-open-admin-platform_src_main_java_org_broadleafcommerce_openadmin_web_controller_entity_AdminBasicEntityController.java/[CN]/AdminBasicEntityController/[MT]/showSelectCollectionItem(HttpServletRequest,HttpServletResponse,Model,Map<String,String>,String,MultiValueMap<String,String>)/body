@@ -7,8 +7,8 @@
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md);
   ppr.addFilterAndSortCriteria(getCriteria(requestParams));
   if (md instanceof BasicFieldMetadata) {
-    Entity[] rows=service.getRecords(ppr);
-    ListGrid listGrid=formService.buildCollectionListGrid(null,rows,collectionProperty,sectionKey);
+    DynamicResultSet drs=service.getRecords(ppr);
+    ListGrid listGrid=formService.buildCollectionListGrid(null,drs,collectionProperty,sectionKey);
     model.addAttribute("listGrid",listGrid);
     model.addAttribute("viewType","modal/simpleSelectEntity");
   }

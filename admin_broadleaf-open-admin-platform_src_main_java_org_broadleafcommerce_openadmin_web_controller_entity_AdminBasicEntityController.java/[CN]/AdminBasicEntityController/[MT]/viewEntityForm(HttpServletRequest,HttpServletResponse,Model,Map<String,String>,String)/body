@@ -4,7 +4,7 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   ClassMetadata cmd=service.getClassMetadata(ppr);
   Entity entity=service.getRecord(ppr,id,cmd);
-  Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
+  Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.buildEntityForm(cmd,entity,subRecordsMap);
   model.addAttribute("entity",entity);
   model.addAttribute("entityForm",entityForm);

@@ -15,8 +15,8 @@
       model.addAttribute("viewType","modal/simpleAddEntity");
     }
  else {
-      Entity[] rows=service.getRecords(ppr);
-      ListGrid listGrid=formService.buildCollectionListGrid(id,rows,collectionProperty,sectionKey);
+      DynamicResultSet drs=service.getRecords(ppr);
+      ListGrid listGrid=formService.buildCollectionListGrid(id,drs,collectionProperty,sectionKey);
       model.addAttribute("listGrid",listGrid);
       model.addAttribute("viewType","modal/simpleSelectEntity");
     }
@@ -26,8 +26,8 @@
     ppr.setOperationTypesOverride(null);
     ppr.setType(PersistencePackageRequest.Type.STANDARD);
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-    Entity[] rows=service.getRecords(ppr);
-    ListGrid listGrid=formService.buildMainListGrid(rows,collectionMetadata,sectionKey);
+    DynamicResultSet drs=service.getRecords(ppr);
+    ListGrid listGrid=formService.buildMainListGrid(drs,collectionMetadata,sectionKey);
     listGrid.setSubCollectionFieldName(collectionField);
     EntityForm entityForm=formService.buildAdornedListForm(fmd,ppr.getAdornedList(),id);
     if (fmd.getMaintainedAdornedTargetFields().length > 0) {

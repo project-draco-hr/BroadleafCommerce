@@ -5,7 +5,9 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]),sectionKey);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,getCriteria(requestParams),sectionKey);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,criteriaForm,sectionKey);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";
