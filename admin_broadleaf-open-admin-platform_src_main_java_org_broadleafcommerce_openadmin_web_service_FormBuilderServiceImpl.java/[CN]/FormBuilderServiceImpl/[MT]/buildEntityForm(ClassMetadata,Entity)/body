@@ -1,6 +1,7 @@
 {
   EntityForm ef=buildEntityForm(cmd);
-  ef.setId(entity.findProperty("id").getValue());
+  String idProperty=adminEntityService.getIdProperty(cmd);
+  ef.setId(entity.findProperty(idProperty).getValue());
   ef.setEntityType(entity.getType()[0]);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {

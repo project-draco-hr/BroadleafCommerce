@@ -6,7 +6,7 @@
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md);
   ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-  Entity entity=service.getRecord(ppr,collectionItemId);
+  Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata);
   Map<String,Entity[]> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.buildEntityForm(collectionMetadata,entity,subRecordsMap);
   entityForm.getActions().remove(DefaultEntityFormActions.DELETE);

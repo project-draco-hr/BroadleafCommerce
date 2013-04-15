@@ -1,0 +1,11 @@
+{
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
+      if (SupportedFieldType.ID.equals(fmd.getFieldType())) {
+        return p.getName();
+      }
+    }
+  }
+  throw new ServiceException("Could not determine ID field for " + cmd.getCeilingType());
+}
