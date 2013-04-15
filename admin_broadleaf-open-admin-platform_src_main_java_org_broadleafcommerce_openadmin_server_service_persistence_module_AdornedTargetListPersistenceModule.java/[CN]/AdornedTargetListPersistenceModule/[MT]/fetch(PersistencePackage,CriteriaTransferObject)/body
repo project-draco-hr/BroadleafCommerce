@@ -7,11 +7,10 @@
   try {
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
     Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-    Class<?>[] entities2=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
-    Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,false,new String[]{},new String[]{},null,"");
-    BaseCtoConverter ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,adornedTargetList.getAdornedTargetEntityClassname());
-    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+    AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,adornedTargetList,cto).invokeForFetch();
+    List<Serializable> records=adornedTargetRetrieval.getRecords();
+    Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
+    BaseCtoConverter ctoConverter=adornedTargetRetrieval.getCtoConverter();
     payload=getRecords(mergedPropertiesTarget,records,mergedProperties,adornedTargetList.getTargetObjectPath());
     totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
   }

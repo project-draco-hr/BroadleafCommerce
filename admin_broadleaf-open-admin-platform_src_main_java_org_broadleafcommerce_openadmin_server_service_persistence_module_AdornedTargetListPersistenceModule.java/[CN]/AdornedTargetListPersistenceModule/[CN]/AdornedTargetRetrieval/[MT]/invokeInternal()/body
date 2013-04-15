@@ -1,25 +1,11 @@
 {
-  CriteriaTransferObject cto=new CriteriaTransferObject();
-  FilterAndSortCriteria filterCriteria=cto.get(adornedTargetList.getCollectionFieldName());
-  filterCriteria.setFilterValue(entity.findProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty()).getValue());
   if (adornedTargetList.getSortField() != null) {
     FilterAndSortCriteria sortCriteria=cto.get(adornedTargetList.getSortField());
     sortCriteria.setSortAscending(adornedTargetList.getSortAscending());
   }
   Class<?>[] entities2=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
   mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-  BaseCtoConverter ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
+  ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
   PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,adornedTargetList.getAdornedTargetEntityClassname());
   records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
-  index=0;
-  Long myEntityId=Long.valueOf(entity.findProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty()).getValue());
-  FieldManager fieldManager=getFieldManager();
-  for (  Serializable record : records) {
-    Long targetId=(Long)fieldManager.getFieldValue(record,adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty());
-    if (myEntityId.equals(targetId)) {
-      break;
-    }
-    index++;
-  }
-  return this;
 }
