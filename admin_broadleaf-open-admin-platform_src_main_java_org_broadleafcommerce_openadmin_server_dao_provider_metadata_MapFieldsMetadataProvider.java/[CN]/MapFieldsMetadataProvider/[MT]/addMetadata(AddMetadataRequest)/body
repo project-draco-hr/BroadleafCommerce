@@ -1,5 +1,5 @@
 {
-  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest.getRequestedField())) {
+  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest)) {
     return false;
   }
   AdminPresentationMapFields annot=addMetadataRequest.getRequestedField().getAnnotation(AdminPresentationMapFields.class);
@@ -13,7 +13,7 @@
     myInfo.setName(addMetadataRequest.getRequestedField().getName() + FieldManager.MAPFIELDSEPARATOR + mapField.fieldName());
     buildBasicMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo,override,addMetadataRequest.getDynamicEntityDao());
     setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),addMetadataRequest.getRequestedMetadata(),myInfo);
-    BasicFieldMetadata metadata=(BasicFieldMetadata)addMetadataRequest.getRequestedMetadata().get(addMetadataRequest.getRequestedField().getName());
+    BasicFieldMetadata metadata=(BasicFieldMetadata)addMetadataRequest.getRequestedMetadata().get(myInfo.getName());
     if (!mapField.targetClass().equals(Void.class)) {
       if (mapField.targetClass().isInterface()) {
         throw new IllegalArgumentException("targetClass on @AdminPresentationMapField must be a concrete class");

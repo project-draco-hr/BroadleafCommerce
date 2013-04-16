@@ -119,9 +119,8 @@
     }
   }
   if (metadata.getValueClassName() == null) {
-    String manyToManyMappedBy=field.getManyToManyMappedBy();
     if (!StringUtils.isEmpty(field.getManyToManyTargetEntity())) {
-      metadata.setValueClassName(field.getManyToManyMappedBy());
+      metadata.setValueClassName(field.getManyToManyTargetEntity());
     }
   }
   if (metadata.getValueClassName() == null) {
@@ -166,25 +165,26 @@
   if (map.getMapKeyOptionEntityValueField() != null) {
     metadata.setMapKeyOptionEntityValueField(map.getMapKeyOptionEntityValueField());
   }
-  if (ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
-    throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties");
+  if ((map.getForceFreeFormKeys() == null || !map.getForceFreeFormKeys()) && ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
+    throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties. If you wish to allow free form entry for key values, then set forceFreeFormKeys on AdminPresentationMap.");
   }
+  MapStructure mapStructure;
   if (serverMetadata != null) {
     ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
     foreignKey.setManyToField(parentObjectIdField);
     foreignKey.setForeignKeyClass(parentObjectClass);
     if (metadata.isSimpleValue()) {
-      SimpleValueMapStructure mapStructure=(SimpleValueMapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+      mapStructure=(SimpleValueMapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
       mapStructure.setKeyClassName(keyClassName);
       mapStructure.setKeyPropertyName(keyPropertyName);
       mapStructure.setKeyPropertyFriendlyName(keyPropertyFriendlyName);
       mapStructure.setValueClassName(metadata.getValueClassName());
-      mapStructure.setValuePropertyName(valuePropertyName);
-      mapStructure.setValuePropertyFriendlyName(valuePropertyFriendlyName);
+      ((SimpleValueMapStructure)mapStructure).setValuePropertyName(valuePropertyName);
+      ((SimpleValueMapStructure)mapStructure).setValuePropertyFriendlyName(valuePropertyFriendlyName);
       mapStructure.setMapProperty(prefix + field.getName());
     }
  else {
-      MapStructure mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
+      mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
       mapStructure.setKeyClassName(keyClassName);
       mapStructure.setKeyPropertyName(keyPropertyName);
       mapStructure.setKeyPropertyFriendlyName(keyPropertyFriendlyName);
@@ -196,7 +196,6 @@
  else {
     ForeignKey foreignKey=new ForeignKey(parentObjectIdField,parentObjectClass);
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
-    MapStructure mapStructure;
     if (metadata.isSimpleValue()) {
       mapStructure=new SimpleValueMapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),valuePropertyName,valuePropertyFriendlyName,prefix + field.getName());
     }
@@ -204,6 +203,19 @@
       mapStructure=new MapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),prefix + field.getName(),deleteEntityUponRemove);
     }
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,mapStructure);
+  }
+  if (!StringUtils.isEmpty(map.getManyToField())) {
+    mapStructure.setManyToField(map.getManyToField());
+  }
+  if (mapStructure.getManyToField() == null) {
+    if (field.getManyToManyMappedBy() != null) {
+      mapStructure.setManyToField(field.getManyToManyMappedBy());
+    }
+  }
+  if (mapStructure.getManyToField() == null) {
+    if (field.getOneToManyMappedBy() != null) {
+      mapStructure.setManyToField(field.getOneToManyMappedBy());
+    }
   }
   if (map.getExcluded() != null) {
     if (LOG.isDebugEnabled()) {
@@ -245,6 +257,9 @@
   }
   if (map.getCurrencyCodeField() != null) {
     metadata.setCurrencyCodeField(map.getCurrencyCodeField());
+  }
+  if (map.getForceFreeFormKeys() != null) {
+    metadata.setForceFreeFormKeys(map.getForceFreeFormKeys());
   }
   attributes.put(field.getName(),metadata);
 }

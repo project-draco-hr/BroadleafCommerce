@@ -1,6 +1,14 @@
 {
-  if (!super.extractValue(extractValueRequest)) {
-    return false;
+  if (extractValueRequest.getRequestedValue() != null && extractValueRequest.getRequestedValue() instanceof ValueAssignable) {
+    ValueAssignable assignableValue=(ValueAssignable)extractValueRequest.getRequestedValue();
+    String val=(String)assignableValue.getValue();
+    extractValueRequest.getRequestedProperty().setValue(val);
+    extractValueRequest.getRequestedProperty().setDisplayValue(extractValueRequest.getDisplayVal());
+  }
+ else {
+    if (!super.extractValue(extractValueRequest)) {
+      return false;
+    }
   }
   return true;
 }

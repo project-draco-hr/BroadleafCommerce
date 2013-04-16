@@ -1,0 +1,16 @@
+{
+  FieldInfo info=new FieldInfo();
+  info.setName(field.getName());
+  info.setGenericType(field.getGenericType());
+  ManyToMany manyToMany=field.getAnnotation(ManyToMany.class);
+  if (manyToMany != null) {
+    info.setManyToManyMappedBy(manyToMany.mappedBy());
+    info.setManyToManyTargetEntity(manyToMany.targetEntity().getName());
+  }
+  OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+  if (oneToMany != null) {
+    info.setOneToManyMappedBy(oneToMany.mappedBy());
+    info.setOneToManyTargetEntity(oneToMany.targetEntity().getName());
+  }
+  return info;
+}

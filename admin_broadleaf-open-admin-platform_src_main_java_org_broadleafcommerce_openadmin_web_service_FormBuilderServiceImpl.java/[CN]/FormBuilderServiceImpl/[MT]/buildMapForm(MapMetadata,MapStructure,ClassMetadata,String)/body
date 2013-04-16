@@ -2,19 +2,26 @@
   EntityForm ef=createStandardEntityForm();
   ForeignKey foreignKey=(ForeignKey)mapMd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
   ef.setEntityType(foreignKey.getForeignKeyClass());
-  ComboField keyField=new ComboField();
-  keyField.withName("key").withFieldType("combo_field").withFriendlyName("Key");
-  if (mapMd.getKeys() != null) {
-    keyField.setOptions(mapMd.getKeys());
+  Field keyField;
+  if (!mapMd.getForceFreeFormKeys()) {
+    ComboField temp=new ComboField();
+    temp.withName("key").withFieldType("combo_field").withFriendlyName("Key");
+    if (mapMd.getKeys() != null) {
+      temp.setOptions(mapMd.getKeys());
+    }
+ else {
+      PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(mapMd.getMapKeyOptionEntityClass());
+      Entity[] rows=adminEntityService.getRecords(ppr);
+      for (      Entity entity : rows) {
+        String keyValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityValueField()).getValue();
+        String keyDisplayValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityDisplayField()).getValue();
+        temp.putOption(keyValue,keyDisplayValue);
+      }
+    }
+    keyField=temp;
   }
  else {
-    PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(mapMd.getMapKeyOptionEntityClass());
-    Entity[] rows=adminEntityService.getRecords(ppr);
-    for (    Entity entity : rows) {
-      String keyValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityValueField()).getValue();
-      String keyDisplayValue=entity.getPMap().get(mapMd.getMapKeyOptionEntityDisplayField()).getValue();
-      keyField.putOption(keyValue,keyDisplayValue);
-    }
+    keyField=new Field().withName("key").withFieldType(SupportedFieldType.STRING.toString()).withFriendlyName("Key");
   }
   ef.addMapKeyField(keyField);
   List<Property> mapFormProperties=new ArrayList<Property>(Arrays.asList(cmd.getProperties()));

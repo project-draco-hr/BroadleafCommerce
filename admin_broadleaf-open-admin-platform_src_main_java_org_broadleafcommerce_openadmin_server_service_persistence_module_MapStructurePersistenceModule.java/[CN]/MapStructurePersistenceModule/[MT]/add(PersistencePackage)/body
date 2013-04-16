@@ -27,6 +27,12 @@
     if (persistentClass != null) {
       Serializable valueInstance=(Serializable)Class.forName(mapStructure.getValueClassName()).newInstance();
       valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
+      if (valueInstance instanceof ValueAssignable) {
+        ((ValueAssignable)valueInstance).setName(entity.findProperty(mapStructure.getKeyPropertyName()).getValue());
+      }
+      if (mapStructure.getManyToField() != null) {
+        fieldManager.setFieldValue(valueInstance,mapStructure.getManyToField(),instance);
+      }
       valueInstance=persistenceManager.getDynamicEntityDao().persist(valueInstance);
       map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
     }
