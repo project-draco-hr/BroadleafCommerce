@@ -1,9 +1,10 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,criteriaForm);
+  ClassMetadata mainMetadata=service.getClassMetadata(ppr);
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
+  ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]),sectionKey);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,getCriteria(requestParams),sectionKey);

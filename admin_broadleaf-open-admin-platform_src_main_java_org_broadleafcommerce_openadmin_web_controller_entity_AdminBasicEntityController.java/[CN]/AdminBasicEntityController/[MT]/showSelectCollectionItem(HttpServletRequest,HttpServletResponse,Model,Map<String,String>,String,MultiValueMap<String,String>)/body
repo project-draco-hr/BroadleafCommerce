@@ -1,10 +1,11 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,criteriaForm);
+  ClassMetadata mainMetadata=service.getClassMetadata(ppr);
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   FieldMetadata md=collectionProperty.getMetadata();
-  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md);
+  ppr=PersistencePackageRequest.fromMetadata(md);
   ppr.addFilterAndSortCriteria(getCriteria(requestParams));
   if (md instanceof BasicFieldMetadata) {
     DynamicResultSet drs=service.getRecords(ppr);

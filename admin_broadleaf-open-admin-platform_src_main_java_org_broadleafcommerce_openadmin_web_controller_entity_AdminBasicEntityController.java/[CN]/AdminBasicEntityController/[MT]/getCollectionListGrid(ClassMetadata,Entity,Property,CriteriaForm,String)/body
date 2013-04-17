@@ -1,9 +1,5 @@
 {
-  FilterAndSortCriteria[] fascs=null;
-  if (form != null) {
-    fascs=form.getCriteria().toArray(new FilterAndSortCriteria[form.getCriteria().size()]);
-  }
-  DynamicResultSet drs=service.getRecordsForCollection(mainMetadata,entity,collectionProperty,fascs);
+  DynamicResultSet drs=service.getRecordsForCollection(mainMetadata,entity,collectionProperty,form);
   String idProperty=service.getIdProperty(mainMetadata);
   ListGrid listGrid=formService.buildCollectionListGrid(entity.findProperty(idProperty).getValue(),drs,collectionProperty,sectionKey);
   listGrid.setListGridType(ListGrid.Type.INLINE);

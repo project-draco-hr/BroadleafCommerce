@@ -1,5 +1,15 @@
 {
-  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata()).withFilterAndSortCriteria(criteria);
+  FilterAndSortCriteria[] fascs=null;
+  int startIndex=0;
+  if (criteriaForm != null) {
+    if (criteriaForm.getCriteria() != null) {
+      fascs=criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]);
+    }
+    if (criteriaForm.getStartIndex() != null) {
+      startIndex=criteriaForm.getStartIndex();
+    }
+  }
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata()).withStartIndex(startIndex).withFilterAndSortCriteria(fascs);
   FilterAndSortCriteria fasc;
   FieldMetadata md=collectionProperty.getMetadata();
   if (md instanceof BasicCollectionMetadata) {
