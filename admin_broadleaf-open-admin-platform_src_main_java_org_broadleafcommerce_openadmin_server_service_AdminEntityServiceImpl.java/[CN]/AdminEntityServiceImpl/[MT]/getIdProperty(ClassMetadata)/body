@@ -2,7 +2,7 @@
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
-      if (SupportedFieldType.ID.equals(fmd.getFieldType())) {
+      if (SupportedFieldType.ID.equals(fmd.getFieldType()) && !p.getName().contains(".")) {
         return p.getName();
       }
     }
