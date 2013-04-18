@@ -92,5 +92,20 @@
  else   if (operator.equals("endsWith")) {
     return BLCOperator.ENDS_WITH;
   }
+ else   if (operator.equals(".size()>")) {
+    return BLCOperator.COUNT_GREATER_THAN;
+  }
+ else   if (operator.equals(".size()>=")) {
+    return BLCOperator.COUNT_GREATER_OR_EQUAL;
+  }
+ else   if (operator.equals(".size()<")) {
+    return BLCOperator.COUNT_LESS_THAN;
+  }
+ else   if (operator.equals(".size()<=")) {
+    return BLCOperator.COUNT_LESS_OR_EQUAL;
+  }
+ else   if (operator.equals(".size()==")) {
+    return BLCOperator.COUNT_EQUALS;
+  }
   throw new MVELTranslationException("Unable to identify an operator compatible with the " + "rules builder: (" + (isNegation ? "!" : "" + field + operator+ value) + ")");
 }

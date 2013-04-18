@@ -3,12 +3,75 @@
   if (isNegation) {
     response.append("!");
   }
+  String convertedField=field;
+  boolean isMapField=false;
+  if (convertedField.contains(FieldManager.MAPFIELDSEPARATOR)) {
+    convertedField=convertedField.substring(0,convertedField.indexOf(FieldManager.MAPFIELDSEPARATOR)) + "[\"" + convertedField.substring(convertedField.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),convertedField.length())+ "\"]";
+    isMapField=true;
+  }
+  if (isMapField) {
 switch (type) {
-case BROADLEAF_ENUMERATION:
+case BOOLEAN:
+      response.append("new java.lang.Boolean(");
     response.append(entityKey);
   response.append(".");
+response.append(convertedField);
+response.append(")");
+break;
+case INTEGER:
+response.append("new java.lang.Integer(");
+response.append(entityKey);
+response.append(".");
+response.append(convertedField);
+response.append(")");
+break;
+case DECIMAL:
+case MONEY:
+response.append("new java.math.BigDecimal(");
+response.append(entityKey);
+response.append(".");
+response.append(convertedField);
+response.append(")");
+break;
+case DATE:
+response.append("new java.text.SimpleDateFormat(\"yyyy.MM.dd HH:mm:ss Z\").parse(");
+response.append(entityKey);
+response.append(".");
+response.append(convertedField);
+response.append(")");
+break;
+case STRING:
+if (ignoreCase) {
+response.append("MVEL.eval(\"toUpperCase()\",");
+}
+response.append(entityKey);
+response.append(".");
+response.append(convertedField);
+if (ignoreCase) {
+response.append(")");
+}
+break;
+case STRING_LIST:
+response.append(entityKey);
+response.append(".");
+response.append(convertedField);
+break;
+default :
+throw new UnsupportedOperationException(type.toString() + " is not supported for map fields in the rule builder.");
+}
+}
+ else {
+switch (type) {
+case BROADLEAF_ENUMERATION:
+if (isMapField) {
+throw new UnsupportedOperationException("Enumerations are not supported for map fields in the rule builder.");
+}
+ else {
+response.append(entityKey);
+response.append(".");
 response.append(field);
 response.append(".getType()");
+}
 break;
 case MONEY:
 response.append(entityKey);
@@ -32,6 +95,7 @@ response.append(entityKey);
 response.append(".");
 response.append(field);
 break;
+}
 }
 return response.toString();
 }

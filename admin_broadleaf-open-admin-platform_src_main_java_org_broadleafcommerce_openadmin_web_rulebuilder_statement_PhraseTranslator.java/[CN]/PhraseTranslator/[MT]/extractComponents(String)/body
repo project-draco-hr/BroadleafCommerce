@@ -1,7 +1,16 @@
 {
   String[] components=new String[]{};
   for (  String operator : STANDARDOPERATORS) {
-    String[] temp=phrase.split(operator);
+    String[] temp;
+    if (phrase.contains(operator)) {
+      temp=new String[2];
+      temp[0]=phrase.substring(0,phrase.indexOf(operator));
+      temp[1]=phrase.substring(phrase.indexOf(operator) + operator.length(),phrase.length());
+    }
+ else {
+      temp=new String[1];
+      temp[0]=phrase;
+    }
     if (temp.length == 2) {
       components=new String[3];
       components[0]=temp[0];
@@ -33,6 +42,12 @@
       if (components.length != 3) {
         throw new MVELTranslationException("Could not parse the MVEL expression to a " + "compatible form for the rules builder (" + phrase + ")");
       }
+    }
+  }
+  if (components[0].matches(".*\\[\".*?\"\\].*")) {
+    components[0]=components[0].substring(0,components[0].lastIndexOf("[")) + FieldManager.MAPFIELDSEPARATOR + components[0].substring(components[0].lastIndexOf("[") + 2,components[0].lastIndexOf("]") - 1);
+    if (components[0].startsWith("new ")) {
+      components[0]=components[0].substring(components[0].indexOf("(") + 1,components[0].length());
     }
   }
   return components;

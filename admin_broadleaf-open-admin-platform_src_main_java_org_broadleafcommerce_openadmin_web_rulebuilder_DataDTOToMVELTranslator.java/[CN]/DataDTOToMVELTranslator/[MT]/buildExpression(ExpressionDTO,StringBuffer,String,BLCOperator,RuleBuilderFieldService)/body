@@ -168,6 +168,31 @@ case STARTS_WITH_FIELD:
 buildExpression(sb,entityKey,field,value,type,secondaryType,".startsWith",true,true,false,false,false);
 break;
 }
+case COUNT_GREATER_THAN:
+{
+buildExpression(sb,entityKey,field,value,type,secondaryType,".size()>",false,false,false,false,true);
+break;
+}
+case COUNT_GREATER_OR_EQUAL:
+{
+buildExpression(sb,entityKey,field,value,type,secondaryType,".size()>=",false,false,false,false,true);
+break;
+}
+case COUNT_LESS_THAN:
+{
+buildExpression(sb,entityKey,field,value,type,secondaryType,".size()<",false,false,false,false,true);
+break;
+}
+case COUNT_LESS_OR_EQUAL:
+{
+buildExpression(sb,entityKey,field,value,type,secondaryType,".size()<=",false,false,false,false,true);
+break;
+}
+case COUNT_EQUALS:
+{
+buildExpression(sb,entityKey,field,value,type,secondaryType,".size()==",false,false,false,false,true);
+break;
+}
 case BETWEEN:
 {
 if (SupportedFieldType.DATE.toString().equals(type.toString())) {
