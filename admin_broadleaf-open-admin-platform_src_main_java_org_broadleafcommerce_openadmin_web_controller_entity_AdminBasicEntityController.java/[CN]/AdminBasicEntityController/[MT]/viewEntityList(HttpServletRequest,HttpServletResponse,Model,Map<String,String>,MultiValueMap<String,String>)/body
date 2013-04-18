@@ -1,14 +1,7 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
-  PersistencePackageRequest ppr;
-  if (criteriaForm == null) {
-    ppr=getSectionPersistencePackageRequest(sectionClassName);
-  }
- else {
-    ppr=getSectionPersistencePackageRequest(sectionClassName,criteriaForm.getCriteria().toArray(new FilterAndSortCriteria[criteriaForm.getCriteria().size()]));
-  }
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,getCriteria(requestParams));
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,requestParams);
   ClassMetadata cmd=service.getClassMetadata(ppr);
   DynamicResultSet drs=service.getRecords(ppr);
   ListGrid listGrid=formService.buildMainListGrid(drs,cmd,sectionKey);

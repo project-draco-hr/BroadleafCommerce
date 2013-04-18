@@ -4,6 +4,17 @@
   if (request.getFilterAndSortCriteria() != null) {
     cto.addAll(request.getFilterAndSortCriteria());
   }
-  cto.setFirstResult(request.getStartIndex());
+  if (request.getStartIndex() == null) {
+    cto.setFirstResult(0);
+  }
+ else {
+    cto.setFirstResult(request.getStartIndex());
+  }
+  if (request.getMaxIndex() != null) {
+    int requestedMaxResults=request.getMaxIndex() - request.getStartIndex() + 1;
+    if (requestedMaxResults >= 0 && requestedMaxResults < cto.getMaxResults()) {
+      cto.setMaxResults(requestedMaxResults);
+    }
+  }
   return service.fetch(pkg,cto);
 }
