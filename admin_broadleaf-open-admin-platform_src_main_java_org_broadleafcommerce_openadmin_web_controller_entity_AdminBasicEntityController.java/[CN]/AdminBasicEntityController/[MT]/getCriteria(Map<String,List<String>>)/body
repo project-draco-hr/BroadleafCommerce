@@ -1,0 +1,32 @@
+{
+  List<FilterAndSortCriteria> result=new ArrayList<FilterAndSortCriteria>();
+  for (  Entry<String,List<String>> entry : requestParams.entrySet()) {
+    if (!entry.getKey().equals(FilterAndSortCriteria.SORT_PROPERTY_PARAMETER) && !entry.getKey().equals(FilterAndSortCriteria.SORT_DIRECTION_PARAMETER)) {
+      FilterAndSortCriteria fasCriteria=new FilterAndSortCriteria(entry.getKey(),entry.getValue());
+      result.add(fasCriteria);
+    }
+  }
+  List<String> sortProperties=getSortPropertyNames(requestParams);
+  List<String> sortDirections=getSortDirections(requestParams);
+  if (CollectionUtils.isNotEmpty(sortProperties)) {
+    Map<String,FilterAndSortCriteria> fasMap=BLCMapUtils.keyedMap(result,new TypedClosure<String,FilterAndSortCriteria>(){
+      @Override public String getKey(      FilterAndSortCriteria value){
+        return value.getPropertyId();
+      }
+    }
+);
+    for (int i=0; i < sortProperties.size(); i++) {
+      boolean sortAscending=FilterAndSortCriteria.SortDirection.ASCENDING.toString().equals(sortDirections.get(i));
+      FilterAndSortCriteria propertyCriteria=fasMap.get(sortProperties.get(i));
+      if (propertyCriteria != null) {
+        propertyCriteria.setSortAscending(sortAscending);
+      }
+ else {
+        FilterAndSortCriteria fasc=new FilterAndSortCriteria(sortProperties.get(i));
+        fasc.setSortAscending(sortAscending);
+        result.add(fasc);
+      }
+    }
+  }
+  return result.toArray(new FilterAndSortCriteria[result.size()]);
+}
