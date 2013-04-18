@@ -45,9 +45,9 @@
     }
   }
   if (components[0].matches(".*\\[\".*?\"\\].*")) {
-    components[0]=components[0].substring(0,components[0].lastIndexOf("[")) + FieldManager.MAPFIELDSEPARATOR + components[0].substring(components[0].lastIndexOf("[") + 2,components[0].lastIndexOf("]") - 1);
-    if (components[0].startsWith("new ")) {
-      components[0]=components[0].substring(components[0].indexOf("(") + 1,components[0].length());
+    components[0]=components[0].substring(0,components[0].lastIndexOf("[")) + FieldManager.MAPFIELDSEPARATOR + components[0].substring(components[0].lastIndexOf("[") + 2,components[0].lastIndexOf("]") - 1)+ components[0].substring(components[0].lastIndexOf("]") + 1,components[0].length());
+    if (components[0].startsWith("MvelHelper.convertField(")) {
+      components[0]=components[0].substring(components[0].indexOf("(") + 1,components[0].length() - 1);
     }
   }
   return components;

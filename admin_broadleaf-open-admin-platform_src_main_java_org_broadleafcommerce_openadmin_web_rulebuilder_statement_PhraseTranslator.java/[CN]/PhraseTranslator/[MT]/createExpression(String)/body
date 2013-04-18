@@ -8,7 +8,15 @@
     isNegation=true;
   }
   boolean isIgnoreCase=false;
-  String caseInsensitivityKey="MVEL.eval(\"toUpperCase()\",";
+  String legacyCaseInsensitivityKey="MVEL.eval(\"toUpperCase()\",";
+  String newCaseInsensitivityKey="MvelHelper.toUpperCase(";
+  String caseInsensitivityKey;
+  if (field.contains(legacyCaseInsensitivityKey) || value.contains(legacyCaseInsensitivityKey)) {
+    caseInsensitivityKey=legacyCaseInsensitivityKey;
+  }
+ else {
+    caseInsensitivityKey=newCaseInsensitivityKey;
+  }
   if (field.startsWith(caseInsensitivityKey)) {
     isIgnoreCase=true;
     field=field.substring(caseInsensitivityKey.length(),field.length() - 1);
@@ -40,9 +48,23 @@
     sb.append("]");
     value=sb.toString();
   }
-  String dateFormatKey="java.text.DateFormat.getDateTimeInstance(3,3).parse(";
+  String legacyDateFormatKey="java.text.DateFormat.getDateTimeInstance(3,3).parse(";
+  String newDateFormatKey="MvelHelper.convertField(\"DATE\",\"";
+  String dateFormatKey;
+  if (value.contains(legacyDateFormatKey)) {
+    dateFormatKey=legacyDateFormatKey;
+  }
+ else {
+    dateFormatKey=newDateFormatKey;
+  }
   if (value.startsWith(dateFormatKey)) {
     value=value.substring(dateFormatKey.length(),value.length() - 1);
+    try {
+      value=RuleBuilderFormatUtil.getDateFormat().format(FormatUtil.getDateFormat().parse(value));
+    }
+ catch (    ParseException e) {
+      throw new MVELTranslationException("Unable to convert the persisted date value(" + value + ") to the admin"+ "display format.");
+    }
   }
   int entityKeyIndex=field.indexOf(".");
   if (entityKeyIndex < 0) {

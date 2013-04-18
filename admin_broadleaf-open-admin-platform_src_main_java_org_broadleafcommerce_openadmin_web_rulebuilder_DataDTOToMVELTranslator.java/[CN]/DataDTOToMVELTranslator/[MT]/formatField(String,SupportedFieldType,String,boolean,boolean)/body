@@ -12,14 +12,14 @@
   if (isMapField) {
 switch (type) {
 case BOOLEAN:
-      response.append("new java.lang.Boolean(");
+      response.append("MvelHelper.convertField(\"BOOLEAN\",");
     response.append(entityKey);
   response.append(".");
 response.append(convertedField);
 response.append(")");
 break;
 case INTEGER:
-response.append("new java.lang.Integer(");
+response.append("MvelHelper.convertField(\"INTEGER\",");
 response.append(entityKey);
 response.append(".");
 response.append(convertedField);
@@ -27,14 +27,14 @@ response.append(")");
 break;
 case DECIMAL:
 case MONEY:
-response.append("new java.math.BigDecimal(");
+response.append("MvelHelper.convertField(\"DECIMAL\",");
 response.append(entityKey);
 response.append(".");
 response.append(convertedField);
 response.append(")");
 break;
 case DATE:
-response.append("new java.text.SimpleDateFormat(\"yyyy.MM.dd HH:mm:ss Z\").parse(");
+response.append("MvelHelper.convertField(\"DATE\",");
 response.append(entityKey);
 response.append(".");
 response.append(convertedField);
@@ -42,7 +42,7 @@ response.append(")");
 break;
 case STRING:
 if (ignoreCase) {
-response.append("MVEL.eval(\"toUpperCase()\",");
+response.append("MvelHelper.toUpperCase(");
 }
 response.append(entityKey);
 response.append(".");
@@ -81,7 +81,7 @@ response.append(".getAmount()");
 break;
 case STRING:
 if (ignoreCase) {
-response.append("MVEL.eval(\"toUpperCase()\",");
+response.append("MvelHelper.toUpperCase(");
 }
 response.append(entityKey);
 response.append(".");

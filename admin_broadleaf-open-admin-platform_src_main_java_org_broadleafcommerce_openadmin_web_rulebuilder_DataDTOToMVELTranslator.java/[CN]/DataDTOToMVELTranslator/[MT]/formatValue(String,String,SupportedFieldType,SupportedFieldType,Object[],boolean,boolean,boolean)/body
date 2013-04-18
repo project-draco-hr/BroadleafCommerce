@@ -10,7 +10,7 @@ response.append(".getAmount()");
 break;
 case STRING:
 if (ignoreCase) {
-response.append("MVEL.eval(\"toUpperCase()\",");
+response.append("MvelHelper.toUpperCase(");
 }
 response.append(entityKey);
 response.append(".");
@@ -44,7 +44,7 @@ break;
 case ID:
 if (secondaryType != null && secondaryType.toString().equals(SupportedFieldType.STRING.toString())) {
 if (ignoreCase) {
-response.append("MVEL.eval(\"toUpperCase()\",");
+response.append("MvelHelper.toUpperCase(");
 }
 if (!ignoreQuotes) {
 response.append("\"");
@@ -86,15 +86,21 @@ throw new MVELTranslationException("Cannot format value for the field (" + field
 response.append(value[j]);
 break;
 case DATE:
-DateTimeFormat formatter=DateTimeFormat.getFormat("MM/dd/yy H:mm a Z");
-String formattedDate=formatter.format((Date)value[0]);
-response.append("java.text.DateFormat.getDateTimeInstance(3,3).parse(\"");
-response.append(formattedDate);
+Date temp=null;
+try {
+temp=RuleBuilderFormatUtil.getDateFormat().parse(String.valueOf(value[j]));
+}
+ catch (ParseException e) {
+throw new MVELTranslationException("Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Date, "+ "and you entered: ("+ value[j]+ "). Dates must be in the format MM/dd/yyyy HH:mm.");
+}
+String convertedDate=FormatUtil.getDateFormat().format(temp);
+response.append("MvelHelper.convertField(\"DATE\",\"");
+response.append(convertedDate);
 response.append("\")");
 break;
 default :
 if (ignoreCase) {
-response.append("MVEL.eval(\"toUpperCase()\",");
+response.append("MvelHelper.toUpperCase(");
 }
 if (!ignoreQuotes) {
 response.append("\"");
