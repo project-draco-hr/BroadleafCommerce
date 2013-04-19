@@ -1,3 +1,37 @@
 {
-  return fields;
+  List<Field> myFields=new ArrayList<Field>();
+  myFields.addAll(fields);
+  Collections.sort(myFields,new Comparator<Field>(){
+    @Override public int compare(    Field o1,    Field o2){
+      return new CompareToBuilder().append(o1.getOrder(),o2.getOrder()).append(o1.getFriendlyName(),o2.getFriendlyName()).append(o1.getName(),o2.getName()).toComparison();
+    }
+  }
+);
+  if (!alternateOrderedFields.isEmpty()) {
+    List<Field> mapFieldsList=new ArrayList<Field>(alternateOrderedFields);
+    Collections.sort(mapFieldsList,new Comparator<Field>(){
+      @Override public int compare(      Field o1,      Field o2){
+        return new CompareToBuilder().append(o1.getOrder(),o2.getOrder()).append(o1.getFriendlyName(),o2.getFriendlyName()).append(o1.getName(),o2.getName()).toComparison();
+      }
+    }
+);
+    List<Field> smallOrderFields=new ArrayList<Field>();
+    for (    Field mapField : mapFieldsList) {
+      if (mapField.getOrder() <= 0) {
+        smallOrderFields.add(mapField);
+      }
+    }
+    myFields.addAll(0,smallOrderFields);
+    for (    Field mapField : mapFieldsList) {
+      if (mapField.getOrder() <= 0) {
+        continue;
+      }
+      if (mapField.getOrder() < myFields.size()) {
+        myFields.add(mapField.getOrder() - 1,mapField);
+        continue;
+      }
+      myFields.add(mapField);
+    }
+  }
+  return Collections.unmodifiableSet(new LinkedHashSet<Field>(myFields));
 }
