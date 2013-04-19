@@ -83,7 +83,13 @@
     type=ListGrid.Type.MAP;
     editable=true;
   }
-  String ceilingType=cmd.getCeilingType();
+  String ceilingType="";
+  if (fmd instanceof BasicFieldMetadata) {
+    ceilingType=cmd.getCeilingType();
+  }
+ else   if (fmd instanceof CollectionMetadata) {
+    ceilingType=((CollectionMetadata)fmd).getCollectionCeilingEntity();
+  }
   ListGrid listGrid=createListGrid(ceilingType,headerFields,type,drs,sectionKey,fmd.getOrder(),idProperty);
   listGrid.setSubCollectionFieldName(field.getName());
   listGrid.setFriendlyName(field.getMetadata().getFriendlyName());
