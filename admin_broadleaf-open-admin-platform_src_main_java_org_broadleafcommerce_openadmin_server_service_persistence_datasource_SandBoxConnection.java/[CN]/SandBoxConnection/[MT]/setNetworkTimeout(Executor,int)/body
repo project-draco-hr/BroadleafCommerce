@@ -1,0 +1,23 @@
+{
+  try {
+    Class<? extends Connection> delegateClass=delegate.getClass();
+    Class partypes[]=new Class[2];
+    partypes[0]=Executor.class;
+    partypes[1]=int.class;
+    Object args[]=new Object[2];
+    args[0]=executor;
+    args[1]=milliseconds;
+    Method method=delegateClass.getMethod("setNetworkTimeout",partypes);
+    method.invoke(delegate,args);
+  }
+ catch (  SecurityException e) {
+  }
+catch (  NoSuchMethodException e) {
+  }
+catch (  IllegalArgumentException e) {
+  }
+catch (  IllegalAccessException e) {
+  }
+catch (  InvocationTargetException e) {
+  }
+}
