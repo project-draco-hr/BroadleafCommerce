@@ -2,7 +2,7 @@
   Expression expression=phraseTranslator.createExpression(phrase);
   FieldDTO field=fieldService.getField(expression.getField());
   if (field == null) {
-    throw new MVELTranslationException("MVEL phrase is not compatible with the RuleBuilderFieldService " + "associated with the current rules builder. Unable to find the field " + "specified: (" + expression.getField() + ")");
+    throw new MVELTranslationException(MVELTranslationException.SPECIFIED_FIELD_NOT_FOUND,"MVEL phrase is not compatible with the RuleBuilderFieldService " + "associated with the current rules builder. Unable to find the field " + "specified: (" + expression.getField() + ")");
   }
   SupportedFieldType type=fieldService.getSupportedFieldType(expression.getField());
   ExpressionDTO expressionDTO=createExpressionDTO(expression);

@@ -3,30 +3,37 @@
     return null;
   }
   DataWrapper dataWrapper=new DataWrapper();
-  for (  Entity e : entities) {
-    String mvel=null;
-    Integer qty=null;
-    Long id=null;
-    for (    Property p : e.getProperties()) {
-      if (mvelProperty.equals(p.getName())) {
-        mvel=p.getValue();
+  try {
+    for (    Entity e : entities) {
+      String mvel=null;
+      Integer qty=null;
+      Long id=null;
+      for (      Property p : e.getProperties()) {
+        if (mvelProperty.equals(p.getName())) {
+          mvel=p.getValue();
+        }
+        if (quantityProperty != null && quantityProperty.equals(p.getName())) {
+          qty=Integer.parseInt(p.getValue());
+        }
+        if (idProperty != null && idProperty.equals(p.getName())) {
+          id=Long.parseLong(p.getValue());
+        }
       }
-      if (quantityProperty != null && quantityProperty.equals(p.getName())) {
-        qty=Integer.parseInt(p.getValue());
-      }
-      if (idProperty != null && idProperty.equals(p.getName())) {
-        id=Long.parseLong(p.getValue());
+      if (mvel != null) {
+        Group group=groupingTranslator.createGroups(mvel);
+        DataDTO dataDTO=createRuleDataDTO(null,group,fieldService);
+        if (dataDTO != null) {
+          dataDTO.setId(id);
+          dataDTO.setQuantity(qty);
+          dataWrapper.getData().add(dataDTO);
+        }
       }
     }
-    if (mvel != null) {
-      Group group=groupingTranslator.createGroups(mvel);
-      DataDTO dataDTO=createRuleDataDTO(null,group,fieldService);
-      if (dataDTO != null) {
-        dataDTO.setId(id);
-        dataDTO.setQuantity(qty);
-        dataWrapper.getData().add(dataDTO);
-      }
-    }
+    throw new MVELTranslationException(MVELTranslationException.INCOMPATIBLE_RULE,"test");
+  }
+ catch (  MVELTranslationException e) {
+    LOG.error("Unable to translate rule MVEL",e);
+    dataWrapper.setError(e.getLocalizedMessage());
   }
   return dataWrapper;
 }

@@ -1,0 +1,17 @@
+{
+  String response=getMessage();
+  try {
+    String exCode=getClass().getSimpleName() + "_" + code;
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    if (context != null && context.getMessageSource() != null) {
+      response=context.getMessageSource().getMessage(exCode,null,context.getJavaLocale());
+      if (response.equals(exCode)) {
+        response=getMessage();
+      }
+    }
+  }
+ catch (  NoSuchMessageException e) {
+    response=getMessage();
+  }
+  return response;
+}

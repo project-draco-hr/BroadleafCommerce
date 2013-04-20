@@ -2,7 +2,7 @@
   mvel=stripWhiteSpace(mvel);
   String[] tokens=mvel.trim().split(STATEMENTENDCHAR);
   if (tokens.length > 1) {
-    throw new MVELTranslationException("mvel expressions must resolve to a boolean result. " + "More than one terminated statement has been detected, which does not cumulatively result " + "in a single boolean. Multiple phrases should be strung together into a single expression using "+ "standard operators.");
+    throw new MVELTranslationException(MVELTranslationException.INCOMPATIBLE_RULE,"mvel expressions must resolve to a boolean result. " + "More than one terminated statement has been detected, which does not cumulatively result " + "in a single boolean. Multiple phrases should be strung together into a single expression using "+ "standard operators.");
   }
   Group topGroup=new Group();
   topGroup.setIsTopGroup(true);

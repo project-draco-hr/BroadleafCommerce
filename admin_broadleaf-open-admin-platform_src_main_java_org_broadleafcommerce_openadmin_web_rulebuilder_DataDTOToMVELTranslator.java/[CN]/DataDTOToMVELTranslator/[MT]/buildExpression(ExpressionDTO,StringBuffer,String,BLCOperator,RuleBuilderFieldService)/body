@@ -4,7 +4,7 @@
   SupportedFieldType secondaryType=fieldService.getSecondaryFieldType(field);
   Object[] value;
   if (type == null) {
-    throw new MVELTranslationException("The DataDTO is not compatible with the RuleBuilderFieldService " + "associated with the current rules builder. Unable to find the field " + "specified: (" + field + ")");
+    throw new MVELTranslationException(MVELTranslationException.SPECIFIED_FIELD_NOT_FOUND,"The DataDTO is not compatible with the RuleBuilderFieldService " + "associated with the current rules builder. Unable to find the field " + "specified: (" + field + ")");
   }
   if (SupportedFieldType.DATE.toString().equals(type.toString()) && !BLCOperator.CONTAINS_FIELD.equals(operator) && !BLCOperator.ENDS_WITH_FIELD.equals(operator)&& !BLCOperator.EQUALS_FIELD.equals(operator)&& !BLCOperator.GREATER_OR_EQUAL_FIELD.equals(operator)&& !BLCOperator.GREATER_THAN_FIELD.equals(operator)&& !BLCOperator.LESS_OR_EQUAL_FIELD.equals(operator)&& !BLCOperator.LESS_THAN_FIELD.equals(operator)&& !BLCOperator.NOT_EQUAL_FIELD.equals(operator)&& !BLCOperator.STARTS_WITH_FIELD.equals(operator)&& !BLCOperator.BETWEEN.equals(operator)&& !BLCOperator.BETWEEN_INCLUSIVE.equals(operator)) {
     value=extractDate(expressionDTO,operator,"value");
