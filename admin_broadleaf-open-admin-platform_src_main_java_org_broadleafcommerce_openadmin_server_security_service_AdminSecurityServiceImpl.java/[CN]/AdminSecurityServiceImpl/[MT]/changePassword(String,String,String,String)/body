@@ -6,7 +6,9 @@
   }
   checkUser(user,response);
   checkPassword(password,confirmPassword,response);
-  checkExistingPassword(oldPassword,user,response);
+  if (!response.getHasErrors()) {
+    checkExistingPassword(oldPassword,user,response);
+  }
   if (!response.getHasErrors()) {
     user.setUnencodedPassword(password);
     saveAdminUser(user);
