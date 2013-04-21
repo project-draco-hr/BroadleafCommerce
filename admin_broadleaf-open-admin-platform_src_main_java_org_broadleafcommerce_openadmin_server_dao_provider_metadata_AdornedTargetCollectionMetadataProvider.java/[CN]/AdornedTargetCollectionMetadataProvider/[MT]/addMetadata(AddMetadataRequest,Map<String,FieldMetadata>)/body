@@ -1,0 +1,11 @@
+{
+  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest,metadata)) {
+    return false;
+  }
+  AdminPresentationAdornedTargetCollection annot=addMetadataRequest.getRequestedField().getAnnotation(AdminPresentationAdornedTargetCollection.class);
+  FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+  FieldMetadataOverride override=constructAdornedTargetCollectionMetadataOverride(annot);
+  buildAdornedTargetCollectionMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info,override,addMetadataRequest.getDynamicEntityDao());
+  setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
+  return true;
+}

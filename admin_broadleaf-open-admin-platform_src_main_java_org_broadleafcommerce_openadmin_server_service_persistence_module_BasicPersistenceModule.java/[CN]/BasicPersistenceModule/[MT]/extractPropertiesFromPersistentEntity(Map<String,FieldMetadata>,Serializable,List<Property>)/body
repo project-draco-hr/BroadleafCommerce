@@ -56,13 +56,13 @@
             String displayVal=null;
             boolean handled=false;
             for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              boolean response=persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
+              boolean response=persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
               if (response) {
                 handled=true;
               }
             }
             if (!handled) {
-              defaultPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,propertyItem,displayVal,persistenceManager,this));
+              defaultPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
             }
             break checkField;
           }

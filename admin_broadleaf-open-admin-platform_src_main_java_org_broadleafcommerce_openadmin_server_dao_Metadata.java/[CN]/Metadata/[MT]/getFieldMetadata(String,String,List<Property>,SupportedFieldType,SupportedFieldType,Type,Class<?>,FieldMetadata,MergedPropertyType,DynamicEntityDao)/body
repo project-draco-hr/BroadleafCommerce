@@ -7,13 +7,13 @@
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
   boolean handled=false;
   for (  MetadataProvider metadataProvider : metadataProviders) {
-    boolean response=metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+    boolean response=metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
     if (response) {
       handled=true;
     }
   }
   if (!handled) {
-    defaultMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(presentationAttribute,componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao));
+    defaultMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
   }
   return presentationAttribute;
 }

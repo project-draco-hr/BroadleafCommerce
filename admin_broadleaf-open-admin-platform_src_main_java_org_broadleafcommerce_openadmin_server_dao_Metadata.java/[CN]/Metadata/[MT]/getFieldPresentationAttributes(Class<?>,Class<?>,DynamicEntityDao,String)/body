@@ -4,13 +4,13 @@
   for (  Field field : fields) {
     boolean foundOneOrMoreHandlers=false;
     for (    MetadataProvider metadataProvider : metadataProviders) {
-      boolean response=metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
+      boolean response=metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
       if (response) {
         foundOneOrMoreHandlers=true;
       }
     }
     if (!foundOneOrMoreHandlers) {
-      defaultMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,attributes,dynamicEntityDao,prefix));
+      defaultMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
     }
   }
   return attributes;

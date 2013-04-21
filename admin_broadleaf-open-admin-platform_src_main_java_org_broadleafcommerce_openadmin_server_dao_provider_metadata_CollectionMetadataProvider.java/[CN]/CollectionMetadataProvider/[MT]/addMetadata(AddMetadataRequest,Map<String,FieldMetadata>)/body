@@ -1,0 +1,11 @@
+{
+  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest,metadata)) {
+    return false;
+  }
+  AdminPresentationCollection annot=addMetadataRequest.getRequestedField().getAnnotation(AdminPresentationCollection.class);
+  FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+  FieldMetadataOverride override=constructBasicCollectionMetadataOverride(annot);
+  buildCollectionMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info,override);
+  setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
+  return true;
+}
