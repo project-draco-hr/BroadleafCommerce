@@ -1,0 +1,12 @@
+{
+  for (  AdminModule module : modules) {
+    List<AdminSection> authorizedSections=buildAuthorizedSectionsList(adminUser,module);
+    if (authorizedSections != null && authorizedSections.size() > 0) {
+      AdminModuleDTO adminModuleDto=((AdminModuleImpl)module).getAdminModuleDTO();
+      adminMenu.getAdminModules().add(adminModuleDto);
+      adminModuleDto.setSections(authorizedSections);
+    }
+  }
+  BeanComparator displayComparator=new BeanComparator("displayOrder");
+  Collections.sort(adminMenu.getAdminModules(),displayComparator);
+}

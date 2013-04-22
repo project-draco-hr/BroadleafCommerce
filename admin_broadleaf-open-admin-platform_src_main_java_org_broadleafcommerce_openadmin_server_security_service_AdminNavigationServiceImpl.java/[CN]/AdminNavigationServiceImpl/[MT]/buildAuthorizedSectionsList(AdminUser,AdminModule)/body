@@ -1,0 +1,10 @@
+{
+  List<AdminSection> authorizedSections=new ArrayList<AdminSection>();
+  for (  AdminSection section : module.getSections()) {
+    if (isUserAuthorizedToViewSection(adminUser,section)) {
+      authorizedSections.add(section);
+    }
+  }
+  Collections.sort(authorizedSections,SECTION_COMPARATOR);
+  return authorizedSections;
+}
