@@ -7,6 +7,8 @@
   FieldMetadata md=collectionProperty.getMetadata();
   ppr=PersistencePackageRequest.fromMetadata(md);
   ppr.addFilterAndSortCriteria(getCriteria(requestParams));
+  ppr.setStartIndex(getStartIndex(requestParams));
+  ppr.setMaxIndex(getMaxIndex(requestParams));
   if (md instanceof BasicFieldMetadata) {
     DynamicResultSet drs=service.getRecords(ppr);
     ListGrid listGrid=formService.buildCollectionListGrid(null,drs,collectionProperty,sectionKey);
