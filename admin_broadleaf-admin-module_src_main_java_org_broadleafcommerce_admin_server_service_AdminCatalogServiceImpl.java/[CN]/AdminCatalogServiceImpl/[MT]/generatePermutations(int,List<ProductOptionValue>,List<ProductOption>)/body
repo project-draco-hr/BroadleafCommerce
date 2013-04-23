@@ -5,11 +5,18 @@
     return result;
   }
   ProductOption currentOption=options.get(currentTypeIndex);
+  if (!currentOption.getUseInSkuGeneration()) {
+    result.addAll(generatePermutations(currentTypeIndex + 1,currentPermutation,options));
+    return result;
+  }
   for (  ProductOptionValue option : currentOption.getAllowedValues()) {
     List<ProductOptionValue> permutation=new ArrayList<ProductOptionValue>();
     permutation.addAll(currentPermutation);
     permutation.add(option);
     result.addAll(generatePermutations(currentTypeIndex + 1,permutation,options));
+  }
+  if (currentOption.getAllowedValues().size() == 0) {
+    result.addAll(generatePermutations(currentTypeIndex + 1,currentPermutation,options));
   }
   return result;
 }
