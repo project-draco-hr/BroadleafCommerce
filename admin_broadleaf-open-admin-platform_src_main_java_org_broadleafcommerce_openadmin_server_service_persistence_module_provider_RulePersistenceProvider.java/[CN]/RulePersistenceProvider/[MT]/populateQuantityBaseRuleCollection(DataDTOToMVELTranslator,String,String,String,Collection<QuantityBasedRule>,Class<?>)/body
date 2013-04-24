@@ -1,7 +1,7 @@
 {
   if (!StringUtils.isEmpty(jsonPropertyValue)) {
     DataWrapper dw=convertJsonToDataWrapper(jsonPropertyValue);
-    if (dw != null) {
+    if (dw != null && StringUtils.isEmpty(dw.getError())) {
       List<QuantityBasedRule> updatedRules=new ArrayList<QuantityBasedRule>();
       for (      DataDTO dto : dw.getData()) {
         if (dto.getId() != null) {
@@ -33,6 +33,9 @@
             quantityBasedRule=(QuantityBasedRule)memberType.newInstance();
             quantityBasedRule.setQuantity(dto.getQuantity());
             quantityBasedRule.setMatchRule(translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService)));
+            if (StringUtils.isEmpty(quantityBasedRule.getMatchRule()) && !StringUtils.isEmpty(dw.getRawMvel())) {
+              quantityBasedRule.setMatchRule(dw.getRawMvel());
+            }
           }
  catch (          Exception e) {
             throw new RuntimeException(e);
