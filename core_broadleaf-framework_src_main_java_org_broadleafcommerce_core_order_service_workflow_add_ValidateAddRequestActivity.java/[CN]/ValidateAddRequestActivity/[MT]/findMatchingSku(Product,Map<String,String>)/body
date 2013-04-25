@@ -6,11 +6,12 @@
         if (StringUtils.isEmpty(attributeValues.get(productOption.getAttributeName()))) {
           throw new RequiredAttributeNotProvidedException("Unable to add to product (" + product.getId() + ") cart. Required attribute was not provided: "+ productOption.getAttributeName());
         }
- else {
-          if (productOption.getUseInSkuGeneration()) {
-            attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
-          }
+ else         if (productOption.getUseInSkuGeneration()) {
+          attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
         }
+      }
+      if (productOption.getProductOptionValidationType() != null) {
+        productOptionValidationService.validate(productOption,attributeValues.get(productOption.getAttributeName()));
       }
     }
     if (product != null && product.getSkus() != null) {
