@@ -71,9 +71,17 @@
         }
       }
     }
-    Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();
-    for (    Entry<String,Serializable> entry : persistedEntities.entrySet()) {
-      fieldManager.setFieldValue(instance,entry.getKey(),entry.getValue());
+    validate(entity,instance,mergedProperties);
+    if (entity.isValidationFailure()) {
+      if (persistenceManager.getDynamicEntityDao().getStandardEntityManager().contains(instance)) {
+        persistenceManager.getDynamicEntityDao().refresh(instance);
+      }
+    }
+ else {
+      Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();
+      for (      Entry<String,Serializable> entry : persistedEntities.entrySet()) {
+        fieldManager.setFieldValue(instance,entry.getKey(),entry.getValue());
+      }
     }
   }
  catch (  IllegalAccessException e) {

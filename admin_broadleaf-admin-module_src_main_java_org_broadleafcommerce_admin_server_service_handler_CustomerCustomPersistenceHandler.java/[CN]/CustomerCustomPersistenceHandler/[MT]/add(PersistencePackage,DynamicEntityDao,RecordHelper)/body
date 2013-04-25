@@ -8,7 +8,6 @@
     adminInstance=(Customer)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     if (customerService.readCustomerByUsername(adminInstance.getUsername()) != null) {
       Entity error=new Entity();
-      error.setValidationFailure(true);
       error.addValidationError("username","nonUniqueUsernameError");
       return error;
     }
