@@ -1,5 +1,5 @@
 {
-  EntityForm ef=buildEntityForm(cmd,entity);
+  populateEntityForm(cmd,entity,ef);
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       continue;
@@ -19,6 +19,8 @@
       lg.getToolbarActions().add(0,DefaultListGridActions.ADD);
     }
   }
+  if (CollectionUtils.isEmpty(ef.getActions())) {
+    ef.addAction(DefaultEntityFormActions.SAVE);
+  }
   ef.addAction(DefaultEntityFormActions.DELETE);
-  return ef;
 }

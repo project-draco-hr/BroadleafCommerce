@@ -6,7 +6,7 @@
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md).withCustomCriteria(new String[]{id});
   ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-  EntityForm entityForm=formService.buildEntityForm(collectionMetadata);
+  EntityForm entityForm=formService.createEntityForm(collectionMetadata);
   entityForm.getActions().remove(DefaultEntityFormActions.DELETE);
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("viewType","modal/simpleAddEntity");
