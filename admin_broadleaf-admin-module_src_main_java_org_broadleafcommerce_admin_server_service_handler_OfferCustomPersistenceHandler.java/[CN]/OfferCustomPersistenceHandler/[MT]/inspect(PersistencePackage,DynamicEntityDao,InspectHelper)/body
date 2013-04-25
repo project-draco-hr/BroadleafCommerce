@@ -3,7 +3,7 @@
     Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
     Map<String,FieldMetadata> mergedProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePackage.getPersistencePerspective());
     allMergedProperties.put(MergedPropertyType.PRIMARY,mergedProperties);
-    PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",EntityImplementations.OFFER,null)});
+    PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",OfferImpl.class.getName(),null)});
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
     BasicFieldMetadata metadata=(BasicFieldMetadata)offerCodeMergedProperties.get("offerCode");
     mergedProperties.put("offerCode.offerCode",metadata);

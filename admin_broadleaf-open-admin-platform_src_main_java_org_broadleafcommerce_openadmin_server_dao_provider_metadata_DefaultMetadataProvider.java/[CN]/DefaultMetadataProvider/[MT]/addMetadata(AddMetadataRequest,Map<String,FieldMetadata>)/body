@@ -1,13 +1,16 @@
 {
-  String idField=(String)addMetadataRequest.getDynamicEntityDao().getIdMetadata(addMetadataRequest.getTargetClass()).get("name");
-  if (idField.equals(addMetadataRequest.getRequestedField().getName())) {
-    FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
-    BasicFieldMetadata basicMetadata=new BasicFieldMetadata();
-    basicMetadata.setName(addMetadataRequest.getRequestedField().getName());
-    basicMetadata.setExcluded(false);
-    metadata.put(addMetadataRequest.getRequestedField().getName(),basicMetadata);
-    setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
-    return true;
+  Map<String,Object> idMetadata=addMetadataRequest.getDynamicEntityDao().getIdMetadata(addMetadataRequest.getTargetClass());
+  if (idMetadata != null) {
+    String idField=(String)idMetadata.get("name");
+    if (idField.equals(addMetadataRequest.getRequestedField().getName())) {
+      FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+      BasicFieldMetadata basicMetadata=new BasicFieldMetadata();
+      basicMetadata.setName(addMetadataRequest.getRequestedField().getName());
+      basicMetadata.setExcluded(false);
+      metadata.put(addMetadataRequest.getRequestedField().getName(),basicMetadata);
+      setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
+      return true;
+    }
   }
   return false;
 }
