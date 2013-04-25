@@ -1,0 +1,13 @@
+{
+  if (authorizedPermissions != null) {
+    if (authorizedPermissions.contains(permission)) {
+      return true;
+    }
+    for (    AdminPermission authorizedPermission : authorizedPermissions) {
+      if (permission.getName().equals(parseForAllPermission(authorizedPermission.getName()))) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
