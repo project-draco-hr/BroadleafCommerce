@@ -10,7 +10,9 @@
           attributeValuesForSku.put(productOption.getAttributeName(),attributeValues.get(productOption.getAttributeName()));
         }
       }
-      if (productOption.getProductOptionValidationType() != null) {
+      if (!productOption.getRequired() && StringUtils.isEmpty(attributeValues.get(productOption.getAttributeName()))) {
+      }
+ else       if (productOption.getProductOptionValidationType() != null) {
         productOptionValidationService.validate(productOption,attributeValues.get(productOption.getAttributeName()));
       }
     }
