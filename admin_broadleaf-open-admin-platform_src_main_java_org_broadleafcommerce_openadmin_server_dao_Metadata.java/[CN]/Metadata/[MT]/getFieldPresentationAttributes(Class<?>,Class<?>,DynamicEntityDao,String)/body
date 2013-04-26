@@ -3,14 +3,17 @@
   Field[] fields=dynamicEntityDao.getAllFields(targetClass);
   for (  Field field : fields) {
     boolean foundOneOrMoreHandlers=false;
-    for (    MetadataProvider metadataProvider : metadataProviders) {
-      boolean response=metadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
-      if (response) {
+    for (    FieldMetadataProvider fieldMetadataProvider : fieldMetadataProviders) {
+      FieldProviderResponse response=fieldMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
+      if (FieldProviderResponse.NOT_HANDLED != response) {
         foundOneOrMoreHandlers=true;
+      }
+      if (FieldProviderResponse.HANDLED_BREAK == response) {
+        break;
       }
     }
     if (!foundOneOrMoreHandlers) {
-      defaultMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
+      defaultFieldMetadataProvider.addMetadata(new AddMetadataRequest(field,parentClass,targetClass,dynamicEntityDao,prefix),attributes);
     }
   }
   return attributes;

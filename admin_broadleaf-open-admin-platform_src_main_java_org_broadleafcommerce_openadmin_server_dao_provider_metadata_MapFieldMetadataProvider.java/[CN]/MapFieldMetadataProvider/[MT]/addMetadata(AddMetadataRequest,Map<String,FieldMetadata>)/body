@@ -1,0 +1,11 @@
+{
+  if (!canHandleFieldForConfiguredMetadata(addMetadataRequest,metadata)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  AdminPresentationMap annot=addMetadataRequest.getRequestedField().getAnnotation(AdminPresentationMap.class);
+  FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+  FieldMetadataOverride override=constructMapMetadataOverride(annot);
+  buildMapMetadata(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info,override,addMetadataRequest.getDynamicEntityDao(),addMetadataRequest.getPrefix());
+  setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
+  return FieldProviderResponse.HANDLED;
+}

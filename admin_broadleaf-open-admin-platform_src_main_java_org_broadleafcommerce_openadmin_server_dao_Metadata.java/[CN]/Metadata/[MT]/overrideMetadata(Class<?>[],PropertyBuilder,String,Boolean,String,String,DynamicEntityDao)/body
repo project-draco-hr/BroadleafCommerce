@@ -10,26 +10,32 @@
   Map<String,FieldMetadata> mergedProperties=propertyBuilder.execute(classAnnotatedPopulateManyToOneFields);
   for (int i=entities.length - 1; i >= 0; i--) {
     boolean handled=false;
-    for (    MetadataProvider metadataProvider : metadataProviders) {
-      boolean response=metadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],isParentExcluded,dynamicEntityDao,prefix),mergedProperties);
-      if (response) {
+    for (    FieldMetadataProvider fieldMetadataProvider : fieldMetadataProviders) {
+      FieldProviderResponse response=fieldMetadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],isParentExcluded,dynamicEntityDao,prefix),mergedProperties);
+      if (FieldProviderResponse.NOT_HANDLED != response) {
         handled=true;
+      }
+      if (FieldProviderResponse.HANDLED_BREAK == response) {
+        break;
       }
     }
     if (!handled) {
-      defaultMetadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],isParentExcluded,dynamicEntityDao,prefix),mergedProperties);
+      defaultFieldMetadataProvider.overrideViaAnnotation(new OverrideViaAnnotationRequest(entities[i],isParentExcluded,dynamicEntityDao,prefix),mergedProperties);
     }
   }
-  ((DefaultMetadataProvider)defaultMetadataProvider).overrideExclusionsFromXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
+  ((DefaultFieldMetadataProvider)defaultFieldMetadataProvider).overrideExclusionsFromXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
   boolean handled=false;
-  for (  MetadataProvider metadataProvider : metadataProviders) {
-    boolean response=metadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
-    if (response) {
+  for (  FieldMetadataProvider fieldMetadataProvider : fieldMetadataProviders) {
+    FieldProviderResponse response=fieldMetadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
+    if (FieldProviderResponse.NOT_HANDLED != response) {
       handled=true;
+    }
+    if (FieldProviderResponse.HANDLED_BREAK == response) {
+      break;
     }
   }
   if (!handled) {
-    defaultMetadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
+    defaultFieldMetadataProvider.overrideViaXml(new OverrideViaXmlRequest(configurationKey,ceilingEntityFullyQualifiedClassname,prefix,isParentExcluded,dynamicEntityDao),mergedProperties);
   }
   return mergedProperties;
 }

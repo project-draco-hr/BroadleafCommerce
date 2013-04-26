@@ -1,0 +1,29 @@
+{
+  Map<String,Object> idMetadata=addMetadataRequest.getDynamicEntityDao().getIdMetadata(addMetadataRequest.getTargetClass());
+  if (idMetadata != null) {
+    String idField=(String)idMetadata.get("name");
+    boolean processField;
+    processField=idField.equals(addMetadataRequest.getRequestedField().getName());
+    if (!processField) {
+      List<String> propertyNames=addMetadataRequest.getDynamicEntityDao().getPropertyNames(addMetadataRequest.getTargetClass());
+      if (!CollectionUtils.isEmpty(propertyNames)) {
+        List<org.hibernate.type.Type> propertyTypes=addMetadataRequest.getDynamicEntityDao().getPropertyTypes(addMetadataRequest.getTargetClass());
+        int index=propertyNames.indexOf(addMetadataRequest.getRequestedField().getName());
+        if (index >= 0) {
+          Type myType=propertyTypes.get(index);
+          processField=myType.isCollectionType() || myType.isAssociationType() || myType.isComponentType()|| myType.isEntityType();
+        }
+      }
+    }
+    if (processField) {
+      FieldInfo info=buildFieldInfo(addMetadataRequest.getRequestedField());
+      BasicFieldMetadata basicMetadata=new BasicFieldMetadata();
+      basicMetadata.setName(addMetadataRequest.getRequestedField().getName());
+      basicMetadata.setExcluded(false);
+      metadata.put(addMetadataRequest.getRequestedField().getName(),basicMetadata);
+      setClassOwnership(addMetadataRequest.getParentClass(),addMetadataRequest.getTargetClass(),metadata,info);
+      return FieldProviderResponse.HANDLED;
+    }
+  }
+  return FieldProviderResponse.NOT_HANDLED;
+}

@@ -1,0 +1,20 @@
+{
+  if (!canHandleAnnotationOverride(overrideViaAnnotationRequest,metadata)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  Map<String,AdminPresentationCollectionOverride> presentationCollectionOverrides=new HashMap<String,AdminPresentationCollectionOverride>();
+  AdminPresentationOverrides myOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationOverrides.class);
+  if (myOverrides != null) {
+    for (    AdminPresentationCollectionOverride myOverride : myOverrides.collections()) {
+      presentationCollectionOverrides.put(myOverride.name(),myOverride);
+    }
+  }
+  for (  String propertyName : presentationCollectionOverrides.keySet()) {
+    for (    String key : metadata.keySet()) {
+      if (key.startsWith(propertyName)) {
+        buildAdminPresentationCollectionOverride(overrideViaAnnotationRequest.getPrefix(),overrideViaAnnotationRequest.getParentExcluded(),metadata,presentationCollectionOverrides,propertyName,key,overrideViaAnnotationRequest.getDynamicEntityDao());
+      }
+    }
+  }
+  return FieldProviderResponse.HANDLED;
+}

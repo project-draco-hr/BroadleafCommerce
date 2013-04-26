@@ -6,14 +6,17 @@
   presentationAttribute.setInheritedFromType(targetClass.getName());
   presentationAttribute.setAvailableToTypes(new String[]{targetClass.getName()});
   boolean handled=false;
-  for (  MetadataProvider metadataProvider : metadataProviders) {
-    boolean response=metadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
-    if (response) {
+  for (  FieldMetadataProvider fieldMetadataProvider : fieldMetadataProviders) {
+    FieldProviderResponse response=fieldMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
+    if (FieldProviderResponse.NOT_HANDLED != response) {
       handled=true;
+    }
+    if (FieldProviderResponse.HANDLED_BREAK == response) {
+      break;
     }
   }
   if (!handled) {
-    defaultMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
+    defaultFieldMetadataProvider.addMetadataFromMappingData(new AddMetadataFromMappingDataRequest(componentProperties,type,secondaryType,entityType,propertyName,mergedPropertyType,dynamicEntityDao),presentationAttribute);
   }
   return presentationAttribute;
 }

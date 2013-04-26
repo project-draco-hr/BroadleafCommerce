@@ -2,14 +2,17 @@
   Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(unfilteredProperties);
   FieldManager fieldManager=getFieldManager();
   boolean handled=false;
-  for (  PersistenceProvider persistenceProvider : persistenceProviders) {
-    boolean response=persistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity),unfilteredProperties);
-    if (response) {
+  for (  FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
+    FieldProviderResponse response=fieldPersistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity),unfilteredProperties);
+    if (FieldProviderResponse.NOT_HANDLED != response) {
       handled=true;
+    }
+    if (FieldProviderResponse.HANDLED_BREAK == response) {
+      break;
     }
   }
   if (!handled) {
-    defaultPersistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity),unfilteredProperties);
+    defaultFieldPersistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity),unfilteredProperties);
   }
   try {
     for (    Property property : entity.getProperties()) {
@@ -48,14 +51,17 @@
         if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
           if (value != null) {
             handled=false;
-            for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              boolean response=persistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
-              if (response) {
+            for (            FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
+              FieldProviderResponse response=fieldPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
+              if (FieldProviderResponse.NOT_HANDLED != response) {
                 handled=true;
+              }
+              if (FieldProviderResponse.HANDLED_BREAK == response) {
+                break;
               }
             }
             if (!handled) {
-              defaultPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
+              defaultFieldPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
             }
           }
  else {

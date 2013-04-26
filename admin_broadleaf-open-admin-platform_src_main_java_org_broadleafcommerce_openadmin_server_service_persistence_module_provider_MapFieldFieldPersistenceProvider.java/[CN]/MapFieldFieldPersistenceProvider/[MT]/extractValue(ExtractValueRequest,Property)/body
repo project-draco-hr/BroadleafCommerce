@@ -1,0 +1,14 @@
+{
+  if (extractValueRequest.getRequestedValue() != null && extractValueRequest.getRequestedValue() instanceof ValueAssignable) {
+    ValueAssignable assignableValue=(ValueAssignable)extractValueRequest.getRequestedValue();
+    String val=(String)assignableValue.getValue();
+    property.setValue(val);
+    property.setDisplayValue(extractValueRequest.getDisplayVal());
+  }
+ else {
+    if (FieldProviderResponse.NOT_HANDLED == super.extractValue(extractValueRequest,property)) {
+      return FieldProviderResponse.NOT_HANDLED;
+    }
+  }
+  return FieldProviderResponse.HANDLED;
+}

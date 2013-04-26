@@ -1,0 +1,13 @@
+{
+  if (!canHandleFieldForTypeMetadata(addMetadataFromFieldTypeRequest,metadata)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  super.addMetadataFromFieldType(addMetadataFromFieldTypeRequest,metadata);
+  AdornedTargetCollectionMetadata fieldMetadata=(AdornedTargetCollectionMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute();
+  if (StringUtils.isEmpty(fieldMetadata.getCollectionCeilingEntity())) {
+    fieldMetadata.setCollectionCeilingEntity(addMetadataFromFieldTypeRequest.getType().getReturnedClass().getName());
+    AdornedTargetList targetList=((AdornedTargetList)fieldMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST));
+    targetList.setAdornedTargetEntityClassname(fieldMetadata.getCollectionCeilingEntity());
+  }
+  return FieldProviderResponse.HANDLED;
+}

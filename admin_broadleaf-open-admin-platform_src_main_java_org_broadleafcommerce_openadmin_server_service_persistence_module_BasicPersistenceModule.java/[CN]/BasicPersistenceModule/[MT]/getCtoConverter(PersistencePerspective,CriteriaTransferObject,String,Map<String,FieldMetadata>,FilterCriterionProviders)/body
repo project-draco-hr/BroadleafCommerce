@@ -7,14 +7,17 @@
   for (  String propertyId : cto.getPropertyIdSet()) {
     if (mergedProperties.containsKey(propertyId)) {
       boolean handled=false;
-      for (      PersistenceProvider persistenceProvider : persistenceProviders) {
-        boolean response=persistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,propertyId,getFieldManager(),this),ctoConverter);
-        if (response) {
+      for (      FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
+        FieldProviderResponse response=fieldPersistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,propertyId,getFieldManager(),this),ctoConverter);
+        if (FieldProviderResponse.NOT_HANDLED != response) {
           handled=true;
+        }
+        if (FieldProviderResponse.HANDLED_BREAK == response) {
+          break;
         }
       }
       if (!handled) {
-        defaultPersistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,propertyId,getFieldManager(),this),ctoConverter);
+        defaultFieldPersistenceProvider.addSearchMapping(new AddSearchMappingRequest(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties,propertyId,getFieldManager(),this),ctoConverter);
       }
     }
  else {

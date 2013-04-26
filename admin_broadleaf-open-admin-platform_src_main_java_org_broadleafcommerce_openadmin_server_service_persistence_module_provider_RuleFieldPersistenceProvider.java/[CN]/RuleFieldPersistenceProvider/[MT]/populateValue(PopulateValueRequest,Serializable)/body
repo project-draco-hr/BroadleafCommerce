@@ -1,0 +1,76 @@
+{
+  if (!canHandlePersistence(populateValueRequest,instance)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  try {
+switch (populateValueRequest.getMetadata().getFieldType()) {
+case RULE_WITH_QUANTITY:
+{
+        Class<?> valueType=getListFieldType(instance,populateValueRequest.getFieldManager(),populateValueRequest.getProperty(),populateValueRequest.getPersistenceManager());
+        if (valueType == null) {
+          throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
+        }
+        DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+        Collection<QuantityBasedRule> rules;
+        try {
+          rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        }
+ catch (        FieldNotAvailableException e) {
+          throw new IllegalArgumentException(e);
+        }
+        populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getRequestedValue(),rules,valueType);
+        break;
+      }
+case RULE_SIMPLE:
+{
+      DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+      DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getRequestedValue());
+      if (dw == null || StringUtils.isEmpty(dw.getError())) {
+        String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
+        Class<?> valueType=null;
+        if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+          valueType=populateValueRequest.getReturnType();
+        }
+ else {
+          String valueClassName=populateValueRequest.getMetadata().getMapFieldValueClass();
+          if (valueClassName != null) {
+            valueType=Class.forName(valueClassName);
+          }
+          if (valueType == null) {
+            valueType=populateValueRequest.getReturnType();
+          }
+        }
+        if (valueType == null) {
+          throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
+        }
+        if (String.class.isAssignableFrom(valueType)) {
+          populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),mvel);
+        }
+        if (SimpleRule.class.isAssignableFrom(valueType)) {
+          SimpleRule rule;
+          try {
+            rule=(SimpleRule)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+          }
+ catch (          FieldNotAvailableException e) {
+            throw new IllegalArgumentException(e);
+          }
+          if (rule != null) {
+            rule.setMatchRule(mvel);
+          }
+ else {
+            rule=(SimpleRule)valueType.newInstance();
+            rule.setMatchRule(mvel);
+            populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(rule);
+            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),rule);
+          }
+        }
+      }
+      break;
+    }
+}
+}
+ catch (Exception e) {
+throw new PersistenceException(e);
+}
+return FieldProviderResponse.HANDLED;
+}

@@ -23,14 +23,17 @@
     if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || Collections.binarySearch(presentationKeyList,propertyName,propertyComparator) >= 0) {
       if (myField != null) {
         boolean handled=false;
-        for (        MetadataProvider provider : metadataProviders) {
+        for (        FieldMetadataProvider provider : fieldMetadataProviders) {
           FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
           if (presentationAttribute != null) {
             setExcludedBasedOnShowIfProperty(presentationAttribute);
           }
-          boolean response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this),fields);
-          if (response) {
+          FieldProviderResponse response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this),fields);
+          if (FieldProviderResponse.NOT_HANDLED != response) {
             handled=true;
+          }
+          if (FieldProviderResponse.HANDLED_BREAK == response) {
+            break;
           }
         }
         if (!handled) {

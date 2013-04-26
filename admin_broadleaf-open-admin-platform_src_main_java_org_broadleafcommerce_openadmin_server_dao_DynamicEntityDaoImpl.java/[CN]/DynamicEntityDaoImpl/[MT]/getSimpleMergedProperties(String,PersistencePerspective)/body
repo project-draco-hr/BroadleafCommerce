@@ -25,14 +25,17 @@
         Field field=FieldManager.getSingleField(targetClass,property);
         if (!Modifier.isStatic(field.getModifiers())) {
           boolean handled=false;
-          for (          MetadataProvider provider : metadataProviders) {
-            boolean response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this),mergedProperties);
-            if (response) {
+          for (          FieldMetadataProvider provider : fieldMetadataProviders) {
+            FieldProviderResponse response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this),mergedProperties);
+            if (FieldProviderResponse.NOT_HANDLED != response) {
               handled=true;
+            }
+            if (FieldProviderResponse.HANDLED_BREAK == response) {
+              break;
             }
           }
           if (!handled) {
-            defaultMetadataProvider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this),mergedProperties);
+            defaultFieldMetadataProvider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,null,new ForeignKey[]{},MergedPropertyType.PRIMARY,null,null,"",property,null,false,0,attributesMap,presentationAttribute,((BasicFieldMetadata)presentationAttribute).getExplicitFieldType(),field.getType(),this),mergedProperties);
           }
         }
       }

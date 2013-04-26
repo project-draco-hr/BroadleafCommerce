@@ -55,14 +55,17 @@
             props.add(propertyItem);
             String displayVal=null;
             boolean handled=false;
-            for (            PersistenceProvider persistenceProvider : persistenceProviders) {
-              boolean response=persistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
-              if (response) {
+            for (            FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
+              FieldProviderResponse response=fieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
+              if (FieldProviderResponse.NOT_HANDLED != response) {
                 handled=true;
+              }
+              if (FieldProviderResponse.HANDLED_BREAK == response) {
+                break;
               }
             }
             if (!handled) {
-              defaultPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
+              defaultFieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
             }
             break checkField;
           }
