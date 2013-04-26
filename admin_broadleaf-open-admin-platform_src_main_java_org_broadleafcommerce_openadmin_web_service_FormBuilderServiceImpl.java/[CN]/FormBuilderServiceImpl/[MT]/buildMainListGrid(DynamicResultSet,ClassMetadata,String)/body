@@ -9,17 +9,7 @@
         idProperty=fmd.getName();
       }
       if (fmd.isProminent() != null && fmd.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(fmd.getVisibility())) {
-        Field hf;
-        if (fmd.getFieldType().equals(SupportedFieldType.EXPLICIT_ENUMERATION) || fmd.getFieldType().equals(SupportedFieldType.BROADLEAF_ENUMERATION) || fmd.getFieldType().equals(SupportedFieldType.DATA_DRIVEN_ENUMERATION)|| fmd.getFieldType().equals(SupportedFieldType.EMPTY_ENUMERATION)) {
-          hf=new ComboField();
-          ((ComboField)hf).setOptions(fmd.getEnumerationValues());
-        }
- else {
-          hf=new Field();
-        }
-        hf.withName(p.getName()).withFriendlyName(fmd.getFriendlyName()).withOrder(fmd.getGridOrder()).withColumnWidth(fmd.getColumnWidth()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty());
-        String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
-        hf.setFieldType(fieldType);
+        Field hf=createHeaderField(p,fmd);
         headerFields.add(hf);
       }
     }
