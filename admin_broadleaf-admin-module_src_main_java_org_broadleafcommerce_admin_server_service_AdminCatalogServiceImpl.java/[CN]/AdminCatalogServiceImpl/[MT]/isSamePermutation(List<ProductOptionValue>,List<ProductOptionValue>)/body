@@ -1,13 +1,13 @@
 {
   if (perm1.size() == perm2.size()) {
-    Collection perm1Ids=CollectionUtils.collect(perm1,new Transformer(){
-      @Override public Object transform(      Object input){
+    Collection<Long> perm1Ids=BLCCollectionUtils.collect(perm1,new TypedTransformer<Long>(){
+      @Override public Long transform(      Object input){
         return ((ProductOptionValue)input).getId();
       }
     }
 );
-    Collection perm2Ids=CollectionUtils.collect(perm2,new Transformer(){
-      @Override public Object transform(      Object input){
+    Collection<Long> perm2Ids=BLCCollectionUtils.collect(perm2,new TypedTransformer<Long>(){
+      @Override public Long transform(      Object input){
         return ((ProductOptionValue)input).getId();
       }
     }
