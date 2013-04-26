@@ -8,15 +8,9 @@
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance.setUnencodedPassword(adminInstance.getPassword());
     adminInstance.setPassword(null);
-    boolean validated=helper.validate(entity,adminInstance,adminProperties);
-    if (validated) {
-      adminInstance=adminSecurityService.saveAdminUser(adminInstance);
-      Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
-      return adminEntity;
-    }
- else {
-      return entity;
-    }
+    adminInstance=adminSecurityService.saveAdminUser(adminInstance);
+    Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+    return adminEntity;
   }
  catch (  Exception e) {
     LOG.error("Unable to add entity for " + entity.getType()[0],e);

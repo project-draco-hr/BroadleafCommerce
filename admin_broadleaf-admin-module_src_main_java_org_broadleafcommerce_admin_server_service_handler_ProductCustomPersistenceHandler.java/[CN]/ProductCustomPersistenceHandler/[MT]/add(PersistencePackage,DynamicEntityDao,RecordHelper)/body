@@ -5,9 +5,6 @@
     Product adminInstance=(Product)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Product.class.getName(),persistencePerspective);
     adminInstance=(Product)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    if (entity.isValidationFailure()) {
-      return entity;
-    }
     adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
     CategoryProductXref categoryXref=new CategoryProductXrefImpl();
     categoryXref.setCategory(adminInstance.getDefaultCategory());
