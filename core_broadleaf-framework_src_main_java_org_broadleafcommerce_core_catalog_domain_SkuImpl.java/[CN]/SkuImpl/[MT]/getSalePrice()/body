@@ -1,35 +1,27 @@
 {
   Money returnPrice=null;
+  Money optionValueAdjustments=null;
   if (SkuPricingConsiderationContext.hasDynamicPricing()) {
-    if (dynamicPrices != null) {
-      returnPrice=dynamicPrices.getSalePrice();
-    }
- else {
+    if (dynamicPrices == null) {
       DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
       Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
       dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
-      returnPrice=dynamicPrices.getSalePrice();
     }
-  }
- else {
-    if (salePrice != null) {
-      returnPrice=new Money(salePrice,Money.defaultCurrency());
-    }
-  }
-  if (returnPrice == null && hasDefaultSku()) {
-    returnPrice=lookupDefaultSku().getSalePrice();
-  }
-  Money optionValueAdjustments=null;
-  if (dynamicPrices != null) {
+    returnPrice=dynamicPrices.getSalePrice();
     optionValueAdjustments=dynamicPrices.getPriceAdjustment();
   }
- else {
+ else   if (salePrice != null) {
+    return new Money(salePrice,Money.defaultCurrency());
+  }
+ else   if (hasDefaultSku()) {
+    returnPrice=lookupDefaultSku().getSalePrice();
     optionValueAdjustments=getProductOptionValueAdjustments();
   }
-  if (optionValueAdjustments == null) {
+  if (returnPrice == null) {
+    return null;
   }
- else {
-    returnPrice=returnPrice == null ? optionValueAdjustments : optionValueAdjustments.add(returnPrice);
+  if (optionValueAdjustments != null) {
+    returnPrice=optionValueAdjustments.add(returnPrice);
   }
   return returnPrice;
 }
