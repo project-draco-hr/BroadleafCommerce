@@ -5,16 +5,9 @@
   if (extractValueRequest.getRequestedValue() == null) {
     return false;
   }
-  BigDecimal bd=(BigDecimal)extractValueRequest.getRequestedValue();
-  NumberFormat valFormat=NumberFormat.getInstance();
-  valFormat.setMaximumFractionDigits(2);
-  valFormat.setMinimumFractionDigits(2);
-  String val=valFormat.format(bd);
-  property.setValue(val);
+  BigDecimal value=(BigDecimal)extractValueRequest.getRequestedValue();
+  property.setValue(getFormattedValue(value));
   BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
-  NumberFormat format=NumberFormat.getCurrencyInstance(brc.getJavaLocale());
-  format.setCurrency(Money.defaultCurrency());
-  BigDecimal value=new BigDecimal(val);
-  property.setDisplayValue(format.format(value));
+  property.setDisplayValue(getFormattedDisplayValue(value,brc.getJavaLocale(),Money.defaultCurrency()));
   return true;
 }
