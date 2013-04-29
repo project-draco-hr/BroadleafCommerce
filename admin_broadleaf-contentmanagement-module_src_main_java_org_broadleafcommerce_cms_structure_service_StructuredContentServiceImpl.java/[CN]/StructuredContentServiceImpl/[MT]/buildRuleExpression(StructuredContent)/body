@@ -3,6 +3,7 @@
   Map<String,StructuredContentRule> ruleMap=sc.getStructuredContentMatchRules();
   if (ruleMap != null) {
     for (    String ruleKey : ruleMap.keySet()) {
+      if (ruleMap.get(ruleKey).getMatchRule() == null)       continue;
       if (ruleExpression == null) {
         ruleExpression=new StringBuffer(ruleMap.get(ruleKey).getMatchRule());
       }
