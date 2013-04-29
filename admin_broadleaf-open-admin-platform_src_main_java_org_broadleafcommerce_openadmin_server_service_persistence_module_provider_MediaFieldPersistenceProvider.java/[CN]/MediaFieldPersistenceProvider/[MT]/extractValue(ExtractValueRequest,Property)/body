@@ -1,0 +1,16 @@
+{
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  if (extractValueRequest.getRequestedValue() != null) {
+    if (extractValueRequest.getRequestedValue() instanceof Media) {
+      Media media=(Media)extractValueRequest.getRequestedValue();
+      Property jsonProperty=convertMediaToJson(media,extractValueRequest.getMetadata().getName() + "Json");
+      extractValueRequest.getProps().add(jsonProperty);
+    }
+ else {
+      throw new UnsupportedOperationException("MEDIA type is currently only supported on fields of type Media");
+    }
+  }
+  return FieldProviderResponse.HANDLED;
+}

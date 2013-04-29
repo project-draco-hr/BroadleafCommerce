@@ -1,0 +1,30 @@
+{
+  List<Property> propertyList=new ArrayList<Property>();
+  propertyList.addAll(Arrays.asList(addFilterPropertiesRequest.getEntity().getProperties()));
+  Iterator<Property> itr=propertyList.iterator();
+  List<Property> additionalProperties=new ArrayList<Property>();
+  while (itr.hasNext()) {
+    Property prop=itr.next();
+    if (prop.getName().endsWith("Json")) {
+      for (      Map.Entry<String,FieldMetadata> entry : properties.entrySet()) {
+        if (prop.getName().startsWith(entry.getKey())) {
+          BasicFieldMetadata originalFM=(BasicFieldMetadata)entry.getValue();
+          if (originalFM.getFieldType() == SupportedFieldType.MEDIA) {
+            Property orginalProp=addFilterPropertiesRequest.getEntity().findProperty(originalFM.getName());
+            if (orginalProp == null) {
+              orginalProp=new Property();
+              orginalProp.setName(originalFM.getName());
+              additionalProperties.add(orginalProp);
+            }
+            orginalProp.setValue(prop.getValue());
+            itr.remove();
+            break;
+          }
+        }
+      }
+    }
+  }
+  propertyList.addAll(additionalProperties);
+  addFilterPropertiesRequest.getEntity().setProperties(propertyList.toArray(new Property[propertyList.size()]));
+  return FieldProviderResponse.HANDLED;
+}

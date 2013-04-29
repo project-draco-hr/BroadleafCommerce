@@ -1,0 +1,46 @@
+{
+  if (!canHandlePersistence(populateValueRequest,instance)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  try {
+    Class<?> valueType=null;
+    if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+      valueType=populateValueRequest.getReturnType();
+    }
+ else {
+      String valueClassName=populateValueRequest.getMetadata().getMapFieldValueClass();
+      if (valueClassName != null) {
+        valueType=Class.forName(valueClassName);
+      }
+      if (valueType == null) {
+        valueType=populateValueRequest.getReturnType();
+      }
+    }
+    if (valueType == null) {
+      throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
+    }
+    if (Media.class.isAssignableFrom(valueType)) {
+      Media newMedia=convertJsonToMedia(populateValueRequest.getRequestedValue());
+      Media media;
+      try {
+        media=(Media)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+      }
+ catch (      FieldNotAvailableException e) {
+        throw new IllegalArgumentException(e);
+      }
+      if (media == null) {
+        media=(Media)valueType.newInstance();
+      }
+      updateMediaFields(media,newMedia);
+      populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
+      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
+    }
+ else {
+      throw new UnsupportedOperationException("MediaFields only work with Media types.");
+    }
+  }
+ catch (  Exception e) {
+    throw new PersistenceException(e);
+  }
+  return FieldProviderResponse.HANDLED;
+}
