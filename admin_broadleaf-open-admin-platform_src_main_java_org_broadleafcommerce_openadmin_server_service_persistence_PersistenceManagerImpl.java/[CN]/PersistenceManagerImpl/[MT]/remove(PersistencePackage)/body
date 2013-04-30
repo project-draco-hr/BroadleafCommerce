@@ -2,25 +2,13 @@
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleRemove(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
-        Entity entity=persistencePackage.getEntity();
-        for (        Property p : entity.getProperties()) {
-          if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
-            adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
-            break;
-          }
-        }
+        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
       }
       handler.remove(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
       return;
     }
   }
-  Entity entity=persistencePackage.getEntity();
-  for (  Property p : entity.getProperties()) {
-    if (p.getName().equals("ceilingEntityFullyQualifiedClassname")) {
-      adminRemoteSecurityService.securityCheck(p.getValue(),EntityOperationType.REMOVE);
-      break;
-    }
-  }
+  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType());
   myModule.remove(persistencePackage);
 }
