@@ -6,8 +6,10 @@
     PersistencePerspective offerCodePersistencePerspective=new PersistencePerspective(null,new String[]{},new ForeignKey[]{new ForeignKey("offer",OfferImpl.class.getName(),null)});
     Map<String,FieldMetadata> offerCodeMergedProperties=helper.getSimpleMergedProperties(OfferCode.class.getName(),offerCodePersistencePerspective);
     BasicFieldMetadata metadata=(BasicFieldMetadata)offerCodeMergedProperties.get("offerCode");
+    metadata.setAvailableToTypes(ArrayUtils.addAll(metadata.getAvailableToTypes(),new String[]{OfferImpl.class.getName()}));
     mergedProperties.put("offerCode.offerCode",metadata);
     BasicFieldMetadata metadata2=(BasicFieldMetadata)offerCodeMergedProperties.get("id");
+    metadata2.setAvailableToTypes(ArrayUtils.addAll(metadata2.getAvailableToTypes(),new String[]{OfferImpl.class.getName()}));
     mergedProperties.put("offerCode.id",metadata2);
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Offer.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);

@@ -5,6 +5,7 @@
     Offer offerInstance=(Offer)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> offerProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective);
     offerInstance=(Offer)helper.createPopulatedInstance(offerInstance,entity,offerProperties,false);
+    offerInstance=(Offer)dynamicEntityDao.merge(offerInstance);
     OfferCode offerCode=null;
     if (entity.findProperty("deliveryType").getValue().equals("CODE")) {
       offerCode=(OfferCode)entityConfiguration.createEntityInstance(OfferCode.class.getName());
