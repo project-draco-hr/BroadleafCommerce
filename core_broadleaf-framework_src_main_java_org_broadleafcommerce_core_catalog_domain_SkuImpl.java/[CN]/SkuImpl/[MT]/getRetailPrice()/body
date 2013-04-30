@@ -11,7 +11,7 @@
     optionValueAdjustments=dynamicPrices.getPriceAdjustment();
   }
  else   if (retailPrice != null) {
-    return new Money(retailPrice,Money.defaultCurrency());
+    return new Money(retailPrice,getCurrency());
   }
  else   if (hasDefaultSku()) {
     returnPrice=lookupDefaultSku().getRetailPrice();
@@ -21,7 +21,7 @@
     throw new IllegalStateException("Retail price on Sku with id " + getId() + " was null");
   }
   if (optionValueAdjustments != null) {
-    returnPrice=optionValueAdjustments.add(returnPrice);
+    returnPrice=returnPrice.add(optionValueAdjustments);
   }
   return returnPrice;
 }

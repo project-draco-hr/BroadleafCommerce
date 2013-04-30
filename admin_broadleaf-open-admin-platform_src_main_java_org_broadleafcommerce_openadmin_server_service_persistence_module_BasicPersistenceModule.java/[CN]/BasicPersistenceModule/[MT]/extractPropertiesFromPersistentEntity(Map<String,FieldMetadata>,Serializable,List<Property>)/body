@@ -56,7 +56,7 @@
             String displayVal=null;
             boolean handled=false;
             for (            FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
-              FieldProviderResponse response=fieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
+              FieldProviderResponse response=fieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this,entity),propertyItem);
               if (FieldProviderResponse.NOT_HANDLED != response) {
                 handled=true;
               }
@@ -65,7 +65,7 @@
               }
             }
             if (!handled) {
-              defaultFieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this),propertyItem);
+              defaultFieldPersistenceProvider.extractValue(new ExtractValueRequest(props,fieldManager,metadata,value,displayVal,persistenceManager,this,entity),propertyItem);
             }
             break checkField;
           }

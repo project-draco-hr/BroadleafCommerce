@@ -1,0 +1,17 @@
+{
+  BroadleafCurrency bc;
+  if (isDefaultSkuPrice(extractValueRequest,property)) {
+    Product p=(Product)extractValueRequest.getEntity();
+    bc=p.getDefaultSku().getCurrency();
+  }
+ else {
+    Sku s=(Sku)extractValueRequest.getEntity();
+    bc=s.getCurrency();
+  }
+  if (bc == null) {
+    return Money.defaultCurrency();
+  }
+ else {
+    return Currency.getInstance(bc.getCurrencyCode());
+  }
+}
