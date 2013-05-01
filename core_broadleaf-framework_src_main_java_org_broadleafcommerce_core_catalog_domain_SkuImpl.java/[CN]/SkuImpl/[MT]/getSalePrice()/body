@@ -4,7 +4,9 @@
   if (SkuPricingConsiderationContext.hasDynamicPricing()) {
     if (dynamicPrices == null) {
       DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
-      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),getClass().getInterfaces(),handler);
+      List<Class<?>> list=ClassUtils.getAllInterfaces(getClass());
+      Class<?>[] intfArray=list.toArray(new Class<?>[list.size()]);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),intfArray,handler);
       dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
     }
     returnPrice=dynamicPrices.getSalePrice();
