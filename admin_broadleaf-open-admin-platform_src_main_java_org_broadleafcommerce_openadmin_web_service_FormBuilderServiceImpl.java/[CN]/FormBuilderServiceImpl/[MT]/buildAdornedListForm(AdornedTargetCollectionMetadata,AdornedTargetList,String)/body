@@ -14,7 +14,9 @@
   ef.addHiddenField(f);
   f=new Field().withName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withIdOverride("adornedTargetIdProperty");
   ef.addHiddenField(f);
-  f=new Field().withName(adornedList.getSortField()).withFieldType(SupportedFieldType.HIDDEN.toString());
-  ef.addHiddenField(f);
+  if (StringUtils.isNotBlank(adornedList.getSortField())) {
+    f=new Field().withName(adornedList.getSortField()).withFieldType(SupportedFieldType.HIDDEN.toString());
+    ef.addHiddenField(f);
+  }
   return ef;
 }

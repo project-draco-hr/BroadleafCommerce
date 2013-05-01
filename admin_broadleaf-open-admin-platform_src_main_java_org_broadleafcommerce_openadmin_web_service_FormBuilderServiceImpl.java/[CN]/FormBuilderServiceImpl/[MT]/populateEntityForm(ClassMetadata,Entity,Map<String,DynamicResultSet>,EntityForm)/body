@@ -4,6 +4,9 @@
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       continue;
     }
+    if (!ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),entity.getType()[0])) {
+      continue;
+    }
     DynamicResultSet subCollectionEntities=collectionRecords.get(p.getName());
     String containingEntityId=entity.getPMap().get("id").getValue();
     ListGrid listGrid=buildCollectionListGrid(containingEntityId,subCollectionEntities,p,ef.getSectionKey());

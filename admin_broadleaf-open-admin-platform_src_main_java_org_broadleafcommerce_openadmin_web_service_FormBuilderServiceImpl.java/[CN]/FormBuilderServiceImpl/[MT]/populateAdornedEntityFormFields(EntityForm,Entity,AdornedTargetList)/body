@@ -2,9 +2,11 @@
   Field field=ef.getFields().get(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty());
   Property entityProp=entity.findProperty("id");
   field.setValue(entityProp.getValue());
-  field=ef.getFields().get(adornedList.getSortField());
-  entityProp=entity.findProperty(adornedList.getSortField());
-  if (entityProp != null) {
-    field.setValue(entityProp.getValue());
+  if (StringUtils.isNotBlank(adornedList.getSortField())) {
+    field=ef.getFields().get(adornedList.getSortField());
+    entityProp=entity.findProperty(adornedList.getSortField());
+    if (field != null && entityProp != null) {
+      field.setValue(entityProp.getValue());
+    }
   }
 }
