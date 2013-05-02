@@ -1,0 +1,21 @@
+{
+  try {
+    Class<? extends Connection> delegateClass=delegate.getClass();
+    Class partypes[]=new Class[1];
+    partypes[0]=Executor.class;
+    Object args[]=new Object[1];
+    args[0]=executor;
+    Method method=delegateClass.getMethod("abort",partypes);
+    method.invoke(delegate,args);
+  }
+ catch (  SecurityException e) {
+  }
+catch (  NoSuchMethodException e) {
+  }
+catch (  IllegalArgumentException e) {
+  }
+catch (  IllegalAccessException e) {
+  }
+catch (  InvocationTargetException e) {
+  }
+}

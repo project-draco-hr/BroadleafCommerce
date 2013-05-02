@@ -2,7 +2,7 @@
   Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
   Customer customer=null;
   if ((authentication != null) && !(authentication instanceof AnonymousAuthenticationToken)) {
-    String userName=request.getUserPrincipal().getName();
+    String userName=authentication.getName();
     customer=(Customer)request.getAttribute(customerRequestAttributeName,WebRequest.SCOPE_REQUEST);
     if (userName != null && (customer == null || !userName.equals(customer.getUsername()))) {
       customer=customerService.readCustomerByUsername(userName);

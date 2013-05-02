@@ -1,0 +1,19 @@
+{
+  int returnValue=0;
+  try {
+    Class<? extends Connection> delegateClass=delegate.getClass();
+    Method method=delegateClass.getMethod("getNetworkTimeout");
+    returnValue=Integer.parseInt(method.invoke(delegate).toString());
+  }
+ catch (  SecurityException e) {
+  }
+catch (  NoSuchMethodException e) {
+  }
+catch (  IllegalArgumentException e) {
+  }
+catch (  IllegalAccessException e) {
+  }
+catch (  InvocationTargetException e) {
+  }
+  return returnValue;
+}

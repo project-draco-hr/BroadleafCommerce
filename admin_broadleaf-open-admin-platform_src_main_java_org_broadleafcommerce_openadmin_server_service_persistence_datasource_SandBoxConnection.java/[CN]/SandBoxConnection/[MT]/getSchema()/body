@@ -1,0 +1,19 @@
+{
+  String returnValue=null;
+  try {
+    Class<? extends Connection> delegateClass=delegate.getClass();
+    Method method=delegateClass.getMethod("getSchema");
+    returnValue=method.invoke(delegate).toString();
+  }
+ catch (  SecurityException e) {
+  }
+catch (  NoSuchMethodException e) {
+  }
+catch (  IllegalArgumentException e) {
+  }
+catch (  IllegalAccessException e) {
+  }
+catch (  InvocationTargetException e) {
+  }
+  return returnValue;
+}
