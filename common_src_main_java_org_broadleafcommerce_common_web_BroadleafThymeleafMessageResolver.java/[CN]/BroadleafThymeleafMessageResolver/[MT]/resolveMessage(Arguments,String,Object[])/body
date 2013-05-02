@@ -1,0 +1,16 @@
+{
+  Validate.notNull(args,"args cannot be null");
+  Validate.notNull(args.getContext().getLocale(),"Locale in context cannot be null");
+  Validate.notNull(key,"Message key cannot be null");
+  if (LOG.isTraceEnabled()) {
+    LOG.trace(String.format("Thread %s resolving message with key \"%s\" for template \"%s\" and " + "locale \"%s\". Messages will be retrieved from Spring's MessageSource infrastructure.",TemplateEngine.threadIndex(),key,args.getTemplateName(),args.getContext().getLocale()));
+  }
+  try {
+    Locale locale=args.getContext().getLocale();
+    final String resolvedMessage=this.messageSource.getMessage(key,messageParams,locale);
+    return new MessageResolution(resolvedMessage);
+  }
+ catch (  NoSuchMessageException e) {
+    return null;
+  }
+}
