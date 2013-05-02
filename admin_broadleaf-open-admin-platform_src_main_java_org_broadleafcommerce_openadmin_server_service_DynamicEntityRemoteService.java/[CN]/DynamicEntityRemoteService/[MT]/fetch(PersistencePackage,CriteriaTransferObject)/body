@@ -1,10 +1,9 @@
 {
   exploitProtectionService.compareToken(persistencePackage.getCsrfToken());
-  com.anasoft.os.daofusion.cto.client.CriteriaTransferObject targetCto=translateCto(cto);
   try {
     PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
     persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-    return persistenceManager.fetch(persistencePackage,targetCto);
+    return persistenceManager.fetch(persistencePackage,cto);
   }
  catch (  ServiceException e) {
     String message=exploitProtectionService.cleanString(e.getMessage());

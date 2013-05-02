@@ -1,0 +1,32 @@
+{
+  final List<Long> productOptionValueFilterIDs=new ArrayList<Long>();
+  for (  String filterProperty : cto.getCriteriaMap().keySet()) {
+    if (filterProperty.startsWith(PRODUCT_OPTION_FIELD_PREFIX)) {
+      FilterAndSortCriteria criteria=cto.get(filterProperty);
+      productOptionValueFilterIDs.add(Long.parseLong(criteria.getFilterValues().get(0)));
+    }
+  }
+  final List<String> productOptionValueFilterValues=new ArrayList<String>();
+  FilterAndSortCriteria consolidatedCriteria=cto.get(CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME);
+  if (!consolidatedCriteria.getFilterValues().isEmpty()) {
+    productOptionValueFilterValues.addAll(Arrays.asList(StringUtils.split(consolidatedCriteria.getFilterValues().get(0),CONSOLIDATED_PRODUCT_OPTIONS_DELIMETER)));
+  }
+  if (productOptionValueFilterIDs.size() > 0) {
+    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + "productOptionValues.id")).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+      @Override public Predicate buildPredicate(      CriteriaBuilder builder,      FieldPathBuilder fieldPathBuilder,      From root,      String ceilingEntity,      String fullPropertyName,      Path explicitPath,      List directValues){
+        return explicitPath.as(Long.class).in(productOptionValueFilterIDs);
+      }
+    }
+));
+    filterMappings.add(filterMapping);
+  }
+  if (productOptionValueFilterValues.size() > 0) {
+    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + "productOptionValues.attributeValue")).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+      @Override public Predicate buildPredicate(      CriteriaBuilder builder,      FieldPathBuilder fieldPathBuilder,      From root,      String ceilingEntity,      String fullPropertyName,      Path explicitPath,      List directValues){
+        return explicitPath.as(String.class).in(productOptionValueFilterValues);
+      }
+    }
+));
+    filterMappings.add(filterMapping);
+  }
+}

@@ -10,9 +10,8 @@
     AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,adornedTargetList,cto).invokeForFetch();
     List<Serializable> records=adornedTargetRetrieval.getRecords();
     Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
-    BaseCtoConverter ctoConverter=adornedTargetRetrieval.getCtoConverter();
     payload=getRecords(mergedPropertiesTarget,records,mergedProperties,adornedTargetList.getTargetObjectPath());
-    totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
+    totalRecords=getTotalRecords(adornedTargetList.getAdornedTargetEntityClassname(),adornedTargetRetrieval.getFilterMappings());
   }
  catch (  Exception e) {
     LOG.error("Problem fetching results for " + adornedTargetList.getAdornedTargetEntityClassname(),e);

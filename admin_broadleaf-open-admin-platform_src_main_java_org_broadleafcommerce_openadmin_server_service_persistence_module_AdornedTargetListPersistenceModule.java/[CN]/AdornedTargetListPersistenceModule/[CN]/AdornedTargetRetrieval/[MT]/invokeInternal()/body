@@ -5,7 +5,6 @@
   }
   Class<?>[] entities2=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
   mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-  ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
-  PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,adornedTargetList.getAdornedTargetEntityClassname());
-  records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+  filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
+  records=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
 }

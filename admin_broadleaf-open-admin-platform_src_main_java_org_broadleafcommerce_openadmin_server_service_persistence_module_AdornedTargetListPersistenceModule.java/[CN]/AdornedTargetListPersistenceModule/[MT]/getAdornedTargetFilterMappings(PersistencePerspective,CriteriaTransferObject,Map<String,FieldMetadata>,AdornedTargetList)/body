@@ -1,0 +1,18 @@
+{
+  List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,adornedTargetList.getAdornedTargetEntityClassname(),mergedProperties);
+  FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName()).getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<String,String>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<String> explicitPath,    List<String> directValues){
+      return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+    }
+  }
+));
+  filterMappings.add(filterMapping);
+  FilterMapping filterMapping2=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName() + "Target").getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<String,String>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<String> explicitPath,    List<String> directValues){
+      return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+    }
+  }
+));
+  filterMappings.add(filterMapping2);
+  return filterMappings;
+}

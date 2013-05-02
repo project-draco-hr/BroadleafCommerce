@@ -3,21 +3,15 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
-    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps,new SkuPropertiesFilterCriterionProvider());
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
-    applyProductOptionValueCriteria(queryCriteria,cto,persistencePackage,null);
-    applyAdditionalFetchCriteria(queryCriteria,cto,persistencePackage);
-    Criteria skuListCriteria=getSkuCriteria(queryCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao,null);
-    List<Serializable> records=skuListCriteria.list();
+    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps,skuRestrictionFactory);
+    applyProductOptionValueCriteria(filterMappings,cto,persistencePackage,null);
+    applyAdditionalFetchCriteria(filterMappings,cto,persistencePackage);
+    List<Serializable> records=helper.getPersistentRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     Entity[] payload=helper.getRecords(originalProps,records);
-    PersistentEntityCriteria countCriteria=helper.getCountCriteria(persistencePackage,cto,ctoConverter);
-    applyProductOptionValueCriteria(countCriteria,cto,persistencePackage,null);
-    applyAdditionalFetchCriteria(countCriteria,cto,persistencePackage);
-    Criteria skuCountCriteria=getSkuCriteria(countCriteria,Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()),dynamicEntityDao,null);
-    int totalRecords=dynamicEntityDao.rowCount(skuCountCriteria);
+    int totalRecords=helper.getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
     ClassMetadata metadata=new ClassMetadata();
-    if (cto.get("product").getFilterValues().length > 0) {
-      Long productId=Long.parseLong(cto.get("product").getFilterValues()[0]);
+    if (cto.get("product").getFilterValues().size() > 0) {
+      Long productId=Long.parseLong(cto.get("product").getFilterValues().get(0));
       Product product=catalogService.findProductById(productId);
       List<Property> properties=new ArrayList<Property>();
       for (      ProductOption option : product.getProductOptions()) {

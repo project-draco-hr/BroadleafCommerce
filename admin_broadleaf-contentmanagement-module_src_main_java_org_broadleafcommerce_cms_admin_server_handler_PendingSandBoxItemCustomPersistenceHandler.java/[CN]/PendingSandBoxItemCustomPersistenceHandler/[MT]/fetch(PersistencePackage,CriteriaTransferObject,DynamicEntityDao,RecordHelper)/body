@@ -60,11 +60,10 @@
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(SandBoxItem.class.getName(),persistencePerspective);
     cto.get("originalSandBoxId").setFilterValue(mySandBox.getId().toString());
     cto.get("archivedFlag").setFilterValue(Boolean.FALSE.toString());
-    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,SandBoxItem.class.getName(),originalProps);
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,SandBoxItem.class.getName());
-    List<Serializable> records=dynamicEntityDao.query(queryCriteria,SandBoxItem.class);
+    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,SandBoxItem.class.getName(),originalProps);
+    List<Serializable> records=helper.getPersistentRecords(SandBoxItem.class.getName(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     Entity[] results=helper.getRecords(originalProps,records);
-    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
+    int totalRecords=helper.getTotalRecords(StringUtils.isEmpty(persistencePackage.getFetchTypeFullyQualifiedClassname()) ? persistencePackage.getCeilingEntityFullyQualifiedClassname() : persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
     DynamicResultSet response=new DynamicResultSet(results,totalRecords);
     return response;
   }

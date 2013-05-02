@@ -19,13 +19,12 @@
       valueUnfilteredMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,false,new String[]{},new String[]{},null,"");
     }
     Map<String,FieldMetadata> valueMergedProperties=filterOutCollectionMetadata(valueUnfilteredMergedProperties);
-    BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
-    totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
+    List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,persistencePackage.getFetchTypeFullyQualifiedClassname(),mergedProperties);
+    totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
     if (totalRecords > 1) {
       throw new ServiceException("Queries to retrieve an entity containing a MapStructure must return only 1 entity. Your query returned (" + totalRecords + ") values.");
     }
-    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
+    List<Serializable> records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     Map<String,FieldMetadata> ceilingMergedProperties=getSimpleMergedProperties(records.get(0).getClass().getName(),persistencePerspective);
     payload=getMapRecords(records.get(0),mapStructure,ceilingMergedProperties,valueMergedProperties,null);
   }

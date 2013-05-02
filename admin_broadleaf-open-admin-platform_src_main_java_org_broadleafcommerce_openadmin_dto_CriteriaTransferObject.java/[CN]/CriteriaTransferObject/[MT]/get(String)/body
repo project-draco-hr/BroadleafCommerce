@@ -1,4 +1,8 @@
 {
-  if (!criteriaMap.containsKey(propertyId))   add(new FilterAndSortCriteria(propertyId));
-  return criteriaMap.get(propertyId);
+  if (criteriaMap.containsKey(name)) {
+    return criteriaMap.get(name);
+  }
+  FilterAndSortCriteria criteria=new FilterAndSortCriteria(name);
+  criteriaMap.put(name,criteria);
+  return criteriaMap.get(name);
 }

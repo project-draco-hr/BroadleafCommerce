@@ -1,0 +1,9 @@
+{
+  BasicFieldMetadata metadata=(BasicFieldMetadata)addSearchMappingRequest.getMergedProperties().get(addSearchMappingRequest.getPropertyName());
+  Property property=null;
+  boolean response=detectBasicType(metadata,property);
+  if (!response) {
+    response=metadata.getFieldType() == SupportedFieldType.MONEY;
+  }
+  return response;
+}

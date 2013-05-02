@@ -1,0 +1,15 @@
+{
+  FieldPath myFieldPath=fieldPath;
+  if (!StringUtils.isEmpty(fieldPath.getTargetProperty())) {
+    myFieldPath=getFieldPath(root,fieldPath.getTargetProperty());
+  }
+  From myRoot=root;
+  for (  String pathElement : myFieldPath.getAssociationPath()) {
+    myRoot=myRoot.join(pathElement);
+  }
+  Path path=myRoot;
+  for (  String piece : myFieldPath.getTargetPropertyPieces()) {
+    path=path.get(piece);
+  }
+  return path;
+}

@@ -1,0 +1,13 @@
+{
+  String[] vals;
+  if (filterValue.contains(RANGE_SPECIFIER_REGEX)) {
+    vals=new String[]{filterValue.substring(0,filterValue.indexOf(RANGE_SPECIFIER_REGEX)),filterValue.substring(filterValue.indexOf(RANGE_SPECIFIER_REGEX) + RANGE_SPECIFIER_REGEX.length(),filterValue.length())};
+  }
+ else {
+    vals=new String[]{filterValue};
+  }
+  for (int j=0; j < vals.length; j++) {
+    vals[j]=vals[j].trim();
+  }
+  return vals;
+}

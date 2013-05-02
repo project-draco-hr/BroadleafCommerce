@@ -28,9 +28,8 @@
     filterCriteriaInsertedLinked.setFilterValue(entity.findProperty(adornedTargetList.getInverse() ? targetPath : linkedPath).getValue());
     FilterAndSortCriteria filterCriteriaInsertedTarget=ctoInserted.get(adornedTargetList.getCollectionFieldName() + "Target");
     filterCriteriaInsertedTarget.setFilterValue(entity.findProperty(adornedTargetList.getInverse() ? linkedPath : targetPath).getValue());
-    BaseCtoConverter ctoConverterInserted=getAdornedTargetCtoConverter(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
-    PersistentEntityCriteria queryCriteriaInserted=ctoConverterInserted.convert(ctoInserted,adornedTargetList.getAdornedTargetEntityClassname());
-    List<Serializable> recordsInserted=persistenceManager.getDynamicEntityDao().query(queryCriteriaInserted,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+    List<FilterMapping> filterMappingsInserted=getAdornedTargetFilterMappings(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
+    List<Serializable> recordsInserted=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappingsInserted,ctoInserted.getFirstResult(),ctoInserted.getMaxResults());
     if (recordsInserted.size() > 0) {
       payload=getRecords(mergedPropertiesTarget,recordsInserted,mergedProperties,adornedTargetList.getTargetObjectPath())[0];
     }
@@ -48,13 +47,13 @@
         filterCriteria.setFilterValue(entity.findProperty(adornedTargetList.getInverse() ? targetPath : linkedPath).getValue());
         FilterAndSortCriteria sortCriteria=cto.get(adornedTargetList.getSortField());
         sortCriteria.setSortAscending(adornedTargetList.getSortAscending());
-        BaseCtoConverter ctoConverter=getAdornedTargetCtoConverter(persistencePerspective,cto,mergedProperties,adornedTargetList);
-        int totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
+        List<FilterMapping> filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
+        int totalRecords=getTotalRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings);
         fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),Long.valueOf(totalRecords + 1));
       }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
       persistenceManager.getDynamicEntityDao().clear();
-      List<Serializable> recordsInserted2=persistenceManager.getDynamicEntityDao().query(queryCriteriaInserted,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+      List<Serializable> recordsInserted2=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappingsInserted,ctoInserted.getFirstResult(),ctoInserted.getMaxResults());
       payload=getRecords(mergedPropertiesTarget,recordsInserted2,mergedProperties,adornedTargetList.getTargetObjectPath())[0];
     }
   }

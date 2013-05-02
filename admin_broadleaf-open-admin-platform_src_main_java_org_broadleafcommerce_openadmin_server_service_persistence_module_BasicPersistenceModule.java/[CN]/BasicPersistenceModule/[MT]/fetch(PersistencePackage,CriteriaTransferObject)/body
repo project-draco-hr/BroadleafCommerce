@@ -9,8 +9,7 @@
   try {
     Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-    BaseCtoConverter ctoConverter=getCtoConverter(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,mergedProperties);
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,ceilingEntityFullyQualifiedClassname);
+    List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,persistencePackage.getFetchTypeFullyQualifiedClassname(),mergedProperties);
     boolean isArchivable=false;
     for (    Class<?> entity : entities) {
       if (Status.class.isAssignableFrom(entity)) {
@@ -19,18 +18,17 @@
       }
     }
     if (isArchivable && !persistencePerspective.getShowArchivedFields()) {
-      SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
-        @Override public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
-          return Restrictions.or(Restrictions.eq(targetPropertyName,'N'),Restrictions.isNull(targetPropertyName));
+      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("archiveStatus.archived")).withFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+        @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path<Character> explicitPath,        List<Character> directValues){
+          return builder.or(builder.equal(explicitPath,'N'),builder.isNull(explicitPath));
         }
       }
-;
-      FilterCriterion filterCriterion=new FilterCriterion(AssociationPath.ROOT,"archiveStatus.archived",criterionProvider);
-      ((NestedPropertyCriteria)queryCriteria).add(filterCriterion);
+));
+      filterMappings.add(filterMapping);
     }
-    List<Serializable> records=persistenceManager.getDynamicEntityDao().query(queryCriteria,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
+    List<Serializable> records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     payload=getRecords(mergedProperties,records,null,null);
-    totalRecords=getTotalRecords(persistencePackage,cto,ctoConverter);
+    totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
   }
  catch (  Exception e) {
     LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);

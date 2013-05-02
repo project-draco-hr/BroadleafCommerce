@@ -1,0 +1,11 @@
+{
+  if (StringUtils.isEmpty(value)) {
+    return null;
+  }
+  try {
+    return dateFormat.parse(value);
+  }
+ catch (  ParseException e) {
+    throw new RuntimeException("Error while converting '" + value + "' into Date using pattern "+ dateFormat.toPattern(),e);
+  }
+}

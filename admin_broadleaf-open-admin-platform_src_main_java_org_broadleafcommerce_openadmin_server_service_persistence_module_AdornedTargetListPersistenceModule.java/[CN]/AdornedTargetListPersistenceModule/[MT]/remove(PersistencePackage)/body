@@ -14,9 +14,8 @@
     filterCriteriaInsertedLinked.setFilterValue(entity.findProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty()).getValue());
     FilterAndSortCriteria filterCriteriaInsertedTarget=ctoInserted.get(adornedTargetList.getCollectionFieldName() + "Target");
     filterCriteriaInsertedTarget.setFilterValue(entity.findProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty()).getValue());
-    BaseCtoConverter ctoConverterInserted=getAdornedTargetCtoConverter(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
-    PersistentEntityCriteria queryCriteriaInserted=ctoConverterInserted.convert(ctoInserted,adornedTargetList.getAdornedTargetEntityClassname());
-    List<Serializable> recordsInserted=persistenceManager.getDynamicEntityDao().query(queryCriteriaInserted,Class.forName(adornedTargetList.getAdornedTargetEntityClassname()));
+    List<FilterMapping> filterMappings=getAdornedTargetFilterMappings(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
+    List<Serializable> recordsInserted=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,ctoInserted.getFirstResult(),ctoInserted.getMaxResults());
     persistenceManager.getDynamicEntityDao().remove(recordsInserted.get(0));
   }
  catch (  Exception e) {

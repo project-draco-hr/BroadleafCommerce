@@ -3,22 +3,20 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> offerProperties=helper.getSimpleMergedProperties(Offer.class.getName(),persistencePerspective);
-    BaseCtoConverter ctoConverter=helper.getCtoConverter(persistencePerspective,cto,Offer.class.getName(),offerProperties);
-    PersistentEntityCriteria queryCriteria=ctoConverter.convert(cto,Offer.class.getName());
+    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,Offer.class.getName(),offerProperties);
     if (!persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
-      SimpleFilterCriterionProvider criterionProvider=new SimpleFilterCriterionProvider(SimpleFilterCriterionProvider.FilterDataStrategy.NONE,0){
-        @Override public Criterion getCriterion(        String targetPropertyName,        Object[] filterObjectValues,        Object[] directValues){
-          return Restrictions.or(Restrictions.eq(targetPropertyName,'N'),Restrictions.isNull(targetPropertyName));
+      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("archiveStatus.archived")).withFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+        @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path<Character> explicitPath,        List<Character> directValues){
+          return builder.or(builder.equal(explicitPath,'N'),builder.isNull(explicitPath));
         }
       }
-;
-      FilterCriterion filterCriterion=new FilterCriterion(AssociationPath.ROOT,"archiveStatus.archived",criterionProvider);
-      ((NestedPropertyCriteria)queryCriteria).add(filterCriterion);
+));
+      filterMappings.add(filterMapping);
     }
-    List<Serializable> records=dynamicEntityDao.query(queryCriteria,Offer.class);
+    List<Serializable> records=helper.getPersistentRecords(Offer.class.getName(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     Entity[] entities=helper.getRecords(offerProperties,records);
     addAssociatedOfferCodes(dynamicEntityDao,helper,entities);
-    int totalRecords=helper.getTotalRecords(persistencePackage,cto,ctoConverter);
+    int totalRecords=helper.getTotalRecords(StringUtils.isEmpty(persistencePackage.getFetchTypeFullyQualifiedClassname()) ? persistencePackage.getCeilingEntityFullyQualifiedClassname() : persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
     DynamicResultSet response=new DynamicResultSet(null,entities,totalRecords);
     return response;
   }

@@ -5,9 +5,8 @@
     CriteriaTransferObject offerCodeCto=new CriteriaTransferObject();
     FilterAndSortCriteria filterCriteria=offerCodeCto.get("offer");
     filterCriteria.setFilterValue(record.findProperty("id").getValue());
-    BaseCtoConverter offerCodeCtoConverter=helper.getCtoConverter(offerCodePersistencePerspective,offerCodeCto,OfferCode.class.getName(),offerCodeMergedProperties);
-    PersistentEntityCriteria offerCodeQueryCriteria=offerCodeCtoConverter.convert(offerCodeCto,OfferCode.class.getName());
-    List<Serializable> offerCodes=dynamicEntityDao.query(offerCodeQueryCriteria,OfferCode.class);
+    List<FilterMapping> filterMappings=helper.getFilterMappings(offerCodePersistencePerspective,offerCodeCto,OfferCode.class.getName(),offerCodeMergedProperties);
+    List<Serializable> offerCodes=helper.getPersistentRecords(OfferCode.class.getName(),filterMappings,null,null);
     Entity[] offerCodeEntities=helper.getRecords(offerCodeMergedProperties,offerCodes,null,null);
     if (offerCodeEntities.length > 0) {
       Entity temp=new Entity();

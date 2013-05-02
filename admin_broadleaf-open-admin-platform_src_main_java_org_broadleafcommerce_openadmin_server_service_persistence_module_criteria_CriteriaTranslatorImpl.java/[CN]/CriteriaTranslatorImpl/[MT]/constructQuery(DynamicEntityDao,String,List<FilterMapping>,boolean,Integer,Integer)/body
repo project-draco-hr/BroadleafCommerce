@@ -1,0 +1,30 @@
+{
+  CriteriaBuilder criteriaBuilder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
+  Class<Serializable> ceilingMarker;
+  try {
+    ceilingMarker=(Class<Serializable>)Class.forName(ceilingEntity);
+  }
+ catch (  ClassNotFoundException e) {
+    throw new RuntimeException(e);
+  }
+  Class<?>[] polyEntities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(ceilingMarker);
+  Class<Serializable> ceilingClass=(Class<Serializable>)polyEntities[polyEntities.length - 1];
+  CriteriaQuery<Serializable> criteria=criteriaBuilder.createQuery(ceilingMarker);
+  Root<Serializable> original=criteria.from(ceilingClass);
+  if (isCount) {
+    criteria.select(criteriaBuilder.count(original));
+  }
+ else {
+    criteria.select(original);
+  }
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  List<Order> sorts=new ArrayList<Order>();
+  addRestrictions(ceilingEntity,filterMappings,criteriaBuilder,original,restrictions,sorts);
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
+  TypedQuery<Serializable> response=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
+  if (!isCount) {
+    addPaging(response,firstResult,maxResults);
+  }
+  return response;
+}
