@@ -2,6 +2,8 @@
   String failureUrlParam=StringUtil.cleanseUrlString(request.getParameter("failureUrl"));
   String successUrlParam=StringUtil.cleanseUrlString(request.getParameter("successUrl"));
   String failureUrl=StringUtils.trimToNull(failureUrlParam);
+  failureUrl=validateUrlParam(failureUrl);
+  successUrlParam=validateUrlParam(successUrlParam);
   if (failureUrl == null) {
     failureUrl=StringUtils.trimToNull(defaultFailureUrl);
   }
