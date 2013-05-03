@@ -1,0 +1,13 @@
+{
+  Map<String,Object> response=new HashMap<String,Object>();
+  SessionFactory sessionFactory=entityManager.getSession().getSessionFactory();
+  ClassMetadata metadata=sessionFactory.getClassMetadata(entityClass);
+  if (metadata == null) {
+    return null;
+  }
+  String idProperty=metadata.getIdentifierPropertyName();
+  response.put("name",idProperty);
+  Type idType=metadata.getIdentifierType();
+  response.put("type",idType);
+  return response;
+}
