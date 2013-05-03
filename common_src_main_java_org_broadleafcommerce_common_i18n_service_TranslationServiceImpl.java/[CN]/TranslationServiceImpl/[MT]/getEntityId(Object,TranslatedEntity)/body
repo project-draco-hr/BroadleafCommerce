@@ -1,0 +1,22 @@
+{
+  Map<String,Object> idMetadata=dao.getIdPropertyMetadata(entityType);
+  String idProperty=(String)idMetadata.get("name");
+  Type idType=(Type)idMetadata.get("type");
+  if (!(idType instanceof LongType || idType instanceof StringType)) {
+    throw new UnsupportedOperationException("Only ID types of String and Long are currently supported");
+  }
+  Object idValue=null;
+  try {
+    idValue=PropertyUtils.getProperty(entity,idProperty);
+  }
+ catch (  Exception e) {
+    throw new RuntimeException("Error reading id property",e);
+  }
+  if (idType instanceof StringType) {
+    return (String)idValue;
+  }
+ else   if (idType instanceof LongType) {
+    return String.valueOf(idValue);
+  }
+  throw new IllegalArgumentException(String.format("Could not retrieve value for id property. Object: [%s], " + "ID Property: [%s], ID Type: [%s]",entity,idProperty,idType));
+}
