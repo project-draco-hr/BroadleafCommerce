@@ -2,15 +2,17 @@
   Validate.notNull(args,"args cannot be null");
   Validate.notNull(args.getContext().getLocale(),"Locale in context cannot be null");
   Validate.notNull(key,"Message key cannot be null");
-  if (LOG.isTraceEnabled()) {
-    LOG.trace(String.format("Thread %s resolving message with key \"%s\" for template \"%s\" and " + "locale \"%s\". Messages will be retrieved from Spring's MessageSource infrastructure.",TemplateEngine.threadIndex(),key,args.getTemplateName(),args.getContext().getLocale()));
-  }
-  try {
+  if (I18N_VALUE_KEY.equals(key)) {
+    Object entity=messageParams[0];
+    String property=(String)messageParams[1];
     Locale locale=args.getContext().getLocale();
-    final String resolvedMessage=this.messageSource.getMessage(key,messageParams,locale);
-    return new MessageResolution(resolvedMessage);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(String.format("Attempting to resolve translated value for object %s, property %s, locale %s",entity,property,locale));
+    }
+    String resolvedMessage=i18nService.getTranslatedValue(entity,property,locale);
+    if (StringUtils.isNotBlank(resolvedMessage)) {
+      return new MessageResolution(resolvedMessage);
+    }
   }
- catch (  NoSuchMessageException e) {
-    return null;
-  }
+  return null;
 }
