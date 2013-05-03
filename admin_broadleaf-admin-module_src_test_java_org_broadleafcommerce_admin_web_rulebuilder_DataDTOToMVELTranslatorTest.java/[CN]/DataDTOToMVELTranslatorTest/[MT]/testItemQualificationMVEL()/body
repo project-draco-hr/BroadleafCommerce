@@ -9,7 +9,7 @@
   d1e1.setValue("test category");
   d1.getGroups().add(d1e1);
   String d1Translated=translator.createMVEL("discreteOrderItem",d1,orderItemFieldService);
-  String d1Mvel="discreteOrderItem.category.name==\"test category\"";
+  String d1Mvel="discreteOrderItem.?category.?name==\"test category\"";
   assert(d1Mvel.equals(d1Translated));
   DataDTO d2=new DataDTO();
   d2.setQuantity(2);
@@ -25,6 +25,6 @@
   d2.getGroups().add(d2e1);
   d2.getGroups().add(d2e2);
   String d2Translated=translator.createMVEL("discreteOrderItem",d2,orderItemFieldService);
-  String d2Mvel="!(discreteOrderItem.product.manufacturer==\"test manufacturer\"&&discreteOrderItem.product.model==\"test model\")";
+  String d2Mvel="!(discreteOrderItem.?product.?manufacturer==\"test manufacturer\"&&discreteOrderItem.?product.?model==\"test model\")";
   assert(d2Mvel.equals(d2Translated));
 }

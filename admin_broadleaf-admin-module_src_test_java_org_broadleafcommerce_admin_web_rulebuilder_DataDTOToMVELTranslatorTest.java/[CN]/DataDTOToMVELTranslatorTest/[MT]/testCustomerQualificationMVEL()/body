@@ -2,17 +2,12 @@
   DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
   DataDTO dataDTO=new DataDTO();
   dataDTO.setGroupOperator(BLCOperator.AND.name());
-  ExpressionDTO e1=new ExpressionDTO();
-  e1.setName("emailAddress");
-  e1.setOperator(BLCOperator.NOT_EQUAL_FIELD.name());
-  e1.setValue("username");
   ExpressionDTO e2=new ExpressionDTO();
   e2.setName("deactivated");
   e2.setOperator(BLCOperator.EQUALS.name());
   e2.setValue("true");
-  dataDTO.getGroups().add(e1);
   dataDTO.getGroups().add(e2);
   String translated=translator.createMVEL("customer",dataDTO,customerFieldService);
-  String mvel="customer.emailAddress!=customer.username&&customer.deactivated==true";
+  String mvel="customer.?deactivated==true";
   assert(mvel.equals(translated));
 }

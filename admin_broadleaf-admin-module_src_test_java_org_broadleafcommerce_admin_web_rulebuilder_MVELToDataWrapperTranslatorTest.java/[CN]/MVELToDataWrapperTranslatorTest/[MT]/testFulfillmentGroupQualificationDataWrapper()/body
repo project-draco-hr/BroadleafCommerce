@@ -3,7 +3,7 @@
   Property[] properties=new Property[1];
   Property mvelProperty=new Property();
   mvelProperty.setName("matchRule");
-  mvelProperty.setValue("fulfillmentGroup.address.state.name==\"Texas\"&&(fulfillmentGroup.retailShippingPrice.getAmount()>=99&&fulfillmentGroup.retailShippingPrice.getAmount()<=199)");
+  mvelProperty.setValue("fulfillmentGroup.address.state.name==\"Texas\"&&(fulfillmentGroup.retailFulfillmentPrice.getAmount()>=99&&fulfillmentGroup.retailFulfillmentPrice.getAmount()<=199)");
   properties[0]=mvelProperty;
   Entity[] entities=new Entity[1];
   Entity entity=new Entity();
@@ -21,7 +21,7 @@
   assert(e1.getValue().equals("Texas"));
   assert(dataWrapper.getData().get(0).getGroups().get(1) instanceof ExpressionDTO);
   ExpressionDTO e2=(ExpressionDTO)dataWrapper.getData().get(0).getGroups().get(1);
-  assert(e2.getName().equals("retailShippingPrice"));
+  assert(e2.getName().equals("retailFulfillmentPrice"));
   assert(e2.getOperator().equals(BLCOperator.BETWEEN_INCLUSIVE.name()));
   assert(e2.getStart().equals("99"));
   assert(e2.getEnd().equals("199"));
