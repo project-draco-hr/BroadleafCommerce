@@ -10,7 +10,7 @@
         payments.put(paymentInfo,referenced);
         CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(cart,payments);
         PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
-        PaymentResponseItemWrapper paymentResponseItemWrapper=(PaymentResponseItemWrapper)context.getBean(PaymentResponseItemWrapper.class);
+        PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
         paymentResponseItemWrapper.wrap(responseItem,request);
         return paymentResponseItemWrapper;
       }

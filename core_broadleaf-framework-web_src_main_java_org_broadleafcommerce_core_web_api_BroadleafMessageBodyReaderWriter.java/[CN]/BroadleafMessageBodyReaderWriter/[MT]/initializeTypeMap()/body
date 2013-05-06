@@ -1,10 +1,12 @@
 {
   if (this.typeMap == null) {
 synchronized (this) {
-      this.typeMap=new HashMap<String,Class<?>>();
-      Map<String,Object> apiWrappers=applicationContext.getBeansWithAnnotation(XmlRootElement.class);
-      for (      Object obj : apiWrappers.values()) {
-        this.typeMap.put(obj.getClass().getName(),obj.getClass());
+      if (this.typeMap == null) {
+        this.typeMap=new HashMap<String,Class<?>>();
+        Map<String,Object> apiWrappers=applicationContext.getBeansWithAnnotation(XmlRootElement.class);
+        for (        Object obj : apiWrappers.values()) {
+          this.typeMap.put(obj.getClass().getName(),obj.getClass());
+        }
       }
     }
   }
