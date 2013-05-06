@@ -1,5 +1,9 @@
 {
   BasicFieldMetadata metadata=populateValueRequest.getMetadata();
   Property property=populateValueRequest.getProperty();
-  return detectBasicType(metadata,property);
+  boolean response=detectBasicType(metadata,property);
+  if (!response) {
+    response=metadata.getFieldType() == SupportedFieldType.MONEY;
+  }
+  return response;
 }
