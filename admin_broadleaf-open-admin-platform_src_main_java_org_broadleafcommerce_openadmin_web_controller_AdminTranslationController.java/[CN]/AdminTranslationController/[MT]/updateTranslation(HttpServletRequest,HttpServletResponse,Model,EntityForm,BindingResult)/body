@@ -1,5 +1,6 @@
 {
   TranslationForm form=getTranslationForm(entityForm);
+  adminRemoteSecurityService.securityCheck(form.getCeilingEntity(),EntityOperationType.UPDATE);
   translationService.update(form.getTranslationId(),form.getLocaleCode(),form.getTranslatedValue());
   return viewTranslation(request,response,model,form,result);
 }
