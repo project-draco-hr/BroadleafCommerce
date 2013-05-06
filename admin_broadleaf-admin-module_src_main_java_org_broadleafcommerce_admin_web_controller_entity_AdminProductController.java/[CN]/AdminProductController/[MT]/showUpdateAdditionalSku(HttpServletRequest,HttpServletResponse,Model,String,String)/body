@@ -6,6 +6,9 @@
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md);
   ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+  if (collectionMetadata.getCeilingType().equals(SkuImpl.class.getName())) {
+    collectionMetadata.setCeilingType(Sku.class.getName());
+  }
   Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata);
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);

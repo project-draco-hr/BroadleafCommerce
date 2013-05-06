@@ -6,6 +6,9 @@
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md).withCustomCriteria(new String[]{id});
   ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+  if (collectionMetadata.getCeilingType().equals(SkuImpl.class.getName())) {
+    collectionMetadata.setCeilingType(Sku.class.getName());
+  }
   EntityForm entityForm=formService.createEntityForm(collectionMetadata);
   entityForm.getActions().remove(DefaultEntityFormActions.DELETE);
   model.addAttribute("entityForm",entityForm);
