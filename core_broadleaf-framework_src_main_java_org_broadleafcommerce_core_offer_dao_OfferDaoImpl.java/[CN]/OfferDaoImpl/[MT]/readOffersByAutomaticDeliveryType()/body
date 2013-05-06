@@ -1,6 +1,11 @@
 {
-  Query query=em.createNamedQuery("BC_READ_OFFERS_BY_AUTOMATIC_DELIVERY_TYPE");
-  query.setParameter("specifiedDate",SystemTime.asDate());
-  List<Offer> result=query.getResultList();
-  return result;
+  Criteria criteria=((HibernateEntityManager)em).getSession().createCriteria(OfferImpl.class);
+  Calendar c=Calendar.getInstance();
+  c.setTime(SystemTime.asDate());
+  c.add(Calendar.DATE,+1);
+  criteria.add(Restrictions.lt("startDate",c.getTime()));
+  c.add(Calendar.DATE,-2);
+  criteria.add(Restrictions.gt("endDate",c.getTime()));
+  criteria.add(Restrictions.or(Restrictions.eq("archiveStatus.archived",'N'),Restrictions.isNull("archiveStatus.archived")));
+  return criteria.list();
 }
