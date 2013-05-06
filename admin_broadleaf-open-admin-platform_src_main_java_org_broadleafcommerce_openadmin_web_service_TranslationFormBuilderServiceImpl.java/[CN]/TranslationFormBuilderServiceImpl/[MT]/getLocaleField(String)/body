@@ -1,0 +1,17 @@
+{
+  ComboField f=new ComboField();
+  f.setName("localeCode");
+  f.setFriendlyName("Translation_localeCode");
+  f.setFieldType(SupportedFieldType.EXPLICIT_ENUMERATION.toString());
+  f.setOrder(0);
+  if (StringUtils.isNotBlank(value)) {
+    f.setValue(value);
+  }
+  List<Locale> locales=localeService.findAllLocales();
+  Map<String,String> localeMap=new HashMap<String,String>();
+  for (  Locale l : locales) {
+    localeMap.put(l.getLocaleCode(),l.getFriendlyName());
+  }
+  f.setOptions(localeMap);
+  return f;
+}

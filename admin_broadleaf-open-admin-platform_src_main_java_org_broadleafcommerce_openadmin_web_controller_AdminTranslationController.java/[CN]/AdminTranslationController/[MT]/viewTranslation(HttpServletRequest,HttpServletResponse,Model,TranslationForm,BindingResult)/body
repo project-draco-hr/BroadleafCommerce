@@ -1,0 +1,10 @@
+{
+  List<Translation> translations=translationService.getTranslations(form.getCeilingEntity(),form.getEntityId(),form.getPropertyName());
+  ListGrid lg=formService.buildListGrid(translations);
+  model.addAttribute("currentUrl",request.getRequestURL().toString());
+  model.addAttribute("form",form);
+  model.addAttribute("listGrid",lg);
+  model.addAttribute("viewType","modal/translationListGrid");
+  model.addAttribute("modalHeaderType","translation");
+  return "modules/modalContainer";
+}

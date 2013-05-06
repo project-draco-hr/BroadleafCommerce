@@ -1,0 +1,30 @@
+{
+  List<Field> headerFields=new ArrayList<Field>();
+  headerFields.add(new Field().withName("localeCode").withFriendlyName("Translation_localeCode").withOrder(0));
+  headerFields.add(new Field().withName("translatedValue").withFriendlyName("Translation_translatedValue").withOrder(10));
+  ListGrid listGrid=new ListGrid();
+  listGrid.getHeaderFields().addAll(headerFields);
+  listGrid.setListGridType(ListGrid.Type.TRANSLATION);
+  listGrid.setCanFilterAndSort(false);
+  ListGridAction addAction=DefaultListGridActions.ADD.clone();
+  ListGridAction removeAction=DefaultListGridActions.REMOVE.clone();
+  ListGridAction updateAction=DefaultListGridActions.UPDATE.clone();
+  addAction.setButtonClass("translation-grid-add");
+  removeAction.setButtonClass("translation-grid-remove");
+  updateAction.setButtonClass("translation-grid-update");
+  listGrid.addToolbarAction(addAction);
+  listGrid.addRowAction(removeAction);
+  listGrid.addRowAction(updateAction);
+  listGrid.setSubCollectionFieldName("translation");
+  listGrid.setSectionKey("translation");
+  for (  Translation t : translations) {
+    ListGridRecord record=new ListGridRecord();
+    record.setListGrid(listGrid);
+    record.setId(String.valueOf(t.getId()));
+    Locale locale=localeService.findLocaleByCode(t.getLocaleCode());
+    record.getFields().add(new Field().withName("localeCode").withFriendlyName("Translation_localeCode").withOrder(0).withValue(locale.getLocaleCode()).withDisplayValue(locale.getFriendlyName()));
+    record.getFields().add(new Field().withName("translatedValue").withFriendlyName("Translation_translatedValue").withOrder(10).withValue(t.getTranslatedValue()));
+    listGrid.getRecords().add(record);
+  }
+  return listGrid;
+}

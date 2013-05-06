@@ -1,0 +1,13 @@
+{
+  TranslatedEntity te=TranslatedEntity.getInstance(entityType);
+  Translation translation=getTranslation(te,entityId,fieldName,localeCode);
+  if (translation == null) {
+    translation=dao.create();
+    translation.setEntityType(te);
+    translation.setEntityId(entityId);
+    translation.setFieldName(fieldName);
+    translation.setLocaleCode(localeCode);
+  }
+  translation.setTranslatedValue(translatedValue);
+  return save(translation);
+}

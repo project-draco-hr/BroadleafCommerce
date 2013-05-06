@@ -1,0 +1,10 @@
+{
+  Translation t=dao.readTranslationById(translationId);
+  Translation t2=dao.readTranslation(t.getEntityType(),t.getEntityId(),t.getFieldName(),localeCode);
+  if (t2 != null && t != t2) {
+    dao.delete(t2);
+  }
+  t.setLocaleCode(localeCode);
+  t.setTranslatedValue(translatedValue);
+  return save(t);
+}

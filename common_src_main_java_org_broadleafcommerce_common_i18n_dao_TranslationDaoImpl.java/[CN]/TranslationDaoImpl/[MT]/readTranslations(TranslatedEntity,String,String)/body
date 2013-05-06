@@ -1,0 +1,13 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Translation> criteria=builder.createQuery(Translation.class);
+  Root<TranslationImpl> translation=criteria.from(TranslationImpl.class);
+  criteria.select(translation);
+  criteria.where(builder.equal(translation.get("entityType"),entity.getFriendlyType()),builder.equal(translation.get("entityId"),entityId),builder.equal(translation.get("fieldName"),fieldName));
+  try {
+    return em.createQuery(criteria).getResultList();
+  }
+ catch (  NoResultException e) {
+    return null;
+  }
+}
