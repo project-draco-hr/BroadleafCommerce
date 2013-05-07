@@ -1,7 +1,4 @@
 {
-  if (cache != null && cache.containsKey(field)) {
-    return cache.get(field);
-  }
   String valueToReturn=defaultValue;
   if (TranslationConsiderationContext.hasTranslation()) {
     TranslationService translationService=TranslationConsiderationContext.getTranslationService();
@@ -10,9 +7,6 @@
     if (StringUtils.isNotBlank(translatedValue)) {
       valueToReturn=translatedValue;
     }
-  }
-  if (cache != null) {
-    cache.put(field,valueToReturn);
   }
   return valueToReturn;
 }

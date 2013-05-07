@@ -6,9 +6,24 @@
   if (StringUtils.isNotBlank(locale.getCountry())) {
     localeCountryCode+="_" + locale.getCountry();
   }
-  Translation translation=getTranslation(entityType,entityId,property,localeCountryCode);
+  Translation translation=null;
+  String countryCacheKey=getCacheKey(entityType,entityId,property,localeCountryCode);
+  if (getCache().isKeyInCache(countryCacheKey)) {
+    translation=(Translation)getCache().get(countryCacheKey).getObjectValue();
+  }
+ else {
+    translation=getTranslation(entityType,entityId,property,localeCountryCode);
+    getCache().put(new Element(countryCacheKey,translation));
+  }
   if (translation == null) {
-    translation=getTranslation(entityType,entityId,property,localeCode);
+    String nonCountryCacheKey=getCacheKey(entityType,entityId,property,localeCode);
+    if (getCache().isKeyInCache(nonCountryCacheKey)) {
+      translation=(Translation)getCache().get(nonCountryCacheKey).getObjectValue();
+    }
+ else {
+      translation=getTranslation(entityType,entityId,property,localeCode);
+      getCache().put(new Element(nonCountryCacheKey,translation));
+    }
   }
   if (translation != null && StringUtils.isNotBlank(translation.getTranslatedValue())) {
     return translation.getTranslatedValue();
