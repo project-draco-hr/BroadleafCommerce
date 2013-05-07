@@ -1,15 +1,4 @@
 {
-  String entityPropertyValue=null;
-  try {
-    Object rawPropertyValue=PropertyUtils.getSimpleProperty(entity,property);
-    if (rawPropertyValue != null) {
-      entityPropertyValue=String.valueOf(rawPropertyValue);
-    }
-  }
- catch (  Exception e) {
-    String msg=e.getMessage();
-    LOG.warn(String.format("Unable to find a value for property %s in object %s, %s",property,entity,msg));
-  }
   TranslatedEntity entityType=getEntityType(entity);
   String entityId=getEntityId(entity,entityType);
   String localeCode=locale.getLanguage();
@@ -22,7 +11,7 @@
     translation=getTranslation(entityType,entityId,property,localeCode);
   }
   if (translation != null && StringUtils.isNotBlank(translation.getTranslatedValue())) {
-    entityPropertyValue=translation.getTranslatedValue();
+    return translation.getTranslatedValue();
   }
-  return entityPropertyValue;
+  return null;
 }

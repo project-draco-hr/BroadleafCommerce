@@ -1,0 +1,18 @@
+{
+  if (cache != null && cache.containsKey(field)) {
+    return cache.get(field);
+  }
+  String valueToReturn=defaultValue;
+  if (TranslationConsiderationContext.hasTranslation()) {
+    TranslationService translationService=TranslationConsiderationContext.getTranslationService();
+    Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getJavaLocale();
+    String translatedValue=translationService.getTranslatedValue(obj,field,locale);
+    if (StringUtils.isNotBlank(translatedValue)) {
+      valueToReturn=translatedValue;
+    }
+  }
+  if (cache != null) {
+    cache.put(field,valueToReturn);
+  }
+  return valueToReturn;
+}
