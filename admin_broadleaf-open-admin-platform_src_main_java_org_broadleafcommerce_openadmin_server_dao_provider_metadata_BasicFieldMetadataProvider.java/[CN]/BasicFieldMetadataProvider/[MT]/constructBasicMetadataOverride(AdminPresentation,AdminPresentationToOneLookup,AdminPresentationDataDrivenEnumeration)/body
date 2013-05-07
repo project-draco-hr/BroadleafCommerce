@@ -25,19 +25,9 @@
     override.setCurrencyCodeField(annot.currencyCodeField());
     override.setRuleIdentifier(annot.ruleIdentifier());
     override.setTranslatable(annot.translatable());
+    override.setRequiredOverride(RequiredOverride.REQUIRED == annot.requiredOverride());
     if (annot.validationConfigurations().length != 0) {
-      ValidationConfiguration[] configurations=annot.validationConfigurations();
-      for (      ValidationConfiguration configuration : configurations) {
-        ConfigurationItem[] items=configuration.configurationItems();
-        Map<String,String> itemMap=new HashMap<String,String>();
-        for (        ConfigurationItem item : items) {
-          itemMap.put(item.itemName(),item.itemValue());
-        }
-        if (override.getValidationConfigurations() == null) {
-          override.setValidationConfigurations(new LinkedHashMap<String,Map<String,String>>(5));
-        }
-        override.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
-      }
+      processValidationAnnotations(annot.validationConfigurations(),override);
     }
     if (annot.requiredOverride() != RequiredOverride.IGNORED) {
       override.setRequiredOverride(annot.requiredOverride() == RequiredOverride.REQUIRED);

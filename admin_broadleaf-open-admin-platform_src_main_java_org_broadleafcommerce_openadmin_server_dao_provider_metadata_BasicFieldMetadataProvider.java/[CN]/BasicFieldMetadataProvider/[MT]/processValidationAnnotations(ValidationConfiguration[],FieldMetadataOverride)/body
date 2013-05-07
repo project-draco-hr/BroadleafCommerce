@@ -1,0 +1,13 @@
+{
+  for (  ValidationConfiguration configuration : configurations) {
+    ConfigurationItem[] items=configuration.configurationItems();
+    Map<String,String> itemMap=new HashMap<String,String>();
+    for (    ConfigurationItem item : items) {
+      itemMap.put(item.itemName(),item.itemValue());
+    }
+    if (override.getValidationConfigurations() == null) {
+      override.setValidationConfigurations(new LinkedHashMap<String,Map<String,String>>(5));
+    }
+    override.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+  }
+}

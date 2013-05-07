@@ -2,9 +2,9 @@
   if (!canHandleAnnotationOverride(overrideViaAnnotationRequest,metadata)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
-  Map<String,AdminPresentationOverride> presentationOverrides=new HashMap<String,AdminPresentationOverride>();
-  Map<String,AdminPresentationToOneLookupOverride> presentationToOneLookupOverrides=new HashMap<String,AdminPresentationToOneLookupOverride>();
-  Map<String,AdminPresentationDataDrivenEnumerationOverride> presentationDataDrivenEnumerationOverrides=new HashMap<String,AdminPresentationDataDrivenEnumerationOverride>();
+  Map<String,AdminPresentationOverride> presentationOverrides=new LinkedHashMap<String,AdminPresentationOverride>();
+  Map<String,AdminPresentationToOneLookupOverride> presentationToOneLookupOverrides=new LinkedHashMap<String,AdminPresentationToOneLookupOverride>();
+  Map<String,AdminPresentationDataDrivenEnumerationOverride> presentationDataDrivenEnumerationOverrides=new LinkedHashMap<String,AdminPresentationDataDrivenEnumerationOverride>();
   AdminPresentationOverrides myOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationOverrides.class);
   if (myOverrides != null) {
     for (    AdminPresentationOverride myOverride : myOverrides.value()) {

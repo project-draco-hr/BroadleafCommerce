@@ -2,7 +2,8 @@
   AdminPresentationOverride override=presentationOverrides.get(propertyName);
   if (override != null) {
     AdminPresentation annot=override.value();
-    if (annot != null) {
+    AdminPresentationMerge merge=override.mergeValue();
+    if (annot != null && ArrayUtils.isEmpty(merge.mergeEntries())) {
       String testKey=prefix + key;
       if ((testKey.startsWith(propertyName + ".") || testKey.equals(propertyName)) && annot.excluded()) {
         FieldMetadata metadata=mergedProperties.get(key);
@@ -21,11 +22,16 @@
           metadata.setExcluded(false);
         }
       }
+    }
+    if (annot != null || !ArrayUtils.isEmpty(merge.mergeEntries()) || !ArrayUtils.isEmpty(merge.validationConfigurations())) {
       if (!(mergedProperties.get(key) instanceof BasicFieldMetadata)) {
         return;
       }
       BasicFieldMetadata serverMetadata=(BasicFieldMetadata)mergedProperties.get(key);
-      if (serverMetadata.getTargetClass() != null) {
+      if (!ArrayUtils.isEmpty(merge.mergeEntries()) || !ArrayUtils.isEmpty(merge.validationConfigurations())) {
+        overrideMergeMetadata(serverMetadata,merge);
+      }
+ else       if (serverMetadata.getTargetClass() != null) {
         try {
           Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
           Class<?> parentClass=null;

@@ -1,0 +1,94 @@
+{
+  Map<AdminPresentationPropertyType,AdminPresentationMergeEntry> overrideValues=getAdminPresentationEntries(merge.mergeEntries());
+  ValidationConfiguration[] configurations=merge.validationConfigurations();
+  for (  Map.Entry<AdminPresentationPropertyType,AdminPresentationMergeEntry> entry : overrideValues.entrySet()) {
+    String stringValue=entry.getValue().overrideValue();
+switch (entry.getKey()) {
+case friendlyName:
+      basicFieldMetadata.setFriendlyName(stringValue);
+    break;
+case securityLevel:
+  basicFieldMetadata.setSecurityLevel(stringValue);
+break;
+case group:
+basicFieldMetadata.setGroup(stringValue);
+break;
+case tab:
+basicFieldMetadata.setTab(stringValue);
+break;
+case columnWidth:
+basicFieldMetadata.setColumnWidth(stringValue);
+break;
+case broadleafEnumeration:
+basicFieldMetadata.setBroadleafEnumeration(stringValue);
+break;
+case tooltip:
+basicFieldMetadata.setTooltip(stringValue);
+break;
+case helpText:
+basicFieldMetadata.setHelpText(stringValue);
+break;
+case hint:
+basicFieldMetadata.setHint(stringValue);
+break;
+case showIfProperty:
+basicFieldMetadata.setShowIfProperty(stringValue);
+break;
+case currencyCodeField:
+basicFieldMetadata.setCurrencyCodeField(stringValue);
+break;
+case ruleIdentifier:
+basicFieldMetadata.setRuleIdentifier(stringValue);
+break;
+case order:
+basicFieldMetadata.setOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+break;
+case gridOrder:
+basicFieldMetadata.setGridOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+break;
+case visibility:
+basicFieldMetadata.setVisibility(VisibilityEnum.valueOf(stringValue));
+break;
+case fieldType:
+basicFieldMetadata.setFieldType(SupportedFieldType.valueOf(stringValue));
+break;
+case groupOrder:
+basicFieldMetadata.setGroupOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+break;
+case groupCollapsed:
+basicFieldMetadata.setGroupCollapsed(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+break;
+case tabOrder:
+basicFieldMetadata.setTabOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+break;
+case largeEntry:
+basicFieldMetadata.setLargeEntry(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+break;
+case prominent:
+basicFieldMetadata.setProminent(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+break;
+case readOnly:
+basicFieldMetadata.setReadOnly(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+break;
+case requiredOverride:
+basicFieldMetadata.setRequiredOverride(RequiredOverride.REQUIRED == RequiredOverride.valueOf(stringValue));
+break;
+case excluded:
+basicFieldMetadata.setExcluded(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+break;
+default :
+throw new IllegalArgumentException("Unrecognized type: " + entry.getKey().toString());
+}
+}
+for (ValidationConfiguration configuration : configurations) {
+ConfigurationItem[] items=configuration.configurationItems();
+Map<String,String> itemMap=new HashMap<String,String>();
+for (ConfigurationItem item : items) {
+itemMap.put(item.itemName(),item.itemValue());
+}
+if (basicFieldMetadata.getValidationConfigurations() == null) {
+basicFieldMetadata.setValidationConfigurations(new LinkedHashMap<String,Map<String,String>>(5));
+}
+basicFieldMetadata.getValidationConfigurations().put(configuration.validationImplementation(),itemMap);
+}
+}
