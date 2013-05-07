@@ -1,0 +1,17 @@
+{
+  String customerName=null;
+  String orderNumber=getOrderNumber();
+  if (!StringUtils.isEmpty(getCustomer().getFirstName()) && !StringUtils.isEmpty(getCustomer().getLastName())) {
+    customerName=getCustomer().getFirstName() + " " + getCustomer().getLastName();
+  }
+  if (!StringUtils.isEmpty(orderNumber) && !StringUtils.isEmpty(customerName)) {
+    return orderNumber + " - " + customerName;
+  }
+  if (!StringUtils.isEmpty(orderNumber)) {
+    return orderNumber;
+  }
+  if (!StringUtils.isEmpty(customerName)) {
+    return customerName;
+  }
+  return "";
+}

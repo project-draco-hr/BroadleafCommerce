@@ -29,14 +29,31 @@
  else       if (extractValueRequest.getMetadata().getForeignKeyClass() != null) {
         try {
           val=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyProperty()).toString();
-          Object temp=null;
-          try {
-            temp=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty());
+          String entityName=null;
+          if (extractValueRequest.getRequestedValue() instanceof AdminMainEntity) {
+            entityName=((AdminMainEntity)extractValueRequest.getRequestedValue()).getMainEntityName();
           }
- catch (          FieldNotAvailableException e) {
+          Object temp=null;
+          if (!StringUtils.isEmpty(extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty())) {
+            String nameProperty=extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty();
+            try {
+              temp=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),nameProperty);
+            }
+ catch (            FieldNotAvailableException e) {
+            }
+          }
+          if (temp == null && StringUtils.isEmpty(entityName)) {
+            try {
+              temp=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),"name");
+            }
+ catch (            FieldNotAvailableException e) {
+            }
           }
           if (temp != null) {
             extractValueRequest.setDisplayVal(temp.toString());
+          }
+ else           if (!StringUtils.isEmpty(entityName)) {
+            extractValueRequest.setDisplayVal(entityName);
           }
         }
  catch (        FieldNotAvailableException e) {
