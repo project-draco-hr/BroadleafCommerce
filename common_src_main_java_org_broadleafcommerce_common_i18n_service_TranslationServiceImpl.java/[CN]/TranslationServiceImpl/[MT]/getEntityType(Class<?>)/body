@@ -1,0 +1,14 @@
+{
+  for (  Entry<String,TranslatedEntity> entry : TranslatedEntity.getTypes().entrySet()) {
+    try {
+      Class<?> clazz=Class.forName(entry.getKey());
+      if (clazz.isAssignableFrom(entityClass)) {
+        return entry.getValue();
+      }
+    }
+ catch (    ClassNotFoundException e) {
+      throw new IllegalArgumentException("TranslatedEntity type was not set to a known class",e);
+    }
+  }
+  throw new IllegalArgumentException(entityClass.getName() + " is not a known translatable class");
+}
