@@ -12,6 +12,10 @@
   }
   clearAuthenticationAttributes(request);
   String targetUrl=savedRequest.getRedirectUrl();
+  targetUrl=targetUrl.replace("sessionTimeout=true","");
+  if (targetUrl.charAt(targetUrl.length() - 1) == '?') {
+    targetUrl=targetUrl.substring(0,targetUrl.length() - 1);
+  }
   String moduleKey=request.getParameter("moduleKey");
   String pageKey=request.getParameter("pageKey");
   if (moduleKey != null && pageKey != null) {
