@@ -1,0 +1,7 @@
+{
+  listGrid.getHeaderFields().add(new Field().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.STRING.toString()).withOrder(Integer.MIN_VALUE).withColumnWidth("100px").withFilterSortDisabled(true));
+  for (  ListGridRecord record : listGrid.getRecords()) {
+    record.getFields().add(new Field().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.IMAGE.toString()).withOrder(Integer.MIN_VALUE).withValue(record.getField(urlField).getValue()));
+    record.clearFieldMap();
+  }
+}
