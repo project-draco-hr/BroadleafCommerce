@@ -3,7 +3,12 @@
     StringTokenizer tokens=new StringTokenizer(propertyName,".");
     propertyName=tokens.nextToken();
   }
-  Object value=helper.getFieldManager().getFieldValue(sku,propertyName);
+  Object value=null;
+  try {
+    value=helper.getFieldManager().getFieldValue(sku,propertyName);
+  }
+ catch (  FieldNotAvailableException e) {
+  }
   String strVal;
   if (value == null) {
     strVal=null;
