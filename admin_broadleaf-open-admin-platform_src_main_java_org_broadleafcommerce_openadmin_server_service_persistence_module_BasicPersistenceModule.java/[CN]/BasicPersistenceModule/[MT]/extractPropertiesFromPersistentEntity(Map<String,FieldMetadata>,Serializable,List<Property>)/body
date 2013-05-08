@@ -1,6 +1,12 @@
 {
   FieldManager fieldManager=getFieldManager();
   try {
+    if (entity instanceof AdminMainEntity) {
+      Property propertyItem=new Property();
+      propertyItem.setName(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY);
+      propertyItem.setValue(((AdminMainEntity)entity).getMainEntityName());
+      props.add(propertyItem);
+    }
     for (    Entry<String,FieldMetadata> entry : mergedProperties.entrySet()) {
       String property=entry.getKey();
       BasicFieldMetadata metadata=(BasicFieldMetadata)entry.getValue();

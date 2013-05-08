@@ -40,16 +40,28 @@
         foreignMetadata=addMetadataFromFieldTypeRequest.getDynamicEntityDao().getSessionFactory().getClassMetadata(entities[entities.length - 1]);
         foreignKeyClass=entities[entities.length - 1].getName();
         lookupDisplayProperty=((BasicFieldMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute()).getLookupDisplayProperty();
+        if (StringUtils.isEmpty(lookupDisplayProperty) && AdminMainEntity.class.isAssignableFrom(entities[entities.length - 1])) {
+          lookupDisplayProperty=AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY;
+        }
+        if (StringUtils.isEmpty(lookupDisplayProperty)) {
+          lookupDisplayProperty="name";
+        }
       }
  else {
         try {
           foreignMetadata=addMetadataFromFieldTypeRequest.getDynamicEntityDao().getSessionFactory().getClassMetadata(Class.forName(addMetadataFromFieldTypeRequest.getForeignField().getForeignKeyClass()));
+          foreignKeyClass=addMetadataFromFieldTypeRequest.getForeignField().getForeignKeyClass();
+          lookupDisplayProperty=addMetadataFromFieldTypeRequest.getForeignField().getDisplayValueProperty();
+          if (StringUtils.isEmpty(lookupDisplayProperty) && AdminMainEntity.class.isAssignableFrom(Class.forName(foreignKeyClass))) {
+            lookupDisplayProperty=AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY;
+          }
+          if (StringUtils.isEmpty(lookupDisplayProperty)) {
+            lookupDisplayProperty="name";
+          }
         }
  catch (        ClassNotFoundException e) {
           throw new RuntimeException(e);
         }
-        foreignKeyClass=addMetadataFromFieldTypeRequest.getForeignField().getForeignKeyClass();
-        lookupDisplayProperty=addMetadataFromFieldTypeRequest.getForeignField().getDisplayValueProperty();
       }
       Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
       if (foreignResponseType.equals(String.class)) {
@@ -74,16 +86,28 @@
         foreignMetadata=addMetadataFromFieldTypeRequest.getDynamicEntityDao().getSessionFactory().getClassMetadata(entities[entities.length - 1]);
         foreignKeyClass=entities[entities.length - 1].getName();
         lookupDisplayProperty=((BasicFieldMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute()).getLookupDisplayProperty();
+        if (StringUtils.isEmpty(lookupDisplayProperty) && AdminMainEntity.class.isAssignableFrom(entities[entities.length - 1])) {
+          lookupDisplayProperty=AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY;
+        }
+        if (StringUtils.isEmpty(lookupDisplayProperty)) {
+          lookupDisplayProperty="name";
+        }
       }
  else {
         try {
           foreignMetadata=addMetadataFromFieldTypeRequest.getDynamicEntityDao().getSessionFactory().getClassMetadata(Class.forName(addMetadataFromFieldTypeRequest.getAdditionalForeignFields()[addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition()].getForeignKeyClass()));
+          foreignKeyClass=addMetadataFromFieldTypeRequest.getAdditionalForeignFields()[addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition()].getForeignKeyClass();
+          lookupDisplayProperty=addMetadataFromFieldTypeRequest.getAdditionalForeignFields()[addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition()].getDisplayValueProperty();
+          if (StringUtils.isEmpty(lookupDisplayProperty) && AdminMainEntity.class.isAssignableFrom(Class.forName(foreignKeyClass))) {
+            lookupDisplayProperty=AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY;
+          }
+          if (StringUtils.isEmpty(lookupDisplayProperty)) {
+            lookupDisplayProperty="name";
+          }
         }
  catch (        ClassNotFoundException e) {
           throw new RuntimeException(e);
         }
-        foreignKeyClass=addMetadataFromFieldTypeRequest.getAdditionalForeignFields()[addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition()].getForeignKeyClass();
-        lookupDisplayProperty=addMetadataFromFieldTypeRequest.getAdditionalForeignFields()[addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition()].getDisplayValueProperty();
       }
       Class<?> foreignResponseType=foreignMetadata.getIdentifierType().getReturnedClass();
       if (foreignResponseType.equals(String.class)) {

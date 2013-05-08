@@ -3,13 +3,7 @@
     StringTokenizer tokens=new StringTokenizer(propertyName,".");
     propertyName=tokens.nextToken();
   }
-  Object value;
-  try {
-    value=PropertyUtils.getProperty(sku,propertyName);
-  }
- catch (  NoSuchMethodException e) {
-    return null;
-  }
+  Object value=helper.getFieldManager().getFieldValue(sku,propertyName);
   String strVal;
   if (value == null) {
     strVal=null;

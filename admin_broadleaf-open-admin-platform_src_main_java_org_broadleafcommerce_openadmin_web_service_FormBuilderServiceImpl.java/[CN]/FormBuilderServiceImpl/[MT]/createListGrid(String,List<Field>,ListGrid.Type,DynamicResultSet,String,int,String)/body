@@ -33,6 +33,11 @@
         record.getFields().add(recordField);
       }
     }
+    if (e.findProperty(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY) != null) {
+      Field hiddenField=new Field().withName(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY);
+      hiddenField.setValue(e.findProperty(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY).getValue());
+      record.getHiddenFields().add(hiddenField);
+    }
     listGrid.getRecords().add(record);
   }
   return listGrid;
