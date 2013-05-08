@@ -22,6 +22,12 @@
               rbf.setDataWrapper(dw);
             }
           }
+          if (basicFM.getFieldType() == SupportedFieldType.MEDIA) {
+            field.setValue(entityProp.getValue());
+            field.setDisplayValue(entityProp.getDisplayValue());
+            MediaField mf=(MediaField)field;
+            mf.setMedia(convertJsonToMedia(entityProp.getValue()));
+          }
  else {
             field.setValue(entityProp.getValue());
             field.setDisplayValue(entityProp.getDisplayValue());

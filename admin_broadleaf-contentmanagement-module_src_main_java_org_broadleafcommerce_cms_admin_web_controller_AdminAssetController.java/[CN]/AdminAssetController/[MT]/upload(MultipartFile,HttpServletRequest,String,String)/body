@@ -1,0 +1,23 @@
+{
+  Map<String,Object> responseMap=new HashMap<String,Object>();
+  Map<String,String> properties=new HashMap<String,String>();
+  properties.put("entityType",sectionKey);
+  properties.put("entityId",id);
+  StaticAsset staticAsset=staticAssetService.createStaticAssetFromFile(file,properties);
+  staticAssetStorageService.createStaticAssetStorageFromFile(file,staticAsset);
+  String staticAssetUrlPrefix=staticAssetService.getStaticAssetUrlPrefix();
+  if (staticAssetUrlPrefix != null && !staticAssetUrlPrefix.startsWith("/")) {
+    staticAssetUrlPrefix="/" + staticAssetUrlPrefix;
+  }
+  String assetUrl=request.getSession().getServletContext().getContextPath() + staticAssetUrlPrefix + staticAsset.getFullUrl();
+  responseMap.put("assetUrl",assetUrl);
+  if (staticAsset instanceof ImageStaticAssetImpl) {
+    responseMap.put("image",Boolean.TRUE);
+    responseMap.put("assetThumbnail",assetUrl + "?smallAdminThumbnail");
+    responseMap.put("assetLarge",assetUrl + "?largeAdminThumbnail");
+  }
+ else {
+    responseMap.put("image",Boolean.FALSE);
+  }
+  return responseMap;
+}

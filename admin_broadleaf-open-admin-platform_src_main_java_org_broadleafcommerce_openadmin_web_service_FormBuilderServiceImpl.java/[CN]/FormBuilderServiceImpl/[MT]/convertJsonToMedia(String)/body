@@ -1,0 +1,12 @@
+{
+  if (json != null && !"".equals(json)) {
+    try {
+      ObjectMapper om=new ObjectMapper();
+      return om.readValue(json,MediaDto.class);
+    }
+ catch (    Exception e) {
+      LOG.warn("Error parsing json to media " + json,e);
+    }
+  }
+  return new MediaDto();
+}

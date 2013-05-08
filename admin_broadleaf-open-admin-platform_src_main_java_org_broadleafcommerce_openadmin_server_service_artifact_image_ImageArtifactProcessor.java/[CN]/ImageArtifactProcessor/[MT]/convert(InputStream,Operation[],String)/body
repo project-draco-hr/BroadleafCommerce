@@ -3,7 +3,7 @@
     Iterator<ImageReader> iter=ImageIO.getImageReaders(ImageIO.createImageInputStream(artifactStream));
     ImageReader reader=iter.next();
     String formatName=reader.getFormatName();
-    ((ByteArrayInputStream)artifactStream).reset();
+    artifactStream.reset();
     BufferedImage image=ImageIO.read(ImageIO.createImageInputStream(artifactStream));
     if (formatName.toLowerCase().equals("jpeg") || formatName.toLowerCase().equals("jpg")) {
       image=stripAlpha(image);
