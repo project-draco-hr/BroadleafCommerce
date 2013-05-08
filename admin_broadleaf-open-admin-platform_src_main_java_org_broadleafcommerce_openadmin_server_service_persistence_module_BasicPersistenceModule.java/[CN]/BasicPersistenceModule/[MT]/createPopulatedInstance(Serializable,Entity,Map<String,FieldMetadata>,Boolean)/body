@@ -66,7 +66,7 @@
           }
  else {
             try {
-              if (fieldManager.getFieldValue(instance,property.getName()) != null && (metadata.getFieldType() != SupportedFieldType.ID || setId)) {
+              if (fieldManager.getFieldValue(instance,property.getName()) != null && (metadata.getFieldType() != SupportedFieldType.ID || setId) && metadata.getFieldType() != SupportedFieldType.PASSWORD) {
                 fieldManager.setFieldValue(instance,property.getName(),null);
               }
             }
@@ -82,6 +82,7 @@
       if (persistenceManager.getDynamicEntityDao().getStandardEntityManager().contains(instance)) {
         persistenceManager.getDynamicEntityDao().refresh(instance);
       }
+      throw new ValidationException(entity,"The entity has failed validation");
     }
  else {
       Map<String,Serializable> persistedEntities=fieldManager.persistMiddleEntities();

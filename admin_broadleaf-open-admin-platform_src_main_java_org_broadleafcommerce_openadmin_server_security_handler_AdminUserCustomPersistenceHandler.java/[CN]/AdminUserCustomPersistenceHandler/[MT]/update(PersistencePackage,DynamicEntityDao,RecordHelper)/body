@@ -7,8 +7,10 @@
     AdminUser adminInstance=(AdminUser)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     dynamicEntityDao.detach(adminInstance);
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    adminInstance.setUnencodedPassword(adminInstance.getPassword());
-    adminInstance.setPassword(null);
+    if (StringUtils.isNotEmpty(adminInstance.getPassword())) {
+      adminInstance.setUnencodedPassword(adminInstance.getPassword());
+      adminInstance.setPassword(null);
+    }
     if (!adminRemoteSecurityService.getPersistentAdminUser().getId().equals(adminInstance.getId())) {
       adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
     }

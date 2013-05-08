@@ -7,7 +7,7 @@
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata basicFM=(BasicFieldMetadata)p.getMetadata();
       Property entityProp=entity.findProperty(p.getName());
-      if (entityProp == null) {
+      if (entityProp == null && !SupportedFieldType.PASSWORD_CONFIRM.equals(basicFM.getExplicitFieldType())) {
         ef.removeField(p.getName());
       }
  else {
@@ -28,7 +28,7 @@
             MediaField mf=(MediaField)field;
             mf.setMedia(convertJsonToMedia(entityProp.getValue()));
           }
- else {
+ else           if (!SupportedFieldType.PASSWORD_CONFIRM.equals(basicFM.getExplicitFieldType())) {
             field.setValue(entityProp.getValue());
             field.setDisplayValue(entityProp.getDisplayValue());
           }
