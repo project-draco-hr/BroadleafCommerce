@@ -6,11 +6,14 @@
     if (staticAssetUrlPrefix != null && !staticAssetUrlPrefix.startsWith("/")) {
       staticAssetUrlPrefix="/" + staticAssetUrlPrefix;
     }
-    if (staticAssetUrlPrefix != null) {
+    if (staticAssetUrlPrefix == null) {
+      staticAssetUrlPrefix="";
+    }
+ else {
       imageUrl=staticAssetUrlPrefix + imageUrl;
     }
-    imageUrl=imageUrl + "?smallAdminThumbnail";
-    MediaField mf=(MediaField)new MediaField().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.IMAGE.toString()).withOrder(Integer.MIN_VALUE).withValue(imageUrl);
+    MediaField mf=(MediaField)new MediaField().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.IMAGE.toString()).withOrder(Integer.MIN_VALUE).withValue(imageUrl + "?smallAdminThumbnail");
+    record.getHiddenFields().add(new Field().withName("cmsUrlPrefix").withValue(staticAssetUrlPrefix));
     mf.setHeight(operationMap.getNamedOperations().get("smallAdminThumbnail").get("resize-height-amount"));
     record.getFields().add(mf);
     record.clearFieldMap();

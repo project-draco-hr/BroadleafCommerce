@@ -1,0 +1,13 @@
+{
+  Map<String,String> pathVars=new HashMap<String,String>();
+  pathVars.put("sectionKey",AdminAssetController.SECTION_KEY);
+  assetController.viewEntityList(request,response,model,pathVars,null);
+  ListGrid listGrid=(ListGrid)model.asMap().get("listGrid");
+  listGrid.setListGridType(Type.ASSET);
+  model.addAttribute("viewType","modal/selectAsset");
+  model.addAttribute("currentUrl",request.getRequestURL().toString());
+  model.addAttribute("modalHeaderType","selectAsset");
+  model.addAttribute("entityId",id);
+  model.addAttribute("sectionKey",sectionKey);
+  return "modules/modalContainer";
+}
