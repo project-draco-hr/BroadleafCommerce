@@ -1,0 +1,16 @@
+{
+  if (addMetadataFromFieldTypeRequest.getPresentationAttribute() instanceof BasicFieldMetadata && SupportedFieldType.PASSWORD.equals(((BasicFieldMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute()).getExplicitFieldType())) {
+    addMetadataFromFieldTypeRequest.getDynamicEntityDao().getDefaultFieldMetadataProvider().addMetadataFromFieldType(addMetadataFromFieldTypeRequest,metadata);
+    ((BasicFieldMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute()).setFieldType(SupportedFieldType.PASSWORD);
+    BasicFieldMetadata confirmMd=(BasicFieldMetadata)addMetadataFromFieldTypeRequest.getPresentationAttribute().cloneFieldMetadata();
+    confirmMd.setFieldName("passwordConfirm");
+    confirmMd.setFriendlyName("AdminUserImpl_Admin_Password_Confirm");
+    confirmMd.setExplicitFieldType(SupportedFieldType.PASSWORD_CONFIRM);
+    confirmMd.setValidationConfigurations(new HashMap<String,Map<String,String>>());
+    metadata.put("passwordConfirm",confirmMd);
+    return FieldProviderResponse.HANDLED;
+  }
+ else {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+}
