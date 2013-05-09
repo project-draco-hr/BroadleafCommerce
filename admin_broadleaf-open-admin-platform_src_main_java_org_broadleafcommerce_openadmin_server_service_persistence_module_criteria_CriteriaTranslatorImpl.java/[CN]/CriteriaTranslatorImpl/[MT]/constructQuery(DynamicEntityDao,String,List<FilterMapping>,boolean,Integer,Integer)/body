@@ -21,7 +21,9 @@
   List<Order> sorts=new ArrayList<Order>();
   addRestrictions(ceilingEntity,filterMappings,criteriaBuilder,original,restrictions,sorts);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
-  criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
+  if (!isCount) {
+    criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
+  }
   TypedQuery<Serializable> response=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
   if (!isCount) {
     addPaging(response,firstResult,maxResults);
