@@ -1,0 +1,26 @@
+{
+  Response response=null;
+  if (t instanceof WebApplicationException) {
+    response=((WebApplicationException)t).getResponse();
+    if (response.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+      LOG.error("An exception was caught by the JAX-RS framework: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    }
+ else     if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
+      LOG.warn("Someone tried to access a resource that was forbidden: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    }
+ else     if (LOG.isDebugEnabled()) {
+      LOG.debug("REST Services Caught Exception: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    }
+  }
+ else {
+    LOG.error("An exception was caught by the JAX-RS framework.",t);
+  }
+  if (response != null) {
+    Object msg=response.getEntity();
+    if (msg == null) {
+      msg="An error occurred";
+    }
+    return Response.status(response.getStatus()).type(MediaType.TEXT_PLAIN).entity(msg).build();
+  }
+  return Response.status(500).type(MediaType.TEXT_PLAIN).entity("An unknown or unreported error has occured. If the problem persists, please contact the administrator.").build();
+}
