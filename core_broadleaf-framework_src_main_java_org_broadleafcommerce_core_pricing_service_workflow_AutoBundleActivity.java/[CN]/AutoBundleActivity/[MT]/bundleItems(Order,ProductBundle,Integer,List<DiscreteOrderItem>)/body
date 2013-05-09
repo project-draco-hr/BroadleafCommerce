@@ -52,7 +52,7 @@
       newOrderItem.updateSaleAndRetailPrices();
       FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(newSkuBundleItem.getSku().getId());
       if (fulfillmentGroupItem != null) {
-        FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
+        FulfillmentGroupItem newFulfillmentGroupItem=fulfillmentGroupItem.clone();
         newFulfillmentGroupItem.setOrderItem(newOrderItem);
         newFulfillmentGroupItem.setQuantity(newOrderItem.getQuantity());
         newFulfillmentGroupItem=fulfillmentGroupItemDao.save(newFulfillmentGroupItem);
@@ -74,7 +74,7 @@
       for (      DiscreteOrderItem discreteOrderItem : bundleItem.getDiscreteOrderItems()) {
         FulfillmentGroupItem fulfillmentGroupItem=skuIdFulfillmentGroupMap.get(discreteOrderItem.getSku().getId());
         if (fulfillmentGroupItem != null) {
-          FulfillmentGroupItem newFulfillmentGroupItem=(FulfillmentGroupItem)fulfillmentGroupItem.clone();
+          FulfillmentGroupItem newFulfillmentGroupItem=fulfillmentGroupItem.clone();
           newFulfillmentGroupItem.setOrderItem(discreteOrderItem);
           newFulfillmentGroupItem.setQuantity(discreteOrderItem.getQuantity());
           for (          FulfillmentGroup fg : order.getFulfillmentGroups()) {

@@ -1,0 +1,20 @@
+{
+  Set<Long> appliedOfferIds=new HashSet<Long>();
+  CheckoutSeed seed=context.getSeedData();
+  Order order=seed.getOrder();
+  if (order != null) {
+    addOfferIds(order.getOrderAdjustments(),appliedOfferIds);
+    if (order.getOrderItems() != null) {
+      for (      OrderItem item : order.getOrderItems()) {
+        addOfferIds(item.getOrderItemAdjustments(),appliedOfferIds);
+      }
+    }
+    if (order.getFulfillmentGroups() != null) {
+      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
+        addOfferIds(fg.getFulfillmentGroupAdjustments(),appliedOfferIds);
+      }
+    }
+    saveOfferIds(appliedOfferIds,order);
+  }
+  return context;
+}

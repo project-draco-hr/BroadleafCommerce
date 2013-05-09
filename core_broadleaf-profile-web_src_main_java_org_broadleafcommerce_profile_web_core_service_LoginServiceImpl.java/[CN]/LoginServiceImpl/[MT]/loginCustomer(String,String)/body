@@ -3,5 +3,7 @@
   UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(principal,clearTextPassword,principal.getAuthorities());
   Authentication authentication=authenticationManager.authenticate(token);
   SecurityContextHolder.getContext().setAuthentication(authentication);
+  customerStateRequestProcessor.process(getWebRequest());
+  cartStateRequestProcessor.process(getWebRequest());
   return authentication;
 }

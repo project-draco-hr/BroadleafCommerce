@@ -15,36 +15,41 @@
     RollbackStateLocal.setRollbackStateLocal(rollbackStateLocal);
   }
   try {
-    List<Activity> activities=getActivities();
+    List<Activity<ProcessContext>> activities=getActivities();
     context=createContext(seedData);
-    for (    Activity activity : activities) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
-      }
-      try {
-        context=activity.execute(context);
-      }
- catch (      Throwable th) {
-        if (getAutoRollbackOnError()) {
-          LOG.info("Automatically rolling back state for any previously registered RollbackHandlers. RollbackHandlers may be registered for workflow activities in appContext.");
-          ActivityStateManagerImpl.getStateManager().rollbackAllState();
+    for (    Activity<ProcessContext> activity : activities) {
+      if (activity.shouldExecute(context)) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);
         }
-        ErrorHandler errorHandler=activity.getErrorHandler();
-        if (errorHandler == null) {
-          LOG.info("no error handler for this action, run default error" + "handler and abort processing ");
-          getDefaultErrorHandler().handleError(context,th);
+        try {
+          context=activity.execute(context);
+        }
+ catch (        Throwable th) {
+          if (getAutoRollbackOnError()) {
+            LOG.info("Automatically rolling back state for any previously registered RollbackHandlers. RollbackHandlers may be registered for workflow activities in appContext.");
+            ActivityStateManagerImpl.getStateManager().rollbackAllState();
+          }
+          ErrorHandler errorHandler=activity.getErrorHandler();
+          if (errorHandler == null) {
+            LOG.info("no error handler for this action, run default error" + "handler and abort processing ");
+            getDefaultErrorHandler().handleError(context,th);
+            break;
+          }
+ else {
+            LOG.info("run error handler and continue");
+            errorHandler.handleError(context,th);
+          }
+        }
+        if (processShouldStop(context,activity)) {
           break;
         }
- else {
-          LOG.info("run error handler and continue");
-          errorHandler.handleError(context,th);
+        if (activity.getRollbackHandler() != null && activity.getAutomaticallyRegisterRollbackHandler()) {
+          ActivityStateManagerImpl.getStateManager().registerState(activity,context,activity.getRollbackRegion(),activity.getRollbackHandler(),activity.getStateConfiguration());
         }
       }
-      if (processShouldStop(context,activity)) {
-        break;
-      }
-      if (activity.getRollbackHandler() != null && activity.getAutomaticallyRegisterRollbackHandler()) {
-        ActivityStateManagerImpl.getStateManager().registerState(activity,context,activity.getRollbackRegion(),activity.getRollbackHandler(),activity.getStateConfiguration());
+ else {
+        LOG.debug("Not executing activity: " + activity.getBeanName() + " based on the context: "+ context);
       }
     }
   }

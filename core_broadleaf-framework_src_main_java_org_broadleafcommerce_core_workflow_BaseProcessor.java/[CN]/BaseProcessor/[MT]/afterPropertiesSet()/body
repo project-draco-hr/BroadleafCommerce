@@ -2,11 +2,35 @@
   if (!(beanFactory instanceof ListableBeanFactory)) {
     throw new BeanInitializationException("The workflow processor [" + beanName + "] "+ "is not managed by a ListableBeanFactory, please re-deploy using some derivative of ListableBeanFactory such as"+ "ClassPathXmlApplicationContext ");
   }
-  if (activities == null || activities.isEmpty()) {
+  if (CollectionUtils.isEmpty(activities) && !isAllowEmptyActivities()) {
     throw new UnsatisfiedDependencyException(getBeanDesc(),beanName,"activities","No activities were wired for this workflow");
   }
-  for (Iterator<Activity> iter=activities.iterator(); iter.hasNext(); ) {
-    Activity activitiy=iter.next();
-    if (!supports(activitiy))     throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activitiy.getClass().getName());
+  OrderComparator.sort(activities);
+  HashSet<String> moduleNames=new HashSet<String>();
+  for (Iterator<Activity<ProcessContext>> iter=activities.iterator(); iter.hasNext(); ) {
+    Activity<? extends ProcessContext> activity=iter.next();
+    if (!supports(activity)) {
+      throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activity.getClass().getName());
+    }
+    if (activity instanceof ModuleActivity) {
+      moduleActivities.add((ModuleActivity)activity);
+      moduleNames.add(((ModuleActivity)activity).getModuleName());
+    }
+  }
+  if (CollectionUtils.isNotEmpty(moduleActivities)) {
+    StringBuffer message=new StringBuffer();
+    message.append("The following modules have made changes to the " + getBeanName() + " workflow: ");
+    message.append(Arrays.toString(moduleNames.toArray()));
+    message.append("\n");
+    message.append("The final ordering of activities for the " + getBeanName() + " workflow is: \n");
+    ArrayList<String> activityNames=new ArrayList<String>();
+    CollectionUtils.collect(activities,new Transformer(){
+      @Override public Object transform(      Object input){
+        return ((Activity)input).getBeanName();
+      }
+    }
+,activityNames);
+    message.append(Arrays.toString(activityNames.toArray()));
+    supportLogger.lifecycle(LifeCycleEvent.CONFIG,message.toString());
   }
 }

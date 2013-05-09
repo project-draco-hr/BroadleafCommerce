@@ -7,6 +7,7 @@
   addSampleItemToOrder(order,group);
   order.setTotalShipping(new Money(0D));
   Map<PaymentInfo,Referenced> map=addPaymentToOrder(order,address);
+  orderService.save(order,true);
   CheckoutResponse response=checkoutService.performCheckout(order,map);
   for (  PaymentInfo paymentInfo : response.getInfos().keySet()) {
     assert(paymentInfo.getReferenceNumber().equals("abc123"));

@@ -1,0 +1,11 @@
+{
+  if (order.getOrderAdjustments() != null) {
+    for (    OrderAdjustment adjustment : order.getOrderAdjustments()) {
+      if (adjustment.getOffer() != null) {
+        PromotableCandidateOrderOffer pcoo=itemFactory.createPromotableCandidateOrderOffer(this,adjustment.getOffer(),adjustment.getValue());
+        PromotableOrderAdjustment adj=itemFactory.createPromotableOrderAdjustment(pcoo,this,adjustment.getValue());
+        candidateOrderOfferAdjustments.add(adj);
+      }
+    }
+  }
+}

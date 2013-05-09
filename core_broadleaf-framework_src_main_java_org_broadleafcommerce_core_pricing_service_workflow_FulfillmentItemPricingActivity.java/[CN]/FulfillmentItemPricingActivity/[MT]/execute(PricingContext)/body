@@ -1,0 +1,12 @@
+{
+  Order order=context.getSeedData();
+  Map<OrderItem,List<FulfillmentGroupItem>> partialOrderItemMap=new HashMap<OrderItem,List<FulfillmentGroupItem>>();
+  populateItemTotalAmount(order,partialOrderItemMap);
+  fixItemTotalRoundingIssues(order,partialOrderItemMap);
+  Money totalAllItemsAmount=calculateTotalPriceForAllFulfillmentItems(order);
+  Money totalOrderAdjustmentDistributed=distributeOrderSavingsToItems(order,totalAllItemsAmount.getAmount());
+  fixOrderSavingsRoundingIssues(order,totalOrderAdjustmentDistributed);
+  updateTaxableAmountsOnItems(order);
+  context.setSeedData(order);
+  return context;
+}
