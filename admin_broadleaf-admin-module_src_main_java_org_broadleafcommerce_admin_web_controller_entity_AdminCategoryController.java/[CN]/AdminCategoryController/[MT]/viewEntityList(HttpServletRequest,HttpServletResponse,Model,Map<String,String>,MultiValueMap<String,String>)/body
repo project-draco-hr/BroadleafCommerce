@@ -1,0 +1,7 @@
+{
+  super.viewEntityList(request,response,model,pathVars,requestParams);
+  List<Category> parentCategories=catalogService.findAllParentCategories();
+  model.addAttribute("parentCategories",parentCategories);
+  model.addAttribute("viewType","categoryTree");
+  return "modules/defaultContainer";
+}

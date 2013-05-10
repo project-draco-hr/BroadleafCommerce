@@ -1,0 +1,13 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Category> criteria=builder.createQuery(Category.class);
+  Root<CategoryImpl> category=criteria.from(CategoryImpl.class);
+  criteria.select(category);
+  criteria.where(builder.isNull(category.get("defaultParentCategory")));
+  try {
+    return em.createQuery(criteria).getResultList();
+  }
+ catch (  NoResultException e) {
+    return null;
+  }
+}
