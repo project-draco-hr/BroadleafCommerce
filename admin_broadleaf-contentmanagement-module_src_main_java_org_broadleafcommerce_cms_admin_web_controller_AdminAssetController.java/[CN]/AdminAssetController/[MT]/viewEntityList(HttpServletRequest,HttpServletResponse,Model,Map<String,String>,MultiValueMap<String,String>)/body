@@ -1,6 +1,10 @@
 {
   String returnPath=super.viewEntityList(request,response,model,pathVars,requestParams);
   ListGrid listGrid=(ListGrid)model.asMap().get("listGrid");
+  ListGridAction uploadAssetAction=new ListGridAction(ListGridAction.UPLOAD).withDisplayText("Upload New Asset").withIconClass("icon-camera").withButtonClass("upload-asset").withUrlPostfix("/uploadAsset");
+  listGrid.getToolbarActions().add(0,uploadAssetAction);
+  model.addAttribute("cannotCreate",true);
+  model.addAttribute("viewType","entityListWithUploadForm");
   formService.addImageThumbnailField(listGrid,"fullUrl");
   return returnPath;
 }

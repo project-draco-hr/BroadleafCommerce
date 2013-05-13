@@ -1,0 +1,9 @@
+{
+  StaticAsset staticAsset=staticAssetService.createStaticAssetFromFile(file,null);
+  staticAssetStorageService.createStaticAssetStorageFromFile(file,staticAsset);
+  String staticAssetUrlPrefix=staticAssetService.getStaticAssetUrlPrefix();
+  if (staticAssetUrlPrefix != null && !staticAssetUrlPrefix.startsWith("/")) {
+    staticAssetUrlPrefix="/" + staticAssetUrlPrefix;
+  }
+  return "redirect:/assets/" + staticAsset.getId();
+}
