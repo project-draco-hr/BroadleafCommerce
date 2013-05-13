@@ -5,7 +5,12 @@
     newAsset.setMimeType(mimeType.toString());
   }
  else {
-    mimeTypes=MimeUtil.getMimeTypes(file.getInputStream());
+    try {
+      mimeTypes=MimeUtil.getMimeTypes(file.getInputStream());
+    }
+ catch (    IOException ioe) {
+      throw new RuntimeException(ioe);
+    }
     if (!mimeTypes.isEmpty()) {
       MimeType mimeType=(MimeType)mimeTypes.iterator().next();
       newAsset.setMimeType(mimeType.toString());
