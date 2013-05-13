@@ -6,16 +6,17 @@
       try {
         if (mapWrappers != null && !mapWrappers.isEmpty()) {
           Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-          List<PaymentInfo> paymentInfos=new ArrayList<PaymentInfo>();
+          orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
           for (          PaymentReferenceMapWrapper mapWrapper : mapWrappers) {
             PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
+            paymentInfo.setOrder(cart);
             Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
+            if (cart.getPaymentInfos() == null) {
+              cart.setPaymentInfos(new ArrayList<PaymentInfo>());
+            }
+            cart.getPaymentInfos().add(paymentInfo);
             payments.put(paymentInfo,referenced);
-            paymentInfos.add(paymentInfo);
           }
-          cart.setPaymentInfos(paymentInfos);
-          cart.setStatus(OrderStatus.SUBMITTED);
-          cart.setSubmitDate(Calendar.getInstance().getTime());
           CheckoutResponse response=checkoutService.performCheckout(cart,payments);
           Order order=response.getOrder();
           OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());

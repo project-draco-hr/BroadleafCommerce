@@ -26,7 +26,10 @@
     }
     this.additionalFields=mapElementWrappers;
   }
-  this.amount=model.getAmount();
+  if (model.getAmount() != null) {
+    this.amount=model.getAmount().getAmount();
+    this.currency=model.getAmount().getCurrency();
+  }
   if (model.getAmountItems() != null) {
     List<AmountItemWrapper> wrappers=new ArrayList<AmountItemWrapper>();
     for (    AmountItem amountItem : model.getAmountItems()) {

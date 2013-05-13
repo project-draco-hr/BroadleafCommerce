@@ -1,9 +1,6 @@
 {
   PaymentInfoService paymentInfoService=(PaymentInfoService)context.getBean("blPaymentInfoService");
   PaymentInfo paymentInfo=paymentInfoService.create();
-  OrderService orderService=(OrderService)context.getBean("blOrderService");
-  Order order=orderService.findOrderById(this.orderId);
-  paymentInfo.setOrder(order);
   paymentInfo.setType(PaymentInfoType.getInstance(this.type));
   if (this.address != null) {
     paymentInfo.setAddress(this.address.unwrap(request,context));
@@ -18,7 +15,14 @@
     }
     paymentInfo.setAdditionalFields(fields);
   }
-  paymentInfo.setAmount(this.amount);
+  if (this.amount != null) {
+    if (this.currency != null) {
+      paymentInfo.setAmount(new Money(this.amount,this.currency));
+    }
+ else {
+      paymentInfo.setAmount(new Money(this.amount));
+    }
+  }
   paymentInfo.setCustomerIpAddress(this.customerIpAddress);
   paymentInfo.setReferenceNumber(this.referenceNumber);
   return paymentInfo;
