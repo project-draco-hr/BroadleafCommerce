@@ -184,6 +184,7 @@
       ((SimpleValueMapStructure)mapStructure).setValuePropertyName(valuePropertyName);
       ((SimpleValueMapStructure)mapStructure).setValuePropertyFriendlyName(valuePropertyFriendlyName);
       mapStructure.setMapProperty(prefix + field.getName());
+      mapStructure.setMutable(metadata.isMutable());
     }
  else {
       mapStructure=(MapStructure)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.MAPSTRUCTURE);
@@ -193,6 +194,7 @@
       mapStructure.setValueClassName(metadata.getValueClassName());
       mapStructure.setMapProperty(prefix + field.getName());
       mapStructure.setDeleteValueEntity(deleteEntityUponRemove);
+      mapStructure.setMutable(metadata.isMutable());
     }
   }
  else {
@@ -200,9 +202,11 @@
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
     if (metadata.isSimpleValue()) {
       mapStructure=new SimpleValueMapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),valuePropertyName,valuePropertyFriendlyName,prefix + field.getName());
+      mapStructure.setMutable(metadata.isMutable());
     }
  else {
       mapStructure=new MapStructure(keyClassName,keyPropertyName,keyPropertyFriendlyName,metadata.getValueClassName(),prefix + field.getName(),deleteEntityUponRemove);
+      mapStructure.setMutable(metadata.isMutable());
     }
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.MAPSTRUCTURE,mapStructure);
   }

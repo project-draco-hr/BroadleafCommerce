@@ -7,6 +7,9 @@
   Entity entity=persistencePackage.getEntity();
   try {
     AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+    if (!adornedTargetList.getMutable()) {
+      throw new SecurityServiceException("Field is not mutable");
+    }
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,false,new String[]{},new String[]{},null,"");
     CriteriaTransferObject ctoInserted=new CriteriaTransferObject();

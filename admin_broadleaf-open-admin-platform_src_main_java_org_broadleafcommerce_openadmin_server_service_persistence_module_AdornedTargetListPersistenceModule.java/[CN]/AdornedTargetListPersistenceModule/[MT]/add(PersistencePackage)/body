@@ -7,6 +7,9 @@
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   Entity entity=persistencePackage.getEntity();
   AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  if (!adornedTargetList.getMutable()) {
+    throw new SecurityServiceException("Field is not mutable");
+  }
   Entity payload;
   try {
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);

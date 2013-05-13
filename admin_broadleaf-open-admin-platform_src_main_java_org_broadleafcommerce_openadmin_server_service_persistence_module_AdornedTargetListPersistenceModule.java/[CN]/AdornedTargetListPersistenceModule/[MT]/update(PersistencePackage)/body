@@ -6,6 +6,9 @@
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   Entity entity=persistencePackage.getEntity();
   AdornedTargetList adornedTargetList=(AdornedTargetList)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+  if (!adornedTargetList.getMutable()) {
+    throw new SecurityServiceException("Field is not mutable");
+  }
   try {
     AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,entity,adornedTargetList).invokeForUpdate();
     List<Serializable> records=adornedTargetRetrieval.getRecords();

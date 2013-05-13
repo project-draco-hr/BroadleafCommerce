@@ -67,10 +67,12 @@
     ForeignKey foreignKey=(ForeignKey)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
     foreignKey.setManyToField(foreignKeyName);
     foreignKey.setForeignKeyClass(resolvedClass.getName());
+    foreignKey.setMutable(metadata.isMutable());
   }
  else {
     ForeignKey foreignKey=new ForeignKey(foreignKeyName,resolvedClass.getName(),null,ForeignKeyRestrictionType.ID_EQ);
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
+    foreignKey.setMutable(metadata.isMutable());
   }
   String ceiling=null;
   checkCeiling: {

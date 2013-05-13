@@ -6,8 +6,10 @@
   ListGrid.Type type=null;
   boolean editable=false;
   boolean sortable=false;
+  boolean readOnly=false;
   String idProperty="id";
   if (fmd instanceof BasicFieldMetadata) {
+    readOnly=((BasicFieldMetadata)fmd).getReadOnly();
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
@@ -23,6 +25,7 @@
     type=ListGrid.Type.TO_ONE;
   }
  else   if (fmd instanceof BasicCollectionMetadata) {
+    readOnly=!((BasicCollectionMetadata)fmd).isMutable();
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
@@ -38,6 +41,7 @@
     }
   }
  else   if (fmd instanceof AdornedTargetCollectionMetadata) {
+    readOnly=!((AdornedTargetCollectionMetadata)fmd).isMutable();
     AdornedTargetCollectionMetadata atcmd=(AdornedTargetCollectionMetadata)fmd;
     for (    String fieldName : atcmd.getGridVisibleFields()) {
       Property p=cmd.getPMap().get(fieldName);
@@ -53,6 +57,7 @@
     sortable=StringUtils.isNotBlank(adornedList.getSortField());
   }
  else   if (fmd instanceof MapMetadata) {
+    readOnly=!((MapMetadata)fmd).isMutable();
     MapMetadata mmd=(MapMetadata)fmd;
     Property p2=cmd.getPMap().get("key");
     BasicFieldMetadata keyMd=(BasicFieldMetadata)p2.getMetadata();
@@ -86,8 +91,12 @@
     listGrid.setFriendlyName(field.getName());
   }
   listGrid.setContainingEntityId(containingEntityId);
+  listGrid.setReadOnly(readOnly);
   if (editable) {
     listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
+  }
+  if (readOnly) {
+    listGrid.getRowActions().add(DefaultListGridActions.VIEW);
   }
   if (sortable) {
     listGrid.getToolbarActions().add(DefaultListGridActions.REORDER);

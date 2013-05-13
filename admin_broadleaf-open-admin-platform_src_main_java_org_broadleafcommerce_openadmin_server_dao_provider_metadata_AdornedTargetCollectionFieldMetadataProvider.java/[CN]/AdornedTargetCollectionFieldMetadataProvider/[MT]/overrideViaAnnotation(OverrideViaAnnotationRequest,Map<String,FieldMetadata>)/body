@@ -40,9 +40,12 @@
                 temp.put(field.getName(),serverMetadata);
                 FieldInfo info=buildFieldInfo(field);
                 FieldMetadataOverride fieldMetadataOverride=overrideAdornedTargetMergeMetadata(override);
+                if (serverMetadata.getExcluded() != null && serverMetadata.getExcluded() && (fieldMetadataOverride.getExcluded() == null || fieldMetadataOverride.getExcluded())) {
+                  continue;
+                }
                 buildAdornedTargetCollectionMetadata(parentClass,targetClass,temp,info,fieldMetadataOverride,overrideViaAnnotationRequest.getDynamicEntityDao());
                 serverMetadata=(AdornedTargetCollectionMetadata)temp.get(field.getName());
-                metadata.put(propertyName,serverMetadata);
+                metadata.put(entry.getKey(),serverMetadata);
               }
  catch (              Exception e) {
                 throw new RuntimeException(e);

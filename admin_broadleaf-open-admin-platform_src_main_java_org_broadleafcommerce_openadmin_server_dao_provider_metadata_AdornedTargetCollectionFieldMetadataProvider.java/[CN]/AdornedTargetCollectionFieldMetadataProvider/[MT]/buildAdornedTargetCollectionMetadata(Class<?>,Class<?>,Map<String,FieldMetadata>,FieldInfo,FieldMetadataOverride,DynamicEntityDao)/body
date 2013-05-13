@@ -161,10 +161,12 @@
     adornedTargetList.setAdornedTargetEntityClassname(collectionTarget.getName());
     adornedTargetList.setSortField(sortProperty);
     adornedTargetList.setSortAscending(isAscending);
+    adornedTargetList.setMutable(metadata.isMutable());
   }
  else {
     AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,collectionTarget.getName(),sortProperty,isAscending);
     adornedTargetList.setJoinEntityClass(joinEntityClass);
+    adornedTargetList.setMutable(metadata.isMutable());
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
   }
   if (adornedTargetCollectionMetadata.getExcluded() != null) {

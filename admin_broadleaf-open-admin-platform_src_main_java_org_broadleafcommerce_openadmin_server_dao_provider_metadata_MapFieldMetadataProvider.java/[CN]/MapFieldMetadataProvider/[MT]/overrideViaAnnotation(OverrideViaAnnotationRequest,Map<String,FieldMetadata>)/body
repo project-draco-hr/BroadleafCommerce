@@ -40,9 +40,12 @@
                 temp.put(field.getName(),serverMetadata);
                 FieldInfo info=buildFieldInfo(field);
                 FieldMetadataOverride fieldMetadataOverride=overrideMapMergeMetadata(override);
+                if (serverMetadata.getExcluded() != null && serverMetadata.getExcluded() && (fieldMetadataOverride.getExcluded() == null || fieldMetadataOverride.getExcluded())) {
+                  continue;
+                }
                 buildMapMetadata(parentClass,targetClass,temp,info,fieldMetadataOverride,overrideViaAnnotationRequest.getDynamicEntityDao(),serverMetadata.getPrefix());
                 serverMetadata=(MapMetadata)temp.get(field.getName());
-                metadata.put(propertyName,serverMetadata);
+                metadata.put(entry.getKey(),serverMetadata);
               }
  catch (              Exception e) {
                 throw new RuntimeException(e);
