@@ -3,6 +3,11 @@
   for (  FieldData field : getFields()) {
     FieldDTO fieldDTO=new FieldDTO();
     fieldDTO.setLabel(field.getFieldLabel());
+    String label=field.getFieldLabel();
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    MessageSource messages=context.getMessageSource();
+    label=messages.getMessage(label,null,label,context.getJavaLocale());
+    fieldDTO.setLabel(label);
     fieldDTO.setName(field.getFieldName());
     fieldDTO.setOperators(field.getOperators());
     fieldDTO.setOptions(field.getOptions());
