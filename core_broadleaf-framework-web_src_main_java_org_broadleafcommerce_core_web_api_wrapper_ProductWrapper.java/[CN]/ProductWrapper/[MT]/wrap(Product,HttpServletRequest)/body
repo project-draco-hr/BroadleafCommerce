@@ -11,6 +11,9 @@
     this.defaultSku=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
     this.defaultSku.wrap(model.getDefaultSku(),request);
   }
+  if (model.getDefaultCategory() != null) {
+    this.defaultCategoryId=model.getDefaultCategory().getId();
+  }
   if (model.getProductOptions() != null) {
     this.productOptions=new ArrayList<ProductOptionWrapper>();
     List<ProductOption> options=model.getProductOptions();
