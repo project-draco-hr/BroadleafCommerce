@@ -1,0 +1,98 @@
+{
+  FieldMetadataOverride fieldMetadataOverride=new FieldMetadataOverride();
+  Map<String,AdminPresentationMergeEntry> overrideValues=getAdminPresentationEntries(merge.mergeEntries());
+  for (  Map.Entry<String,AdminPresentationMergeEntry> entry : overrideValues.entrySet()) {
+    String stringValue=entry.getValue().overrideValue();
+    if (entry.getKey().equals(PropertyType.AdminPresentationMap.CURRENCYCODEFIELD)) {
+      fieldMetadataOverride.setCurrencyCodeField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.CUSTOMCRITERIA)) {
+      fieldMetadataOverride.setCustomCriteria(entry.getValue().stringArrayOverrideValue());
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.DELETEENTITYUPONREMOVE)) {
+      fieldMetadataOverride.setDeleteEntityUponRemove(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.EXCLUDED)) {
+      fieldMetadataOverride.setExcluded(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.FORCEFREEFORMKEYS)) {
+      fieldMetadataOverride.setForceFreeFormKeys(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.FRIENDLYNAME)) {
+      fieldMetadataOverride.setFriendlyName(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.ISSIMPLEVALUE)) {
+      fieldMetadataOverride.setSimpleValue(UnspecifiedBooleanType.valueOf(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.KEYCLASS)) {
+      fieldMetadataOverride.setKeyClass(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.KEYPROPERTYFRIENDLYNAME)) {
+      fieldMetadataOverride.setKeyPropertyFriendlyName(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.KEYS)) {
+      if (!ArrayUtils.isEmpty(entry.getValue().keys())) {
+        String[][] keys=new String[entry.getValue().keys().length][2];
+        for (int j=0; j < keys.length; j++) {
+          keys[j][0]=entry.getValue().keys()[j].keyName();
+          keys[j][1]=entry.getValue().keys()[j].friendlyKeyName();
+        }
+        fieldMetadataOverride.setKeys(keys);
+      }
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.MANYTOFIELD)) {
+      fieldMetadataOverride.setManyToField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.MAPKEYOPTIONENTITYCLASS)) {
+      fieldMetadataOverride.setMapKeyOptionEntityClass(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.MAPKEYOPTIONENTITYDISPLAYFIELD)) {
+      fieldMetadataOverride.setMapKeyOptionEntityDisplayField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.MAPKEYOPTIONENTITYVALUEFIELD)) {
+      fieldMetadataOverride.setMapKeyOptionEntityValueField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.MEDIAFIELD)) {
+      fieldMetadataOverride.setMediaField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.OPERATIONTYPES)) {
+      AdminPresentationOperationTypes operationType=entry.getValue().operationTypes();
+      fieldMetadataOverride.setAddType(operationType.addType());
+      fieldMetadataOverride.setRemoveType(operationType.removeType());
+      fieldMetadataOverride.setUpdateType(operationType.updateType());
+      fieldMetadataOverride.setFetchType(operationType.fetchType());
+      fieldMetadataOverride.setInspectType(operationType.inspectType());
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.ORDER)) {
+      fieldMetadataOverride.setOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.READONLY)) {
+      fieldMetadataOverride.setReadOnly(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.SECURITYLEVEL)) {
+      fieldMetadataOverride.setSecurityLevel(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.SHOWIFPROPERTY)) {
+      fieldMetadataOverride.setShowIfProperty(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.TAB)) {
+      fieldMetadataOverride.setTab(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.TABORDER)) {
+      fieldMetadataOverride.setTabOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.USESERVERSIDEINSPECTIONCACHE)) {
+      fieldMetadataOverride.setUseServerSideInspectionCache(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.VALUECLASS)) {
+      fieldMetadataOverride.setValueClass(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationMap.VALUEPROPERTYFRIENDLYNAME)) {
+      fieldMetadataOverride.setValuePropertyFriendlyName(stringValue);
+    }
+ else {
+      throw new IllegalArgumentException("Unrecognized type: " + entry.getKey());
+    }
+  }
+  return fieldMetadataOverride;
+}

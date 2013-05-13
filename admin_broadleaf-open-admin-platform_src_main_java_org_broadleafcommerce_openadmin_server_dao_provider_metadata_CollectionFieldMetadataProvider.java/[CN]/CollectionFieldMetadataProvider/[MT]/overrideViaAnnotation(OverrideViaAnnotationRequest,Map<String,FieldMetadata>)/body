@@ -16,5 +16,42 @@
       }
     }
   }
+  AdminPresentationMergeOverrides myMergeOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationMergeOverrides.class);
+  if (myMergeOverrides != null) {
+    for (    AdminPresentationMergeOverride override : myMergeOverrides.value()) {
+      String propertyName=override.name();
+      Map<String,FieldMetadata> loopMap=new HashMap<String,FieldMetadata>();
+      loopMap.putAll(metadata);
+      for (      Map.Entry<String,FieldMetadata> entry : loopMap.entrySet()) {
+        if (entry.getKey().startsWith(propertyName) || StringUtils.isEmpty(propertyName)) {
+          FieldMetadata targetMetadata=entry.getValue();
+          if (targetMetadata instanceof BasicCollectionMetadata) {
+            BasicCollectionMetadata serverMetadata=(BasicCollectionMetadata)targetMetadata;
+            if (serverMetadata.getTargetClass() != null) {
+              try {
+                Class<?> targetClass=Class.forName(serverMetadata.getTargetClass());
+                Class<?> parentClass=null;
+                if (serverMetadata.getOwningClass() != null) {
+                  parentClass=Class.forName(serverMetadata.getOwningClass());
+                }
+                String fieldName=serverMetadata.getFieldName();
+                Field field=overrideViaAnnotationRequest.getDynamicEntityDao().getFieldManager().getField(targetClass,fieldName);
+                Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
+                temp.put(field.getName(),serverMetadata);
+                FieldInfo info=buildFieldInfo(field);
+                FieldMetadataOverride fieldMetadataOverride=overrideCollectionMergeMetadata(override);
+                buildCollectionMetadata(parentClass,targetClass,temp,info,fieldMetadataOverride);
+                serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
+                metadata.put(propertyName,serverMetadata);
+              }
+ catch (              Exception e) {
+                throw new RuntimeException(e);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   return FieldProviderResponse.HANDLED;
 }

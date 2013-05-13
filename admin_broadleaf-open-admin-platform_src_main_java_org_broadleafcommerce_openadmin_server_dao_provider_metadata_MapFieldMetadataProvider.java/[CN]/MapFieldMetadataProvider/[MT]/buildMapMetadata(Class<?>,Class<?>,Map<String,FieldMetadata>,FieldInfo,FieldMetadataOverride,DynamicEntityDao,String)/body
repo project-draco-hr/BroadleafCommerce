@@ -165,8 +165,10 @@
   if (map.getMapKeyOptionEntityValueField() != null) {
     metadata.setMapKeyOptionEntityValueField(map.getMapKeyOptionEntityValueField());
   }
-  if ((map.getForceFreeFormKeys() == null || !map.getForceFreeFormKeys()) && ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
-    throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties. If you wish to allow free form entry for key values, then set forceFreeFormKeys on AdminPresentationMap.");
+  if (map.getForceFreeFormKeys() != null) {
+    if (!map.getForceFreeFormKeys() && ArrayUtils.isEmpty(metadata.getKeys()) && (StringUtils.isEmpty(metadata.getMapKeyOptionEntityClass()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityValueField()) || StringUtils.isEmpty(metadata.getMapKeyOptionEntityDisplayField()))) {
+      throw new IllegalArgumentException("Could not ascertain method for generating key options for the annotated map (" + field.getName() + "). Must specify either an array of AdminPresentationMapKey values for the keys property, or utilize the mapOptionKeyClass, mapOptionKeyDisplayField and mapOptionKeyValueField properties. If you wish to allow free form entry for key values, then set forceFreeFormKeys on AdminPresentationMap.");
+    }
   }
   MapStructure mapStructure;
   if (serverMetadata != null) {

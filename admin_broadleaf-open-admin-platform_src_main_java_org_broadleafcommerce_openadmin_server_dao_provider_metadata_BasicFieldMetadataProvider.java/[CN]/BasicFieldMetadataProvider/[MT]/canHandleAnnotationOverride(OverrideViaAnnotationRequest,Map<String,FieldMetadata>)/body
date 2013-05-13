@@ -1,4 +1,5 @@
 {
   AdminPresentationOverrides myOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationOverrides.class);
-  return myOverrides != null && (!ArrayUtils.isEmpty(myOverrides.value()) || !ArrayUtils.isEmpty(myOverrides.toOneLookups()) || !ArrayUtils.isEmpty(myOverrides.dataDrivenEnums()));
+  AdminPresentationMergeOverrides myMergeOverrides=overrideViaAnnotationRequest.getRequestedEntity().getAnnotation(AdminPresentationMergeOverrides.class);
+  return (myOverrides != null && (!ArrayUtils.isEmpty(myOverrides.value()) || !ArrayUtils.isEmpty(myOverrides.toOneLookups()) || !ArrayUtils.isEmpty(myOverrides.dataDrivenEnums()))) || myMergeOverrides != null;
 }

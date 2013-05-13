@@ -1,0 +1,121 @@
+{
+  FieldMetadataOverride fieldMetadataOverride=new FieldMetadataOverride();
+  Map<String,AdminPresentationMergeEntry> overrideValues=getAdminPresentationEntries(merge.mergeEntries());
+  for (  Map.Entry<String,AdminPresentationMergeEntry> entry : overrideValues.entrySet()) {
+    String stringValue=entry.getValue().overrideValue();
+    if (entry.getKey().equals(PropertyType.AdminPresentation.FRIENDLYNAME)) {
+      fieldMetadataOverride.setFriendlyName(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.SECURITYLEVEL)) {
+      fieldMetadataOverride.setSecurityLevel(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.GROUP)) {
+      fieldMetadataOverride.setGroup(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.TAB)) {
+      fieldMetadataOverride.setTab(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.COLUMNWIDTH)) {
+      fieldMetadataOverride.setColumnWidth(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.BROADLEAFENUMERATION)) {
+      fieldMetadataOverride.setBroadleafEnumeration(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.TOOLTIP)) {
+      fieldMetadataOverride.setTooltip(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.HELPTEXT)) {
+      fieldMetadataOverride.setHelpText(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.HINT)) {
+      fieldMetadataOverride.setHint(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.SHOWIFPROPERTY)) {
+      fieldMetadataOverride.setShowIfProperty(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.CURRENCYCODEFIELD)) {
+      fieldMetadataOverride.setCurrencyCodeField(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.RULEIDENTIFIER)) {
+      fieldMetadataOverride.setRuleIdentifier(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.ORDER)) {
+      fieldMetadataOverride.setOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.GRIDORDER)) {
+      fieldMetadataOverride.setGridOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.VISIBILITY)) {
+      fieldMetadataOverride.setVisibility(VisibilityEnum.valueOf(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.FIELDTYPE)) {
+      fieldMetadataOverride.setFieldType(SupportedFieldType.valueOf(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.GROUPORDER)) {
+      fieldMetadataOverride.setGroupOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.GROUPCOLLAPSED)) {
+      fieldMetadataOverride.setGroupCollapsed(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.TABORDER)) {
+      fieldMetadataOverride.setTabOrder(StringUtils.isEmpty(stringValue) ? entry.getValue().intOverrideValue() : Integer.parseInt(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.LARGEENTRY)) {
+      fieldMetadataOverride.setLargeEntry(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.PROMINENT)) {
+      fieldMetadataOverride.setProminent(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.READONLY)) {
+      fieldMetadataOverride.setReadOnly(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.REQUIREDOVERRIDE)) {
+      fieldMetadataOverride.setRequiredOverride(RequiredOverride.REQUIRED == RequiredOverride.valueOf(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.EXCLUDED)) {
+      fieldMetadataOverride.setExcluded(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentation.VALIDATIONCONFIGURATIONS)) {
+      processValidationAnnotations(entry.getValue().validationConfigurations(),fieldMetadataOverride);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationToOneLookup.LOOKUPDISPLAYPROPERTY)) {
+      fieldMetadataOverride.setLookupDisplayProperty(stringValue);
+      fieldMetadataOverride.setForeignKeyDisplayValueProperty(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationToOneLookup.USESERVERSIDEINSPECTIONCACHE)) {
+      fieldMetadataOverride.setUseServerSideInspectionCache(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationToOneLookup.LOOKUPTYPE)) {
+      fieldMetadataOverride.setLookupType(LookupType.valueOf(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationToOneLookup.CUSTOMCRITERIA)) {
+      fieldMetadataOverride.setCustomCriteria(entry.getValue().stringArrayOverrideValue());
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationDataDrivenEnumeration.OPTIONLISTENTITY)) {
+      fieldMetadataOverride.setOptionListEntity(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationDataDrivenEnumeration.OPTIONVALUEFIELDNAME)) {
+      fieldMetadataOverride.setOptionValueFieldName(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationDataDrivenEnumeration.OPTIONDISPLAYFIELDNAME)) {
+      fieldMetadataOverride.setOptionDisplayFieldName(stringValue);
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationDataDrivenEnumeration.OPTIONCANEDITVALUES)) {
+      fieldMetadataOverride.setOptionCanEditValues(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
+    }
+ else     if (entry.getKey().equals(PropertyType.AdminPresentationDataDrivenEnumeration.OPTIONFILTERPARAMS)) {
+      OptionFilterParam[] optionFilterParams=entry.getValue().optionFilterParams();
+      String[][] params=new String[optionFilterParams.length][3];
+      for (int j=0; j < params.length; j++) {
+        params[j][0]=optionFilterParams[j].param();
+        params[j][1]=optionFilterParams[j].value();
+        params[j][2]=String.valueOf(optionFilterParams[j].paramType());
+      }
+      fieldMetadataOverride.setOptionFilterValues(params);
+    }
+ else {
+      throw new IllegalArgumentException("Unrecognized type: " + entry.getKey());
+    }
+  }
+  return fieldMetadataOverride;
+}
