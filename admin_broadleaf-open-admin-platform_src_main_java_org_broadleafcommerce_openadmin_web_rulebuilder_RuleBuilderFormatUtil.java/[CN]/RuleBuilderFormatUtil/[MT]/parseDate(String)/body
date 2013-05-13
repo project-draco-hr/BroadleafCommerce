@@ -1,15 +1,19 @@
 {
   Date parsedDate;
   try {
-    parsedDate=FormatUtil.getDateFormat().parse(date);
+    parsedDate=FormatUtil.getTimeZoneFormat().parse(date);
   }
  catch (  ParseException e) {
     try {
-      parsedDate=new SimpleDateFormat(COMPATIBILITY_FORMAT).parse(date);
+      SimpleDateFormat formatter=new SimpleDateFormat(COMPATIBILITY_FORMAT);
+      formatter.setTimeZone(BroadleafRequestContext.getBroadleafRequestContext().getTimeZone());
+      parsedDate=formatter.parse(date);
     }
  catch (    ParseException e1) {
       try {
-        parsedDate=new SimpleDateFormat(DATE_FORMAT).parse(date);
+        SimpleDateFormat formatter=new SimpleDateFormat(DATE_FORMAT);
+        formatter.setTimeZone(BroadleafRequestContext.getBroadleafRequestContext().getTimeZone());
+        parsedDate=formatter.parse(date);
       }
  catch (      ParseException e2) {
         throw e;

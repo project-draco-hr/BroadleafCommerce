@@ -93,7 +93,7 @@ temp=RuleBuilderFormatUtil.parseDate(String.valueOf(value[j]));
  catch (ParseException e) {
 throw new MVELTranslationException(MVELTranslationException.INCOMPATIBLE_DATE_VALUE,"Cannot format value for the field (" + fieldName + ") based on field type. The type of field is Date, "+ "and you entered: ("+ value[j]+ "). Dates must be in the format MM/dd/yyyy HH:mm.");
 }
-String convertedDate=FormatUtil.getDateFormat().format(temp);
+String convertedDate=FormatUtil.getTimeZoneFormat().format(temp);
 response.append("MvelHelper.convertField(\"DATE\",\"");
 response.append(convertedDate);
 response.append("\")");
