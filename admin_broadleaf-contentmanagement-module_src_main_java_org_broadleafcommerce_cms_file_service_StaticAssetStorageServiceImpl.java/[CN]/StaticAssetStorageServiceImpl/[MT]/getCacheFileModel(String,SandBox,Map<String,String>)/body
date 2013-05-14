@@ -12,7 +12,18 @@
   Map<String,String> convertedParameters=namedOperationManager.manageNamedParameters(parameterMap);
   String returnFilePath=null;
   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType()) && convertedParameters.isEmpty()) {
-    returnFilePath=generateStorageFileName(staticAsset.getFullUrl());
+    InputStream classPathInputStream=getResourceFromClasspath(staticAsset);
+    if (classPathInputStream != null) {
+      String cacheName=constructCacheFileName(staticAsset,convertedParameters);
+      File cacheFile=new File(cacheName);
+      if (!cacheFile.exists()) {
+        createCacheFile(classPathInputStream,cacheFile);
+      }
+      returnFilePath=cacheFile.getAbsolutePath();
+    }
+ else {
+      returnFilePath=generateStorageFileName(staticAsset.getFullUrl());
+    }
   }
  else {
     String cacheName=constructCacheFileName(staticAsset,convertedParameters);

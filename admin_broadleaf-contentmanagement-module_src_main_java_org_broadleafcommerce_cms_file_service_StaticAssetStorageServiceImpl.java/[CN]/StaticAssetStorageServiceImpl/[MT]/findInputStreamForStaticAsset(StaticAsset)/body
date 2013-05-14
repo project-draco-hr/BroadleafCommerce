@@ -1,4 +1,8 @@
 {
+  InputStream classPathInputStream=getResourceFromClasspath(staticAsset);
+  if (classPathInputStream != null) {
+    return classPathInputStream;
+  }
   if (StorageType.DATABASE.equals(staticAsset.getStorageType())) {
     StaticAssetStorage storage=readStaticAssetStorageByStaticAssetId(staticAsset.getId());
     ByteArrayOutputStream baos=new ByteArrayOutputStream();

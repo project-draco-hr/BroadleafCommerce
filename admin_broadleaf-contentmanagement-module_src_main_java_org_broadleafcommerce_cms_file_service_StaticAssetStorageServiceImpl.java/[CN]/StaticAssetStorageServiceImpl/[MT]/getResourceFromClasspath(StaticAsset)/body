@@ -1,0 +1,20 @@
+{
+  if (assetFileClasspathDirectory != null && !"".equals(assetFileClasspathDirectory)) {
+    try {
+      ClassPathResource resource=new ClassPathResource(assetFileClasspathDirectory + staticAsset.getFullUrl());
+      if (resource.exists()) {
+        InputStream assetFile=resource.getInputStream();
+        BufferedInputStream bufferedStream=new BufferedInputStream(assetFile);
+        bufferedStream.mark(0);
+        return bufferedStream;
+      }
+ else {
+        return null;
+      }
+    }
+ catch (    Exception e) {
+      LOG.error("Error getting resource from classpath",e);
+    }
+  }
+  return null;
+}
