@@ -2,7 +2,7 @@
   for (  Property property : properties) {
     if (property.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)property.getMetadata();
-      if (!(VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) || VisibilityEnum.FORM_HIDDEN.equals(fmd.getVisibility()))) {
+      if (!ArrayUtils.contains(getFormHiddenVisibilities(),fmd.getVisibility())) {
         String fieldType=fmd.getFieldType() == null ? null : fmd.getFieldType().toString();
         Field f;
         if (fieldType.equals(SupportedFieldType.BROADLEAF_ENUMERATION.toString()) || fieldType.equals(SupportedFieldType.EXPLICIT_ENUMERATION.toString()) || fieldType.equals(SupportedFieldType.DATA_DRIVEN_ENUMERATION.toString())|| fieldType.equals(SupportedFieldType.EMPTY_ENUMERATION.toString())) {

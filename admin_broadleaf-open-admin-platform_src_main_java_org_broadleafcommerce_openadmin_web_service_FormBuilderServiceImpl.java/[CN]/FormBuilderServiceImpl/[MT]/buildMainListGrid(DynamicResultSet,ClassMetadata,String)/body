@@ -8,7 +8,7 @@
       if (SupportedFieldType.ID.equals(fmd.getFieldType())) {
         idProperty=fmd.getName();
       }
-      if (fmd.isProminent() != null && fmd.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(fmd.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(fmd.getVisibility())) {
+      if (fmd.isProminent() != null && fmd.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),fmd.getVisibility())) {
         Field hf=createHeaderField(p,fmd);
         headerFields.add(hf);
       }

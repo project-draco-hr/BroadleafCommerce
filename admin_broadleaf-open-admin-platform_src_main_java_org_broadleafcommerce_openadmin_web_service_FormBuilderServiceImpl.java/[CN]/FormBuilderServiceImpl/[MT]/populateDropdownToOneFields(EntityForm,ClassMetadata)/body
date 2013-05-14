@@ -2,7 +2,7 @@
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
-      if (LookupType.DROPDOWN.equals(fmd.getLookupType())) {
+      if (LookupType.DROPDOWN.equals(fmd.getLookupType()) && !ArrayUtils.contains(getFormHiddenVisibilities(),fmd.getVisibility())) {
         PersistencePackageRequest toOnePpr=PersistencePackageRequest.standard().withCeilingEntityClassname(fmd.getForeignKeyClass());
         Entity[] rows=adminEntityService.getRecords(toOnePpr).getRecords();
         String idProp=null;

@@ -16,7 +16,7 @@
         if (SupportedFieldType.ID.equals(md.getFieldType())) {
           idProperty=md.getName();
         }
-        if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
+        if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
           Field hf=createHeaderField(p,md);
           headerFields.add(hf);
         }
@@ -29,7 +29,7 @@
     for (    Property p : cmd.getProperties()) {
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
-        if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
+        if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
           Field hf=createHeaderField(p,md);
           headerFields.add(hf);
         }
@@ -67,7 +67,7 @@
       if (p.getMetadata() instanceof BasicFieldMetadata) {
         BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
         if (md.getTargetClass().equals(mmd.getValueClassName())) {
-          if (md.isProminent() != null && md.isProminent() && !VisibilityEnum.HIDDEN_ALL.equals(md.getVisibility()) && !VisibilityEnum.GRID_HIDDEN.equals(md.getVisibility())) {
+          if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
             hf=createHeaderField(p,md);
             headerFields.add(hf);
           }
