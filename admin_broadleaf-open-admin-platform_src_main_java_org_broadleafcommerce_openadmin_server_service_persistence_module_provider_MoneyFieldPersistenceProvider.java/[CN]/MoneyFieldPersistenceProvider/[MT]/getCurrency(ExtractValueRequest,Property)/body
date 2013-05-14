@@ -7,5 +7,12 @@
  catch (    Exception e) {
     }
   }
+  if (extractValueRequest.getEntity() instanceof CurrencyCodeIdentifiable) {
+    try {
+      return Currency.getInstance(((CurrencyCodeIdentifiable)extractValueRequest.getEntity()).getCurrencyCode());
+    }
+ catch (    Exception e) {
+    }
+  }
   return Money.defaultCurrency();
 }
