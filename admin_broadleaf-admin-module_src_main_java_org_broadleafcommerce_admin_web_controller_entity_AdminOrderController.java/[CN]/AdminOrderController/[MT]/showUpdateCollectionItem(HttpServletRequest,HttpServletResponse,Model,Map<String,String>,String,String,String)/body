@@ -1,0 +1,15 @@
+{
+  String returnPath=super.showUpdateCollectionItem(request,response,model,pathVars,id,collectionField,collectionItemId);
+  if ("orderItems".equals(collectionField)) {
+    EntityForm ef=(EntityForm)model.asMap().get("entityForm");
+    ListGrid adjustmentsGrid=ef.findListGrid("orderItemAdjustments");
+    if (adjustmentsGrid != null && CollectionUtils.isEmpty(adjustmentsGrid.getRecords())) {
+      ef.removeListGrid("orderItemAdjustments");
+    }
+    ListGrid priceDetailsGrid=ef.findListGrid("orderItemPriceDetails");
+    if (priceDetailsGrid != null && CollectionUtils.isEmpty(priceDetailsGrid.getRecords())) {
+      ef.removeListGrid("orderItemPriceDetails");
+    }
+  }
+  return returnPath;
+}
