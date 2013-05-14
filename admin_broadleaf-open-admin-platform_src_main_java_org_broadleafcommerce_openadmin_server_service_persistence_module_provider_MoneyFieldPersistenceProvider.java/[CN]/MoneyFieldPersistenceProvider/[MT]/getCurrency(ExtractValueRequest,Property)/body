@@ -1,3 +1,11 @@
 {
+  String currencyCodeField=extractValueRequest.getMetadata().getCurrencyCodeField();
+  if (!StringUtils.isEmpty(currencyCodeField)) {
+    try {
+      return Currency.getInstance((String)extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getEntity(),currencyCodeField));
+    }
+ catch (    Exception e) {
+    }
+  }
   return Money.defaultCurrency();
 }
