@@ -1,4 +1,5 @@
 {
+  EntityResult entityResult=new EntityResult();
   Entity entity=persistencePackage.getEntity();
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
@@ -15,12 +16,18 @@
     instance=createPopulatedInstance(instance,entity,mergedProperties,false);
     if (!entity.isValidationFailure()) {
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
+      if (includeRealEntity) {
+        entityResult.setEntityBackingObject(instance);
+      }
       List<Serializable> entityList=new ArrayList<Serializable>(1);
       entityList.add(instance);
-      return getRecords(mergedProperties,entityList,null,null)[0];
+      entity=getRecords(mergedProperties,entityList,null,null)[0];
+      entityResult.setEntity(entity);
+      return entityResult;
     }
  else {
-      return entity;
+      entityResult.setEntity(entity);
+      return entityResult;
     }
   }
  catch (  Exception e) {
