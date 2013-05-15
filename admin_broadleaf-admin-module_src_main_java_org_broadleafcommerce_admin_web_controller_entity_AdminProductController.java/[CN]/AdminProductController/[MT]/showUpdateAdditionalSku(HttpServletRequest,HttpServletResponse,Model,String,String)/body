@@ -12,7 +12,7 @@
   Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata);
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
-  entityForm.getActions().remove(DefaultEntityFormActions.DELETE);
+  entityForm.removeAction(DefaultEntityFormActions.DELETE);
   for (  ListGrid lg : entityForm.getAllListGrids()) {
     lg.setSectionKey("org.broadleafcommerce.core.catalog.domain.Sku");
   }
