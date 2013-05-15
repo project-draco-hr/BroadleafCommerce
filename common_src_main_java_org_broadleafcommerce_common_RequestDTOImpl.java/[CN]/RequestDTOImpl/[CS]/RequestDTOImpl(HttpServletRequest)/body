@@ -2,4 +2,9 @@
   requestURI=request.getRequestURI();
   fullUrlWithQueryString=request.getRequestURL().toString();
   secure=("HTTPS".equalsIgnoreCase(request.getScheme()) || request.isSecure());
+  for (  Object param : request.getParameterMap().keySet()) {
+    if (param != null && param.toString().startsWith("attr") && request.getParameterValues(param.toString()) != null) {
+      requestDTOAttributes.put(param.toString(),request.getParameterValues(param.toString())[0]);
+    }
+  }
 }
