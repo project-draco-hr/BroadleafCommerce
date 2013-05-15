@@ -7,6 +7,7 @@
   boolean editable=false;
   boolean sortable=false;
   boolean readOnly=false;
+  boolean hideIdColumn=false;
   String idProperty="id";
   if (fmd instanceof BasicFieldMetadata) {
     readOnly=((BasicFieldMetadata)fmd).getReadOnly();
@@ -61,15 +62,27 @@
     MapMetadata mmd=(MapMetadata)fmd;
     Property p2=cmd.getPMap().get("key");
     BasicFieldMetadata keyMd=(BasicFieldMetadata)p2.getMetadata();
+    keyMd.setFriendlyName("Key");
     Field hf=createHeaderField(p2,keyMd);
     headerFields.add(hf);
-    for (    Property p : cmd.getProperties()) {
-      if (p.getMetadata() instanceof BasicFieldMetadata) {
-        BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
-        if (md.getTargetClass().equals(mmd.getValueClassName())) {
-          if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
-            hf=createHeaderField(p,md);
-            headerFields.add(hf);
+    if (mmd.isSimpleValue()) {
+      Property valueProperty=cmd.getPMap().get("value");
+      BasicFieldMetadata valueMd=(BasicFieldMetadata)valueProperty.getMetadata();
+      valueMd.setFriendlyName("Value");
+      hf=createHeaderField(valueProperty,valueMd);
+      headerFields.add(hf);
+      idProperty="key";
+      hideIdColumn=true;
+    }
+ else {
+      for (      Property p : cmd.getProperties()) {
+        if (p.getMetadata() instanceof BasicFieldMetadata) {
+          BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
+          if (md.getTargetClass().equals(mmd.getValueClassName())) {
+            if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
+              hf=createHeaderField(p,md);
+              headerFields.add(hf);
+            }
           }
         }
       }
@@ -92,6 +105,7 @@
   }
   listGrid.setContainingEntityId(containingEntityId);
   listGrid.setReadOnly(readOnly);
+  listGrid.setHideIdColumn(hideIdColumn);
   if (editable) {
     listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
   }

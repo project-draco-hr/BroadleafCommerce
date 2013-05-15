@@ -15,12 +15,17 @@
     entity=entities[0];
   }
  else   if (md instanceof MapMetadata) {
+    MapMetadata mmd=(MapMetadata)md;
     FilterAndSortCriteria fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
     fasc.setFilterValue(containingEntityId);
     ppr.addFilterAndSortCriteria(fasc);
     Entity[] entities=fetch(ppr).getRecords();
     for (    Entity e : entities) {
-      Property p=e.getPMap().get("id");
+      String idProperty=getIdProperty(containingClassMetadata);
+      if (mmd.isSimpleValue()) {
+        idProperty="key";
+      }
+      Property p=e.getPMap().get(idProperty);
       if (p.getValue().equals(collectionItemId)) {
         entity=e;
         break;

@@ -24,14 +24,23 @@
     keyField=new Field().withName("key").withFieldType(SupportedFieldType.STRING.toString()).withFriendlyName("Key");
   }
   ef.addMapKeyField(keyField);
-  List<Property> mapFormProperties=new ArrayList<Property>(Arrays.asList(cmd.getProperties()));
-  CollectionUtils.filter(mapFormProperties,new Predicate(){
-    @Override public boolean evaluate(    Object object){
-      Property p=(Property)object;
-      return ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),mapStructure.getValueClassName());
-    }
+  List<Property> mapFormProperties;
+  if (mapMd.isSimpleValue()) {
+    ef.setIdProperty("key");
+    mapFormProperties=new ArrayList<Property>();
+    Property valueProp=cmd.getPMap().get("value");
+    mapFormProperties.add(valueProp);
   }
+ else {
+    mapFormProperties=new ArrayList<Property>(Arrays.asList(cmd.getProperties()));
+    CollectionUtils.filter(mapFormProperties,new Predicate(){
+      @Override public boolean evaluate(      Object object){
+        Property p=(Property)object;
+        return ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),mapStructure.getValueClassName());
+      }
+    }
 );
+  }
   setEntityFormFields(ef,mapFormProperties);
   Field f=new Field().withName("priorKey").withFieldType(SupportedFieldType.HIDDEN.toString());
   ef.addHiddenField(f);
