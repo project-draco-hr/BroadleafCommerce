@@ -1,5 +1,5 @@
 {
-  listGrid.getHeaderFields().add(new Field().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.STRING.toString()).withOrder(Integer.MIN_VALUE).withColumnWidth("70px").withFilterSortDisabled(true));
+  listGrid.getHeaderFields().add(new Field().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.STRING.toString()).withOrder(Integer.MIN_VALUE).withColumnWidth("50px").withFilterSortDisabled(true));
   for (  ListGridRecord record : listGrid.getRecords()) {
     String imageUrl=record.getField(urlField).getValue();
     String staticAssetUrlPrefix=staticAssetService.getStaticAssetUrlPrefix();
@@ -12,8 +12,9 @@
  else {
       imageUrl=staticAssetUrlPrefix + imageUrl;
     }
-    MediaField mf=(MediaField)new MediaField().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.IMAGE.toString()).withOrder(Integer.MIN_VALUE).withValue(imageUrl + "?smallAdminThumbnail");
+    MediaField mf=(MediaField)new MediaField().withName("thumbnail").withFriendlyName("Asset_thumbnail").withFieldType(SupportedFieldType.IMAGE.toString()).withOrder(Integer.MIN_VALUE).withValue(imageUrl);
     record.getHiddenFields().add(new Field().withName("cmsUrlPrefix").withValue(staticAssetUrlPrefix));
+    record.getHiddenFields().add(new Field().withName("thumbnailKey").withValue("?smallAdminThumbnail"));
     record.getHiddenFields().add(new Field().withName("servletContext").withValue(BroadleafRequestContext.getBroadleafRequestContext().getRequest().getContextPath()));
     mf.setHeight(operationMap.getNamedOperations().get("smallAdminThumbnail").get("resize-height-amount"));
     record.getFields().add(mf);
