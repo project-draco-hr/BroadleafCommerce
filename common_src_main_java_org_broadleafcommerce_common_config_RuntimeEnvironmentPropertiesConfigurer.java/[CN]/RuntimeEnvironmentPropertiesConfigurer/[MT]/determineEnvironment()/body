@@ -1,8 +1,11 @@
 {
-  String environment=keyResolver.resolveRuntimeEnvironmentKey();
-  if (environment == null) {
-    LOG.warn("Unable to determine runtime environment, using default environment '" + defaultEnvironment + "'");
-    return defaultEnvironment;
+  if (determinedEnvironment != null) {
+    return determinedEnvironment;
   }
-  return environment.toLowerCase();
+  determinedEnvironment=keyResolver.resolveRuntimeEnvironmentKey();
+  if (determinedEnvironment == null) {
+    LOG.warn("Unable to determine runtime environment, using default environment '" + defaultEnvironment + "'");
+    determinedEnvironment=defaultEnvironment;
+  }
+  return determinedEnvironment.toLowerCase();
 }
