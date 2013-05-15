@@ -10,6 +10,7 @@
   Locale locale=localeResolver.resolveLocale(request);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
   BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
+  RequestDTO requestDTO=broadleafRequestDTOResolver.resolveRequestDTO(request);
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   if (currentSandbox != null) {
     SandBoxContext previewSandBoxContext=new SandBoxContext();
@@ -24,6 +25,7 @@
   brc.setTheme(theme);
   brc.setMessageSource(messageSource);
   brc.setTimeZone(timeZone);
+  brc.setRequestDTO(requestDTO);
   Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute("blRuleMap",WebRequest.SCOPE_REQUEST);
   if (ruleMap == null) {
     LOG.trace("Creating ruleMap and adding in Locale.");
