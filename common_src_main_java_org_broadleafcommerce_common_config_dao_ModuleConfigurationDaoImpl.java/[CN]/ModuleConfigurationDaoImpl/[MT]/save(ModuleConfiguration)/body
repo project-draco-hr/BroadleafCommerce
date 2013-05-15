@@ -1,0 +1,8 @@
+{
+  if (config.getIsDefault()) {
+    Query batchUpdate=em.createNamedQuery("BC_BATCH_UPDATE_MODULE_CONFIG_DEFAULT");
+    batchUpdate.setParameter("configType",config.getModuleConfigurationType().getType());
+    batchUpdate.executeUpdate();
+  }
+  return em.merge(config);
+}
