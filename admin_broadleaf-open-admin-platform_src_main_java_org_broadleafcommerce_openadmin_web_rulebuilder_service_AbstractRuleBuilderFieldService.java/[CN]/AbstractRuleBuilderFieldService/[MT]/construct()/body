@@ -1,4 +1,9 @@
 {
+  if (BroadleafRequestContext.getBroadleafRequestContext() == null) {
+    BroadleafRequestContext brc=new BroadleafRequestContext();
+    brc.setIgnoreSite(true);
+    BroadleafRequestContext.setBroadleafRequestContext(brc);
+  }
   PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF);
   persistenceManager.setTargetMode(TargetModeType.SANDBOX);
   dynamicEntityDao=persistenceManager.getDynamicEntityDao();
