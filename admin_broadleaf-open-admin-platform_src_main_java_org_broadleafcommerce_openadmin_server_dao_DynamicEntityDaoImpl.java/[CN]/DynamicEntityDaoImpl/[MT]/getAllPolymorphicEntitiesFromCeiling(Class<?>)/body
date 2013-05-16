@@ -1,7 +1,7 @@
 {
   Class<?>[] cache;
 synchronized (LOCK_OBJECT) {
-    cache=null;
+    cache=POLYMORPHIC_ENTITY_CACHE.get(ceilingClass);
     if (cache == null) {
       List<Class<?>> entities=new ArrayList<Class<?>>();
       for (      Object item : getSessionFactory().getAllClassMetadata().values()) {
