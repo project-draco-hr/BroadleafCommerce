@@ -1,9 +1,0 @@
-{
-  super.doStartTag();
-  List<TargetContent> targetContents=(List<TargetContent>)pageContext.getAttribute(getVarList());
-  List<TargetContent> randomizedContents=randomizeSublist(targetContents,targetContents.size());
-  Collections.sort(randomizedContents,new BeanComparator("priority"));
-  pageContext.setAttribute(getVarList(),randomizedContents);
-  pageContext.setAttribute(getVarFirstItem(),(randomizedContents.size() > 0) ? randomizedContents.get(0) : null);
-  return EVAL_PAGE;
-}
