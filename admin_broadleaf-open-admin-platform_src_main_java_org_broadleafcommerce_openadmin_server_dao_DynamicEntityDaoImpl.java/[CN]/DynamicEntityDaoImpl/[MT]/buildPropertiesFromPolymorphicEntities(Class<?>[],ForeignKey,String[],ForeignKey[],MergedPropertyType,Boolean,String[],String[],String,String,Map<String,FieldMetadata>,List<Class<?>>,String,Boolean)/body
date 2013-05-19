@@ -1,9 +1,11 @@
 {
   for (  Class<?> clazz : entities) {
     String cacheKey=getCacheKey(foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,clazz,configurationKey,isParentExcluded);
-    Map<String,FieldMetadata> cacheData;
+    Map<String,FieldMetadata> cacheData=null;
 synchronized (LOCK_OBJECT) {
-      cacheData=METADATA_CACHE.get(cacheKey);
+      if (useCache()) {
+        cacheData=METADATA_CACHE.get(cacheKey);
+      }
       if (cacheData == null) {
         Map<String,FieldMetadata> props=getPropertiesForEntityClass(clazz,foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded);
         for (        Class<?> clazz2 : entities) {

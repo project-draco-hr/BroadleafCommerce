@@ -1,0 +1,19 @@
+{
+  if (cacheEntityMetaDataTtl < 0) {
+    return true;
+  }
+  if (cacheEntityMetaDataTtl == 0) {
+    return false;
+  }
+ else {
+    if ((System.currentTimeMillis() - lastCacheFlushTime) > cacheEntityMetaDataTtl) {
+      lastCacheFlushTime=System.currentTimeMillis();
+      METADATA_CACHE.clear();
+      POLYMORPHIC_ENTITY_CACHE.clear();
+      return true;
+    }
+ else {
+      return true;
+    }
+  }
+}
