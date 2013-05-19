@@ -1,15 +1,9 @@
 {
   List<Offer> filteredOffers=new ArrayList<Offer>();
   if (offers != null && !offers.isEmpty()) {
-    if (extensionManager != null) {
-      filteredOffers=extensionManager.removeOutOfDateOffers(offers,this);
-    }
- else {
-      filteredOffers=removeOutOfDateOffers(offers);
-    }
-    if (extensionManager != null) {
-      filteredOffers=extensionManager.removeAdditionalOffers(filteredOffers,this);
-    }
+    filteredOffers=removeOutOfDateOffers(offers);
+    offers=removeTimePeriodOffers(offers);
+    offers=removeInvalidRequestOffers(offers);
     filteredOffers=removeInvalidCustomerOffers(filteredOffers,customer);
   }
   return filteredOffers;

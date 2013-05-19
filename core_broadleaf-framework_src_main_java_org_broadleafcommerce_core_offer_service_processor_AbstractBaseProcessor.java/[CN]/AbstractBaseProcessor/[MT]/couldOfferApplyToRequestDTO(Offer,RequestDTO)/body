@@ -1,0 +1,20 @@
+{
+  boolean appliesToRequestRule=false;
+  String rule=null;
+  OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.REQUEST.getType());
+  if (customerRule != null) {
+    rule=customerRule.getMatchRule();
+  }
+  if (rule != null) {
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("request",requestDTO);
+    Boolean expressionOutcome=executeExpression(rule,vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToRequestRule=true;
+    }
+  }
+ else {
+    appliesToRequestRule=true;
+  }
+  return appliesToRequestRule;
+}

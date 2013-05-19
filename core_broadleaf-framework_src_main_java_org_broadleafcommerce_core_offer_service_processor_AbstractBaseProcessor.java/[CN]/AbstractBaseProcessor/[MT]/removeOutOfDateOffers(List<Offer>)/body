@@ -1,11 +1,44 @@
 {
-  Date now=SystemTime.asDate();
   List<Offer> offersToRemove=new ArrayList<Offer>();
   for (  Offer offer : offers) {
-    if ((offer.getStartDate() == null) || (offer.getStartDate().after(now))) {
+    TimeZone timeZone=offerTimeZoneProcessor.getTimeZone(offer);
+    Calendar current=new GregorianCalendar(timeZone);
+    Calendar start=null;
+    if (offer.getStartDate() != null) {
+      LocalDateTime startDate=new LocalDateTime(offer.getStartDate());
+      start=new GregorianCalendar(timeZone);
+      start.set(Calendar.YEAR,startDate.getYear());
+      start.set(Calendar.MONTH,startDate.getMonthOfYear() - 1);
+      start.set(Calendar.DAY_OF_MONTH,startDate.getDayOfMonth());
+      start.set(Calendar.HOUR_OF_DAY,startDate.getHourOfDay());
+      start.set(Calendar.MINUTE,startDate.getMinuteOfHour());
+      start.set(Calendar.SECOND,startDate.getSecondOfMinute());
+      start.get(Calendar.HOUR_OF_DAY);
+      start.get(Calendar.MINUTE);
+      if (LOG.isTraceEnabled()) {
+        LOG.debug("Offer: " + offer.getName() + " timeZone:"+ timeZone+ " startTime:"+ start.getTime()+ " currentTime:"+ current.getTime());
+      }
+    }
+    Calendar end=null;
+    if (offer.getEndDate() != null) {
+      LocalDateTime endDate=new LocalDateTime(offer.getEndDate());
+      end=new GregorianCalendar(timeZone);
+      end.set(Calendar.YEAR,endDate.getYear());
+      end.set(Calendar.MONTH,endDate.getMonthOfYear() - 1);
+      end.set(Calendar.DAY_OF_MONTH,endDate.getDayOfMonth());
+      end.set(Calendar.HOUR_OF_DAY,endDate.getHourOfDay());
+      end.set(Calendar.MINUTE,endDate.getMinuteOfHour());
+      end.set(Calendar.SECOND,endDate.getSecondOfMinute());
+      end.get(Calendar.HOUR_OF_DAY);
+      end.get(Calendar.MINUTE);
+      if (LOG.isTraceEnabled()) {
+        LOG.debug("Offer: " + offer.getName() + " endTime:"+ start.getTime());
+      }
+    }
+    if ((offer.getStartDate() == null) || (start.after(current))) {
       offersToRemove.add(offer);
     }
- else     if (offer.getEndDate() != null && offer.getEndDate().before(now)) {
+ else     if (offer.getEndDate() != null && end.before(current)) {
       offersToRemove.add(offer);
     }
   }

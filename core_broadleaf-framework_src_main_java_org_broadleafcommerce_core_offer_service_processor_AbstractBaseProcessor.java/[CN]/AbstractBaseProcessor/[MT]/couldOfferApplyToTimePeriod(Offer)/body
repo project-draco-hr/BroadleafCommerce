@@ -1,0 +1,22 @@
+{
+  boolean appliesToTimePeriod=false;
+  String rule=null;
+  OfferRule timeRule=offer.getOfferMatchRules().get(OfferRuleType.TIME.getType());
+  if (timeRule != null) {
+    rule=timeRule.getMatchRule();
+  }
+  if (rule != null) {
+    TimeZone timeZone=offerTimeZoneProcessor.getTimeZone(offer);
+    TimeDTO timeDto=new TimeDTO(SystemTime.asCalendar(timeZone));
+    HashMap<String,Object> vars=new HashMap<String,Object>();
+    vars.put("time",timeDto);
+    Boolean expressionOutcome=executeExpression(rule,vars);
+    if (expressionOutcome != null && expressionOutcome) {
+      appliesToTimePeriod=true;
+    }
+  }
+ else {
+    appliesToTimePeriod=true;
+  }
+  return appliesToTimePeriod;
+}
