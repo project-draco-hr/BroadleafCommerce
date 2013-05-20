@@ -1,5 +1,8 @@
 {
-  RequestDTO requestDTO=BroadleafRequestContext.getBroadleafRequestContext().getRequestDTO();
+  RequestDTO requestDTO=null;
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    BroadleafRequestContext.getBroadleafRequestContext().getRequestDTO();
+  }
   List<Offer> offersToRemove=new ArrayList<Offer>();
   for (  Offer offer : offers) {
     if (!couldOfferApplyToRequestDTO(offer,requestDTO)) {

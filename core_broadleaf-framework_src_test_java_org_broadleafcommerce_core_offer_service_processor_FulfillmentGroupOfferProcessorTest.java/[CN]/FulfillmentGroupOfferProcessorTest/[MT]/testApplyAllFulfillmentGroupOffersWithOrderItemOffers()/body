@@ -50,6 +50,7 @@
   EasyMock.expect(fgItemDaoMock.create()).andAnswer(OfferDataItemProvider.getCreateFulfillmentGroupItemAnswer()).anyTimes();
   fgItemDaoMock.delete(EasyMock.isA(FulfillmentGroupItem.class));
   EasyMock.expectLastCall().anyTimes();
+  EasyMock.expect(offerTimeZoneProcessorMock.getTimeZone(EasyMock.isA(OfferImpl.class))).andReturn(TimeZone.getTimeZone("CST")).anyTimes();
   replay();
   PromotableOrder promotableOrder=dataProvider.createBasicPromotableOrder();
   Order order=promotableOrder.getOrder();

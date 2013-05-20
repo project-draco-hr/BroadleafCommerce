@@ -13,9 +13,11 @@
   fgProcessor.setOfferDao(offerDaoMock);
   fgProcessor.setOrderItemDao(orderItemDaoMock);
   fgProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
-  OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
+  OrderOfferProcessorImpl orderProcessor=new OrderOfferProcessorImpl();
   orderProcessor.setOfferDao(offerDaoMock);
   orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  offerTimeZoneProcessorMock=EasyMock.createMock(OfferTimeZoneProcessor.class);
+  orderProcessor.setOfferTimeZoneProcessor(offerTimeZoneProcessorMock);
   orderProcessor.setOrderItemDao(orderItemDaoMock);
   ItemOfferProcessor itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);

@@ -8,14 +8,17 @@
   fgItemDaoMock=EasyMock.createMock(FulfillmentGroupItemDao.class);
   fgServiceMock=EasyMock.createMock(FulfillmentGroupService.class);
   multishipOptionServiceMock=EasyMock.createMock(OrderMultishipOptionService.class);
+  offerTimeZoneProcessorMock=EasyMock.createMock(OfferTimeZoneProcessor.class);
   itemProcessor=new ItemOfferProcessorImpl();
   itemProcessor.setOfferDao(offerDaoMock);
   itemProcessor.setOrderItemDao(orderItemDaoMock);
+  itemProcessor.setOfferTimeZoneProcessor(offerTimeZoneProcessorMock);
   itemProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
   offerService=new OfferServiceImpl();
-  OrderOfferProcessor orderProcessor=new OrderOfferProcessorImpl();
+  OrderOfferProcessorImpl orderProcessor=new OrderOfferProcessorImpl();
   orderProcessor.setOfferDao(offerDaoMock);
   orderProcessor.setPromotableItemFactory(new PromotableItemFactoryImpl());
+  orderProcessor.setOfferTimeZoneProcessor(offerTimeZoneProcessorMock);
   orderProcessor.setOrderItemDao(orderItemDaoMock);
   offerService.setCustomerOfferDao(customerOfferDaoMock);
   offerService.setOfferCodeDao(offerCodeDaoMock);

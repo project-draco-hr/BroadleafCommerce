@@ -2,10 +2,10 @@
   replay();
   PromotableOrder order=dataProvider.createBasicPromotableOrder();
   List<Offer> offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF);
-  boolean couldApply=fgProcessor.couldOfferApplyToFulfillmentGroup(offers.get(0),(PromotableFulfillmentGroup)order.getFulfillmentGroups().get(0));
+  boolean couldApply=fgProcessor.couldOfferApplyToFulfillmentGroup(offers.get(0),order.getFulfillmentGroups().get(0));
   assertTrue(couldApply);
   offers=dataProvider.createFGBasedOffer("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75240",OfferDiscountType.PERCENT_OFF);
-  couldApply=fgProcessor.couldOfferApplyToFulfillmentGroup(offers.get(0),(PromotableFulfillmentGroup)order.getFulfillmentGroups().get(0));
+  couldApply=fgProcessor.couldOfferApplyToFulfillmentGroup(offers.get(0),order.getFulfillmentGroups().get(0));
   assertFalse(couldApply);
   verify();
 }
