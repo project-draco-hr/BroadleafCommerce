@@ -6,6 +6,7 @@
     return persistenceManager.fetch(persistencePackage,cto);
   }
  catch (  ServiceException e) {
+    LOG.error("Problem fetching results for " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
     String message=exploitProtectionService.cleanString(e.getMessage());
     throw recreateSpecificServiceException(e,message,e.getCause());
   }
