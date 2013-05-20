@@ -1,6 +1,11 @@
 {
   Order order=context.getSeedData();
-  order=taxModule.calculateTaxForOrder(order);
+  if (taxService != null) {
+    order=taxService.calculateTaxForOrder(order);
+  }
+ else   if (taxModule != null) {
+    order=taxModule.calculateTaxForOrder(order);
+  }
   context.setSeedData(order);
   return context;
 }
