@@ -1,6 +1,7 @@
 {
   Site site=siteResolver.resolveSite(request);
   BroadleafRequestContext brc=new BroadleafRequestContext();
+  BroadleafRequestContext.setBroadleafRequestContext(brc);
   brc.setSite(site);
   brc.setWebRequest(request);
   Locale locale=localeResolver.resolveLocale(request);
@@ -11,5 +12,4 @@
   brc.setMessageSource(messageSource);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
   brc.setTimeZone(timeZone);
-  BroadleafRequestContext.setBroadleafRequestContext(brc);
 }
