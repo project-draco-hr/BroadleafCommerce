@@ -1,0 +1,23 @@
+{
+  if (providers != null && !providers.isEmpty()) {
+    List<ModuleConfiguration> moduleConfigs=moduleConfigService.findActiveConfigurationsByType(ModuleConfigurationType.ADDRESS_VERIFICATION);
+    if (moduleConfigs != null && !moduleConfigs.isEmpty()) {
+      ModuleConfiguration config=null;
+      for (      ModuleConfiguration configuration : moduleConfigs) {
+        if (configuration.getIsDefault()) {
+          config=configuration;
+          break;
+        }
+      }
+      if (config == null) {
+        config=moduleConfigs.get(0);
+      }
+      for (      AddressValidationProvider provider : providers) {
+        if (provider.canRespond(config)) {
+          return provider.validateAddress(address,config);
+        }
+      }
+    }
+  }
+  throw new AddressValidationException("No providers were configured to handle address validation");
+}
