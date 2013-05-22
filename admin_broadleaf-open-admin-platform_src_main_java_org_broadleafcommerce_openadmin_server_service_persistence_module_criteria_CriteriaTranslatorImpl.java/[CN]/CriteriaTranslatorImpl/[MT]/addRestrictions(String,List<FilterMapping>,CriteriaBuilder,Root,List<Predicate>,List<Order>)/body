@@ -4,8 +4,8 @@
     if (filterMapping.getFieldPath() != null) {
       explicitPath=filterMapping.getRestriction().getFieldPathBuilder().getPath(original,filterMapping.getFieldPath(),criteriaBuilder);
     }
-    if (filterMapping.getRestriction() != null) {
-      Predicate predicate=filterMapping.getRestriction().buildRestriction(criteriaBuilder,original,ceilingEntity,filterMapping.getFullPropertyName(),explicitPath,filterMapping.getFilterValues() == null ? new ArrayList<String>() : filterMapping.getFilterValues());
+    if (filterMapping.getRestriction() != null && !CollectionUtils.isEmpty(filterMapping.getFilterValues())) {
+      Predicate predicate=filterMapping.getRestriction().buildRestriction(criteriaBuilder,original,ceilingEntity,filterMapping.getFullPropertyName(),explicitPath,filterMapping.getFilterValues());
       restrictions.add(predicate);
     }
     if (filterMapping.getSortDirection() != null) {
