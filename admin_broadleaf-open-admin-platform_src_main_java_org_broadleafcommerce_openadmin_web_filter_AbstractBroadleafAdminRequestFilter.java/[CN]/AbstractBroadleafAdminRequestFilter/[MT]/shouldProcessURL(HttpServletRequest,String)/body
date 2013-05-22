@@ -1,6 +1,6 @@
 {
   int pos=requestURI.lastIndexOf(".");
-  if (pos > 0) {
+  if (pos > 0 && !requestURI.contains(assetPrefix)) {
     String suffix=requestURI.substring(pos);
     if (getIgnoreSuffixes().contains(suffix.toLowerCase())) {
       if (LOG.isTraceEnabled()) {
