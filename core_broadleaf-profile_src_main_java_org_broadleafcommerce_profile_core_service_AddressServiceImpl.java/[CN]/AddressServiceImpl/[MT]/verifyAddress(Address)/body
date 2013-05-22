@@ -12,12 +12,12 @@
       if (config == null) {
         config=moduleConfigs.get(0);
       }
-      for (      AddressValidationProvider provider : providers) {
+      for (      AddressVerificationProvider provider : providers) {
         if (provider.canRespond(config)) {
           return provider.validateAddress(address,config);
         }
       }
     }
   }
-  throw new AddressValidationException("No providers were configured to handle address validation");
+  throw new AddressVerificationException("No providers were configured to handle address validation");
 }
