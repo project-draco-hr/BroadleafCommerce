@@ -1,0 +1,31 @@
+{
+  FieldPath myFieldPath=fieldPath;
+  if (!StringUtils.isEmpty(fieldPath.getTargetProperty())) {
+    myFieldPath=getFieldPath(root,fieldPath.getTargetProperty());
+  }
+  From myRoot=root;
+  for (  String pathElement : myFieldPath.getAssociationPath()) {
+    myRoot=myRoot.join(pathElement);
+  }
+  Path path=myRoot;
+  for (  String piece : myFieldPath.getTargetPropertyPieces()) {
+    if (path.getJavaType().isAnnotationPresent(Embeddable.class)) {
+      String original=((SingularAttributePath)path).getAttribute().getDeclaringType().getJavaType().getName() + "." + ((SingularAttributePath)path).getAttribute().getName()+ "."+ piece;
+      String copy=path.getJavaType().getName() + "." + piece;
+      copyCollectionPersister(original,copy,((CriteriaBuilderImpl)builder).getEntityManagerFactory().getSessionFactory());
+    }
+    path=path.get(piece);
+    if (path.getParentPath() != null && path.getParentPath().getJavaType().isAnnotationPresent(Embeddable.class) && path instanceof PluralAttributePath) {
+      Class<?> myClass=((PluralAttributePath)path).getAttribute().getClass().getInterfaces()[0];
+      try {
+        From embeddedJoin=myRoot.join(((SingularAttributePath)path.getParentPath()).getAttribute());
+        Method join=embeddedJoin.getClass().getMethod("join",myClass);
+        path=(Path)join.invoke(embeddedJoin,((PluralAttributePath)path).getAttribute());
+      }
+ catch (      Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  return path;
+}

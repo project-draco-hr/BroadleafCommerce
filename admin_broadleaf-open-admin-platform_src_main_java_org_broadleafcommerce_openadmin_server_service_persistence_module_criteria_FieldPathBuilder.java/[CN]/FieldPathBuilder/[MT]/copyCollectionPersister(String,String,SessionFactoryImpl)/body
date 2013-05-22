@@ -1,0 +1,14 @@
+{
+  try {
+    Field collectionPersistersField=SessionFactoryImpl.class.getDeclaredField("collectionPersisters");
+    collectionPersistersField.setAccessible(true);
+    Map collectionPersisters=(Map)collectionPersistersField.get(sessionFactory);
+    if (collectionPersisters.containsKey(originalKey)) {
+      Object collectionPersister=collectionPersisters.get(originalKey);
+      collectionPersisters.put(copyKey,collectionPersister);
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+}
