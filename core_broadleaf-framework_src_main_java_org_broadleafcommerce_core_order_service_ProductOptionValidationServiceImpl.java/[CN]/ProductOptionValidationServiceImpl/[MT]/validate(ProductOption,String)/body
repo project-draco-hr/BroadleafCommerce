@@ -1,6 +1,7 @@
 {
   if (productOption.getProductOptionValidationType() == ProductOptionValidationType.REGEX) {
     if (!validateRegex(productOption.getValidationSring(),value)) {
+      LOG.error(productOption.getErrorMessage() + ". Value [" + value+ "] does not match regex string ["+ productOption.getValidationSring()+ "]");
       throw new ProductOptionValidationException(productOption.getErrorMessage(),productOption.getErrorCode());
     }
   }

@@ -17,9 +17,6 @@
         productOptions.remove("skuId");
         productOptions.remove("quantity");
         productOptions.remove("priceOrder");
-        if (skuId == null && productOptions.size() == 0) {
-          throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("You must submit a Sku Id, or a map of product option / values.").build());
-        }
         OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
         orderItemRequestDTO.setCategoryId(categoryId);
         orderItemRequestDTO.setProductId(productId);

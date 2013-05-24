@@ -7,10 +7,7 @@
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
-  if (model.getDefaultSku() != null) {
-    this.defaultSku=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
-    this.defaultSku.wrap(model.getDefaultSku(),request);
-  }
+  wrapSku(model,request);
   if (model.getDefaultCategory() != null) {
     this.defaultCategoryId=model.getDefaultCategory().getId();
   }
