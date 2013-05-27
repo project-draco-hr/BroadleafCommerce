@@ -20,6 +20,13 @@
       this.orderItemAttributes.add(orderItemAttributeWrapper);
     }
   }
+  if (!model.getOrderItemPriceDetails().isEmpty()) {
+    for (    OrderItemPriceDetail orderItemPriceDetail : model.getOrderItemPriceDetails()) {
+      OrderItemPriceDetailWrapper orderItemPriceDetailWrapper=(OrderItemPriceDetailWrapper)context.getBean(OrderItemPriceDetailWrapper.class.getName());
+      orderItemPriceDetailWrapper.wrap(orderItemPriceDetail,request);
+      this.orderItemPriceDetails.add(orderItemPriceDetailWrapper);
+    }
+  }
   if (model instanceof DiscreteOrderItem) {
     DiscreteOrderItem doi=(DiscreteOrderItem)model;
     SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
