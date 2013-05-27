@@ -1,0 +1,12 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<StaticAsset> criteria=builder.createQuery(StaticAsset.class);
+  Root<StaticAssetImpl> handler=criteria.from(StaticAssetImpl.class);
+  criteria.select(handler);
+  try {
+    return em.createQuery(criteria).getResultList();
+  }
+ catch (  NoResultException e) {
+    return new ArrayList<StaticAsset>();
+  }
+}
