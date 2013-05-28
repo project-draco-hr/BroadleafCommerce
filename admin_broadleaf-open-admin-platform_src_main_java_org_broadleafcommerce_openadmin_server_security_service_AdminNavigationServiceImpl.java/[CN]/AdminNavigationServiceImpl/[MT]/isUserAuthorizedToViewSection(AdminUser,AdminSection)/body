@@ -1,10 +1,11 @@
 {
+  boolean response=false;
   List<AdminPermission> authorizedPermissions=section.getPermissions();
   if (!CollectionUtils.isEmpty(adminUser.getAllRoles())) {
     for (    AdminRole role : adminUser.getAllRoles()) {
       for (      AdminPermission permission : role.getAllPermissions()) {
         if (checkPermissions(authorizedPermissions,permission)) {
-          return true;
+          response=true;
         }
       }
     }
@@ -12,9 +13,17 @@
   if (!CollectionUtils.isEmpty(adminUser.getAllPermissions())) {
     for (    AdminPermission permission : adminUser.getAllPermissions()) {
       if (checkPermissions(authorizedPermissions,permission)) {
-        return true;
+        response=true;
       }
     }
   }
-  return false;
+  if (response) {
+    for (    SectionAuthorization sectionAuthorization : additionalSectionAuthorizations) {
+      if (!sectionAuthorization.isUserAuthorizedToViewSection(adminUser,section)) {
+        response=false;
+        break;
+      }
+    }
+  }
+  return response;
 }
