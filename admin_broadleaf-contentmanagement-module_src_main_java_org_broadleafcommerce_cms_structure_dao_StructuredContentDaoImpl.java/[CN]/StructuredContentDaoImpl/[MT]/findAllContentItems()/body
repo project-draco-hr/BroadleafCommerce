@@ -1,0 +1,12 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<StructuredContent> criteria=builder.createQuery(StructuredContent.class);
+  Root<StructuredContentImpl> sc=criteria.from(StructuredContentImpl.class);
+  criteria.select(sc);
+  try {
+    return em.createQuery(criteria).getResultList();
+  }
+ catch (  NoResultException e) {
+    return new ArrayList<StructuredContent>();
+  }
+}

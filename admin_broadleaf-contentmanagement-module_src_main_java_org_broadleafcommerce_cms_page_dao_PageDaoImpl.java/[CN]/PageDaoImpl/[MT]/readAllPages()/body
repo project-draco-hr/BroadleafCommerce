@@ -1,0 +1,12 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Page> criteria=builder.createQuery(Page.class);
+  Root<PageImpl> page=criteria.from(PageImpl.class);
+  criteria.select(page);
+  try {
+    return em.createQuery(criteria).getResultList();
+  }
+ catch (  NoResultException e) {
+    return new ArrayList<Page>();
+  }
+}
