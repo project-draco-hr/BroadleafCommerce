@@ -6,10 +6,8 @@
     }
  else {
       DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(sku,salePrice);
-      List<Class<?>> list=ClassUtils.getAllInterfaces(getClass());
-      Class<?>[] intfArray=list.toArray(new Class<?>[list.size()]);
-      SkuBundleItem proxy=(SkuBundleItem)Proxy.newProxyInstance(getClass().getClassLoader(),intfArray,handler);
-      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuBundleItemPrice(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+      Sku proxy=(Sku)Proxy.newProxyInstance(sku.getClass().getClassLoader(),ClassUtils.getAllInterfacesForClass(sku.getClass()),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
       returnPrice=dynamicPrices.getSalePrice();
     }
   }
