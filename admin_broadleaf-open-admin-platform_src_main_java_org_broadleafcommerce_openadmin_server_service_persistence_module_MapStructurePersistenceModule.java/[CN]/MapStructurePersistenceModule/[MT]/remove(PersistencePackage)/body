@@ -16,6 +16,7 @@
       throw new ServiceException("\"" + mapKey + "\" is a reserved property name.");
     }
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),Long.valueOf(entity.findProperty("symbolicId").getValue()));
+    Assert.isTrue(instance != null,"Entity not found");
     FieldManager fieldManager=getFieldManager();
     Map map=(Map)fieldManager.getFieldValue(instance,mapStructure.getMapProperty());
     Object value=map.remove(entity.findProperty("priorKey").getValue());

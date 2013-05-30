@@ -13,6 +13,7 @@
       primaryKey=getPrimaryKey(entity,mergedProperties);
     }
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    Assert.isTrue(instance != null,"Entity not found");
     instance=createPopulatedInstance(instance,entity,mergedProperties,false);
     if (!entity.isValidationFailure()) {
       instance=persistenceManager.getDynamicEntityDao().merge(instance);

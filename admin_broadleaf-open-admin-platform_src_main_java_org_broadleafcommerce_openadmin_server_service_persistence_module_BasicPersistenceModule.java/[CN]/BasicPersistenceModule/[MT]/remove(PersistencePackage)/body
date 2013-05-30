@@ -11,6 +11,7 @@
     Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(mergedUnfilteredProperties);
     Object primaryKey=getPrimaryKey(entity,mergedProperties);
     Serializable instance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    Assert.isTrue(instance != null,"Entity not found");
 switch (persistencePerspective.getOperationTypes().getRemoveType()) {
 case NONDESTRUCTIVEREMOVE:
       for (      Property property : entity.getProperties()) {

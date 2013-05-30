@@ -19,6 +19,7 @@
     filterCriteriaInsertedTarget.setFilterValue(entity.findProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty()).getValue());
     List<FilterMapping> filterMappings=getAdornedTargetFilterMappings(persistencePerspective,ctoInserted,mergedProperties,adornedTargetList);
     List<Serializable> recordsInserted=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,ctoInserted.getFirstResult(),ctoInserted.getMaxResults());
+    Assert.isTrue(!CollectionUtils.isEmpty(recordsInserted),"Entity not found");
     persistenceManager.getDynamicEntityDao().remove(recordsInserted.get(0));
   }
  catch (  Exception e) {

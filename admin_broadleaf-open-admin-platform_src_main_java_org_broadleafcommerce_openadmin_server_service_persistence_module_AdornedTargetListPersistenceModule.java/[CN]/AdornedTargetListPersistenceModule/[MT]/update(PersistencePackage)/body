@@ -12,6 +12,7 @@
   try {
     AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,entity,adornedTargetList).invokeForUpdate();
     List<Serializable> records=adornedTargetRetrieval.getRecords();
+    Assert.isTrue(!CollectionUtils.isEmpty(records),"Entity not found");
     int index=adornedTargetRetrieval.getIndex();
     Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
     FieldManager fieldManager=getFieldManager();
