@@ -9,8 +9,14 @@
     if (sandBoxId != null) {
       sandBox=sandBoxDao.retrieve(sandBoxId);
     }
-    Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
-    return new ModelAndView(viewResolverName,model);
+    try {
+      Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
+      return new ModelAndView(viewResolverName,model);
+    }
+ catch (    AssetNotFoundException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      return null;
+    }
   }
  catch (  Exception e) {
     LOG.error("Unable to retrieve static asset",e);
