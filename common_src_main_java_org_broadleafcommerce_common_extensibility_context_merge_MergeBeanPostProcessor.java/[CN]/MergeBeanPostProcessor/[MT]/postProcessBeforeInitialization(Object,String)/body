@@ -1,0 +1,91 @@
+{
+  if (beanName.equals(targetRef)) {
+    if (bean instanceof ListFactoryBean) {
+      try {
+        Field field=ListFactoryBean.class.getDeclaredField("sourceList");
+        field.setAccessible(true);
+        List sourceList=(List)field.get(bean);
+switch (placement) {
+case APPEND:
+          sourceList.addAll(mergeList);
+        break;
+case PREPEND:
+      sourceList.addAll(0,mergeList);
+    break;
+case SPECIFIC:
+  sourceList.addAll(position,mergeList);
+break;
+}
+}
+ catch (Exception e) {
+throw new BeanCreationException(e.getMessage());
+}
+}
+ else if (bean instanceof SetFactoryBean) {
+try {
+Field field=SetFactoryBean.class.getDeclaredField("sourceSet");
+field.setAccessible(true);
+Set sourceSet=(Set)field.get(bean);
+List tempList=new ArrayList(sourceSet);
+switch (placement) {
+case APPEND:
+tempList.addAll(mergeList);
+break;
+case PREPEND:
+tempList.addAll(0,mergeList);
+break;
+case SPECIFIC:
+tempList.addAll(position,mergeList);
+break;
+}
+sourceSet.clear();
+sourceSet.addAll(tempList);
+}
+ catch (Exception e) {
+throw new BeanCreationException(e.getMessage());
+}
+}
+ else if (bean instanceof MapFactoryBean) {
+try {
+Field field=MapFactoryBean.class.getDeclaredField("sourceMap");
+field.setAccessible(true);
+Map sourceMap=(Map)field.get(bean);
+LinkedHashMap tempMap=new LinkedHashMap();
+switch (placement) {
+case APPEND:
+tempMap.putAll(sourceMap);
+tempMap.putAll(mergeMap);
+break;
+case PREPEND:
+tempMap.putAll(mergeMap);
+tempMap.putAll(sourceMap);
+break;
+case SPECIFIC:
+boolean added=false;
+int j=0;
+for (Object key : sourceMap.keySet()) {
+if (j == position) {
+tempMap.putAll(mergeMap);
+added=true;
+}
+tempMap.put(key,sourceMap.get(key));
+j++;
+}
+if (!added) {
+tempMap.putAll(mergeMap);
+}
+break;
+}
+sourceMap.clear();
+sourceMap.putAll(tempMap);
+}
+ catch (Exception e) {
+throw new BeanCreationException(e.getMessage());
+}
+}
+ else {
+throw new IllegalArgumentException("Bean (" + beanName + ") is specified as a merge target, but is not"+ "of type List or Map");
+}
+}
+return bean;
+}
