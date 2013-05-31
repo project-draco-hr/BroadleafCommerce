@@ -1,13 +1,9 @@
 {
-  Customer customer=CustomerState.getCustomer(request);
-  if (customer != null) {
-    Order cart=orderService.findCartForCustomer(customer);
-    if (cart != null) {
-      OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-      wrapper.wrap(cart,request);
-      return wrapper;
-    }
-    throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
+  Order cart=CartState.getCart();
+  if (cart != null) {
+    OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+    wrapper.wrap(cart,request);
+    return wrapper;
   }
-  throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Could not find customer associated with request. " + "Ensure that customer ID is passed in the request as header or request parameter : customerId").build());
+  throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
 }

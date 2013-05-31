@@ -1,24 +1,20 @@
 {
-  Customer customer=CustomerState.getCustomer(request);
-  if (customer != null) {
-    Order cart=orderService.findCartForCustomer(customer);
-    if (cart != null) {
-      try {
-        Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-        PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
-        Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
-        payments.put(paymentInfo,referenced);
-        CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(cart,payments);
-        PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
-        PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
-        paymentResponseItemWrapper.wrap(responseItem,request);
-        return paymentResponseItemWrapper;
-      }
- catch (      PaymentException e) {
-        throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured with payment.").build());
-      }
+  Order cart=CartState.getCart();
+  if (cart != null) {
+    try {
+      Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+      PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
+      Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
+      payments.put(paymentInfo,referenced);
+      CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(cart,payments);
+      PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
+      PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
+      paymentResponseItemWrapper.wrap(responseItem,request);
+      return paymentResponseItemWrapper;
     }
-    throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
+ catch (    PaymentException e) {
+      throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured with payment.").build());
+    }
   }
-  throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Could not find customer associated with request. " + "Ensure that customer ID is passed in the request as header or request parameter : customerId").build());
+  throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
 }

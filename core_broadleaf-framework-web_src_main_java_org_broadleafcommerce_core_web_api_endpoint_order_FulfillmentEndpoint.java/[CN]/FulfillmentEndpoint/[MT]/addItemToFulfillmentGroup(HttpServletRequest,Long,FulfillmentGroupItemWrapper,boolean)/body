@@ -1,38 +1,34 @@
 {
-  Customer customer=CustomerState.getCustomer(request);
-  if (customer != null) {
-    Order cart=orderService.findCartForCustomer(customer);
-    if (cart != null) {
-      FulfillmentGroupItemRequest fulfillmentGroupItemRequest=wrapper.unwrap(request,context);
-      if (fulfillmentGroupItemRequest.getOrderItem() != null) {
-        FulfillmentGroup fulfillmentGroup=null;
-        OrderItem orderItem=null;
-        for (        FulfillmentGroup fg : cart.getFulfillmentGroups()) {
-          if (fg.getId().equals(fulfillmentGroupId)) {
-            fulfillmentGroup=fg;
-          }
+  Order cart=CartState.getCart();
+  if (cart != null) {
+    FulfillmentGroupItemRequest fulfillmentGroupItemRequest=wrapper.unwrap(request,context);
+    if (fulfillmentGroupItemRequest.getOrderItem() != null) {
+      FulfillmentGroup fulfillmentGroup=null;
+      OrderItem orderItem=null;
+      for (      FulfillmentGroup fg : cart.getFulfillmentGroups()) {
+        if (fg.getId().equals(fulfillmentGroupId)) {
+          fulfillmentGroup=fg;
         }
-        fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
-        for (        OrderItem oi : cart.getOrderItems()) {
-          if (oi.getId().equals(fulfillmentGroupItemRequest.getOrderItem().getId())) {
-            orderItem=oi;
-          }
+      }
+      fulfillmentGroupItemRequest.setFulfillmentGroup(fulfillmentGroup);
+      for (      OrderItem oi : cart.getOrderItems()) {
+        if (oi.getId().equals(fulfillmentGroupItemRequest.getOrderItem().getId())) {
+          orderItem=oi;
         }
-        fulfillmentGroupItemRequest.setOrderItem(orderItem);
-        if (fulfillmentGroup != null && orderItem != null) {
-          try {
-            FulfillmentGroup fg=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,priceOrder);
-            FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
-            fulfillmentGroupWrapper.wrap(fg,request);
-            return fulfillmentGroupWrapper;
-          }
- catch (          PricingException e) {
-            throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured pricing the cart.").build());
-          }
+      }
+      fulfillmentGroupItemRequest.setOrderItem(orderItem);
+      if (fulfillmentGroup != null && orderItem != null) {
+        try {
+          FulfillmentGroup fg=fulfillmentGroupService.addItemToFulfillmentGroup(fulfillmentGroupItemRequest,priceOrder);
+          FulfillmentGroupWrapper fulfillmentGroupWrapper=(FulfillmentGroupWrapper)context.getBean(FulfillmentGroupWrapper.class.getName());
+          fulfillmentGroupWrapper.wrap(fg,request);
+          return fulfillmentGroupWrapper;
+        }
+ catch (        PricingException e) {
+          throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured pricing the cart.").build());
         }
       }
     }
-    throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
   }
-  throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Could not find customer associated with request. " + "Ensure that customer ID is passed in the request as header or request parameter : customerId").build());
+  throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
 }
