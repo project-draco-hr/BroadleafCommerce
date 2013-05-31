@@ -1,0 +1,14 @@
+{
+  this.id=model.getId();
+  this.name=model.getName();
+  this.description=model.getDescription();
+  if (model.getProductOptions() != null && !model.getProductOptions().isEmpty()) {
+    this.productOptions=new ArrayList<ProductOptionWrapper>();
+    List<ProductOption> options=model.getProductOptions();
+    for (    ProductOption option : options) {
+      ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
+      optionWrapper.wrap(option,request);
+      this.productOptions.add(optionWrapper);
+    }
+  }
+}

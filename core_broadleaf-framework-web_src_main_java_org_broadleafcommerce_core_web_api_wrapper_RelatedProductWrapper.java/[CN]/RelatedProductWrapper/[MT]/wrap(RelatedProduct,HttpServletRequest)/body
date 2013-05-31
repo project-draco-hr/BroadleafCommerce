@@ -2,11 +2,6 @@
   this.id=model.getId();
   this.sequence=model.getSequence();
   this.promotionalMessage=model.getPromotionMessage();
-  if (model.getRelatedProduct() instanceof ProductBundle) {
-    product=(ProductWrapper)context.getBean(ProductBundleWrapper.class.getName());
-  }
- else {
-    product=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
-  }
+  product=(ProductSummaryWrapper)context.getBean(ProductSummaryWrapper.class.getName());
   product.wrap(model.getRelatedProduct(),request);
 }

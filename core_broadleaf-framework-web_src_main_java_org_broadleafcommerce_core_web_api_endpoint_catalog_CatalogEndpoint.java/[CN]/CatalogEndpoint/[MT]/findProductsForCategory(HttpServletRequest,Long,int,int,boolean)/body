@@ -2,7 +2,7 @@
   Category category=catalogService.findCategoryById(id);
   if (category != null) {
     List<Product> products;
-    ArrayList<ProductWrapper> out=new ArrayList<ProductWrapper>();
+    ArrayList<ProductSummaryWrapper> out=new ArrayList<ProductSummaryWrapper>();
     if (activeOnly) {
       products=catalogService.findActiveProductsByCategory(category,new Date(),limit,offset);
     }
@@ -11,13 +11,7 @@
     }
     if (products != null) {
       for (      Product product : products) {
-        ProductWrapper wrapper;
-        if (product instanceof ProductBundle) {
-          wrapper=(ProductWrapper)context.getBean(ProductBundleWrapper.class.getName());
-        }
- else {
-          wrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
-        }
+        ProductSummaryWrapper wrapper=(ProductSummaryWrapper)context.getBean(ProductSummaryWrapper.class.getName());
         wrapper.wrap(product,request);
         out.add(wrapper);
       }

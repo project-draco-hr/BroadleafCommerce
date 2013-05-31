@@ -1,23 +1,37 @@
 {
-  this.id=model.getId();
-  this.name=model.getName();
-  this.description=model.getDescription();
+  super.wrap(model,request);
   this.activeStartDate=model.getActiveStartDate();
   this.activeEndDate=model.getActiveEndDate();
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
-  wrapSku(model,request);
   if (model.getDefaultCategory() != null) {
     this.defaultCategoryId=model.getDefaultCategory().getId();
   }
-  if (model.getProductOptions() != null) {
-    this.productOptions=new ArrayList<ProductOptionWrapper>();
-    List<ProductOption> options=model.getProductOptions();
-    for (    ProductOption option : options) {
-      ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
-      optionWrapper.wrap(option,request);
-      this.productOptions.add(optionWrapper);
+  if (model.getUpSaleProducts() != null && !model.getUpSaleProducts().isEmpty()) {
+    upsaleProducts=new ArrayList<RelatedProductWrapper>();
+    for (    RelatedProduct p : model.getUpSaleProducts()) {
+      RelatedProductWrapper upsaleProductWrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
+      upsaleProductWrapper.wrap(p,request);
+      upsaleProducts.add(upsaleProductWrapper);
+    }
+  }
+  if (model.getCrossSaleProducts() != null && !model.getCrossSaleProducts().isEmpty()) {
+    crossSaleProducts=new ArrayList<RelatedProductWrapper>();
+    for (    RelatedProduct p : model.getCrossSaleProducts()) {
+      RelatedProductWrapper crossSaleProductWrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
+      crossSaleProductWrapper.wrap(p,request);
+      crossSaleProducts.add(crossSaleProductWrapper);
+    }
+  }
+  if (model.getProductAttributes() != null) {
+    productAttributes=new ArrayList<ProductAttributeWrapper>();
+    if (model.getProductAttributes() != null) {
+      for (      Map.Entry<String,ProductAttribute> entry : model.getProductAttributes().entrySet()) {
+        ProductAttributeWrapper wrapper=(ProductAttributeWrapper)context.getBean(ProductAttributeWrapper.class.getName());
+        wrapper.wrap(entry.getValue(),request);
+        productAttributes.add(wrapper);
+      }
     }
   }
 }

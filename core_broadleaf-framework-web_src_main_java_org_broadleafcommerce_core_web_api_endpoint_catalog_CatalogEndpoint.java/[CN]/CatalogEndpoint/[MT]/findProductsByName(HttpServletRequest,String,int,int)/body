@@ -6,16 +6,10 @@
  else {
     result=catalogService.findProductsByName(name,limit,offset);
   }
-  List<ProductWrapper> out=new ArrayList<ProductWrapper>();
+  List<ProductSummaryWrapper> out=new ArrayList<ProductSummaryWrapper>();
   if (result != null) {
     for (    Product product : result) {
-      ProductWrapper wrapper;
-      if (product instanceof ProductBundle) {
-        wrapper=(ProductWrapper)context.getBean(ProductBundleWrapper.class.getName());
-      }
- else {
-        wrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
-      }
+      ProductWrapper wrapper=(ProductWrapper)context.getBean(ProductSummaryWrapper.class.getName());
       wrapper.wrap(product,request);
       out.add(wrapper);
     }
