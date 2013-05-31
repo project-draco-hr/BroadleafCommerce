@@ -54,7 +54,10 @@ case RULE_SIMPLE:
  catch (          FieldNotAvailableException e) {
             throw new IllegalArgumentException(e);
           }
-          if (rule != null) {
+          if (mvel == null) {
+            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
+          }
+ else           if (rule != null) {
             rule.setMatchRule(mvel);
           }
  else {
