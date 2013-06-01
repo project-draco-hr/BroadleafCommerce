@@ -18,13 +18,13 @@ case RULE_WITH_QUANTITY:
  catch (        FieldNotAvailableException e) {
           throw new IllegalArgumentException(e);
         }
-        populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getRequestedValue(),rules,valueType);
+        populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
         break;
       }
 case RULE_SIMPLE:
 {
       DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-      DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getRequestedValue());
+      DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
       if (dw == null || StringUtils.isEmpty(dw.getError())) {
         String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
         Class<?> valueType=null;
