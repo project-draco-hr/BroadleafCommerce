@@ -1,4 +1,7 @@
 {
+  if (CollectionUtils.isNotEmpty(directFilterValues)) {
+    throw new IllegalArgumentException("Cannot set both filter values and direct filter values");
+  }
   List<String> parsedValues=new ArrayList<String>();
   for (  String unfiltered : filterValues) {
     parsedValues.addAll(Arrays.asList(parseFilterValue(unfiltered)));
