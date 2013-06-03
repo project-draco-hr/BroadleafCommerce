@@ -1,8 +1,17 @@
 {
-  if (activeEndDate == null && hasDefaultSku()) {
-    return lookupDefaultSku().getActiveEndDate();
+  Date returnDate=null;
+  if (SkuActiveDateConsiderationContext.hasDynamicActiveDates()) {
+    returnDate=SkuActiveDateConsiderationContext.getSkuActiveDatesService().getDynamicSkuActiveEndDate(this);
+  }
+  if (returnDate == null) {
+    if (activeEndDate == null && hasDefaultSku()) {
+      return lookupDefaultSku().getActiveEndDate();
+    }
+ else {
+      return activeEndDate;
+    }
   }
  else {
-    return activeEndDate;
+    return returnDate;
   }
 }

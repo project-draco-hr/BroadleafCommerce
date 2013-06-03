@@ -11,9 +11,9 @@
     optionValueAdjustments=dynamicPrices.getPriceAdjustment();
   }
  else   if (salePrice != null) {
-    return new Money(salePrice,getCurrency());
+    returnPrice=new Money(salePrice,getCurrency());
   }
- else   if (hasDefaultSku()) {
+  if (returnPrice == null && hasDefaultSku()) {
     returnPrice=lookupDefaultSku().getSalePrice();
     optionValueAdjustments=getProductOptionValueAdjustments();
   }

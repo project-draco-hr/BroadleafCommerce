@@ -10,10 +10,10 @@
     returnPrice=dynamicPrices.getRetailPrice();
     optionValueAdjustments=dynamicPrices.getPriceAdjustment();
   }
- else   if (retailPrice != null) {
-    return new Money(retailPrice,getCurrency());
+ else {
+    returnPrice=new Money(retailPrice,getCurrency());
   }
- else   if (hasDefaultSku()) {
+  if (returnPrice == null && hasDefaultSku()) {
     returnPrice=lookupDefaultSku().getRetailPrice();
     optionValueAdjustments=getProductOptionValueAdjustments();
   }
