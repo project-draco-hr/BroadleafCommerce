@@ -5,6 +5,11 @@
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
+  this.longDescription=model.getLongDescription();
+  if (model.getDefaultSku() != null) {
+    this.defaultRetailPrice=model.getDefaultSku().getRetailPrice();
+    this.defaultSalePrice=model.getDefaultSku().getSalePrice();
+  }
   if (model.getDefaultCategory() != null) {
     this.defaultCategoryId=model.getDefaultCategory().getId();
   }
@@ -32,6 +37,19 @@
         wrapper.wrap(entry.getValue(),request);
         productAttributes.add(wrapper);
       }
+    }
+  }
+  if (model.getMedia() != null && !model.getMedia().isEmpty()) {
+    Map<String,Media> mediaMap=model.getMedia();
+    media=new ArrayList<MediaWrapper>();
+    StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+    for (    Media med : mediaMap.values()) {
+      MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
+      wrapper.wrap(med,request);
+      if (wrapper.isAllowOverrideUrl()) {
+        wrapper.setUrl(staticAssetService.convertAssetPath(med.getUrl(),request.getContextPath(),request.isSecure()));
+      }
+      media.add(wrapper);
     }
   }
 }
