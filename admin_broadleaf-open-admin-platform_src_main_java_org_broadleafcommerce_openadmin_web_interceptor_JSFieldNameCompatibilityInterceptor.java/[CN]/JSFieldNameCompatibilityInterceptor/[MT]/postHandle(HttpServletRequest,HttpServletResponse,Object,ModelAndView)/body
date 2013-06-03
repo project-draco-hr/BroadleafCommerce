@@ -1,0 +1,24 @@
+{
+  Entity entity=(Entity)modelAndView.getModelMap().get("entity");
+  EntityForm entityForm=(EntityForm)modelAndView.getModelMap().get("entityForm");
+  if (entity != null) {
+    for (    Property property : entity.getProperties()) {
+      if (property.getName().contains(".")) {
+        property.setName(JSCompatibilityHelper.encodeFieldName(property.getName()));
+      }
+    }
+  }
+  if (entityForm != null) {
+    entityForm.clearFieldsMap();
+    for (    Map.Entry<String,Field> field : entityForm.getFields().entrySet()) {
+      if (field.getKey().contains(".")) {
+        field.getValue().setName(JSCompatibilityHelper.encodeFieldName(field.getValue().getName()));
+        if (field.getValue() instanceof RuleBuilderField) {
+          ((RuleBuilderField)field.getValue()).setJsonFieldName(JSCompatibilityHelper.encodeFieldName(((RuleBuilderField)field.getValue()).getJsonFieldName()));
+        }
+      }
+    }
+    entityForm.clearFieldsMap();
+  }
+  System.out.print("test");
+}

@@ -10,10 +10,10 @@
         if (prop.getName().startsWith(entry.getKey())) {
           BasicFieldMetadata originalFM=(BasicFieldMetadata)entry.getValue();
           if (originalFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || originalFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-            Property originalProp=addFilterPropertiesRequest.getEntity().findProperty(originalFM.getName());
+            Property originalProp=addFilterPropertiesRequest.getEntity().findProperty(entry.getKey());
             if (originalProp == null) {
               originalProp=new Property();
-              originalProp.setName(originalFM.getName());
+              originalProp.setName(entry.getKey());
               additionalProperties.add(originalProp);
             }
             originalProp.setValue(prop.getValue());
