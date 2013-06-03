@@ -15,11 +15,13 @@
         if (field != null) {
           if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
             RuleBuilderField rbf=(RuleBuilderField)field;
-            String json=entity.getPMap().get(rbf.getJsonFieldName()).getValue();
-            rbf.setJson(json);
-            DataWrapper dw=convertJsonToDataWrapper(json);
-            if (dw != null) {
-              rbf.setDataWrapper(dw);
+            if (entity.getPMap().containsKey(rbf.getJsonFieldName())) {
+              String json=entity.getPMap().get(rbf.getJsonFieldName()).getValue();
+              rbf.setJson(json);
+              DataWrapper dw=convertJsonToDataWrapper(json);
+              if (dw != null) {
+                rbf.setDataWrapper(dw);
+              }
             }
           }
           if (basicFM.getFieldType() == SupportedFieldType.MEDIA) {
