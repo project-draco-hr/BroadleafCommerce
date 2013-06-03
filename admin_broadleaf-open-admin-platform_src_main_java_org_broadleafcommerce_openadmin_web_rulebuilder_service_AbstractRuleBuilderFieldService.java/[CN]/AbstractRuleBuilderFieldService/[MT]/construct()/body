@@ -1,12 +1,14 @@
 {
-  if (BroadleafRequestContext.getBroadleafRequestContext() == null) {
-    BroadleafRequestContext brc=new BroadleafRequestContext();
-    brc.setIgnoreSite(true);
-    BroadleafRequestContext.setBroadleafRequestContext(brc);
+  if (applicationContext.containsBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF)) {
+    if (BroadleafRequestContext.getBroadleafRequestContext() == null) {
+      BroadleafRequestContext brc=new BroadleafRequestContext();
+      brc.setIgnoreSite(true);
+      BroadleafRequestContext.setBroadleafRequestContext(brc);
+    }
+    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF);
+    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
+    dynamicEntityDao=persistenceManager.getDynamicEntityDao();
+    setFields(new ArrayList<FieldData>());
+    init();
   }
-  PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF);
-  persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-  dynamicEntityDao=persistenceManager.getDynamicEntityDao();
-  setFields(new ArrayList<FieldData>());
-  init();
 }

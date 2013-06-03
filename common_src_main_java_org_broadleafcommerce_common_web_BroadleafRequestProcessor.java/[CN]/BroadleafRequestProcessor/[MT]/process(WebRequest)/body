@@ -10,7 +10,10 @@
   Locale locale=localeResolver.resolveLocale(request);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
   BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
-  RequestDTO requestDTO=broadleafRequestDTOResolver.resolveRequestDTO(request);
+  RequestDTO requestDTO=(RequestDTO)request.getAttribute(REQUEST_DTO_PARAM_NAME,WebRequest.SCOPE_REQUEST);
+  if (requestDTO == null) {
+    requestDTO=new RequestDTOImpl(request);
+  }
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   if (currentSandbox != null) {
     SandBoxContext previewSandBoxContext=new SandBoxContext();
