@@ -4,26 +4,11 @@
     propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
   }
   Map<String,Object> values=new HashMap<String,Object>();
-  if (fieldType.equals(FieldType.PRICE)) {
-    Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-    values.put("",propertyValue);
-    if (extensionManager != null) {
-      extensionManager.addPriceFieldPropertyValues(product,field,values,propertyName);
-    }
-  }
- else {
-    for (    Locale locale : locales) {
-      String localeCode=locale.getLocaleCode();
-      if (!field.getTranslatable() && !locale.getDefaultFlag()) {
-        locale=shs.getDefaultLocale();
-      }
-      if (field.getTranslatable()) {
-        BroadleafRequestContext tempContext=new BroadleafRequestContext();
-        tempContext.setLocale(locale);
-        BroadleafRequestContext.setBroadleafRequestContext(tempContext);
-      }
+  if (extensionManager != null) {
+    ExtensionResultStatusType result=extensionManager.getProxy().addPropertyValues(product,field,fieldType,values,propertyName,locales);
+    if (ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
       Object propertyValue=PropertyUtils.getProperty(product,propertyName);
-      values.put(localeCode,propertyValue);
+      values.put("",propertyValue);
     }
   }
   return values;

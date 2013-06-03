@@ -1,0 +1,12 @@
+{
+  if (field.getTranslatable()) {
+    if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+      Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getLocale();
+      if (locale != null) {
+        prefixList.add(locale.getLocaleCode());
+        return ExtensionResultStatusType.HANDLED_CONTINUE;
+      }
+    }
+  }
+  return ExtensionResultStatusType.NOT_HANDLED;
+}

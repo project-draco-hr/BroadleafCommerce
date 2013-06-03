@@ -1,17 +1,6 @@
 {
-  String prefix="";
-  if (searchableFieldType.equals(FieldType.PRICE)) {
-    if (extensionManager != null) {
-      prefix=extensionManager.getPrefixForPriceField();
-    }
-  }
- else {
-    if (field.getTranslatable()) {
-      prefix=getLocalePrefix();
-    }
- else {
-      prefix=getDefaultLocalePrefix();
-    }
-  }
+  List<String> prefixList=new ArrayList<String>();
+  extensionManager.getProxy().buildPrefixListForSearchableField(field,searchableFieldType,prefixList);
+  String prefix=convertPrefixListToString(prefixList);
   return getPropertyNameForFieldSearchable(field,searchableFieldType,prefix);
 }

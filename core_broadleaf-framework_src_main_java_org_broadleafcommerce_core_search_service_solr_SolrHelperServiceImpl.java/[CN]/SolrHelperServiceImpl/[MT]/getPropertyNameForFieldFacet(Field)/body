@@ -3,19 +3,8 @@
   if (fieldType == null) {
     return null;
   }
-  String prefix="";
-  if (fieldType.equals(FieldType.PRICE)) {
-    if (extensionManager != null) {
-      prefix=extensionManager.getPrefixForPriceField();
-    }
-  }
- else {
-    if (field.getTranslatable()) {
-      prefix=getLocalePrefix();
-    }
- else {
-      prefix=getDefaultLocalePrefix();
-    }
-  }
+  List<String> prefixList=new ArrayList<String>();
+  extensionManager.getProxy().buildPrefixListForSearchableFacet(field,prefixList);
+  String prefix=convertPrefixListToString(prefixList);
   return getPropertyNameForFieldFacet(field,prefix);
 }

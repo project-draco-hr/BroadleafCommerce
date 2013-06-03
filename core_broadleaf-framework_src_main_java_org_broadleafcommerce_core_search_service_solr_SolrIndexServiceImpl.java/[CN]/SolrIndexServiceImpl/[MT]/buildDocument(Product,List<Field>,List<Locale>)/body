@@ -22,7 +22,9 @@
               copyFieldValue=new ArrayList<String>();
               copyFieldValues.put(prefix,copyFieldValue);
             }
-            copyFieldValue.add(value.toString());
+            if (value != null) {
+              copyFieldValue.add(value.toString());
+            }
           }
         }
       }
@@ -34,16 +36,14 @@
           prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
           String solrFacetPropertyName=shs.getPropertyNameForFieldFacet(field,prefix);
           Object value=entry.getValue();
-          if (facetType.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
-            if (!addedProperties.contains(solrFacetPropertyName)) {
-              document.addField(solrFacetPropertyName,value);
-            }
+          if (!addedProperties.contains(solrFacetPropertyName)) {
+            document.addField(solrFacetPropertyName,value);
           }
         }
       }
     }
  catch (    Exception e) {
-      LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]");
+      LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]",e);
     }
   }
   for (  Entry<String,List<String>> entry : copyFieldValues.entrySet()) {

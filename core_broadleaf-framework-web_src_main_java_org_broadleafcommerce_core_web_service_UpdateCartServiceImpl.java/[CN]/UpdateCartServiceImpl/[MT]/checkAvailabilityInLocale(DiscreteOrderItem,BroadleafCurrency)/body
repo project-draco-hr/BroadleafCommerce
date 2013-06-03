@@ -1,6 +1,11 @@
 {
   if (doi.getSku() != null && extensionManager != null) {
-    return extensionManager.isAvailable(doi,currency);
+    ExtensionResultHolder erh=new ExtensionResultHolder();
+    extensionManager.getProxy().isAvailable(doi,currency,erh);
+    Object result=erh.getResult();
+    if (result != null && result instanceof Boolean) {
+      return ((Boolean)result).booleanValue();
+    }
   }
   return false;
 }

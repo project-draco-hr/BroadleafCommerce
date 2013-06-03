@@ -7,6 +7,7 @@
   BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
   HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
   DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
+  DynamicSkuActiveDatesService savedActiveDateServcie=SkuActiveDateConsiderationContext.getSkuActiveDatesService();
   try {
     Long numProducts=productDao.readCountAllActiveProducts(SystemTime.asDate());
     if (LOG.isDebugEnabled()) {
@@ -34,6 +35,7 @@
     BroadleafRequestContext.setBroadleafRequestContext(savedContext);
     SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
     SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
+    SkuActiveDateConsiderationContext.setSkuActiveDatesService(savedActiveDateServcie);
   }
   shs.swapActiveCores();
   if (!SolrContext.isSingleCoreMode()) {

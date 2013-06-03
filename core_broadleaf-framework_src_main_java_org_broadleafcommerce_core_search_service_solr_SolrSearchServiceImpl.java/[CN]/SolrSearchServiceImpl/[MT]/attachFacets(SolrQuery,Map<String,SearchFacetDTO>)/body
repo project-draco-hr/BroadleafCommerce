@@ -5,7 +5,7 @@
     String facetTagField=entry.getValue().isActive() ? shs.getGlobalFacetTagField() : entry.getKey();
     List<SearchFacetRange> facetRanges=new ArrayList<SearchFacetRange>(dto.getFacet().getSearchFacetRanges());
     if (extensionManager != null) {
-      extensionManager.filterSearchFacetRanges(dto,facetRanges);
+      extensionManager.getProxy().filterSearchFacetRanges(dto,facetRanges);
     }
     if (facetRanges != null && facetRanges.size() > 0) {
       for (      SearchFacetRange range : facetRanges) {

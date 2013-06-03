@@ -1,0 +1,17 @@
+{
+  ExtensionResultStatusType result=ExtensionResultStatusType.NOT_HANDLED;
+  if (field.getTranslatable()) {
+    result=ExtensionResultStatusType.HANDLED;
+    for (    Locale locale : locales) {
+      String localeCode=locale.getLocaleCode();
+      if (field.getTranslatable()) {
+        BroadleafRequestContext tempContext=new BroadleafRequestContext();
+        tempContext.setLocale(locale);
+        BroadleafRequestContext.setBroadleafRequestContext(tempContext);
+      }
+      Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+      values.put(localeCode,propertyValue);
+    }
+  }
+  return result;
+}
