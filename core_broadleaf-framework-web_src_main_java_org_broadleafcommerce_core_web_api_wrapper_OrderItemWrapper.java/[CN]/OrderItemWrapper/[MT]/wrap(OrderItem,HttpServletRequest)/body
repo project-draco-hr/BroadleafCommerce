@@ -5,7 +5,7 @@
   this.retailPrice=model.getRetailPrice();
   this.salePrice=model.getSalePrice();
   if (model.getCategory() != null) {
-    CategoryWrapper categoryWrapper=(CategoryWrapper)context.getBean(CategoryWrapper.class.getName());
+    CategorySummaryWrapper categoryWrapper=(CategorySummaryWrapper)context.getBean(CategorySummaryWrapper.class.getName());
     categoryWrapper.wrap(model.getCategory(),request);
     this.category=categoryWrapper;
   }
@@ -32,7 +32,7 @@
     SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
     skuWrapper.wrap(doi.getSku(),request);
     this.sku=skuWrapper;
-    ProductWrapper productWrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
+    ProductSummaryWrapper productWrapper=(ProductSummaryWrapper)context.getBean(ProductSummaryWrapper.class.getName());
     productWrapper.wrap(doi.getProduct(),request);
     this.product=productWrapper;
   }
