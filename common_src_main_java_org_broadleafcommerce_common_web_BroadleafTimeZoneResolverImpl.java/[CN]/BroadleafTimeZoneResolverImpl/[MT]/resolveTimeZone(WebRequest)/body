@@ -8,7 +8,7 @@
       LOG.trace("Attempt to find TimeZone by param " + timeZoneCode + " resulted in "+ timeZone);
     }
   }
-  if (timeZone == null) {
+  if (timeZone == null && useSessionInRequestProcessing) {
     timeZone=(TimeZone)request.getAttribute(TIMEZONE_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
     if (LOG.isTraceEnabled()) {
       LOG.trace("Attempt to find timezone from session resulted in " + timeZone);
@@ -20,6 +20,8 @@
       LOG.trace("timezone set to default timezone " + timeZone);
     }
   }
-  request.setAttribute(TIMEZONE_VAR,timeZone,WebRequest.SCOPE_GLOBAL_SESSION);
+  if (useSessionInRequestProcessing) {
+    request.setAttribute(TIMEZONE_VAR,timeZone,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
   return timeZone;
 }

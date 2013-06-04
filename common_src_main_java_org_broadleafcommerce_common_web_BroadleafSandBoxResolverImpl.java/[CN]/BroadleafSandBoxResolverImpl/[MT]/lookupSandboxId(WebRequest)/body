@@ -12,16 +12,18 @@
       LOG.warn("blcSandboxId parameter could not be converted into a Long",nfe);
     }
   }
-  if (sandboxId == null) {
-    sandboxId=(Long)request.getAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
-    if (LOG.isTraceEnabled()) {
-      if (sandboxId != null) {
-        LOG.trace("SandboxId found in session " + sandboxId);
+  if (useSessionInRequestProcessing) {
+    if (sandboxId == null) {
+      sandboxId=(Long)request.getAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      if (LOG.isTraceEnabled()) {
+        if (sandboxId != null) {
+          LOG.trace("SandboxId found in session " + sandboxId);
+        }
       }
     }
-  }
  else {
-    request.setAttribute(SANDBOX_ID_VAR,sandboxId,WebRequest.SCOPE_GLOBAL_SESSION);
+      request.setAttribute(SANDBOX_ID_VAR,sandboxId,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
   }
   return sandboxId;
 }

@@ -15,8 +15,10 @@
       if (LOG.isTraceEnabled()) {
         LOG.trace("Removing sandbox from session.");
       }
-      request.removeAttribute(SANDBOX_DATE_TIME_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
-      request.removeAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      if (useSessionInRequestProcessing) {
+        request.removeAttribute(SANDBOX_DATE_TIME_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+        request.removeAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      }
     }
     if (sandboxId != null) {
       currentSandbox=sandBoxDao.retrieve(sandboxId);

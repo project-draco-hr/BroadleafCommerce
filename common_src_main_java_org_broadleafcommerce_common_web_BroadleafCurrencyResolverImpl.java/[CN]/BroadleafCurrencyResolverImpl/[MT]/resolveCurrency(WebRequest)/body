@@ -8,11 +8,11 @@
       LOG.trace("Attempt to find currency by param " + currencyCode + " resulted in "+ currency);
     }
   }
-  if (currency == null) {
+  if (currency == null && useSessionInRequestProcessing) {
     currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
   }
   if (currency == null) {
-    Locale locale=(Locale)request.getAttribute(BroadleafLocaleResolverImpl.LOCALE_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    Locale locale=(Locale)request.getAttribute(BroadleafLocaleResolverImpl.LOCALE_VAR,WebRequest.SCOPE_REQUEST);
     if (locale != null) {
       currency=locale.getDefaultCurrency();
     }
@@ -20,6 +20,8 @@
   if (currency == null) {
     currency=broadleafCurrencyService.findDefaultBroadleafCurrency();
   }
-  request.setAttribute(CURRENCY_VAR,currency,WebRequest.SCOPE_GLOBAL_SESSION);
+  if (useSessionInRequestProcessing) {
+    request.setAttribute(CURRENCY_VAR,currency,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
   return currency;
 }
