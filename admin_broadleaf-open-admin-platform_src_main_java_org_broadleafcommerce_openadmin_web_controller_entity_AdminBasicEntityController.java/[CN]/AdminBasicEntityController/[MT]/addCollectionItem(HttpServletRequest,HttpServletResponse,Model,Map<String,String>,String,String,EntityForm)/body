@@ -4,7 +4,7 @@
   ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
-  Entity entity=service.getRecord(ppr,id,mainMetadata);
+  Entity entity=service.getRecord(ppr,id,mainMetadata,false);
   service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey);
   model.addAttribute("listGrid",listGrid);

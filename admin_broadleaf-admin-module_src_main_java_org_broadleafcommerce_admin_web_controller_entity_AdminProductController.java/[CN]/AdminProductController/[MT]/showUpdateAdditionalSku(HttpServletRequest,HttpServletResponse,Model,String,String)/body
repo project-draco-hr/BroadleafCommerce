@@ -9,7 +9,7 @@
   if (collectionMetadata.getCeilingType().equals(SkuImpl.class.getName())) {
     collectionMetadata.setCeilingType(Sku.class.getName());
   }
-  Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata);
+  Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true);
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
   entityForm.removeAction(DefaultEntityFormActions.DELETE);

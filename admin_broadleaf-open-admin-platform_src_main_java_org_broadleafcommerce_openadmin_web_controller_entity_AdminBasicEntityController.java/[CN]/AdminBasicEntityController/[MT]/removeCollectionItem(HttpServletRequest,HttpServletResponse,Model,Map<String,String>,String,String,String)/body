@@ -5,7 +5,7 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   String priorKey=request.getParameter("key");
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
-  Entity entity=service.getRecord(ppr,id,mainMetadata);
+  Entity entity=service.getRecord(ppr,id,mainMetadata,false);
   service.removeSubCollectionEntity(mainMetadata,collectionProperty,entity,collectionItemId,priorKey);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey);
   model.addAttribute("listGrid",listGrid);

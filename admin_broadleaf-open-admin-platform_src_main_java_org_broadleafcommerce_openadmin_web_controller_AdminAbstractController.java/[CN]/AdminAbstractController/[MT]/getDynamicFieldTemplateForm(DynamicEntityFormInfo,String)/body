@@ -2,7 +2,7 @@
   PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(info.getCeilingClassName()).withCustomCriteria(new String[]{info.getCriteriaName(),info.getPropertyValue()});
   ClassMetadata cmd=service.getClassMetadata(ppr);
   ppr.setCustomCriteria(new String[]{info.getCriteriaName(),entityId});
-  Entity entity=service.getRecord(ppr,entityId,cmd);
+  Entity entity=service.getRecord(ppr,entityId,cmd,true);
   EntityForm dynamicForm=formService.createEntityForm(cmd,entity);
   dynamicForm.clearFieldsMap();
   for (  Tab tab : dynamicForm.getTabs()) {

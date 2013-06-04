@@ -5,12 +5,12 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
-  Entity parentEntity=service.getRecord(ppr,id,mainMetadata);
+  Entity parentEntity=service.getRecord(ppr,id,mainMetadata,false);
   ppr=PersistencePackageRequest.fromMetadata(md);
   if (md instanceof BasicCollectionMetadata && ((BasicCollectionMetadata)md).getAddMethodType().equals(AddMethodType.PERSIST)) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-    Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata);
+    Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true);
     Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
     EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
     model.addAttribute("entityForm",entityForm);

@@ -3,7 +3,7 @@
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   ClassMetadata cmd=service.getClassMetadata(ppr);
-  Entity entity=service.getRecord(ppr,id,cmd);
+  Entity entity=service.getRecord(ppr,id,cmd,false);
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.createEntityForm(cmd,entity,subRecordsMap);
   model.addAttribute("entity",entity);
