@@ -1,15 +1,10 @@
 {
-  if (getValidationErrors() == null) {
-    setValidationErrors(new String[0][2]);
+  Map<String,List<String>> fieldErrors=getValidationErrors();
+  List<String> errorMessages=fieldErrors.get(fieldName);
+  if (errorMessages == null) {
+    errorMessages=new ArrayList<String>();
+    fieldErrors.put(fieldName,errorMessages);
   }
-  String[][] allErrors=getValidationErrors();
-  String[][] newErrors=new String[allErrors.length + 1][2];
-  for (int j=0; j < allErrors.length; j++) {
-    newErrors[j][0]=allErrors[j][0];
-    newErrors[j][1]=allErrors[j][1];
-  }
-  newErrors[newErrors.length - 1][0]=fieldName;
-  newErrors[newErrors.length - 1][1]=errorOrErrorKey;
-  setValidationErrors(newErrors);
+  errorMessages.add(errorOrErrorKey);
   setValidationFailure(true);
 }

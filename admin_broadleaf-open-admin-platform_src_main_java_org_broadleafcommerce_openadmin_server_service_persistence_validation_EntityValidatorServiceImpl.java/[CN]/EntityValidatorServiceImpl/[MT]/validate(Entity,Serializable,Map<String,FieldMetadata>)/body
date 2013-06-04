@@ -1,21 +1,36 @@
 {
   for (  Property property : entity.getProperties()) {
-    FieldMetadata metadata=mergedProperties.get(property.getName());
+    FieldMetadata metadata=propertiesMetadata.get(property.getName());
     if (metadata instanceof BasicFieldMetadata) {
+      if (CollectionUtils.isNotEmpty(globalEntityValidators)) {
+        for (        PropertyValidator validator : globalEntityValidators) {
+          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,null,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+          if (!result.isValid()) {
+            entity.addValidationError(property.getName(),result.getErrorMessage());
+          }
+        }
+      }
       Map<String,Map<String,String>> validations=((BasicFieldMetadata)metadata).getValidationConfigurations();
       for (      Map.Entry<String,Map<String,String>> validation : validations.entrySet()) {
-        String validatorClassname=validation.getKey();
+        String validationImplementation=validation.getKey();
         Map<String,String> configuration=validation.getValue();
         PropertyValidator validator=null;
-        try {
-          validator=(PropertyValidator)Class.forName(validatorClassname).newInstance();
+        if (applicationContext.containsBean(validationImplementation)) {
+          validator=applicationContext.getBean(validationImplementation,PropertyValidator.class);
         }
- catch (        Exception e) {
-          throw new PersistenceException(e);
+        if (validator == null) {
+          try {
+            validator=(PropertyValidator)Class.forName(validationImplementation).newInstance();
+          }
+ catch (          Exception e) {
+          }
         }
-        boolean validationResult=validator.validate(entity,configuration,instance,property.getValue());
-        if (!validationResult) {
-          entity.addValidationError(property.getName(),configuration.get(ConfigurationItem.ERROR_MESSAGE));
+        if (validator == null) {
+          throw new PersistenceException("Could not find validator: " + validationImplementation + " for property: "+ property.getName());
+        }
+        PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+        if (!result.isValid()) {
+          entity.addValidationError(property.getName(),result.getErrorMessage());
         }
       }
     }
