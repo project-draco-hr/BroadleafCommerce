@@ -11,6 +11,23 @@
   if (md instanceof BasicCollectionMetadata) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ppr.getEntity().setType(new String[]{fmd.getCollectionCeilingEntity()});
+    if (fmd.getAddMethodType().equals(AddMethodType.LOOKUP)) {
+      List<String> fieldsToRemove=new ArrayList<String>();
+      String idProp=getIdProperty(mainMetadata);
+      for (      String key : entityForm.getFields().keySet()) {
+        if (!idProp.equals(key)) {
+          fieldsToRemove.add(key);
+        }
+      }
+      for (      String key : fieldsToRemove) {
+        ListIterator<Property> li=properties.listIterator();
+        while (li.hasNext()) {
+          if (li.next().getName().equals(key)) {
+            li.remove();
+          }
+        }
+      }
+    }
     Property fp=new Property();
     fp.setName(ppr.getForeignKey().getManyToField());
     fp.setValue(getContextSpecificRelationshipId(mainMetadata,parentEntity,field.getName()));
