@@ -4,6 +4,7 @@
   for (  SortableValue val : middleFields) {
     Serializable s=dynamicEntityDao.merge(val.entity);
     persistedEntities.put(val.getContainingPropertyName(),s);
+    setFieldValue(val.getBean(),val.getContainingPropertyName(),s);
   }
   return persistedEntities;
 }
