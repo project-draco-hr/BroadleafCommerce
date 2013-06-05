@@ -1,0 +1,21 @@
+{
+  Map params=super.getParameterMap();
+  Map temp=new LinkedHashMap();
+  for (  Object key : params.keySet()) {
+    Object value=params.get(key);
+    if (value instanceof String) {
+      temp.put(JSCompatibilityHelper.unencode((String)key),JSCompatibilityHelper.unencode((String)value));
+    }
+ else {
+      String[] vals=(String[])value;
+      String[] tempVals=new String[vals.length];
+      int j=0;
+      for (      String val : vals) {
+        tempVals[j]=JSCompatibilityHelper.unencode(val);
+        j++;
+      }
+      temp.put(JSCompatibilityHelper.unencode((String)key),tempVals);
+    }
+  }
+  return temp;
+}

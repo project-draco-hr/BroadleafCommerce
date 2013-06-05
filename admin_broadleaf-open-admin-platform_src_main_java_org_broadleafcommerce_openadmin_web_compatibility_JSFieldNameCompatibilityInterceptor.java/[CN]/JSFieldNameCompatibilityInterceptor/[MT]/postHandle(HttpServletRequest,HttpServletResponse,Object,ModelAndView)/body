@@ -5,7 +5,7 @@
     if (entity != null) {
       for (      Property property : entity.getProperties()) {
         if (property.getName().contains(".")) {
-          property.setName(JSCompatibilityHelper.encodeFieldName(property.getName()));
+          property.setName(JSCompatibilityHelper.encode(property.getName()));
         }
       }
     }
@@ -13,9 +13,9 @@
       entityForm.clearFieldsMap();
       for (      Map.Entry<String,Field> field : entityForm.getFields().entrySet()) {
         if (field.getKey().contains(".")) {
-          field.getValue().setName(JSCompatibilityHelper.encodeFieldName(field.getValue().getName()));
+          field.getValue().setName(JSCompatibilityHelper.encode(field.getValue().getName()));
           if (field.getValue() instanceof RuleBuilderField) {
-            ((RuleBuilderField)field.getValue()).setJsonFieldName(JSCompatibilityHelper.encodeFieldName(((RuleBuilderField)field.getValue()).getJsonFieldName()));
+            ((RuleBuilderField)field.getValue()).setJsonFieldName(JSCompatibilityHelper.encode(((RuleBuilderField)field.getValue()).getJsonFieldName()));
           }
         }
       }

@@ -1,0 +1,12 @@
+{
+  if (getAttribute("requestParameterConversionMap") == null) {
+    Map<String,String> map=new HashMap<String,String>();
+    Enumeration enumeration=super.getParameterNames();
+    while (enumeration.hasMoreElements()) {
+      String temp=(String)enumeration.nextElement();
+      map.put(JSCompatibilityHelper.unencode(temp),temp);
+    }
+    setAttribute("requestParameterConversionMap",map);
+  }
+  return (Map<String,String>)getAttribute("requestParameterConversionMap");
+}

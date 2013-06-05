@@ -1,0 +1,13 @@
+{
+  String[] paramValues=super.getParameterValues(getParameterNameConversionMap().get(name));
+  if (!ArrayUtils.isEmpty(paramValues)) {
+    String[] temp=new String[paramValues.length];
+    int j=0;
+    for (    String val : paramValues) {
+      temp[j]=JSCompatibilityHelper.unencode(val);
+      j++;
+    }
+    return temp;
+  }
+  return paramValues;
+}
