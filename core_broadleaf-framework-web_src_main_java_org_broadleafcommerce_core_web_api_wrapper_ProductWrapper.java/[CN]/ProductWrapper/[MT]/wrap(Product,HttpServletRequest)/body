@@ -1,15 +1,11 @@
 {
-  super.wrap(model,request);
+  this.productSummary=(ProductSummaryWrapper)context.getBean(ProductSummaryWrapper.class.getName());
+  this.productSummary.wrap(model,request);
   this.activeStartDate=model.getActiveStartDate();
   this.activeEndDate=model.getActiveEndDate();
   this.manufacturer=model.getManufacturer();
   this.model=model.getModel();
   this.promoMessage=model.getPromoMessage();
-  this.longDescription=model.getLongDescription();
-  if (model.getDefaultSku() != null) {
-    this.defaultRetailPrice=model.getDefaultSku().getRetailPrice();
-    this.defaultSalePrice=model.getDefaultSku().getSalePrice();
-  }
   if (model.getDefaultCategory() != null) {
     this.defaultCategoryId=model.getDefaultCategory().getId();
   }

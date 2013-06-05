@@ -2,6 +2,9 @@
   this.id=model.getId();
   this.name=model.getName();
   this.description=model.getDescription();
+  this.longDescripion=model.getLongDescription();
+  this.retailPrice=model.getDefaultSku().getRetailPrice();
+  this.salePrice=model.getDefaultSku().getSalePrice();
   if (model.getProductOptions() != null && !model.getProductOptions().isEmpty()) {
     this.productOptions=new ArrayList<ProductOptionWrapper>();
     List<ProductOption> options=model.getProductOptions();
@@ -9,6 +12,17 @@
       ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
       optionWrapper.wrap(option,request);
       this.productOptions.add(optionWrapper);
+    }
+  }
+  if (model.getMedia() != null && !model.getMedia().isEmpty()) {
+    Media media=model.getMedia().get("primary");
+    if (media != null) {
+      StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+      primaryMedia=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
+      primaryMedia.wrap(media,request);
+      if (primaryMedia.isAllowOverrideUrl()) {
+        primaryMedia.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
+      }
     }
   }
 }
