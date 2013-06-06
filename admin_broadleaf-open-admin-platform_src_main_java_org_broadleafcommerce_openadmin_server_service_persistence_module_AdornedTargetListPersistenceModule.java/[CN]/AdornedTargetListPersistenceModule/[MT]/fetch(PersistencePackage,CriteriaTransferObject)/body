@@ -7,7 +7,7 @@
   try {
     Class<?>[] entities=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
     Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
-    AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePerspective,adornedTargetList,cto).invokeForFetch();
+    AdornedTargetRetrieval adornedTargetRetrieval=new AdornedTargetRetrieval(persistencePackage,adornedTargetList,cto).invokeForFetch();
     List<Serializable> records=adornedTargetRetrieval.getRecords();
     Map<String,FieldMetadata> mergedProperties=adornedTargetRetrieval.getMergedProperties();
     payload=getRecords(mergedPropertiesTarget,records,mergedProperties,adornedTargetList.getTargetObjectPath());

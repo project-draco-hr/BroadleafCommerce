@@ -3,8 +3,23 @@
     FilterAndSortCriteria sortCriteria=cto.get(adornedTargetList.getSortField());
     sortCriteria.setSortAscending(adornedTargetList.getSortAscending());
   }
-  Class<?>[] entities2=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
-  mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities2,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+  Class<?>[] entities=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
+  mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
   filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  Class<?>[] entities2=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
+  Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities2,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
+  Map<String,FieldMetadata> convertedMergedPropertiesTarget=new HashMap<String,FieldMetadata>();
+  String prefix=adornedTargetList.getTargetObjectPath();
+  for (  Entry<String,FieldMetadata> entry : mergedPropertiesTarget.entrySet()) {
+    convertedMergedPropertiesTarget.put(prefix + "." + entry.getKey(),entry.getValue());
+  }
+  Map<String,FilterAndSortCriteria> convertedCto=new HashMap<String,FilterAndSortCriteria>();
+  for (  Entry<String,FilterAndSortCriteria> entry : cto.getCriteriaMap().entrySet()) {
+    convertedCto.put(prefix + "." + entry.getKey(),entry.getValue());
+  }
+  cto.setCriteriaMap(convertedCto);
+  List<FilterMapping> filterMappings2=getBasicFilterMappings(persistencePerspective,cto,convertedMergedPropertiesTarget,ceilingEntityFullyQualifiedClassname);
+  filterMappings.addAll(filterMappings2);
   records=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
 }
