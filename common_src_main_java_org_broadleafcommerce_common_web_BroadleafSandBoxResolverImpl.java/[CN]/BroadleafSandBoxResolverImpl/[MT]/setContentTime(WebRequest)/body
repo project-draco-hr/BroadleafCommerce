@@ -18,7 +18,7 @@
  catch (  ParseException e) {
     LOG.debug(e);
   }
-  if (useSessionInRequestProcessing) {
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
     if (overrideTime == null) {
       overrideTime=(Date)request.getAttribute(SANDBOX_DATE_TIME_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
     }

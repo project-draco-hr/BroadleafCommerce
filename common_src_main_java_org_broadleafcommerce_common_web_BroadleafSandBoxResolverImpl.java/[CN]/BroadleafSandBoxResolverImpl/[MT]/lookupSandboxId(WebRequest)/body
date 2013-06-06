@@ -12,7 +12,7 @@
       LOG.warn("blcSandboxId parameter could not be converted into a Long",nfe);
     }
   }
-  if (useSessionInRequestProcessing) {
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
     if (sandboxId == null) {
       sandboxId=(Long)request.getAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
       if (LOG.isTraceEnabled()) {

@@ -15,7 +15,7 @@
       if (LOG.isTraceEnabled()) {
         LOG.trace("Removing sandbox from session.");
       }
-      if (useSessionInRequestProcessing) {
+      if (BLCRequestUtils.isOKtoUseSession(request)) {
         request.removeAttribute(SANDBOX_DATE_TIME_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
         request.removeAttribute(SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
       }

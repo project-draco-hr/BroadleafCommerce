@@ -1,14 +1,14 @@
 {
   BroadleafCurrency currency=null;
   currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_REQUEST);
-  if (currency == null && request.getParameter(CURRENCY_CODE_PARAM) != null) {
-    String currencyCode=request.getParameter(CURRENCY_CODE_PARAM);
+  if (currency == null && BLCRequestUtils.getURLorHeaderParameter(request,CURRENCY_CODE_PARAM) != null) {
+    String currencyCode=BLCRequestUtils.getURLorHeaderParameter(request,CURRENCY_CODE_PARAM);
     currency=broadleafCurrencyService.findCurrencyByCode(currencyCode);
     if (LOG.isTraceEnabled()) {
       LOG.trace("Attempt to find currency by param " + currencyCode + " resulted in "+ currency);
     }
   }
-  if (currency == null && useSessionInRequestProcessing) {
+  if (currency == null && BLCRequestUtils.isOKtoUseSession(request)) {
     currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
   }
   if (currency == null) {
@@ -20,7 +20,7 @@
   if (currency == null) {
     currency=broadleafCurrencyService.findDefaultBroadleafCurrency();
   }
-  if (useSessionInRequestProcessing) {
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
     request.setAttribute(CURRENCY_VAR,currency,WebRequest.SCOPE_GLOBAL_SESSION);
   }
   return currency;

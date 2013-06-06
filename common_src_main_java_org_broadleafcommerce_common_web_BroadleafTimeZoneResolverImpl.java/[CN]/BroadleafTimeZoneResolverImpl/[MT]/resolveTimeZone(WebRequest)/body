@@ -1,14 +1,14 @@
 {
   TimeZone timeZone=null;
   timeZone=(TimeZone)request.getAttribute(TIMEZONE_VAR,WebRequest.SCOPE_REQUEST);
-  if (timeZone == null && request.getParameter(TIMEZONE_CODE_PARAM) != null) {
-    String timeZoneCode=request.getParameter(TIMEZONE_CODE_PARAM);
+  if (timeZone == null && BLCRequestUtils.getURLorHeaderParameter(request,TIMEZONE_CODE_PARAM) != null) {
+    String timeZoneCode=BLCRequestUtils.getURLorHeaderParameter(request,TIMEZONE_CODE_PARAM);
     timeZone=TimeZone.getTimeZone(timeZoneCode);
     if (LOG.isTraceEnabled()) {
       LOG.trace("Attempt to find TimeZone by param " + timeZoneCode + " resulted in "+ timeZone);
     }
   }
-  if (timeZone == null && useSessionInRequestProcessing) {
+  if (timeZone == null && BLCRequestUtils.isOKtoUseSession(request)) {
     timeZone=(TimeZone)request.getAttribute(TIMEZONE_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
     if (LOG.isTraceEnabled()) {
       LOG.trace("Attempt to find timezone from session resulted in " + timeZone);
@@ -20,7 +20,7 @@
       LOG.trace("timezone set to default timezone " + timeZone);
     }
   }
-  if (useSessionInRequestProcessing) {
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
     request.setAttribute(TIMEZONE_VAR,timeZone,WebRequest.SCOPE_GLOBAL_SESSION);
   }
   return timeZone;
