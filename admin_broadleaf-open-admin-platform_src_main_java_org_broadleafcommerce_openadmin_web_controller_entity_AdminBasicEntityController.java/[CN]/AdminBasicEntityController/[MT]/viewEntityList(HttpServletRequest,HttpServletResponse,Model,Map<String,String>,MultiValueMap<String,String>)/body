@@ -16,6 +16,18 @@
     }
   }
   if (canCreate) {
+    checkReadOnly: {
+      for (      Property property : cmd.getProperties()) {
+        if (property.getMetadata() instanceof BasicFieldMetadata) {
+          if (((BasicFieldMetadata)property.getMetadata()).getReadOnly() == null || !((BasicFieldMetadata)property.getMetadata()).getReadOnly()) {
+            break checkReadOnly;
+          }
+        }
+      }
+      canCreate=false;
+    }
+  }
+  if (canCreate) {
     mainActions.add(DefaultMainActions.ADD);
   }
   model.addAttribute("entityFriendlyName",cmd.getPolymorphicEntities().getFriendlyName());
