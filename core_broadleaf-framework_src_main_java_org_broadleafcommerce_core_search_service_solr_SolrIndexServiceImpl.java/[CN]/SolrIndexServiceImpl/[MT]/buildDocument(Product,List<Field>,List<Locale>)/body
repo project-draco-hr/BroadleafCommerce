@@ -2,7 +2,6 @@
   SolrInputDocument document=new SolrInputDocument();
   attachBasicDocumentFields(product,document);
   List<String> addedProperties=new ArrayList<String>();
-  Map<String,List<String>> copyFieldValues=new HashMap<String,List<String>>();
   for (  Field field : fields) {
     try {
       if (field.getSearchable()) {
@@ -13,18 +12,8 @@
             prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
             String solrPropertyName=shs.getPropertyNameForFieldSearchable(field,sft,prefix);
             Object value=entry.getValue();
-            if (sft.equals(FieldType.PRICE) || field.getTranslatable() || prefix.equals(shs.getDefaultLocalePrefix())) {
-              document.addField(solrPropertyName,value);
-              addedProperties.add(solrPropertyName);
-            }
-            List<String> copyFieldValue=copyFieldValues.get(prefix);
-            if (copyFieldValue == null) {
-              copyFieldValue=new ArrayList<String>();
-              copyFieldValues.put(prefix,copyFieldValue);
-            }
-            if (value != null) {
-              copyFieldValue.add(value.toString());
-            }
+            document.addField(solrPropertyName,value);
+            addedProperties.add(solrPropertyName);
           }
         }
       }
@@ -45,9 +34,6 @@
  catch (    Exception e) {
       LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]",e);
     }
-  }
-  for (  Entry<String,List<String>> entry : copyFieldValues.entrySet()) {
-    document.addField(shs.getSearchableFieldName(entry.getKey()),StringUtils.join(entry.getValue()," "));
   }
   return document;
 }

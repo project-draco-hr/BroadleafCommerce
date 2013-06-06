@@ -1,13 +1,16 @@
 {
   String propertyName=field.getPropertyName();
-  if (propertyName.contains("productAttributes.")) {
-    propertyName=convertToMappedProperty(propertyName,"productAttributes","mappedProductAttributes");
-  }
   Map<String,Object> values=new HashMap<String,Object>();
   if (extensionManager != null) {
     ExtensionResultStatusType result=extensionManager.getProxy().addPropertyValues(product,field,fieldType,values,propertyName,locales);
     if (ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
-      Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+      final Object propertyValue;
+      if (propertyName.contains(ATTR_MAP)) {
+        propertyValue=PropertyUtils.getMappedProperty(product,ATTR_MAP,propertyName.substring(ATTR_MAP.length() + 1));
+      }
+ else {
+        propertyValue=PropertyUtils.getProperty(product,propertyName);
+      }
       values.put("",propertyValue);
     }
   }

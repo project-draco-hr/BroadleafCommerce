@@ -4,12 +4,18 @@
     result=ExtensionResultStatusType.HANDLED;
     for (    Locale locale : locales) {
       String localeCode=locale.getLocaleCode();
-      if (field.getTranslatable()) {
-        BroadleafRequestContext tempContext=new BroadleafRequestContext();
-        tempContext.setLocale(locale);
-        BroadleafRequestContext.setBroadleafRequestContext(tempContext);
+      TranslationConsiderationContext.setTranslationConsiderationContext(translationEnabled);
+      TranslationConsiderationContext.setTranslationService(translationService);
+      BroadleafRequestContext tempContext=new BroadleafRequestContext();
+      tempContext.setLocale(locale);
+      BroadleafRequestContext.setBroadleafRequestContext(tempContext);
+      final Object propertyValue;
+      if (propertyName.contains(ATTR_MAP)) {
+        propertyValue=PropertyUtils.getMappedProperty(product,ATTR_MAP,propertyName.substring(ATTR_MAP.length() + 1));
       }
-      Object propertyValue=PropertyUtils.getProperty(product,propertyName);
+ else {
+        propertyValue=PropertyUtils.getProperty(product,propertyName);
+      }
       values.put(localeCode,propertyValue);
     }
   }
