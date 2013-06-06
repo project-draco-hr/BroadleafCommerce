@@ -13,6 +13,7 @@
     Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true);
     Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
     EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
+    entityForm.removeAction(DefaultEntityFormActions.DELETE);
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/simpleEditEntity");
   }
