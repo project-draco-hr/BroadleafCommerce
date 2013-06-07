@@ -16,6 +16,9 @@
     if (LOG.isTraceEnabled()) {
       LOG.trace("Attempt to find locale from session resulted in " + locale);
     }
+    if (locale != null) {
+      request.setAttribute(LOCALE_PULLED_FROM_SESSION,Boolean.TRUE,WebRequest.SCOPE_REQUEST);
+    }
   }
   if (locale == null) {
     locale=localeService.findDefaultLocale();
