@@ -12,6 +12,10 @@
   try {
     Map<String,FieldMetadata> ceilingMergedProperties=getSimpleMergedProperties(entity.getType()[0],persistencePerspective);
     String mapKey=entity.findProperty(mapStructure.getKeyPropertyName()).getValue();
+    if (StringUtils.isEmpty(mapKey)) {
+      entity.addValidationError(mapStructure.getKeyPropertyName(),RequiredPropertyValidator.ERROR_MESSAGE);
+      throw new ValidationException(entity,"This entity failed validation on the 'key' property");
+    }
     if (ceilingMergedProperties.containsKey(mapStructure.getMapProperty() + FieldManager.MAPFIELDSEPARATOR + mapKey)) {
       throw new ServiceException("\"" + mapKey + "\" is a reserved property name.");
     }
