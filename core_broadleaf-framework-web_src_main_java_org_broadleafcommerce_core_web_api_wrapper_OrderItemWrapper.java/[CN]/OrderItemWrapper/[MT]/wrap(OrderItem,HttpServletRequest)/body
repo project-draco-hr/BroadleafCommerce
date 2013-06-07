@@ -2,8 +2,6 @@
   this.id=model.getId();
   this.name=model.getName();
   this.quantity=model.getQuantity();
-  this.retailPrice=model.getRetailPrice();
-  this.salePrice=model.getSalePrice();
   if (model.getCategory() != null) {
     CategorySummaryWrapper categoryWrapper=(CategorySummaryWrapper)context.getBean(CategorySummaryWrapper.class.getName());
     categoryWrapper.wrap(model.getCategory(),request);
@@ -20,7 +18,8 @@
       this.orderItemAttributes.add(orderItemAttributeWrapper);
     }
   }
-  if (!model.getOrderItemPriceDetails().isEmpty()) {
+  if (model.getOrderItemPriceDetails() != null && !model.getOrderItemPriceDetails().isEmpty()) {
+    this.orderItemPriceDetails=new ArrayList<OrderItemPriceDetailWrapper>();
     for (    OrderItemPriceDetail orderItemPriceDetail : model.getOrderItemPriceDetails()) {
       OrderItemPriceDetailWrapper orderItemPriceDetailWrapper=(OrderItemPriceDetailWrapper)context.getBean(OrderItemPriceDetailWrapper.class.getName());
       orderItemPriceDetailWrapper.wrap(orderItemPriceDetail,request);
@@ -28,6 +27,8 @@
     }
   }
   if (model instanceof DiscreteOrderItem) {
+    this.retailPrice=model.getRetailPrice();
+    this.salePrice=model.getSalePrice();
     DiscreteOrderItem doi=(DiscreteOrderItem)model;
     SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
     skuWrapper.wrap(doi.getSku(),request);
@@ -37,12 +38,23 @@
     this.product=productWrapper;
   }
  else   if (model instanceof BundleOrderItem) {
-    BundleOrderItem doi=(BundleOrderItem)model;
+    BundleOrderItem boi=(BundleOrderItem)model;
+    this.bundleRetailPrice=boi.getRetailPrice();
+    this.bundleSalePrice=boi.getSalePrice();
     SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
-    skuWrapper.wrap(doi.getSku(),request);
+    skuWrapper.wrap(boi.getSku(),request);
     this.sku=skuWrapper;
+    List<DiscreteOrderItem> discreteItems=boi.getDiscreteOrderItems();
+    if (discreteItems != null && !discreteItems.isEmpty()) {
+      this.bundleItems=new ArrayList<OrderItemWrapper>();
+      for (      DiscreteOrderItem doi : discreteItems) {
+        OrderItemWrapper doiWrapper=(OrderItemWrapper)context.getBean(OrderItemWrapper.class.getName());
+        doiWrapper.wrap(doi,request);
+        this.bundleItems.add(doiWrapper);
+      }
+    }
     ProductBundleSummaryWrapper productWrapper=(ProductBundleSummaryWrapper)context.getBean(ProductBundleSummaryWrapper.class.getName());
-    productWrapper.wrap(doi.getProduct(),request);
+    productWrapper.wrap(boi.getProduct(),request);
     this.product=productWrapper;
   }
 }

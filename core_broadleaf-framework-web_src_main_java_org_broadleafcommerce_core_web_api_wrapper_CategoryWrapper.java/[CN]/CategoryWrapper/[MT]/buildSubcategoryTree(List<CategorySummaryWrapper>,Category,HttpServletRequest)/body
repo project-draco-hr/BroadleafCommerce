@@ -2,7 +2,7 @@
   CatalogService catalogService=(CatalogService)context.getBean("blCatalogService");
   Integer subcategoryLimit=(Integer)request.getAttribute("subcategoryLimit");
   Integer subcategoryOffset=(Integer)request.getAttribute("subcategoryOffset");
-  List<Category> subcategories=catalogService.findAllSubCategories(root,subcategoryLimit,subcategoryOffset);
+  List<Category> subcategories=catalogService.findActiveSubCategoriesByCategory(root,subcategoryLimit,subcategoryOffset);
   if (subcategories != null && !subcategories.isEmpty() && wrappers == null) {
     wrappers=new ArrayList<CategorySummaryWrapper>();
   }

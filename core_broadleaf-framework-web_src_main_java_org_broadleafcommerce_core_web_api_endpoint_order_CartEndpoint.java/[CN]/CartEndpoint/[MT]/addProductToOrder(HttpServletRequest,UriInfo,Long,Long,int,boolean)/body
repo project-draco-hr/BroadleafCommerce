@@ -7,16 +7,12 @@
       Set<String> keySet=multiValuedMap.keySet();
       for (      String key : keySet) {
         if (multiValuedMap.getFirst(key) != null) {
-          productOptions.put(key,multiValuedMap.getFirst(key));
+          if (key.startsWith("productOption.")) {
+            productOptions.put(StringUtils.removeStart(key,"productOption."),multiValuedMap.getFirst(key));
+          }
         }
       }
-      productOptions.remove("categoryId");
-      productOptions.remove("productId");
-      productOptions.remove("skuId");
-      productOptions.remove("quantity");
-      productOptions.remove("priceOrder");
       OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
-      orderItemRequestDTO.setCategoryId(categoryId);
       orderItemRequestDTO.setProductId(productId);
       orderItemRequestDTO.setCategoryId(categoryId);
       orderItemRequestDTO.setQuantity(quantity);
