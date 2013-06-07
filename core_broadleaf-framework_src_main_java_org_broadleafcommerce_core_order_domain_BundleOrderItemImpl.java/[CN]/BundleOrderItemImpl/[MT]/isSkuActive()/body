@@ -1,0 +1,11 @@
+{
+  if (getSku() != null && !getSku().isActive()) {
+    return false;
+  }
+  for (  DiscreteOrderItem discreteItem : getDiscreteOrderItems()) {
+    if (!discreteItem.isSkuActive()) {
+      return false;
+    }
+  }
+  return true;
+}
