@@ -8,6 +8,7 @@
   boolean sortable=false;
   boolean readOnly=false;
   boolean hideIdColumn=false;
+  boolean canFilterAndSort=true;
   String idProperty="id";
   if (fmd instanceof BasicFieldMetadata) {
     readOnly=((BasicFieldMetadata)fmd).getReadOnly();
@@ -89,6 +90,7 @@
     }
     type=ListGrid.Type.MAP;
     editable=true;
+    canFilterAndSort=false;
   }
   String ceilingType="";
   if (fmd instanceof BasicFieldMetadata) {
@@ -106,6 +108,7 @@
   listGrid.setContainingEntityId(containingEntityId);
   listGrid.setReadOnly(readOnly);
   listGrid.setHideIdColumn(hideIdColumn);
+  listGrid.setCanFilterAndSort(canFilterAndSort);
   if (editable) {
     listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
   }
