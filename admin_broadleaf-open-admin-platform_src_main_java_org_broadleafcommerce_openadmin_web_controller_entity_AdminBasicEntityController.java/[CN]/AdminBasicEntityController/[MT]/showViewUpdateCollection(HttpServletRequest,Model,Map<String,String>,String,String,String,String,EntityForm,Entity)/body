@@ -7,6 +7,9 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity parentEntity=service.getRecord(ppr,id,mainMetadata,false);
   ppr=PersistencePackageRequest.fromMetadata(md);
+  if (entityForm != null) {
+    entityForm.clearFieldsMap();
+  }
   if (md instanceof BasicCollectionMetadata && ((BasicCollectionMetadata)md).getAddMethodType().equals(AddMethodType.PERSIST)) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
@@ -27,6 +30,15 @@
   }
  else   if (md instanceof AdornedTargetCollectionMetadata && ((AdornedTargetCollectionMetadata)md).getMaintainedAdornedTargetFields().length > 0) {
     AdornedTargetCollectionMetadata fmd=(AdornedTargetCollectionMetadata)md;
+    if (entity == null) {
+      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId);
+    }
+    if (entityForm == null) {
+      entityForm=formService.buildAdornedListForm(fmd,ppr.getAdornedList(),id);
+    }
+ else {
+      formService.buildAdornedListForm(fmd,ppr.getAdornedList(),id,entityForm);
+    }
     formService.populateEntityFormFields(entityForm,entity);
     formService.populateAdornedEntityFormFields(entityForm,entity,ppr.getAdornedList());
     model.addAttribute("entityForm",entityForm);
@@ -35,6 +47,15 @@
  else   if (md instanceof MapMetadata) {
     MapMetadata fmd=(MapMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+    if (entity == null) {
+      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId);
+    }
+    if (entityForm == null) {
+      entityForm=formService.buildMapForm(fmd,ppr.getMapStructure(),collectionMetadata,id);
+    }
+ else {
+      formService.buildMapForm(fmd,ppr.getMapStructure(),collectionMetadata,id,entityForm);
+    }
     formService.populateEntityFormFields(entityForm,entity);
     formService.populateMapEntityFormFields(entityForm,entity);
     model.addAttribute("entityForm",entityForm);

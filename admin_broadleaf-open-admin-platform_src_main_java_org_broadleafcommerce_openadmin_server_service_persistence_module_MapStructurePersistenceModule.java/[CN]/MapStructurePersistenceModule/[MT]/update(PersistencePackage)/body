@@ -28,20 +28,26 @@
       valueUnfilteredMergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(mapStructure.getValueClassName(),new Class[]{Class.forName(mapStructure.getValueClassName())},null,new String[]{},new ForeignKey[]{},MergedPropertyType.MAPSTRUCTUREVALUE,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     }
     Map<String,FieldMetadata> valueMergedProperties=filterOutCollectionMetadata(valueUnfilteredMergedProperties);
+    if (StringUtils.isEmpty(mapKey)) {
+      entity.addValidationError(mapStructure.getKeyPropertyName(),RequiredPropertyValidator.ERROR_MESSAGE);
+      LOG.debug("No key property passed in for map, failing validation");
+    }
     if (persistentClass != null) {
       Serializable valueInstance=(Serializable)map.get(entity.findProperty("priorKey").getValue());
-      if (!entity.findProperty("priorKey").getValue().equals(entity.findProperty(mapStructure.getKeyPropertyName()).getValue())) {
-        map.remove(entity.findProperty("priorKey").getValue());
-      }
       valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
-      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
+      if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
+        if (!entity.findProperty("priorKey").getValue().equals(mapKey)) {
+          map.remove(entity.findProperty("priorKey").getValue());
+        }
+        map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
+      }
     }
  else {
-      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
+      if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
+        map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
+      }
     }
-    if (!entity.isValidationFailure()) {
-      instance=persistenceManager.getDynamicEntityDao().merge(instance);
-    }
+    instance=persistenceManager.getDynamicEntityDao().merge(instance);
     return getMapRecords(instance,mapStructure,ceilingMergedProperties,valueMergedProperties,entity.findProperty("symbolicId"))[0];
   }
  catch (  Exception e) {
