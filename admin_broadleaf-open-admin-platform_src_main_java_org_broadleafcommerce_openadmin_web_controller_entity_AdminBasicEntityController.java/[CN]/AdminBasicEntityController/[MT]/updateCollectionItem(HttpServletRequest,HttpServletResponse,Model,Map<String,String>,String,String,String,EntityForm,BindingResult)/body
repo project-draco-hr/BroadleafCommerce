@@ -5,7 +5,11 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false);
-  service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity,collectionItemId);
+  Entity savedEntity=service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity,collectionItemId);
+  entityFormValidator.validate(entityForm,savedEntity,result);
+  if (result.hasErrors()) {
+    return showViewUpdateCollection(request,model,pathVars,id,collectionField,collectionItemId,"updateCollectionItem",entityForm,savedEntity);
+  }
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);

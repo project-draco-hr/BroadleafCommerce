@@ -6,7 +6,7 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false);
   Entity savedEntity=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
-  entityValidator.validate(entityForm,savedEntity,result);
+  entityFormValidator.validate(entityForm,savedEntity,result);
   if (result.hasErrors()) {
     FieldMetadata md=collectionProperty.getMetadata();
     ppr=PersistencePackageRequest.fromMetadata(md);
