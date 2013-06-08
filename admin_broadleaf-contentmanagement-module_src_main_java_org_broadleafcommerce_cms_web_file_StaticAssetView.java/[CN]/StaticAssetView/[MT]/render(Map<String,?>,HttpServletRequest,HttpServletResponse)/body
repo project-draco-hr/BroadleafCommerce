@@ -9,6 +9,29 @@
       response.setHeader("Pragma","no-cache");
       response.setDateHeader("Expires",0);
     }
+ else {
+      response.setHeader("Cache-Control","public");
+      response.setHeader("Pragma","cache");
+      if (!StringUtils.isEmpty(request.getHeader("If-Modified-Since"))) {
+        long lastModified=request.getDateHeader("If-Modified-Since");
+        Calendar last=Calendar.getInstance();
+        last.setTime(new Date(lastModified));
+        Calendar check=Calendar.getInstance();
+        check.add(Calendar.SECOND,-2 * new Long(cacheSeconds).intValue());
+        if (check.compareTo(last) < 0) {
+          response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+          return;
+        }
+      }
+ else {
+        Calendar check=Calendar.getInstance();
+        check.add(Calendar.SECOND,-1 * new Long(cacheSeconds).intValue());
+        response.setDateHeader("Last-Modified",check.getTimeInMillis());
+      }
+      Calendar cal=Calendar.getInstance();
+      cal.add(Calendar.SECOND,new Long(cacheSeconds).intValue());
+      response.setDateHeader("Expires",cal.getTimeInMillis());
+    }
     OutputStream os=response.getOutputStream();
     boolean eof=false;
     while (!eof) {
