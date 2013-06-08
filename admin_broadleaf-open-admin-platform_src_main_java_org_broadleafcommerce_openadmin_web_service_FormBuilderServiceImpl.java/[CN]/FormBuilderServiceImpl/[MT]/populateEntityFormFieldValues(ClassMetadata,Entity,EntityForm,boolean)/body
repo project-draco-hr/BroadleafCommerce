@@ -1,0 +1,43 @@
+{
+  for (  Property p : cmd.getProperties()) {
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      BasicFieldMetadata basicFM=(BasicFieldMetadata)p.getMetadata();
+      Property entityProp=entity.findProperty(p.getName());
+      if (entityProp == null && (formFieldsOverride || basicFM.getVisibility().equals(VisibilityEnum.FORM_EXPLICITLY_SHOWN))) {
+        Field field=ef.findField(p.getName());
+        if (field != null) {
+          field.setValue(null);
+        }
+      }
+ else       if (entityProp == null && !SupportedFieldType.PASSWORD_CONFIRM.equals(basicFM.getExplicitFieldType())) {
+        ef.removeField(p.getName());
+      }
+ else {
+        Field field=ef.findField(p.getName());
+        if (field != null) {
+          if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
+            RuleBuilderField rbf=(RuleBuilderField)field;
+            if (entity.getPMap().containsKey(rbf.getJsonFieldName())) {
+              String json=entity.getPMap().get(rbf.getJsonFieldName()).getValue();
+              rbf.setJson(json);
+              DataWrapper dw=convertJsonToDataWrapper(json);
+              if (dw != null) {
+                rbf.setDataWrapper(dw);
+              }
+            }
+          }
+          if (basicFM.getFieldType() == SupportedFieldType.MEDIA) {
+            field.setValue(entityProp.getValue());
+            field.setDisplayValue(entityProp.getDisplayValue());
+            MediaField mf=(MediaField)field;
+            mf.setMedia(convertJsonToMedia(entityProp.getValue()));
+          }
+ else           if (!SupportedFieldType.PASSWORD_CONFIRM.equals(basicFM.getExplicitFieldType())) {
+            field.setValue(entityProp.getValue());
+            field.setDisplayValue(entityProp.getDisplayValue());
+          }
+        }
+      }
+    }
+  }
+}

@@ -14,7 +14,7 @@
     String mapKey=entity.findProperty(mapStructure.getKeyPropertyName()).getValue();
     if (StringUtils.isEmpty(mapKey)) {
       entity.addValidationError(mapStructure.getKeyPropertyName(),RequiredPropertyValidator.ERROR_MESSAGE);
-      throw new ValidationException(entity,"This entity failed validation on the 'key' property");
+      LOG.debug("No key property passed in for map, failing validation");
     }
     if (ceilingMergedProperties.containsKey(mapStructure.getMapProperty() + FieldManager.MAPFIELDSEPARATOR + mapKey)) {
       throw new ServiceException("\"" + mapKey + "\" is a reserved property name.");
@@ -42,13 +42,13 @@
         fieldManager.setFieldValue(valueInstance,mapStructure.getManyToField(),instance);
       }
       valueInstance=persistenceManager.getDynamicEntityDao().persist(valueInstance);
-      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
+      map.put(mapKey,valueInstance);
     }
  else {
       String propertyName=((SimpleValueMapStructure)mapStructure).getValuePropertyName();
       String value=entity.findProperty(propertyName).getValue();
       Object convertedPrimitive=convertPrimitiveBasedOnType(propertyName,value,valueMergedProperties);
-      map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),convertedPrimitive);
+      map.put(mapKey,convertedPrimitive);
     }
     Entity[] responses=getMapRecords(instance,mapStructure,ceilingMergedProperties,valueMergedProperties,entity.findProperty("symbolicId"));
     for (    Entity response : responses) {

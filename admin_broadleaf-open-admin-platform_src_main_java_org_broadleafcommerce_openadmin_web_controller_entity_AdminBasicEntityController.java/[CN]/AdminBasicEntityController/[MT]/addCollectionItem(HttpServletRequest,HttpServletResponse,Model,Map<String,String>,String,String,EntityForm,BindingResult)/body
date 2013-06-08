@@ -5,7 +5,13 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false);
-  service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
+  Entity savedEntity=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
+  entityValidator.validate(entityForm,savedEntity,result);
+  if (result.hasErrors()) {
+    FieldMetadata md=collectionProperty.getMetadata();
+    ppr=PersistencePackageRequest.fromMetadata(md);
+    return buildAddCollectionItemModel(request,response,model,id,collectionField,sectionKey,collectionProperty,md,ppr,entityForm,savedEntity);
+  }
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);
