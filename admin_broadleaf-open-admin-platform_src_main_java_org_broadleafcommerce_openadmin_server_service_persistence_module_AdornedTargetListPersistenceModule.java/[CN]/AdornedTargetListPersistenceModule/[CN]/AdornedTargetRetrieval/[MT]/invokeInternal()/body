@@ -16,7 +16,12 @@
   }
   Map<String,FilterAndSortCriteria> convertedCto=new HashMap<String,FilterAndSortCriteria>();
   for (  Entry<String,FilterAndSortCriteria> entry : cto.getCriteriaMap().entrySet()) {
-    convertedCto.put(prefix + "." + entry.getKey(),entry.getValue());
+    if (adornedTargetList.getSortField() != null && entry.getKey().equals(adornedTargetList.getSortField())) {
+      convertedCto.put(entry.getKey(),entry.getValue());
+    }
+ else {
+      convertedCto.put(prefix + "." + entry.getKey(),entry.getValue());
+    }
   }
   cto.setCriteriaMap(convertedCto);
   List<FilterMapping> filterMappings2=getBasicFilterMappings(persistencePerspective,cto,convertedMergedPropertiesTarget,ceilingEntityFullyQualifiedClassname);
