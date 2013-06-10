@@ -7,9 +7,6 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity parentEntity=service.getRecord(ppr,id,mainMetadata,false);
   ppr=PersistencePackageRequest.fromMetadata(md);
-  if (entityForm != null) {
-    entityForm.clearFieldsMap();
-  }
   if (md instanceof BasicCollectionMetadata && ((BasicCollectionMetadata)md).getAddMethodType().equals(AddMethodType.PERSIST)) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
@@ -21,7 +18,8 @@
       entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
     }
  else {
-      formService.populateEntityForm(collectionMetadata,entity,subRecordsMap,entityForm,true);
+      entityForm.clearFieldsMap();
+      formService.populateEntityForm(collectionMetadata,entity,subRecordsMap,entityForm);
       entityForm.removeAllActions();
     }
     entityForm.removeAction(DefaultEntityFormActions.DELETE);
@@ -37,6 +35,7 @@
       entityForm=formService.buildAdornedListForm(fmd,ppr.getAdornedList(),id);
     }
  else {
+      entityForm.clearFieldsMap();
       formService.buildAdornedListForm(fmd,ppr.getAdornedList(),id,entityForm);
     }
     formService.populateEntityFormFields(entityForm,entity);
@@ -54,7 +53,10 @@
       entityForm=formService.buildMapForm(fmd,ppr.getMapStructure(),collectionMetadata,id);
     }
  else {
+      String priorKey=entityForm.getFields().get("priorKey").getValue();
+      entityForm.clearFieldsMap();
       formService.buildMapForm(fmd,ppr.getMapStructure(),collectionMetadata,id,entityForm);
+      entityForm.getFields().get("priorKey").setValue(priorKey);
     }
     formService.populateEntityFormFields(entityForm,entity);
     formService.populateMapEntityFormFields(entityForm,entity);

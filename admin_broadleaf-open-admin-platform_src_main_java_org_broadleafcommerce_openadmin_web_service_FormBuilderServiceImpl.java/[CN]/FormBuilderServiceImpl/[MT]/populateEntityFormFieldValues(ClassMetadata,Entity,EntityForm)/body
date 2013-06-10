@@ -3,7 +3,11 @@
     if (p.getMetadata() instanceof BasicFieldMetadata) {
       BasicFieldMetadata basicFM=(BasicFieldMetadata)p.getMetadata();
       Property entityProp=entity.findProperty(p.getName());
-      if (entityProp == null && (formFieldsOverride || basicFM.getVisibility().equals(VisibilityEnum.FORM_EXPLICITLY_SHOWN))) {
+      boolean explicitlyShown=VisibilityEnum.FORM_EXPLICITLY_SHOWN.equals(basicFM.getVisibility());
+      if (p.getName().equals("key") || p.getName().equals("priorKey")) {
+        explicitlyShown=true;
+      }
+      if (entityProp == null && explicitlyShown) {
         Field field=ef.findField(p.getName());
         if (field != null) {
           field.setValue(null);
