@@ -19,7 +19,7 @@ populateValueRequest.getFieldManager().setFieldValue(instance,populateValueReque
 break;
 case DECIMAL:
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(new Double(populateValueRequest.getRequestedValue())));
+populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
 }
  else {
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Double(populateValueRequest.getRequestedValue()));
@@ -27,13 +27,14 @@ populateValueRequest.getFieldManager().setFieldValue(instance,populateValueReque
 break;
 case MONEY:
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(new Double(populateValueRequest.getRequestedValue())));
+populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
 }
  else if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+LOG.warn("The requested Money field is of type double and could result in a loss of precision." + " Broadleaf recommends that the type of all Money fields are 'BigDecimal' in order to avoid" + " this loss of precision that could occur.");
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Double(populateValueRequest.getRequestedValue()));
 }
  else {
-populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Money(new Double(populateValueRequest.getRequestedValue())));
+populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Money(new BigDecimal(populateValueRequest.getRequestedValue())));
 }
 break;
 case INTEGER:
