@@ -30,20 +30,12 @@
     this.retailPrice=model.getRetailPrice();
     this.salePrice=model.getSalePrice();
     DiscreteOrderItem doi=(DiscreteOrderItem)model;
-    SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
-    skuWrapper.wrap(doi.getSku(),request);
-    this.sku=skuWrapper;
-    ProductSummaryWrapper productWrapper=(ProductSummaryWrapper)context.getBean(ProductSummaryWrapper.class.getName());
-    productWrapper.wrap(doi.getProduct(),request);
-    this.product=productWrapper;
+    this.productId=doi.getProduct().getId();
   }
  else   if (model instanceof BundleOrderItem) {
     BundleOrderItem boi=(BundleOrderItem)model;
     this.bundleRetailPrice=boi.getRetailPrice();
     this.bundleSalePrice=boi.getSalePrice();
-    SkuWrapper skuWrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
-    skuWrapper.wrap(boi.getSku(),request);
-    this.sku=skuWrapper;
     List<DiscreteOrderItem> discreteItems=boi.getDiscreteOrderItems();
     if (discreteItems != null && !discreteItems.isEmpty()) {
       this.bundleItems=new ArrayList<OrderItemWrapper>();
@@ -53,8 +45,6 @@
         this.bundleItems.add(doiWrapper);
       }
     }
-    ProductBundleSummaryWrapper productWrapper=(ProductBundleSummaryWrapper)context.getBean(ProductBundleSummaryWrapper.class.getName());
-    productWrapper.wrap(boi.getProduct(),request);
-    this.product=productWrapper;
+    this.productId=boi.getProduct().getId();
   }
 }
