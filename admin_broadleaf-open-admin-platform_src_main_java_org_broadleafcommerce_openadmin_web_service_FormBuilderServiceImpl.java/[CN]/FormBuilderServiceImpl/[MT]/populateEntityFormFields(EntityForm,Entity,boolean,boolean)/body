@@ -1,0 +1,15 @@
+{
+  if (populateType) {
+    ef.setId(entity.findProperty(ef.getIdProperty()).getValue());
+  }
+  if (populateId) {
+    ef.setEntityType(entity.getType()[0]);
+  }
+  for (  Entry<String,Field> entry : ef.getFields().entrySet()) {
+    Property entityProp=entity.findProperty(entry.getKey());
+    if (entityProp != null) {
+      entry.getValue().setValue(entityProp.getValue());
+      entry.getValue().setDisplayValue(entityProp.getDisplayValue());
+    }
+  }
+}
