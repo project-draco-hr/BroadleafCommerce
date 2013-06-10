@@ -15,6 +15,13 @@
     }
   }
   ListGrid listGrid=createListGrid(cmd.getCeilingType(),headerFields,type,drs,sectionKey,0,idProperty);
-  listGrid.getHeaderFields().iterator().next().setMainEntityLink(true);
+  if (CollectionUtils.isNotEmpty(listGrid.getHeaderFields())) {
+    listGrid.getHeaderFields().iterator().next().setMainEntityLink(true);
+  }
+ else {
+    String message="There are no listgrid header fields configured for the class " + cmd.getCeilingType();
+    message+="Please mark some @AdminPresentation fields with 'prominent = true'";
+    LOG.error(message);
+  }
   return listGrid;
 }
