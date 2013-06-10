@@ -51,17 +51,28 @@
         if ((mutable == null || mutable) && (readOnly == null || !readOnly)) {
           if (value != null) {
             handled=false;
-            for (            FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
-              FieldProviderResponse response=fieldPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
-              if (FieldProviderResponse.NOT_HANDLED != response) {
-                handled=true;
-              }
-              if (FieldProviderResponse.HANDLED_BREAK == response) {
-                break;
+            PopulateValueRequest request=new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this);
+            boolean attemptToPopulate=true;
+            for (            PopulateValueRequestValidator validator : populateValidators) {
+              PropertyValidationResult validationResult=validator.validate(request,instance);
+              if (!validationResult.isValid()) {
+                entity.addValidationError(property.getName(),validationResult.getErrorMessage());
+                attemptToPopulate=false;
               }
             }
-            if (!handled) {
-              defaultFieldPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
+            if (attemptToPopulate) {
+              for (              FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
+                FieldProviderResponse response=fieldPersistenceProvider.populateValue(request,instance);
+                if (FieldProviderResponse.NOT_HANDLED != response) {
+                  handled=true;
+                }
+                if (FieldProviderResponse.HANDLED_BREAK == response) {
+                  break;
+                }
+              }
+              if (!handled) {
+                defaultFieldPersistenceProvider.populateValue(new PopulateValueRequest(setId,fieldManager,property,metadata,returnType,value,persistenceManager,this),instance);
+              }
             }
           }
  else {
