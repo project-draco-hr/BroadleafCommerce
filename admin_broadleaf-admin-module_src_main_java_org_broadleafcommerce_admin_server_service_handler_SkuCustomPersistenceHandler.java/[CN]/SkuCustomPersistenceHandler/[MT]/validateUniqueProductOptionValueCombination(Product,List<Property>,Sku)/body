@@ -1,27 +1,29 @@
 {
-  List<Long> productOptionValueIds=new ArrayList<Long>();
-  for (  Property property : productOptionProperties) {
-    productOptionValueIds.add(Long.parseLong(property.getValue()));
-  }
-  boolean validated=true;
-  for (  Sku sku : product.getAdditionalSkus()) {
-    if (currentSku == null || !sku.getId().equals(currentSku.getId())) {
-      List<Long> testList=new ArrayList<Long>();
-      for (      ProductOptionValue optionValue : sku.getProductOptionValues()) {
-        testList.add(optionValue.getId());
-      }
-      if (productOptionValueIds.containsAll(testList) && productOptionValueIds.size() == testList.size()) {
-        validated=false;
-        break;
+  if (CollectionUtils.isNotEmpty(productOptionProperties)) {
+    List<Long> productOptionValueIds=new ArrayList<Long>();
+    for (    Property property : productOptionProperties) {
+      productOptionValueIds.add(Long.parseLong(property.getValue()));
+    }
+    boolean validated=true;
+    for (    Sku sku : product.getAdditionalSkus()) {
+      if (currentSku == null || !sku.getId().equals(currentSku.getId())) {
+        List<Long> testList=new ArrayList<Long>();
+        for (        ProductOptionValue optionValue : sku.getProductOptionValues()) {
+          testList.add(optionValue.getId());
+        }
+        if (CollectionUtils.isNotEmpty(testList) && productOptionValueIds.containsAll(testList) && productOptionValueIds.size() == testList.size()) {
+          validated=false;
+          break;
+        }
       }
     }
-  }
-  if (!validated) {
-    Entity errorEntity=new Entity();
-    for (    Property productOptionProperty : productOptionProperties) {
-      errorEntity.addValidationError(productOptionProperty.getName(),"uniqueSkuError");
+    if (!validated) {
+      Entity errorEntity=new Entity();
+      for (      Property productOptionProperty : productOptionProperties) {
+        errorEntity.addValidationError(productOptionProperty.getName(),"uniqueSkuError");
+      }
+      return errorEntity;
     }
-    return errorEntity;
   }
   return null;
 }

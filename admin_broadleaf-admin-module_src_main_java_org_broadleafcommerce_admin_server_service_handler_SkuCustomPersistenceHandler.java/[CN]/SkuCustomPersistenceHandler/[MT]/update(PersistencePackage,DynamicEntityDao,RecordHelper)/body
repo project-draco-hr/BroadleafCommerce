@@ -9,7 +9,7 @@
     Entity errorEntity=validateUniqueProductOptionValueCombination(adminInstance.getProduct(),getProductOptionProperties(entity),adminInstance);
     if (errorEntity != null) {
       entity.setValidationErrors(errorEntity.getValidationErrors());
-      return errorEntity;
+      return entity;
     }
     associateProductOptionValuesToSku(entity,adminInstance,dynamicEntityDao);
     adminInstance=(Sku)dynamicEntityDao.merge(adminInstance);
