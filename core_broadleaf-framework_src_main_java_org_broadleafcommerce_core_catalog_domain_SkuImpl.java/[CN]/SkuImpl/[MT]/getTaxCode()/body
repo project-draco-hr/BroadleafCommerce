@@ -1,6 +1,9 @@
 {
-  if (StringUtils.isEmpty(this.taxCode)) {
-    this.product.getTaxCode();
+  if (StringUtils.isEmpty(taxCode) && hasDefaultSku()) {
+    return lookupDefaultSku().getTaxCode();
   }
-  return this.taxCode;
+ else   if (StringUtils.isEmpty(taxCode)) {
+    return getProduct().getTaxCode();
+  }
+  return taxCode;
 }
