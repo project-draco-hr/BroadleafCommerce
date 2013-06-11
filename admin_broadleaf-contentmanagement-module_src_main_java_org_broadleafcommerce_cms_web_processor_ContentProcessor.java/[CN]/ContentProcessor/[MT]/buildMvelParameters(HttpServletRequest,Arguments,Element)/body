@@ -1,9 +1,23 @@
 {
-  TimeDTO timeDto=new TimeDTO(SystemTime.asCalendar());
+  TimeZone timeZone=BroadleafRequestContext.getBroadleafRequestContext().getTimeZone();
+  final TimeDTO timeDto;
+  if (timeZone != null) {
+    timeDto=new TimeDTO(SystemTime.asCalendar(timeZone));
+  }
+ else {
+    timeDto=new TimeDTO();
+  }
   RequestDTO requestDto=(RequestDTO)request.getAttribute(REQUEST_DTO);
   Map<String,Object> mvelParameters=new HashMap<String,Object>();
   mvelParameters.put("time",timeDto);
   mvelParameters.put("request",requestDto);
+  String productString=element.getAttributeValue("product");
+  if (productString != null) {
+    Object product=StandardExpressionProcessor.processExpression(arguments,productString);
+    if (product != null) {
+      mvelParameters.put("product",product);
+    }
+  }
   @SuppressWarnings("unchecked") Map<String,Object> blcRuleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);
   if (blcRuleMap != null) {
     for (    String mapKey : blcRuleMap.keySet()) {
