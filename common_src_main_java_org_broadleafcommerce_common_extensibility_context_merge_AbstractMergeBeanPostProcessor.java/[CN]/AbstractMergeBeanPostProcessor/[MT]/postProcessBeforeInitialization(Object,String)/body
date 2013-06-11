@@ -1,12 +1,20 @@
 {
   if (beanName.equals(targetRef)) {
-    Object mergeCollection=applicationContext.getBean(collectionRef);
-    if (bean instanceof ListFactoryBean) {
+    if (collectionBean == null) {
+      collectionBean=applicationContext.getBean(collectionRef);
+    }
+    if (bean instanceof ListFactoryBean || bean instanceof List) {
       try {
-        List mergeList=(List)mergeCollection;
-        Field field=ListFactoryBean.class.getDeclaredField("sourceList");
-        field.setAccessible(true);
-        List sourceList=(List)field.get(bean);
+        List mergeList=(List)collectionBean;
+        List sourceList;
+        if (bean instanceof ListFactoryBean) {
+          Field field=ListFactoryBean.class.getDeclaredField("sourceList");
+          field.setAccessible(true);
+          sourceList=(List)field.get(bean);
+        }
+ else {
+          sourceList=(List)bean;
+        }
 switch (placement) {
 case APPEND:
           sourceList.addAll(mergeList);
@@ -23,12 +31,18 @@ break;
 throw new BeanCreationException(e.getMessage());
 }
 }
- else if (bean instanceof SetFactoryBean) {
+ else if (bean instanceof SetFactoryBean || bean instanceof Set) {
 try {
-Set mergeSet=(Set)mergeCollection;
+Set mergeSet=(Set)collectionBean;
+Set sourceSet;
+if (bean instanceof Set) {
 Field field=SetFactoryBean.class.getDeclaredField("sourceSet");
 field.setAccessible(true);
-Set sourceSet=(Set)field.get(bean);
+sourceSet=(Set)field.get(bean);
+}
+ else {
+sourceSet=(Set)bean;
+}
 List tempList=new ArrayList(sourceSet);
 switch (placement) {
 case APPEND:
@@ -48,12 +62,18 @@ sourceSet.addAll(tempList);
 throw new BeanCreationException(e.getMessage());
 }
 }
- else if (bean instanceof MapFactoryBean) {
+ else if (bean instanceof MapFactoryBean || bean instanceof Map) {
 try {
-Map mergeMap=(Map)mergeCollection;
+Map mergeMap=(Map)collectionBean;
+Map sourceMap;
+if (bean instanceof MapFactoryBean) {
 Field field=MapFactoryBean.class.getDeclaredField("sourceMap");
 field.setAccessible(true);
-Map sourceMap=(Map)field.get(bean);
+sourceMap=(Map)field.get(bean);
+}
+ else {
+sourceMap=(Map)bean;
+}
 LinkedHashMap tempMap=new LinkedHashMap();
 switch (placement) {
 case APPEND:
