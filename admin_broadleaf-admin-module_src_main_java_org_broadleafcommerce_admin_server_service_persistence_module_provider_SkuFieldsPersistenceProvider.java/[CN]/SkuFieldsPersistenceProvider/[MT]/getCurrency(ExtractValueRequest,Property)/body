@@ -1,10 +1,10 @@
 {
-  BroadleafCurrency bc;
-  if (isDefaultSkuPrice(extractValueRequest,property)) {
+  BroadleafCurrency bc=null;
+  if (extractValueRequest.getEntity() instanceof Product && isDefaultSkuProperty(extractValueRequest,property)) {
     Product p=(Product)extractValueRequest.getEntity();
     bc=p.getDefaultSku().getCurrency();
   }
- else {
+ else   if (extractValueRequest.getEntity() instanceof Sku) {
     Sku s=(Sku)extractValueRequest.getEntity();
     bc=s.getCurrency();
   }

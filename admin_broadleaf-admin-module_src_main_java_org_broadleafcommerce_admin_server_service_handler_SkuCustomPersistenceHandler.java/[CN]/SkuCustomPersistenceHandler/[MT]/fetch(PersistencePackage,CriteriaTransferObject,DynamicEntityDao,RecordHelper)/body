@@ -24,18 +24,6 @@
     for (int i=0; i < records.size(); i++) {
       Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
-      for (      Property property : entity.getProperties()) {
-        if (StringUtils.isEmpty(property.getValue())) {
-          if (property.getName().equals("retailPrice") || property.getName().equals("salePrice")) {
-            property.setValue("(Not set)");
-          }
- else {
-            String propertyName=property.getName();
-            String strValue=SkuCustomPersistenceHandler.getStringValueFromGetter(propertyName,sku,helper);
-            property.setValue(strValue);
-          }
-        }
-      }
       List<ProductOptionValue> optionValues=sku.getProductOptionValues();
       for (      ProductOptionValue value : optionValues) {
         Property optionProperty=new Property();
