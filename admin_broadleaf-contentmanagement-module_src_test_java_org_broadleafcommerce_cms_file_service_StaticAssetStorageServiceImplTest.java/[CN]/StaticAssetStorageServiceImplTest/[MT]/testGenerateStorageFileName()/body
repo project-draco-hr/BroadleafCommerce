@@ -2,19 +2,19 @@
   StaticAssetStorageServiceImpl staticAssetStorageService=new StaticAssetStorageServiceImpl();
   staticAssetStorageService.assetFileSystemPath="/test";
   staticAssetStorageService.assetServerMaxGeneratedDirectories=2;
-  String fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg");
+  String fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg",false);
   assertTrue(fileName.equals("/test/35/ec/myproductimage.jpg"));
   BroadleafRequestContext brc=new BroadleafRequestContext();
   BroadleafRequestContext.setBroadleafRequestContext(brc);
   Site site=new SiteImpl();
   site.setId(125L);
   brc.setSite(site);
-  fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg");
+  fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg",false);
   assertTrue(fileName.equals("/test/7f/site-125/35/ec/myproductimage.jpg"));
   staticAssetStorageService.assetServerMaxGeneratedDirectories=3;
-  fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg");
+  fileName=staticAssetStorageService.generateStorageFileName("/product/myproductimage.jpg",false);
   assertTrue(fileName.equals("/test/7f/site-125/35/ec/52/myproductimage.jpg"));
   staticAssetStorageService.assetServerMaxGeneratedDirectories=2;
-  fileName=staticAssetStorageService.generateStorageFileName("testwithoutslash");
+  fileName=staticAssetStorageService.generateStorageFileName("testwithoutslash",false);
   assertTrue(fileName.equals("/test/7f/site-125/e9/90/testwithoutslash"));
 }
