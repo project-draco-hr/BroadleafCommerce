@@ -1,0 +1,25 @@
+{
+  return new ErrorReporter(){
+    @Override public void warning(    String message,    String sourceName,    int line,    String lineSource,    int lineOffset){
+      if (line < 0) {
+        LOG.warn(message);
+      }
+ else {
+        LOG.warn(line + ':' + lineOffset+ ':'+ message);
+      }
+    }
+    @Override public void error(    String message,    String sourceName,    int line,    String lineSource,    int lineOffset){
+      if (line < 0) {
+        LOG.error(message);
+      }
+ else {
+        LOG.error(line + ':' + lineOffset+ ':'+ message);
+      }
+    }
+    @Override public EvaluatorException runtimeError(    String message,    String sourceName,    int line,    String lineSource,    int lineOffset){
+      error(message,sourceName,line,lineSource,lineOffset);
+      return new EvaluatorException(message);
+    }
+  }
+;
+}

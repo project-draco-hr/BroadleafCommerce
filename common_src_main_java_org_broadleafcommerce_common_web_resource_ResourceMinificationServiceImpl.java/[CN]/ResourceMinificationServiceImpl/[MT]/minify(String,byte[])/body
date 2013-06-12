@@ -1,0 +1,48 @@
+{
+  if (!enabled) {
+    return bytes;
+  }
+  String type=null;
+  if (filename.endsWith(".js")) {
+    type="js";
+  }
+ else   if (filename.endsWith(".css")) {
+    type="css";
+  }
+  if (!"js".equals(type) && !"css".equals(type)) {
+    throw new IllegalArgumentException("Can only minify js or css resources");
+  }
+  byte[] minifiedBytes;
+  ByteArrayInputStream bais=new ByteArrayInputStream(bytes);
+  InputStreamReader isr=new InputStreamReader(bais);
+  BufferedReader in=new BufferedReader(isr);
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  OutputStreamWriter osw=new OutputStreamWriter(baos);
+  BufferedWriter out=new BufferedWriter(osw);
+  try {
+    if ("js".equals(type)) {
+      JavaScriptCompressor jsc=new JavaScriptCompressor(in,getLogBasedErrorReporter());
+      jsc.compress(out,linebreak,true,verbose,preserveAllSemiColons,disableOptimizations);
+    }
+ else     if ("css".equals(type)) {
+      CssCompressor cssc=new CssCompressor(in);
+      cssc.compress(out,100);
+    }
+    out.flush();
+    minifiedBytes=baos.toByteArray();
+    System.out.println(new String(minifiedBytes));
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    try {
+      in.close();
+      out.close();
+    }
+ catch (    IOException e2) {
+      throw new RuntimeException(e2);
+    }
+  }
+  return minifiedBytes;
+}

@@ -1,0 +1,37 @@
+{
+  StopWatch s=new StopWatch();
+  LinkedHashMap<String,Resource> foundResources=new LinkedHashMap<String,Resource>();
+  for (  String file : files) {
+    for (    Resource location : handler.getLocations()) {
+      try {
+        Resource resource=location.createRelative(file);
+        if (resource.exists() && resource.isReadable()) {
+          foundResources.put(file,resource);
+          break;
+        }
+      }
+ catch (      IOException ex) {
+        LOG.debug("Failed to create relative resource - trying next resource location",ex);
+      }
+    }
+    if (handler.getHandlers() != null) {
+      for (      AbstractGeneratedResourceHandler h : handler.getHandlers()) {
+        if (h.getHandledFileName().equals(file)) {
+          foundResources.put(file,h.getResource());
+        }
+      }
+    }
+  }
+  StringBuilder sb=new StringBuilder();
+  for (  Entry<String,Resource> entry : foundResources.entrySet()) {
+    sb.append(entry.getKey()).append(entry.getValue().lastModified()).append("\r\n");
+  }
+  String version=String.valueOf(sb.toString().hashCode());
+  String bundleWithoutExtension=bundleName.substring(0,bundleName.lastIndexOf('.'));
+  String bundleExtension=bundleName.substring(bundleName.lastIndexOf('.'));
+  String versionedName=bundleWithoutExtension + version + bundleExtension;
+  bundles.put(versionedName,foundResources.values());
+  bundleVersions.put(bundleName,versionedName);
+  s.printString("Regitering bundle");
+  return versionedName;
+}

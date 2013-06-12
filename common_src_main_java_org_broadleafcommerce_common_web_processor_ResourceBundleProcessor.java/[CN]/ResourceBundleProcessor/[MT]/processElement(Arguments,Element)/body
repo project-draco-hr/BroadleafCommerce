@@ -1,0 +1,35 @@
+{
+  String name=element.getAttributeValue("name");
+  String mappingPrefix=element.getAttributeValue("mapping-prefix");
+  NestableNode parent=element.getParent();
+  List<String> files=new ArrayList<String>();
+  for (  String file : element.getAttributeValue("files").split(",")) {
+    files.add(file.trim());
+  }
+  if (isProductionMode()) {
+    String versionedBundle=bundlingService.getVersionedBundleName(name);
+    versionedBundle=null;
+    if (StringUtils.isBlank(versionedBundle)) {
+      BroadleafResourceHttpRequestHandler reqHandler=getRequestHandler(name,arguments);
+      try {
+        versionedBundle=bundlingService.registerBundle(name,files,reqHandler);
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + versionedBundle+ "'}");
+    Element e=getElement(value);
+    parent.insertAfter(element,e);
+  }
+ else {
+    for (    String file : files) {
+      file=file.trim();
+      String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + file+ "'}");
+      Element e=getElement(value);
+      parent.insertAfter(element,e);
+    }
+  }
+  parent.removeChild(element);
+  return ProcessorResult.OK;
+}
