@@ -10,16 +10,19 @@
     loader.setParent(classLoader);
     loader.setThreadContextLoader();
     String[] contexts=StandardConfigLocations.retrieveAll(StandardConfigLocations.TESTCONTEXTTYPE);
-    String[] otherContexts=new String[classPathApplicationContexts.size()];
-    for (int j=0; j < otherContexts.length; j++) {
-      otherContexts[j]=classPathApplicationContexts.get(j).getPath();
+    LinkedHashMap<String,MergeFileSystemAndClassPathXMLApplicationContext.ResourceType> locations=new LinkedHashMap<String,MergeFileSystemAndClassPathXMLApplicationContext.ResourceType>();
+    for (    String context : contexts) {
+      locations.put(context,MergeFileSystemAndClassPathXMLApplicationContext.ResourceType.CLASSPATH);
     }
-    contexts=(String[])ArrayUtils.addAll(contexts,otherContexts);
-    String[] fileSystemItems=new String[fileSystemApplicationContexts.size()];
-    for (int j=0; j < fileSystemItems.length; j++) {
-      fileSystemItems[j]=fileSystemApplicationContexts.get(j).getPath();
+    for (    Task task : appContexts) {
+      if (task instanceof ClassPathApplicationContextTask) {
+        locations.put(((ClassPathApplicationContextTask)task).getPath(),MergeFileSystemAndClassPathXMLApplicationContext.ResourceType.CLASSPATH);
+      }
+ else       if (task instanceof FileSystemApplicationContextTask) {
+        locations.put(((FileSystemApplicationContextTask)task).getPath(),MergeFileSystemAndClassPathXMLApplicationContext.ResourceType.FILESYSTEM);
+      }
     }
-    mergeContext=new MergeFileSystemAndClassPathXMLApplicationContext(contexts,fileSystemItems);
+    mergeContext=new MergeFileSystemAndClassPathXMLApplicationContext(locations,null);
   }
  catch (  Exception e) {
     throw new BuildException(e,getLocation());
