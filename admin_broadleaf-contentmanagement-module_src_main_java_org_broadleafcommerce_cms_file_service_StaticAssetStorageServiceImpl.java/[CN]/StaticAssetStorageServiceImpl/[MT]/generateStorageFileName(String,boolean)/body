@@ -4,7 +4,7 @@
   BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
   if (brc != null) {
     Site site=brc.getSite();
-    if (site != null) {
+    if (site != null && !useSharedFile) {
       String siteDirectory="/site-" + site.getId();
       String siteHash=DigestUtils.md5Hex(siteDirectory);
       fileName=fileName.append("/").append(siteHash.substring(0,2)).append(siteDirectory);

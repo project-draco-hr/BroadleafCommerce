@@ -9,7 +9,7 @@
  else   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType())) {
     InputStream input=file.getInputStream();
     byte[] buffer=new byte[fileBufferSize];
-    String destFileName=generateStorageFileName(staticAsset.getFullUrl());
+    String destFileName=generateStorageFileName(staticAsset.getFullUrl(),false);
     String tempFileName=destFileName.substring(0,destFileName.lastIndexOf("/") + 1) + UUID.randomUUID().toString();
     File tmpFile=new File(tempFileName);
     if (!tmpFile.getParentFile().exists()) {

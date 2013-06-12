@@ -14,7 +14,7 @@
   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType()) && convertedParameters.isEmpty()) {
     InputStream classPathInputStream=getResourceFromClasspath(staticAsset);
     if (classPathInputStream != null) {
-      String cacheName=constructCacheFileName(staticAsset,convertedParameters);
+      String cacheName=constructCacheFileName(staticAsset,convertedParameters,true);
       File cacheFile=new File(cacheName);
       if (!cacheFile.exists()) {
         createCacheFile(classPathInputStream,cacheFile);
@@ -22,14 +22,19 @@
       returnFilePath=cacheFile.getAbsolutePath();
     }
  else {
-      returnFilePath=generateStorageFileName(staticAsset.getFullUrl());
+      returnFilePath=generateStorageFileName(staticAsset.getFullUrl(),false);
     }
   }
  else {
-    String cacheName=constructCacheFileName(staticAsset,convertedParameters);
-    File cacheFile=new File(cacheName);
+    String sharedCacheName=constructCacheFileName(staticAsset,convertedParameters,true);
+    File cacheFile=new File(sharedCacheName);
+    if (!cacheFile.exists()) {
+      String cacheName=constructCacheFileName(staticAsset,convertedParameters,false);
+      cacheFile=new File(cacheName);
+    }
     if (!cacheFile.exists()) {
       InputStream original=findInputStreamForStaticAsset(staticAsset);
+      boolean useSharedFile=shouldUseSharedFile(original);
       if (!convertedParameters.isEmpty()) {
         Operation[] operations=artifactService.buildOperations(convertedParameters,original,staticAsset.getMimeType());
         InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
@@ -39,7 +44,13 @@
         }
       }
  else {
-        createCacheFile(original,cacheFile);
+        if (useSharedFile) {
+          cacheFile=new File(sharedCacheName);
+          createCacheFile(original,cacheFile);
+        }
+ else {
+          createCacheFile(original,cacheFile);
+        }
       }
     }
     returnFilePath=cacheFile.getAbsolutePath();

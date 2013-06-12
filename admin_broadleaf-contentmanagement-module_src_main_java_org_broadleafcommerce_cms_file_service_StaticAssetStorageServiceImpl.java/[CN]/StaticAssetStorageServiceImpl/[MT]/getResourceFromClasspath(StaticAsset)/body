@@ -5,8 +5,9 @@
       if (resource.exists()) {
         InputStream assetFile=resource.getInputStream();
         BufferedInputStream bufferedStream=new BufferedInputStream(assetFile);
-        bufferedStream.mark(0);
-        return bufferedStream;
+        GloballySharedInputStream globallySharedStream=new GloballySharedInputStream(bufferedStream);
+        globallySharedStream.mark(0);
+        return globallySharedStream;
       }
  else {
         return null;
