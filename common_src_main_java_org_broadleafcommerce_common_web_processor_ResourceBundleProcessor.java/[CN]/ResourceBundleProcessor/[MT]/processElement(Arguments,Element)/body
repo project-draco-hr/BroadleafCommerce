@@ -6,7 +6,7 @@
   for (  String file : element.getAttributeValue("files").split(",")) {
     files.add(file.trim());
   }
-  if (isProductionMode()) {
+  if (bundleEnabled) {
     String versionedBundle=bundlingService.getVersionedBundleName(name);
     versionedBundle=null;
     if (StringUtils.isBlank(versionedBundle)) {
@@ -23,11 +23,15 @@
     parent.insertAfter(element,e);
   }
  else {
+    List<String> additionalBundleFiles=bundlingService.getAdditionalBundleFiles(name);
+    if (additionalBundleFiles != null) {
+      files.addAll(additionalBundleFiles);
+    }
     for (    String file : files) {
       file=file.trim();
       String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + file+ "'}");
       Element e=getElement(value);
-      parent.insertAfter(element,e);
+      parent.insertBefore(element,e);
     }
   }
   parent.removeChild(element);
