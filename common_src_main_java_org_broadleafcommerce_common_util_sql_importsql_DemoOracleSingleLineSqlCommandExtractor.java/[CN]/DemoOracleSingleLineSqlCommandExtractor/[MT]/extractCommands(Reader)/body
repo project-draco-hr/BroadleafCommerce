@@ -1,0 +1,53 @@
+{
+  if (!alreadyRun) {
+    alreadyRun=true;
+    LOGGER.support("Converting hibernate.hbm2ddl.import_files sql statements for compatibility with Oracle");
+  }
+  String[] statements=super.extractCommands(reader);
+  for (int j=0; j < statements.length; j++) {
+    statements[j]=statements[j].replaceAll(BOOLEANTRUEMATCH + "\\s*[,]",TRUE + ",");
+    statements[j]=statements[j].replaceAll(BOOLEANFALSEMATCH + "\\s*[,]",FALSE + ",");
+    statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANTRUEMATCH + "\\s*[,]","," + TRUE + ",");
+    statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANFALSEMATCH + "\\s*[,]","," + FALSE + ",");
+    statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANTRUEMATCH,"," + TRUE);
+    statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANFALSEMATCH,"," + FALSE);
+  }
+  List<String> stringList=new ArrayList<String>(Arrays.asList(statements));
+  int j=0;
+  for (  String statement : statements) {
+    if (statement.matches(".*[)]\\s*[,].*")) {
+      int pos=statement.toUpperCase().indexOf("VALUES ") + "VALUES ".length();
+      String prefix=statement.substring(0,pos);
+      stringList.remove(j);
+      String values=statement.substring(pos,statement.length());
+      String[] tokens=values.split("[)]\\s*[,]\\s*[(]");
+      String[] newStatements=new String[tokens.length];
+      for (int i=0; i < tokens.length; i++) {
+        String suffix=tokens[i];
+        if (!suffix.startsWith("(")) {
+          suffix="(" + suffix;
+        }
+        if (!suffix.endsWith(")")) {
+          suffix+=")";
+        }
+        newStatements[i]=prefix + suffix;
+      }
+      stringList.addAll(j,Arrays.asList(newStatements));
+      j+=tokens.length;
+    }
+ else {
+      j++;
+    }
+  }
+  Pattern pattern=Pattern.compile(TIMESTAMPMATCH);
+  statements=stringList.toArray(new String[stringList.size()]);
+  for (int x=0; x < statements.length; x++) {
+    Matcher matcher=pattern.matcher(statements[x]);
+    while (matcher.find()) {
+      String date=matcher.group(1);
+      String temp=statements[x].substring(0,statements[x].indexOf(date)) + "{ts " + date+ "}"+ statements[x].substring(statements[x].indexOf(date) + date.length(),statements[x].length());
+      statements[x]=temp;
+    }
+  }
+  return statements;
+}
