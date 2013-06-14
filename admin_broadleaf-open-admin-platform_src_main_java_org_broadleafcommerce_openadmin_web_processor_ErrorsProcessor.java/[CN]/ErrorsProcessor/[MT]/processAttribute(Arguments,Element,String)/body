@@ -1,0 +1,10 @@
+{
+  final String attributeValue=element.getAttributeValue(attributeName);
+  final BindStatus bindStatus=FieldUtils.getBindStatus(arguments,attributeValue,true);
+  if (bindStatus.isError()) {
+    final Map<String,Object> localVariables=new HashMap<String,Object>();
+    ((Map<String,Object>)arguments.getExpressionEvaluationRoot()).put(SpringContextVariableNames.SPRING_FIELD_BIND_STATUS,bindStatus);
+    return ProcessorResult.setLocalVariables(localVariables);
+  }
+  return ProcessorResult.OK;
+}
