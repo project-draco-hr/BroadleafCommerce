@@ -4,7 +4,7 @@
   }
   Object getterValue=null;
   try {
-    getterValue=extractValueRequest.getRecordHelper().getStringValueFromGetter(extractValueRequest.getEntity(),property.getName());
+    getterValue=PropertyUtils.getProperty(extractValueRequest.getEntity(),property.getName());
   }
  catch (  IllegalAccessException e) {
     throw new PersistenceException(e);
