@@ -1,0 +1,16 @@
+{
+  CustomerService customerService=(CustomerService)context.getBean("blCustomerService");
+  Customer customer=customerService.readCustomerById(this.id);
+  customer.setId(this.id);
+  customer.setFirstName(this.firstName);
+  customer.setLastName(this.lastName);
+  customer.setEmailAddress(this.emailAddress);
+  if (customerAttributes != null) {
+    for (    CustomerAttributeWrapper customerAttributeWrapper : customerAttributes) {
+      CustomerAttribute attribute=customerAttributeWrapper.unwrap(request,context);
+      attribute.setCustomer(customer);
+      customer.getCustomerAttributes().put(attribute.getName(),attribute);
+    }
+  }
+  return customer;
+}

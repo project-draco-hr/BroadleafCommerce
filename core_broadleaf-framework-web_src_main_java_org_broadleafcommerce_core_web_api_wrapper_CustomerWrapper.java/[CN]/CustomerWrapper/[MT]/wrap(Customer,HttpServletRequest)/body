@@ -3,4 +3,14 @@
   this.firstName=model.getFirstName();
   this.lastName=model.getLastName();
   this.emailAddress=model.getEmailAddress();
+  if (model.getCustomerAttributes() != null && !model.getCustomerAttributes().isEmpty()) {
+    Map<String,CustomerAttribute> itemAttributes=model.getCustomerAttributes();
+    this.customerAttributes=new ArrayList<CustomerAttributeWrapper>();
+    Set<String> keys=itemAttributes.keySet();
+    for (    String key : keys) {
+      CustomerAttributeWrapper customerAttributeWrapper=(CustomerAttributeWrapper)context.getBean(CustomerAttributeWrapper.class.getName());
+      customerAttributeWrapper.wrap(itemAttributes.get(key),request);
+      this.customerAttributes.add(customerAttributeWrapper);
+    }
+  }
 }
