@@ -1,0 +1,8 @@
+{
+  String fkc=extractValueRequest.getMetadata().getForeignKeyClass();
+  String rvc=null;
+  if (extractValueRequest.getRequestedValue() != null) {
+    rvc=extractValueRequest.getRequestedValue().getClass().getName();
+  }
+  return (SkuImpl.class.getName().equals(fkc) || Sku.class.getName().equals(fkc)) && (SkuImpl.class.getName().equals(rvc) || Sku.class.getName().equals(rvc)) && extractValueRequest.getMetadata().getFieldType().equals(SupportedFieldType.ADDITIONAL_FOREIGN_KEY);
+}

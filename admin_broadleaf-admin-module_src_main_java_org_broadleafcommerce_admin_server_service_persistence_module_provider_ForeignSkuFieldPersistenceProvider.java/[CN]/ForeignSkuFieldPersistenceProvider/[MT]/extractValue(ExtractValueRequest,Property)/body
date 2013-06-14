@@ -1,0 +1,21 @@
+{
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  try {
+    String val=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyProperty()).toString();
+    String displayVal=null;
+    if (!StringUtils.isEmpty(extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty())) {
+      String nameProperty=extractValueRequest.getMetadata().getForeignKeyDisplayValueProperty();
+      Sku sku=(Sku)extractValueRequest.getRequestedValue();
+      displayVal=extractValueRequest.getRecordHelper().getStringValueFromGetter(sku,nameProperty);
+    }
+    extractValueRequest.setDisplayVal(displayVal);
+    property.setValue(val);
+    property.setDisplayValue(displayVal);
+  }
+ catch (  Exception e) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  return FieldProviderResponse.HANDLED_BREAK;
+}
