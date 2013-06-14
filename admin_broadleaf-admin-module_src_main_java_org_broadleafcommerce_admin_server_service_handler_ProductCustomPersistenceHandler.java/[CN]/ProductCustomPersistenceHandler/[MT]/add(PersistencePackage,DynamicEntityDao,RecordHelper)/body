@@ -4,6 +4,9 @@
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Product adminInstance=(Product)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Product.class.getName(),persistencePerspective);
+    if (adminInstance instanceof ProductBundle) {
+      removeBundleFieldRestrictions((ProductBundle)adminInstance,adminProperties,entity);
+    }
     adminInstance=(Product)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
     CategoryProductXref categoryXref=new CategoryProductXrefImpl();

@@ -3,8 +3,8 @@
     FieldMetadata metadata=propertiesMetadata.get(property.getName());
     if (metadata instanceof BasicFieldMetadata) {
       if (CollectionUtils.isNotEmpty(globalEntityValidators)) {
-        for (        PropertyValidator validator : globalEntityValidators) {
-          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,null,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+        for (        GlobalPropertyValidator validator : globalEntityValidators) {
+          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
           if (!result.isValid()) {
             entity.addValidationError(property.getName(),result.getErrorMessage());
           }
