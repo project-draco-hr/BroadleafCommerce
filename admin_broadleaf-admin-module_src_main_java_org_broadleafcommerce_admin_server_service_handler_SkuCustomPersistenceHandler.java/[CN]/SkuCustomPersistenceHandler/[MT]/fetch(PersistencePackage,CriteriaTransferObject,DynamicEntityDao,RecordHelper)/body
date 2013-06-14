@@ -24,16 +24,6 @@
     for (int i=0; i < records.size(); i++) {
       Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
-      for (      Property property : entity.getProperties()) {
-        if (property.getValue() == null && !property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
-          BasicFieldMetadata md=(BasicFieldMetadata)originalProps.get(property.getName());
-          Class testClass=Class.forName(md.getTargetClass());
-          if (Sku.class.isAssignableFrom(testClass)) {
-            String getterValue=getStringValueFromGetter(sku,property,helper);
-            property.setDisplayValue(getterValue);
-          }
-        }
-      }
       List<ProductOptionValue> optionValues=sku.getProductOptionValues();
       for (      ProductOptionValue value : optionValues) {
         Property optionProperty=new Property();
