@@ -1,0 +1,25 @@
+{
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  Object actualValue=extractValueRequest.getRequestedValue();
+  String value=extractValueRequest.getRecordHelper().formatValue(actualValue);
+  String displayValue=value;
+  if (displayValue == null) {
+    try {
+      displayValue=extractValueRequest.getRecordHelper().getStringValueFromGetter(extractValueRequest.getEntity(),property.getName());
+    }
+ catch (    IllegalAccessException e) {
+      throw new PersistenceException(e);
+    }
+catch (    InvocationTargetException e) {
+      throw new PersistenceException(e);
+    }
+catch (    NoSuchMethodException e) {
+      throw new PersistenceException(e);
+    }
+  }
+  property.setValue(value);
+  property.setDisplayValue(displayValue);
+  return FieldProviderResponse.HANDLED;
+}
