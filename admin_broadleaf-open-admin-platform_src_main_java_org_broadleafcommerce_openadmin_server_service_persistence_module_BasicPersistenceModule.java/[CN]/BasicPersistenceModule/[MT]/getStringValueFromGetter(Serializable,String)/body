@@ -1,28 +1,4 @@
 {
   Object value=PropertyUtils.getProperty(instance,propertyName);
-  String strVal;
-  if (value == null) {
-    strVal=null;
-  }
- else {
-    if (Date.class.isAssignableFrom(value.getClass())) {
-      strVal=getSimpleDateFormatter().format((Date)value);
-    }
- else     if (Timestamp.class.isAssignableFrom(value.getClass())) {
-      strVal=getSimpleDateFormatter().format(new Date(((Timestamp)value).getTime()));
-    }
- else     if (Calendar.class.isAssignableFrom(value.getClass())) {
-      strVal=getSimpleDateFormatter().format(((Calendar)value).getTime());
-    }
- else     if (Double.class.isAssignableFrom(value.getClass())) {
-      strVal=getDecimalFormatter().format(value);
-    }
- else     if (BigDecimal.class.isAssignableFrom(value.getClass())) {
-      strVal=getDecimalFormatter().format(((BigDecimal)value).doubleValue());
-    }
- else {
-      strVal=value.toString();
-    }
-  }
-  return strVal;
+  return formatValue(value);
 }
