@@ -25,11 +25,13 @@
         Field recordField=new Field().withName(headerField.getName()).withFriendlyName(headerField.getFriendlyName()).withOrder(p.getMetadata().getOrder());
         if (headerField instanceof ComboField) {
           recordField.setValue(((ComboField)headerField).getOption(p.getValue()));
+          recordField.setDisplayValue(p.getDisplayValue());
         }
  else {
           recordField.setValue(p.getValue());
           recordField.setDisplayValue(p.getDisplayValue());
         }
+        recordField.setDerived(isDerivedField(headerField,recordField,p));
         record.getFields().add(recordField);
       }
     }

@@ -1,0 +1,11 @@
+{
+  if (StringUtils.isEmpty(recordField.getValue())) {
+    return !StringUtils.isEmpty(recordField.getDisplayValue());
+  }
+ else {
+    if (SupportedFieldType.MONEY.toString().equalsIgnoreCase(headerField.getFieldType())) {
+      return !recordField.getValue().equals(recordField.getDisplayValue().replaceFirst("[^0-9\\.]",""));
+    }
+    return !recordField.getValue().equals(recordField.getDisplayValue());
+  }
+}
