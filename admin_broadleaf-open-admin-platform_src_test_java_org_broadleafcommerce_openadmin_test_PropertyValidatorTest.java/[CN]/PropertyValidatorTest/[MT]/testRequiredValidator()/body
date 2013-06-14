@@ -1,0 +1,22 @@
+{
+  RequiredPropertyValidator validator=new RequiredPropertyValidator();
+  BasicFieldMetadata md=new BasicFieldMetadata();
+  md.setRequired(true);
+  assertFalse(validator.validate(null,null,null,md,null,null).isValid());
+  assertFalse(validator.validate(null,null,null,md,null,"").isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"testest").isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"1.8832").isValid());
+  md.setRequired(false);
+  assertTrue(validator.validate(null,null,null,md,null,null).isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"").isValid());
+  md.setRequired(true);
+  md.setRequiredOverride(false);
+  assertTrue(validator.validate(null,null,null,md,null,null).isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"").isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"testtest").isValid());
+  md.setRequired(false);
+  md.setRequiredOverride(true);
+  assertFalse(validator.validate(null,null,null,md,null,null).isValid());
+  assertFalse(validator.validate(null,null,null,md,null,"").isValid());
+  assertTrue(validator.validate(null,null,null,md,null,"testtest").isValid());
+}
