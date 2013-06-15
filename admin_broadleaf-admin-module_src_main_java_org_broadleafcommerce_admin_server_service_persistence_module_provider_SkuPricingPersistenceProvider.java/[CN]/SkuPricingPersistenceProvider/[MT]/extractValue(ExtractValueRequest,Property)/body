@@ -6,14 +6,7 @@
   try {
     getterValue=PropertyUtils.getProperty(extractValueRequest.getEntity(),property.getName());
   }
- catch (  IllegalAccessException e) {
-    throw new PersistenceException(e);
-  }
-catch (  InvocationTargetException e) {
-    throw new PersistenceException(e);
-  }
-catch (  NoSuchMethodException e) {
-    throw new PersistenceException(e);
+ catch (  Exception e) {
   }
   Object actualValue=extractValueRequest.getRequestedValue();
   property.setValue(formatValue(actualValue,extractValueRequest,property));
