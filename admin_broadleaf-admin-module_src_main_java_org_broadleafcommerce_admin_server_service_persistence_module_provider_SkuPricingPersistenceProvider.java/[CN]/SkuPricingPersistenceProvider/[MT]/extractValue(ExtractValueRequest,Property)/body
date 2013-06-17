@@ -2,14 +2,17 @@
   if (!canHandleExtraction(extractValueRequest,property)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
-  Object getterValue=null;
-  try {
-    getterValue=PropertyUtils.getProperty(extractValueRequest.getEntity(),property.getName());
-  }
- catch (  Exception e) {
+  Object displayValue=extractValueRequest.getRequestedValue();
+  if (displayValue == null) {
+    try {
+      displayValue=PropertyUtils.getProperty(extractValueRequest.getEntity(),property.getName());
+      ((BasicFieldMetadata)property.getMetadata()).setDerived(true);
+    }
+ catch (    Exception e) {
+    }
   }
   Object actualValue=extractValueRequest.getRequestedValue();
   property.setValue(formatValue(actualValue,extractValueRequest,property));
-  property.setDisplayValue(formatDisplayValue(getterValue,extractValueRequest,property));
+  property.setDisplayValue(formatDisplayValue(displayValue,extractValueRequest,property));
   return FieldProviderResponse.HANDLED_BREAK;
 }
