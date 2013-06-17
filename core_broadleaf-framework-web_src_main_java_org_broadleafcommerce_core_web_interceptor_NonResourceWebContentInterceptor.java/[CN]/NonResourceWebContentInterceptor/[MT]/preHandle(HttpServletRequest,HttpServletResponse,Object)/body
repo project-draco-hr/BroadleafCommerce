@@ -1,5 +1,12 @@
 {
-  if (ResourceHttpRequestHandler.class.isAssignableFrom(handler.getClass())) {
+  if (BroadleafResourceHttpRequestHandler.class.isAssignableFrom(handler.getClass())) {
+    BroadleafResourceHttpRequestHandler h=(BroadleafResourceHttpRequestHandler)handler;
+    if (h.isBundleRequest(request)) {
+      applyCacheSeconds(response,TEN_YEARS_SECONDS);
+    }
+    return true;
+  }
+ else   if (ResourceHttpRequestHandler.class.isAssignableFrom(handler.getClass())) {
     return true;
   }
  else {
