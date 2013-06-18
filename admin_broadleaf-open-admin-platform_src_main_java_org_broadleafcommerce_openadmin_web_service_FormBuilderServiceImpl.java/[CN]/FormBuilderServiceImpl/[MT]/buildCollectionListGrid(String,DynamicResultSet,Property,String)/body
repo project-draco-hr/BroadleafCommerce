@@ -10,6 +10,12 @@
   boolean hideIdColumn=false;
   boolean canFilterAndSort=true;
   String idProperty="id";
+  for (  Property property : cmd.getProperties()) {
+    if (property.getMetadata() instanceof BasicFieldMetadata && SupportedFieldType.ID == ((BasicFieldMetadata)property.getMetadata()).getFieldType()) {
+      idProperty=property.getName();
+      break;
+    }
+  }
   if (fmd instanceof BasicFieldMetadata) {
     readOnly=((BasicFieldMetadata)fmd).getReadOnly();
     for (    Property p : cmd.getProperties()) {

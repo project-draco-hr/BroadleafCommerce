@@ -1,15 +1,25 @@
 {
   List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,adornedTargetList.getAdornedTargetEntityClassname(),mergedProperties);
-  FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName()).getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<String,String>(){
-    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<String> explicitPath,    List<String> directValues){
-      return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+  FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getLinkedObjectPath() + "." + adornedTargetList.getLinkedIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName()).getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Serializable,String>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<Serializable> explicitPath,    List<String> directValues){
+      if (String.class.isAssignableFrom(explicitPath.getJavaType())) {
+        return builder.equal(explicitPath,directValues.get(0));
+      }
+ else {
+        return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+      }
     }
   }
 ));
   filterMappings.add(filterMapping);
-  FilterMapping filterMapping2=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName() + "Target").getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<String,String>(){
-    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<String> explicitPath,    List<String> directValues){
-      return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+  FilterMapping filterMapping2=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(adornedTargetList.getTargetObjectPath() + "." + adornedTargetList.getTargetIdProperty())).withFilterValues(cto.get(adornedTargetList.getCollectionFieldName() + "Target").getFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Serializable,String>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<Serializable> explicitPath,    List<String> directValues){
+      if (String.class.isAssignableFrom(explicitPath.getJavaType())) {
+        return builder.equal(explicitPath,directValues.get(0));
+      }
+ else {
+        return builder.equal(explicitPath,Long.parseLong(directValues.get(0)));
+      }
     }
   }
 ));
