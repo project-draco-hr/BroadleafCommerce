@@ -1,4 +1,5 @@
 {
   Query query=em.createQuery("SELECT config FROM " + type.getName() + " config");
+  query.setHint(QueryHints.CACHEABLE,true);
   return query.getResultList();
 }
