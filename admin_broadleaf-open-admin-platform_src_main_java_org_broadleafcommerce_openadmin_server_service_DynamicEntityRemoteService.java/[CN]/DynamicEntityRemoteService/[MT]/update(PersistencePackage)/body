@@ -9,10 +9,15 @@
     return persistenceManager.update(persistencePackage);
   }
  catch (  ServiceException e) {
-    if (e.getCause() instanceof ValidationException) {
+    if (e instanceof ValidationException) {
+      LOG.warn("Not saving entity as it has failed validation");
+      return ((ValidationException)e).getEntity();
+    }
+ else     if (e.getCause() instanceof ValidationException) {
       LOG.warn("Not saving entity as it has failed validation");
       return ((ValidationException)e.getCause()).getEntity();
     }
+    LOG.error("Problem updating " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
     String message=exploitProtectionService.cleanString(e.getMessage());
     throw recreateSpecificServiceException(e,message,e.getCause());
   }

@@ -9,7 +9,6 @@
   AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
   if (adminUser == null) {
     ServiceException e=new ServiceException("Unable to determine current user logged in status");
-    LOG.error("Unable to determine current user logged in status",e);
     throw e;
   }
   try {
@@ -94,7 +93,6 @@
     return response;
   }
  catch (  Exception e) {
-    LOG.error("Unable to execute persistence activity",e);
     throw new ServiceException("Unable to execute persistence activity for entity: " + ceilingEntityFullyQualifiedClassname,e);
   }
 }

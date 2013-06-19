@@ -5,6 +5,7 @@
     persistenceManager.remove(persistencePackage);
   }
  catch (  ServiceException e) {
+    LOG.error("Problem removing " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
     String message=exploitProtectionService.cleanString(e.getMessage());
     throw recreateSpecificServiceException(e,message,e.getCause());
   }
