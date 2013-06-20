@@ -1,6 +1,7 @@
 {
   Query query=em.createNamedQuery("BC_READ_STRUCTURED_CONTENT_TYPE_BY_NAME");
   query.setParameter("name",name);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   List<StructuredContentType> results=query.getResultList();
   if (results.size() > 0) {
     return results.get(0);

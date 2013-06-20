@@ -4,5 +4,8 @@
   Root<FieldImpl> root=criteria.from(FieldImpl.class);
   criteria.select(root);
   criteria.where(builder.equal(root.get("entityType").as(String.class),FieldEntity.PRODUCT.getType()));
-  return em.createQuery(criteria).getResultList();
+  TypedQuery<Field> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
+  return query.getResultList();
 }

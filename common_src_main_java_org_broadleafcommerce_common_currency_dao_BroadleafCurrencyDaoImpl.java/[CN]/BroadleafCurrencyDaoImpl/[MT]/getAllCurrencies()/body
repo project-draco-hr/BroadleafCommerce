@@ -1,4 +1,5 @@
 {
   Query query=em.createNamedQuery("BC_READ_ALL_CURRENCIES");
+  query.setHint(org.hibernate.ejb.QueryHints.HINT_CACHEABLE,true);
   return (List<BroadleafCurrency>)query.getResultList();
 }

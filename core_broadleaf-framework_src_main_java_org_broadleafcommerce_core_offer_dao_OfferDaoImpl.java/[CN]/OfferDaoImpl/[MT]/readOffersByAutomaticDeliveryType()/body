@@ -1,14 +1,17 @@
 {
   Criteria criteria=((HibernateEntityManager)em).getSession().createCriteria(OfferImpl.class);
+  Date myDate=SystemTime.asDate();
+  myDate=getDateFactoringInDateResolution(myDate);
   Calendar c=Calendar.getInstance();
-  c.setTime(SystemTime.asDate());
+  c.setTime(myDate);
   c.add(Calendar.DATE,+1);
   criteria.add(Restrictions.lt("startDate",c.getTime()));
   c=Calendar.getInstance();
-  c.setTime(SystemTime.asDate());
+  c.setTime(myDate);
   c.add(Calendar.DATE,-1);
   criteria.add(Restrictions.or(Restrictions.isNull("endDate"),Restrictions.gt("endDate",c.getTime())));
   criteria.add(Restrictions.or(Restrictions.eq("archiveStatus.archived",'N'),Restrictions.isNull("archiveStatus.archived")));
   criteria.add(Restrictions.or(Restrictions.eq("automaticallyAdded",true),Restrictions.and(Restrictions.isNull("automaticallyAdded"),Restrictions.eq("deliveryType","AUTOMATIC"))));
+  criteria.setCacheable(true);
   return criteria.list();
 }

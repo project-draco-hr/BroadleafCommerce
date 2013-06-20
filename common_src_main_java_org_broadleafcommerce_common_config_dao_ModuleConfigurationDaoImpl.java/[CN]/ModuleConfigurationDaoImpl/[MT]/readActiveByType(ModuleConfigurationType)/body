@@ -1,7 +1,9 @@
 {
   Query query=em.createNamedQuery("BC_READ_ACTIVE_MODULE_CONFIG_BY_TYPE");
   query.setParameter("configType",type.getType());
-  query.setParameter("currentDate",SystemTime.asDate());
+  Date myDate=SystemTime.asDate();
+  myDate=getDateFactoringInDateResolution(myDate);
+  query.setParameter("currentDate",myDate);
   query.setHint(QueryHints.CACHEABLE,true);
   return query.getResultList();
 }

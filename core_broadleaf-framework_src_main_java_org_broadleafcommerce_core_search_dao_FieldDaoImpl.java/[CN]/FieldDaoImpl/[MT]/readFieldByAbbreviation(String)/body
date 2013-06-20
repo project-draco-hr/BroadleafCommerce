@@ -4,5 +4,8 @@
   Root<FieldImpl> root=criteria.from(FieldImpl.class);
   criteria.select(root);
   criteria.where(builder.equal(root.get("abbreviation").as(String.class),abbreviation));
-  return em.createQuery(criteria).getSingleResult();
+  TypedQuery<Field> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
+  return query.getSingleResult();
 }

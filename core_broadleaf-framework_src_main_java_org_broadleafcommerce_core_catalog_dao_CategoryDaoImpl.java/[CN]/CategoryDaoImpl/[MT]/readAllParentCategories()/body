@@ -4,8 +4,11 @@
   Root<CategoryImpl> category=criteria.from(CategoryImpl.class);
   criteria.select(category);
   criteria.where(builder.isNull(category.get("defaultParentCategory")));
+  TypedQuery<Category> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
   try {
-    return em.createQuery(criteria).getResultList();
+    return query.getResultList();
   }
  catch (  NoResultException e) {
     return null;

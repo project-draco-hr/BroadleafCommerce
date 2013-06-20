@@ -4,8 +4,10 @@
   Root<TranslationImpl> translation=criteria.from(TranslationImpl.class);
   criteria.select(translation);
   criteria.where(builder.equal(translation.get("entityType"),entity.getFriendlyType()),builder.equal(translation.get("entityId"),entityId),builder.equal(translation.get("fieldName"),fieldName));
+  TypedQuery<Translation> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   try {
-    return em.createQuery(criteria).getResultList();
+    return query.getResultList();
   }
  catch (  NoResultException e) {
     return null;
