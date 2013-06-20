@@ -1,35 +1,3 @@
 {
-  Class<?>[] cache=null;
-synchronized (LOCK_OBJECT) {
-    if (useCache()) {
-      cache=POLYMORPHIC_ENTITY_CACHE.get(ceilingClass);
-    }
-    if (cache == null) {
-      List<Class<?>> entities=new ArrayList<Class<?>>();
-      for (      Object item : getSessionFactory().getAllClassMetadata().values()) {
-        ClassMetadata metadata=(ClassMetadata)item;
-        Class<?> mappedClass=metadata.getMappedClass();
-        if (mappedClass != null && ceilingClass.isAssignableFrom(mappedClass)) {
-          entities.add(mappedClass);
-        }
-      }
-      Class<?>[] sortedEntities=sortEntities(ceilingClass,entities);
-      List<Class<?>> filteredSortedEntities=new ArrayList<Class<?>>();
-      for (int i=0; i < sortedEntities.length; i++) {
-        Class<?> item=sortedEntities[i];
-        if (Modifier.isAbstract(item.getModifiers())) {
-          continue;
-        }
-        AdminPresentationClass adminPresentationClass=item.getAnnotation(AdminPresentationClass.class);
-        if (adminPresentationClass == null || (adminPresentationClass != null && !adminPresentationClass.excludeFromPolymorphism())) {
-          filteredSortedEntities.add(sortedEntities[i]);
-        }
-      }
-      Class<?>[] filteredEntities=new Class<?>[filteredSortedEntities.size()];
-      filteredEntities=filteredSortedEntities.toArray(filteredEntities);
-      cache=filteredEntities;
-      POLYMORPHIC_ENTITY_CACHE.put(ceilingClass,filteredEntities);
-    }
-  }
-  return cache;
+  return getAllPolymorphicEntitiesFromCeiling(ceilingClass,true);
 }

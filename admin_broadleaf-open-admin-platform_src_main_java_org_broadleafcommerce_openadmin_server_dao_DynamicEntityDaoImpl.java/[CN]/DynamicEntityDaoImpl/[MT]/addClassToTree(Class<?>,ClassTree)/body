@@ -10,7 +10,7 @@
     return;
   }
   if (clazz.getSuperclass().equals(testClass)) {
-    ClassTree myTree=new ClassTree(clazz.getName());
+    ClassTree myTree=new ClassTree(clazz.getName(),isExcludeClassFromPolymorphism(clazz));
     createClassTreeFromAnnotation(clazz,myTree);
     tree.setChildren((ClassTree[])ArrayUtils.add(tree.getChildren(),myTree));
   }

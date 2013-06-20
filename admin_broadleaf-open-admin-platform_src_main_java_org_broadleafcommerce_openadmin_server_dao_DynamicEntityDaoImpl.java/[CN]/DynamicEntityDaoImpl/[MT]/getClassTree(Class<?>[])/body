@@ -29,7 +29,7 @@
   ClassTree classTree=null;
   if (!ArrayUtils.isEmpty(polymorphicClasses)) {
     Class<?> topClass=polymorphicClasses[polymorphicClasses.length - 1];
-    classTree=new ClassTree(topClass.getName());
+    classTree=new ClassTree(topClass.getName(),isExcludeClassFromPolymorphism(topClass));
     createClassTreeFromAnnotation(topClass,classTree);
     for (int j=polymorphicClasses.length - 1; j >= 0; j--) {
       addClassToTree(polymorphicClasses[j],classTree);
