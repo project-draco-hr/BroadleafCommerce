@@ -5,7 +5,8 @@
   for (  Field field : fields) {
     try {
       if (field.getSearchable()) {
-        for (        FieldType sft : field.getSearchableFieldTypes()) {
+        List<FieldType> searchableFieldTypes=shs.getSearchableFieldTypes(field);
+        for (        FieldType sft : searchableFieldTypes) {
           Map<String,Object> propertyValues=getPropertyValues(product,field,sft,locales);
           for (          Entry<String,Object> entry : propertyValues.entrySet()) {
             String prefix=entry.getKey();
