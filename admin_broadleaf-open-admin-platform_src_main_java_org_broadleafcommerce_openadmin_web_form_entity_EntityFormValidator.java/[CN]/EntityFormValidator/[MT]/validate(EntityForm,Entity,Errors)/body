@@ -4,8 +4,11 @@
     result=false;
     for (    Map.Entry<String,List<String>> propertyErrors : entity.getValidationErrors().entrySet()) {
       for (      String errorMessage : propertyErrors.getValue()) {
-        String serializedFieldName=JSCompatibilityHelper.encode(propertyErrors.getKey());
-        errors.rejectValue(String.format("fields[%s].value",serializedFieldName),errorMessage,errorMessage);
+        String unserializedFieldName=propertyErrors.getKey();
+        String serializedFieldName=JSCompatibilityHelper.encode(unserializedFieldName);
+        String[] errorCodes=((AbstractBindingResult)errors).resolveMessageCodes(errorMessage,serializedFieldName);
+        FieldError fieldError=new FieldError("entityForm",String.format("fields[%s].value",serializedFieldName),form.getFields().get(unserializedFieldName).getValue(),false,errorCodes,null,errorMessage);
+        ((AbstractBindingResult)errors).addError(fieldError);
       }
     }
   }
