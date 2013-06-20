@@ -37,6 +37,16 @@
       this.orderAdjustments.add(orderItemWrapper);
     }
   }
+  if (model.getOrderAttributes() != null && !model.getOrderAttributes().isEmpty()) {
+    Map<String,OrderAttribute> itemAttributes=model.getOrderAttributes();
+    this.orderAttributes=new ArrayList<OrderAttributeWrapper>();
+    Set<String> keys=itemAttributes.keySet();
+    for (    String key : keys) {
+      OrderAttributeWrapper orderAttributeWrapper=(OrderAttributeWrapper)context.getBean(OrderAttributeWrapper.class.getName());
+      orderAttributeWrapper.wrap(itemAttributes.get(key),request);
+      this.orderAttributes.add(orderAttributeWrapper);
+    }
+  }
   CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
   customerWrapper.wrap(model.getCustomer(),request);
   this.customer=customerWrapper;
