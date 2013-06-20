@@ -1,9 +1,24 @@
 {
-  final String attributeValue=element.getAttributeValue(attributeName);
-  final BindStatus bindStatus=FieldUtils.getBindStatus(arguments,attributeValue,true);
+  String attributeValue=element.getAttributeValue(attributeName);
+  BindStatus bindStatus=FieldUtils.getBindStatus(arguments,attributeValue,true);
   if (bindStatus.isError()) {
-    final Map<String,Object> localVariables=new HashMap<String,Object>();
-    ((Map<String,Object>)arguments.getExpressionEvaluationRoot()).put(SpringContextVariableNames.SPRING_FIELD_BIND_STATUS,bindStatus);
+    EntityForm form=(EntityForm)((BindingResult)bindStatus.getErrors()).getTarget();
+    Map<String,Map<String,String>> result=new HashMap<String,Map<String,String>>();
+    for (    FieldError err : bindStatus.getErrors().getFieldErrors()) {
+      Tab tab=form.findTabForField(err.getField());
+      if (tab != null) {
+        Map<String,String> tabErrors=result.get(tab.getTitle());
+        if (tabErrors == null) {
+          tabErrors=new HashMap<String,String>();
+          result.put(tab.getTitle(),tabErrors);
+        }
+        tabErrors.put(form.findField(err.getField()).getFriendlyName(),err.getCode());
+      }
+    }
+    for (    ObjectError err : bindStatus.getErrors().getGlobalErrors()) {
+    }
+    Map<String,Object> localVariables=new HashMap<String,Object>();
+    localVariables.put("tabErrors",result);
     return ProcessorResult.setLocalVariables(localVariables);
   }
   return ProcessorResult.OK;
