@@ -16,7 +16,12 @@
     if (oiQuantity == null) {
       oiQuantity=0;
     }
-    oiQuantity+=oi.getQuantity();
+    if (((DiscreteOrderItem)oi).getBundleOrderItem() != null) {
+      oiQuantity+=((DiscreteOrderItem)oi).getBundleOrderItem().getQuantity() * oi.getQuantity();
+    }
+ else {
+      oiQuantity+=oi.getQuantity();
+    }
     oiQuantityMap.put(oi.getId(),oiQuantity);
   }
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
@@ -32,6 +37,10 @@
   }
   for (  Entry<Long,Integer> entry : oiQuantityMap.entrySet()) {
     if (entry.getValue() != 0) {
+      System.out.println(entry.getValue());
+      for (      OrderItem oi : order.getDiscreteOrderItems()) {
+        System.out.println(oi.getClass().getName());
+      }
       throw new IllegalStateException("Not enough fulfillment group items found for DiscreteOrderItem id: " + entry.getKey());
     }
   }
