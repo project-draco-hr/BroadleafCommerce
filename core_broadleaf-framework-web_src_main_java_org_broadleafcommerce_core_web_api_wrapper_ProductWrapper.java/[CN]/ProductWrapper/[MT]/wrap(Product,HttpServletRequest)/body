@@ -48,4 +48,16 @@
       media.add(wrapper);
     }
   }
+  if (model instanceof ProductBundle) {
+    ProductBundle bundle=(ProductBundle)model;
+    if (bundle.getSkuBundleItems() != null) {
+      this.skuBundleItems=new ArrayList<SkuBundleItemWrapper>();
+      List<SkuBundleItem> bundleItems=bundle.getSkuBundleItems();
+      for (      SkuBundleItem item : bundleItems) {
+        SkuBundleItemWrapper skuBundleItemsWrapper=(SkuBundleItemWrapper)context.getBean(SkuBundleItemWrapper.class.getName());
+        skuBundleItemsWrapper.wrap(item,request);
+        this.skuBundleItems.add(skuBundleItemsWrapper);
+      }
+    }
+  }
 }

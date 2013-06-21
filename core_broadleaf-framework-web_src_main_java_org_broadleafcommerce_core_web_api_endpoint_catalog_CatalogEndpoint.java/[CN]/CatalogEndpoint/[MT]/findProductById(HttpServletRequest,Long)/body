@@ -2,12 +2,7 @@
   Product product=catalogService.findProductById(id);
   if (product != null) {
     ProductWrapper wrapper;
-    if (product instanceof ProductBundle) {
-      wrapper=(ProductWrapper)context.getBean(ProductBundleWrapper.class.getName());
-    }
- else {
-      wrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
-    }
+    wrapper=(ProductWrapper)context.getBean(ProductWrapper.class.getName());
     wrapper.wrap(product,request);
     return wrapper;
   }
