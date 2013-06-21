@@ -2,8 +2,8 @@
   Long customerId=0L;
   try {
     BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
-    if (requestContext != null && requestContext.getRequest() != null) {
-      Object customer=requestContext.getRequest().getAttribute(customerRequestAttributeName);
+    if (requestContext != null) {
+      Object customer=requestContext.getWebRequest().getAttribute(customerRequestAttributeName,RequestAttributes.SCOPE_REQUEST);
       if (customer != null) {
         Class<?> customerClass=customer.getClass();
         Field userNameField=getSingleField(customerClass,"username");

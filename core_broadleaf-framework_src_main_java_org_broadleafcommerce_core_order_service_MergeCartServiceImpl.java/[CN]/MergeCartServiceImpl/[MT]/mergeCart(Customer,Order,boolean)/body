@@ -10,12 +10,20 @@
   }
  else   if (anonymousCart == null || anonymousCart.getOrderItems().size() == 0) {
     mergeCartResponse.setOrder(customerCart);
+    if (anonymousCart != null) {
+      orderService.cancelOrder(anonymousCart);
+    }
   }
  else   if (customerCart == null || customerCart.getOrderItems().size() == 0) {
+    if (customerCart != null) {
+      orderService.cancelOrder(customerCart);
+    }
     setNewCartOwnership(anonymousCart,customer);
     mergeCartResponse.setOrder(anonymousCart);
   }
  else {
+    setSavedCartAttributes(customerCart);
+    orderService.save(customerCart,false);
     setNewCartOwnership(anonymousCart,customer);
     mergeCartResponse.setOrder(anonymousCart);
   }
