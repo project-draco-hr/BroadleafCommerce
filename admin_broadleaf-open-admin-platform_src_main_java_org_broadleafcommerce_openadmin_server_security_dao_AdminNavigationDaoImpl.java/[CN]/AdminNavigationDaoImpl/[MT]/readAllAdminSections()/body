@@ -1,5 +1,6 @@
 {
   Query query=em.createNamedQuery("BC_READ_ALL_ADMIN_SECTIONS");
+  query.setHint(org.hibernate.ejb.QueryHints.HINT_CACHEABLE,true);
   List<AdminSection> sections=query.getResultList();
   return sections;
 }

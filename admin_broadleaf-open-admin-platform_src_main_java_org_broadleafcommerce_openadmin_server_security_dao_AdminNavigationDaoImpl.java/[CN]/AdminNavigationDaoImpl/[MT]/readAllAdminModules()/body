@@ -1,5 +1,6 @@
 {
   Query query=em.createNamedQuery("BC_READ_ALL_ADMIN_MODULES");
+  query.setHint(org.hibernate.ejb.QueryHints.HINT_CACHEABLE,true);
   List<AdminModule> modules=query.getResultList();
   return modules;
 }
