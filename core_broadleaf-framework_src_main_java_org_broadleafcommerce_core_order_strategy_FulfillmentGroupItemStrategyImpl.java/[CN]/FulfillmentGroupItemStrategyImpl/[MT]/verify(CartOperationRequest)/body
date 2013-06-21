@@ -16,7 +16,12 @@
     if (oiQuantity == null) {
       oiQuantity=0;
     }
-    oiQuantity+=oi.getQuantity();
+    if (((DiscreteOrderItem)oi).getBundleOrderItem() != null) {
+      oiQuantity+=((DiscreteOrderItem)oi).getBundleOrderItem().getQuantity() * oi.getQuantity();
+    }
+ else {
+      oiQuantity+=oi.getQuantity();
+    }
     oiQuantityMap.put(oi.getId(),oiQuantity);
   }
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {

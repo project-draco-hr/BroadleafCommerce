@@ -9,8 +9,8 @@
     if (orderItem instanceof BundleOrderItem) {
       List<OrderItem> itemsToUpdate=new ArrayList<OrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
       for (      OrderItem oi : itemsToUpdate) {
-        int qtyMultiplier=oi.getQuantity() / orderItem.getQuantity();
-        order=updateItemQuantity(order,oi,(qtyMultiplier * orderItemQuantityDelta));
+        int quantityPer=oi.getQuantity();
+        order=updateItemQuantity(order,oi,(quantityPer * orderItemQuantityDelta));
       }
     }
  else {
