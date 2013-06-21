@@ -28,12 +28,7 @@
     Map<String,FieldMetadata> ceilingMergedProperties=getSimpleMergedProperties(records.get(0).getClass().getName(),persistencePerspective);
     payload=getMapRecords(records.get(0),mapStructure,ceilingMergedProperties,valueMergedProperties,null);
   }
- catch (  ServiceException e) {
-    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
-    throw e;
-  }
-catch (  Exception e) {
-    LOG.error("Problem fetching results for " + ceilingEntityFullyQualifiedClassname,e);
+ catch (  Exception e) {
     throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
   }
   DynamicResultSet results=new DynamicResultSet(null,payload,payload.length);
