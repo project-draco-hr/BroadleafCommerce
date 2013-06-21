@@ -4,7 +4,6 @@
   persistencePerspective.setUseServerSideInspectionCache(false);
   persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,new ForeignKey("product",EntityImplementations.PRODUCT,null));
   DataSourceModule[] modules=new DataSourceModule[]{new SkuBasicClientEntityModule(CeilingEntities.SKU,persistencePerspective,AppServices.DYNAMIC_ENTITY)};
-  CustomCriteriaListGridDataSource dataSource=new CustomCriteriaListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules,true,false,false,false,true);
-  dataSource.setCustomCriteria(new String[]{"productSkuList"});
+  ListGridDataSource dataSource=new ListGridDataSource(name,persistencePerspective,AppServices.DYNAMIC_ENTITY,modules);
   dataSource.buildFields(null,false,cb);
 }

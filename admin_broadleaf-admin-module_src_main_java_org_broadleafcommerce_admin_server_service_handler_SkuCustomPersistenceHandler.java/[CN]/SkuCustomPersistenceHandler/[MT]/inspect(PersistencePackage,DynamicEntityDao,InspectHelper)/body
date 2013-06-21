@@ -10,6 +10,8 @@
     }
     properties.put(CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME,createConsolidatedOptionField(SkuImpl.class));
     allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
+    adornedPersistenceModule.setPersistenceManager((PersistenceManager)helper);
+    adornedPersistenceModule.updateMergedProperties(persistencePackage,allMergedProperties);
     Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(Sku.class);
     ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
     DynamicResultSet results=new DynamicResultSet(mergedMetadata,null,null);
