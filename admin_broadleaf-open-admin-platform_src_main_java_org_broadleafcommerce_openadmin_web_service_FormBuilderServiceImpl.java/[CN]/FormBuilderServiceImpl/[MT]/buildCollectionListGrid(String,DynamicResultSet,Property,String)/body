@@ -11,7 +11,7 @@
   boolean canFilterAndSort=true;
   String idProperty="id";
   for (  Property property : cmd.getProperties()) {
-    if (property.getMetadata() instanceof BasicFieldMetadata && SupportedFieldType.ID == ((BasicFieldMetadata)property.getMetadata()).getFieldType()) {
+    if (property.getMetadata() instanceof BasicFieldMetadata && SupportedFieldType.ID == ((BasicFieldMetadata)property.getMetadata()).getFieldType() && !property.getName().contains(".")) {
       idProperty=property.getName();
       break;
     }
