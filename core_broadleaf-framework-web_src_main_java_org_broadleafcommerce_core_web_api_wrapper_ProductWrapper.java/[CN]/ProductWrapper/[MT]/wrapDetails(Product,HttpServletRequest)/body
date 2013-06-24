@@ -1,0 +1,93 @@
+{
+  this.id=model.getId();
+  this.name=model.getName();
+  this.description=model.getDescription();
+  this.longDescripion=model.getLongDescription();
+  this.activeStartDate=model.getActiveStartDate();
+  this.activeEndDate=model.getActiveEndDate();
+  this.manufacturer=model.getManufacturer();
+  this.model=model.getModel();
+  this.promoMessage=model.getPromoMessage();
+  this.active=model.isActive();
+  if (model instanceof ProductBundle) {
+    ProductBundle bundle=(ProductBundle)model;
+    this.priority=bundle.getPriority();
+    this.bundleItemsRetailPrice=bundle.getBundleItemsRetailPrice();
+    this.bundleItemsSalePrice=bundle.getBundleItemsSalePrice();
+    if (bundle.getSkuBundleItems() != null) {
+      this.skuBundleItems=new ArrayList<SkuBundleItemWrapper>();
+      List<SkuBundleItem> bundleItems=bundle.getSkuBundleItems();
+      for (      SkuBundleItem item : bundleItems) {
+        SkuBundleItemWrapper skuBundleItemsWrapper=(SkuBundleItemWrapper)context.getBean(SkuBundleItemWrapper.class.getName());
+        skuBundleItemsWrapper.wrapSummary(item,request);
+        this.skuBundleItems.add(skuBundleItemsWrapper);
+      }
+    }
+  }
+ else {
+    this.retailPrice=model.getDefaultSku().getRetailPrice();
+    this.salePrice=model.getDefaultSku().getSalePrice();
+  }
+  if (model.getProductOptions() != null && !model.getProductOptions().isEmpty()) {
+    this.productOptions=new ArrayList<ProductOptionWrapper>();
+    List<ProductOption> options=model.getProductOptions();
+    for (    ProductOption option : options) {
+      ProductOptionWrapper optionWrapper=(ProductOptionWrapper)context.getBean(ProductOptionWrapper.class.getName());
+      optionWrapper.wrapSummary(option,request);
+      this.productOptions.add(optionWrapper);
+    }
+  }
+  if (model.getMedia() != null && !model.getMedia().isEmpty()) {
+    Media media=model.getMedia().get("primary");
+    if (media != null) {
+      StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+      primaryMedia=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
+      primaryMedia.wrapDetails(media,request);
+      if (primaryMedia.isAllowOverrideUrl()) {
+        primaryMedia.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
+      }
+    }
+  }
+  if (model.getDefaultCategory() != null) {
+    this.defaultCategoryId=model.getDefaultCategory().getId();
+  }
+  if (model.getUpSaleProducts() != null && !model.getUpSaleProducts().isEmpty()) {
+    upsaleProducts=new ArrayList<RelatedProductWrapper>();
+    for (    RelatedProduct p : model.getUpSaleProducts()) {
+      RelatedProductWrapper upsaleProductWrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
+      upsaleProductWrapper.wrapSummary(p,request);
+      upsaleProducts.add(upsaleProductWrapper);
+    }
+  }
+  if (model.getCrossSaleProducts() != null && !model.getCrossSaleProducts().isEmpty()) {
+    crossSaleProducts=new ArrayList<RelatedProductWrapper>();
+    for (    RelatedProduct p : model.getCrossSaleProducts()) {
+      RelatedProductWrapper crossSaleProductWrapper=(RelatedProductWrapper)context.getBean(RelatedProductWrapper.class.getName());
+      crossSaleProductWrapper.wrapSummary(p,request);
+      crossSaleProducts.add(crossSaleProductWrapper);
+    }
+  }
+  if (model.getProductAttributes() != null && !model.getProductAttributes().isEmpty()) {
+    productAttributes=new ArrayList<ProductAttributeWrapper>();
+    if (model.getProductAttributes() != null) {
+      for (      Map.Entry<String,ProductAttribute> entry : model.getProductAttributes().entrySet()) {
+        ProductAttributeWrapper wrapper=(ProductAttributeWrapper)context.getBean(ProductAttributeWrapper.class.getName());
+        wrapper.wrapSummary(entry.getValue(),request);
+        productAttributes.add(wrapper);
+      }
+    }
+  }
+  if (model.getMedia() != null && !model.getMedia().isEmpty()) {
+    Map<String,Media> mediaMap=model.getMedia();
+    media=new ArrayList<MediaWrapper>();
+    StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+    for (    Media med : mediaMap.values()) {
+      MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
+      wrapper.wrapSummary(med,request);
+      if (wrapper.isAllowOverrideUrl()) {
+        wrapper.setUrl(staticAssetService.convertAssetPath(med.getUrl(),request.getContextPath(),request.isSecure()));
+      }
+      media.add(wrapper);
+    }
+  }
+}

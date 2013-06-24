@@ -1,0 +1,18 @@
+{
+  this.attributeName="productOption." + model.getAttributeName();
+  this.label=model.getLabel();
+  this.required=model.getRequired();
+  if (model.getType() != null) {
+    this.productOptionType=model.getType().getType();
+  }
+  List<ProductOptionValue> optionValues=model.getAllowedValues();
+  if (optionValues != null) {
+    ArrayList<ProductOptionValueWrapper> allowedValueWrappers=new ArrayList<ProductOptionValueWrapper>();
+    for (    ProductOptionValue value : optionValues) {
+      ProductOptionValueWrapper optionValueWrapper=(ProductOptionValueWrapper)context.getBean(ProductOptionValueWrapper.class.getName());
+      optionValueWrapper.wrapSummary(value,request);
+      allowedValueWrappers.add(optionValueWrapper);
+    }
+    this.allowedValues=allowedValueWrappers;
+  }
+}

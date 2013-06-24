@@ -2,7 +2,7 @@
   Order cart=CartState.getCart();
   if (cart != null) {
     OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-    wrapper.wrap(cart,request);
+    wrapper.wrapDetails(cart,request);
     return wrapper;
   }
   throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());

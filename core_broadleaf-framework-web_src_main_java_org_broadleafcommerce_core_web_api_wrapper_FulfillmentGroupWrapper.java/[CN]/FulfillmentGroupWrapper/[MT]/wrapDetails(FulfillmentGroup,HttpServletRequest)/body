@@ -1,0 +1,27 @@
+{
+  this.id=model.getId();
+  this.total=model.getTotal();
+  if (model.getOrder() != null) {
+    this.orderId=model.getOrder().getId();
+  }
+  if (model.getAddress() != null) {
+    AddressWrapper addressWrapper=(AddressWrapper)context.getBean(AddressWrapper.class.getName());
+    addressWrapper.wrapDetails(model.getAddress(),request);
+    this.address=addressWrapper;
+  }
+  if (model.getPhone() != null) {
+    PhoneWrapper phoneWrapper=(PhoneWrapper)context.getBean(PhoneWrapper.class.getName());
+    phoneWrapper.wrapDetails(model.getPhone(),request);
+    this.phone=phoneWrapper;
+  }
+  List<FulfillmentGroupItem> fgs=model.getFulfillmentGroupItems();
+  if (fgs != null && !fgs.isEmpty()) {
+    List<FulfillmentGroupItemWrapper> fulfillmentGroupItemWrappers=new ArrayList<FulfillmentGroupItemWrapper>();
+    for (    FulfillmentGroupItem fgi : fgs) {
+      FulfillmentGroupItemWrapper fulfillmentGroupItemWrapper=(FulfillmentGroupItemWrapper)context.getBean(FulfillmentGroupItemWrapper.class.getName());
+      fulfillmentGroupItemWrapper.wrapDetails(fgi,request);
+      fulfillmentGroupItemWrappers.add(fulfillmentGroupItemWrapper);
+    }
+    this.fulfillmentGroupItems=fulfillmentGroupItemWrappers;
+  }
+}

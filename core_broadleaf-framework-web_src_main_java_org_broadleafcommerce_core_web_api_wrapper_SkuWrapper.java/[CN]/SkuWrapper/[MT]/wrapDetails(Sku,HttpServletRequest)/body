@@ -1,0 +1,18 @@
+{
+  this.id=model.getId();
+  this.activeStartDate=model.getActiveStartDate();
+  this.activeEndDate=model.getActiveEndDate();
+  this.name=model.getName();
+  this.description=model.getDescription();
+  this.retailPrice=model.getRetailPrice();
+  this.salePrice=model.getSalePrice();
+  this.active=model.isActive();
+  if (model.getWeight() != null) {
+    weight=(WeightWrapper)context.getBean(WeightWrapper.class.getName());
+    weight.wrapDetails(model.getWeight(),request);
+  }
+  if (model.getDimension() != null) {
+    dimension=(DimensionWrapper)context.getBean(DimensionWrapper.class.getName());
+    dimension.wrapDetails(model.getDimension(),request);
+  }
+}

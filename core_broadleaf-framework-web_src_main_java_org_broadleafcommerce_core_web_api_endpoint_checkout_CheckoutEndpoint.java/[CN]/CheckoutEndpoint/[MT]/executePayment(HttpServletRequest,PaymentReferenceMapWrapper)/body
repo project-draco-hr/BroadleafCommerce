@@ -9,7 +9,7 @@
       CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(cart,payments);
       PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
       PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
-      paymentResponseItemWrapper.wrap(responseItem,request);
+      paymentResponseItemWrapper.wrapDetails(responseItem,request);
       return paymentResponseItemWrapper;
     }
  catch (    PaymentException e) {

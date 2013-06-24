@@ -5,7 +5,7 @@
       Order order=orderService.removeItem(cart.getId(),itemId,priceOrder);
       order=orderService.save(order,priceOrder);
       OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-      wrapper.wrap(order,request);
+      wrapper.wrapDetails(order,request);
       return wrapper;
     }
  catch (    PricingException e) {
