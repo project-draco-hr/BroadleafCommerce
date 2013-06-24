@@ -6,7 +6,7 @@
     request.setAttribute("subcategoryLimit",subcategoryLimit);
     request.setAttribute("subcategoryOffset",subcategoryOffset);
     CategoryWrapper wrapper=(CategoryWrapper)context.getBean(CategoryWrapper.class.getName());
-    wrapper.wrap(cat,request);
+    wrapper.wrapDetails(cat,request);
     return wrapper;
   }
   throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Category with Id " + id + " could not be found").build());

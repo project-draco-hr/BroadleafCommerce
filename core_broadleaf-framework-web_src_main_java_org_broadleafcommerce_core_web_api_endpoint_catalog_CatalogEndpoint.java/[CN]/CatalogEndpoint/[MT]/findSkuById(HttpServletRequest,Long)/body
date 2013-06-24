@@ -2,7 +2,7 @@
   Sku sku=catalogService.findSkuById(id);
   if (sku != null) {
     SkuWrapper wrapper=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
-    wrapper.wrap(sku,request);
+    wrapper.wrapDetails(sku,request);
     return wrapper;
   }
   throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Sku with Id " + id + " could not be found").build());

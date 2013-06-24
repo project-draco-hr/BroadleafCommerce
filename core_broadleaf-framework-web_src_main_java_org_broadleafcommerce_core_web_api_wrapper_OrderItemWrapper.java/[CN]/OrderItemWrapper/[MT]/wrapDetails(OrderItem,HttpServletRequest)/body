@@ -1,0 +1,50 @@
+{
+  this.id=model.getId();
+  this.name=model.getName();
+  this.quantity=model.getQuantity();
+  this.orderId=model.getOrder().getId();
+  if (model.getCategory() != null) {
+    CategoryWrapper categoryWrapper=(CategoryWrapper)context.getBean(CategoryWrapper.class.getName());
+    categoryWrapper.wrapSummary(model.getCategory(),request);
+    this.category=categoryWrapper;
+  }
+  if (model.getOrderItemAttributes() != null && !model.getOrderItemAttributes().isEmpty()) {
+    Map<String,OrderItemAttribute> itemAttributes=model.getOrderItemAttributes();
+    this.orderItemAttributes=new ArrayList<OrderItemAttributeWrapper>();
+    Set<String> keys=itemAttributes.keySet();
+    for (    String key : keys) {
+      OrderItemAttributeWrapper orderItemAttributeWrapper=(OrderItemAttributeWrapper)context.getBean(OrderItemAttributeWrapper.class.getName());
+      orderItemAttributeWrapper.wrapSummary(itemAttributes.get(key),request);
+      this.orderItemAttributes.add(orderItemAttributeWrapper);
+    }
+  }
+  if (model.getOrderItemPriceDetails() != null && !model.getOrderItemPriceDetails().isEmpty()) {
+    this.orderItemPriceDetails=new ArrayList<OrderItemPriceDetailWrapper>();
+    for (    OrderItemPriceDetail orderItemPriceDetail : model.getOrderItemPriceDetails()) {
+      OrderItemPriceDetailWrapper orderItemPriceDetailWrapper=(OrderItemPriceDetailWrapper)context.getBean(OrderItemPriceDetailWrapper.class.getName());
+      orderItemPriceDetailWrapper.wrapSummary(orderItemPriceDetail,request);
+      this.orderItemPriceDetails.add(orderItemPriceDetailWrapper);
+    }
+  }
+  if (model instanceof DiscreteOrderItem) {
+    this.retailPrice=model.getRetailPrice();
+    this.salePrice=model.getSalePrice();
+    DiscreteOrderItem doi=(DiscreteOrderItem)model;
+    this.productId=doi.getProduct().getId();
+  }
+ else   if (model instanceof BundleOrderItem) {
+    BundleOrderItem boi=(BundleOrderItem)model;
+    this.bundleRetailPrice=boi.getRetailPrice();
+    this.bundleSalePrice=boi.getSalePrice();
+    List<DiscreteOrderItem> discreteItems=boi.getDiscreteOrderItems();
+    if (discreteItems != null && !discreteItems.isEmpty()) {
+      this.bundleItems=new ArrayList<OrderItemWrapper>();
+      for (      DiscreteOrderItem doi : discreteItems) {
+        OrderItemWrapper doiWrapper=(OrderItemWrapper)context.getBean(OrderItemWrapper.class.getName());
+        doiWrapper.wrapSummary(doi,request);
+        this.bundleItems.add(doiWrapper);
+      }
+    }
+    this.productId=boi.getProduct().getId();
+  }
+}

@@ -1,0 +1,12 @@
+{
+  this.fieldName=model.getFacet().getField().getAbbreviation();
+  this.active=model.isActive();
+  if (model.getFacetValues() != null) {
+    this.values=new ArrayList<SearchFacetValueWrapper>();
+    for (    SearchFacetResultDTO result : model.getFacetValues()) {
+      SearchFacetValueWrapper wrapper=(SearchFacetValueWrapper)context.getBean(SearchFacetValueWrapper.class.getName());
+      wrapper.wrapSummary(result,request);
+      this.values.add(wrapper);
+    }
+  }
+}

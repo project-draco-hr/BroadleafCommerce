@@ -1,0 +1,12 @@
+{
+  this.id=model.getId();
+  this.quantity=model.getQuantity();
+  if (!model.getOrderItemPriceDetailAdjustments().isEmpty()) {
+    this.orderItemPriceDetailAdjustments=new ArrayList<OrderItemPriceDetailAdjustmentWrapper>();
+    for (    OrderItemPriceDetailAdjustment orderItemPriceDetail : model.getOrderItemPriceDetailAdjustments()) {
+      OrderItemPriceDetailAdjustmentWrapper orderItemPriceDetailAdjustmentWrapper=(OrderItemPriceDetailAdjustmentWrapper)context.getBean(OrderItemPriceDetailAdjustmentWrapper.class.getName());
+      orderItemPriceDetailAdjustmentWrapper.wrapSummary(orderItemPriceDetail,request);
+      this.orderItemPriceDetailAdjustments.add(orderItemPriceDetailAdjustmentWrapper);
+    }
+  }
+}
