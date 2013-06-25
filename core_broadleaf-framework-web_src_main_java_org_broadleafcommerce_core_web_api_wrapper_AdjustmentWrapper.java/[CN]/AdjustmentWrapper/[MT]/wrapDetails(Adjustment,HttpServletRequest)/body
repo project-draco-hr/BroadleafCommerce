@@ -1,0 +1,18 @@
+{
+  if (model == null) {
+    return;
+  }
+  this.id=model.getId();
+  this.reason=model.getReason();
+  Offer offer=model.getOffer();
+  if (offer != null) {
+    if (model.getReason() == null) {
+      this.reason="OFFER";
+    }
+    this.offerid=offer.getId();
+    this.marketingMessage=offer.getMarketingMessage();
+    this.discountType=offer.getDiscountType().getType();
+    this.discountAmount=offer.getValue();
+  }
+  this.adjustmentValue=model.getValue();
+}
