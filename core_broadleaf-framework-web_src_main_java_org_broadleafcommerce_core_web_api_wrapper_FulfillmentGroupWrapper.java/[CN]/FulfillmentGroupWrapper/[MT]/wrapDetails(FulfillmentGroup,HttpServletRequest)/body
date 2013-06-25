@@ -24,4 +24,13 @@
     }
     this.fulfillmentGroupItems=fulfillmentGroupItemWrappers;
   }
+  List<FulfillmentGroupAdjustment> adjustments=model.getFulfillmentGroupAdjustments();
+  if (adjustments != null && !adjustments.isEmpty()) {
+    this.fulfillmentGroupAdjustments=new ArrayList<AdjustmentWrapper>();
+    for (    FulfillmentGroupAdjustment adj : adjustments) {
+      AdjustmentWrapper adjustmentWrapper=(AdjustmentWrapper)context.getBean(AdjustmentWrapper.class.getName());
+      adjustmentWrapper.wrapSummary(adj,request);
+      this.fulfillmentGroupAdjustments.add(adjustmentWrapper);
+    }
+  }
 }
