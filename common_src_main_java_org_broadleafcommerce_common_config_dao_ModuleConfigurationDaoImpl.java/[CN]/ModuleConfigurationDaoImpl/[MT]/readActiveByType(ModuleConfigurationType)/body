@@ -4,6 +4,7 @@
   Date myDate=SystemTime.asDate();
   myDate=getDateFactoringInDateResolution(myDate);
   query.setParameter("currentDate",myDate);
-  query.setHint(QueryHints.CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"blConfigurationModuleElements");
   return query.getResultList();
 }

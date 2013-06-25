@@ -1,6 +1,7 @@
 {
   Query query=em.createNamedQuery("BC_READ_MODULE_CONFIG_BY_TYPE");
   query.setParameter("configType",type.getType());
-  query.setHint(QueryHints.CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"blConfigurationModuleElements");
   return query.getResultList();
 }
