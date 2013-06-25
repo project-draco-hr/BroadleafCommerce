@@ -1,40 +1,38 @@
 {
-  StopWatch s=new StopWatch();
   LinkedHashMap<String,Resource> foundResources=new LinkedHashMap<String,Resource>();
   if (additionalBundleFiles.get(bundleName) != null) {
     files.addAll(additionalBundleFiles.get(bundleName));
   }
   for (  String file : files) {
-    for (    Resource location : handler.getLocations()) {
-      try {
-        Resource resource=location.createRelative(file);
-        if (resource.exists() && resource.isReadable()) {
-          foundResources.put(file,resource);
+    boolean match=false;
+    if (handler.getHandlers() != null) {
+      for (      AbstractGeneratedResourceHandler h : handler.getHandlers()) {
+        if (h.canHandle(file)) {
+          foundResources.put(file,h.getResource(file,handler.getLocations()));
+          match=true;
           break;
         }
       }
- catch (      IOException ex) {
-        LOG.debug("Failed to create relative resource - trying next resource location",ex);
-      }
     }
-    if (handler.getHandlers() != null) {
-      for (      AbstractGeneratedResourceHandler h : handler.getHandlers()) {
-        if (h.getHandledFileName().equals(file)) {
-          foundResources.put(file,h.getResource());
+    if (!match) {
+      for (      Resource location : handler.getLocations()) {
+        try {
+          Resource resource=location.createRelative(file);
+          if (resource.exists() && resource.isReadable()) {
+            foundResources.put(file,resource);
+            match=true;
+            break;
+          }
+        }
+ catch (        IOException ex) {
+          LOG.debug("Failed to create relative resource - trying next resource location",ex);
         }
       }
     }
   }
-  StringBuilder sb=new StringBuilder();
-  for (  Entry<String,Resource> entry : foundResources.entrySet()) {
-    sb.append(entry.getKey()).append(entry.getValue().lastModified()).append("\r\n");
-  }
-  String version=String.valueOf(sb.toString().hashCode());
-  String bundleWithoutExtension=bundleName.substring(0,bundleName.lastIndexOf('.'));
-  String bundleExtension=bundleName.substring(bundleName.lastIndexOf('.'));
-  String versionedName=bundleWithoutExtension + version + bundleExtension;
+  String version=getBundleVersion(foundResources);
+  String versionedName=getBundleName(bundleName,version);
   bundles.put(versionedName,foundResources.values());
-  bundleVersions.put(bundleName,versionedName);
-  s.printString("Regitering bundle");
+  getBundleVersionsCache().put(new Element(bundleName,versionedName));
   return versionedName;
 }
