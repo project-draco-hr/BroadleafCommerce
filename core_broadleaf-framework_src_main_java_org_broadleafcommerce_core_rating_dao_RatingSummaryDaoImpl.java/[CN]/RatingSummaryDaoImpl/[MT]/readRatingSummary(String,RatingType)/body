@@ -2,6 +2,8 @@
   final Query query=em.createNamedQuery("BC_READ_RATING_SUMMARY_BY_ITEM_ID_AND_TYPE");
   query.setParameter("itemId",itemId);
   query.setParameter("ratingType",type.getType());
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
   RatingSummary ratingSummary=null;
   try {
     ratingSummary=(RatingSummary)query.getSingleResult();
