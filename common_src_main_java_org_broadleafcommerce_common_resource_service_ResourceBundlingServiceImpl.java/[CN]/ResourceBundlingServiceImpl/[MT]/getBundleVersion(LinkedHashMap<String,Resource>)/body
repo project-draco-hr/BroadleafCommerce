@@ -1,0 +1,15 @@
+{
+  StringBuilder sb=new StringBuilder();
+  for (  Entry<String,Resource> entry : foundResources.entrySet()) {
+    sb.append(entry.getKey());
+    if (entry.getValue() instanceof GeneratedResource) {
+      sb.append(((GeneratedResource)entry.getValue()).getHash());
+    }
+ else {
+      sb.append(entry.getValue().lastModified());
+    }
+    sb.append("\r\n");
+  }
+  String version=String.valueOf(sb.toString().hashCode());
+  return version;
+}

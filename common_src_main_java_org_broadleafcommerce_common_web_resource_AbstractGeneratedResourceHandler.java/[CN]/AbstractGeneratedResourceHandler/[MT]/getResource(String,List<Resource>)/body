@@ -1,0 +1,15 @@
+{
+  Element e=getGeneratedResourceCache().get(path);
+  Resource r=null;
+  if (e == null || e.getObjectValue() == null) {
+    r=getFileContents(path,locations);
+    if (!(r instanceof GeneratedResource) || ((GeneratedResource)r).isCacheable()) {
+      e=new Element(path,r);
+      getGeneratedResourceCache().put(e);
+    }
+  }
+ else {
+    r=(Resource)e.getObjectValue();
+  }
+  return r;
+}
