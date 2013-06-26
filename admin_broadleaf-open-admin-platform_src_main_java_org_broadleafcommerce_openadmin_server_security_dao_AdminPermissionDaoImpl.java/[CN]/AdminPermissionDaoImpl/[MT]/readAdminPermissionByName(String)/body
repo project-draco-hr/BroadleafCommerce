@@ -1,0 +1,16 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<AdminPermission> criteria=builder.createQuery(AdminPermission.class);
+  Root<AdminPermissionImpl> adminPerm=criteria.from(AdminPermissionImpl.class);
+  criteria.select(adminPerm);
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(adminPerm.get("name"),name));
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  List<AdminPermission> results=em.createQuery(criteria).getResultList();
+  if (results == null || results.size() == 0) {
+    return null;
+  }
+ else {
+    return results.get(0);
+  }
+}

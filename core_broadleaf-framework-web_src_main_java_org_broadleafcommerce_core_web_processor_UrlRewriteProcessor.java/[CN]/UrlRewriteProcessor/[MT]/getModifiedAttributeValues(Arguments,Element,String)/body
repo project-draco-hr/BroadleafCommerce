@@ -1,7 +1,6 @@
 {
   Map<String,String> attrs=new HashMap<String,String>();
   HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
-  StaticAssetService staticAssetService=ProcessorUtils.getStaticAssetService(arguments);
   boolean secureRequest=isRequestSecure(request);
   String assetPath=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
   assetPath=staticAssetService.convertAssetPath(assetPath,request.getContextPath(),secureRequest);
