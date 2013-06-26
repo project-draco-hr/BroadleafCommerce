@@ -8,13 +8,20 @@
   address.setAddressLine2(this.addressLine2);
   address.setAddressLine3(this.addressLine3);
   address.setCity(this.city);
+  address.setPostalCode(this.postalCode);
+  address.setCompanyName(this.companyName);
+  if (this.isBusiness != null) {
+    address.setBusiness(this.isBusiness);
+  }
+  if (this.isDefault != null) {
+    address.setDefault(this.isDefault);
+  }
   if (this.state != null) {
     address.setState(this.state.unwrap(request,appContext));
   }
   if (this.country != null) {
     address.setCountry(this.country.unwrap(request,appContext));
   }
-  address.setPostalCode(this.postalCode);
   if (this.phonePrimary != null) {
     address.setPhonePrimary(this.phonePrimary.unwrap(request,appContext));
   }
@@ -23,13 +30,6 @@
   }
   if (this.phoneFax != null) {
     address.setPhoneFax(this.phoneFax.unwrap(request,appContext));
-  }
-  address.setCompanyName(this.companyName);
-  if (this.isBusiness != null) {
-    address.setBusiness(this.isBusiness);
-  }
-  if (this.isDefault != null) {
-    address.setDefault(this.isDefault);
   }
   return address;
 }
