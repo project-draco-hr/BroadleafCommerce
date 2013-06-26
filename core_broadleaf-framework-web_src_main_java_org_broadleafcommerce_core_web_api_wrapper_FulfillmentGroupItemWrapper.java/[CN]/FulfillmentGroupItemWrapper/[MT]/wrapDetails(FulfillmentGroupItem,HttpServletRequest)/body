@@ -9,4 +9,13 @@
   this.totalTax=model.getTotalTax();
   this.quantity=model.getQuantity();
   this.totalItemAmount=model.getTotalItemAmount();
+  List<TaxDetail> taxes=model.getTaxes();
+  if (taxes != null && !taxes.isEmpty()) {
+    this.taxDetails=new ArrayList<TaxDetailWrapper>();
+    for (    TaxDetail detail : taxes) {
+      TaxDetailWrapper taxDetailWrapper=(TaxDetailWrapper)context.getBean(TaxDetailWrapper.class.getName());
+      taxDetailWrapper.wrapSummary(detail,request);
+      this.taxDetails.add(taxDetailWrapper);
+    }
+  }
 }
