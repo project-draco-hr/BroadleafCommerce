@@ -1,0 +1,16 @@
+{
+  this.id=model.getId();
+  if (model.getType() != null) {
+    this.taxType=(BroadleafEnumerationTypeWrapper)context.getBean(BroadleafEnumerationTypeWrapper.class.getName());
+    this.taxType.wrapDetails(model.getType(),request);
+  }
+  this.amount=model.getAmount();
+  this.rate=model.getRate();
+  if (model.getCurrency() != null) {
+    this.currency=model.getCurrency().getCurrencyCode();
+  }
+  this.jurisdictionName=model.getJurisdictionName();
+  this.taxName=model.getTaxName();
+  this.region=model.getRegion();
+  this.country=model.getCountry();
+}
