@@ -1,15 +1,20 @@
 {
   Element e=getGeneratedResourceCache().get(path);
   Resource r=null;
+  boolean shouldGenerate=false;
   if (e == null || e.getObjectValue() == null) {
-    r=getFileContents(path,locations);
-    if (!(r instanceof GeneratedResource) || ((GeneratedResource)r).isCacheable()) {
-      e=new Element(path,r);
-      getGeneratedResourceCache().put(e);
-    }
+    shouldGenerate=true;
+  }
+ else   if (e.getObjectValue() instanceof GeneratedResource && isCachedResourceExpired((GeneratedResource)e.getObjectValue(),path,locations)) {
+    shouldGenerate=true;
   }
  else {
     r=(Resource)e.getObjectValue();
+  }
+  if (shouldGenerate) {
+    r=getFileContents(path,locations);
+    e=new Element(path,r);
+    getGeneratedResourceCache().put(e);
   }
   return r;
 }
