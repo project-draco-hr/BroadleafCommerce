@@ -1,7 +1,6 @@
 {
   if (!"GET".equalsIgnoreCase(element.getAttributeValueFromNormalizedName("method"))) {
     try {
-      ExploitProtectionService eps=ProcessorUtils.getExploitProtectionService(arguments);
       String csrfToken=eps.getCSRFToken();
       if ("multipart/form-data".equalsIgnoreCase(element.getAttributeValueFromNormalizedName("enctype"))) {
         String action=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValueFromNormalizedName("th:action"));
