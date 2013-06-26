@@ -47,4 +47,12 @@
     }
     this.productId=boi.getProduct().getId();
   }
+  if (model.getOrderItemQualifiers() != null && !model.getOrderItemQualifiers().isEmpty()) {
+    this.qualifiers=new ArrayList<OrderItemQualifierWrapper>();
+    for (    OrderItemQualifier qualifier : model.getOrderItemQualifiers()) {
+      OrderItemQualifierWrapper qualifierWrapper=(OrderItemQualifierWrapper)context.getBean(OrderItemQualifierWrapper.class.getName());
+      qualifierWrapper.wrapSummary(qualifier,request);
+      this.qualifiers.add(qualifierWrapper);
+    }
+  }
 }
