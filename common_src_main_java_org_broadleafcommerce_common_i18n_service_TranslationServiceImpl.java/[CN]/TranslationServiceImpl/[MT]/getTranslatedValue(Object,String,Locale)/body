@@ -6,10 +6,11 @@
   if (StringUtils.isNotBlank(locale.getCountry())) {
     localeCountryCode+="_" + locale.getCountry();
   }
-  Translation translation=null;
+  Translation translation;
   String countryCacheKey=getCacheKey(entityType,entityId,property,localeCountryCode);
-  if (getCache().isKeyInCache(countryCacheKey)) {
-    translation=(Translation)getCache().get(countryCacheKey).getObjectValue();
+  Element countryValue=getCache().get(countryCacheKey);
+  if (countryValue != null) {
+    translation=(Translation)countryValue.getObjectValue();
   }
  else {
     translation=getTranslation(entityType,entityId,property,localeCountryCode);
@@ -17,8 +18,9 @@
   }
   if (translation == null) {
     String nonCountryCacheKey=getCacheKey(entityType,entityId,property,localeCode);
-    if (getCache().isKeyInCache(nonCountryCacheKey)) {
-      translation=(Translation)getCache().get(nonCountryCacheKey).getObjectValue();
+    Element nonCountryValue=getCache().get(nonCountryCacheKey);
+    if (nonCountryValue != null) {
+      translation=(Translation)nonCountryValue.getObjectValue();
     }
  else {
       translation=getTranslation(entityType,entityId,property,localeCode);
