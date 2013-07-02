@@ -50,4 +50,14 @@
   CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
   customerWrapper.wrapDetails(model.getCustomer(),request);
   this.customer=customerWrapper;
+  if (model.getOrderMessages() != null && !model.getOrderMessages().isEmpty()) {
+    for (    ActivityMessageDTO dto : model.getOrderMessages()) {
+      CartMessageWrapper cartMessageWrapper=(CartMessageWrapper)context.getBean(CartMessageWrapper.class.getName());
+      cartMessageWrapper.wrapSummary(dto,request);
+      if (cartMessages == null) {
+        cartMessages=new ArrayList<CartMessageWrapper>();
+      }
+      this.cartMessages.add(cartMessageWrapper);
+    }
+  }
 }

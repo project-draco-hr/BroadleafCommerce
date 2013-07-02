@@ -15,8 +15,9 @@
   try {
     order=orderService.save(order,false);
     seed=new CheckoutSeed(order,payments,new HashMap<String,Object>());
-    checkoutWorkflow.doActivities(seed);
+    ProcessContext<CheckoutSeed> context=(ProcessContext<CheckoutSeed>)checkoutWorkflow.doActivities(seed);
     order=orderService.save(seed.getOrder(),false);
+    order.getOrderMessages().addAll(((ActivityMessages)context).getActivityMessages());
     seed.setOrder(order);
     return seed;
   }
@@ -25,5 +26,8 @@
   }
 catch (  WorkflowException e) {
     throw new CheckoutException("Unable to checkout order -- id: " + order.getId(),e.getRootCause(),seed);
+  }
+catch (  RequiredAttributeNotProvidedException e) {
+    throw new CheckoutException("Unable to checkout order -- id: " + order.getId(),e.getCause(),seed);
   }
 }

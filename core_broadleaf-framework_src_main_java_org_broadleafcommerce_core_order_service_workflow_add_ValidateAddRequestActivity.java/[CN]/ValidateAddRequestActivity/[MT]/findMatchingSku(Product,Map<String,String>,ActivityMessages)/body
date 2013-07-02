@@ -2,7 +2,7 @@
   Map<String,String> attributeValuesForSku=new HashMap<String,String>();
   if (product != null && product.getProductOptions() != null && product.getProductOptions().size() > 0) {
     for (    ProductOption productOption : product.getProductOptions()) {
-      if (productOption.getRequired()) {
+      if (productOption.getRequired() && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= ProductOptionValidationStrategyType.ADD_ITEM.getRank())) {
         if (StringUtils.isEmpty(attributeValues.get(productOption.getAttributeName()))) {
           throw new RequiredAttributeNotProvidedException("Unable to add to product (" + product.getId() + ") cart. Required attribute was not provided: "+ productOption.getAttributeName());
         }
@@ -12,8 +12,17 @@
       }
       if (!productOption.getRequired() && StringUtils.isEmpty(attributeValues.get(productOption.getAttributeName()))) {
       }
- else       if (productOption.getProductOptionValidationType() != null) {
+ else       if (productOption.getProductOptionValidationType() != null && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= ProductOptionValidationStrategyType.ADD_ITEM.getRank())) {
         productOptionValidationService.validate(productOption,attributeValues.get(productOption.getAttributeName()));
+      }
+      if ((productOption.getProductOptionValidationStrategyType() != null && productOption.getProductOptionValidationStrategyType().getRank() > ProductOptionValidationStrategyType.ADD_ITEM.getRank())) {
+        try {
+          productOptionValidationService.validate(productOption,attributeValues.get(productOption.getAttributeName()));
+        }
+ catch (        ProductOptionValidationException e) {
+          ActivityMessageDTO msg=new ActivityMessageDTO(MessageType.PRODUCT_OPTION,1,e.getMessage());
+          ((ActivityMessages)messages).getActivityMessages().add(msg);
+        }
       }
     }
     if (product != null && product.getSkus() != null) {

@@ -18,7 +18,7 @@
       throw new IllegalArgumentException("Product was specified but no matching product was found for productId " + orderItemRequestDTO.getProductId());
     }
   }
-  Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes());
+  Sku sku=determineSku(product,orderItemRequestDTO.getSkuId(),orderItemRequestDTO.getItemAttributes(),(ActivityMessages)context);
   if (sku == null) {
     StringBuilder sb=new StringBuilder();
     for (    Entry<String,String> entry : orderItemRequestDTO.getItemAttributes().entrySet()) {
