@@ -7,8 +7,8 @@
   }
   OrderComparator.sort(activities);
   HashSet<String> moduleNames=new HashSet<String>();
-  for (Iterator<Activity<ProcessContext>> iter=activities.iterator(); iter.hasNext(); ) {
-    Activity<? extends ProcessContext> activity=iter.next();
+  for (Iterator<Activity<ProcessContext<? extends Object>>> iter=activities.iterator(); iter.hasNext(); ) {
+    Activity<? extends ProcessContext<? extends Object>> activity=iter.next();
     if (!supports(activity)) {
       throw new BeanInitializationException("The workflow processor [" + beanName + "] does "+ "not support the activity of type"+ activity.getClass().getName());
     }

@@ -1,0 +1,8 @@
+{
+  if (!(seedData instanceof CartOperationRequest)) {
+    throw new WorkflowException("Seed data instance is incorrect. " + "Required class is " + CartOperationRequest.class.getName() + " "+ "but found class: "+ seedData.getClass().getName());
+  }
+  ProcessContext<CartOperationRequest> context=new DefaultProcessContextImpl<CartOperationRequest>();
+  context.setSeedData((CartOperationRequest)seedData);
+  return context;
+}

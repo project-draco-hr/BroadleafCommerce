@@ -3,7 +3,7 @@
     OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
     orderItemRequestDTO.setOrderItemId(orderItemId);
     CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
-    CartOperationContext context=(CartOperationContext)removeItemWorkflow.doActivities(cartOpRequest);
+    ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)removeItemWorkflow.doActivities(cartOpRequest);
     return context.getSeedData().getOrder();
   }
  catch (  WorkflowException e) {

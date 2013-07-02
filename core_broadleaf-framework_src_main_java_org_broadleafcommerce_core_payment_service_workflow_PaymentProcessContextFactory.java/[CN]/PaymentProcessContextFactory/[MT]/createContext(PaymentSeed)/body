@@ -1,0 +1,23 @@
+{
+  if (!(seedData instanceof PaymentSeed)) {
+    throw new WorkflowException("Seed data instance is incorrect. " + "Required class is " + PaymentSeed.class.getName() + " "+ "but found class: "+ seedData.getClass().getName());
+  }
+  PaymentSeed paymentSeed=(PaymentSeed)seedData;
+  Map<PaymentInfo,Referenced> secureMap=paymentSeed.getInfos();
+  if (secureMap == null) {
+    secureMap=new HashMap<PaymentInfo,Referenced>();
+    List<PaymentInfo> paymentInfoList=orderService.findPaymentInfosForOrder(paymentSeed.getOrder());
+    if (paymentInfoList == null || paymentInfoList.size() == 0) {
+      throw new WorkflowException("No payment info instances associated with the order -- id: " + paymentSeed.getOrder().getId());
+    }
+    Iterator<PaymentInfo> infos=paymentInfoList.iterator();
+    while (infos.hasNext()) {
+      PaymentInfo info=infos.next();
+      secureMap.put(info,securePaymentInfoService.findSecurePaymentInfo(info.getReferenceNumber(),info.getType()));
+    }
+  }
+  CombinedPaymentContextSeed combinedSeed=new CombinedPaymentContextSeed(secureMap,paymentActionType,paymentSeed.getOrder().getTotal(),paymentSeed.getPaymentResponse(),paymentSeed.getTransactionAmount());
+  ProcessContext<CombinedPaymentContextSeed> response=new DefaultProcessContextImpl<CombinedPaymentContextSeed>();
+  response.setSeedData(combinedSeed);
+  return response;
+}

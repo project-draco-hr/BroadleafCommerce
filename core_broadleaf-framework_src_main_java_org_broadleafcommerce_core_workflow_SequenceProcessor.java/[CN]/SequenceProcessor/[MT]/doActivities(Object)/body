@@ -6,7 +6,7 @@
   if (activityStateManager == null) {
     throw new IllegalStateException("Unable to find an instance of ActivityStateManager registered under bean id blActivityStateManager");
   }
-  ProcessContext context=null;
+  ProcessContext<? extends Object> context=null;
   RollbackStateLocal rollbackStateLocal=RollbackStateLocal.getRollbackStateLocal();
   if (rollbackStateLocal == null) {
     rollbackStateLocal=new RollbackStateLocal();
@@ -15,9 +15,9 @@
     RollbackStateLocal.setRollbackStateLocal(rollbackStateLocal);
   }
   try {
-    List<Activity<ProcessContext>> activities=getActivities();
+    List<Activity<ProcessContext<? extends Object>>> activities=getActivities();
     context=createContext(seedData);
-    for (    Activity<ProcessContext> activity : activities) {
+    for (    Activity<ProcessContext<? extends Object>> activity : activities) {
       if (activity.shouldExecute(context)) {
         if (LOG.isDebugEnabled()) {
           LOG.debug("running activity:" + activity.getBeanName() + " using arguments:"+ context);

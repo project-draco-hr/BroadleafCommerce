@@ -4,7 +4,7 @@
   }
   try {
     CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
-    CartOperationContext context=(CartOperationContext)updateItemWorkflow.doActivities(cartOpRequest);
+    ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)updateItemWorkflow.doActivities(cartOpRequest);
     return context.getSeedData().getOrder();
   }
  catch (  WorkflowException e) {

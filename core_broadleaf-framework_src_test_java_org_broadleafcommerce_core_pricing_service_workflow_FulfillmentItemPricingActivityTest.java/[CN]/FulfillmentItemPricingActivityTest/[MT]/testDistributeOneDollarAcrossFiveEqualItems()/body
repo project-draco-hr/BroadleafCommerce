@@ -11,7 +11,7 @@
   order.getOrderAdjustments().add(adjustment);
   adjustment.setOrder(order);
   order.setSubTotal(subTotal);
-  PricingContext context=new PricingContext();
+  ProcessContext<Order> context=new DefaultProcessContextImpl<Order>();
   context.setSeedData(order);
   fulfillmentItemPricingActivity.execute(context);
   Money proratedAdjustment=new Money(".20");

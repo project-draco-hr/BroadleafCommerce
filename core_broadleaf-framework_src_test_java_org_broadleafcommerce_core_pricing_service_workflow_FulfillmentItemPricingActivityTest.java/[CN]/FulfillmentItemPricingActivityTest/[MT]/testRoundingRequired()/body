@@ -12,7 +12,7 @@
   adjustment.setValue(new Money(new BigDecimal(".05"),order.getCurrency()));
   adjustment.setOrder(order);
   order.getOrderAdjustments().add(adjustment);
-  PricingContext context=new PricingContext();
+  ProcessContext<Order> context=new DefaultProcessContextImpl<Order>();
   context.setSeedData(order);
   fulfillmentItemPricingActivity.execute(context);
   assertTrue(sumProratedOfferAdjustments(order).equals(new Money(new BigDecimal(".05"),order.getCurrency())));
