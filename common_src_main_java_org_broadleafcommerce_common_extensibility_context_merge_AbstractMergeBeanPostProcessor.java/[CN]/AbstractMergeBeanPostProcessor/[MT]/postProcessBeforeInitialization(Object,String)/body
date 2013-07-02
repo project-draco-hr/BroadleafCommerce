@@ -1,4 +1,10 @@
 {
+  if (statusProvider != null && !statusProvider.isProcessingEnabled(bean,beanName,applicationContext)) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(String.format("Not performing post-processing on targetRef [%s] because the registered " + "status provider [%s] returned false",targetRef,statusProvider.getClass().getSimpleName()));
+    }
+    return bean;
+  }
   if (beanName.equals(targetRef)) {
     Object mergeCollection=applicationContext.getBean(collectionRef);
     if (bean instanceof ListFactoryBean || bean instanceof List) {
