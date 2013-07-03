@@ -1,0 +1,23 @@
+{
+  try {
+    super.doFilter(baseRequest,baseResponse,chain);
+  }
+ catch (  ServletException e) {
+    SecurityContextRepository repo=new HttpSessionSecurityContextRepository();
+    HttpServletRequest baseHttpRequest=(HttpServletRequest)baseRequest;
+    HttpRequestResponseHolder holder=new HttpRequestResponseHolder(baseHttpRequest,(HttpServletResponse)baseResponse);
+    SecurityContext securityContext=repo.loadContext(holder);
+    if (securityContext.getAuthentication() == null) {
+      baseHttpRequest.setAttribute("sessionTimeout",true);
+      failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new AuthenticationException("Session Time Out"){
+        private static final long serialVersionUID=1L;
+      }
+);
+    }
+ else {
+      String previousLocation=baseHttpRequest.getHeader("referer");
+      HttpServletResponse response=(HttpServletResponse)baseResponse;
+      response.sendRedirect(previousLocation);
+    }
+  }
+}
