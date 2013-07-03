@@ -9,10 +9,7 @@
     SecurityContext securityContext=repo.loadContext(holder);
     if (securityContext.getAuthentication() == null) {
       baseHttpRequest.setAttribute("sessionTimeout",true);
-      failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new AuthenticationException("Session Time Out"){
-        private static final long serialVersionUID=1L;
-      }
-);
+      failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new SessionAuthenticationException("Session Time Out"));
     }
  else {
       String previousLocation=baseHttpRequest.getHeader("referer");
