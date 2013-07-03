@@ -3,18 +3,20 @@
     super.doFilter(baseRequest,baseResponse,chain);
   }
  catch (  ServletException e) {
-    SecurityContextRepository repo=new HttpSessionSecurityContextRepository();
-    HttpServletRequest baseHttpRequest=(HttpServletRequest)baseRequest;
-    HttpRequestResponseHolder holder=new HttpRequestResponseHolder(baseHttpRequest,(HttpServletResponse)baseResponse);
-    SecurityContext securityContext=repo.loadContext(holder);
-    if (securityContext.getAuthentication() == null) {
-      baseHttpRequest.setAttribute("sessionTimeout",true);
-      failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new SessionAuthenticationException("Session Time Out"));
+    if (e.getCause() instanceof ServiceException) {
+      HttpServletRequest baseHttpRequest=(HttpServletRequest)baseRequest;
+      if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        baseHttpRequest.setAttribute("sessionTimeout",true);
+        failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new SessionAuthenticationException("Session Time Out"));
+      }
+ else {
+        String previousLocation=baseHttpRequest.getHeader("referer");
+        HttpServletResponse response=(HttpServletResponse)baseResponse;
+        response.sendRedirect(previousLocation);
+      }
     }
  else {
-      String previousLocation=baseHttpRequest.getHeader("referer");
-      HttpServletResponse response=(HttpServletResponse)baseResponse;
-      response.sendRedirect(previousLocation);
+      throw e;
     }
   }
 }
