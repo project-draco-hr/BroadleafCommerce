@@ -5,15 +5,15 @@
     Product product=((DiscreteOrderItem)i).getProduct();
     if (product != null && product.getProductOptions() != null && product.getProductOptions().size() > 0) {
       for (      ProductOption productOption : product.getProductOptions()) {
-        if (productOption.getRequired() && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= ProductOptionValidationStrategyType.SUBMIT_ORDER.getRank())) {
+        if (productOption.getRequired() && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= productOptionValidationStrategyType.getRank())) {
           if (attributeValues.get(productOption.getAttributeName()) == null || StringUtils.isEmpty(attributeValues.get(productOption.getAttributeName()).getValue())) {
-            throw new RequiredAttributeNotProvidedException("Unable to submit cart, product  (" + product.getId() + ") required attribute was not provided: "+ productOption.getAttributeName());
+            throw new RequiredAttributeNotProvidedException("Unable to validate cart, product  (" + product.getId() + ") required attribute was not provided: "+ productOption.getAttributeName());
           }
         }
-        if (productOption.getProductOptionValidationType() != null && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= ProductOptionValidationStrategyType.SUBMIT_ORDER.getRank())) {
+        if (productOption.getProductOptionValidationType() != null && (productOption.getProductOptionValidationStrategyType() == null || productOption.getProductOptionValidationStrategyType().getRank() <= productOptionValidationStrategyType.getRank())) {
           productOptionValidationService.validate(productOption,attributeValues.get(productOption.getAttributeName()).getValue());
         }
-        if ((productOption.getProductOptionValidationStrategyType() != null && productOption.getProductOptionValidationStrategyType().getRank() > ProductOptionValidationStrategyType.SUBMIT_ORDER.getRank())) {
+        if ((productOption.getProductOptionValidationStrategyType() != null && productOption.getProductOptionValidationStrategyType().getRank() > productOptionValidationStrategyType.getRank())) {
           try {
             productOptionValidationService.validate(productOption,(attributeValues.get(productOption.getAttributeName()) != null) ? attributeValues.get(productOption.getAttributeName()).getValue() : null);
           }
