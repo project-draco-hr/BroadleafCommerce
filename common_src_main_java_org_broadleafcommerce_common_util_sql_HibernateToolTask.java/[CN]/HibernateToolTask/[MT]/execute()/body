@@ -1,14 +1,10 @@
 {
-  AntClassLoader loader;
   MergeFileSystemAndClassPathXMLApplicationContext mergeContext;
   try {
     ConfigurationOnlyState state=new ConfigurationOnlyState();
     state.setConfigurationOnly(true);
     ConfigurationOnlyState.setState(state);
-    loader=getProject().createClassLoader(classPath);
-    ClassLoader classLoader=this.getClass().getClassLoader();
-    loader.setParent(classLoader);
-    loader.setThreadContextLoader();
+    Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
     String[] contexts=StandardConfigLocations.retrieveAll(StandardConfigLocations.TESTCONTEXTTYPE);
     LinkedHashMap<String,MergeFileSystemAndClassPathXMLApplicationContext.ResourceType> locations=new LinkedHashMap<String,MergeFileSystemAndClassPathXMLApplicationContext.ResourceType>();
     for (    String context : contexts) {
@@ -49,12 +45,6 @@
   }
  catch (  RuntimeException re) {
     reportException(re,count,generatorTask);
-  }
- finally {
-    if (loader != null) {
-      loader.resetThreadContextLoader();
-      loader.cleanup();
-    }
   }
   try {
     if (combinePersistenceUnits) {
