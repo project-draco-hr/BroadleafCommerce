@@ -1,4 +1,9 @@
 {
+  if (address.getStandardized() != null && Boolean.TRUE.equals(address.getStandardized())) {
+    ArrayList<Address> out=new ArrayList<Address>();
+    out.add(address);
+    return out;
+  }
   if (providers != null && !providers.isEmpty()) {
     List<ModuleConfiguration> moduleConfigs=moduleConfigService.findActiveConfigurationsByType(ModuleConfigurationType.ADDRESS_VERIFICATION);
     if (moduleConfigs != null && !moduleConfigs.isEmpty()) {
