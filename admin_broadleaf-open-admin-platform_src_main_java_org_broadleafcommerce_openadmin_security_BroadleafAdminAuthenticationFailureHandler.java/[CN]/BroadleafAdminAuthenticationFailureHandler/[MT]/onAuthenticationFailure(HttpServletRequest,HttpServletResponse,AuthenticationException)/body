@@ -2,8 +2,8 @@
   String failureUrlParam=StringUtil.cleanseUrlString(request.getParameter("failureUrl"));
   String successUrlParam=StringUtil.cleanseUrlString(request.getParameter("successUrl"));
   String failureUrl=failureUrlParam == null ? null : failureUrlParam.trim();
-  boolean sessionTimeout=(Boolean)request.getAttribute("sessionTimeout");
-  if (StringUtils.isEmpty(failureUrl) && !sessionTimeout) {
+  Boolean sessionTimeout=(Boolean)request.getAttribute("sessionTimeout");
+  if (StringUtils.isEmpty(failureUrl) && BooleanUtils.isNotTrue(sessionTimeout)) {
     failureUrl=defaultFailureUrl;
   }
   if (sessionTimeout) {
