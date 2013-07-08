@@ -9,5 +9,24 @@
   for (  String removeKey : removeKeys) {
     mergedProperties.remove(removeKey);
   }
+  Set<String> keys=new HashSet<String>(mergedProperties.keySet());
+  for (  Class<?> targetClass : entities) {
+    for (    String key : keys) {
+      LateStageAddMetadataRequest amr=new LateStageAddMetadataRequest(key,null,targetClass,this,"");
+      boolean foundOneOrMoreHandlers=false;
+      for (      FieldMetadataProvider fieldMetadataProvider : fieldMetadataProviders) {
+        FieldProviderResponse response=fieldMetadataProvider.lateStageAddMetadata(amr,mergedProperties);
+        if (FieldProviderResponse.NOT_HANDLED != response) {
+          foundOneOrMoreHandlers=true;
+        }
+        if (FieldProviderResponse.HANDLED_BREAK == response) {
+          break;
+        }
+      }
+      if (!foundOneOrMoreHandlers) {
+        defaultFieldMetadataProvider.lateStageAddMetadata(amr,mergedProperties);
+      }
+    }
+  }
   return mergedProperties;
 }
