@@ -1,9 +1,11 @@
 {
-  if (StringUtils.isEmpty(taxCode) && hasDefaultSku()) {
-    return lookupDefaultSku().getTaxCode();
+  if (StringUtils.isEmpty(this.taxCode)) {
+    if (hasDefaultSku() && !StringUtils.isEmpty(lookupDefaultSku().getTaxCode())) {
+      return lookupDefaultSku().getTaxCode();
+    }
+ else     if (getProduct() != null && getProduct().getDefaultCategory() != null) {
+      return getProduct().getDefaultCategory().getTaxCode();
+    }
   }
- else   if (StringUtils.isEmpty(taxCode)) {
-    return getProduct().getTaxCode();
-  }
-  return taxCode;
+  return this.taxCode;
 }

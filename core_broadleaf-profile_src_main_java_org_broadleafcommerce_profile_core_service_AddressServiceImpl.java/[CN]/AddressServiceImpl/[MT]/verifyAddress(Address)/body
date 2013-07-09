@@ -24,5 +24,10 @@
       }
     }
   }
-  throw new AddressVerificationException("No providers were configured to handle address validation");
+  if (mustValidateAddresses) {
+    throw new AddressVerificationException("No providers were configured to handle address validation");
+  }
+  ArrayList<Address> out=new ArrayList<Address>();
+  out.add(address);
+  return out;
 }
