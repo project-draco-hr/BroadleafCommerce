@@ -1,4 +1,11 @@
 {
   ef.addAction(DefaultEntityFormActions.SAVE);
   ef.addAction(DefaultEntityFormActions.DELETE);
+  if (extensionManagers != null && !extensionManagers.isEmpty()) {
+    for (    FormBuilderExtensionManager mgr : extensionManagers) {
+      if (mgr.canHandle(ef)) {
+        mgr.addFormExtensions(ef);
+      }
+    }
+  }
 }
