@@ -22,5 +22,9 @@
       lg.getToolbarActions().add(0,DefaultListGridActions.ADD);
     }
   }
-  addEntityFormActions(ef);
+  if (CollectionUtils.isEmpty(ef.getActions())) {
+    ef.addAction(DefaultEntityFormActions.SAVE);
+  }
+  ef.addAction(DefaultEntityFormActions.DELETE);
+  addAdditionalEntityFormActions(ef);
 }
