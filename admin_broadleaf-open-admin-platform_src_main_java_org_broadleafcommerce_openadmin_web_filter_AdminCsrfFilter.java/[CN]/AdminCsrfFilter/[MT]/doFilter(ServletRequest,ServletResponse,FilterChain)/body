@@ -1,0 +1,17 @@
+{
+  try {
+    super.doFilter(baseRequest,baseResponse,chain);
+  }
+ catch (  ServletException e) {
+    if (e.getCause() instanceof ServiceException) {
+      HttpServletRequest baseHttpRequest=(HttpServletRequest)baseRequest;
+      if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        baseHttpRequest.setAttribute("sessionTimeout",true);
+        failureHandler.onAuthenticationFailure((HttpServletRequest)baseRequest,(HttpServletResponse)baseResponse,new SessionAuthenticationException("Session Time Out"));
+      }
+    }
+ else {
+      throw e;
+    }
+  }
+}

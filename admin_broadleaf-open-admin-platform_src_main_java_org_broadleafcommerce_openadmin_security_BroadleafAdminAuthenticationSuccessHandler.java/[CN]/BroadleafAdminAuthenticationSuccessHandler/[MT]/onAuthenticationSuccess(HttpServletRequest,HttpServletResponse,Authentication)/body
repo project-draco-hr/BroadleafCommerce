@@ -16,10 +16,15 @@
   if (targetUrl.charAt(targetUrl.length() - 1) == '?') {
     targetUrl=targetUrl.substring(0,targetUrl.length() - 1);
   }
-  String moduleKey=request.getParameter("moduleKey");
-  String pageKey=request.getParameter("pageKey");
-  if (moduleKey != null && pageKey != null) {
-    targetUrl+="#" + "moduleKey=" + moduleKey + "&pageKey="+ pageKey;
+  if (targetUrl.contains(successUrlParameter)) {
+    int successUrlPosistion=targetUrl.indexOf(successUrlParameter) + successUrlParameter.length();
+    int nextParamPosistion=targetUrl.indexOf("&",successUrlPosistion);
+    if (nextParamPosistion == -1) {
+      targetUrl=targetUrl.substring(successUrlPosistion,targetUrl.length());
+    }
+ else {
+      targetUrl=targetUrl.substring(successUrlPosistion,nextParamPosistion);
+    }
   }
   logger.debug("Redirecting to DefaultSavedRequest Url: " + targetUrl);
   getRedirectStrategy().sendRedirect(request,response,targetUrl);
