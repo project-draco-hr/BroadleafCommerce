@@ -3,13 +3,16 @@
   if (cart != null) {
     try {
       OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+      HashMap<String,String> productOptions=getOptions(uriInfo);
+      if (uriInfo.getQueryParameters().getFirst("bundleOrderItemId") != null) {
+      }
       orderItemRequestDTO.setOrderItemId(itemId);
-      orderItemRequestDTO.setQuantity(quantity);
-      Order order=orderService.updateItemQuantity(cart.getId(),orderItemRequestDTO,priceOrder);
+      if (productOptions.size() > 0) {
+        orderItemRequestDTO.setItemAttributes(productOptions);
+      }
+      Order order=orderService.updateProductOptionsForItem(cart.getId(),orderItemRequestDTO,priceOrder);
       order=orderService.save(order,priceOrder);
-      OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-      wrapper.wrapDetails(order,request);
-      return wrapper;
+      return wrapCart(request,cart);
     }
  catch (    UpdateCartException e) {
       if (e.getCause() instanceof ItemNotFoundException) {
@@ -17,14 +20,6 @@
       }
  else {
         throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occurred on updating the cart.").build());
-      }
-    }
-catch (    RemoveFromCartException e) {
-      if (e.getCause() instanceof ItemNotFoundException) {
-        throw new WebApplicationException(e,Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Could not find order item id " + itemId).build());
-      }
- else {
-        throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occurred removing the item from the cart.").build());
       }
     }
 catch (    PricingException pe) {

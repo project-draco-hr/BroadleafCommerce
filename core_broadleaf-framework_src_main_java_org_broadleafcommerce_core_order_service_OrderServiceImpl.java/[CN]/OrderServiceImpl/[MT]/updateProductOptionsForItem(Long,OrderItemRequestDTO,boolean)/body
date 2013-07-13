@@ -1,0 +1,11 @@
+{
+  try {
+    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)updateProductOptionsForItemWorkflow.doActivities(cartOpRequest);
+    context.getSeedData().getOrder().getOrderMessages().addAll(((ActivityMessages)context).getActivityMessages());
+    return context.getSeedData().getOrder();
+  }
+ catch (  WorkflowException e) {
+    throw new UpdateCartException("Could not product options",getCartOperationExceptionRootCause(e));
+  }
+}

@@ -1,6 +1,16 @@
 {
   Order order=context.getSeedData().getOrder();
+  List<DiscreteOrderItem> orderItems=new ArrayList<DiscreteOrderItem>();
   for (  OrderItem i : order.getOrderItems()) {
+    if (i instanceof DiscreteOrderItem) {
+      orderItems.add((DiscreteOrderItem)i);
+    }
+ else     if (i instanceof BundleOrderItem) {
+      orderItems.addAll(((BundleOrderItem)i).getDiscreteOrderItems());
+    }
+ else     continue;
+  }
+  for (  DiscreteOrderItem i : orderItems) {
     Map<String,OrderItemAttribute> attributeValues=i.getOrderItemAttributes();
     Product product=((DiscreteOrderItem)i).getProduct();
     if (product != null && product.getProductOptions() != null && product.getProductOptions().size() > 0) {

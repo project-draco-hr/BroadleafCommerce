@@ -1,0 +1,13 @@
+{
+  CartOperationRequest request=context.getSeedData();
+  OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
+  Order order=request.getOrder();
+  if (orderItemService.readOrderItemById(Long.valueOf(orderItemRequestDTO.getOrderItemId())) != null) {
+    DiscreteOrderItemRequest itemRequest=new DiscreteOrderItemRequest();
+    itemRequest.setItemAttributes(orderItemRequestDTO.getItemAttributes());
+    orderItemService.updateDiscreteOrderItem(orderItemService.readOrderItemById(Long.valueOf(orderItemRequestDTO.getOrderItemId())),itemRequest);
+  }
+  order=orderService.save(order,false);
+  request.setOrder(order);
+  return context;
+}

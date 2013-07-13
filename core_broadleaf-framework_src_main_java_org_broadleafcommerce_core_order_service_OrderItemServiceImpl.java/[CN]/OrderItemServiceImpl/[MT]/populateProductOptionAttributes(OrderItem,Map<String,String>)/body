@@ -1,0 +1,17 @@
+{
+  if (attributes != null && attributes.size() > 0) {
+    Map<String,OrderItemAttribute> orderItemAttributes=item.getOrderItemAttributes();
+    if (item.getOrderItemAttributes() == null) {
+      orderItemAttributes=new HashMap<String,OrderItemAttribute>();
+      item.setOrderItemAttributes(orderItemAttributes);
+    }
+    for (    String key : attributes.keySet()) {
+      String value=attributes.get(key);
+      OrderItemAttribute attribute=new OrderItemAttributeImpl();
+      attribute.setName(key);
+      attribute.setValue(value);
+      attribute.setOrderItem(item);
+      orderItemAttributes.put(key,attribute);
+    }
+  }
+}

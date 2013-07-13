@@ -4,16 +4,6 @@
   item.setCategory(itemRequest.getCategory());
   item.setProduct(itemRequest.getProduct());
   item.setOrder(itemRequest.getOrder());
-  if (itemRequest.getItemAttributes() != null && itemRequest.getItemAttributes().size() > 0) {
-    Map<String,OrderItemAttribute> orderItemAttributes=new HashMap<String,OrderItemAttribute>();
-    item.setOrderItemAttributes(orderItemAttributes);
-    for (    String key : itemRequest.getItemAttributes().keySet()) {
-      String value=itemRequest.getItemAttributes().get(key);
-      OrderItemAttribute attribute=new OrderItemAttributeImpl();
-      attribute.setName(key);
-      attribute.setValue(value);
-      attribute.setOrderItem(item);
-      orderItemAttributes.put(key,attribute);
-    }
-  }
+  Map<String,String> attributes=itemRequest.getItemAttributes();
+  populateProductOptionAttributes(item,attributes);
 }
