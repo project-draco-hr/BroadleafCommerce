@@ -14,7 +14,9 @@
   }
  else {
     translation=getTranslation(entityType,entityId,property,localeCountryCode);
-    getCache().put(new Element(countryCacheKey,translation));
+    if (translation != null) {
+      getCache().put(new Element(countryCacheKey,translation));
+    }
   }
   if (translation == null) {
     String nonCountryCacheKey=getCacheKey(entityType,entityId,property,localeCode);
@@ -24,7 +26,9 @@
     }
  else {
       translation=getTranslation(entityType,entityId,property,localeCode);
-      getCache().put(new Element(nonCountryCacheKey,translation));
+      if (translation != null) {
+        getCache().put(new Element(nonCountryCacheKey,translation));
+      }
     }
   }
   if (translation != null && StringUtils.isNotBlank(translation.getTranslatedValue())) {
