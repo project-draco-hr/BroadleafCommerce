@@ -1,0 +1,18 @@
+{
+  if (root.getFullyQualifiedClassname().equals(classToCheck.getName())) {
+    return root;
+  }
+  for (  ClassTree parent : parents) {
+    if (parent.getFullyQualifiedClassname().equals(classToCheck.getName())) {
+      return root;
+    }
+  }
+  parents.add(root);
+  for (  ClassTree child : root.getChildren()) {
+    ClassTree result=child.find(classToCheck.getName());
+    if (result != null) {
+      return result;
+    }
+  }
+  return null;
+}
