@@ -16,5 +16,10 @@
   if (this.phone != null) {
     fulfillmentGroupRequest.setPhone(this.phone.unwrap(request,appContext));
   }
+  if (this.fulfillmentOption != null && this.fulfillmentOption.getId() != null) {
+    FulfillmentOptionService fulfillmentOptionService=(FulfillmentOptionService)appContext.getBean("blFulfillmentOptionService");
+    FulfillmentOption option=fulfillmentOptionService.readFulfillmentOptionById(this.fulfillmentOption.getId());
+    fulfillmentGroupRequest.setOption(option);
+  }
   return fulfillmentGroupRequest;
 }

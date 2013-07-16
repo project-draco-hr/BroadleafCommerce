@@ -1,6 +1,14 @@
 {
   this.id=model.getId();
   this.total=model.getTotal();
+  if (model.getType() != null) {
+    this.fulfillmentType=(BroadleafEnumerationTypeWrapper)context.getBean(BroadleafEnumerationTypeWrapper.class.getName());
+    this.fulfillmentType.wrapDetails(model.getType(),request);
+  }
+  if (model.getFulfillmentOption() != null) {
+    this.fulfillmentOption=(FulfillmentOptionWrapper)context.getBean(FulfillmentOptionWrapper.class.getName());
+    this.fulfillmentOption.wrapDetails(model.getFulfillmentOption(),request);
+  }
   if (model.getOrder() != null) {
     this.orderId=model.getOrder().getId();
   }

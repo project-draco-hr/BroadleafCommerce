@@ -1,0 +1,17 @@
+{
+  ArrayList<FulfillmentOptionWrapper> out=new ArrayList<FulfillmentOptionWrapper>();
+  List<FulfillmentOption> options=null;
+  FulfillmentType type=FulfillmentType.getInstance(fulfillmentType);
+  if (type != null) {
+    options=fulfillmentOptionService.readAllFulfillmentOptionsByFulfillmentType(type);
+  }
+ else {
+    options=fulfillmentOptionService.readAllFulfillmentOptions();
+  }
+  for (  FulfillmentOption option : options) {
+    FulfillmentOptionWrapper fulfillmentOptionWrapper=(FulfillmentOptionWrapper)context.getBean(FulfillmentOptionWrapper.class.getName());
+    fulfillmentOptionWrapper.wrapDetails(option,request);
+    out.add(fulfillmentOptionWrapper);
+  }
+  return out;
+}
