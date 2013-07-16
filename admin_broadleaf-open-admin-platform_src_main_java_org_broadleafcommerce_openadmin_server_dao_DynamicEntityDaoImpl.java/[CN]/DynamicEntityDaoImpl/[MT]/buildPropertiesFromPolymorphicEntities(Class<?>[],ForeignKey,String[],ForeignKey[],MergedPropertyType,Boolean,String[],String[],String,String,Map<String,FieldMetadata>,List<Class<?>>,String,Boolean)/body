@@ -2,7 +2,7 @@
   for (  Class<?> clazz : entities) {
     String cacheKey=getCacheKey(foreignField,additionalNonPersistentProperties,additionalForeignFields,mergedPropertyType,populateManyToOneFields,clazz,configurationKey,isParentExcluded);
     Map<String,FieldMetadata> cacheData=null;
-synchronized (LOCK_OBJECT) {
+synchronized (DynamicDaoHelperImpl.LOCK_OBJECT) {
       if (useCache()) {
         cacheData=METADATA_CACHE.get(cacheKey);
       }

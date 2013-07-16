@@ -1,0 +1,14 @@
+{
+  EntityManagerFactoryImpl em=builder.getEntityManagerFactory();
+  Metamodel mm=em.getMetamodel();
+  Class<?>[] polyClasses=dynamicDaoHelper.getAllPolymorphicEntitiesFromCeiling(getJavaType(),em.getSessionFactory(),true,true);
+  for (  Class<?> clazz : polyClasses) {
+    ManagedType mt=mm.managedType(clazz);
+    try {
+      return mt.getAttribute(attributeName);
+    }
+ catch (    IllegalArgumentException e) {
+    }
+  }
+  return super.locateAttributeInternal(attributeName);
+}
