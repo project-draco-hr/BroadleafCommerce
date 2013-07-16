@@ -7,6 +7,14 @@
       return root;
     }
   }
+  try {
+    Class<?> rootClass=Class.forName(root.getFullyQualifiedClassname());
+    if (classToCheck.isAssignableFrom(rootClass)) {
+      return root;
+    }
+  }
+ catch (  ClassNotFoundException e) {
+  }
   parents.add(root);
   for (  ClassTree child : root.getChildren()) {
     ClassTree result=child.find(classToCheck.getName());
