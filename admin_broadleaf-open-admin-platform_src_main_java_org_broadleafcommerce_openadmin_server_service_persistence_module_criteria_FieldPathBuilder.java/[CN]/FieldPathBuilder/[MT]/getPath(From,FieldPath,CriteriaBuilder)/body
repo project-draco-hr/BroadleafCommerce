@@ -21,6 +21,7 @@
  catch (    IllegalArgumentException e) {
       EntityManagerFactoryImpl em=((CriteriaBuilderImpl)builder).getEntityManagerFactory();
       Metamodel mm=em.getMetamodel();
+      boolean found=false;
       Class<?>[] polyClasses=dynamicDaoHelper.getAllPolymorphicEntitiesFromCeiling(path.getJavaType(),em.getSessionFactory(),true,true);
       for (      Class<?> clazz : polyClasses) {
         ManagedType mt=mm.managedType(clazz);
@@ -30,13 +31,16 @@
             Root additionalRoot=criteria.from(clazz);
             restrictions.add(builder.equal(path,additionalRoot));
             path=additionalRoot.get(piece);
+            found=true;
             break;
           }
         }
  catch (        IllegalArgumentException e2) {
         }
       }
-      throw e;
+      if (!found) {
+        throw new IllegalArgumentException("Could not resolve requested attribute against path, including" + " known polymorphic versions of the root",e);
+      }
     }
     if (path.getParentPath() != null && path.getParentPath().getJavaType().isAnnotationPresent(Embeddable.class) && path instanceof PluralAttributePath) {
       Class<?> myClass=((PluralAttributePath)path).getAttribute().getClass().getInterfaces()[0];
