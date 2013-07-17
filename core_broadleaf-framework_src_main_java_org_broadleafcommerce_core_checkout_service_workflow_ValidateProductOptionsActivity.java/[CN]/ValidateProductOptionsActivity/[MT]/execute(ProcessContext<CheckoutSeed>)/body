@@ -29,6 +29,7 @@
           }
  catch (          ProductOptionValidationException e) {
             ActivityMessageDTO msg=new ActivityMessageDTO(MessageType.PRODUCT_OPTION.getType(),1,e.getMessage());
+            msg.setErrorCode(productOption.getErrorCode());
             ((ActivityMessages)context).getActivityMessages().add(msg);
           }
         }
