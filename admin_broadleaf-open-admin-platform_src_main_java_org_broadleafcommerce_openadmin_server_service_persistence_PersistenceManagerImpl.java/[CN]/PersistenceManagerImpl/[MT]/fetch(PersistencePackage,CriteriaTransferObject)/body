@@ -10,5 +10,14 @@
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.FETCH);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
-  return postFetch(myModule.fetch(persistencePackage,cto),persistencePackage,cto);
+  try {
+    return postFetch(myModule.fetch(persistencePackage,cto),persistencePackage,cto);
+  }
+ catch (  ServiceException e) {
+    if (e.getCause() instanceof NoPossibleResultsException) {
+      DynamicResultSet drs=new DynamicResultSet(null,new Entity[]{},0);
+      return postFetch(drs,persistencePackage,cto);
+    }
+    throw e;
+  }
 }

@@ -1,0 +1,19 @@
+{
+  Class<?>[] polyEntities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(ceilingMarker);
+  ClassTree root=dynamicEntityDao.getClassTree(polyEntities);
+  List<ClassTree> parents=new ArrayList<ClassTree>();
+  for (  FilterMapping mapping : filterMappings) {
+    if (mapping.getInheritedFromClass() != null) {
+      root=determineRootInternal(root,parents,mapping.getInheritedFromClass());
+      if (root == null) {
+        throw new NoPossibleResultsException("AND filter on different class hierarchies produces no results");
+      }
+    }
+  }
+  for (  Class<?> clazz : polyEntities) {
+    if (clazz.getName().equals(root.getFullyQualifiedClassname())) {
+      return (Class<Serializable>)clazz;
+    }
+  }
+  throw new IllegalStateException("Class didn't match - this should not occur");
+}

@@ -1,13 +1,3 @@
 {
-  if (Modifier.isAbstract(clazz.getModifiers())) {
-    return true;
-  }
-  AdminPresentationClass adminPresentationClass=clazz.getAnnotation(AdminPresentationClass.class);
-  if (adminPresentationClass == null) {
-    return false;
-  }
- else   if (adminPresentationClass.excludeFromPolymorphism()) {
-    return true;
-  }
-  return false;
+  return dynamicDaoHelper.isExcludeClassFromPolymorphism(clazz);
 }

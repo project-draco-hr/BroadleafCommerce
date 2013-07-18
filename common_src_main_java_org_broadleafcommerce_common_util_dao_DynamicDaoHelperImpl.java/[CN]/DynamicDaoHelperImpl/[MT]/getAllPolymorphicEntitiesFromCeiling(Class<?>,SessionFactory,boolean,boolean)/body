@@ -1,0 +1,49 @@
+{
+  Class<?>[] cache=null;
+synchronized (LOCK_OBJECT) {
+    if (useCache) {
+      if (includeUnqualifiedPolymorphicEntities) {
+        cache=POLYMORPHIC_ENTITY_CACHE.get(ceilingClass);
+      }
+ else {
+        cache=POLYMORPHIC_ENTITY_CACHE_WO_EXCLUSIONS.get(ceilingClass);
+      }
+    }
+    if (cache == null) {
+      List<Class<?>> entities=new ArrayList<Class<?>>();
+      for (      Object item : sessionFactory.getAllClassMetadata().values()) {
+        ClassMetadata metadata=(ClassMetadata)item;
+        Class<?> mappedClass=metadata.getMappedClass();
+        if (mappedClass != null && ceilingClass.isAssignableFrom(mappedClass)) {
+          entities.add(mappedClass);
+        }
+      }
+      Class<?>[] sortedEntities=sortEntities(ceilingClass,entities);
+      List<Class<?>> filteredSortedEntities=new ArrayList<Class<?>>();
+      for (int i=0; i < sortedEntities.length; i++) {
+        Class<?> item=sortedEntities[i];
+        if (includeUnqualifiedPolymorphicEntities) {
+          filteredSortedEntities.add(sortedEntities[i]);
+        }
+ else {
+          if (isExcludeClassFromPolymorphism(item)) {
+            continue;
+          }
+ else {
+            filteredSortedEntities.add(sortedEntities[i]);
+          }
+        }
+      }
+      Class<?>[] filteredEntities=new Class<?>[filteredSortedEntities.size()];
+      filteredEntities=filteredSortedEntities.toArray(filteredEntities);
+      cache=filteredEntities;
+      if (includeUnqualifiedPolymorphicEntities) {
+        POLYMORPHIC_ENTITY_CACHE.put(ceilingClass,filteredEntities);
+      }
+ else {
+        POLYMORPHIC_ENTITY_CACHE_WO_EXCLUSIONS.put(ceilingClass,filteredEntities);
+      }
+    }
+  }
+  return cache;
+}
