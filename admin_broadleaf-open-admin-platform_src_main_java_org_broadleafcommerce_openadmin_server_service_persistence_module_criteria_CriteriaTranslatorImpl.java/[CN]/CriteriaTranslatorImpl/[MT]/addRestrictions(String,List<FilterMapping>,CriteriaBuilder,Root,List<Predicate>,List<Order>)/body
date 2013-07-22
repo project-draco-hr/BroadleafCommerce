@@ -1,32 +1,3 @@
 {
-  for (  FilterMapping filterMapping : filterMappings) {
-    Path explicitPath=null;
-    if (filterMapping.getFieldPath() != null) {
-      explicitPath=filterMapping.getRestriction().getFieldPathBuilder().getPath(original,filterMapping.getFieldPath(),criteriaBuilder);
-    }
-    if (filterMapping.getRestriction() != null) {
-      List directValues=null;
-      boolean shouldConvert=true;
-      if (CollectionUtils.isNotEmpty(filterMapping.getFilterValues())) {
-        directValues=filterMapping.getFilterValues();
-      }
- else       if (CollectionUtils.isNotEmpty(filterMapping.getDirectFilterValues()) || (filterMapping.getDirectFilterValues() != null && filterMapping.getDirectFilterValues() instanceof EmptyFilterValues)) {
-        directValues=filterMapping.getDirectFilterValues();
-        shouldConvert=false;
-      }
-      if (directValues != null) {
-        Predicate predicate=filterMapping.getRestriction().buildRestriction(criteriaBuilder,original,ceilingEntity,filterMapping.getFullPropertyName(),explicitPath,directValues,shouldConvert);
-        restrictions.add(predicate);
-      }
-    }
-    if (filterMapping.getSortDirection() != null) {
-      Path sortPath=explicitPath;
-      if (sortPath == null && !StringUtils.isEmpty(filterMapping.getFullPropertyName())) {
-        sortPath=filterMapping.getRestriction().getFieldPathBuilder().getPath(original,filterMapping.getFullPropertyName(),criteriaBuilder);
-      }
-      if (sortPath != null) {
-        addSorting(criteriaBuilder,sorts,filterMapping,sortPath);
-      }
-    }
-  }
+  addRestrictions(ceilingEntity,filterMappings,criteriaBuilder,original,restrictions,sorts,null);
 }
