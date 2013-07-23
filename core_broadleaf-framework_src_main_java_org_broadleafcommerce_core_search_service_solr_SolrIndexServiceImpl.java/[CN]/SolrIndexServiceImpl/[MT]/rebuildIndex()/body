@@ -4,10 +4,6 @@
   if (SolrContext.isSingleCoreMode()) {
     deleteAllDocuments();
   }
-  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
-  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
-  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
-  DynamicSkuActiveDatesService savedActiveDateServcie=SkuActiveDateConsiderationContext.getSkuActiveDatesService();
   try {
     Long numProducts=productDao.readCountAllActiveProducts(SystemTime.asDate());
     if (LOG.isDebugEnabled()) {
@@ -32,10 +28,7 @@
     throw e;
   }
  finally {
-    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
-    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
-    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
-    SkuActiveDateConsiderationContext.setSkuActiveDatesService(savedActiveDateServcie);
+    ThreadLocalManager.remove();
   }
   shs.swapActiveCores();
   if (!SolrContext.isSingleCoreMode()) {
