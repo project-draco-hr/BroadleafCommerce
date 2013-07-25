@@ -1,32 +1,56 @@
 {
-  Response response=null;
-  if (t instanceof WebApplicationException) {
-    response=((WebApplicationException)t).getResponse();
-    if (response.getStatus() == Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-      LOG.error("An exception was caught by the JAX-RS framework: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+  MediaType mediaType=resolveResponseMediaType(t);
+  ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
+  Locale locale=null;
+  BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  if (requestContext != null) {
+    locale=requestContext.getJavaLocale();
+  }
+  if (t instanceof BroadleafWebServicesException) {
+    BroadleafWebServicesException blcException=(BroadleafWebServicesException)t;
+    if (t.getCause() != null) {
+      LOG.error("An error occured invoking a REST service.",t.getCause());
     }
- else     if (response.getStatus() == Response.Status.FORBIDDEN.getStatusCode()) {
-      LOG.warn("Someone tried to access a resource that was forbidden: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    errorWrapper.setHttpStatusCode(blcException.getHttpStatusCode());
+    if (blcException.getLocale() != null) {
+      locale=blcException.getLocale();
     }
- else     if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode() && LOG.isDebugEnabled()) {
-      LOG.debug("Bad Request: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    if (locale == null) {
+      locale=Locale.getDefault();
     }
- else     if (response.getStatus() == Response.Status.NOT_ACCEPTABLE.getStatusCode() && LOG.isDebugEnabled()) {
-      LOG.debug("Not acceptable: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+    if (blcException.getMessages() != null && !blcException.getMessages().isEmpty()) {
+      Set<String> keys=blcException.getMessages().keySet();
+      for (      String key : keys) {
+        ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+        errorMessageWrapper.setMessageKey(resolveClientMessageKey(key));
+        errorMessageWrapper.setMessage(messageSource.getMessage(key,blcException.getMessages().get(key),key,locale));
+        errorWrapper.getMessages().add(errorMessageWrapper);
+      }
     }
  else {
-      LOG.error("An exception was caught by the JAX-RS framework: Status: " + response.getStatus() + " Message: "+ response.getEntity(),t);
+      ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+      errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.UNKNOWN_ERROR));
+      errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
+      errorWrapper.getMessages().add(errorMessageWrapper);
     }
+  }
+ else   if (t instanceof WebApplicationException) {
+    if (t.getCause() != null) {
+      LOG.error("An error occured invoking a REST service.",t.getCause());
+    }
+    WebApplicationException webAppException=(WebApplicationException)t;
+    return webAppException.getResponse();
   }
  else {
-    LOG.error("An exception was caught by the JAX-RS framework: ",t);
-  }
-  if (response != null) {
-    Object msg=response.getEntity();
-    if (msg == null) {
-      msg="An error occurred";
+    LOG.error("An error occured invoking a REST service",t);
+    if (locale == null) {
+      locale=Locale.getDefault();
     }
-    return Response.status(response.getStatus()).type(MediaType.TEXT_PLAIN).entity(msg).build();
+    errorWrapper.setHttpStatusCode(500);
+    ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+    errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.UNKNOWN_ERROR));
+    errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
+    errorWrapper.getMessages().add(errorMessageWrapper);
   }
-  return Response.status(500).type(MediaType.TEXT_PLAIN).entity("An unknown or unreported error has occured. If the problem persists, please contact the administrator.").build();
+  return Response.status(resolveResponseStatusCode(t,errorWrapper)).type(mediaType).entity(errorWrapper).build();
 }

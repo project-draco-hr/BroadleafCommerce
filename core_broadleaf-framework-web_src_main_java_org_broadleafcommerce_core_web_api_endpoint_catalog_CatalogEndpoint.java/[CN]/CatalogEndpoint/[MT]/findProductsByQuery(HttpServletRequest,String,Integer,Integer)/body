@@ -5,11 +5,11 @@
       q=exploitProtectionService.cleanString(q);
     }
  else {
-      throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Search query was empty. Set parameter 'q' to query for a product. (e.g. q=My Product Name).").build());
+      throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_EMPTY);
     }
   }
  catch (  ServiceException e) {
-    throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("The search query: " + q + " was incorrect or malformed.").build());
+    throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_MALFORMED,q);
   }
   List<SearchFacetDTO> availableFacets=searchService.getSearchFacets();
   ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
@@ -22,6 +22,6 @@
     return wrapper;
   }
  catch (  ServiceException e) {
-    throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("Problem occured executing search.").build());
+    throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_ERROR);
   }
 }

@@ -11,5 +11,5 @@
     }
     return out;
   }
-  throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Product with Id " + id + " could not be found").build());
+  throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.PRODUCT_NOT_FOUND,id);
 }
