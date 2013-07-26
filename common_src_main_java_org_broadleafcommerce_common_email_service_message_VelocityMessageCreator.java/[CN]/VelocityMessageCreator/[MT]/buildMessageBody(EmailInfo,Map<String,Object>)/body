@@ -1,0 +1,14 @@
+{
+  if (props == null) {
+    props=new HashMap<String,Object>();
+  }
+  if (props instanceof HashMap) {
+    HashMap<String,Object> hashProps=(HashMap<String,Object>)props;
+    @SuppressWarnings("unchecked") Map<String,Object> propsCopy=(Map<String,Object>)hashProps.clone();
+    if (additionalConfigItems != null) {
+      propsCopy.putAll(additionalConfigItems);
+    }
+    return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine,info.getEmailTemplate(),info.getEncoding(),propsCopy);
+  }
+  throw new IllegalArgumentException("Property map must be of type HashMap<String, Object>");
+}
