@@ -42,7 +42,7 @@
       order=fulfillmentGroup.getOrder();
     }
   }
- else {
+ else   if (orderItem instanceof DiscreteOrderItem) {
     DiscreteOrderItem doi=(DiscreteOrderItem)orderItem;
     FulfillmentGroup fulfillmentGroup=null;
     FulfillmentType type=resolveFulfillmentType(doi.getSku());
@@ -63,6 +63,17 @@
       order.getFulfillmentGroups().add(fulfillmentGroup);
     }
     fulfillmentGroup=addItemToFulfillmentGroup(order,(DiscreteOrderItem)orderItem,fulfillmentGroup);
+    order=fulfillmentGroup.getOrder();
+  }
+ else {
+    FulfillmentGroup fulfillmentGroup=nullFulfillmentTypeGroup;
+    if (fulfillmentGroup == null) {
+      fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
+      fulfillmentGroup.setOrder(order);
+      fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
+      order.getFulfillmentGroups().add(fulfillmentGroup);
+    }
+    fulfillmentGroup=addItemToFulfillmentGroup(order,orderItem,fulfillmentGroup);
     order=fulfillmentGroup.getOrder();
   }
   request.setOrder(order);
