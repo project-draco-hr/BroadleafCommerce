@@ -1,0 +1,14 @@
+{
+  TypedQueryBuilder<String> q=new TypedQueryBuilder<String>(String.class,"test");
+  TQRestriction r=new TQRestriction(TQRestriction.Mode.AND).addChildRestriction(new TQRestriction("test.startDate","&lt;","123")).addChildRestriction(new TQRestriction(TQRestriction.Mode.OR).addChildRestriction(new TQRestriction("test.endDate","is null")).addChildRestriction(new TQRestriction("test.endDate","&gt;","456")));
+  q.addRestriction("test.attr","=","sample");
+  q.addRestriction(r);
+  StringBuilder expected=new StringBuilder("SELECT test FROM " + String.class.getName() + " test").append(" WHERE (test.attr = :p0)").append(" AND ((test.startDate &lt; :p1_0) AND ((test.endDate is null) OR (test.endDate &gt; :p1_1_1)))");
+  assertEquals(q.toQueryString(),expected.toString());
+  assertEquals(q.getParamMap().get("p0"),"sample");
+  assertEquals(q.getParamMap().get("p1_0"),"123");
+  assertEquals(q.getParamMap().get("p1_1"),null);
+  assertEquals(q.getParamMap().get("p1_1_0"),null);
+  assertEquals(q.getParamMap().get("p1_1_1"),"456");
+  assertEquals(q.getParamMap().size(),5);
+}

@@ -1,0 +1,14 @@
+{
+  StringBuilder sb=new StringBuilder().append("SELECT ").append(rootAlias).append(" FROM ").append(rootClass.getName()).append(" ").append(rootAlias);
+  if (CollectionUtils.isNotEmpty(restrictions)) {
+    sb.append(" WHERE ");
+    for (int i=0; i < restrictions.size(); i++) {
+      TQRestriction r=restrictions.get(i);
+      sb.append(r.toQl("p" + i,paramMap));
+      if (i != restrictions.size() - 1) {
+        sb.append(" AND ");
+      }
+    }
+  }
+  return sb.toString();
+}
