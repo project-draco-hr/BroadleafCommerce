@@ -11,12 +11,26 @@
     }
   }
   Map<Long,Integer> oiQuantityMap=new HashMap<Long,Integer>();
-  for (  OrderItem oi : order.getDiscreteOrderItems()) {
+  List<OrderItem> expandedOrderItems=new ArrayList<OrderItem>();
+  for (  OrderItem oi : order.getOrderItems()) {
+    if (oi instanceof BundleOrderItem) {
+      for (      DiscreteOrderItem doi : ((BundleOrderItem)oi).getDiscreteOrderItems()) {
+        expandedOrderItems.add(doi);
+      }
+    }
+ else     if (oi instanceof DiscreteOrderItem) {
+      expandedOrderItems.add(oi);
+    }
+ else {
+      expandedOrderItems.add(oi);
+    }
+  }
+  for (  OrderItem oi : expandedOrderItems) {
     Integer oiQuantity=oiQuantityMap.get(oi.getId());
     if (oiQuantity == null) {
       oiQuantity=0;
     }
-    if (((DiscreteOrderItem)oi).getBundleOrderItem() != null) {
+    if (oi instanceof DiscreteOrderItem && ((DiscreteOrderItem)oi).getBundleOrderItem() != null) {
       oiQuantity+=((DiscreteOrderItem)oi).getBundleOrderItem().getQuantity() * oi.getQuantity();
     }
  else {

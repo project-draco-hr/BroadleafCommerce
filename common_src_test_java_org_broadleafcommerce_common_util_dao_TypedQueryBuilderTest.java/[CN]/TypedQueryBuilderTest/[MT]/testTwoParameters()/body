@@ -1,0 +1,10 @@
+{
+  TypedQueryBuilder<String> q=new TypedQueryBuilder<String>(String.class,"test");
+  q.addRestriction("test.attr","=","sample");
+  q.addRestriction("test.attr2","=","sample2");
+  StringBuilder expected=new StringBuilder("SELECT test FROM " + String.class.getName() + " test").append(" WHERE (test.attr = :p0) AND (test.attr2 = :p1)");
+  assertEquals(q.toQueryString(),expected.toString());
+  assertEquals(q.getParamMap().get("p0"),"sample");
+  assertEquals(q.getParamMap().get("p1"),"sample2");
+  assertEquals(q.getParamMap().size(),2);
+}

@@ -1,0 +1,15 @@
+{
+  final OrderItem item=orderItemDao.create(OrderItemType.BASIC);
+  item.setName(itemRequest.getItemName());
+  item.setQuantity(itemRequest.getQuantity());
+  item.setOrder(itemRequest.getOrder());
+  if (itemRequest.getSalePriceOverride() != null) {
+    item.setSalePriceOverride(Boolean.TRUE);
+    item.setSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    item.setRetailPriceOverride(Boolean.TRUE);
+    item.setRetailPrice(itemRequest.getRetailPriceOverride());
+  }
+  return item;
+}

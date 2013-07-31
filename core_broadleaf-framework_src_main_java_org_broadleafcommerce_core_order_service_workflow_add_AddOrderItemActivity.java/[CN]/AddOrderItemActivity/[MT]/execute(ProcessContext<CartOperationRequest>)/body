@@ -2,7 +2,10 @@
   CartOperationRequest request=context.getSeedData();
   OrderItemRequestDTO orderItemRequestDTO=request.getItemRequest();
   Order order=request.getOrder();
-  Sku sku=catalogService.findSkuById(orderItemRequestDTO.getSkuId());
+  Sku sku=null;
+  if (orderItemRequestDTO.getSkuId() != null) {
+    sku=catalogService.findSkuById(orderItemRequestDTO.getSkuId());
+  }
   Product product=null;
   if (orderItemRequestDTO.getProductId() != null) {
     product=catalogService.findProductById(orderItemRequestDTO.getProductId());
@@ -15,7 +18,17 @@
     category=product.getDefaultCategory();
   }
   OrderItem item;
-  if (product == null || !(product instanceof ProductBundle)) {
+  if (orderItemRequestDTO instanceof NonDiscreteOrderItemRequestDTO) {
+    NonDiscreteOrderItemRequestDTO ndr=(NonDiscreteOrderItemRequestDTO)orderItemRequestDTO;
+    OrderItemRequest itemRequest=new OrderItemRequest();
+    itemRequest.setQuantity(ndr.getQuantity());
+    itemRequest.setRetailPriceOverride(ndr.getOverrideRetailPrice());
+    itemRequest.setSalePriceOverride(ndr.getOverrideSalePrice());
+    itemRequest.setItemName(ndr.getItemName());
+    itemRequest.setOrder(order);
+    item=orderItemService.createOrderItem(itemRequest);
+  }
+ else   if (product == null || !(product instanceof ProductBundle)) {
     DiscreteOrderItemRequest itemRequest=new DiscreteOrderItemRequest();
     itemRequest.setCategory(category);
     itemRequest.setProduct(product);

@@ -1,15 +1,31 @@
 {
-  OrderItemRequestDTO orderItemRequest=new OrderItemRequestDTO().setQuantity(item.getQuantity()).setSkuId(((DiscreteOrderItem)item).getSku().getId());
-  if (item.getCategory() != null) {
-    orderItemRequest.setCategoryId(item.getCategory().getId());
-  }
-  if (((DiscreteOrderItem)item).getProduct() != null) {
-    orderItemRequest.setProductId(((DiscreteOrderItem)item).getProduct().getId());
-  }
-  if (item.getOrderItemAttributes() != null) {
-    for (    Entry<String,OrderItemAttribute> entry : item.getOrderItemAttributes().entrySet()) {
-      orderItemRequest.getItemAttributes().put(entry.getKey(),entry.getValue().getValue());
+  OrderItemRequestDTO orderItemRequest;
+  if (item instanceof DiscreteOrderItem) {
+    DiscreteOrderItem doi=(DiscreteOrderItem)item;
+    orderItemRequest=new OrderItemRequestDTO();
+    orderItemRequest.setQuantity(doi.getQuantity());
+    if (doi.getCategory() != null) {
+      orderItemRequest.setCategoryId(doi.getCategory().getId());
     }
+    if (doi.getProduct() != null) {
+      orderItemRequest.setProductId(doi.getProduct().getId());
+    }
+    if (doi.getSku() != null) {
+      orderItemRequest.setSkuId(doi.getSku().getId());
+    }
+    if (doi.getOrderItemAttributes() != null) {
+      for (      Entry<String,OrderItemAttribute> entry : item.getOrderItemAttributes().entrySet()) {
+        orderItemRequest.getItemAttributes().put(entry.getKey(),entry.getValue().getValue());
+      }
+    }
+  }
+ else {
+    orderItemRequest=new NonDiscreteOrderItemRequestDTO();
+    NonDiscreteOrderItemRequestDTO ndr=(NonDiscreteOrderItemRequestDTO)orderItemRequest;
+    ndr.setItemName(item.getName());
+    ndr.setQuantity(item.getQuantity());
+    ndr.setOverrideRetailPrice(item.getRetailPrice());
+    ndr.setOverrideSalePrice(item.getSalePrice());
   }
   return orderItemRequest;
 }
