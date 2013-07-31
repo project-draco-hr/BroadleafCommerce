@@ -1,10 +1,13 @@
 {
-  Field idField=entityForm.findField(entityForm.getIdProperty());
+  Field idField=entityForm.getFields().get(entityForm.getIdProperty());
   if (idField == null) {
     idField=new Field();
     idField.setName(entityForm.getIdProperty());
     idField.setValue(entityForm.getId());
     entityForm.getFields().put(entityForm.getIdProperty(),idField);
+  }
+ else {
+    idField.setValue(entityForm.getId());
   }
   List<Property> propList=getPropertiesFromEntityForm(entityForm);
   Property[] properties=new Property[propList.size()];

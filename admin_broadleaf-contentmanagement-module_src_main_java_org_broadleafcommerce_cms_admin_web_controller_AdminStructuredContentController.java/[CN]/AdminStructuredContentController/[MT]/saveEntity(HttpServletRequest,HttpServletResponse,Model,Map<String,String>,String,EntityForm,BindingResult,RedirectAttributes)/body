@@ -1,5 +1,12 @@
 {
   DynamicEntityFormInfo info=new DynamicEntityFormInfo().withCeilingClassName(StructuredContentType.class.getName()).withCriteriaName("constructForm").withPropertyName("structuredContentType");
   entityForm.putDynamicFormInfo("structuredContentType",info);
-  return super.saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
+  String returnPath=super.saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
+  if (result.hasErrors()) {
+    info=entityForm.getDynamicFormInfo("structuredContentType");
+    info.setPropertyValue(entityForm.findField("structuredContentType").getValue());
+    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+    entityForm.putDynamicForm("structuredContentType",dynamicForm);
+  }
+  return returnPath;
 }

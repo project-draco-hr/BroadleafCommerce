@@ -1,5 +1,12 @@
 {
   DynamicEntityFormInfo info=new DynamicEntityFormInfo().withCeilingClassName(PageTemplate.class.getName()).withCriteriaName("constructForm").withPropertyName("pageTemplate");
   entityForm.putDynamicFormInfo("pageTemplate",info);
-  return super.saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
+  String returnPath=super.saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
+  if (result.hasErrors()) {
+    info=entityForm.getDynamicFormInfo("pageTemplate");
+    info.setPropertyValue(entityForm.findField("pageTemplate").getValue());
+    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+    entityForm.putDynamicForm("pageTemplate",dynamicForm);
+  }
+  return returnPath;
 }

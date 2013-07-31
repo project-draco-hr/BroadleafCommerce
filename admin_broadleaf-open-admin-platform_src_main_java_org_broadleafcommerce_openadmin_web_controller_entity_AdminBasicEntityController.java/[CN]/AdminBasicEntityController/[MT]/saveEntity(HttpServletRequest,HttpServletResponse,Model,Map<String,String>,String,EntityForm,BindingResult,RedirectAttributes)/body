@@ -4,7 +4,7 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   Map<String,Field> dynamicFields=new HashMap<String,Field>();
   for (  Entry<String,Field> entry : entityForm.getFields().entrySet()) {
-    if (entry.getKey().contains("|")) {
+    if (entry.getKey().contains(DynamicEntityFormInfo.FIELD_SEPARATOR)) {
       dynamicFields.put(entry.getKey(),entry.getValue());
     }
   }
@@ -12,7 +12,7 @@
     entityForm.removeField(entry.getKey());
   }
   for (  Entry<String,Field> entry : dynamicFields.entrySet()) {
-    String[] fieldName=entry.getKey().split("\\|");
+    String[] fieldName=entry.getKey().split("\\" + DynamicEntityFormInfo.FIELD_SEPARATOR);
     DynamicEntityFormInfo info=entityForm.getDynamicFormInfo(fieldName[0]);
     EntityForm dynamicForm=entityForm.getDynamicForm(fieldName[0]);
     if (dynamicForm == null) {

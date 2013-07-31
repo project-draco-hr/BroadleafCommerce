@@ -5,13 +5,22 @@
     EntityForm form=(EntityForm)((BindingResult)bindStatus.getErrors()).getTarget();
     Map<String,Map<String,String>> result=new HashMap<String,Map<String,String>>();
     for (    FieldError err : bindStatus.getErrors().getFieldErrors()) {
+      String tabName=EntityForm.DEFAULT_TAB_NAME;
       Tab tab=form.findTabForField(err.getField());
       if (tab != null) {
-        Map<String,String> tabErrors=result.get(tab.getTitle());
-        if (tabErrors == null) {
-          tabErrors=new HashMap<String,String>();
-          result.put(tab.getTitle(),tabErrors);
-        }
+        tabName=tab.getTitle();
+      }
+      Map<String,String> tabErrors=result.get(tabName);
+      if (tabErrors == null) {
+        tabErrors=new HashMap<String,String>();
+        result.put(tabName,tabErrors);
+      }
+      if (err.getField().contains(DynamicEntityFormInfo.FIELD_SEPARATOR)) {
+        String fieldName=err.getField().substring(err.getField().indexOf('[') + 1,err.getField().lastIndexOf(']'));
+        String[] fieldInfo=fieldName.split("\\" + DynamicEntityFormInfo.FIELD_SEPARATOR);
+        tabErrors.put(form.getDynamicForm(fieldInfo[0]).getFields().get(fieldName).getFriendlyName(),err.getCode());
+      }
+ else {
         tabErrors.put(form.findField(err.getField()).getFriendlyName(),err.getCode());
       }
     }

@@ -12,7 +12,14 @@
   }
   for (  Entry<String,EntityForm> entry : dynamicForms.entrySet()) {
     Map<String,Field> dynamicFormFields=entry.getValue().getFields();
-    fields.putAll(dynamicFormFields);
+    for (    Entry<String,Field> dynamicField : dynamicFormFields.entrySet()) {
+      if (fields.containsKey(dynamicField.getKey())) {
+        LOG.info("Excluding dynamic field " + dynamicField.getKey() + " as there is already an occurrance in"+ " this entityForm");
+      }
+ else {
+        fields.put(dynamicField.getKey(),dynamicField.getValue());
+      }
+    }
   }
   return fields;
 }
