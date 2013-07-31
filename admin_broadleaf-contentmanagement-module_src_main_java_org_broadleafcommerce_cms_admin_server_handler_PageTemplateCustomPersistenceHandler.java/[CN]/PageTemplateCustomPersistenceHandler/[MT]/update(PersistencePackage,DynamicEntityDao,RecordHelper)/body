@@ -3,6 +3,15 @@
   try {
     String pageId=persistencePackage.getCustomCriteria()[1];
     Page page=pageService.findPageById(Long.valueOf(pageId));
+    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(page.getPageTemplate().getFieldGroups(),PageTemplateImpl.class);
+    Map<String,FieldMetadata> md=new HashMap<String,FieldMetadata>();
+    for (    Property property : properties) {
+      md.put(property.getName(),property.getMetadata());
+    }
+    boolean validated=helper.validate(persistencePackage.getEntity(),null,md);
+    if (!validated) {
+      return persistencePackage.getEntity();
+    }
     List<String> templateFieldNames=new ArrayList<String>(20);
     for (    FieldGroup group : page.getPageTemplate().getFieldGroups()) {
       for (      FieldDefinition definition : group.getFieldDefinitions()) {

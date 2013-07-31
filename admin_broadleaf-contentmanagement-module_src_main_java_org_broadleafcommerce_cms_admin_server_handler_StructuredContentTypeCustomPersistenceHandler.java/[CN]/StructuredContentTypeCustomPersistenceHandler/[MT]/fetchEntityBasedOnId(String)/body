@@ -12,7 +12,9 @@
       String value=null;
       if (!MapUtils.isEmpty(structuredContentFieldMap)) {
         StructuredContentField structuredContentField=structuredContentFieldMap.get(definition.getName());
-        value=structuredContentField.getValue();
+        if (structuredContentField != null) {
+          value=structuredContentField.getValue();
+        }
       }
       property.setValue(value);
     }
