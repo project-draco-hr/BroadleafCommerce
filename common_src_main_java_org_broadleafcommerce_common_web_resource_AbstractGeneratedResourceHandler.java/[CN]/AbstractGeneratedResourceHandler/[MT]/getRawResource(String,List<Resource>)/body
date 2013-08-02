@@ -1,0 +1,14 @@
+{
+  for (  Resource location : locations) {
+    try {
+      Resource resource=location.createRelative(path);
+      if (resource.exists() && resource.isReadable()) {
+        return resource;
+      }
+    }
+ catch (    IOException ex) {
+      LOG.debug("Failed to create relative resource - trying next resource location",ex);
+    }
+  }
+  return null;
+}

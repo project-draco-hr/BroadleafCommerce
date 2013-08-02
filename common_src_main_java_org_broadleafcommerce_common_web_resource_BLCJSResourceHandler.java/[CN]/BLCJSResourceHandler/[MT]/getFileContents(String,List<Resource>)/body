@@ -1,0 +1,18 @@
+{
+  Resource resource=getRawResource(path,locations);
+  String contents;
+  try {
+    contents=getResourceContents(resource);
+  }
+ catch (  IOException e) {
+    throw new RuntimeException("Could not get raw resource contents",e);
+  }
+  String newContents=contents;
+  if (StringUtils.isNotBlank(contents)) {
+    HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    newContents=newContents.replace("//BLC-SERVLET-CONTEXT",request.getContextPath());
+  }
+  GeneratedResource gr=new GeneratedResource(newContents.getBytes(),path);
+  gr.setHashRepresentation(String.valueOf(contents.hashCode()));
+  return gr;
+}

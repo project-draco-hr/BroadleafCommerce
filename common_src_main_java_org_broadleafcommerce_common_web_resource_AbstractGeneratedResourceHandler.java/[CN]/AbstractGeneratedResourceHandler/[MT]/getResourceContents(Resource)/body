@@ -1,0 +1,14 @@
+{
+  StringWriter writer=null;
+  try {
+    writer=new StringWriter();
+    IOUtils.copy(resource.getInputStream(),writer,"UTF-8");
+    return writer.toString();
+  }
+  finally {
+    if (writer != null) {
+      writer.flush();
+      writer.close();
+    }
+  }
+}
