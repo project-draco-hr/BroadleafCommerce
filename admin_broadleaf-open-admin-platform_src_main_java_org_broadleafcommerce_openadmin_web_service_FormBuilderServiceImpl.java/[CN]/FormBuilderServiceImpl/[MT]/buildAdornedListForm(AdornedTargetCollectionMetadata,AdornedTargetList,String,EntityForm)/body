@@ -5,8 +5,10 @@
   List<Property> entityFormProperties=new ArrayList<Property>();
   for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
     Property p=collectionMetadata.getPMap().get(targetFieldName);
-    ((BasicFieldMetadata)p.getMetadata()).setVisibility(VisibilityEnum.VISIBLE_ALL);
-    entityFormProperties.add(p);
+    if (p.getMetadata() instanceof BasicFieldMetadata) {
+      ((BasicFieldMetadata)p.getMetadata()).setVisibility(VisibilityEnum.VISIBLE_ALL);
+      entityFormProperties.add(p);
+    }
   }
   setEntityFormFields(ef,entityFormProperties);
   Field f=new Field().withName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);

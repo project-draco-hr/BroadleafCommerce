@@ -1,21 +1,3 @@
 {
-  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata()).withFilterAndSortCriteria(fascs).withStartIndex(startIndex).withMaxIndex(maxIndex);
-  FilterAndSortCriteria fasc;
-  FieldMetadata md=collectionProperty.getMetadata();
-  if (md instanceof BasicCollectionMetadata) {
-    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
-  }
- else   if (md instanceof AdornedTargetCollectionMetadata) {
-    fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName());
-  }
- else   if (md instanceof MapMetadata) {
-    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
-  }
- else {
-    throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
-  }
-  String id=getContextSpecificRelationshipId(containingClassMetadata,containingEntity,collectionProperty.getName());
-  fasc.setFilterValue(id);
-  ppr.addFilterAndSortCriteria(fasc);
-  return fetch(ppr);
+  return getRecordsForCollection(containingClassMetadata,containingEntity,collectionProperty,fascs,startIndex,maxIndex,null);
 }
