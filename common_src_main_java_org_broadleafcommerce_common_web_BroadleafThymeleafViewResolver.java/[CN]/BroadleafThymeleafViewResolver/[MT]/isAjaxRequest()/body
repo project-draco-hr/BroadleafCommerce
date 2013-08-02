@@ -1,7 +1,4 @@
 {
-  if (BroadleafRequestContext.getBroadleafRequestContext() != null && BroadleafRequestContext.getBroadleafRequestContext().getRequest() != null) {
-    HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
-    return BroadleafControllerUtility.isAjaxRequest(request);
-  }
-  return false;
+  HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+  return BroadleafControllerUtility.isAjaxRequest(request);
 }

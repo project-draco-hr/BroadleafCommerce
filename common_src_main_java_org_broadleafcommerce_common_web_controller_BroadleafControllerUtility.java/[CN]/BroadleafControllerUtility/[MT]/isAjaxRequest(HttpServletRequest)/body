@@ -1,4 +1,10 @@
 {
   String ajaxParameter=request.getParameter(BLC_AJAX_PARAMETER);
-  return (ajaxParameter != null && "true".equals(ajaxParameter)) || "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+  String requestedWithHeader=request.getHeader("X-Requested-With");
+  boolean result=(ajaxParameter != null && "true".equals(ajaxParameter)) || "XMLHttpRequest".equals(requestedWithHeader);
+  if (LOG.isTraceEnabled()) {
+    StringBuilder sb=new StringBuilder().append("Request URL: [").append(request.getServletPath()).append("]").append(" - ").append("ajaxParam: [").append(String.valueOf(ajaxParameter)).append("]").append(" - ").append("X-Requested-With: [").append(requestedWithHeader).append("]").append(" - ").append("Returning: [").append(result).append("]");
+    LOG.trace(sb.toString());
+  }
+  return result;
 }
