@@ -1,6 +1,10 @@
 {
   Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
-  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(shs.getProductIdFieldName()).setRows(searchCriteria.getPageSize()).setFilterQueries(filterQueries).addFilterQuery(shs.getNamespaceFieldName() + ":" + shs.getCurrentNamespace()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(shs.getProductIdFieldName()).setRows(searchCriteria.getPageSize()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  if (filterQueries != null) {
+    solrQuery.setFilterQueries(filterQueries);
+  }
+  solrQuery.addFilterQuery(shs.getNamespaceFieldName() + ":" + shs.getCurrentNamespace());
   solrQuery.set("defType","edismax");
   solrQuery.set("qf",buildQueryFieldsString());
   attachSortClause(solrQuery,searchCriteria,defaultSort);
