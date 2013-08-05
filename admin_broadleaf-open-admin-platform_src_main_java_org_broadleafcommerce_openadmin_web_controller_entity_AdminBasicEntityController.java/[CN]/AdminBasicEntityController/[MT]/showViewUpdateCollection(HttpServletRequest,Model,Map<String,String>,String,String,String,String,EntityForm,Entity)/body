@@ -42,8 +42,30 @@
       entityForm.setEntityType(entityType);
       populateTypeAndId=false;
     }
+    ClassMetadata cmd=service.getClassMetadata(ppr);
+    for (    String field : fmd.getMaintainedAdornedTargetFields()) {
+      Property p=cmd.getPMap().get(field);
+      if (p != null && p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
+        Property alternateIdProperty=entity.getPMap().get(BasicPersistenceModule.ALTERNATE_ID_PROPERTY);
+        DynamicResultSet drs=service.getRecordsForCollection(cmd,entity,p,null,null,null,alternateIdProperty.getValue());
+        ListGrid listGrid=formService.buildCollectionListGrid(alternateIdProperty.getValue(),drs,p,ppr.getAdornedList().getAdornedTargetEntityClassname());
+        listGrid.setListGridType(ListGrid.Type.INLINE);
+        listGrid.getToolbarActions().add(DefaultListGridActions.ADD);
+        entityForm.addListGrid(listGrid,EntityForm.DEFAULT_TAB_NAME,EntityForm.DEFAULT_TAB_ORDER);
+      }
+    }
     formService.populateEntityFormFields(entityForm,entity,populateTypeAndId,populateTypeAndId);
     formService.populateAdornedEntityFormFields(entityForm,entity,ppr.getAdornedList());
+    boolean atLeastOneBasicField=false;
+    for (    Entry<String,Field> entry : entityForm.getFields().entrySet()) {
+      if (entry.getValue().getIsVisible()) {
+        atLeastOneBasicField=true;
+        break;
+      }
+    }
+    if (!atLeastOneBasicField) {
+      entityForm.removeAction(DefaultEntityFormActions.SAVE);
+    }
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/adornedEditEntity");
   }

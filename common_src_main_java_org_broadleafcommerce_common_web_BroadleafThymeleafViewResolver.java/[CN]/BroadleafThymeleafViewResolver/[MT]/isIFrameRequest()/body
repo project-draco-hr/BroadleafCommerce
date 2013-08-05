@@ -1,8 +1,5 @@
 {
-  if (BroadleafRequestContext.getBroadleafRequestContext() != null && BroadleafRequestContext.getBroadleafRequestContext().getRequest() != null) {
-    HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
-    String iFrameParameter=request.getParameter("blcIFrame");
-    return (iFrameParameter != null && "true".equals(iFrameParameter));
-  }
-  return false;
+  HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+  String iFrameParameter=request.getParameter("blcIFrame");
+  return (iFrameParameter != null && "true".equals(iFrameParameter));
 }
