@@ -1,6 +1,5 @@
 {
   List<SearchFacetDTO> facets=getSearchFacets();
-  query=sanitizeQuery(query);
-  query=buildQueryString(query);
+  query="(" + sanitizeQuery(query) + ")";
   return findProducts(query,facets,searchCriteria,null);
 }
