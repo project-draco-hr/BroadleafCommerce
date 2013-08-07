@@ -5,7 +5,7 @@
   if (md instanceof BasicCollectionMetadata) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
-      ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+      ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
       if (entityForm == null) {
         entityForm=formService.createEntityForm(collectionMetadata);
       }
@@ -18,7 +18,7 @@
       model.addAttribute("viewType","modal/simpleAddEntity");
     }
  else {
-      DynamicResultSet drs=service.getRecords(ppr);
+      DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
       ListGrid listGrid=formService.buildCollectionListGrid(id,drs,collectionProperty,sectionKey);
       listGrid.setPathOverride(request.getRequestURL().toString());
       model.addAttribute("listGrid",listGrid);
@@ -29,8 +29,8 @@
     AdornedTargetCollectionMetadata fmd=(AdornedTargetCollectionMetadata)md;
     ppr.setOperationTypesOverride(null);
     ppr.setType(PersistencePackageRequest.Type.STANDARD);
-    ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-    DynamicResultSet drs=service.getRecords(ppr);
+    ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+    DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
     ListGrid listGrid=formService.buildMainListGrid(drs,collectionMetadata,sectionKey);
     listGrid.setSubCollectionFieldName(collectionField);
     listGrid.setPathOverride(request.getRequestURL().toString());
@@ -55,7 +55,7 @@
   }
  else   if (md instanceof MapMetadata) {
     MapMetadata fmd=(MapMetadata)md;
-    ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+    ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     if (entityForm == null) {
       entityForm=formService.buildMapForm(fmd,ppr.getMapStructure(),collectionMetadata,id);
     }

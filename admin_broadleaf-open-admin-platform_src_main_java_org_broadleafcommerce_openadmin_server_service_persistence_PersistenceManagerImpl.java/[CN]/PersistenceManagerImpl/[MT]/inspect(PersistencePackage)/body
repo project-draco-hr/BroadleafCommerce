@@ -1,11 +1,17 @@
 {
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.preInspect(this,persistencePackage);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      break;
+    }
+  }
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleInspect(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
         adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
       }
       DynamicResultSet results=handler.inspect(persistencePackage,dynamicEntityDao,this);
-      return results;
+      return executePostInspectHandlers(persistencePackage,new PersistenceResponse().withDynamicResultSet(results));
     }
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
@@ -16,5 +22,5 @@
   }
   ClassMetadata mergedMetadata=getMergedClassMetadata(entities,allMergedProperties);
   DynamicResultSet results=new DynamicResultSet(mergedMetadata);
-  return results;
+  return executePostInspectHandlers(persistencePackage,new PersistenceResponse().withDynamicResultSet(results));
 }

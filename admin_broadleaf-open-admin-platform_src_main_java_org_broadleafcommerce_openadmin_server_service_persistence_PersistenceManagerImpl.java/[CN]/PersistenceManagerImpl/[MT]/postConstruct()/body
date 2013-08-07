@@ -2,4 +2,10 @@
   for (  PersistenceModule module : modules) {
     module.setPersistenceManager(this);
   }
+  Collections.sort(persistenceManagerEventHandlers,new Comparator<PersistenceManagerEventHandler>(){
+    @Override public int compare(    PersistenceManagerEventHandler o1,    PersistenceManagerEventHandler o2){
+      return Integer.valueOf(o1.getOrder()).compareTo(Integer.valueOf(o2.getOrder()));
+    }
+  }
+);
 }

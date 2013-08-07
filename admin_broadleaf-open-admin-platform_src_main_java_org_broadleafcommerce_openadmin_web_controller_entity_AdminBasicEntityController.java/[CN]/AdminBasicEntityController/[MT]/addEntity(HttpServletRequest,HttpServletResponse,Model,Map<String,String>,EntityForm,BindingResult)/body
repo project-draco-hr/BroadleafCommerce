@@ -1,9 +1,9 @@
 {
   String sectionKey=getSectionKey(pathVars);
-  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria());
+  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria()).getEntity();
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
-    ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(entityForm.getEntityType()));
+    ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(entityForm.getEntityType())).getDynamicResultSet().getClassMetaData();
     entityForm.clearFieldsMap();
     formService.populateEntityForm(cmd,entity,entityForm);
     formService.removeNonApplicableFields(cmd,entityForm,entityForm.getEntityType());

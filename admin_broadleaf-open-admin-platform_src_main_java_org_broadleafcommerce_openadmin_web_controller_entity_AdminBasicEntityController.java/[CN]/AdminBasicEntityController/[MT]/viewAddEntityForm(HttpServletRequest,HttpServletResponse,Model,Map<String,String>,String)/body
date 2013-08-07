@@ -1,7 +1,7 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(sectionClassName));
+  ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(sectionClassName)).getDynamicResultSet().getClassMetaData();
   if (StringUtils.isBlank(entityType)) {
     if (cmd.getPolymorphicEntities().getChildren().length == 0) {
       entityType=cmd.getPolymorphicEntities().getFullyQualifiedClassname();

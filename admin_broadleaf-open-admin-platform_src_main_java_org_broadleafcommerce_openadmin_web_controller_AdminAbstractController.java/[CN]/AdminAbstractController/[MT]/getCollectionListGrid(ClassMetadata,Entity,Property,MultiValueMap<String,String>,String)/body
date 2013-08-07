@@ -1,7 +1,3 @@
 {
-  DynamicResultSet drs=service.getRecordsForCollection(mainMetadata,entity,collectionProperty,getCriteria(requestParams),getStartIndex(requestParams),getMaxIndex(requestParams));
-  String idProperty=service.getIdProperty(mainMetadata);
-  ListGrid listGrid=formService.buildCollectionListGrid(entity.findProperty(idProperty).getValue(),drs,collectionProperty,sectionKey);
-  listGrid.setListGridType(ListGrid.Type.INLINE);
-  return listGrid;
+  return getCollectionListGrid(mainMetadata,entity,collectionProperty,requestParams,sectionKey,null);
 }

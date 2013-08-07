@@ -1,15 +1,15 @@
 {
   String collectionField="additionalSkus";
   String mainClassName=getClassNameForSection(SECTION_KEY);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md);
-  ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
+  ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   if (collectionMetadata.getCeilingType().equals(SkuImpl.class.getName())) {
     collectionMetadata.setCeilingType(Sku.class.getName());
   }
-  Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true);
+  Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true).getDynamicResultSet().getRecords()[0];
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
   EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
   entityForm.removeAction(DefaultEntityFormActions.DELETE);

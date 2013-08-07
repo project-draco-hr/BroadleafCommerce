@@ -1,22 +1,29 @@
 {
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.preFetch(this,persistencePackage,cto);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      break;
+    }
+  }
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleFetch(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
         adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.FETCH);
       }
       DynamicResultSet results=handler.fetch(persistencePackage,cto,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
-      return postFetch(results,persistencePackage,cto);
+      return executePostFetchHandlers(persistencePackage,cto,new PersistenceResponse().withDynamicResultSet(results));
     }
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.FETCH);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
   try {
-    return postFetch(myModule.fetch(persistencePackage,cto),persistencePackage,cto);
+    DynamicResultSet results=myModule.fetch(persistencePackage,cto);
+    return executePostFetchHandlers(persistencePackage,cto,new PersistenceResponse().withDynamicResultSet(results));
   }
  catch (  ServiceException e) {
     if (e.getCause() instanceof NoPossibleResultsException) {
       DynamicResultSet drs=new DynamicResultSet(null,new Entity[]{},0);
-      return postFetch(drs,persistencePackage,cto);
+      return executePostFetchHandlers(persistencePackage,cto,new PersistenceResponse().withDynamicResultSet(drs));
     }
     throw e;
   }

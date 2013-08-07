@@ -47,6 +47,13 @@
     throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was" + " not a collection field.",field.getName(),mainMetadata.getCeilingType()));
   }
   ppr.setCeilingEntityClassname(ppr.getEntity().getType()[0]);
+  ppr.setSectionEntityClassname(mainMetadata.getCeilingType());
+  ppr.setSectionEntityIdValue(getContextSpecificRelationshipId(mainMetadata,parentEntity,""));
+  String sectionField="";
+  if (sectionField.contains(".")) {
+    sectionField=sectionField.substring(0,sectionField.lastIndexOf("."));
+  }
+  ppr.setSectionEntityField(sectionField);
   Property[] propArr=new Property[properties.size()];
   properties.toArray(propArr);
   ppr.getEntity().setProperties(propArr);

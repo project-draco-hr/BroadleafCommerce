@@ -3,8 +3,8 @@
   FilterAndSortCriteria fasc=new FilterAndSortCriteria(idProperty);
   fasc.setFilterValue(id);
   request.addFilterAndSortCriteria(fasc);
-  Entity[] entities=fetch(request).getRecords();
+  PersistenceResponse response=fetch(request);
+  Entity[] entities=response.getDynamicResultSet().getRecords();
   Assert.isTrue(entities != null && entities.length == 1,"Entity not found");
-  Entity entity=entities[0];
-  return entity;
+  return response;
 }

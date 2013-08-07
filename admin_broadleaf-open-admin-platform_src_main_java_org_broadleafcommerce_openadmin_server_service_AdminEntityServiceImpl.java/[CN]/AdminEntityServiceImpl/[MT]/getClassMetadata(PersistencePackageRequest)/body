@@ -1,5 +1,6 @@
 {
-  ClassMetadata cmd=inspect(request).getClassMetaData();
+  PersistenceResponse response=inspect(request);
+  ClassMetadata cmd=response.getDynamicResultSet().getClassMetaData();
   cmd.setCeilingType(request.getCeilingEntityClassname());
-  return cmd;
+  return response;
 }

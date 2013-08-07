@@ -1,15 +1,21 @@
 {
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.preAdd(this,persistencePackage);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      break;
+    }
+  }
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleAdd(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
         adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
       }
       Entity response=handler.add(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
-      return postAdd(response,persistencePackage);
+      return executePostAddHandlers(persistencePackage,new PersistenceResponse().withEntity(response));
     }
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
-  Entity response=myModule.add(persistencePackage);
-  return postAdd(response,persistencePackage);
+  Entity entity=myModule.add(persistencePackage);
+  return executePostAddHandlers(persistencePackage,new PersistenceResponse().withEntity(entity));
 }

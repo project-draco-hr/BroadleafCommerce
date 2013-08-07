@@ -1,7 +1,7 @@
 {
   cleanEntity(persistencePackage.getEntity());
   if (persistencePackage.getEntity().isValidationFailure()) {
-    return persistencePackage.getEntity();
+    return new PersistenceResponse().withEntity(persistencePackage.getEntity());
   }
   try {
     PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
@@ -11,11 +11,11 @@
  catch (  ServiceException e) {
     if (e instanceof ValidationException) {
       LOG.warn("Not saving entity as it has failed validation");
-      return ((ValidationException)e).getEntity();
+      return new PersistenceResponse().withEntity(((ValidationException)e).getEntity());
     }
  else     if (e.getCause() instanceof ValidationException) {
       LOG.warn("Not saving entity as it has failed validation");
-      return ((ValidationException)e.getCause()).getEntity();
+      return new PersistenceResponse().withEntity(((ValidationException)e.getCause()).getEntity());
     }
     String message=exploitProtectionService.cleanString(e.getMessage());
     LOG.error("Problem adding new " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);

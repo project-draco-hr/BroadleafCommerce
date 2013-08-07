@@ -1,14 +1,21 @@
 {
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.preRemove(this,persistencePackage);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      break;
+    }
+  }
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleRemove(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
         adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
       }
       handler.remove(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
-      return;
+      return executePostRemoveHandlers(persistencePackage,new PersistenceResponse());
     }
   }
   adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType());
   myModule.remove(persistencePackage);
+  return executePostRemoveHandlers(persistencePackage,new PersistenceResponse());
 }

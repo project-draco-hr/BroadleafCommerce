@@ -1,18 +1,19 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
-  Entity entity=service.getRecord(ppr,id,mainMetadata,false);
-  Entity savedEntity=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
+  Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
+  PersistenceResponse persistenceResponse=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
+  Entity savedEntity=persistenceResponse.getEntity();
   entityFormValidator.validate(entityForm,savedEntity,result);
   if (result.hasErrors()) {
     FieldMetadata md=collectionProperty.getMetadata();
     ppr=PersistencePackageRequest.fromMetadata(md);
     return buildAddCollectionItemModel(request,response,model,id,collectionField,sectionKey,collectionProperty,md,ppr,entityForm,savedEntity);
   }
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";

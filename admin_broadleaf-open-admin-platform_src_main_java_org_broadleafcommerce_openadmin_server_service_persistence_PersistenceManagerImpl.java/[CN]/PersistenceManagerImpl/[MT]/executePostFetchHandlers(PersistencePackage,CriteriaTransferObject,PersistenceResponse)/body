@@ -1,0 +1,22 @@
+{
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.postFetch(this,persistenceResponse.getDynamicResultSet(),persistencePackage,cto);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      persistenceResponse.setDynamicResultSet(response.getDynamicResultSet());
+      if (!MapUtils.isEmpty(response.getAdditionalData())) {
+        persistenceResponse.getAdditionalData().putAll(response.getAdditionalData());
+      }
+      break;
+    }
+ else     if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED == response.getStatus()) {
+      persistenceResponse.setDynamicResultSet(response.getDynamicResultSet());
+      if (!MapUtils.isEmpty(response.getAdditionalData())) {
+        persistenceResponse.getAdditionalData().putAll(response.getAdditionalData());
+      }
+    }
+  }
+  persistenceResponse.setDynamicResultSet(postFetch(persistenceResponse.getDynamicResultSet(),persistencePackage,cto));
+  persistenceResponse.getDynamicResultSet().setStartIndex(cto.getFirstResult());
+  persistenceResponse.getDynamicResultSet().setPageSize(cto.getMaxResults());
+  return persistenceResponse;
+}

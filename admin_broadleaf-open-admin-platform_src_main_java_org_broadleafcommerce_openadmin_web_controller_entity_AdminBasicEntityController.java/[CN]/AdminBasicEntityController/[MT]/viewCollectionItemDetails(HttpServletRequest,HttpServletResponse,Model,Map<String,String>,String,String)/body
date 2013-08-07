@@ -1,7 +1,7 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   BasicFieldMetadata md=(BasicFieldMetadata)collectionProperty.getMetadata();
   AdminSection section=adminNavigationService.findAdminSectionByClass(md.getForeignKeyClass());

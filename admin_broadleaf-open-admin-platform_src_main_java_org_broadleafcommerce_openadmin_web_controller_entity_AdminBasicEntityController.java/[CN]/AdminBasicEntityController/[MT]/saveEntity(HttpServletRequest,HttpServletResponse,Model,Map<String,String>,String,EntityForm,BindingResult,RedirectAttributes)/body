@@ -23,11 +23,12 @@
     entry.getValue().setName(fieldName[1]);
     dynamicForm.addField(entry.getValue());
   }
-  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
+  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria()).getEntity();
+  id=entity.findProperty(entityForm.getIdProperty()).getValue();
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
-    ClassMetadata cmd=service.getClassMetadata(ppr);
+    ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     entityForm.clearFieldsMap();
     formService.populateEntityForm(cmd,entity,subRecordsMap,entityForm);
     model.addAttribute("entity",entity);

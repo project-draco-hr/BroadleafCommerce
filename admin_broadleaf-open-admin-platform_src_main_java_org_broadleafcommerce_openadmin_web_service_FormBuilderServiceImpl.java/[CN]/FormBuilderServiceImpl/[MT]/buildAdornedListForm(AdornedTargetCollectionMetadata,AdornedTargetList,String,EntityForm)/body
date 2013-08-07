@@ -1,7 +1,7 @@
 {
   ef.setEntityType(adornedList.getAdornedTargetEntityClassname());
   PersistencePackageRequest request=PersistencePackageRequest.adorned().withCeilingEntityClassname(adornedMd.getCollectionCeilingEntity()).withAdornedList(adornedList);
-  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(request);
+  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(request).getDynamicResultSet().getClassMetaData();
   List<Property> entityFormProperties=new ArrayList<Property>();
   for (  String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
     Property p=collectionMetadata.getPMap().get(targetFieldName);

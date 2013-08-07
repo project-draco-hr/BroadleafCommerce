@@ -4,9 +4,9 @@
       BasicFieldMetadata fmd=(BasicFieldMetadata)p.getMetadata();
       if (LookupType.DROPDOWN.equals(fmd.getLookupType()) && !ArrayUtils.contains(getFormHiddenVisibilities(),fmd.getVisibility())) {
         PersistencePackageRequest toOnePpr=PersistencePackageRequest.standard().withCeilingEntityClassname(fmd.getForeignKeyClass());
-        Entity[] rows=adminEntityService.getRecords(toOnePpr).getRecords();
+        Entity[] rows=adminEntityService.getRecords(toOnePpr).getDynamicResultSet().getRecords();
         String idProp=null;
-        ClassMetadata foreignClassMd=adminEntityService.getClassMetadata(toOnePpr);
+        ClassMetadata foreignClassMd=adminEntityService.getClassMetadata(toOnePpr).getDynamicResultSet().getClassMetaData();
         for (        Property foreignP : foreignClassMd.getProperties()) {
           if (foreignP.getMetadata() instanceof BasicFieldMetadata) {
             BasicFieldMetadata foreignFmd=(BasicFieldMetadata)foreignP.getMetadata();

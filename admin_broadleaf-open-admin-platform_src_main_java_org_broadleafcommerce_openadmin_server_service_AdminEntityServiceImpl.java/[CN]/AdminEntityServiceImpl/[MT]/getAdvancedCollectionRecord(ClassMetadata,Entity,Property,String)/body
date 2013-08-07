@@ -2,7 +2,7 @@
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata());
   FieldMetadata md=collectionProperty.getMetadata();
   String containingEntityId=getContextSpecificRelationshipId(containingClassMetadata,containingEntity,collectionProperty.getName());
-  Entity entity=null;
+  PersistenceResponse response;
   if (md instanceof AdornedTargetCollectionMetadata) {
     FilterAndSortCriteria fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName());
     fasc.setFilterValue(containingEntityId);
@@ -10,16 +10,17 @@
     fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName() + "Target");
     fasc.setFilterValue(collectionItemId);
     ppr.addFilterAndSortCriteria(fasc);
-    Entity[] entities=fetch(ppr).getRecords();
+    response=fetch(ppr);
+    Entity[] entities=response.getDynamicResultSet().getRecords();
     Assert.isTrue(entities != null && entities.length == 1,"Entity not found");
-    entity=entities[0];
   }
  else   if (md instanceof MapMetadata) {
     MapMetadata mmd=(MapMetadata)md;
     FilterAndSortCriteria fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
     fasc.setFilterValue(containingEntityId);
     ppr.addFilterAndSortCriteria(fasc);
-    Entity[] entities=fetch(ppr).getRecords();
+    response=fetch(ppr);
+    Entity[] entities=response.getDynamicResultSet().getRecords();
     for (    Entity e : entities) {
       String idProperty=getIdProperty(containingClassMetadata);
       if (mmd.isSimpleValue()) {
@@ -27,7 +28,7 @@
       }
       Property p=e.getPMap().get(idProperty);
       if (p.getValue().equals(collectionItemId)) {
-        entity=e;
+        response.setEntity(e);
         break;
       }
     }
@@ -35,8 +36,8 @@
  else {
     throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not an " + "advanced collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
   }
-  if (entity == null) {
+  if (response == null) {
     throw new NoResultException(String.format("Could not find record for class [%s], field [%s], main entity id " + "[%s], collection entity id [%s]",containingClassMetadata.getCeilingType(),collectionProperty.getName(),containingEntityId,collectionItemId));
   }
-  return entity;
+  return response;
 }

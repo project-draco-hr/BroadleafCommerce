@@ -2,8 +2,8 @@
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,requestParams);
-  ClassMetadata cmd=service.getClassMetadata(ppr);
-  DynamicResultSet drs=service.getRecords(ppr);
+  ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
   ListGrid listGrid=formService.buildMainListGrid(drs,cmd,sectionKey);
   List<EntityFormAction> mainActions=new ArrayList<EntityFormAction>();
   boolean canCreate=true;

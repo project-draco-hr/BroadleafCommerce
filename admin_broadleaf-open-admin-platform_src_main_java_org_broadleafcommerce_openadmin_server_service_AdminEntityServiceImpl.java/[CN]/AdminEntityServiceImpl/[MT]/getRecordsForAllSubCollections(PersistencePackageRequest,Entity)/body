@@ -1,10 +1,11 @@
 {
   Map<String,DynamicResultSet> map=new HashMap<String,DynamicResultSet>();
-  ClassMetadata cmd=getClassMetadata(ppr);
+  PersistenceResponse response=getClassMetadata(ppr);
+  ClassMetadata cmd=response.getDynamicResultSet().getClassMetaData();
   for (  Property p : cmd.getProperties()) {
     if (p.getMetadata() instanceof CollectionMetadata) {
-      DynamicResultSet drs=getRecordsForCollection(cmd,containingEntity,p,null,null,null);
-      map.put(p.getName(),drs);
+      PersistenceResponse response2=getRecordsForCollection(cmd,containingEntity,p,null,null,null);
+      map.put(p.getName(),response2.getDynamicResultSet());
     }
   }
   return map;

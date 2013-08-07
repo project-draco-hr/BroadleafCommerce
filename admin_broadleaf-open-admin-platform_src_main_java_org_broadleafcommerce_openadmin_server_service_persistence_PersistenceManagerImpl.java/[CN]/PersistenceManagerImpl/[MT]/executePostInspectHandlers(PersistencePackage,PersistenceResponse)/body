@@ -1,0 +1,19 @@
+{
+  for (  PersistenceManagerEventHandler handler : persistenceManagerEventHandlers) {
+    PersistenceManagerEventHandlerResponse response=handler.postInspect(this,persistenceResponse.getDynamicResultSet(),persistencePackage);
+    if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED_BREAK == response.getStatus()) {
+      persistenceResponse.setDynamicResultSet(response.getDynamicResultSet());
+      if (!MapUtils.isEmpty(response.getAdditionalData())) {
+        persistenceResponse.getAdditionalData().putAll(response.getAdditionalData());
+      }
+      break;
+    }
+ else     if (PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED == response.getStatus()) {
+      persistenceResponse.setDynamicResultSet(response.getDynamicResultSet());
+      if (!MapUtils.isEmpty(response.getAdditionalData())) {
+        persistenceResponse.getAdditionalData().putAll(response.getAdditionalData());
+      }
+    }
+  }
+  return persistenceResponse;
+}
