@@ -13,6 +13,9 @@
   if (isCount) {
     criteria.select(criteriaBuilder.count(original));
   }
+ else   if (isMax) {
+    criteria.select(criteriaBuilder.max((Path<Number>)((Object)original.get(maxField))));
+  }
  else {
     criteria.select(original);
   }
