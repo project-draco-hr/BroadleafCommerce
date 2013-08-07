@@ -1,9 +1,9 @@
 {
   try {
-    AdminSandBoxContext context=(AdminSandBoxContext)SandBoxContext.getSandBoxContext();
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
     if (context != null) {
       field.setAccessible(true);
-      field.set(entity,context.getAdminUser().getId());
+      field.set(entity,((AdminUser)context.getAdditionalProperties().get(BroadleafAdminRequestProcessor.ADMIN_USER_PROPERTY)).getId());
     }
   }
  catch (  IllegalStateException e) {
