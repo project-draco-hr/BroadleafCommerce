@@ -65,7 +65,12 @@
                 transformedMethods.add(methodDescription(originalMethod));
               }
               logger.debug(String.format("Removing method [%s]",method.getName()));
-              clazz.removeMethod(originalMethod);
+              if (renameMethodOverlaps) {
+                originalMethod.setName(renameMethodPrefix + method.getName());
+              }
+ else {
+                clazz.removeMethod(originalMethod);
+              }
             }
  catch (            NotFoundException e) {
             }
