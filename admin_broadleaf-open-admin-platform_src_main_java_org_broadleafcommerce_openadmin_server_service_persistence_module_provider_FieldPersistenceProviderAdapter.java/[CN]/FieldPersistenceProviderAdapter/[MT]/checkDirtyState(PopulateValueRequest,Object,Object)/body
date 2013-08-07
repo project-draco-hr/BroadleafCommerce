@@ -1,0 +1,8 @@
+{
+  boolean dirty=!(instance == null && checkValue == null) && (instance == null || checkValue == null);
+  if (!dirty) {
+    Object value=request.getFieldManager().getFieldValue(instance,request.getProperty().getName());
+    dirty=value == null || !value.equals(checkValue);
+  }
+  return dirty;
+}

@@ -2,6 +2,7 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
+  boolean dirty=false;
   try {
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case RULE_WITH_QUANTITY:
@@ -18,7 +19,7 @@ case RULE_WITH_QUANTITY:
  catch (        FieldNotAvailableException e) {
           throw new IllegalArgumentException(e);
         }
-        populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
+        dirty=populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
         break;
       }
 case RULE_SIMPLE:
@@ -44,6 +45,7 @@ case RULE_SIMPLE:
           throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
         }
         if (String.class.isAssignableFrom(valueType)) {
+          dirty=checkDirtyState(populateValueRequest,instance,mvel);
           populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),mvel);
         }
         if (SimpleRule.class.isAssignableFrom(valueType)) {
@@ -55,12 +57,15 @@ case RULE_SIMPLE:
             throw new IllegalArgumentException(e);
           }
           if (mvel == null) {
+            dirty=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName()) != null;
             populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
           }
  else           if (rule != null) {
+            dirty=!rule.getMatchRule().equals(mvel);
             rule.setMatchRule(mvel);
           }
  else {
+            dirty=true;
             rule=(SimpleRule)valueType.newInstance();
             rule.setMatchRule(mvel);
             populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(rule);
@@ -75,5 +80,6 @@ case RULE_SIMPLE:
  catch (Exception e) {
 throw new PersistenceException(e);
 }
+populateValueRequest.getProperty().setIsDirty(dirty);
 return FieldProviderResponse.HANDLED;
 }

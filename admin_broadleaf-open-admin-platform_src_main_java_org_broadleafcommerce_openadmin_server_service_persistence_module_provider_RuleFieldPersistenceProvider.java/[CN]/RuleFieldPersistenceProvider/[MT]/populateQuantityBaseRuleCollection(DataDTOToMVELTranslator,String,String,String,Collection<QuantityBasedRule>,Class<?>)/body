@@ -1,4 +1,5 @@
 {
+  boolean dirty=false;
   if (!StringUtils.isEmpty(jsonPropertyValue)) {
     DataWrapper dw=convertJsonToDataWrapper(jsonPropertyValue);
     if (dw != null && StringUtils.isEmpty(dw.getError())) {
@@ -10,11 +11,13 @@
               if (dto.getId().equals(quantityBasedRule.getId())) {
                 if (!quantityBasedRule.getQuantity().equals(dto.getQuantity())) {
                   quantityBasedRule.setQuantity(dto.getQuantity());
+                  dirty=true;
                 }
                 try {
                   String mvel=translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService));
                   if (!quantityBasedRule.getMatchRule().equals(mvel)) {
                     quantityBasedRule.setMatchRule(mvel);
+                    dirty=true;
                   }
                 }
  catch (                MVELTranslationException e) {
@@ -42,6 +45,7 @@
           }
           criteriaList.add(quantityBasedRule);
           updatedRules.add(quantityBasedRule);
+          dirty=true;
         }
       }
       Iterator<QuantityBasedRule> itr=criteriaList.iterator();
@@ -54,8 +58,10 @@
             }
           }
           itr.remove();
+          dirty=true;
         }
       }
     }
   }
+  return dirty;
 }

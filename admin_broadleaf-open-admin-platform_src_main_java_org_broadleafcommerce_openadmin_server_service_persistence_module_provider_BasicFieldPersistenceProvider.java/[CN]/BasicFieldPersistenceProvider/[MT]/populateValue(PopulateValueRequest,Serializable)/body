@@ -2,57 +2,76 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
+  boolean dirty=false;
   try {
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case BOOLEAN:
       boolean v=Boolean.valueOf(populateValueRequest.getRequestedValue());
     try {
+      dirty=checkDirtyState(populateValueRequest,instance,v);
       populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),v);
     }
  catch (    IllegalArgumentException e) {
       char c=v ? 'Y' : 'N';
+      dirty=checkDirtyState(populateValueRequest,instance,c);
       populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),c);
     }
   break;
 case DATE:
+Date date=(Date)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+String oldValue=null;
+if (date != null) {
+oldValue=populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().format(date);
+}
+dirty=StringUtils.equals(oldValue,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().parse(populateValueRequest.getRequestedValue()));
 break;
 case DECIMAL:
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,new BigDecimal(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
 }
  else {
+dirty=checkDirtyState(populateValueRequest,instance,new Double(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Double(populateValueRequest.getRequestedValue()));
 }
 break;
 case MONEY:
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,new BigDecimal(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
 }
  else if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-LOG.warn("The requested Money field is of type double and could result in a loss of precision." + " Broadleaf recommends that the type of all Money fields are 'BigDecimal' in order to avoid" + " this loss of precision that could occur.");
+LOG.warn("The requested Money field is of type double and could result in a loss of precision." + " Broadleaf recommends that the type of all Money fields are 'BigDecimal' in order to" + " avoid this loss of precision that could occur.");
+dirty=checkDirtyState(populateValueRequest,instance,new Double(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Double(populateValueRequest.getRequestedValue()));
 }
  else {
+dirty=checkDirtyState(populateValueRequest,instance,new BigDecimal(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new Money(new BigDecimal(populateValueRequest.getRequestedValue())));
 }
 break;
 case INTEGER:
 if (int.class.isAssignableFrom(populateValueRequest.getReturnType()) || Integer.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,Integer.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Integer.valueOf(populateValueRequest.getRequestedValue()));
 }
  else if (byte.class.isAssignableFrom(populateValueRequest.getReturnType()) || Byte.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,Byte.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Byte.valueOf(populateValueRequest.getRequestedValue()));
 }
  else if (short.class.isAssignableFrom(populateValueRequest.getReturnType()) || Short.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,Short.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Short.valueOf(populateValueRequest.getRequestedValue()));
 }
  else if (long.class.isAssignableFrom(populateValueRequest.getReturnType()) || Long.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+dirty=checkDirtyState(populateValueRequest,instance,Long.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Long.valueOf(populateValueRequest.getRequestedValue()));
 }
 break;
 case STRING:
 case EMAIL:
+dirty=checkDirtyState(populateValueRequest,instance,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getRequestedValue());
 break;
 case FOREIGN_KEY:
@@ -79,12 +98,14 @@ throw new IllegalArgumentException(e);
 }
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
+dirty=true;
 }
 }
  else if (Map.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
 }
  else {
+dirty=checkDirtyState(populateValueRequest,instance,foreignInstance);
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),foreignInstance);
 }
 break;
@@ -113,12 +134,14 @@ throw new IllegalArgumentException(e);
 }
 if (!collection.contains(foreignInstance)) {
 collection.add(foreignInstance);
+dirty=true;
 }
 }
  else if (Map.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 throw new IllegalArgumentException("Map structures are not supported for foreign key fields.");
 }
  else {
+dirty=checkDirtyState(populateValueRequest,instance,foreignInstance);
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),foreignInstance);
 }
 break;
@@ -127,9 +150,11 @@ case ID:
 if (populateValueRequest.getSetId()) {
 switch (populateValueRequest.getMetadata().getSecondaryType()) {
 case INTEGER:
+dirty=checkDirtyState(populateValueRequest,instance,Long.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Long.valueOf(populateValueRequest.getRequestedValue()));
 break;
 case STRING:
+dirty=checkDirtyState(populateValueRequest,instance,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getRequestedValue());
 break;
 }
@@ -140,5 +165,6 @@ break;
  catch (Exception e) {
 throw new PersistenceException(e);
 }
+populateValueRequest.getProperty().setIsDirty(dirty);
 return FieldProviderResponse.HANDLED;
 }
