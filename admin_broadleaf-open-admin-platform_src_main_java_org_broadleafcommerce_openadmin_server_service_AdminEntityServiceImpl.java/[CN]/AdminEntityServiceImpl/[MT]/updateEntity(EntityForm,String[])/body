@@ -12,6 +12,7 @@
     }
   }
   PersistencePackageRequest ppr=getRequestForEntityForm(entityForm,customCriteria);
+  ppr.setRequestingEntityName(entityForm.getMainEntityName());
   ppr.getEntity().getValidationErrors().putAll(dynamicFormValidationErrors);
   PersistenceResponse response=update(ppr);
   return response;

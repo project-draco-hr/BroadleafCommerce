@@ -54,6 +54,10 @@
     sectionField=sectionField.substring(0,sectionField.lastIndexOf("."));
   }
   ppr.setSectionEntityField(sectionField);
+  Property parentNameProp=parentEntity.getPMap().get(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY);
+  if (parentNameProp != null) {
+    ppr.setRequestingEntityName(parentNameProp.getValue());
+  }
   Property[] propArr=new Property[properties.size()];
   properties.toArray(propArr);
   ppr.getEntity().setProperties(propArr);
