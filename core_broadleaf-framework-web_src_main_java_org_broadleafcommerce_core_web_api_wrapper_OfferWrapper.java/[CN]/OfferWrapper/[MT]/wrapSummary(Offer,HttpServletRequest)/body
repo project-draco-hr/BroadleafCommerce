@@ -1,3 +1,10 @@
 {
-  wrapDetails(model,request);
+  this.automatic=model.isAutomaticallyAdded();
+  this.offerType=(BroadleafEnumerationTypeWrapper)context.getBean(BroadleafEnumerationTypeWrapper.class.getName());
+  this.offerType.wrapDetails(model.getType(),request);
+  this.discountType=(BroadleafEnumerationTypeWrapper)context.getBean(BroadleafEnumerationTypeWrapper.class.getName());
+  this.discountType.wrapDetails(model.getDiscountType(),request);
+  this.offerId=model.getId();
+  this.marketingMessage=model.getMarketingMessage();
+  this.name=model.getName();
 }
