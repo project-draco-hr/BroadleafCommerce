@@ -23,7 +23,7 @@ String oldValue=null;
 if (date != null) {
 oldValue=populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().format(date);
 }
-dirty=StringUtils.equals(oldValue,populateValueRequest.getRequestedValue());
+dirty=!StringUtils.equals(oldValue,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().parse(populateValueRequest.getRequestedValue()));
 break;
 case DECIMAL:
