@@ -1,0 +1,14 @@
+{
+  AdminSection adminSection=adminNavigationService.findAdminSectionByURI(getRequestURIWithoutPreamble(request));
+  if (adminSection != null && adminSection.getUseDefaultHandler()) {
+    request.setAttribute(CURRENT_ADMIN_SECTION_ATTRIBUTE_NAME,adminSection);
+    request.setAttribute(CURRENT_ADMIN_MODULE_ATTRIBUTE_NAME,adminSection.getModule());
+    if (adminSection.getDisplayController() != null) {
+      return adminSection.getDisplayController();
+    }
+    return controllerName;
+  }
+ else {
+    return null;
+  }
+}
