@@ -10,8 +10,7 @@
     }
     solrServer=tempDir.getAbsolutePath();
   }
-  final String solr=solrServer;
-  final File solrXml=copyConfigToSolrHome(this.getClass().getResourceAsStream("/solr-default.xml"),solrServer,"solr-default.xml");
+  File solrXml=copyConfigToSolrHome(this.getClass().getResourceAsStream("/solr-default.xml"),solrServer,"solr-default.xml");
   LOG.debug(String.format("Using [%s] as solrhome",solrServer));
   LOG.debug(String.format("Using [%s] as solr.xml",solrXml.getAbsoluteFile()));
   if (LOG.isTraceEnabled()) {
@@ -35,7 +34,7 @@
     }
     LOG.trace("Done printing solr.xml");
   }
-  CoreContainer coreContainer=CoreContainer.createAndLoad(solr,solrXml);
+  CoreContainer coreContainer=new CoreContainer(solrServer,solrXml);
   EmbeddedSolrServer primaryServer=new EmbeddedSolrServer(coreContainer,SolrContext.PRIMARY);
   EmbeddedSolrServer reindexServer=new EmbeddedSolrServer(coreContainer,SolrContext.REINDEX);
   SolrContext.setPrimaryServer(primaryServer);
