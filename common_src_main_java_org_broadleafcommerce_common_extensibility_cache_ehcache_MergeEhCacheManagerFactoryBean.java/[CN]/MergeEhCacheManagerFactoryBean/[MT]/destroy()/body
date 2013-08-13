@@ -1,0 +1,22 @@
+{
+  super.destroy();
+  try {
+    CacheManager cacheManager=getObject();
+    Field cacheManagerTimer=CacheManager.class.getDeclaredField("cacheManagerTimer");
+    cacheManagerTimer.setAccessible(true);
+    Object failSafeTimer=cacheManagerTimer.get(cacheManager);
+    Field timer=failSafeTimer.getClass().getDeclaredField("timer");
+    timer.setAccessible(true);
+    Object time=timer.get(failSafeTimer);
+    Field thread=time.getClass().getDeclaredField("thread");
+    thread.setAccessible(true);
+    Thread item=(Thread)thread.get(time);
+    item.setContextClassLoader(Thread.currentThread().getContextClassLoader().getParent());
+  }
+ catch (  NoSuchFieldException e) {
+    throw new RuntimeException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw new RuntimeException(e);
+  }
+}

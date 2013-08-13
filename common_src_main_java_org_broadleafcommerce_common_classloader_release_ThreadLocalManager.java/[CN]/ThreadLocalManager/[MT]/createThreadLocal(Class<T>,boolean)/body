@@ -1,0 +1,25 @@
+{
+  ThreadLocal<T> response=new ThreadLocal<T>(){
+    @Override protected T initialValue(){
+      addThreadLocal(this);
+      if (!createInitialValue) {
+        return null;
+      }
+      try {
+        return type.newInstance();
+      }
+ catch (      InstantiationException e) {
+        throw new RuntimeException(e);
+      }
+catch (      IllegalAccessException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    @Override public void set(    T value){
+      super.get();
+      super.set(value);
+    }
+  }
+;
+  return response;
+}

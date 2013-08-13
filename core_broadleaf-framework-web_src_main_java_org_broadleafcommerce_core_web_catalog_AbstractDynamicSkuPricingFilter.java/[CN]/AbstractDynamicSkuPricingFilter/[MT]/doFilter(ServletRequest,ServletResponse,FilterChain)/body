@@ -1,11 +1,5 @@
 {
   SkuPricingConsiderationContext.setSkuPricingConsiderationContext(getPricingConsiderations(request));
   SkuPricingConsiderationContext.setSkuPricingService(getDynamicSkuPricingService(request));
-  try {
-    filterChain.doFilter(request,response);
-  }
-  finally {
-    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(null);
-    SkuPricingConsiderationContext.setSkuPricingService(null);
-  }
+  filterChain.doFilter(request,response);
 }
