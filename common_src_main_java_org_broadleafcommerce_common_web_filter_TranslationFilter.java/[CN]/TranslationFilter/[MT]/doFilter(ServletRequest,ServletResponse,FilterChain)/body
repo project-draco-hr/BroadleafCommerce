@@ -1,4 +1,9 @@
 {
-  translationRequestProcessor.process(new ServletWebRequest((HttpServletRequest)request,(HttpServletResponse)response));
-  filterChain.doFilter(request,response);
+  try {
+    translationRequestProcessor.process(new ServletWebRequest((HttpServletRequest)request,(HttpServletResponse)response));
+    filterChain.doFilter(request,response);
+  }
+  finally {
+    translationRequestProcessor.postProcess(new ServletWebRequest((HttpServletRequest)request,(HttpServletResponse)response));
+  }
 }
