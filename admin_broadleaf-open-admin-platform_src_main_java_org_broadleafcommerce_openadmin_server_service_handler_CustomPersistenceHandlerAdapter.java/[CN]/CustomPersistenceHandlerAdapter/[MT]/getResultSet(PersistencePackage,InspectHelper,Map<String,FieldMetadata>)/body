@@ -1,0 +1,17 @@
+{
+  String entityName=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    if (helper instanceof PersistenceManager) {
+      Class<?>[] entities=((PersistenceManager)helper).getPolymorphicEntities(entityName);
+      Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+      allMergedProperties.put(MergedPropertyType.PRIMARY,metadata);
+      ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entities,allMergedProperties);
+      DynamicResultSet results=new DynamicResultSet(mergedMetadata);
+      return results;
+    }
+  }
+ catch (  ClassNotFoundException e) {
+    throw new ServiceException(e);
+  }
+  return new DynamicResultSet();
+}
