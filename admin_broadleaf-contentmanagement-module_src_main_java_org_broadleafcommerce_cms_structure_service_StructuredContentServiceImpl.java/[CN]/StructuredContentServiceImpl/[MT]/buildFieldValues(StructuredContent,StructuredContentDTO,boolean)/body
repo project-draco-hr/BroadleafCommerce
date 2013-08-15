@@ -15,7 +15,51 @@
       scDTO.getValues().put(fieldKey,fldValue);
     }
  else {
-      scDTO.getValues().put(fieldKey,originalValue);
-    }
-  }
+      FieldDefinition definition=null;
+      Iterator<FieldGroup> groupIterator=scf.getStructuredContent().getStructuredContentType().getStructuredContentFieldTemplate().getFieldGroups().iterator();
+      while (groupIterator.hasNext() && definition == null) {
+        FieldGroup group=groupIterator.next();
+        for (        FieldDefinition def : group.getFieldDefinitions()) {
+          if (def.getName().equals(fieldKey)) {
+            definition=def;
+            break;
+          }
+        }
+      }
+      if (definition != null) {
+        Object value=null;
+        if (originalValue != null) {
+switch (definition.getFieldType()) {
+case DATE:
+            try {
+              value=FormatUtil.getDateFormat().parse(originalValue);
+            }
+ catch (            Exception e) {
+              value=originalValue;
+            }
+          break;
+case BOOLEAN:
+        value=new Boolean(originalValue);
+      break;
+case DECIMAL:
+    value=new BigDecimal(originalValue);
+  break;
+case INTEGER:
+value=Integer.parseInt(originalValue);
+break;
+case MONEY:
+value=new Money(originalValue);
+break;
+default :
+value=originalValue;
+break;
+}
+}
+scDTO.getValues().put(fieldKey,value);
+}
+ else {
+scDTO.getValues().put(fieldKey,sc.getStructuredContentFields().get(fieldKey).getValue());
+}
+}
+}
 }
