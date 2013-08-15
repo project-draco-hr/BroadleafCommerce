@@ -2,7 +2,7 @@
   String returnPath=super.viewEntityForm(request,response,model,pathVars,id);
   EntityForm ef=(EntityForm)model.asMap().get("entityForm");
   DynamicEntityFormInfo info=new DynamicEntityFormInfo().withCeilingClassName(StructuredContentType.class.getName()).withCriteriaName("constructForm").withPropertyName("structuredContentType").withPropertyValue(ef.findField("structuredContentType").getValue());
-  EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+  EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id,null);
   ef.putDynamicFormInfo("structuredContentType",info);
   ef.putDynamicForm("structuredContentType",dynamicForm);
   ef.findField("structuredContentType").setOnChangeTrigger("dynamicForm-structuredContentType");

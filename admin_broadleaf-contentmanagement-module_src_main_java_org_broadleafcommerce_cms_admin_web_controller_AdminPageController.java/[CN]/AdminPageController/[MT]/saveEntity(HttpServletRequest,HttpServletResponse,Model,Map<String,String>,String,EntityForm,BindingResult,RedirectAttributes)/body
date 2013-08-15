@@ -5,7 +5,8 @@
   if (result.hasErrors()) {
     info=entityForm.getDynamicFormInfo("pageTemplate");
     info.setPropertyValue(entityForm.findField("pageTemplate").getValue());
-    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+    EntityForm inputDynamicForm=entityForm.getDynamicForm("pageTemplate");
+    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id,inputDynamicForm);
     entityForm.putDynamicForm("pageTemplate",dynamicForm);
   }
   return returnPath;

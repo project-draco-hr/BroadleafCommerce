@@ -5,7 +5,8 @@
   if (result.hasErrors()) {
     info=entityForm.getDynamicFormInfo("structuredContentType");
     info.setPropertyValue(entityForm.findField("structuredContentType").getValue());
-    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id);
+    EntityForm inputDynamicForm=entityForm.getDynamicForm("structuredContentType");
+    EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id,inputDynamicForm);
     entityForm.putDynamicForm("structuredContentType",dynamicForm);
   }
   return returnPath;
