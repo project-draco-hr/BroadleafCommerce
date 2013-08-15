@@ -1,0 +1,14 @@
+{
+  String expression=validationConfiguration.get("regularExpression");
+  if (value == null) {
+    return new PropertyValidationResult(succeedForNullValues,validationConfiguration.get(ConfigurationItem.ERROR_MESSAGE));
+  }
+  try {
+    return new PropertyValidationResult(value.matches(expression),validationConfiguration.get(ConfigurationItem.ERROR_MESSAGE));
+  }
+ catch (  PatternSyntaxException e) {
+    String message="Invalid regular expression pattern '" + expression + "' for "+ propertyName;
+    LOG.error(message,e);
+    return new PropertyValidationResult(suceedForInvalidRegex,"Invalid regular expression pattern for " + propertyName);
+  }
+}
