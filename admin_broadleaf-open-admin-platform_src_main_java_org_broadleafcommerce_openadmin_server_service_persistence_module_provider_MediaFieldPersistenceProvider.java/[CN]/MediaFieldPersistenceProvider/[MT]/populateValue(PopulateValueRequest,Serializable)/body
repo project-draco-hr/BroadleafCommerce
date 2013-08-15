@@ -34,13 +34,24 @@
         media=(Media)valueType.newInstance();
         persist=true;
       }
-      if (!media.equals(newMedia)) {
+      Map description=BeanUtils.describe(media);
+      for (      Object temp : description.keySet()) {
+        String property=(String)temp;
+        if (!property.equals("id")) {
+          String prop1=String.valueOf(description.get(property));
+          String prop2=String.valueOf(BeanUtils.getProperty(newMedia,property));
+          if (!prop1.equals(prop2)) {
+            dirty=true;
+            break;
+          }
+        }
+      }
+      if (dirty) {
         updateMediaFields(media,newMedia);
         if (persist) {
           populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
         }
         populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
-        dirty=true;
       }
     }
  else {
