@@ -3,6 +3,13 @@
   ClassMetadata cmd=service.getClassMetadata(ppr);
   ppr.setCustomCriteria(new String[]{info.getCriteriaName(),entityId});
   Entity entity=service.getRecord(ppr,entityId,cmd,true);
+  if (dynamicFormOverride != null) {
+    dynamicFormOverride.clearFieldsMap();
+    Map<String,Field> fieldOverrides=dynamicFormOverride.getFields();
+    for (    Entry<String,Field> override : fieldOverrides.entrySet()) {
+      entity.getPMap().get(override.getKey()).setValue(override.getValue().getValue());
+    }
+  }
   EntityForm dynamicForm=formService.createEntityForm(cmd,entity);
   dynamicForm.clearFieldsMap();
   for (  Tab tab : dynamicForm.getTabs()) {
