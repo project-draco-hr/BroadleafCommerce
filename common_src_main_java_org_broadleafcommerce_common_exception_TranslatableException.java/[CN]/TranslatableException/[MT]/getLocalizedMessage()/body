@@ -4,7 +4,7 @@
     String exCode=getMessageKey();
     BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
     if (context != null && context.getMessageSource() != null) {
-      response=context.getMessageSource().getMessage(exCode,null,context.getJavaLocale());
+      response=context.getMessageSource().getMessage(exCode,this.messageParams,getMessage(),context.getJavaLocale());
       if (response.equals(exCode)) {
         response=getMessage();
       }
