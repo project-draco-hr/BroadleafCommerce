@@ -11,6 +11,10 @@
   if (StringUtils.isNotBlank(contents)) {
     HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
     newContents=newContents.replace("//BLC-SERVLET-CONTEXT",request.getContextPath());
+    String siteBaseUrl=propMgr.getProperty("site.baseurl");
+    if (StringUtils.isNotBlank(siteBaseUrl)) {
+      newContents=newContents.replace("//BLC-SITE-BASEURL",siteBaseUrl);
+    }
   }
   GeneratedResource gr=new GeneratedResource(newContents.getBytes(),path);
   gr.setHashRepresentation(String.valueOf(contents.hashCode()));
