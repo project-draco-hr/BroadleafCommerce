@@ -3,6 +3,9 @@
   Entity returnEntity=update(ppr);
   Map<String,List<String>> dynamicFormValidationErrors=new HashMap<String,List<String>>();
   persistDynamicForms(entityForm,dynamicFormValidationErrors);
-  ppr.getEntity().getValidationErrors().putAll(dynamicFormValidationErrors);
+  returnEntity.getValidationErrors().putAll(dynamicFormValidationErrors);
+  if (MapUtils.isNotEmpty(returnEntity.getValidationErrors())) {
+    throw new ValidationException(returnEntity,"Validation Exception");
+  }
   return returnEntity;
 }

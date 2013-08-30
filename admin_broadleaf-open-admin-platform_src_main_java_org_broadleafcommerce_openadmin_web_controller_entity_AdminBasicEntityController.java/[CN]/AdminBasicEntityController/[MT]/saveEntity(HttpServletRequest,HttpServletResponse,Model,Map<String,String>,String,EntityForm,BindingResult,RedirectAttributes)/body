@@ -3,7 +3,13 @@
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   extractDynamicFormFields(entityForm);
-  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
+  Entity entity;
+  try {
+    entity=service.updateEntity(entityForm,getSectionCustomCriteria());
+  }
+ catch (  ValidationException e) {
+    entity=e.getEntity();
+  }
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     model.addAttribute("headerFlash","save.unsuccessful");
