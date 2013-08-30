@@ -32,7 +32,7 @@
     metadata.setExplicitFieldType(basicFieldMetadata.getExplicitFieldType());
   }
   if (metadata.getExplicitFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
-    if (!basicFieldMetadata.getForcePopulateChildProperties()) {
+    if (basicFieldMetadata.getForcePopulateChildProperties() == null || !basicFieldMetadata.getForcePopulateChildProperties()) {
       metadata.setChildrenExcluded(true);
     }
   }

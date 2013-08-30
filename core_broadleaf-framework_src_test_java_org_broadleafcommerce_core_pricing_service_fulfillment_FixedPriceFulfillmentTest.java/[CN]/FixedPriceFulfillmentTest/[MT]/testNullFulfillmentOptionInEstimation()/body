@@ -1,0 +1,15 @@
+{
+  Set<FulfillmentOption> options=new HashSet<FulfillmentOption>();
+  FixedPriceFulfillmentOption option1=new FixedPriceFulfillmentOptionImpl();
+  option1.setPrice(new Money(BigDecimal.ONE));
+  FixedPriceFulfillmentOption option2=new FixedPriceFulfillmentOptionImpl();
+  option2.setPrice(new Money(BigDecimal.TEN));
+  options.add(option1);
+  options.add(option2);
+  FixedPriceFulfillmentPricingProvider provider=new FixedPriceFulfillmentPricingProvider();
+  FulfillmentGroup fg=new FulfillmentGroupImpl();
+  FulfillmentEstimationResponse response=provider.estimateCostForFulfillmentGroup(fg,options);
+  for (  Entry<? extends FulfillmentOption,Money> entry : response.getFulfillmentOptionPrices().entrySet()) {
+    assertEquals(((FixedPriceFulfillmentOption)entry.getKey()).getPrice(),entry.getValue());
+  }
+}
