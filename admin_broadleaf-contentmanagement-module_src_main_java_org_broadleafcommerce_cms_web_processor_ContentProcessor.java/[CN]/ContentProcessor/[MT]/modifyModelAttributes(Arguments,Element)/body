@@ -12,7 +12,8 @@
   String contentListVar=getAttributeValue(element,"contentListVar","contentList");
   String contentItemVar=getAttributeValue(element,"contentItemVar","contentItem");
   String numResultsVar=getAttributeValue(element,"numResultsVar","numResults");
-  initServices(arguments);
+  String fieldFilters=element.getAttributeValue("fieldFilters");
+  String sortField=element.getAttributeValue("sortField");
   IWebContext context=(IWebContext)arguments.getContext();
   HttpServletRequest request=context.getHttpServletRequest();
   BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
@@ -21,21 +22,26 @@
   List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
   Locale locale=blcContext.getLocale();
-  if (structuredContentType == null) {
-    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
-  }
- else {
-    if (contentName == null || "".equals(contentName)) {
-      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,maxResults,mvelParameters,isSecure(request));
-    }
- else {
-      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
-    }
-  }
+  contentItems=getContentItems(contentName,maxResults,request,mvelParameters,currentSandbox,structuredContentType,locale,arguments,element);
   if (contentItems.size() > 0) {
     List<Map<String,String>> contentItemFields=new ArrayList<Map<String,String>>();
     for (    StructuredContentDTO item : contentItems) {
-      contentItemFields.add(item.getValues());
+      if (StringUtils.isNotEmpty(fieldFilters)) {
+        AssignationSequence assignments=StandardExpressionProcessor.parseAssignationSequence(arguments,fieldFilters,false);
+        boolean valid=true;
+        for (        Assignation assignment : assignments) {
+          if (ObjectUtils.notEqual(StandardExpressionProcessor.executeExpression(arguments,assignment.getRight()),item.getValues().get(assignment.getLeft().getValue()))) {
+            valid=false;
+            break;
+          }
+        }
+        if (valid) {
+          contentItemFields.add(item.getValues());
+        }
+      }
+ else {
+        contentItemFields.add(item.getValues());
+      }
     }
     addToModel(arguments,contentItemVar,contentItemFields.get(0));
     addToModel(arguments,contentListVar,contentItemFields);
