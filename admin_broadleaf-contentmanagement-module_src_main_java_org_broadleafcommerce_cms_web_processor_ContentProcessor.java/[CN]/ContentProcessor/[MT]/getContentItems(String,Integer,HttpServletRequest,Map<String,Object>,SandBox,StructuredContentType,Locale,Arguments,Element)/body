@@ -1,0 +1,15 @@
+{
+  List<StructuredContentDTO> contentItems;
+  if (structuredContentType == null) {
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
+  }
+ else {
+    if (contentName == null || "".equals(contentName)) {
+      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,maxResults,mvelParameters,isSecure(request));
+    }
+ else {
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
+    }
+  }
+  return contentItems;
+}
