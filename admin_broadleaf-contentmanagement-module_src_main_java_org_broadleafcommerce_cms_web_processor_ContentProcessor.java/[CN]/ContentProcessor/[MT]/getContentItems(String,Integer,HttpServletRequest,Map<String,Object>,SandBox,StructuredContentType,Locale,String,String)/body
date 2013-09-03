@@ -1,7 +1,13 @@
 {
   List<StructuredContentDTO> contentItems;
   if (structuredContentType == null) {
-    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
+    if (extensionFieldName != null && extensionFieldValue != null) {
+      contentItems=new ArrayList<StructuredContentDTO>();
+      extensionManager.getProxy().lookupContentByExtensionField(contentItems,extensionFieldName,extensionFieldValue,currentSandbox,locale,maxResults,mvelParameters,isSecure(request));
+    }
+ else {
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
+    }
   }
  else {
     if (contentName == null || "".equals(contentName)) {

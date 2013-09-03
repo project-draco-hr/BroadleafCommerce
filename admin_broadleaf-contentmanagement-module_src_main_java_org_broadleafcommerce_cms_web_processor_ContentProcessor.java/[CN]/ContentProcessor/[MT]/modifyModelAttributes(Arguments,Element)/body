@@ -2,6 +2,8 @@
   String contentType=element.getAttributeValue("contentType");
   String contentName=element.getAttributeValue("contentName");
   String maxResultsStr=element.getAttributeValue("maxResults");
+  String extensionFieldName=element.getAttributeValue("extensionFieldName");
+  String extensionFieldValue=element.getAttributeValue("extensionFieldValue");
   Integer maxResults=null;
   if (maxResultsStr != null) {
     maxResults=Ints.tryParse(maxResultsStr);
@@ -22,7 +24,7 @@
   List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
   Locale locale=blcContext.getLocale();
-  contentItems=getContentItems(contentName,maxResults,request,mvelParameters,currentSandbox,structuredContentType,locale,arguments,element);
+  contentItems=getContentItems(contentName,maxResults,request,mvelParameters,currentSandbox,structuredContentType,locale,extensionFieldName,extensionFieldValue);
   if (contentItems.size() > 0) {
     List<Map<String,String>> contentItemFields=new ArrayList<Map<String,String>>();
     for (    StructuredContentDTO item : contentItems) {
