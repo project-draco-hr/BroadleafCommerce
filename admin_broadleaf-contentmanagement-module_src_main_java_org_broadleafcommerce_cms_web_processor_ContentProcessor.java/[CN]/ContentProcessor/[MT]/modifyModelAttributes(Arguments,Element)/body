@@ -22,7 +22,10 @@
   Map<String,Object> mvelParameters=buildMvelParameters(request,arguments,element);
   SandBox currentSandbox=blcContext.getSandbox();
   List<StructuredContentDTO> contentItems;
-  StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
+  StructuredContentType structuredContentType=null;
+  if (contentType != null) {
+    structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
+  }
   Locale locale=blcContext.getLocale();
   contentItems=getContentItems(contentName,maxResults,request,mvelParameters,currentSandbox,structuredContentType,locale,extensionFieldName,extensionFieldValue);
   if (contentItems.size() > 0) {
