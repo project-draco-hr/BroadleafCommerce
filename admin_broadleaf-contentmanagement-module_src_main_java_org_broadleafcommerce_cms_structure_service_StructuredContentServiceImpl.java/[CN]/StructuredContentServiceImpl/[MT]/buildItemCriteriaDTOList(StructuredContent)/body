@@ -1,7 +1,7 @@
 {
   List<ItemCriteriaDTO> itemCriteriaDTOList=new ArrayList<ItemCriteriaDTO>();
   for (  StructuredContentItemCriteria criteria : sc.getQualifyingItemCriteria()) {
-    ItemCriteriaDTO criteriaDTO=new ItemCriteriaDTO();
+    ItemCriteriaDTO criteriaDTO=entityConfiguration.createEntityInstance(ItemCriteriaDTO.class.getName(),ItemCriteriaDTO.class);
     criteriaDTO.setMatchRule(criteria.getMatchRule());
     criteriaDTO.setQty(criteria.getQuantity());
     itemCriteriaDTOList.add(criteriaDTO);
