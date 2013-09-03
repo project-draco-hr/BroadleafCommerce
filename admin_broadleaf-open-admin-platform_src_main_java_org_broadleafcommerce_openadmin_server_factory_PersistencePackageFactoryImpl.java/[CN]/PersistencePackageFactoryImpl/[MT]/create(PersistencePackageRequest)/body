@@ -36,5 +36,8 @@ pp.setCsrfToken(null);
 if (request.getEntity() != null) {
 pp.setEntity(request.getEntity());
 }
+for (Map.Entry<String,PersistencePackageRequest> subRequest : request.getSubRequests().entrySet()) {
+pp.getSubPackages().put(subRequest.getKey(),create(subRequest.getValue()));
+}
 return pp;
 }
