@@ -1,11 +1,10 @@
 {
   PersistencePackageRequest ppr=getRequestForEntityForm(entityForm,customCriteria);
-  PersistenceResponse response=update(ppr);
-  Map<String,List<String>> dynamicFormValidationErrors=new HashMap<String,List<String>>();
-  persistDynamicForms(entityForm,dynamicFormValidationErrors);
-  response.getEntity().getValidationErrors().putAll(dynamicFormValidationErrors);
-  if (MapUtils.isNotEmpty(response.getEntity().getValidationErrors())) {
-    throw new ValidationException(response.getEntity(),"Validation Exception");
+  for (  Entry<String,EntityForm> entry : entityForm.getDynamicForms().entrySet()) {
+    DynamicEntityFormInfo info=entityForm.getDynamicFormInfo(entry.getKey());
+    customCriteria=new String[]{info.getCriteriaName(),entityForm.getId()};
+    PersistencePackageRequest subRequest=getRequestForEntityForm(entry.getValue(),customCriteria);
+    ppr.addSubRequest(info.getPropertyName(),subRequest);
   }
-  return response;
+  return update(ppr);
 }

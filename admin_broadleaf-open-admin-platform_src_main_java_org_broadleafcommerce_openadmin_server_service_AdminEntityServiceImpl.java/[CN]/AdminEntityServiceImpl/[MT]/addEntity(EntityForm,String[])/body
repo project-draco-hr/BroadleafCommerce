@@ -1,21 +1,10 @@
 {
   PersistencePackageRequest ppr=getRequestForEntityForm(entityForm,customCriteria);
-  PersistenceResponse response=add(ppr);
-  Class<?> entityClass;
-  try {
-    entityClass=Class.forName(entityForm.getEntityType());
+  for (  Entry<String,EntityForm> entry : entityForm.getDynamicForms().entrySet()) {
+    DynamicEntityFormInfo info=entityForm.getDynamicFormInfo(entry.getKey());
+    customCriteria=new String[]{info.getCriteriaName()};
+    PersistencePackageRequest subRequest=getRequestForEntityForm(entry.getValue(),customCriteria);
+    ppr.addSubRequest(info.getPropertyName(),subRequest);
   }
- catch (  ClassNotFoundException e) {
-    throw new ServiceException(e);
-  }
-  Map<String,Object> idMetadata=dynamicDaoHelper.getIdMetadata(entityClass,(HibernateEntityManager)em);
-  String idProperty=(String)idMetadata.get("name");
-  entityForm.setId(response.getEntity().findProperty(idProperty).getValue());
-  Map<String,List<String>> dynamicFormValidationErrors=new HashMap<String,List<String>>();
-  persistDynamicForms(entityForm,dynamicFormValidationErrors);
-  response.getEntity().getValidationErrors().putAll(dynamicFormValidationErrors);
-  if (MapUtils.isNotEmpty(response.getEntity().getValidationErrors())) {
-    throw new ValidationException(response.getEntity(),"Validation Exception");
-  }
-  return response;
+  return add(ppr);
 }
