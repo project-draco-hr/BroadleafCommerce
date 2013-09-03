@@ -1,13 +1,7 @@
 {
   String sectionKey=getSectionKey(pathVars);
   extractDynamicFormFields(entityForm);
-  Entity entity;
-  try {
-    entity=service.addEntity(entityForm,getSectionCustomCriteria()).getEntity();
-  }
- catch (  ValidationException e) {
-    entity=e.getEntity();
-  }
+  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria());
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(entityForm.getEntityType())).getDynamicResultSet().getClassMetaData();

@@ -10,12 +10,10 @@
   }
  catch (  ServiceException e) {
     if (e instanceof ValidationException) {
-      LOG.warn("Not saving entity as it has failed validation");
-      return new PersistenceResponse().withEntity(((ValidationException)e).getEntity());
+      throw e;
     }
  else     if (e.getCause() instanceof ValidationException) {
-      LOG.warn("Not saving entity as it has failed validation");
-      return new PersistenceResponse().withEntity(((ValidationException)e.getCause()).getEntity());
+      throw (ValidationException)e.getCause();
     }
     String message=exploitProtectionService.cleanString(e.getMessage());
     LOG.error("Problem adding new " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);

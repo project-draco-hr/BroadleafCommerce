@@ -5,17 +5,55 @@
       break;
     }
   }
-  for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
-    if (handler.canHandleUpdate(persistencePackage)) {
-      if (!handler.willHandleSecurity(persistencePackage)) {
-        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+  Entity response;
+  try {
+    checkRoot: {
+      for (      CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
+        if (handler.canHandleUpdate(persistencePackage)) {
+          if (!handler.willHandleSecurity(persistencePackage)) {
+            adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+          }
+          response=handler.update(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
+          break checkRoot;
+        }
       }
-      Entity response=handler.update(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
-      return executePostUpdateHandlers(persistencePackage,new PersistenceResponse().withEntity(response));
+      adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+      PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getUpdateType());
+      response=myModule.update(persistencePackage);
     }
   }
-  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
-  PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getUpdateType());
-  Entity entity=myModule.update(persistencePackage);
-  return executePostUpdateHandlers(persistencePackage,new PersistenceResponse().withEntity(entity));
+ catch (  ValidationException e) {
+    response=e.getEntity();
+  }
+  Map<String,List<String>> subPackageValidationErrors=new HashMap<String,List<String>>();
+  for (  Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
+    try {
+      checkHandler: {
+        for (        CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
+          if (handler.canHandleUpdate(subPackage.getValue())) {
+            if (!handler.willHandleSecurity(subPackage.getValue())) {
+              adminRemoteSecurityService.securityCheck(subPackage.getValue().getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+            }
+            Entity subResponse=handler.update(subPackage.getValue(),dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
+            subPackage.getValue().setEntity(subResponse);
+            break checkHandler;
+          }
+        }
+        adminRemoteSecurityService.securityCheck(subPackage.getValue().getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+        PersistenceModule subModule=getCompatibleModule(subPackage.getValue().getPersistencePerspective().getOperationTypes().getUpdateType());
+        Entity subResponse=subModule.update(persistencePackage);
+        subPackage.getValue().setEntity(subResponse);
+      }
+    }
+ catch (    ValidationException e) {
+      for (      Map.Entry<String,List<String>> error : e.getEntity().getValidationErrors().entrySet()) {
+        subPackageValidationErrors.put(subPackage.getKey() + DynamicEntityFormInfo.FIELD_SEPARATOR + error.getKey(),error.getValue());
+      }
+    }
+  }
+  response.getValidationErrors().putAll(subPackageValidationErrors);
+  if (response.isValidationFailure()) {
+    throw new ValidationException(response,"The entity has failed validation");
+  }
+  return executePostUpdateHandlers(persistencePackage,new PersistenceResponse().withEntity(response));
 }
