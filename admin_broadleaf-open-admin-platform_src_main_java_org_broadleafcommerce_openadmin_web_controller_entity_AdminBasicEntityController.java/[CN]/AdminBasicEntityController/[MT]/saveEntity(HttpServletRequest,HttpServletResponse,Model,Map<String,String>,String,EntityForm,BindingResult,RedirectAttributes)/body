@@ -3,7 +3,7 @@
   String sectionClassName=getClassNameForSection(sectionKey);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
   extractDynamicFormFields(entityForm);
-  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria());
+  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria()).getEntity();
   id=entity.findProperty(entityForm.getIdProperty()).getValue();
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
