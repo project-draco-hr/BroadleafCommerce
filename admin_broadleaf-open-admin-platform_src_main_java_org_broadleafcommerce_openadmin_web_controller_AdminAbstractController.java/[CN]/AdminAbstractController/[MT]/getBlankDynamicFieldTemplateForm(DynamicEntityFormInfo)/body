@@ -1,14 +1,3 @@
 {
-  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(info.getCeilingClassName()).withCustomCriteria(new String[]{info.getCriteriaName(),null,info.getPropertyName(),info.getPropertyValue()});
-  ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
-  EntityForm dynamicForm=formService.createEntityForm(cmd);
-  dynamicForm.clearFieldsMap();
-  for (  Tab tab : dynamicForm.getTabs()) {
-    for (    FieldGroup group : tab.getFieldGroups()) {
-      for (      Field field : group.getFields()) {
-        field.setName(info.getPropertyName() + DynamicEntityFormInfo.FIELD_SEPARATOR + field.getName());
-      }
-    }
-  }
-  return dynamicForm;
+  return getBlankDynamicFieldTemplateForm(info,null);
 }
