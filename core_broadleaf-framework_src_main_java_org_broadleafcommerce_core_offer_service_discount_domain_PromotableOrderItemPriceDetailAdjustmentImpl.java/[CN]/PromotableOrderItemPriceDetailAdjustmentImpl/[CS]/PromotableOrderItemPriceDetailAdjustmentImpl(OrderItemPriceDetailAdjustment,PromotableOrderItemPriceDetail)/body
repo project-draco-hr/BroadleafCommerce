@@ -1,8 +1,14 @@
 {
   assert(orderItemPriceDetail != null);
   adjustmentValue=itemAdjustment.getValue();
-  saleAdjustmentValue=itemAdjustment.getSalesPriceValue();
-  retailAdjustmentValue=itemAdjustment.getRetailPriceValue();
+  if (itemAdjustment.isAppliedToSalePrice()) {
+    saleAdjustmentValue=itemAdjustment.getValue();
+    retailAdjustmentValue=itemAdjustment.getRetailPriceValue();
+  }
+ else {
+    retailAdjustmentValue=itemAdjustment.getValue();
+    saleAdjustmentValue=itemAdjustment.getSalesPriceValue();
+  }
   appliedToSalePrice=itemAdjustment.isAppliedToSalePrice();
   promotableOrderItemPriceDetail=orderItemPriceDetail;
   offer=itemAdjustment.getOffer();
