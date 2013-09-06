@@ -1,6 +1,5 @@
 {
   Query query=em.createNamedQuery("BC_FIND_ALL_STORES");
-  query.setHint("org.hibernate.cacheable",true);
-  List results=query.getResultList();
-  return results;
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  return query.getResultList();
 }
