@@ -1,0 +1,26 @@
+{
+  String key=element.getAttributeValue("key");
+  if (StringUtils.isEmpty(key)) {
+    throw new IllegalArgumentException("No 'key' parameter was passed to find enumeration values");
+  }
+  DataDrivenEnumeration ddEnum=enumService.findEnumByKey(key);
+  if (ddEnum == null) {
+    throw new IllegalArgumentException("Could not find a data driven enumeration keyed by " + key);
+  }
+  List<DataDrivenEnumerationValue> enumValues=new ArrayList<DataDrivenEnumerationValue>(ddEnum.getEnumValues());
+  final String sort=element.getAttributeValue("sort");
+  if (StringUtils.isNotEmpty(sort)) {
+    Collections.sort(enumValues,new Comparator<DataDrivenEnumerationValue>(){
+      @Override public int compare(      DataDrivenEnumerationValue arg0,      DataDrivenEnumerationValue arg1){
+        if (sort.equals("ASCENDING")) {
+          return arg0.getDisplay().compareTo(arg1.getDisplay());
+        }
+ else {
+          return arg1.getDisplay().compareTo(arg0.getDisplay());
+        }
+      }
+    }
+);
+  }
+  addToModel(arguments,"enumValues",enumValues);
+}
