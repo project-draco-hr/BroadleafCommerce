@@ -1,0 +1,27 @@
+{
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(owningClass,requestParams);
+  ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  Property collectionProperty=mainMetadata.getPMap().get(collectionField);
+  FieldMetadata md=collectionProperty.getMetadata();
+  ppr=PersistencePackageRequest.fromMetadata(md);
+  ppr.setStartIndex(getStartIndex(requestParams));
+  ppr.setMaxIndex(getMaxIndex(requestParams));
+  if (md instanceof BasicFieldMetadata) {
+    String idProp=((BasicFieldMetadata)md).getForeignKeyProperty();
+    String displayProp=((BasicFieldMetadata)md).getForeignKeyDisplayValueProperty();
+    List<String> filterValues=Arrays.asList(ids.split(FILTER_VALUE_SEPARATOR_REGEX));
+    ppr.addFilterAndSortCriteria(new FilterAndSortCriteria(idProp,filterValues));
+    DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
+    Map<String,String> returnMap=new HashMap<String,String>();
+    for (    Entity e : drs.getRecords()) {
+      String id=e.getPMap().get(idProp).getValue();
+      String disp=e.getPMap().get(displayProp).getDisplayValue();
+      if (StringUtils.isBlank(disp)) {
+        disp=e.getPMap().get(displayProp).getValue();
+      }
+      returnMap.put(id,disp);
+    }
+    return returnMap;
+  }
+  return null;
+}
