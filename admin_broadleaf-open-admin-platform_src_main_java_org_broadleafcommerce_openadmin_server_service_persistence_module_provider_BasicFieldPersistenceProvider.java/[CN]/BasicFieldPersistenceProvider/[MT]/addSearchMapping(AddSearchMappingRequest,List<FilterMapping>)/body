@@ -78,7 +78,6 @@ filterMapping.setFieldPath(new FieldPath().withTargetProperty(addSearchMappingRe
 }
 break;
 case ADDITIONAL_FOREIGN_KEY:
-if (!addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues().isEmpty()) {
 int additionalForeignKeyIndexPosition=Arrays.binarySearch(addSearchMappingRequest.getPersistencePerspective().getAdditionalForeignKeys(),new ForeignKey(addSearchMappingRequest.getPropertyName(),null,null),new Comparator<ForeignKey>(){
 @Override public int compare(ForeignKey o1,ForeignKey o2){
 return o1.getManyToField().compareTo(o2.getManyToField());
@@ -99,7 +98,7 @@ filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().get
 filterMapping.setFieldPath(new FieldPath().withTargetProperty(addSearchMappingRequest.getPropertyName() + "." + metadata.getForeignKeyProperty()));
 }
 }
- else if (addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues().get(0) == null || "null".equals(addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues().get(0))) {
+ else if (CollectionUtils.isEmpty(addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues()) || addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues().get(0) == null || "null".equals(addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues().get(0))) {
 filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.IS_NULL_LONG.getType(),addSearchMappingRequest.getPropertyName()));
 }
  else if (metadata.getSecondaryType() == SupportedFieldType.STRING) {
@@ -109,7 +108,6 @@ filterMapping.setFieldPath(new FieldPath().withTargetProperty(addSearchMappingRe
  else {
 filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.LONG_EQUAL.getType(),addSearchMappingRequest.getPropertyName()));
 filterMapping.setFieldPath(new FieldPath().withTargetProperty(addSearchMappingRequest.getPropertyName() + "." + metadata.getForeignKeyProperty()));
-}
 }
 break;
 case ID:
