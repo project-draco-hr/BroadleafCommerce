@@ -1,5 +1,8 @@
 {
   List<OrderMultishipOption> orderMultishipOptions=new ArrayList<OrderMultishipOption>();
+  if (!fulfillmentGroupService.isShippable(item.getSku().getFulfillmentType())) {
+    return orderMultishipOptions;
+  }
   for (int i=0; i < quantity; i++) {
     OrderMultishipOption orderMultishipOption=new OrderMultishipOptionImpl();
     orderMultishipOption.setOrder(order);

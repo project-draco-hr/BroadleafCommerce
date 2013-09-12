@@ -2,8 +2,24 @@
   if (order.getFulfillmentGroups() == null || order.getFulfillmentGroups().size() < 2) {
     return order;
   }
-  ListIterator<FulfillmentGroup> fgIter=order.getFulfillmentGroups().listIterator();
+  List<FulfillmentGroup> shippableFulfillmentGroupList=new ArrayList<FulfillmentGroup>();
+  List<FulfillmentGroup> nonShippableFulfillmentGroupList=new ArrayList<FulfillmentGroup>();
+  for (  FulfillmentGroup fulfillmentGroup : order.getFulfillmentGroups()) {
+    if (isShippable(fulfillmentGroup.getType())) {
+      shippableFulfillmentGroupList.add(fulfillmentGroup);
+    }
+ else {
+      nonShippableFulfillmentGroupList.add(fulfillmentGroup);
+    }
+  }
+  if (shippableFulfillmentGroupList.size() < 2) {
+    return order;
+  }
+  ListIterator<FulfillmentGroup> fgIter=shippableFulfillmentGroupList.listIterator();
   FulfillmentGroup collapsedFg=fgIter.next();
+  List<FulfillmentGroup> newFulfillmentGroupList=nonShippableFulfillmentGroupList;
+  newFulfillmentGroupList.add(collapsedFg);
+  order.setFulfillmentGroups(newFulfillmentGroupList);
   Map<Long,FulfillmentGroupItem> fgOrderItemMap=new HashMap<Long,FulfillmentGroupItem>();
   for (  FulfillmentGroupItem fgi : collapsedFg.getFulfillmentGroupItems()) {
     fgOrderItemMap.put(fgi.getOrderItem().getId(),fgi);
