@@ -1,0 +1,11 @@
+{
+  List<FulfillmentGroup> fulfillmentGroups=order.getFulfillmentGroups();
+  if (fulfillmentGroups != null) {
+    for (    FulfillmentGroup fulfillmentGroup : fulfillmentGroups) {
+      if (isShippable(fulfillmentGroup.getType())) {
+        return fulfillmentGroup;
+      }
+    }
+  }
+  return null;
+}
