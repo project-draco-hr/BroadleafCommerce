@@ -3,17 +3,14 @@
   Map<Long,Integer> fgItemQuantityMap=new HashMap<Long,Integer>();
   Map<String,FulfillmentGroup> multishipGroups=new HashMap<String,FulfillmentGroup>();
   for (  FulfillmentGroup fg : order.getFulfillmentGroups()) {
-    if (!isShippable(fg.getType())) {
-      continue;
-    }
-    String key=getKey(fg.getAddress(),fg.getFulfillmentOption(),fg.getType());
+    String key=getKey(fg.getAddress(),fg.getFulfillmentOption());
     multishipGroups.put(key,fg);
     for (    FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
       fgItemQuantityMap.put(fgi.getId(),fgi.getQuantity());
     }
   }
   for (  OrderMultishipOption option : multishipOptions) {
-    String key=getKey(option.getAddress(),option.getFulfillmentOption(),((DiscreteOrderItem)option.getOrderItem()).getSku().getFulfillmentType());
+    String key=getKey(option.getAddress(),option.getFulfillmentOption());
     FulfillmentGroup fg=multishipGroups.get(key);
     if (fg == null) {
       FulfillmentGroupRequest fgr=new FulfillmentGroupRequest();
@@ -24,7 +21,6 @@
       if (option.getFulfillmentOption() != null) {
         fgr.setOption(option.getFulfillmentOption());
       }
-      fgr.setFulfillmentType(((DiscreteOrderItem)option.getOrderItem()).getSku().getFulfillmentType());
       fg=addFulfillmentGroupToOrder(fgr,false);
       fg=save(fg);
       order.getFulfillmentGroups().add(fg);
