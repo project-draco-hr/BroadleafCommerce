@@ -85,4 +85,11 @@
     addToModel(arguments,contentListVar,null);
     addToModel(arguments,numResultsVar,0);
   }
+  String deepLinksVar=element.getAttributeValue("deepLinks");
+  if (StringUtils.isNotBlank(deepLinksVar)) {
+    List<DeepLink> links=contentDeepLinkService.getLinks(contentItems.get(0));
+    extensionManager.getProxy().addExtensionFieldDeepLink(links,extensionFieldName,extensionFieldValue);
+    extensionManager.getProxy().postProcessDeepLinks(links);
+    addToModel(arguments,deepLinksVar,links);
+  }
 }
