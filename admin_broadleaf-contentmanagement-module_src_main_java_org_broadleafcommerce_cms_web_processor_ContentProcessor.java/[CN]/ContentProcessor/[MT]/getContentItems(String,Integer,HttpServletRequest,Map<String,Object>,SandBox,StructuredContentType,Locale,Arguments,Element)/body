@@ -1,9 +1,9 @@
 {
   List<StructuredContentDTO> contentItems;
   if (structuredContentType == null) {
-    if (extensionFieldName != null && extensionFieldValue != null) {
+    if (contentName == null || "".equals(contentName)) {
       contentItems=new ArrayList<StructuredContentDTO>();
-      extensionManager.getProxy().lookupContentByExtensionField(contentItems,extensionFieldName,extensionFieldValue,currentSandbox,locale,maxResults,mvelParameters,isSecure(request),arguments,element);
+      extensionManager.getProxy().lookupContentByElementAttribute(contentItems,currentSandbox,locale,maxResults,mvelParameters,isSecure(request),element);
     }
  else {
       contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
@@ -17,5 +17,6 @@
       contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
     }
   }
+  extensionManager.getProxy().addAdditionalFieldsToModel(arguments,element);
   return contentItems;
 }
