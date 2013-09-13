@@ -1,0 +1,24 @@
+{
+  Money returnPrice=null;
+  Money optionValueAdjustments=null;
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
+    if (dynamicPrices == null) {
+      DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),ClassUtils.getAllInterfacesForClass(getClass()),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    }
+    returnPrice=dynamicPrices.getRetailPrice();
+    optionValueAdjustments=dynamicPrices.getPriceAdjustment();
+  }
+ else   if (retailPrice != null) {
+    returnPrice=new Money(retailPrice,getCurrency());
+  }
+  if (returnPrice == null && hasDefaultSku()) {
+    returnPrice=lookupDefaultSku().getRetailPrice();
+    optionValueAdjustments=getProductOptionValueAdjustments();
+  }
+  if (returnPrice != null && optionValueAdjustments != null) {
+    returnPrice=returnPrice.add(optionValueAdjustments);
+  }
+  return returnPrice;
+}
