@@ -3,10 +3,9 @@
   if (result.hasErrors()) {
     return showMultishipAddAddress(request,response,model);
   }
-  Address address=addressService.saveAddress(addressForm.getAddress());
   CustomerAddress customerAddress=customerAddressService.create();
   customerAddress.setAddressName(addressForm.getAddressName());
-  customerAddress.setAddress(address);
+  customerAddress.setAddress(addressForm.getAddress());
   customerAddress.setCustomer(CustomerState.getCustomer());
   customerAddressService.saveCustomerAddress(customerAddress);
   return getMultishipAddAddressSuccessView() + "?_=" + System.currentTimeMillis();

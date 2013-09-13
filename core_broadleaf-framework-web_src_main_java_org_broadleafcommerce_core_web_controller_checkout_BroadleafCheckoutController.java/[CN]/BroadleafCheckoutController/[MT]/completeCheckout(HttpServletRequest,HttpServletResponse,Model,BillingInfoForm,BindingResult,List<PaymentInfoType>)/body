@@ -1,0 +1,28 @@
+{
+  Order cart=CartState.getCart();
+  if (cart != null) {
+    Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
+    for (    PaymentInfo paymentInfo : cart.getPaymentInfos()) {
+      if (!PaymentInfoType.CUSTOMER_CREDIT.equals(paymentInfo.getType()) && !PaymentInfoType.GIFT_CARD.equals(paymentInfo.getType())) {
+        orderService.removePaymentFromOrder(cart,paymentInfo);
+      }
+    }
+    paymentInfoServiceExtensionManager.getProxy().addAdditionalPaymentInfos(payments,paymentInfoTypeList,request,response,model,billingForm,result);
+    if (result.hasErrors()) {
+      populateModelWithReferenceData(request,model);
+      model.addAttribute("transactionError",true);
+      return getCheckoutView();
+    }
+    CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
+    Map<PaymentInfo,PaymentResponseItem> paymentResponseItemMap=checkoutResponse.getPaymentResponse().getResponseItems();
+    for (    PaymentResponseItem paymentResponseItem : paymentResponseItemMap.values()) {
+      if (!paymentResponseItem.getTransactionSuccess()) {
+        populateModelWithReferenceData(request,model);
+        model.addAttribute("transactionError",true);
+        return getCheckoutView();
+      }
+    }
+    return getConfirmationView(cart.getOrderNumber());
+  }
+  return getCartPageRedirect();
+}

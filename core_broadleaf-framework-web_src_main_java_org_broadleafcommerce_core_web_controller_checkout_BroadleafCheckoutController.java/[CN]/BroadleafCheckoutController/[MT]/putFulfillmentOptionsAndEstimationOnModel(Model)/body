@@ -6,7 +6,7 @@
     options.addAll(fulfillmentOptions);
     FulfillmentEstimationResponse estimateResponse=null;
     try {
-      estimateResponse=fulfillmentPricingService.estimateCostForFulfillmentGroup(cart.getFulfillmentGroups().get(0),options);
+      estimateResponse=fulfillmentPricingService.estimateCostForFulfillmentGroup(fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart),options);
     }
  catch (    FulfillmentPriceException e) {
     }

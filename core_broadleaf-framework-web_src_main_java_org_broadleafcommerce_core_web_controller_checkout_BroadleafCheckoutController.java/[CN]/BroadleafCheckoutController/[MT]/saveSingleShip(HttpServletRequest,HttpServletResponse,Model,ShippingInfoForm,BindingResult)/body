@@ -3,7 +3,7 @@
   shippingInfoFormValidator.validate(shippingForm,result);
   if (result.hasErrors()) {
     putFulfillmentOptionsAndEstimationOnModel(model);
-    populateModelWithShippingReferenceData(request,model);
+    populateModelWithReferenceData(request,model);
     model.addAttribute("states",stateService.findStates());
     model.addAttribute("countries",countryService.findCountries());
     model.addAttribute("expirationMonths",populateExpirationMonths());
@@ -11,16 +11,18 @@
     model.addAttribute("validShipping",false);
     return getCheckoutView();
   }
-  FulfillmentGroup fulfillmentGroup=cart.getFulfillmentGroups().get(0);
   if (StringUtils.isEmpty(shippingForm.getAddress().getPhonePrimary().getPhoneNumber())) {
     shippingForm.getAddress().setPhonePrimary(null);
   }
-  fulfillmentGroup.setAddress(shippingForm.getAddress());
-  fulfillmentGroup.setPersonalMessage(shippingForm.getPersonalMessage());
-  fulfillmentGroup.setDeliveryInstruction(shippingForm.getDeliveryMessage());
-  FulfillmentOption fulfillmentOption=fulfillmentOptionService.readFulfillmentOptionById(shippingForm.getFulfillmentOptionId());
-  fulfillmentGroup.setFulfillmentOption(fulfillmentOption);
-  cart=orderService.save(cart,true);
-  CartState.setCart(cart);
+  FulfillmentGroup shippableFulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart);
+  if (shippableFulfillmentGroup != null) {
+    shippableFulfillmentGroup.setAddress(shippingForm.getAddress());
+    shippableFulfillmentGroup.setPersonalMessage(shippingForm.getPersonalMessage());
+    shippableFulfillmentGroup.setDeliveryInstruction(shippingForm.getDeliveryMessage());
+    FulfillmentOption fulfillmentOption=fulfillmentOptionService.readFulfillmentOptionById(shippingForm.getFulfillmentOptionId());
+    shippableFulfillmentGroup.setFulfillmentOption(fulfillmentOption);
+    cart=orderService.save(cart,true);
+    CartState.setCart(cart);
+  }
   return isAjaxRequest(request) ? getCheckoutView() : getCheckoutPageRedirect();
 }

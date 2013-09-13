@@ -3,8 +3,10 @@
     return false;
   }
   for (  FulfillmentGroup fulfillmentGroup : cart.getFulfillmentGroups()) {
-    if (fulfillmentGroup.getAddress() == null || fulfillmentGroup.getFulfillmentOption() == null) {
-      return false;
+    if (fulfillmentGroupService.isShippable(fulfillmentGroup.getType())) {
+      if (fulfillmentGroup.getAddress() == null || fulfillmentGroup.getFulfillmentOption() == null) {
+        return false;
+      }
     }
   }
   return true;

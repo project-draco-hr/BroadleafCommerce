@@ -1,6 +1,7 @@
 {
-  if (order.getFulfillmentGroups().get(0) != null) {
-    Address shipping=order.getFulfillmentGroups().get(0).getAddress();
+  FulfillmentGroup fulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(order);
+  if (fulfillmentGroup != null) {
+    Address shipping=fulfillmentGroup.getAddress();
     if (shipping != null) {
       Address billing=new AddressImpl();
       billing.setFirstName(shipping.getFirstName());
@@ -11,7 +12,7 @@
       billing.setState(shipping.getState());
       billing.setPostalCode(shipping.getPostalCode());
       billing.setCountry(shipping.getCountry());
-      billing.setPrimaryPhone(shipping.getPrimaryPhone());
+      billing.setPhonePrimary(shipping.getPhonePrimary());
       billing.setEmailAddress(shipping.getEmailAddress());
       billingInfoForm.setAddress(billing);
     }

@@ -1,0 +1,7 @@
+{
+  Order cart=CartState.getCart();
+  PaymentInfo codPaymentInfo=codPaymentInfoFactory.constructPaymentInfo(cart);
+  cart.getPaymentInfos().add(codPaymentInfo);
+  payments.put(codPaymentInfo,codPaymentInfo.createEmptyReferenced());
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}
