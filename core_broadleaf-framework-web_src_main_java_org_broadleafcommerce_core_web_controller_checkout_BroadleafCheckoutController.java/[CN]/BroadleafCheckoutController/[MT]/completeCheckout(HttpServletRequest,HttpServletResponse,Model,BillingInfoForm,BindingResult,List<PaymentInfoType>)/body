@@ -2,25 +2,29 @@
   Order cart=CartState.getCart();
   if (cart != null) {
     Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-    for (    PaymentInfo paymentInfo : cart.getPaymentInfos()) {
+    Iterator<PaymentInfo> paymentInfoItr=cart.getPaymentInfos().iterator();
+    while (paymentInfoItr.hasNext()) {
+      PaymentInfo paymentInfo=paymentInfoItr.next();
       if (!PaymentInfoType.CUSTOMER_CREDIT.equals(paymentInfo.getType()) && !PaymentInfoType.GIFT_CARD.equals(paymentInfo.getType())) {
+        paymentInfoItr.remove();
         orderService.removePaymentFromOrder(cart,paymentInfo);
       }
     }
     paymentInfoServiceExtensionManager.getProxy().addAdditionalPaymentInfos(payments,paymentInfoTypeList,request,response,model,billingForm,result);
     if (result.hasErrors()) {
-      populateModelWithReferenceData(request,model);
-      model.addAttribute("transactionError",true);
-      return getCheckoutView();
+      return handleCheckoutError(request,model);
     }
-    CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
-    Map<PaymentInfo,PaymentResponseItem> paymentResponseItemMap=checkoutResponse.getPaymentResponse().getResponseItems();
-    for (    PaymentResponseItem paymentResponseItem : paymentResponseItemMap.values()) {
-      if (!paymentResponseItem.getTransactionSuccess()) {
-        populateModelWithReferenceData(request,model);
-        model.addAttribute("transactionError",true);
-        return getCheckoutView();
+    try {
+      CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
+      Map<PaymentInfo,PaymentResponseItem> paymentResponseItemMap=checkoutResponse.getPaymentResponse().getResponseItems();
+      for (      PaymentResponseItem paymentResponseItem : paymentResponseItemMap.values()) {
+        if (!paymentResponseItem.getTransactionSuccess()) {
+          return handleCheckoutError(request,model);
+        }
       }
+    }
+ catch (    CheckoutException workflowException) {
+      return handleCheckoutError(request,model);
     }
     return getConfirmationView(cart.getOrderNumber());
   }
