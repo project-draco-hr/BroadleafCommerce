@@ -1,12 +1,15 @@
 {
-  for (  Property property : entity.getProperties()) {
-    FieldMetadata metadata=propertiesMetadata.get(property.getName());
+  for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
+    FieldMetadata metadata=metadataEntry.getValue();
+    Property property=entity.getPMap().get(metadataEntry.getKey());
+    String propertyName=metadataEntry.getKey();
+    String propertyValue=(property == null) ? null : property.getValue();
     if (metadata instanceof BasicFieldMetadata) {
       if (CollectionUtils.isNotEmpty(globalEntityValidators)) {
         for (        GlobalPropertyValidator validator : globalEntityValidators) {
-          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,(BasicFieldMetadata)metadata,propertyName,propertyValue);
           if (!result.isValid()) {
-            entity.addValidationError(property.getName(),result.getErrorMessage());
+            entity.addValidationError(propertyName,result.getErrorMessage());
           }
         }
       }
@@ -26,11 +29,11 @@
           }
         }
         if (validator == null) {
-          throw new PersistenceException("Could not find validator: " + validationImplementation + " for property: "+ property.getName());
+          throw new PersistenceException("Could not find validator: " + validationImplementation + " for property: "+ propertyName);
         }
-        PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+        PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,propertyName,propertyValue);
         if (!result.isValid()) {
-          entity.addValidationError(property.getName(),result.getErrorMessage());
+          entity.addValidationError(propertyName,result.getErrorMessage());
         }
       }
     }
