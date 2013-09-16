@@ -50,7 +50,7 @@
   if (customer == null) {
     customer=resolveAnonymousCustomer(request);
   }
-  request.setAttribute(customerRequestAttributeName,customer,WebRequest.SCOPE_REQUEST);
+  CustomerState.setCustomer(customer);
   Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
   if (ruleMap == null) {
     ruleMap=new HashMap<String,Object>();

@@ -1,10 +1,16 @@
 {
   Customer customer;
-  customer=(Customer)request.getAttribute(getAnonymousCustomerAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+  customer=(Customer)request.getAttribute(getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
   if (customer == null) {
-    customer=customerService.createNewCustomer();
-    customer.setAnonymous(true);
-    request.setAttribute(getAnonymousCustomerAttributeName(),customer,WebRequest.SCOPE_GLOBAL_SESSION);
+    Long customerId=(Long)request.getAttribute(getAnonymousCustomerIdSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+    if (customerId != null) {
+      customer=customerService.readCustomerById(customerId);
+    }
+    if (customer == null) {
+      customer=customerService.createNewCustomer();
+      request.setAttribute(getAnonymousCustomerSessionAttributeName(),customer,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
   }
+  customer.setAnonymous(true);
   return customer;
 }
