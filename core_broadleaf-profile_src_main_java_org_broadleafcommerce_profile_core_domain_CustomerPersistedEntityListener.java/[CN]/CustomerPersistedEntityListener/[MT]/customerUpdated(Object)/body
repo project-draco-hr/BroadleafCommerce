@@ -1,0 +1,10 @@
+{
+  if (TransactionSynchronizationManager.isSynchronizationActive()) {
+    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter(){
+      @Override public void afterCommit(){
+        ApplicationContextHolder.getApplicationContext().publishEvent(new CustomerPersistedEvent((Customer)entity));
+      }
+    }
+);
+  }
+}
