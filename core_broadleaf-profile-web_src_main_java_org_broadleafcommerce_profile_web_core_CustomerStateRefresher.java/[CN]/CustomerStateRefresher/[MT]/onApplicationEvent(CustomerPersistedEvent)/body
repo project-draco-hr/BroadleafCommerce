@@ -1,0 +1,16 @@
+{
+  Customer dbCustomer=event.getCustomer();
+  WebRequest request=BroadleafRequestContext.getBroadleafRequestContext().getWebRequest();
+  if (request != null) {
+    String customerAttribute=CustomerStateRequestProcessor.getAnonymousCustomerSessionAttributeName();
+    String customerIdAttribute=CustomerStateRequestProcessor.getAnonymousCustomerIdSessionAttributeName();
+    Customer sessionCustomer=(Customer)request.getAttribute(customerAttribute,WebRequest.SCOPE_GLOBAL_SESSION);
+    if (sessionCustomer != null && sessionCustomer.getId().equals(dbCustomer.getId())) {
+      request.removeAttribute(customerAttribute,WebRequest.SCOPE_GLOBAL_SESSION);
+      request.setAttribute(customerIdAttribute,dbCustomer.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+    }
+    if (CustomerState.getCustomer() != null && CustomerState.getCustomer().getId().equals(dbCustomer.getId())) {
+      CustomerState.setCustomer(event.getCustomer());
+    }
+  }
+}
