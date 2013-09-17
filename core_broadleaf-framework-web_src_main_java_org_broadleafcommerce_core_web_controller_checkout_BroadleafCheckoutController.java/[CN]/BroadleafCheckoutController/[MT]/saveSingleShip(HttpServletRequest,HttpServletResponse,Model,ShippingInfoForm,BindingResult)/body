@@ -24,5 +24,12 @@
     cart=orderService.save(cart,true);
     CartState.setCart(cart);
   }
-  return isAjaxRequest(request) ? getCheckoutView() : getCheckoutPageRedirect();
+  checkoutControllerExtensionManager.getProxy().performAdditionalShippingAction();
+  if (isAjaxRequest(request)) {
+    checkoutControllerExtensionManager.getProxy().addAdditionalModelVariables(model);
+    return getCheckoutView();
+  }
+ else {
+    return getCheckoutPageRedirect();
+  }
 }
