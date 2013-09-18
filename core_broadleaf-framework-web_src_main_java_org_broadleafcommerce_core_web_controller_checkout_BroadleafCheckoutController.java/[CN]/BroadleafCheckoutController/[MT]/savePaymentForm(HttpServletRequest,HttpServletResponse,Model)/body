@@ -1,3 +1,9 @@
 {
-  return isAjaxRequest(request) ? getCheckoutView() : getCheckoutPageRedirect();
+  if (isAjaxRequest(request)) {
+    populateModelWithReferenceData(request,model);
+    return getCheckoutView();
+  }
+ else {
+    return getCheckoutPageRedirect();
+  }
 }

@@ -2,5 +2,6 @@
   Order cart=CartState.getCart();
   orderMultishipOptionService.saveOrderMultishipOptions(cart,orderMultishipOptionForm.getOptions());
   cart=fulfillmentGroupService.matchFulfillmentGroupsToMultishipOptions(cart,true);
+  checkoutControllerExtensionManager.getProxy().performAdditionalShippingAction();
   return getMultishipSuccessView();
 }
