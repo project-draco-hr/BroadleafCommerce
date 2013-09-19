@@ -1,36 +1,42 @@
 {
-  for (  Property property : entity.getProperties()) {
-    FieldMetadata metadata=propertiesMetadata.get(property.getName());
-    if (metadata instanceof BasicFieldMetadata) {
-      if (CollectionUtils.isNotEmpty(globalEntityValidators)) {
-        for (        GlobalPropertyValidator validator : globalEntityValidators) {
-          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
+  List<String> types=getTypeHierarchy(entity);
+  for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
+    FieldMetadata metadata=metadataEntry.getValue();
+    if (types.contains(metadata.getInheritedFromType())) {
+      Property property=entity.getPMap().get(metadataEntry.getKey());
+      String propertyName=metadataEntry.getKey();
+      String propertyValue=(property == null) ? null : property.getValue();
+      if (metadata instanceof BasicFieldMetadata) {
+        if (CollectionUtils.isNotEmpty(globalEntityValidators)) {
+          for (          GlobalPropertyValidator validator : globalEntityValidators) {
+            PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,(BasicFieldMetadata)metadata,propertyName,propertyValue);
+            if (!result.isValid()) {
+              entity.addValidationError(propertyName,result.getErrorMessage());
+            }
+          }
+        }
+        Map<String,Map<String,String>> validations=((BasicFieldMetadata)metadata).getValidationConfigurations();
+        for (        Map.Entry<String,Map<String,String>> validation : validations.entrySet()) {
+          String validationImplementation=validation.getKey();
+          Map<String,String> configuration=validation.getValue();
+          PropertyValidator validator=null;
+          if (applicationContext.containsBean(validationImplementation)) {
+            validator=applicationContext.getBean(validationImplementation,PropertyValidator.class);
+          }
+          if (validator == null) {
+            try {
+              validator=(PropertyValidator)Class.forName(validationImplementation).newInstance();
+            }
+ catch (            Exception e) {
+            }
+          }
+          if (validator == null) {
+            throw new PersistenceException("Could not find validator: " + validationImplementation + " for property: "+ propertyName);
+          }
+          PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,propertyName,propertyValue);
           if (!result.isValid()) {
-            entity.addValidationError(property.getName(),result.getErrorMessage());
+            entity.addValidationError(propertyName,result.getErrorMessage());
           }
-        }
-      }
-      Map<String,Map<String,String>> validations=((BasicFieldMetadata)metadata).getValidationConfigurations();
-      for (      Map.Entry<String,Map<String,String>> validation : validations.entrySet()) {
-        String validationImplementation=validation.getKey();
-        Map<String,String> configuration=validation.getValue();
-        PropertyValidator validator=null;
-        if (applicationContext.containsBean(validationImplementation)) {
-          validator=applicationContext.getBean(validationImplementation,PropertyValidator.class);
-        }
-        if (validator == null) {
-          try {
-            validator=(PropertyValidator)Class.forName(validationImplementation).newInstance();
-          }
- catch (          Exception e) {
-          }
-        }
-        if (validator == null) {
-          throw new PersistenceException("Could not find validator: " + validationImplementation + " for property: "+ property.getName());
-        }
-        PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,property.getName(),property.getValue());
-        if (!result.isValid()) {
-          entity.addValidationError(property.getName(),result.getErrorMessage());
         }
       }
     }
