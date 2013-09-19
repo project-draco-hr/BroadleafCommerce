@@ -10,6 +10,9 @@
     Class<?>[] entities=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(ceilingEntityFullyQualifiedClassname));
     Map<String,FieldMetadata> mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities,(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY),persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
     List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,persistencePackage.getFetchTypeFullyQualifiedClassname(),mergedProperties);
+    if (CollectionUtils.isNotEmpty(cto.getAdditionalFilterMappings())) {
+      filterMappings.addAll(cto.getAdditionalFilterMappings());
+    }
     boolean isArchivable=false;
     for (    Class<?> entity : entities) {
       if (Status.class.isAssignableFrom(entity)) {
