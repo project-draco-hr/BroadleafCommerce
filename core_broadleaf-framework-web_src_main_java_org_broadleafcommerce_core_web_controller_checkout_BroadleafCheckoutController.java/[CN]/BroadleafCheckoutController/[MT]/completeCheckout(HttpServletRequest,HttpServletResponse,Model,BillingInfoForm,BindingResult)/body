@@ -10,7 +10,8 @@
         orderService.removePaymentFromOrder(cart,paymentInfo);
       }
     }
-    paymentInfoServiceExtensionManager.getProxy().addAdditionalPaymentInfos(payments,paymentInfoTypeList,request,response,model,billingForm,result);
+    List<PaymentInfoType> paymentInfoTypes=createPaymentInfoTypeList(billingForm);
+    paymentInfoServiceExtensionManager.getProxy().addAdditionalPaymentInfos(payments,paymentInfoTypes,request,response,model,billingForm,result);
     if (result.hasErrors()) {
       return handleCheckoutError(request,model);
     }
