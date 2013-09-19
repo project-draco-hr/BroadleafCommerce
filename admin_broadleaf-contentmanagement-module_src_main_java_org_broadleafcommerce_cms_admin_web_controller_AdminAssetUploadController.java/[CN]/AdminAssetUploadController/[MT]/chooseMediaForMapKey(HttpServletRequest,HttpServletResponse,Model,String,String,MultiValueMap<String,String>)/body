@@ -3,10 +3,12 @@
   pathVars.put("sectionKey",AdminAssetController.SECTION_KEY);
   assetController.viewEntityList(request,response,model,pathVars,requestParams);
   ListGrid listGrid=(ListGrid)model.asMap().get("listGrid");
+  listGrid.setPathOverride("/" + sectionKey + "/"+ id+ "/chooseAsset");
   listGrid.setListGridType(Type.ASSET);
   model.addAttribute("viewType","modal/selectAsset");
   model.addAttribute("currentUrl",request.getRequestURL().toString());
   model.addAttribute("modalHeaderType","selectAsset");
+  model.addAttribute("currentParams",new ObjectMapper().writeValueAsString(requestParams));
   model.addAttribute("entityId",id);
   model.addAttribute("sectionKey",sectionKey);
   return "modules/modalContainer";

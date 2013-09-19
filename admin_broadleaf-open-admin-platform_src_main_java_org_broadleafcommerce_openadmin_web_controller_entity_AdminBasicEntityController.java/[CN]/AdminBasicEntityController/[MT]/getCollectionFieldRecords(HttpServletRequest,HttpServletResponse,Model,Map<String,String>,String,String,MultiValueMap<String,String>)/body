@@ -8,6 +8,7 @@
   Entity entity=service.getRecord(ppr,id,mainMetadata,false);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,requestParams,sectionKey);
   model.addAttribute("listGrid",listGrid);
+  model.addAttribute("currentParams",new ObjectMapper().writeValueAsString(requestParams));
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";
 }
