@@ -5,5 +5,6 @@
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md).withFilterAndSortCriteria(getCriteria(requestParams)).withStartIndex(getStartIndex(requestParams)).withMaxIndex(getMaxIndex(requestParams));
+  model.addAttribute("currentParams",new ObjectMapper().writeValueAsString(requestParams));
   return buildAddCollectionItemModel(request,response,model,id,collectionField,sectionKey,collectionProperty,md,ppr,null,null);
 }
