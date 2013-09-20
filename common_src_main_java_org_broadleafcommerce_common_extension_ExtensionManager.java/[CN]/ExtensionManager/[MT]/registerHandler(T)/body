@@ -1,0 +1,15 @@
+{
+synchronized (LOCK_OBJECT) {
+    boolean add=true;
+    for (    T item : this.handlers) {
+      if (item.getClass().equals(handler.getClass())) {
+        add=false;
+      }
+    }
+    if (add) {
+      this.handlers.add(handler);
+      handlersSorted=false;
+    }
+    return add;
+  }
+}
