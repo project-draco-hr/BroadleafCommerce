@@ -1,19 +1,23 @@
 {
-  String idField=(String)((BasicPersistenceModule)recordHelper.getCompatibleModule(OperationType.BASIC)).getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name");
+  Object idValue=null;
+  if (instance != null) {
+    String idField=(String)((BasicPersistenceModule)recordHelper.getCompatibleModule(OperationType.BASIC)).getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name");
+    try {
+      idValue=recordHelper.getFieldManager().getFieldValue(instance,idField);
+    }
+ catch (    IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }
+catch (    FieldNotAvailableException e) {
+      throw new RuntimeException(e);
+    }
+  }
   Entity entity;
-  try {
-    if (instance == null || recordHelper.getFieldManager().getFieldValue(instance,idField) == null) {
-      entity=submittedEntity;
-    }
+  if (idValue == null) {
+    entity=submittedEntity;
+  }
  else {
-      entity=recordHelper.getRecord(propertiesMetadata,instance,null,null);
-    }
-  }
- catch (  IllegalAccessException e) {
-    throw new RuntimeException(e);
-  }
-catch (  FieldNotAvailableException e) {
-    throw new RuntimeException(e);
+    entity=recordHelper.getRecord(propertiesMetadata,instance,null,null);
   }
   List<String> types=getTypeHierarchy(entity);
   for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
