@@ -1,6 +1,6 @@
 {
   Order cart=CartState.getCart();
-  if (cart != null) {
+  if (cart != null && !(cart instanceof NullOrderImpl)) {
     Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
     Iterator<PaymentInfo> paymentInfoItr=cart.getPaymentInfos().iterator();
     while (paymentInfoItr.hasNext()) {
