@@ -6,34 +6,7 @@
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(StructuredContentItemCriteria.class.getName(),persistencePerspective);
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     StructuredContentItemCriteria adminInstance=(StructuredContentItemCriteria)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
-    if (adminInstance.getStructuredContent().getLockedFlag()) {
-      CriteriaBuilder criteriaBuilder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
-      CriteriaQuery<StructuredContent> query=criteriaBuilder.createQuery(StructuredContent.class);
-      Root<StructuredContentImpl> root=query.from(StructuredContentImpl.class);
-      query.where(criteriaBuilder.and(criteriaBuilder.equal(root.get("archivedFlag"),Boolean.FALSE),criteriaBuilder.equal(root.get("originalItemId"),adminInstance.getStructuredContent().getId())));
-      query.select(root);
-      TypedQuery<StructuredContent> scQuery=dynamicEntityDao.getStandardEntityManager().createQuery(query);
-      try {
-        checkCriteria: {
-          StructuredContent myContent=scQuery.getSingleResult();
-          for (          StructuredContentItemCriteria itemCriteria : myContent.getQualifyingItemCriteria()) {
-            if (itemCriteria.getMatchRule().equals(adminInstance.getMatchRule()) && itemCriteria.getQuantity().equals(adminInstance.getQuantity())) {
-              itemCriteria.setMatchRule(entity.findProperty("orderItemMatchRule").getValue());
-              itemCriteria.setQuantity(Integer.parseInt(entity.findProperty("quantity").getValue()));
-              adminInstance=itemCriteria;
-              break checkCriteria;
-            }
-          }
-          throw new RuntimeException("Unable to find an item criteria to update");
-        }
-      }
- catch (      Exception e) {
-        throw new IllegalArgumentException("Unable to update a locked record");
-      }
-    }
- else {
-      adminInstance=(StructuredContentItemCriteria)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    }
+    adminInstance=(StructuredContentItemCriteria)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=(StructuredContentItemCriteria)dynamicEntityDao.merge(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;

@@ -1,0 +1,18 @@
+{
+  List<StructuredContentDTO> contentDTOList=null;
+  Locale languageOnlyLocale=findLanguageOnlyLocale(locale);
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  String cacheKey=buildNameKey(context.getSandbox(),languageOnlyLocale,contentType.getName(),contentName);
+  cacheKey=cacheKey + "-" + secure;
+  if (context.isProductionSandBox()) {
+    contentDTOList=getStructuredContentListFromCache(cacheKey);
+  }
+  if (CollectionUtils.isEmpty(contentDTOList)) {
+    List<StructuredContent> productionContentList=structuredContentDao.findActiveStructuredContentByNameAndType(contentType,contentName,locale,languageOnlyLocale);
+    contentDTOList=buildStructuredContentDTOList(productionContentList,secure);
+    if (context.isProductionSandBox() && !CollectionUtils.isEmpty(contentDTOList)) {
+      addStructuredContentListToCache(cacheKey,contentDTOList);
+    }
+  }
+  return evaluateAndPriortizeContent(contentDTOList,count,ruleDTOs);
+}

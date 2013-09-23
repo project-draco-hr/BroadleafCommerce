@@ -1,0 +1,12 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc.isAdminMode()) {
+    List<DeepLink> links=service.getLinks(item);
+    if (links.size() == 1) {
+      model.addObject("adminDeepLink",links.get(0));
+    }
+ else {
+      model.addObject("adminDeepLink",links);
+    }
+  }
+}

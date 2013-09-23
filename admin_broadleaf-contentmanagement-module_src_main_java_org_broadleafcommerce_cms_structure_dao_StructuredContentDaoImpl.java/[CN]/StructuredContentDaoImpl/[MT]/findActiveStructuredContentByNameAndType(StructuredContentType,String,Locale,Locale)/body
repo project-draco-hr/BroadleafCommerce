@@ -1,0 +1,11 @@
+{
+  if (languageOnlyLocale == null) {
+    languageOnlyLocale=fullLocale;
+  }
+  final Query query=em.createNamedQuery("BC_ACTIVE_STRUCTURED_CONTENT_BY_TYPE_AND_NAME");
+  query.setParameter("contentType",type);
+  query.setParameter("contentName",name);
+  query.setParameter("fullLocale",fullLocale);
+  query.setParameter("languageOnlyLocale",languageOnlyLocale);
+  return query.getResultList();
+}

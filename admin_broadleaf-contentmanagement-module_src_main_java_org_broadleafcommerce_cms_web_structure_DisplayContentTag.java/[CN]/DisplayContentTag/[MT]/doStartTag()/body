@@ -1,7 +1,6 @@
 {
   HttpServletRequest request=(HttpServletRequest)pageContext.getRequest();
   Map<String,Object> mvelParameters=buildMvelParameters(request);
-  SandBox currentSandbox=(SandBox)request.getAttribute(BroadleafProcessURLFilter.SANDBOX_VAR);
   initServices();
   List<StructuredContentDTO> contentItems;
   StructuredContentType structuredContentType=structuredContentService.findStructuredContentTypeByName(contentType);
@@ -11,14 +10,14 @@
   }
   int cnt=(count == null) ? Integer.MAX_VALUE : count;
   if (structuredContentType == null) {
-    contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,cnt,mvelParameters,isSecure(request));
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(contentName,locale,cnt,mvelParameters,isSecure(request));
   }
  else {
     if (contentName == null || "".equals(contentName)) {
-      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,cnt,mvelParameters,isSecure(request));
+      contentItems=structuredContentService.lookupStructuredContentItemsByType(structuredContentType,locale,cnt,mvelParameters,isSecure(request));
     }
  else {
-      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,cnt,mvelParameters,isSecure(request));
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(structuredContentType,contentName,locale,cnt,mvelParameters,isSecure(request));
     }
   }
   pageContext.setAttribute(getNumResultsVar(),contentItems.size());

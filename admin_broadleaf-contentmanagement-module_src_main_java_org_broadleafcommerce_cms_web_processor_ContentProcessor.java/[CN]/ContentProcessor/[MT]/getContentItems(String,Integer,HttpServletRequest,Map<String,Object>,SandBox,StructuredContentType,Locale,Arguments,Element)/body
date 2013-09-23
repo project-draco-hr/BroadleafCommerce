@@ -6,15 +6,15 @@
       extensionManager.getProxy().lookupContentByElementAttribute(contentItems,currentSandbox,locale,maxResults,mvelParameters,isSecure(request),element);
     }
  else {
-      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,contentName,locale,maxResults,mvelParameters,isSecure(request));
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(contentName,locale,maxResults,mvelParameters,isSecure(request));
     }
   }
  else {
     if (contentName == null || "".equals(contentName)) {
-      contentItems=structuredContentService.lookupStructuredContentItemsByType(currentSandbox,structuredContentType,locale,maxResults,mvelParameters,isSecure(request));
+      contentItems=structuredContentService.lookupStructuredContentItemsByType(structuredContentType,locale,maxResults,mvelParameters,isSecure(request));
     }
  else {
-      contentItems=structuredContentService.lookupStructuredContentItemsByName(currentSandbox,structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
+      contentItems=structuredContentService.lookupStructuredContentItemsByName(structuredContentType,contentName,locale,maxResults,mvelParameters,isSecure(request));
     }
   }
   extensionManager.getProxy().addAdditionalFieldsToModel(arguments,element);
