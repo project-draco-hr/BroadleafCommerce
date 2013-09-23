@@ -6,9 +6,6 @@
     PageItemCriteria adminInstance=(PageItemCriteria)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(PageItemCriteria.class.getName(),persistencePerspective);
     adminInstance=(PageItemCriteria)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    if (adminInstance.getPage().getLockedFlag()) {
-      throw new IllegalArgumentException("Unable to update a locked record");
-    }
     adminInstance=(PageItemCriteria)dynamicEntityDao.merge(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;

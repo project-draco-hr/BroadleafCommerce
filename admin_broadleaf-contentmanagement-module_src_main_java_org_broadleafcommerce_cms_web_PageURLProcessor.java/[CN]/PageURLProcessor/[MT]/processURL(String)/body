@@ -2,7 +2,7 @@
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
   PageDTO p=(PageDTO)context.getRequest().getAttribute(PAGE_ATTRIBUTE_NAME);
   if (p == null) {
-    p=pageService.findPageByURI(context.getSandbox(),context.getLocale(),key,buildMvelParameters(context.getRequest()),context.isSecure());
+    p=pageService.findPageByURI(context.getLocale(),key,buildMvelParameters(context.getRequest()),context.isSecure());
   }
   if (p != null) {
     String templateJSPPath=p.getTemplatePath();
