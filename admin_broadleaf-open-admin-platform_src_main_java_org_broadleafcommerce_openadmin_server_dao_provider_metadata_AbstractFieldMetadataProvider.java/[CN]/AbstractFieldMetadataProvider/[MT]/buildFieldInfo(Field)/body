@@ -12,5 +12,9 @@
     info.setOneToManyMappedBy(oneToMany.mappedBy());
     info.setOneToManyTargetEntity(oneToMany.targetEntity().getName());
   }
+  MapKey mapKey=field.getAnnotation(MapKey.class);
+  if (mapKey != null) {
+    info.setMapKey(mapKey.name());
+  }
   return info;
 }

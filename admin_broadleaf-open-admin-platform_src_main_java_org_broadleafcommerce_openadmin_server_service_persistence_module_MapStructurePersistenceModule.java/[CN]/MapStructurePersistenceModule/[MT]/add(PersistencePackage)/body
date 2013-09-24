@@ -23,6 +23,9 @@
     Assert.isTrue(instance != null,"Entity not found");
     FieldManager fieldManager=getFieldManager();
     Map map=(Map)fieldManager.getFieldValue(instance,mapStructure.getMapProperty());
+    if (map.containsKey(mapKey)) {
+      entity.addValidationError(mapStructure.getKeyPropertyName(),"keyExistsValidationError");
+    }
     PersistentClass persistentClass=persistenceManager.getDynamicEntityDao().getPersistentClass(mapStructure.getValueClassName());
     Map<String,FieldMetadata> valueUnfilteredMergedProperties;
     if (persistentClass == null) {
