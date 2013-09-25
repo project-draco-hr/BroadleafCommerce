@@ -12,7 +12,7 @@
     checkoutControllerExtensionManager.getProxy().addAdditionalModelVariables(model);
     return getCheckoutView();
   }
-  if (StringUtils.isEmpty(shippingForm.getAddress().getPhonePrimary().getPhoneNumber())) {
+  if ((shippingForm.getAddress().getPhonePrimary() != null) && (StringUtils.isEmpty(shippingForm.getAddress().getPhonePrimary().getPhoneNumber()))) {
     shippingForm.getAddress().setPhonePrimary(null);
   }
   FulfillmentGroup shippableFulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart);
