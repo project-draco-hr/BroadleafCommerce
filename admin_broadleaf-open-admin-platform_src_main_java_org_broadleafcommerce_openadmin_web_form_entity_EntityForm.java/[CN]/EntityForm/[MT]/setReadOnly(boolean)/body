@@ -1,0 +1,19 @@
+{
+  if (getFields() != null) {
+    for (    Entry<String,Field> entry : getFields().entrySet()) {
+      entry.getValue().setReadOnly(readOnly);
+    }
+  }
+  if (getAllListGrids() != null) {
+    for (    ListGrid lg : getAllListGrids()) {
+      lg.setReadOnly(readOnly);
+    }
+  }
+  if (getDynamicForms() != null) {
+    for (    Entry<String,EntityForm> entry : getDynamicForms().entrySet()) {
+      entry.getValue().setReadOnly(readOnly);
+    }
+  }
+  actions.clear();
+  this.readOnly=readOnly;
+}
