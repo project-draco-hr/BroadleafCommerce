@@ -34,7 +34,7 @@
     }
     LOG.trace("Done printing solr.xml");
   }
-  CoreContainer coreContainer=new CoreContainer(solrServer,solrXml);
+  CoreContainer coreContainer=CoreContainer.createAndLoad(solrServer,solrXml);
   EmbeddedSolrServer primaryServer=new EmbeddedSolrServer(coreContainer,SolrContext.PRIMARY);
   EmbeddedSolrServer reindexServer=new EmbeddedSolrServer(coreContainer,SolrContext.REINDEX);
   SolrContext.setPrimaryServer(primaryServer);
