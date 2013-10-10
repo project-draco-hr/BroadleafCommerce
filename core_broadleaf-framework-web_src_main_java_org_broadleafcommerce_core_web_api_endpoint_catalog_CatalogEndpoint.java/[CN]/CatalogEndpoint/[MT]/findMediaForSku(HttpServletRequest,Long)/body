@@ -7,7 +7,7 @@
         MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
         wrapper.wrapSummary(media,request);
         if (wrapper.isAllowOverrideUrl()) {
-          wrapper.setUrl(getStaticAssetService().convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
+          wrapper.setUrl(staticAssetPathService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
         }
         medias.add(wrapper);
       }

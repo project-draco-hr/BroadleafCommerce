@@ -1,0 +1,45 @@
+{
+  String returnValue=assetPath;
+  if (assetPath != null && getStaticAssetEnvironmentUrlPrefix() != null && !"".equals(getStaticAssetEnvironmentUrlPrefix())) {
+    final String envPrefix;
+    if (secureRequest) {
+      envPrefix=getStaticAssetEnvironmentSecureUrlPrefix();
+    }
+ else {
+      envPrefix=getStaticAssetEnvironmentUrlPrefix();
+    }
+    if (envPrefix != null) {
+      if (returnValue.startsWith("/")) {
+        returnValue=returnValue.substring(1);
+      }
+      if (returnValue.startsWith(getStaticAssetUrlPrefix())) {
+        returnValue=returnValue.substring(getStaticAssetUrlPrefix().trim().length());
+        if (returnValue.startsWith("/")) {
+          returnValue=returnValue.substring(1);
+        }
+      }
+      returnValue=envPrefix + returnValue;
+    }
+  }
+ else {
+    if (returnValue != null && !ImportSupport.isAbsoluteUrl(returnValue)) {
+      if (!returnValue.startsWith("/")) {
+        returnValue="/" + returnValue;
+      }
+      if (contextPath != null && !contextPath.equals("")) {
+        if (!contextPath.equals("/")) {
+          if (contextPath.endsWith("/")) {
+            returnValue=returnValue.substring(1);
+          }
+          if (contextPath.startsWith("/")) {
+            returnValue=contextPath + returnValue;
+          }
+ else {
+            returnValue="/" + contextPath + returnValue;
+          }
+        }
+      }
+    }
+  }
+  return returnValue;
+}
