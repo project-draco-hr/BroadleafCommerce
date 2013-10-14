@@ -20,16 +20,16 @@
     PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
     response=myModule.add(persistencePackage);
   }
-  Class<?> entityClass;
-  try {
-    entityClass=Class.forName(response.getType()[0]);
-  }
- catch (  ClassNotFoundException e) {
-    throw new ServiceException(e);
-  }
-  Map<String,Object> idMetadata=getDynamicEntityDao().getIdMetadata(entityClass);
-  String idProperty=(String)idMetadata.get("name");
-  if (response.findProperty(idProperty) != null) {
+  if (!MapUtils.isEmpty(persistencePackage.getSubPackages())) {
+    Class<?> entityClass;
+    try {
+      entityClass=Class.forName(response.getType()[0]);
+    }
+ catch (    ClassNotFoundException e) {
+      throw new ServiceException(e);
+    }
+    Map<String,Object> idMetadata=getDynamicEntityDao().getIdMetadata(entityClass);
+    String idProperty=(String)idMetadata.get("name");
     String idVal=response.findProperty(idProperty).getValue();
     Map<String,List<String>> subPackageValidationErrors=new HashMap<String,List<String>>();
     for (    Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
