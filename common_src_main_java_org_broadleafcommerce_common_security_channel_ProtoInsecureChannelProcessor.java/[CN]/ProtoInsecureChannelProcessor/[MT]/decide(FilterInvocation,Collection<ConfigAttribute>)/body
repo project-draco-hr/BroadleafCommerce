@@ -4,7 +4,7 @@
   }
   for (  ConfigAttribute attribute : config) {
     if (supports(attribute)) {
-      if (invocation.getHttpRequest().getHeader("X-Forwarded-Proto").equals("https")) {
+      if ("https".equals(invocation.getHttpRequest().getHeader("X-Forwarded-Proto"))) {
         getEntryPoint().commence(invocation.getRequest(),invocation.getResponse());
       }
     }
