@@ -1,4 +1,21 @@
 {
-  HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+  HttpServletRequest request=null;
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
+    HttpServletRequest brcRequest=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+    if (brcRequest != null) {
+      request=brcRequest;
+    }
+  }
+  if (request == null) {
+    try {
+      request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    }
+ catch (    ClassCastException e) {
+      LOG.warn("Unable to cast to ServletRequestAttributes and the request in BroadleafRequestContext " + "was not set. This may introduce incorrect AJAX behavior.");
+    }
+  }
+  if (request == null) {
+    return false;
+  }
   return BroadleafControllerUtility.isAjaxRequest(request);
 }
