@@ -8,6 +8,16 @@
         PromotableOrderItemPriceDetailAdjustment poidAdj=new PromotableOrderItemPriceDetailAdjustmentImpl(adjustment,poid);
         poid.addCandidateItemPriceDetailAdjustment(poidAdj);
       }
+      List<OrderItemQualifier> oiqs=poid.getPromotableOrderItem().getOrderItem().getOrderItemQualifiers();
+      if (CollectionUtils.isNotEmpty(oiqs)) {
+        for (        OrderItemQualifier oiq : oiqs) {
+          PromotionQualifier pq=new PromotionQualifier();
+          pq.setPromotion(oiq.getOffer());
+          pq.setQuantity(oiq.getQuantity().intValue());
+          pq.setFinalizedQuantity(oiq.getQuantity().intValue());
+          poid.getPromotionQualifiers().add(pq);
+        }
+      }
     }
   }
  else {
