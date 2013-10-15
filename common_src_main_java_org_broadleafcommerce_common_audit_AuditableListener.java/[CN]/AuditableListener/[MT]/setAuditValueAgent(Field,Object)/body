@@ -3,7 +3,7 @@
   try {
     BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
     if (requestContext != null && requestContext.getWebRequest() != null) {
-      Object customer=requestContext.getWebRequest().getAttribute(customerRequestAttributeName,RequestAttributes.SCOPE_REQUEST);
+      Object customer=BroadleafRequestCustomerResolverImpl.getRequestCustomerResolver().getCustomer();
       if (customer != null) {
         Class<?> customerClass=customer.getClass();
         Field userNameField=getSingleField(customerClass,"username");

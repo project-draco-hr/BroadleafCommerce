@@ -3,7 +3,7 @@
   Customer customer=null;
   if ((authentication != null) && !(authentication instanceof AnonymousAuthenticationToken)) {
     String userName=authentication.getName();
-    customer=(Customer)request.getAttribute(customerRequestAttributeName,WebRequest.SCOPE_REQUEST);
+    customer=(Customer)BroadleafRequestCustomerResolverImpl.getRequestCustomerResolver().getCustomer(request);
     if (userName != null && (customer == null || !userName.equals(customer.getUsername()))) {
       customer=customerService.readCustomerByUsername(userName);
       if (logger.isDebugEnabled() && customer != null) {
