@@ -2,7 +2,7 @@
   Assert.isTrue((invocation != null) && (config != null),"Nulls cannot be provided");
   for (  ConfigAttribute attribute : config) {
     if (supports(attribute)) {
-      if (invocation.getHttpRequest().getHeader("X-Forwarded-Proto").equals("http")) {
+      if ("http".equals(invocation.getHttpRequest().getHeader("X-Forwarded-Proto"))) {
         getEntryPoint().commence(invocation.getRequest(),invocation.getResponse());
       }
     }
