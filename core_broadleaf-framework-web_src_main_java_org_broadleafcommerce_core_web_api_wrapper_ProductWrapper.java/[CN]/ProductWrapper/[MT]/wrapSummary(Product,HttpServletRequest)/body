@@ -26,11 +26,11 @@
   if (model.getMedia() != null && !model.getMedia().isEmpty()) {
     Media media=model.getMedia().get("primary");
     if (media != null) {
-      StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+      StaticAssetPathService staticAssetPathService=(StaticAssetPathService)this.context.getBean("blStaticAssetPathService");
       primaryMedia=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
       primaryMedia.wrapDetails(media,request);
       if (primaryMedia.isAllowOverrideUrl()) {
-        primaryMedia.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
+        primaryMedia.setUrl(staticAssetPathService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
       }
     }
   }

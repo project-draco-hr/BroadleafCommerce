@@ -40,11 +40,11 @@
   if (model.getMedia() != null && !model.getMedia().isEmpty()) {
     Media media=model.getMedia().get("primary");
     if (media != null) {
-      StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+      StaticAssetPathService staticAssetPathService=(StaticAssetPathService)this.context.getBean("blStaticAssetPathService");
       primaryMedia=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
       primaryMedia.wrapDetails(media,request);
       if (primaryMedia.isAllowOverrideUrl()) {
-        primaryMedia.setUrl(staticAssetService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
+        primaryMedia.setUrl(staticAssetPathService.convertAssetPath(media.getUrl(),request.getContextPath(),request.isSecure()));
       }
     }
   }
@@ -80,12 +80,12 @@
   if (model.getMedia() != null && !model.getMedia().isEmpty()) {
     Map<String,Media> mediaMap=model.getMedia();
     media=new ArrayList<MediaWrapper>();
-    StaticAssetService staticAssetService=(StaticAssetService)this.context.getBean("blStaticAssetService");
+    StaticAssetPathService staticAssetPathService=(StaticAssetPathService)this.context.getBean("blStaticAssetPathService");
     for (    Media med : mediaMap.values()) {
       MediaWrapper wrapper=(MediaWrapper)context.getBean(MediaWrapper.class.getName());
       wrapper.wrapSummary(med,request);
       if (wrapper.isAllowOverrideUrl()) {
-        wrapper.setUrl(staticAssetService.convertAssetPath(med.getUrl(),request.getContextPath(),request.isSecure()));
+        wrapper.setUrl(staticAssetPathService.convertAssetPath(med.getUrl(),request.getContextPath(),request.isSecure()));
       }
       media.add(wrapper);
     }
