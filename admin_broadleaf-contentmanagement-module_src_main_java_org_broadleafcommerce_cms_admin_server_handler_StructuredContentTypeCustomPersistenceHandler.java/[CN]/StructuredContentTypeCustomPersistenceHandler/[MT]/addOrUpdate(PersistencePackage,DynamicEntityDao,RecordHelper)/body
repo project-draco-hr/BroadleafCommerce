@@ -3,14 +3,14 @@
   try {
     String structuredContentId=persistencePackage.getCustomCriteria()[1];
     StructuredContent structuredContent=structuredContentService.findStructuredContentById(Long.valueOf(structuredContentId));
-    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(structuredContent.getStructuredContentType().getStructuredContentFieldTemplate().getFieldGroups(),StructuredContentTypeImpl.class);
+    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(structuredContent.getStructuredContentType().getStructuredContentFieldTemplate().getFieldGroups(),StructuredContentType.class);
     Map<String,FieldMetadata> md=new HashMap<String,FieldMetadata>();
     for (    Property property : properties) {
       md.put(property.getName(),property.getMetadata());
     }
     boolean validated=helper.validate(persistencePackage.getEntity(),null,md);
     if (!validated) {
-      return persistencePackage.getEntity();
+      throw new ValidationException(persistencePackage.getEntity(),"Structured Content dynamic fields failed validation");
     }
     List<String> templateFieldNames=new ArrayList<String>(20);
     for (    FieldGroup group : structuredContent.getStructuredContentType().getStructuredContentFieldTemplate().getFieldGroups()) {
@@ -48,7 +48,10 @@
     }
     return fetchEntityBasedOnId(structuredContentId);
   }
- catch (  Exception e) {
+ catch (  ValidationException e) {
+    throw e;
+  }
+catch (  Exception e) {
     throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
   }
 }
