@@ -20,6 +20,14 @@ catch (      UpdateCartException e) {
     CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
     ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)addItemWorkflow.doActivities(cartOpRequest);
     context.getSeedData().getOrder().getOrderMessages().addAll(((ActivityMessages)context).getActivityMessages());
+    if (CollectionUtils.isNotEmpty(orderItemRequestDTO.getChildOrderItems())) {
+      for (      OrderItemRequestDTO childRequest : orderItemRequestDTO.getChildOrderItems()) {
+        childRequest.setParentOrderItemId(context.getSeedData().getAddedOrderItem().getId());
+        CartOperationRequest childCartOpRequest=new CartOperationRequest(findOrderById(orderId),childRequest,priceOrder);
+        ProcessContext<CartOperationRequest> childContext=(ProcessContext<CartOperationRequest>)addItemWorkflow.doActivities(childCartOpRequest);
+        context.getSeedData().getOrder().getOrderMessages().addAll(((ActivityMessages)childContext).getActivityMessages());
+      }
+    }
     return context.getSeedData().getOrder();
   }
  catch (  WorkflowException e) {

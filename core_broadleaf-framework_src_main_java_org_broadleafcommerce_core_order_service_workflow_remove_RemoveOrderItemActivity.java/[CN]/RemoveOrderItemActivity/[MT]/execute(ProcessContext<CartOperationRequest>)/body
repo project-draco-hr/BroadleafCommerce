@@ -4,6 +4,11 @@
   Order order=request.getOrder();
   OrderItem orderItem=orderItemService.readOrderItemById(orderItemRequestDTO.getOrderItemId());
   OrderItem itemFromOrder=order.getOrderItems().remove(order.getOrderItems().indexOf(orderItem));
+  if (itemFromOrder.getParentOrderItem() != null) {
+    OrderItem parentItem=itemFromOrder.getParentOrderItem();
+    parentItem.getChildOrderItems().remove(itemFromOrder);
+    parentItem=orderItemService.saveOrderItem(parentItem);
+  }
   itemFromOrder.setOrder(null);
   orderItemService.delete(itemFromOrder);
   order=orderService.save(order,false);

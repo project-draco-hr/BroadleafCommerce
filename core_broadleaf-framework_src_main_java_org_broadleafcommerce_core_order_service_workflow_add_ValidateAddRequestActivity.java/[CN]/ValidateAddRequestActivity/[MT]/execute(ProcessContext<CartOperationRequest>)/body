@@ -44,5 +44,14 @@
   if (!(orderItemRequestDTO instanceof NonDiscreteOrderItemRequestDTO) && request.getOrder().getCurrency() != null && sku.getCurrency() != null && !request.getOrder().getCurrency().equals(sku.getCurrency())) {
     throw new IllegalArgumentException("Cannot have items with differing currencies in one cart");
   }
+  if (orderItemRequestDTO.getParentOrderItemId() != null) {
+    OrderItem parent=orderItemService.readOrderItemById(orderItemRequestDTO.getParentOrderItemId());
+    if (parent == null) {
+      throw new IllegalArgumentException("Could not find parent order item by the given id");
+    }
+    if (parent.getOrder().getId() != request.getOrder().getId()) {
+      throw new IllegalArgumentException("Given parent order item was part of a different order");
+    }
+  }
   return context;
 }

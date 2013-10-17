@@ -1,11 +1,16 @@
 {
   try {
-    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
-    orderItemRequestDTO.setOrderItemId(orderItemId);
-    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
-    ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)removeItemWorkflow.doActivities(cartOpRequest);
-    context.getSeedData().getOrder().getOrderMessages().addAll(((ActivityMessages)context).getActivityMessages());
-    return context.getSeedData().getOrder();
+    OrderItem oi=orderItemService.readOrderItemById(orderItemId);
+    if (CollectionUtils.isNotEmpty(oi.getChildOrderItems())) {
+      List<Long> childrenToRemove=new ArrayList<Long>();
+      for (      OrderItem childOrderItem : oi.getChildOrderItems()) {
+        childrenToRemove.add(childOrderItem.getId());
+      }
+      for (      Long childToRemove : childrenToRemove) {
+        removeItemInternal(orderId,childToRemove,false);
+      }
+    }
+    return removeItemInternal(orderId,orderItemId,priceOrder);
   }
  catch (  WorkflowException e) {
     throw new RemoveFromCartException("Could not remove from cart",getCartOperationExceptionRootCause(e));
