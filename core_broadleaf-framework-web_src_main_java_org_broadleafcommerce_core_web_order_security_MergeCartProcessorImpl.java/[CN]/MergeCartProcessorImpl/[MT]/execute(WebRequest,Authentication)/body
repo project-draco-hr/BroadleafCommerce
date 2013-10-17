@@ -1,6 +1,6 @@
 {
   Customer loggedInCustomer=customerService.readCustomerByUsername(authResult.getName());
-  Customer anonymousCustomer=(Customer)request.getAttribute(CustomerStateRequestProcessor.ANONYMOUS_CUSTOMER_SESSION_ATTRIBUTE_NAME,WebRequest.SCOPE_GLOBAL_SESSION);
+  Customer anonymousCustomer=customerStateRequestProcessor.resolveAnonymousCustomer(request);
   Order cart=null;
   if (anonymousCustomer != null) {
     cart=orderService.findCartForCustomer(anonymousCustomer);
