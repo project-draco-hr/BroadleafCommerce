@@ -1,0 +1,46 @@
+{
+  ProductBundle productBundle=itemRequest.getProductBundle();
+  BundleOrderItem bundleOrderItem=(BundleOrderItem)orderItemDao.create(OrderItemType.BUNDLE);
+  bundleOrderItem.setQuantity(itemRequest.getQuantity());
+  bundleOrderItem.setCategory(itemRequest.getCategory());
+  bundleOrderItem.setSku(itemRequest.getSku());
+  bundleOrderItem.setName(itemRequest.getName());
+  bundleOrderItem.setProductBundle(productBundle);
+  bundleOrderItem.setOrder(itemRequest.getOrder());
+  if (itemRequest.getSalePriceOverride() != null) {
+    bundleOrderItem.setSalePriceOverride(Boolean.TRUE);
+    bundleOrderItem.setSalePrice(itemRequest.getSalePriceOverride());
+    bundleOrderItem.setBaseSalePrice(itemRequest.getSalePriceOverride());
+  }
+  if (itemRequest.getRetailPriceOverride() != null) {
+    bundleOrderItem.setRetailPriceOverride(Boolean.TRUE);
+    bundleOrderItem.setRetailPrice(itemRequest.getRetailPriceOverride());
+    bundleOrderItem.setBaseRetailPrice(itemRequest.getRetailPriceOverride());
+  }
+  for (  SkuBundleItem skuBundleItem : productBundle.getSkuBundleItems()) {
+    Product bundleProduct=skuBundleItem.getBundle();
+    Sku bundleSku=skuBundleItem.getSku();
+    Category bundleCategory=null;
+    if (itemRequest.getCategory() != null) {
+      bundleCategory=itemRequest.getCategory();
+    }
+    if (bundleCategory == null && bundleProduct != null) {
+      bundleCategory=bundleProduct.getDefaultCategory();
+    }
+    DiscreteOrderItemRequest bundleItemRequest=new DiscreteOrderItemRequest();
+    bundleItemRequest.setCategory(bundleCategory);
+    bundleItemRequest.setProduct(bundleProduct);
+    bundleItemRequest.setQuantity(skuBundleItem.getQuantity());
+    bundleItemRequest.setSku(bundleSku);
+    bundleItemRequest.setItemAttributes(itemRequest.getItemAttributes());
+    bundleItemRequest.setSalePriceOverride(skuBundleItem.getSalePrice());
+    bundleItemRequest.setBundleOrderItem(bundleOrderItem);
+    DiscreteOrderItem bundleDiscreteItem=createDiscreteOrderItem(bundleItemRequest);
+    bundleDiscreteItem.setSkuBundleItem(skuBundleItem);
+    bundleOrderItem.getDiscreteOrderItems().add(bundleDiscreteItem);
+  }
+  if (saveItem) {
+    bundleOrderItem=(BundleOrderItem)saveOrderItem(bundleOrderItem);
+  }
+  return bundleOrderItem;
+}

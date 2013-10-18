@@ -1,22 +1,23 @@
 {
   Order order=request.getOrder();
-  OrderItem orderItem=request.getAddedOrderItem();
+  OrderItem orderItem=request.getOrderItem();
   Integer orderItemQuantityDelta=request.getOrderItemQuantityDelta();
   if (orderItemQuantityDelta == 0) {
     return request;
   }
  else {
+    List<FulfillmentGroupItem> fgisToDelete=new ArrayList<FulfillmentGroupItem>();
     if (orderItem instanceof BundleOrderItem) {
       List<OrderItem> itemsToUpdate=new ArrayList<OrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
       for (      OrderItem oi : itemsToUpdate) {
         int quantityPer=oi.getQuantity();
-        order=updateItemQuantity(order,oi,(quantityPer * orderItemQuantityDelta));
+        fgisToDelete.addAll(updateItemQuantity(order,oi,(quantityPer * orderItemQuantityDelta)));
       }
     }
  else {
-      order=updateItemQuantity(order,orderItem,orderItemQuantityDelta);
+      fgisToDelete.addAll(updateItemQuantity(order,orderItem,orderItemQuantityDelta));
     }
+    request.setFgisToDelete(fgisToDelete);
   }
-  request.setOrder(order);
   return request;
 }

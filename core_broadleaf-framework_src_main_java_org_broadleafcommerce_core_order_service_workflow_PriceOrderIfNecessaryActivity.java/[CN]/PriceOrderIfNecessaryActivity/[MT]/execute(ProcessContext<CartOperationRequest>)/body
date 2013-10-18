@@ -1,6 +1,59 @@
 {
   CartOperationRequest request=context.getSeedData();
   Order order=request.getOrder();
+  if (CollectionUtils.isNotEmpty(request.getMultishipOptionsToDelete())) {
+    for (    Long[] pack : request.getMultishipOptionsToDelete()) {
+      if (pack[1] == null) {
+        orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(pack[0]);
+      }
+ else {
+        orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(pack[0],pack[1].intValue());
+      }
+    }
+  }
+  if (CollectionUtils.isNotEmpty(request.getFgisToDelete())) {
+    for (    FulfillmentGroupItem fgi : request.getFgisToDelete()) {
+      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
+        ListIterator<FulfillmentGroupItem> fgItemIter=fg.getFulfillmentGroupItems().listIterator();
+        while (fgItemIter.hasNext()) {
+          FulfillmentGroupItem fgi2=fgItemIter.next();
+          if (fgi2 == fgi) {
+            fgItemIter.remove();
+            fgItemDao.delete(fgi2);
+          }
+        }
+      }
+    }
+  }
+  for (  OrderItem oi : request.getOisToDelete()) {
+    order.getOrderItems().remove(oi);
+    orderItemService.delete(oi);
+    if (oi.getParentOrderItem() != null) {
+      OrderItem parentItem=oi.getParentOrderItem();
+      parentItem.getChildOrderItems().remove(oi);
+    }
+  }
+  Map<OrderItem,List<FulfillmentGroupItem>> oiFgiMap=new HashMap<OrderItem,List<FulfillmentGroupItem>>();
+  for (  OrderItem oi : order.getOrderItems()) {
+    List<FulfillmentGroupItem> fgis=new ArrayList<FulfillmentGroupItem>();
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      for (      FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
+        if (fgi.getOrderItem().equals(oi)) {
+          fgis.add(fgi);
+        }
+      }
+    }
+    oiFgiMap.put(oi,fgis);
+  }
+  for (  Entry<OrderItem,List<FulfillmentGroupItem>> entry : oiFgiMap.entrySet()) {
+    order.getOrderItems().remove(entry.getKey());
+    OrderItem savedOi=orderItemService.saveOrderItem(entry.getKey());
+    order.getOrderItems().add(savedOi);
+    for (    FulfillmentGroupItem fgi : entry.getValue()) {
+      fgi.setOrderItem(savedOi);
+    }
+  }
+  preSaveOperation(request);
   order=orderService.save(order,request.isPriceOrder());
   request.setOrder(order);
   return context;

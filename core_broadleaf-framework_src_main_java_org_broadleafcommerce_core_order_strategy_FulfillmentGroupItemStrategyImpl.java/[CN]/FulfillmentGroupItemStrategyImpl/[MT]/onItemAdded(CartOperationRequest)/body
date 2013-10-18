@@ -1,6 +1,6 @@
 {
   Order order=request.getOrder();
-  OrderItem orderItem=request.getAddedOrderItem();
+  OrderItem orderItem=request.getOrderItem();
   Map<FulfillmentType,FulfillmentGroup> fulfillmentGroups=new HashMap<FulfillmentType,FulfillmentGroup>();
   FulfillmentGroup nullFulfillmentTypeGroup=null;
   if (order.getFulfillmentGroups() != null) {
@@ -35,11 +35,9 @@
         fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
         fulfillmentGroup.setType(type);
         fulfillmentGroup.setOrder(order);
-        fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
         order.getFulfillmentGroups().add(fulfillmentGroup);
       }
       fulfillmentGroup=addItemToFulfillmentGroup(order,doi,doi.getQuantity() * orderItem.getQuantity(),fulfillmentGroup);
-      order=fulfillmentGroup.getOrder();
     }
   }
  else   if (orderItem instanceof DiscreteOrderItem) {
@@ -59,23 +57,18 @@
       fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
       fulfillmentGroup.setType(type);
       fulfillmentGroup.setOrder(order);
-      fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
       order.getFulfillmentGroups().add(fulfillmentGroup);
     }
     fulfillmentGroup=addItemToFulfillmentGroup(order,(DiscreteOrderItem)orderItem,fulfillmentGroup);
-    order=fulfillmentGroup.getOrder();
   }
  else {
     FulfillmentGroup fulfillmentGroup=nullFulfillmentTypeGroup;
     if (fulfillmentGroup == null) {
       fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
       fulfillmentGroup.setOrder(order);
-      fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
       order.getFulfillmentGroups().add(fulfillmentGroup);
     }
     fulfillmentGroup=addItemToFulfillmentGroup(order,orderItem,fulfillmentGroup);
-    order=fulfillmentGroup.getOrder();
   }
-  request.setOrder(order);
   return request;
 }

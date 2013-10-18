@@ -1,14 +1,14 @@
 {
   Order order=request.getOrder();
-  OrderItem orderItem=orderItemService.readOrderItemById(request.getItemRequest().getOrderItemId());
+  OrderItem orderItem=request.getOrderItem();
   if (orderItem instanceof BundleOrderItem) {
     List<OrderItem> itemsToRemove=new ArrayList<OrderItem>(((BundleOrderItem)orderItem).getDiscreteOrderItems());
     for (    OrderItem oi : itemsToRemove) {
-      fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,oi);
+      request.getFgisToDelete().addAll(fulfillmentGroupService.getFulfillmentGroupItemsForOrderItem(order,oi));
     }
   }
  else {
-    fulfillmentGroupService.removeOrderItemFromFullfillmentGroups(order,orderItem);
+    request.getFgisToDelete().addAll(fulfillmentGroupService.getFulfillmentGroupItemsForOrderItem(order,orderItem));
   }
   return request;
 }

@@ -4,7 +4,7 @@
   Integer orderItemQuantityDelta=request.getOrderItemQuantityDelta();
   if (orderItemQuantityDelta < 0) {
     int numToDelete=-1 * orderItemQuantityDelta;
-    OrderItem orderItem=orderItemService.readOrderItemById(orderItemId);
+    OrderItem orderItem=request.getOrderItem();
     int qty=0;
     if (!CollectionUtils.isEmpty(orderItem.getOrder().getFulfillmentGroups())) {
       FulfillmentGroup fg=orderItem.getOrder().getFulfillmentGroups().get(0);
@@ -17,7 +17,7 @@
       }
     }
     if (numToDelete >= qty) {
-      orderMultishipOptionService.deleteOrderItemOrderMultishipOptions(orderItemId,numToDelete - qty);
+      request.getMultishipOptionsToDelete().add(new Long[]{orderItemId,(long)(numToDelete - qty)});
     }
   }
   return context;
