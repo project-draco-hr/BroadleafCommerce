@@ -94,7 +94,9 @@
       fieldMetadataOverride.setValuePropertyFriendlyName(stringValue);
     }
  else {
-      throw new IllegalArgumentException("Unrecognized type: " + entry.getKey());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Unrecognized type: " + entry.getKey() + ". Not setting on map field.");
+      }
     }
   }
   return fieldMetadataOverride;
