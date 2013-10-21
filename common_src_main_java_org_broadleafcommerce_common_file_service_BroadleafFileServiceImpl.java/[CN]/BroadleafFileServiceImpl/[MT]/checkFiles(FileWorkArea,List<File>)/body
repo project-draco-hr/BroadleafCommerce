@@ -1,0 +1,11 @@
+{
+  for (  File file : fileList) {
+    String fileName=file.getAbsolutePath();
+    if (!fileName.startsWith(workArea.getFilePathLocation())) {
+      throw new FileServiceException("File operation attempted on file that is not in provided work area. " + fileName + ".  Work area = "+ workArea.getFilePathLocation());
+    }
+    if (!file.exists()) {
+      throw new FileServiceException("Add or Update Resource called with filename that does not exist.  " + fileName);
+    }
+  }
+}
