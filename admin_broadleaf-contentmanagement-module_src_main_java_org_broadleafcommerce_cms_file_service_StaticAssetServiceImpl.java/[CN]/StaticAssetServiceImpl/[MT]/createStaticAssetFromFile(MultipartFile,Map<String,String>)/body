@@ -7,10 +7,13 @@
   int count=0;
   while (newAsset != null) {
     count++;
-    newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl + "-" + count,null);
+    newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false),null);
+    if (newAsset == null) {
+      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true),null);
+    }
   }
   if (count > 0) {
-    fullUrl=fullUrl + "-" + count;
+    fullUrl=getCountUrl(fullUrl,count,false);
   }
   try {
     ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(file.getInputStream());
