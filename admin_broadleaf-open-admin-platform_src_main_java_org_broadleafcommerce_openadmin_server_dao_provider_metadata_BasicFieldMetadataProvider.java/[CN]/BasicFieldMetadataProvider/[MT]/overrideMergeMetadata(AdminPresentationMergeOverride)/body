@@ -119,7 +119,9 @@
       fieldMetadataOverride.setOptionFilterValues(params);
     }
  else {
-      throw new IllegalArgumentException("Unrecognized type: " + entry.getKey());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Unrecognized type: " + entry.getKey() + ". Not setting on basic field.");
+      }
     }
   }
   return fieldMetadataOverride;
