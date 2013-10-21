@@ -1,14 +1,11 @@
 {
-  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
-  def.setName("saveOrder");
-  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-  TransactionStatus status=transactionManager.getTransaction(def);
+  TransactionStatus status=TransactionUtils.createTransaction("saveOrder",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager);
   try {
     order=persist(order);
-    finalizeTransaction(status,false);
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
   }
  catch (  RuntimeException ex) {
-    finalizeTransaction(status,true);
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
     throw ex;
   }
   if (priceOrder) {
@@ -67,16 +64,13 @@
         }
       }
     }
-    def=new DefaultTransactionDefinition();
-    def.setName("saveOrder");
-    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-    status=transactionManager.getTransaction(def);
+    status=TransactionUtils.createTransaction("saveOrder",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager);
     try {
       order=persist(order);
-      finalizeTransaction(status,false);
+      TransactionUtils.finalizeTransaction(status,transactionManager,false);
     }
  catch (    RuntimeException ex) {
-      finalizeTransaction(status,true);
+      TransactionUtils.finalizeTransaction(status,transactionManager,true);
       throw ex;
     }
   }

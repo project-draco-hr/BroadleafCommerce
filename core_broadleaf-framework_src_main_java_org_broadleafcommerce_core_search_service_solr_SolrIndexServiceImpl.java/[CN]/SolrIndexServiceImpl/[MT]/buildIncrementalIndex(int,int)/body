@@ -1,9 +1,5 @@
 {
-  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
-  def.setName("saveOrder");
-  def.setReadOnly(true);
-  def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-  TransactionStatus status=transactionManager.getTransaction(def);
+  TransactionStatus status=TransactionUtils.createTransaction("readProducts",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
   if (LOG.isDebugEnabled()) {
     LOG.debug(String.format("Building index - page: [%s], pageSize: [%s]",page,pageSize));
   }
@@ -25,18 +21,18 @@
       SolrContext.getReindexServer().add(documents);
       SolrContext.getReindexServer().commit();
     }
-    finalizeTransaction(status,false);
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
   }
  catch (  SolrServerException e) {
-    finalizeTransaction(status,true);
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
     throw new ServiceException("Could not rebuild index",e);
   }
 catch (  IOException e) {
-    finalizeTransaction(status,true);
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
     throw new ServiceException("Could not rebuild index",e);
   }
 catch (  RuntimeException e) {
-    finalizeTransaction(status,true);
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
     throw e;
   }
   if (LOG.isDebugEnabled()) {

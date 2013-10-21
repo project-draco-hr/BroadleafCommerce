@@ -9,18 +9,6 @@
     List<Serializable> records=helper.getPersistentRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
     Entity[] payload=helper.getRecords(originalProps,records);
     int totalRecords=helper.getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
-    ClassMetadata metadata=new ClassMetadata();
-    if (cto.get("product").getFilterValues().size() > 0) {
-      Long productId=Long.parseLong(cto.get("product").getFilterValues().get(0));
-      Product product=catalogService.findProductById(productId);
-      List<Property> properties=new ArrayList<Property>();
-      for (      ProductOption option : product.getProductOptions()) {
-        Property optionProperty=new Property();
-        optionProperty.setName(PRODUCT_OPTION_FIELD_PREFIX + option.getId());
-        properties.add(optionProperty);
-      }
-      metadata.setProperties(properties.toArray(new Property[0]));
-    }
     for (int i=0; i < records.size(); i++) {
       Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
@@ -38,7 +26,7 @@
         entity.addProperty(getBlankConsolidatedOptionProperty());
       }
     }
-    return new DynamicResultSet(metadata,payload,totalRecords);
+    return new DynamicResultSet(payload,totalRecords);
   }
  catch (  Exception e) {
     throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
