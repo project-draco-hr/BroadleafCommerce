@@ -75,7 +75,9 @@
       fieldMetadataOverride.setUseServerSideInspectionCache(StringUtils.isEmpty(stringValue) ? entry.getValue().booleanOverrideValue() : Boolean.parseBoolean(stringValue));
     }
  else {
-      throw new IllegalArgumentException("Unrecognized type: " + entry.getKey());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Unrecognized type: " + entry.getKey() + ". Not setting on adorned target field.");
+      }
     }
   }
   return fieldMetadataOverride;
