@@ -34,26 +34,47 @@
     }
   }
   Map<OrderItem,List<FulfillmentGroupItem>> oiFgiMap=new HashMap<OrderItem,List<FulfillmentGroupItem>>();
+  Map<OrderItem,OrderItem> savedOrderItems=new HashMap<OrderItem,OrderItem>();
   for (  OrderItem oi : order.getOrderItems()) {
-    List<FulfillmentGroupItem> fgis=new ArrayList<FulfillmentGroupItem>();
-    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
-      for (      FulfillmentGroupItem fgi : fg.getFulfillmentGroupItems()) {
-        if (fgi.getOrderItem().equals(oi)) {
-          fgis.add(fgi);
-        }
+    if (oi instanceof BundleOrderItem) {
+      for (      OrderItem doi : ((BundleOrderItem)oi).getDiscreteOrderItems()) {
+        getOiFgiMap(order,oiFgiMap,doi);
+        savedOrderItems.put(doi,orderItemService.saveOrderItem(doi));
       }
     }
-    oiFgiMap.put(oi,fgis);
+ else {
+      getOiFgiMap(order,oiFgiMap,oi);
+    }
+    savedOrderItems.put(oi,orderItemService.saveOrderItem(oi));
+  }
+  for (  Entry<OrderItem,OrderItem> entry : savedOrderItems.entrySet()) {
+    if (entry.getKey() instanceof BundleOrderItem) {
+      order.getOrderItems().remove(entry.getKey());
+      order.getOrderItems().add(savedOrderItems.get(entry.getKey()));
+    }
+  }
+  for (  Entry<OrderItem,OrderItem> entry : savedOrderItems.entrySet()) {
+    if (!(entry.getKey() instanceof BundleOrderItem)) {
+      if (entry.getKey() instanceof DiscreteOrderItem && ((DiscreteOrderItem)entry.getKey()).getBundleOrderItem() != null) {
+        DiscreteOrderItem doi=(DiscreteOrderItem)entry.getKey();
+        DiscreteOrderItem savedDoi=(DiscreteOrderItem)entry.getValue();
+        BundleOrderItem containingSavedBundle=(BundleOrderItem)savedOrderItems.get(doi.getBundleOrderItem());
+        containingSavedBundle.getDiscreteOrderItems().remove(doi);
+        containingSavedBundle.getDiscreteOrderItems().add(savedDoi);
+        savedDoi.setBundleOrderItem(containingSavedBundle);
+      }
+ else {
+        order.getOrderItems().remove(entry.getKey());
+        order.getOrderItems().add(entry.getValue());
+      }
+    }
   }
   for (  Entry<OrderItem,List<FulfillmentGroupItem>> entry : oiFgiMap.entrySet()) {
-    order.getOrderItems().remove(entry.getKey());
-    OrderItem savedOi=orderItemService.saveOrderItem(entry.getKey());
-    order.getOrderItems().add(savedOi);
     if (entry.getKey() == request.getOrderItem()) {
-      request.setOrderItem(savedOi);
+      request.setOrderItem(savedOrderItems.get(entry.getKey()));
     }
     for (    FulfillmentGroupItem fgi : entry.getValue()) {
-      fgi.setOrderItem(savedOi);
+      fgi.setOrderItem(savedOrderItems.get(entry.getKey()));
     }
   }
   for (  OrderItem oi : order.getOrderItems()) {
