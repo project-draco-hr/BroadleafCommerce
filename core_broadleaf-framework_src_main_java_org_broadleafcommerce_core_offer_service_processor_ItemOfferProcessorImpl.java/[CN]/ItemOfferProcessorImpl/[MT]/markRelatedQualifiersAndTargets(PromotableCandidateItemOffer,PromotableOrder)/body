@@ -1,0 +1,44 @@
+{
+  for (  Entry<OfferItemCriteria,List<PromotableOrderItem>> entry : itemOffer.getCandidateQualifiersMap().entrySet()) {
+    OfferItemCriteria itemCriteria=entry.getKey();
+    List<PromotableOrderItem> promotableItems=entry.getValue();
+    List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
+    Collections.sort(priceDetails,getQualifierItemComparator(itemOffer.getOffer().getApplyDiscountToSalePrice()));
+    int qualifierQtyNeeded=itemCriteria.getQuantity();
+    for (    PromotableOrderItemPriceDetail detail : priceDetails) {
+      OrderItem oi=detail.getPromotableOrderItem().getOrderItem();
+      if (qualifierQtyNeeded > 0) {
+        int itemQtyAvailableToBeUsedAsQualifier=detail.getQuantityAvailableToBeUsedAsQualifier(itemOffer);
+        if (itemQtyAvailableToBeUsedAsQualifier > 0) {
+          OfferItemCriteria previousQualifierCriteria=null;
+          for (          PromotionQualifier possibleQualifier : detail.getPromotionQualifiers()) {
+            if (possibleQualifier.getPromotion().equals(itemOffer.getOffer())) {
+              previousQualifierCriteria=possibleQualifier.getItemCriteria();
+              break;
+            }
+          }
+          int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
+          qualifierQtyNeeded-=qtyToMarkAsQualifier;
+          PromotionQualifier pq=detail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
+          if (!markTargets(itemOffer,order,oi)) {
+            qualifierQtyNeeded+=qtyToMarkAsQualifier;
+            if (pq.getQuantity() == qtyToMarkAsQualifier) {
+              detail.getPromotionQualifiers().remove(pq);
+            }
+ else {
+              pq.setItemCriteria(previousQualifierCriteria);
+              pq.setQuantity(pq.getQuantity() - qtyToMarkAsQualifier);
+            }
+          }
+        }
+      }
+      if (qualifierQtyNeeded == 0) {
+        break;
+      }
+    }
+    if (qualifierQtyNeeded != 0) {
+      return false;
+    }
+  }
+  return true;
+}

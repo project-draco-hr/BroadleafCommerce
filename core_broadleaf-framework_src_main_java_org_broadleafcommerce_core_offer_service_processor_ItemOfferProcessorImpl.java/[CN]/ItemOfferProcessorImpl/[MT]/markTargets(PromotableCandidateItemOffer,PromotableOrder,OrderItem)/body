@@ -6,9 +6,22 @@
   for (  OfferItemCriteria targetCriteria : itemOffer.getOffer().getTargetItemCriteria()) {
     receiveQtyNeeded+=targetCriteria.getQuantity();
   }
+  OrderItem relatedQualifierRoot=null;
+  if (relatedQualifier != null) {
+    relatedQualifierRoot=relatedQualifier;
+    while (relatedQualifierRoot.getParentOrderItem() != null) {
+      relatedQualifierRoot=relatedQualifierRoot.getParentOrderItem();
+    }
+  }
   Collections.sort(priceDetails,getTargetItemComparator(promotion.getApplyDiscountToSalePrice()));
   for (  PromotableOrderItemPriceDetail priceDetail : priceDetails) {
     if (receiveQtyNeeded > 0) {
+      if (relatedQualifier != null) {
+        OrderItem thisItem=priceDetail.getPromotableOrderItem().getOrderItem();
+        if (!relatedQualifierRoot.isAParentOf(thisItem) && !thisItem.isAParentOf(relatedQualifierRoot) && !thisItem.equals(relatedQualifierRoot)) {
+          continue;
+        }
+      }
       int itemQtyAvailableToBeUsedAsTarget=priceDetail.getQuantityAvailableToBeUsedAsTarget(itemOffer);
       if (itemQtyAvailableToBeUsedAsTarget > 0) {
         if ((promotion.getMaxUses() == 0) || (itemOffer.getUses() < promotion.getMaxUses())) {

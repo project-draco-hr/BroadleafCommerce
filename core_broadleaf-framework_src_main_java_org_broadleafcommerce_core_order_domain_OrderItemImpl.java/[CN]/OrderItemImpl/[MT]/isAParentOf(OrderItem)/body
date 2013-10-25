@@ -1,0 +1,15 @@
+{
+  if (CollectionUtils.isNotEmpty(this.getChildOrderItems())) {
+    for (    OrderItem child : this.getChildOrderItems()) {
+      if (child.equals(candidateChild)) {
+        return true;
+      }
+    }
+    for (    OrderItem child : this.getChildOrderItems()) {
+      if (child.isAParentOf(candidateChild)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}

@@ -5,8 +5,17 @@
   }
   int count=1;
   do {
-    boolean qualifiersFound=markQualifiers(itemOffer,order);
-    boolean targetsFound=markTargets(itemOffer,order);
+    boolean qualifiersFound=false;
+    boolean targetsFound=false;
+    if (itemOffer.getOffer().getRequiresRelatedTargetAndQualifiers()) {
+      boolean qualifiersAndTargetsFound=markRelatedQualifiersAndTargets(itemOffer,order);
+      qualifiersFound=qualifiersAndTargetsFound;
+      targetsFound=qualifiersAndTargetsFound;
+    }
+ else {
+      qualifiersFound=markQualifiers(itemOffer,order);
+      targetsFound=markTargets(itemOffer,order,null);
+    }
     if (qualifiersFound && targetsFound) {
       finalizeQuantities(order.getAllPromotableOrderItemPriceDetails());
     }
