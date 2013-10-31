@@ -9,7 +9,11 @@
       envPrefix=getStaticAssetEnvironmentUrlPrefix();
     }
     if (envPrefix != null) {
-      returnValue=returnValue.replaceAll(getStaticAssetUrlPrefix(),envPrefix);
+      String trailing="";
+      if (envPrefix.endsWith("/")) {
+        trailing="/";
+      }
+      returnValue=returnValue.replaceAll(getStaticAssetUrlPrefix() + trailing,envPrefix);
       returnValue=returnValue.replaceAll("/" + envPrefix,envPrefix);
     }
   }
