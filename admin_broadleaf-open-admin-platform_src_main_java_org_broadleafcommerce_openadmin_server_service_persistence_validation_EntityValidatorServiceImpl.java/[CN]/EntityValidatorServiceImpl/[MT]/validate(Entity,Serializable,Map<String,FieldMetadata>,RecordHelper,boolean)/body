@@ -24,6 +24,9 @@ catch (    FieldNotAvailableException e) {
     FieldMetadata metadata=metadataEntry.getValue();
     if (types.contains(metadata.getInheritedFromType())) {
       Property property=entity.getPMap().get(metadataEntry.getKey());
+      if (!validateUnsubmittedProperties && property == null) {
+        continue;
+      }
       String propertyName=metadataEntry.getKey();
       String propertyValue=(property == null) ? null : property.getValue();
       if (metadata instanceof BasicFieldMetadata) {
