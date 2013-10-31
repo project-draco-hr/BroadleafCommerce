@@ -1,10 +1,9 @@
 {
   TransactionStatus status=TransactionUtils.createTransaction("createSandBox",TransactionDefinition.PROPAGATION_REQUIRES_NEW,transactionManager);
   try {
-    SandBox approvalSandbox=retrieveNamedSandBox(site,sandBoxType,sandBoxName);
+    SandBox approvalSandbox=retrieveNamedSandBox(sandBoxType,sandBoxName);
     if (approvalSandbox == null) {
       approvalSandbox=new SandBoxImpl();
-      approvalSandbox.setSite(site);
       approvalSandbox.setName(sandBoxName);
       approvalSandbox.setSandBoxType(sandBoxType);
       approvalSandbox=persist(approvalSandbox);

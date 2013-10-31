@@ -39,7 +39,7 @@
       LOG.error("Current user does not have permission to perform operation",e);
       throw e;
     }
-    SandBox mySandBox=sandBoxService.retrieveUserSandBox(null,adminUser);
+    SandBox mySandBox=sandBoxService.retrieveUserSandBox(adminUser);
     SandBox approvalSandBox=sandBoxService.retrieveApprovalSandBox(mySandBox);
     if (operation.equals("releaseAll")) {
       sandBoxService.revertAllSandBoxItems(mySandBox,approvalSandBox);

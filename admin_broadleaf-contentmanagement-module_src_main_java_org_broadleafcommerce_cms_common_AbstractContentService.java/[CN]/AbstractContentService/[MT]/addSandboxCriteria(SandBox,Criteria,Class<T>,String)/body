@@ -2,13 +2,7 @@
   Criterion originalSandboxExpression=Restrictions.eq("originalSandBox",sandbox);
   Criterion currentSandboxExpression=Restrictions.eq("sandbox",sandbox);
   Criterion userSandboxExpression=Restrictions.or(currentSandboxExpression,originalSandboxExpression);
-  Criterion productionSandboxExpression=null;
-  if (sandbox.getSite() == null || sandbox.getSite().getProductionSandbox() == null) {
-    productionSandboxExpression=Restrictions.isNull("sandbox");
-  }
- else {
-    productionSandboxExpression=Restrictions.eq("sandbox",sandbox.getSite().getProductionSandbox());
-  }
+  Criterion productionSandboxExpression=Restrictions.isNull("sandbox");
   if (productionSandboxExpression != null) {
     c.add(Restrictions.or(userSandboxExpression,productionSandboxExpression));
   }

@@ -3,12 +3,7 @@
     throw new IllegalArgumentException("Unable to update a locked record");
   }
   if (automaticallyApproveAndPromoteStaticAssets) {
-    if (destSandbox != null && destSandbox.getSite() != null) {
-      destSandbox=destSandbox.getSite().getProductionSandbox();
-    }
- else {
-      destSandbox=null;
-    }
+    destSandbox=null;
   }
   if (checkForSandboxMatch(staticAsset.getSandbox(),destSandbox)) {
     if (staticAsset.getDeletedFlag()) {
