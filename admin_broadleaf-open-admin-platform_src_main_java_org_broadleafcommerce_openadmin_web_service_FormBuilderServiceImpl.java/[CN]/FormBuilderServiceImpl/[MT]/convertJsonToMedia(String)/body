@@ -3,11 +3,11 @@
     try {
       ObjectMapper om=new ObjectMapper();
       om.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-      return om.readValue(json,MediaDto.class);
+      return om.readValue(json,entityConfiguration.lookupEntityClass(MediaDto.class.getName(),MediaDto.class));
     }
  catch (    Exception e) {
       LOG.warn("Error parsing json to media " + json,e);
     }
   }
-  return new MediaDto();
+  return entityConfiguration.createEntityInstance(MediaDto.class.getName(),MediaDto.class);
 }
