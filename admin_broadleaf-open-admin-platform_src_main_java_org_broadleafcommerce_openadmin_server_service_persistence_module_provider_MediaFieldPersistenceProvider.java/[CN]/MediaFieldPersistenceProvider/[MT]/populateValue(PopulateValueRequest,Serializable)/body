@@ -2,7 +2,6 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
-  boolean dirty=false;
   try {
     Class<?> valueType=null;
     if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
@@ -29,30 +28,12 @@
  catch (      FieldNotAvailableException e) {
         throw new IllegalArgumentException(e);
       }
-      boolean persist=false;
       if (media == null) {
         media=(Media)valueType.newInstance();
-        persist=true;
       }
-      Map description=BeanUtils.describe(media);
-      for (      Object temp : description.keySet()) {
-        String property=(String)temp;
-        if (!property.equals("id")) {
-          String prop1=String.valueOf(description.get(property));
-          String prop2=String.valueOf(BeanUtils.getProperty(newMedia,property));
-          if (!prop1.equals(prop2)) {
-            dirty=true;
-            break;
-          }
-        }
-      }
-      if (dirty) {
-        updateMediaFields(media,newMedia);
-        if (persist) {
-          populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
-        }
-        populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
-      }
+      updateMediaFields(media,newMedia);
+      populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
+      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
     }
  else {
       throw new UnsupportedOperationException("MediaFields only work with Media types.");
@@ -61,6 +42,5 @@
  catch (  Exception e) {
     throw new PersistenceException(e);
   }
-  populateValueRequest.getProperty().setIsDirty(dirty);
   return FieldProviderResponse.HANDLED;
 }
