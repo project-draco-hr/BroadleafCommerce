@@ -1,9 +1,7 @@
 {
   this.webRequest=webRequest;
-  if (this.request == null) {
-    if (webRequest instanceof ServletWebRequest) {
-      setRequest(((ServletWebRequest)webRequest).getRequest());
-      setResponse(((ServletWebRequest)webRequest).getResponse());
-    }
+  if (webRequest instanceof ServletWebRequest) {
+    this.request=((ServletWebRequest)webRequest).getRequest();
+    setResponse(((ServletWebRequest)webRequest).getResponse());
   }
 }
