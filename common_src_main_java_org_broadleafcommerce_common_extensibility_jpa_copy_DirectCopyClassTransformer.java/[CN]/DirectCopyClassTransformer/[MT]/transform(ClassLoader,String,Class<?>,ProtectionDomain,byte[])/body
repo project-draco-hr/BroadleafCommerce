@@ -1,12 +1,76 @@
 {
-  String convertedClassName=className.replace('/','.');
-  if (xformTemplates.containsKey(convertedClassName)) {
+  try {
+    boolean mySkipOverlaps=skipOverlaps;
+    boolean myRenameMethodOverlaps=renameMethodOverlaps;
+    String convertedClassName=className.replace('/','.');
+    ClassPool classPool=null;
+    CtClass clazz=null;
     String xformKey=convertedClassName;
-    String[] xformVals=xformTemplates.get(xformKey).split(",");
-    logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
-    try {
-      ClassPool classPool=ClassPool.getDefault();
-      CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+    String[] xformVals=null;
+    if (!xformTemplates.isEmpty()) {
+      if (xformTemplates.containsKey(xformKey)) {
+        xformVals=xformTemplates.get(xformKey).split(",");
+        classPool=ClassPool.getDefault();
+        clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+      }
+    }
+ else {
+      if (annotationTransformedClasses.contains(convertedClassName)) {
+        logger.warn(convertedClassName + " has already been transformed by a previous instance of DirectCopyTransfomer. " + "Skipping this annotation based transformation. Generally, annotation-based transformation is handled "+ "by bean id blAnnotationDirectCopyClassTransformer with template tokens being added to "+ "blDirectCopyTransformTokenMap via EarlyStageMergeBeanPostProcessor.");
+      }
+      boolean isValidPattern=true;
+      for (      String pattern : ignorePatterns) {
+        isValidPattern=!convertedClassName.matches(pattern);
+        if (!isValidPattern) {
+          return null;
+        }
+      }
+      if (isValidPattern) {
+        classPool=ClassPool.getDefault();
+        clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+        List<?> attributes=clazz.getClassFile().getAttributes();
+        Iterator<?> itr=attributes.iterator();
+        List<String> templates=new ArrayList<String>();
+        check: {
+          while (itr.hasNext()) {
+            Object object=itr.next();
+            if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+              AnnotationsAttribute attr=(AnnotationsAttribute)object;
+              Annotation[] items=attr.getAnnotations();
+              for (              Annotation annotation : items) {
+                String typeName=annotation.getTypeName();
+                if (typeName.equals(DirectCopyTransform.class.getName())) {
+                  ArrayMemberValue arrayMember=(ArrayMemberValue)annotation.getMemberValue("value");
+                  for (                  MemberValue arrayMemberValue : arrayMember.getValue()) {
+                    AnnotationMemberValue member=(AnnotationMemberValue)arrayMemberValue;
+                    Annotation memberAnnot=member.getValue();
+                    ArrayMemberValue annot=(ArrayMemberValue)memberAnnot.getMemberValue("templateTokens");
+                    for (                    MemberValue memberValue : annot.getValue()) {
+                      String val=((StringMemberValue)memberValue).getValue();
+                      if (val != null && templateTokens.containsKey(val)) {
+                        templates.add(templateTokens.get(val));
+                      }
+                    }
+                    BooleanMemberValue skipAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("skipOverlaps");
+                    if (skipAnnot != null) {
+                      mySkipOverlaps=skipAnnot.getValue();
+                    }
+                    BooleanMemberValue renameAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("renameMethodOverlaps");
+                    if (renameAnnot != null) {
+                      myRenameMethodOverlaps=renameAnnot.getValue();
+                    }
+                    xformVals=templates.toArray(new String[templates.size()]);
+                  }
+                  break check;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    if (xformVals != null && xformVals.length > 0) {
+      logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
       clazz.defrost();
       for (      String xformVal : xformVals) {
         String trimmed=xformVal.trim();
@@ -14,8 +78,21 @@
         CtClass template=classPool.get(trimmed);
         CtClass[] interfacesToCopy=template.getInterfaces();
         for (        CtClass i : interfacesToCopy) {
-          logger.debug(String.format("Adding interface [%s]",i.getName()));
-          clazz.addInterface(i);
+          checkInterfaces: {
+            CtClass[] myInterfaces=clazz.getInterfaces();
+            for (            CtClass myInterface : myInterfaces) {
+              if (myInterface.getName().equals(i.getName())) {
+                if (mySkipOverlaps) {
+                  break checkInterfaces;
+                }
+ else {
+                  throw new RuntimeException("Duplicate interface detected " + myInterface.getName());
+                }
+              }
+            }
+            logger.debug(String.format("Adding interface [%s]",i.getName()));
+            clazz.addInterface(i);
+          }
         }
         CtField[] fieldsToCopy=template.getDeclaredFields();
         for (        CtField field : fieldsToCopy) {
@@ -23,6 +100,15 @@
             logger.debug(String.format("Not adding field [%s]",field.getName()));
           }
  else {
+            try {
+              clazz.getDeclaredField(field.getName());
+              if (mySkipOverlaps) {
+                logger.debug(String.format("Skipping overlapped field [%s]",field.getName()));
+                continue;
+              }
+            }
+ catch (            NotFoundException e) {
+            }
             logger.debug(String.format("Adding field [%s]",field.getName()));
             CtField copiedField=new CtField(field,clazz);
             boolean defaultConstructorFound=false;
@@ -57,6 +143,10 @@
             try {
               CtClass[] paramTypes=method.getParameterTypes();
               CtMethod originalMethod=clazz.getDeclaredMethod(method.getName(),paramTypes);
+              if (mySkipOverlaps) {
+                logger.debug(String.format("Skipping overlapped method [%s]",methodDescription(originalMethod)));
+                continue;
+              }
               if (transformedMethods.contains(methodDescription(originalMethod))) {
                 throw new RuntimeException("Method already replaced " + methodDescription(originalMethod));
               }
@@ -65,7 +155,7 @@
                 transformedMethods.add(methodDescription(originalMethod));
               }
               logger.debug(String.format("Removing method [%s]",method.getName()));
-              if (renameMethodOverlaps) {
+              if (myRenameMethodOverlaps) {
                 originalMethod.setName(renameMethodPrefix + method.getName());
               }
  else {
@@ -80,12 +170,19 @@
           }
         }
       }
+      if (xformTemplates.isEmpty()) {
+        annotationTransformedClasses.add(convertedClassName);
+      }
       logger.lifecycle(LifeCycleEvent.END,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
       return clazz.toBytecode();
     }
- catch (    Exception e) {
-      throw new RuntimeException("Unable to transform class",e);
-    }
+  }
+ catch (  ClassCircularityError error) {
+    error.printStackTrace();
+    throw error;
+  }
+catch (  Exception e) {
+    throw new RuntimeException("Unable to transform class",e);
   }
   return null;
 }
