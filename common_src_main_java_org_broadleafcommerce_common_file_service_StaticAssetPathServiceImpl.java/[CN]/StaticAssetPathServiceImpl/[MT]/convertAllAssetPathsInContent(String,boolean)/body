@@ -1,0 +1,21 @@
+{
+  String returnValue=content;
+  if (StringUtils.isNotBlank(content) && StringUtils.isNotBlank(getStaticAssetUrlPrefix()) && StringUtils.isNotBlank(getStaticAssetEnvironmentUrlPrefix())&& content.contains(getStaticAssetUrlPrefix())) {
+    final String envPrefix;
+    if (secureRequest) {
+      envPrefix=getStaticAssetEnvironmentSecureUrlPrefix();
+    }
+ else {
+      envPrefix=getStaticAssetEnvironmentUrlPrefix();
+    }
+    if (envPrefix != null) {
+      String trailing="";
+      if (envPrefix.endsWith("/")) {
+        trailing="/";
+      }
+      returnValue=returnValue.replaceAll(getStaticAssetUrlPrefix() + trailing,envPrefix);
+      returnValue=returnValue.replaceAll("/" + envPrefix,envPrefix);
+    }
+  }
+  return returnValue;
+}

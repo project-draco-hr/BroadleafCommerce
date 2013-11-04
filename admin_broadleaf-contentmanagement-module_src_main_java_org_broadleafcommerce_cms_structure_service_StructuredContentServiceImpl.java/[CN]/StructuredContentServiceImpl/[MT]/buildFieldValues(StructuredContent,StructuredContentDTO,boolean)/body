@@ -5,7 +5,7 @@
     StructuredContentField scf=sc.getStructuredContentFields().get(fieldKey);
     String originalValue=scf.getValue();
     if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
-      String fldValue=staticAssetPathService.convertAssetPath(originalValue,null,secure);
+      String fldValue=staticAssetPathService.convertAllAssetPathsInContent(originalValue,secure);
       scDTO.getValues().put(fieldKey,fldValue);
     }
  else {

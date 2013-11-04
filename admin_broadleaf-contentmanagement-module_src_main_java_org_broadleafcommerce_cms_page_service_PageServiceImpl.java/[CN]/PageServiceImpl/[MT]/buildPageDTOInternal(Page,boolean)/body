@@ -10,16 +10,12 @@
       pageDTO.setLocaleCode(page.getPageTemplate().getLocale().getLocaleCode());
     }
   }
-  String envPrefix=staticAssetService.getStaticAssetEnvironmentUrlPrefix();
-  if (envPrefix != null && secure) {
-    envPrefix=staticAssetService.getStaticAssetEnvironmentSecureUrlPrefix();
-  }
-  String cmsPrefix=staticAssetService.getStaticAssetUrlPrefix();
+  String cmsPrefix=staticAssetPathService.getStaticAssetUrlPrefix();
   for (  String fieldKey : page.getPageFields().keySet()) {
     PageField pf=page.getPageFields().get(fieldKey);
     String originalValue=pf.getValue();
-    if (StringUtils.isNotBlank(envPrefix) && StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix)&& originalValue.contains(cmsPrefix)) {
-      String fldValue=originalValue.replaceAll(cmsPrefix,envPrefix + cmsPrefix);
+    if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
+      String fldValue=staticAssetPathService.convertAllAssetPathsInContent(originalValue,secure);
       pageDTO.getPageFields().put(fieldKey,fldValue);
     }
  else {
