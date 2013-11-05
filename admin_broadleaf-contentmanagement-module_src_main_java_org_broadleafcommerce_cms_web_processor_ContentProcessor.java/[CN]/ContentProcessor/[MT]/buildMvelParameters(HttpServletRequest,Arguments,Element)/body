@@ -13,7 +13,9 @@
   mvelParameters.put("request",requestDto);
   String productString=element.getAttributeValue("product");
   if (productString != null) {
-    Object product=StandardExpressionProcessor.processExpression(arguments,productString);
+    final IStandardExpressionParser expressionParser=StandardExpressions.getExpressionParser(arguments.getConfiguration());
+    Expression expression=(Expression)expressionParser.parseExpression(arguments.getConfiguration(),arguments,productString);
+    Object product=expression.execute(arguments.getConfiguration(),arguments);
     if (product != null) {
       mvelParameters.put("product",product);
     }
