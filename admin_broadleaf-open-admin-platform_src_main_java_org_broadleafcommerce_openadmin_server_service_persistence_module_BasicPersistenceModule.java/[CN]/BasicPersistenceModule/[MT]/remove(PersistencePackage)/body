@@ -24,8 +24,8 @@ case NONDESTRUCTIVEREMOVE:
         if (SupportedFieldType.FOREIGN_KEY == ((BasicFieldMetadata)mergedProperties.get(originalPropertyName)).getFieldType()) {
           String value=property.getValue();
           Serializable foreignInstance=persistenceManager.getDynamicEntityDao().retrieve(Class.forName(foreignKey.getForeignKeyClass()),Long.valueOf(value));
-          Collection collection=(Collection)fieldManager.getFieldValue(instance,property.getName());
-          collection.remove(foreignInstance);
+          Collection collection=(Collection)fieldManager.getFieldValue(foreignInstance,foreignKey.getOriginatingField());
+          collection.remove(instance);
           break;
         }
       }
