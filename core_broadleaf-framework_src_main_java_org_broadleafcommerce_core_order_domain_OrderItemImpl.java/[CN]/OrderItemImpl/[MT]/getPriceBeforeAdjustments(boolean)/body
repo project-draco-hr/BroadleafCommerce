@@ -1,5 +1,12 @@
 {
-  if (allowSalesPrice) {
+  boolean retailPriceOverride=false;
+  for (  OrderItemPriceDetail oipd : getOrderItemPriceDetails()) {
+    if (oipd.getUseSalePrice() == false) {
+      retailPriceOverride=true;
+      break;
+    }
+  }
+  if (allowSalesPrice && !retailPriceOverride) {
     return getSalePrice();
   }
  else {
