@@ -20,5 +20,7 @@
  else {
     responseMap.put("image",Boolean.FALSE);
   }
-  return responseMap;
+  HttpHeaders responseHeaders=new HttpHeaders();
+  responseHeaders.add("Content-Type","text/html; charset=utf-8");
+  return new ResponseEntity<String>(new ObjectMapper().writeValueAsString(responseMap),responseHeaders,HttpStatus.OK);
 }
