@@ -8,7 +8,7 @@
     Money saleAdjustmentPrice=calculateSaleAdjustmentUnitPrice();
     Money retailAdjustmentPrice=calculateRetailAdjustmentUnitPrice();
     if (promotableOrderItem.isOnSale()) {
-      if (saleAdjustmentPrice.lessThan(retailAdjustmentPrice)) {
+      if (saleAdjustmentPrice.lessThanOrEqual(retailAdjustmentPrice)) {
         this.useSaleAdjustments=Boolean.TRUE;
         adjustedTotal=saleAdjustmentPrice;
       }

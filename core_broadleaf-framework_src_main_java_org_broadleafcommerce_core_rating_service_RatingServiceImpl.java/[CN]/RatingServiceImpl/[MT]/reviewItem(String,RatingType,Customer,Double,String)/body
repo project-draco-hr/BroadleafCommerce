@@ -1,11 +1,11 @@
 {
   RatingSummary ratingSummary=this.readRatingSummary(itemId,type);
   if (ratingSummary == null) {
-    ratingSummary=new RatingSummaryImpl(itemId,type);
+    ratingSummary=ratingSummaryDao.createSummary(itemId,type);
   }
   RatingDetail ratingDetail=ratingSummaryDao.readRating(customer.getId(),ratingSummary.getId());
   if (ratingDetail == null) {
-    ratingDetail=new RatingDetailImpl(ratingSummary,rating,SystemTime.asDate(),customer);
+    ratingDetail=ratingSummaryDao.createDetail(ratingSummary,rating,SystemTime.asDate(),customer);
   }
  else {
     ratingDetail.setRating(rating);

@@ -1,22 +1,3 @@
 {
-  boolean totalitarianOfferApplied=false;
-  for (  PromotableOrderAdjustment adjustment : candidateOrderOfferAdjustments) {
-    if (adjustment.isTotalitarian()) {
-      totalitarianOfferApplied=true;
-      break;
-    }
-  }
-  if (!totalitarianOfferApplied) {
-    for (    PromotableOrderItemPriceDetail itemPriceDetail : getAllPromotableOrderItemPriceDetails()) {
-      totalitarianOfferApplied=itemPriceDetail.isTotalitarianOfferApplied();
-    }
-  }
-  if (!totalitarianOfferApplied) {
-    for (    PromotableFulfillmentGroup fg : getFulfillmentGroups()) {
-      if (fg.isTotalitarianOfferApplied()) {
-        return true;
-      }
-    }
-  }
-  return totalitarianOfferApplied;
+  return isTotalitarianFgOfferApplied() || isTotalitarianItemOfferApplied() || isTotalitarianOrderOfferApplied();
 }
