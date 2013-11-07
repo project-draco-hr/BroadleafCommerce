@@ -17,14 +17,17 @@ catch (      UpdateCartException e) {
     }
   }
   try {
-    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,priceOrder);
+    int numAdditionRequests=priceOrder ? (1 + orderItemRequestDTO.getChildOrderItems().size()) : -1;
+    int currentAddition=1;
+    CartOperationRequest cartOpRequest=new CartOperationRequest(findOrderById(orderId),orderItemRequestDTO,currentAddition == numAdditionRequests);
     ProcessContext<CartOperationRequest> context=(ProcessContext<CartOperationRequest>)addItemWorkflow.doActivities(cartOpRequest);
     List<ActivityMessageDTO> orderMessages=new ArrayList<ActivityMessageDTO>();
     orderMessages.addAll(((ActivityMessages)context).getActivityMessages());
     if (CollectionUtils.isNotEmpty(orderItemRequestDTO.getChildOrderItems())) {
       for (      OrderItemRequestDTO childRequest : orderItemRequestDTO.getChildOrderItems()) {
         childRequest.setParentOrderItemId(context.getSeedData().getOrderItem().getId());
-        CartOperationRequest childCartOpRequest=new CartOperationRequest(context.getSeedData().getOrder(),childRequest,priceOrder);
+        currentAddition++;
+        CartOperationRequest childCartOpRequest=new CartOperationRequest(context.getSeedData().getOrder(),childRequest,currentAddition == numAdditionRequests);
         ProcessContext<CartOperationRequest> childContext=(ProcessContext<CartOperationRequest>)addItemWorkflow.doActivities(childCartOpRequest);
         orderMessages.addAll(((ActivityMessages)childContext).getActivityMessages());
       }
