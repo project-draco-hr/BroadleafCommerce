@@ -31,8 +31,9 @@
     out.flush();
     minifiedBytes=baos.toByteArray();
   }
- catch (  IOException e) {
-    throw new RuntimeException(e);
+ catch (  Exception e) {
+    LOG.warn("Could not minify resources, returned unminified bytes",e);
+    return bytes;
   }
  finally {
     try {
