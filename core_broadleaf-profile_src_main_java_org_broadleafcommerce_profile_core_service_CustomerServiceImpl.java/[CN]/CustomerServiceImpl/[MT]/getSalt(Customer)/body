@@ -1,3 +1,7 @@
 {
-  return getSalt();
+  Object salt=null;
+  if (saltSource != null) {
+    salt=saltSource.getSalt(new User(customer.getUsername(),customer.getUnencodedPassword(),new ArrayList<GrantedAuthority>()));
+  }
+  return salt;
 }
