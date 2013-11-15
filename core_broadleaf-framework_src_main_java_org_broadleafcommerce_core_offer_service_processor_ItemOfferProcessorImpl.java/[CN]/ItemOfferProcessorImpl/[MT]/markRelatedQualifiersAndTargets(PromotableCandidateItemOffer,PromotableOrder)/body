@@ -1,7 +1,6 @@
 {
-  int curQualifier=0;
+  OrderItem relatedOrderItem=null;
   for (  Entry<OfferItemCriteria,List<PromotableOrderItem>> entry : itemOffer.getCandidateQualifiersMap().entrySet()) {
-    curQualifier++;
     OfferItemCriteria itemCriteria=entry.getKey();
     List<PromotableOrderItem> promotableItems=entry.getValue();
     List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
@@ -22,8 +21,10 @@
           int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
           qualifierQtyNeeded-=qtyToMarkAsQualifier;
           PromotionQualifier pq=detail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
-          boolean lastQualifier=curQualifier == itemOffer.getCandidateQualifiersMap().entrySet().size();
-          if (!markTargets(itemOffer,order,oi,!lastQualifier)) {
+          if (markTargets(itemOffer,order,oi,true)) {
+            relatedOrderItem=oi;
+          }
+ else {
             qualifierQtyNeeded+=qtyToMarkAsQualifier;
             if (pq.getQuantity() == qtyToMarkAsQualifier) {
               detail.getPromotionQualifiers().remove(pq);
@@ -43,5 +44,5 @@
       return false;
     }
   }
-  return true;
+  return markTargets(itemOffer,order,relatedOrderItem,false);
 }
