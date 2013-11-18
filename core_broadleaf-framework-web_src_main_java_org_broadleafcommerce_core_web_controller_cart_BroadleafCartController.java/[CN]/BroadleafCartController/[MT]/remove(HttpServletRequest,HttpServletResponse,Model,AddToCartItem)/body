@@ -2,7 +2,6 @@
   Order cart=CartState.getCart();
   cart=orderService.removeItem(cart.getId(),itemRequest.getOrderItemId(),false);
   cart=orderService.save(cart,true);
-  CartState.setCart(cart);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
     extraData.put("cartItemCount",cart.getItemCount());
