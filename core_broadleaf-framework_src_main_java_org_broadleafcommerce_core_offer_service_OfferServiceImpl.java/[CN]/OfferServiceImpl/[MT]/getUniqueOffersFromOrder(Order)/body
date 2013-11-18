@@ -1,0 +1,26 @@
+{
+  HashSet<Offer> result=new HashSet<Offer>();
+  Transformer adjustmentToOfferTransformer=new Transformer(){
+    @Override public Object transform(    Object input){
+      return ((Adjustment)input).getOffer();
+    }
+  }
+;
+  result.addAll(CollectionUtils.collect(order.getOrderAdjustments(),adjustmentToOfferTransformer));
+  if (order.getOrderItems() != null) {
+    for (    OrderItem item : order.getOrderItems()) {
+      result.addAll(CollectionUtils.collect(item.getOrderItemAdjustments(),adjustmentToOfferTransformer));
+      if (item.getOrderItemPriceDetails() != null) {
+        for (        OrderItemPriceDetail detail : item.getOrderItemPriceDetails()) {
+          result.addAll(CollectionUtils.collect(detail.getOrderItemPriceDetailAdjustments(),adjustmentToOfferTransformer));
+        }
+      }
+    }
+  }
+  if (order.getFulfillmentGroups() != null) {
+    for (    FulfillmentGroup fg : order.getFulfillmentGroups()) {
+      result.addAll(CollectionUtils.collect(fg.getFulfillmentGroupAdjustments(),adjustmentToOfferTransformer));
+    }
+  }
+  return result;
+}

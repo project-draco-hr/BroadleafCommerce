@@ -1,0 +1,14 @@
+{
+  for (  Offer offer : offers) {
+    OfferAudit audit=offerAuditDao.create();
+    audit.setCustomerId(order.getCustomer().getId());
+    audit.setOfferId(offer.getId());
+    audit.setOrderId(order.getId());
+    OfferCode codeUsedToRetrieveOffer=offerToCodeMapping.get(offer);
+    if (codeUsedToRetrieveOffer != null) {
+      audit.setOfferCodeId(codeUsedToRetrieveOffer.getId());
+    }
+    audit.setRedeemedDate(SystemTime.asDate());
+    offerAuditDao.save(audit);
+  }
+}

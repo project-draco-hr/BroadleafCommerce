@@ -1,25 +1,10 @@
 {
-  Set<Long> appliedOfferIds=new HashSet<Long>();
   CheckoutSeed seed=context.getSeedData();
   Order order=seed.getOrder();
   if (order != null) {
-    addOfferIds(order.getOrderAdjustments(),appliedOfferIds);
-    if (order.getOrderItems() != null) {
-      for (      OrderItem item : order.getOrderItems()) {
-        addOfferIds(item.getOrderItemAdjustments(),appliedOfferIds);
-        if (item.getOrderItemPriceDetails() != null) {
-          for (          OrderItemPriceDetail detail : item.getOrderItemPriceDetails()) {
-            addOfferIds(detail.getOrderItemPriceDetailAdjustments(),appliedOfferIds);
-          }
-        }
-      }
-    }
-    if (order.getFulfillmentGroups() != null) {
-      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
-        addOfferIds(fg.getFulfillmentGroupAdjustments(),appliedOfferIds);
-      }
-    }
-    saveOfferIds(appliedOfferIds,order);
+    Set<Offer> appliedOffers=offerService.getUniqueOffersFromOrder(order);
+    Map<Offer,OfferCode> offerToCodeMapping=offerService.getOffersRetrievedFromCodes(order.getAddedOfferCodes(),appliedOffers);
+    saveOfferIds(appliedOffers,offerToCodeMapping,order);
   }
   return context;
 }

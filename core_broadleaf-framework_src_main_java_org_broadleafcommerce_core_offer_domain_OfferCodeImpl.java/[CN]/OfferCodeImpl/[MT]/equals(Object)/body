@@ -1,18 +1,3 @@
 {
-  if (this == obj)   return true;
-  if (obj == null)   return false;
-  if (getClass() != obj.getClass())   return false;
-  OfferCodeImpl other=(OfferCodeImpl)obj;
-  if (id != null && other.id != null) {
-    return id.equals(other.id);
-  }
-  if (offer == null) {
-    if (other.offer != null)     return false;
-  }
- else   if (!offer.equals(other.offer))   return false;
-  if (offerCode == null) {
-    if (other.offerCode != null)     return false;
-  }
- else   if (!offerCode.equals(other.offerCode))   return false;
-  return true;
+  return EqualsBuilder.reflectionEquals(this,o);
 }
