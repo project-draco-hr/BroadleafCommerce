@@ -1,7 +1,6 @@
 {
   CriteriaBuilder builder=em.getCriteriaBuilder();
   restrictions.add(builder.or(builder.isNull(product.get("archiveStatus").get("archived")),builder.equal(product.get("archiveStatus").get("archived"),'N')));
-  Date myDate=getDateFactoringInDateResolution(currentDate);
-  restrictions.add(builder.lessThan(sku.get("activeStartDate").as(Date.class),myDate));
-  restrictions.add(builder.or(builder.isNull(sku.get("activeEndDate")),builder.greaterThan(sku.get("activeEndDate").as(Date.class),myDate)));
+  restrictions.add(builder.lessThan(sku.get("activeStartDate").as(Date.class),currentDate));
+  restrictions.add(builder.or(builder.isNull(sku.get("activeEndDate")),builder.greaterThan(sku.get("activeEndDate").as(Date.class),currentDate)));
 }
