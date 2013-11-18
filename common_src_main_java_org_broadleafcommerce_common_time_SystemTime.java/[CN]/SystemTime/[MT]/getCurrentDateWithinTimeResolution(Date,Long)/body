@@ -1,0 +1,12 @@
+{
+  Date returnDate=SystemTime.asDate();
+  if (cachedDate == null || (SystemTime.getTimeSource() instanceof FixedTimeSource)) {
+    return returnDate;
+  }
+  if (returnDate.getTime() > (cachedDate.getTime() + dateResolutionMillis)) {
+    return returnDate;
+  }
+ else {
+    return cachedDate;
+  }
+}
