@@ -32,30 +32,38 @@
       entity.addValidationError(mapStructure.getKeyPropertyName(),RequiredPropertyValidator.ERROR_MESSAGE);
       LOG.debug("No key property passed in for map, failing validation");
     }
-    if (persistentClass != null) {
-      Serializable valueInstance=(Serializable)map.get(entity.findProperty("priorKey").getValue());
-      if (map.get(mapKey) != null && !map.get(mapKey).equals(valueInstance)) {
-        entity.addValidationError(mapStructure.getKeyPropertyName(),"keyExistsValidationError");
-      }
-      if (StringUtils.isNotBlank(mapStructure.getMapKeyValueProperty())) {
-        Property p=entity.findProperty("key");
-        Property newP=new Property();
-        newP.setName(mapStructure.getMapKeyValueProperty());
-        newP.setValue(p.getValue());
-        newP.setIsDirty(p.getIsDirty());
-        entity.addProperty(newP);
-      }
-      valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
-      if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
-        if (!entity.findProperty("priorKey").getValue().equals(mapKey)) {
-          map.remove(entity.findProperty("priorKey").getValue());
+    populate: {
+      if (persistentClass != null) {
+        Serializable valueInstance=(Serializable)map.get(entity.findProperty("priorKey").getValue());
+        if (valueInstance == null) {
+          valueInstance=procureSandBoxMapValue(mapStructure,entity);
+          if (valueInstance == null) {
+            break populate;
+          }
         }
-        map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
+        if (map.get(mapKey) != null && !map.get(mapKey).equals(valueInstance)) {
+          entity.addValidationError(mapStructure.getKeyPropertyName(),"keyExistsValidationError");
+        }
+        if (StringUtils.isNotBlank(mapStructure.getMapKeyValueProperty())) {
+          Property p=entity.findProperty("key");
+          Property newP=new Property();
+          newP.setName(mapStructure.getMapKeyValueProperty());
+          newP.setValue(p.getValue());
+          newP.setIsDirty(p.getIsDirty());
+          entity.addProperty(newP);
+        }
+        valueInstance=createPopulatedInstance(valueInstance,entity,valueMergedProperties,false);
+        if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
+          if (!entity.findProperty("priorKey").getValue().equals(mapKey)) {
+            map.remove(entity.findProperty("priorKey").getValue());
+          }
+          map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),valueInstance);
+        }
       }
-    }
  else {
-      if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
-        map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
+        if (StringUtils.isNotEmpty(mapKey) && !entity.isValidationFailure()) {
+          map.put(entity.findProperty(mapStructure.getKeyPropertyName()).getValue(),entity.findProperty(((SimpleValueMapStructure)mapStructure).getValuePropertyName()).getValue());
+        }
       }
     }
     instance=persistenceManager.getDynamicEntityDao().merge(instance);
@@ -65,7 +73,7 @@
         return response;
       }
     }
-    return responses[0];
+    return ArrayUtils.isEmpty(responses) ? new Entity() : responses[0];
   }
  catch (  Exception e) {
     throw new ServiceException("Problem updating entity : " + e.getMessage(),e);

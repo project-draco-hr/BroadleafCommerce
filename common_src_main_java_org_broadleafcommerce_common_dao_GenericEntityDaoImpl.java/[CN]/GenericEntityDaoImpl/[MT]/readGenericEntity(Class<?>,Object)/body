@@ -1,0 +1,11 @@
+{
+  Map<String,Object> md=daoHelper.getIdMetadata(clazz,(HibernateEntityManager)em);
+  AbstractSingleColumnStandardBasicType type=(AbstractSingleColumnStandardBasicType)md.get("type");
+  if (type instanceof LongType) {
+    id=Long.parseLong(String.valueOf(id));
+  }
+ else   if (type instanceof IntegerType) {
+    id=Integer.parseInt(String.valueOf(id));
+  }
+  return em.find(clazz,id);
+}

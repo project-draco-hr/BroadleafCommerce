@@ -6,6 +6,7 @@
   if (site == null) {
     brc.setIgnoreSite(true);
   }
+  brc.setAdmin(false);
   BroadleafRequestContext.setBroadleafRequestContext(brc);
   Locale locale=localeResolver.resolveLocale(request);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
@@ -39,4 +40,8 @@
     LOG.trace("Using pre-existing ruleMap - added by non standard BLC process.");
   }
   ruleMap.put("locale",locale);
+  String adminUserId=request.getParameter(BroadleafRequestFilter.ADMIN_USER_ID_PARAM_NAME);
+  if (StringUtils.isNotBlank(adminUserId)) {
+    brc.setAdminUserId(Long.parseLong(adminUserId));
+  }
 }

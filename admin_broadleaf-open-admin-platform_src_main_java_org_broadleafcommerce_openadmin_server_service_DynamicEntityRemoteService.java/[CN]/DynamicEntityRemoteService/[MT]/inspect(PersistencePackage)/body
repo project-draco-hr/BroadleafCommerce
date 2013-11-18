@@ -1,16 +1,20 @@
 {
-  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
-  try {
-    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
-    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-    return persistenceManager.inspect(persistencePackage);
+  return persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<PersistenceResponse,ServiceException>(){
+    @Override public PersistenceResponse execute() throws ServiceException {
+      String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+      try {
+        PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+        return persistenceManager.inspect(persistencePackage);
+      }
+ catch (      ServiceException e) {
+        String message=exploitProtectionService.cleanString(e.getMessage());
+        throw recreateSpecificServiceException(e,message,e.getCause());
+      }
+catch (      Exception e) {
+        LOG.error("Problem inspecting results for " + ceilingEntityFullyQualifiedClassname,e);
+        throw new ServiceException(exploitProtectionService.cleanString("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname),e);
+      }
+    }
   }
- catch (  ServiceException e) {
-    String message=exploitProtectionService.cleanString(e.getMessage());
-    throw recreateSpecificServiceException(e,message,e.getCause());
-  }
-catch (  Exception e) {
-    LOG.error("Problem inspecting results for " + ceilingEntityFullyQualifiedClassname,e);
-    throw new ServiceException(exploitProtectionService.cleanString("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname),e);
-  }
+);
 }

@@ -1,0 +1,12 @@
+{
+  PersistencePackageRequest ppr=getRequestForEntityForm(entityForm,customCriteria,sectionCrumb);
+  for (  Entry<String,EntityForm> entry : entityForm.getDynamicForms().entrySet()) {
+    DynamicEntityFormInfo info=entityForm.getDynamicFormInfo(entry.getKey());
+    String propertyName=info.getPropertyName();
+    String propertyValue=entityForm.getFields().get(propertyName).getValue();
+    customCriteria=new String[]{info.getCriteriaName(),entityForm.getId(),propertyName,propertyValue};
+    PersistencePackageRequest subRequest=getRequestForEntityForm(entry.getValue(),customCriteria,sectionCrumb);
+    ppr.addSubRequest(info.getPropertyName(),subRequest);
+  }
+  return add(ppr);
+}

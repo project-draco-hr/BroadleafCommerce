@@ -1,12 +1,13 @@
 {
+  SessionFactory sessionFactory=((HibernateEntityManager)entityManager).getSession().getSessionFactory();
   String[] tokens=fieldName.split("\\.");
   Field field=null;
   for (int j=0; j < tokens.length; j++) {
     String propertyName=tokens[j];
     field=getSingleField(clazz,propertyName);
     if (field != null && j < tokens.length - 1) {
-      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
-      if (entities.length > 0) {
+      Class<?>[] entities=helper.getAllPolymorphicEntitiesFromCeiling(field.getType(),sessionFactory,true,true);
+      if (!ArrayUtils.isEmpty(entities)) {
         String peekAheadToken=tokens[j + 1];
         List<Class<?>> matchedClasses=new ArrayList<Class<?>>();
         for (        Class<?> entity : entities) {
@@ -25,8 +26,8 @@
         }
         if (getSingleField(matchedClasses.get(0),peekAheadToken) != null) {
           clazz=matchedClasses.get(0);
-          PersistentClass persistentClass=dynamicEntityDao.getPersistentClass(clazz.getName());
-          if (persistentClass != null && matchedClasses.size() == 1 && clazz.isInterface()) {
+          Class<?>[] entities2=helper.getAllPolymorphicEntitiesFromCeiling(clazz,sessionFactory,true,true);
+          if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
             try {
               clazz=entityConfiguration.lookupEntityClass(field.getType().getName());
             }

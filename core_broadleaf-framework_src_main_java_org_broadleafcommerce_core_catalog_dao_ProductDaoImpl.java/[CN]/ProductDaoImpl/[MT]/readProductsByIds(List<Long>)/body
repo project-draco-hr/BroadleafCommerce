@@ -6,7 +6,7 @@
   CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
   Root<ProductImpl> product=criteria.from(ProductImpl.class);
   criteria.select(product);
-  criteria.where(product.get("id").as(Long.class).in(productIds));
+  criteria.where(product.get("id").as(Long.class).in(sandBoxHelper.mergeCloneIds(em,ProductImpl.class,productIds.toArray(new Long[productIds.size()])))).distinct(true);
   TypedQuery<Product> query=em.createQuery(criteria);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");

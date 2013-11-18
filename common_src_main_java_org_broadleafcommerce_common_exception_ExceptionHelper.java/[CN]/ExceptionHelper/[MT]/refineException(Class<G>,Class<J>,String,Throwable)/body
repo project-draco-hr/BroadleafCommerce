@@ -1,0 +1,19 @@
+{
+  if (refineType.isAssignableFrom(e.getClass())) {
+    return wrapException(e,wrapType,message);
+  }
+  Throwable rootCause=e;
+  boolean eof=false;
+  while (!eof) {
+    if (rootCause.getCause() != null) {
+      rootCause=rootCause.getCause();
+      if (refineType.isAssignableFrom(rootCause.getClass())) {
+        return wrapException(e,wrapType,message);
+      }
+    }
+ else {
+      eof=true;
+    }
+  }
+  return wrapException(e,wrapType,message);
+}

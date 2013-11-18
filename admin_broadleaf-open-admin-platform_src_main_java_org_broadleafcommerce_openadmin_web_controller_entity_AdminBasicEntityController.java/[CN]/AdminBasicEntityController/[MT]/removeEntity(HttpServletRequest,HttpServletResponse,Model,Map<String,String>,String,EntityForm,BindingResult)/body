@@ -1,5 +1,6 @@
 {
   String sectionKey=getSectionKey(pathVars);
-  service.removeEntity(entityForm,getSectionCustomCriteria());
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  service.removeEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs);
   return "redirect:/" + sectionKey;
 }

@@ -1,8 +1,8 @@
 {
-  Query query;
-  query=em.createNamedQuery("BC_READ_OUTGOING_URL");
+  TypedQuery<URLHandler> query=em.createNamedQuery("BC_READ_OUTGOING_URL",URLHandler.class);
   query.setParameter("incomingURL",uri);
-  @SuppressWarnings("unchecked") List<URLHandler> results=query.getResultList();
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  List<URLHandler> results=query.getResultList();
   if (results != null && !results.isEmpty()) {
     return results.get(0);
   }

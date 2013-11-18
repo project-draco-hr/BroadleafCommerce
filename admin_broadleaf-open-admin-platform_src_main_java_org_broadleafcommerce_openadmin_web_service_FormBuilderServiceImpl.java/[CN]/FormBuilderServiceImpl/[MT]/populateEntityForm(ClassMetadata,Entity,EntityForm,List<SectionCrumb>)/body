@@ -1,0 +1,12 @@
+{
+  populateEntityForm(cmd,ef,sectionCrumbs);
+  String idProperty=adminEntityService.getIdProperty(cmd);
+  ef.setId(entity.findProperty(idProperty).getValue());
+  ef.setEntityType(entity.getType()[0]);
+  populateEntityFormFieldValues(cmd,entity,ef);
+  Property p=entity.findProperty(BasicPersistenceModule.MAIN_ENTITY_NAME_PROPERTY);
+  if (p != null) {
+    ef.setMainEntityName(p.getValue());
+  }
+  extensionManager.getProxy().modifyPopulatedEntityForm(ef,entity);
+}

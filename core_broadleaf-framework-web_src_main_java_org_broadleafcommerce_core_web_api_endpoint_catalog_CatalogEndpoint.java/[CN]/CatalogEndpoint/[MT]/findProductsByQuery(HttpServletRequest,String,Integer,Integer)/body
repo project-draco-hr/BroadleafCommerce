@@ -11,11 +11,11 @@
  catch (  ServiceException e) {
     throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_MALFORMED,q);
   }
-  List<SearchFacetDTO> availableFacets=searchService.getSearchFacets();
+  List<SearchFacetDTO> availableFacets=getSearchService().getSearchFacets();
   ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
   try {
     ProductSearchResult result=null;
-    result=searchService.findProductsByQuery(q,searchCriteria);
+    result=getSearchService().findProductsByQuery(q,searchCriteria);
     facetService.setActiveFacetResults(result.getFacets(),request);
     SearchResultsWrapper wrapper=(SearchResultsWrapper)context.getBean(SearchResultsWrapper.class.getName());
     wrapper.wrapDetails(result,request);

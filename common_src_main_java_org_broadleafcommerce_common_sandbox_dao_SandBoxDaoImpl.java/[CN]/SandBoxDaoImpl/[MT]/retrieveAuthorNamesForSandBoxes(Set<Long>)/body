@@ -1,0 +1,10 @@
+{
+  Query query=sandBoxEntityManager.createQuery("SELECT sb.id, au.name " + "FROM org.broadleafcommerce.common.sandbox.domain.SandBoxImpl sb, " + "org.broadleafcommerce.openadmin.server.security.domain.AdminUserImpl au "+ "WHERE sb.author = au.id "+ "AND sb.id IN :sandBoxIds");
+  query.setParameter("sandBoxIds",sandBoxIds);
+  List<Object[]> results=query.getResultList();
+  Map<Long,String> map=new HashMap<Long,String>();
+  for (  Object[] result : results) {
+    map.put((Long)result[0],(String)result[1]);
+  }
+  return map;
+}

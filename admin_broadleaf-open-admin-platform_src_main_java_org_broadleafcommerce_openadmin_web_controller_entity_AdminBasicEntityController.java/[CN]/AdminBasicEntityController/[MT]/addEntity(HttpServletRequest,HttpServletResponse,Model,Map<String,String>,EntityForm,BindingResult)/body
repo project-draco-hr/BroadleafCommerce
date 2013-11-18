@@ -1,12 +1,13 @@
 {
   String sectionKey=getSectionKey(pathVars);
   extractDynamicFormFields(entityForm);
-  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria()).getEntity();
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,null,null);
+  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
-    ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(entityForm.getEntityType())).getDynamicResultSet().getClassMetaData();
+    ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(entityForm.getEntityType(),sectionCrumbs)).getDynamicResultSet().getClassMetaData();
     entityForm.clearFieldsMap();
-    formService.populateEntityForm(cmd,entity,entityForm);
+    formService.populateEntityForm(cmd,entity,entityForm,sectionCrumbs);
     formService.removeNonApplicableFields(cmd,entityForm,entityForm.getEntityType());
     model.addAttribute("viewType","modal/entityAdd");
     model.addAttribute("currentUrl",request.getRequestURL().toString());

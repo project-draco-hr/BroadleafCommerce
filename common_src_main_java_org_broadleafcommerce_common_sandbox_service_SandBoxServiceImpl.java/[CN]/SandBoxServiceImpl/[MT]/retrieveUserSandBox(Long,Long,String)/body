@@ -1,0 +1,13 @@
+{
+  SandBox userSandbox;
+  if (overrideSandBoxId != null) {
+    userSandbox=retrieveSandBoxById(overrideSandBoxId);
+  }
+ else {
+    userSandbox=retrieveSandBox(sandBoxName,SandBoxType.USER);
+    if (userSandbox == null) {
+      userSandbox=createSandBox(sandBoxName,SandBoxType.USER);
+    }
+  }
+  return userSandbox;
+}

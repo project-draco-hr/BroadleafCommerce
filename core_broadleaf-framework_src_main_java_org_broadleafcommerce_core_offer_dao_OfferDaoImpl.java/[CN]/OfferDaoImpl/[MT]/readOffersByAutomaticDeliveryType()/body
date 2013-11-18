@@ -12,5 +12,6 @@
   criteria.add(Restrictions.or(Restrictions.eq("archiveStatus.archived",'N'),Restrictions.isNull("archiveStatus.archived")));
   criteria.add(Restrictions.or(Restrictions.eq("automaticallyAdded",true),Restrictions.and(Restrictions.isNull("automaticallyAdded"),Restrictions.eq("deliveryType","AUTOMATIC"))));
   criteria.setCacheable(true);
+  criteria.setCacheRegion("query.Offer");
   return criteria.list();
 }

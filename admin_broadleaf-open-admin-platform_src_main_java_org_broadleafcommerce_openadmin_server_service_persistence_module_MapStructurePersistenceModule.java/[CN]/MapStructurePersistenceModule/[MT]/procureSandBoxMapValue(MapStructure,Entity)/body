@@ -1,0 +1,32 @@
+{
+  try {
+    Serializable valueInstance=null;
+    Class<?> valueClass=Class.forName(mapStructure.getValueClassName());
+    Map<String,Object> idMetadata=getPersistenceManager().getDynamicEntityDao().getIdMetadata(valueClass);
+    String idProperty=(String)idMetadata.get("name");
+    Property prop=entity.findProperty(idProperty);
+    if (prop != null) {
+      Serializable identifier;
+      if (!(((Type)idMetadata.get("type")) instanceof StringType)) {
+        identifier=Long.parseLong(prop.getValue());
+      }
+ else {
+        identifier=prop.getValue();
+      }
+      valueInstance=(Serializable)getPersistenceManager().getDynamicEntityDao().find(valueClass,identifier);
+      BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+      if (sandBoxHelper.isSandBoxable(valueInstance.getClass().getName()) && context != null && !context.isProductionSandBox()) {
+        if (sandBoxHelper.isPromote() && !sandBoxHelper.isReject()) {
+          valueInstance=getPersistenceManager().getDynamicEntityDao().merge(valueInstance);
+        }
+ else {
+          valueInstance=null;
+        }
+      }
+    }
+    return valueInstance;
+  }
+ catch (  ClassNotFoundException e) {
+    throw new RuntimeException(e);
+  }
+}

@@ -1,6 +1,6 @@
 {
-  if (applicationContext.containsBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF)) {
-    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(DynamicEntityRemoteService.DEFAULTPERSISTENCEMANAGERREF);
+  if (applicationContext.containsBean(PersistenceManagerFactory.getPersistenceManagerRef())) {
+    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(PersistenceManagerFactory.getPersistenceManagerRef());
     persistenceManager.setTargetMode(TargetModeType.SANDBOX);
     dynamicEntityDao=persistenceManager.getDynamicEntityDao();
     setFields(new ArrayList<FieldData>());

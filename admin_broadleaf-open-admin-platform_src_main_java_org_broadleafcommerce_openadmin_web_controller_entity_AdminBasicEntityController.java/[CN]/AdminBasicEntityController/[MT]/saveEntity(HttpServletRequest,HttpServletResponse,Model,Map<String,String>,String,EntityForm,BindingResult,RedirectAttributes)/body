@@ -1,18 +1,18 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName);
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,sectionCrumbs);
   extractDynamicFormFields(entityForm);
-  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria()).getEntity();
-  id=entity.findProperty(entityForm.getIdProperty()).getValue();
+  Entity entity=service.updateEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     model.addAttribute("headerFlash","save.unsuccessful");
     model.addAttribute("headerFlashAlert",true);
-    Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
+    Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,sectionCrumbs);
     ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     entityForm.clearFieldsMap();
-    formService.populateEntityForm(cmd,entity,subRecordsMap,entityForm);
+    formService.populateEntityForm(cmd,entity,subRecordsMap,entityForm,sectionCrumbs);
     model.addAttribute("entity",entity);
     model.addAttribute("currentUrl",request.getRequestURL().toString());
     setModelAttributes(model,sectionKey);

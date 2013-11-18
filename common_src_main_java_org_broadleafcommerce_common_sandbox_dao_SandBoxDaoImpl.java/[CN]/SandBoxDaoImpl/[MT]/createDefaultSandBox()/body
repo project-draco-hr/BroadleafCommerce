@@ -1,0 +1,16 @@
+{
+  TransactionStatus status=TransactionUtils.createTransaction("createSandBox",TransactionDefinition.PROPAGATION_REQUIRES_NEW,transactionManager);
+  try {
+    SandBox defaultSB=new SandBoxImpl();
+    defaultSB.setName("Default");
+    defaultSB.setSandBoxType(SandBoxType.DEFAULT);
+    defaultSB.setColor("#0B9098");
+    defaultSB=persist(defaultSB);
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
+    return defaultSB;
+  }
+ catch (  Exception ex) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new RuntimeException(ex);
+  }
+}

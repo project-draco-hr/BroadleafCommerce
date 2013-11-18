@@ -1,3 +1,12 @@
 {
-  extensionManager.getHandlers().add(this);
+  boolean shouldAdd=true;
+  for (  SolrSearchServiceExtensionHandler h : extensionManager.getHandlers()) {
+    if (h instanceof I18nSolrSearchServiceExtensionHandler) {
+      shouldAdd=false;
+      break;
+    }
+  }
+  if (shouldAdd) {
+    extensionManager.getHandlers().add(this);
+  }
 }

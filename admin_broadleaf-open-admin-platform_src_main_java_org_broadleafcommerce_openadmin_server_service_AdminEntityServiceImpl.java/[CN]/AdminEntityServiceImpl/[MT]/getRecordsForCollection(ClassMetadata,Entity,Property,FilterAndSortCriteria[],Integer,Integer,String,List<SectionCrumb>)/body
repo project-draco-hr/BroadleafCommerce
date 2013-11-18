@@ -1,0 +1,34 @@
+{
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(collectionProperty.getMetadata(),sectionCrumbs).withFilterAndSortCriteria(fascs).withStartIndex(startIndex).withMaxIndex(maxIndex);
+  FilterAndSortCriteria fasc;
+  FieldMetadata md=collectionProperty.getMetadata();
+  String collectionCeilingClass=null;
+  if (md instanceof BasicCollectionMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
+    collectionCeilingClass=((CollectionMetadata)md).getCollectionCeilingEntity();
+  }
+ else   if (md instanceof AdornedTargetCollectionMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName());
+    collectionCeilingClass=((CollectionMetadata)md).getCollectionCeilingEntity();
+  }
+ else   if (md instanceof MapMetadata) {
+    fasc=new FilterAndSortCriteria(ppr.getForeignKey().getManyToField());
+  }
+ else {
+    throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not a " + "collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
+  }
+  String id;
+  if (idValueOverride == null) {
+    id=getContextSpecificRelationshipId(containingClassMetadata,containingEntity,collectionProperty.getName());
+  }
+ else {
+    id=idValueOverride;
+  }
+  fasc.setFilterValue(id);
+  ppr.addFilterAndSortCriteria(fasc);
+  if (collectionCeilingClass != null) {
+    ppr.setCeilingEntityClassname(collectionCeilingClass);
+  }
+  ppr.setSectionEntityField(collectionProperty.getName());
+  return fetch(ppr);
+}

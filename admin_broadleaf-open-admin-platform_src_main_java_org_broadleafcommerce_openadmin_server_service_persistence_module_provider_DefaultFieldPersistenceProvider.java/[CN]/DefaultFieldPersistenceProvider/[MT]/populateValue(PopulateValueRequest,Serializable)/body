@@ -1,6 +1,12 @@
 {
   boolean dirty;
   try {
+    Property p=populateValueRequest.getProperty();
+    Object value=populateValueRequest.getFieldManager().getFieldValue(instance,p.getName());
+    if (value != null) {
+      p.setOriginalValue(String.valueOf(value));
+      p.setOriginalDisplayValue(p.getOriginalValue());
+    }
     dirty=checkDirtyState(populateValueRequest,instance,populateValueRequest.getRequestedValue());
     populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getRequestedValue());
   }

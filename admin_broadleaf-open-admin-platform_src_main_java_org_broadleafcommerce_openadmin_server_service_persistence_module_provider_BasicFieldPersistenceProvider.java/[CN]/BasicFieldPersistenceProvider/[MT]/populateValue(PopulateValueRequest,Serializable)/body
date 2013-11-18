@@ -4,19 +4,23 @@
   }
   boolean dirty=false;
   try {
+    Property prop=populateValueRequest.getProperty();
+    Object origValue=populateValueRequest.getFieldManager().getFieldValue(instance,prop.getName());
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case BOOLEAN:
       boolean v=Boolean.valueOf(populateValueRequest.getRequestedValue());
-    try {
-      dirty=checkDirtyState(populateValueRequest,instance,v);
-      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),v);
-    }
- catch (    IllegalArgumentException e) {
-      char c=v ? 'Y' : 'N';
-      dirty=checkDirtyState(populateValueRequest,instance,c);
-      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),c);
-    }
-  break;
+    prop.setOriginalValue(String.valueOf(origValue));
+  prop.setOriginalDisplayValue(prop.getOriginalValue());
+try {
+  dirty=checkDirtyState(populateValueRequest,instance,v);
+  populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),v);
+}
+ catch (IllegalArgumentException e) {
+  char c=v ? 'Y' : 'N';
+  dirty=checkDirtyState(populateValueRequest,instance,c);
+  populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),c);
+}
+break;
 case DATE:
 Date date=(Date)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
 String oldValue=null;
@@ -24,10 +28,16 @@ if (date != null) {
 date.setSeconds(0);
 oldValue=populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().format(date);
 }
+prop.setOriginalValue(oldValue);
+prop.setOriginalDisplayValue(prop.getOriginalValue());
 dirty=!StringUtils.equals(oldValue,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getDataFormatProvider().getSimpleDateFormatter().parse(populateValueRequest.getRequestedValue()));
 break;
 case DECIMAL:
+if (origValue != null) {
+prop.setOriginalValue(String.valueOf(origValue));
+prop.setOriginalDisplayValue(prop.getOriginalValue());
+}
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 dirty=checkDirtyState(populateValueRequest,instance,new BigDecimal(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
@@ -38,6 +48,10 @@ populateValueRequest.getFieldManager().setFieldValue(instance,populateValueReque
 }
 break;
 case MONEY:
+if (origValue != null) {
+prop.setOriginalValue(String.valueOf(origValue));
+prop.setOriginalDisplayValue(prop.getOriginalValue());
+}
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 dirty=checkDirtyState(populateValueRequest,instance,new BigDecimal(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),new BigDecimal(populateValueRequest.getRequestedValue()));
@@ -53,6 +67,10 @@ populateValueRequest.getFieldManager().setFieldValue(instance,populateValueReque
 }
 break;
 case INTEGER:
+if (origValue != null) {
+prop.setOriginalValue(String.valueOf(origValue));
+prop.setOriginalDisplayValue(prop.getOriginalValue());
+}
 if (int.class.isAssignableFrom(populateValueRequest.getReturnType()) || Integer.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 dirty=checkDirtyState(populateValueRequest,instance,Integer.valueOf(populateValueRequest.getRequestedValue()));
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),Integer.valueOf(populateValueRequest.getRequestedValue()));
@@ -74,11 +92,18 @@ case STRING:
 case HTML_BASIC:
 case HTML:
 case EMAIL:
+if (origValue != null) {
+prop.setOriginalValue(String.valueOf(origValue));
+prop.setOriginalDisplayValue(prop.getOriginalValue());
+}
 dirty=checkDirtyState(populateValueRequest,instance,populateValueRequest.getRequestedValue());
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),populateValueRequest.getRequestedValue());
 break;
 case FOREIGN_KEY:
 {
+if (origValue != null) {
+prop.setOriginalValue(String.valueOf(origValue));
+}
 Serializable foreignInstance;
 if (StringUtils.isEmpty(populateValueRequest.getRequestedValue())) {
 foreignInstance=null;
@@ -126,6 +151,23 @@ foreignInstance=populateValueRequest.getPersistenceManager().getDynamicEntityDao
  else {
 foreignInstance=populateValueRequest.getPersistenceManager().getDynamicEntityDao().retrieve(Class.forName(populateValueRequest.getMetadata().getForeignKeyClass()),populateValueRequest.getRequestedValue());
 }
+}
+String fkProp=populateValueRequest.getMetadata().getForeignKeyDisplayValueProperty();
+Object origDispVal=null;
+if (origValue != null) {
+if (AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY.equals(fkProp)) {
+if (origValue instanceof AdminMainEntity) {
+origDispVal=((AdminMainEntity)origValue).getMainEntityName();
+}
+}
+ else {
+origDispVal=populateValueRequest.getFieldManager().getFieldValue(origValue,fkProp);
+}
+}
+if (origDispVal != null) {
+prop.setOriginalDisplayValue(String.valueOf(origDispVal));
+Session session=populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().unwrap(Session.class);
+prop.setOriginalValue(String.valueOf(session.getIdentifier(origValue)));
 }
 if (Collection.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 Collection collection;

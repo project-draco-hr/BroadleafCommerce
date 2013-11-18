@@ -1,22 +1,26 @@
 {
-  cleanEntity(persistencePackage.getEntity());
-  if (persistencePackage.getEntity().isValidationFailure()) {
-    return new PersistenceResponse().withEntity(persistencePackage.getEntity());
-  }
-  try {
-    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
-    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-    return persistenceManager.add(persistencePackage);
-  }
- catch (  ServiceException e) {
-    if (e instanceof ValidationException) {
-      throw e;
+  return persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<PersistenceResponse,ServiceException>(){
+    @Override public PersistenceResponse execute() throws ServiceException {
+      cleanEntity(persistencePackage.getEntity());
+      if (persistencePackage.getEntity().isValidationFailure()) {
+        return new PersistenceResponse().withEntity(persistencePackage.getEntity());
+      }
+      try {
+        PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+        return persistenceManager.add(persistencePackage);
+      }
+ catch (      ServiceException e) {
+        if (e instanceof ValidationException) {
+          throw e;
+        }
+ else         if (e.getCause() instanceof ValidationException) {
+          throw (ValidationException)e.getCause();
+        }
+        String message=exploitProtectionService.cleanString(e.getMessage());
+        LOG.error("Problem adding new " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+        throw recreateSpecificServiceException(e,message,e.getCause());
+      }
     }
- else     if (e.getCause() instanceof ValidationException) {
-      throw (ValidationException)e.getCause();
-    }
-    String message=exploitProtectionService.cleanString(e.getMessage());
-    LOG.error("Problem adding new " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
-    throw recreateSpecificServiceException(e,message,e.getCause());
   }
+);
 }

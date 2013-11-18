@@ -1,19 +1,7 @@
 {
-  if (this == obj)   return true;
-  if (obj == null)   return false;
-  if (getClass() != obj.getClass())   return false;
-  SandBoxImpl other=(SandBoxImpl)obj;
-  if (author == null) {
-    if (other.author != null)     return false;
+  if (obj instanceof SandBoxImpl) {
+    SandBoxImpl other=(SandBoxImpl)obj;
+    return new EqualsBuilder().append(author,other.author).append(id,other.id).append(name,other.name).append(color,other.color).append(goLiveDate,other.goLiveDate).build();
   }
- else   if (!author.equals(other.author))   return false;
-  if (id == null) {
-    if (other.id != null)     return false;
-  }
- else   if (!id.equals(other.id))   return false;
-  if (name == null) {
-    if (other.name != null)     return false;
-  }
- else   if (!name.equals(other.name))   return false;
-  return true;
+  return false;
 }

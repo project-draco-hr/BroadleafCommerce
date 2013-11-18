@@ -1,0 +1,11 @@
+{
+  try {
+    AdminSection section=adminNavigationService.findAdminSectionByURI("/" + sectionKey);
+    String className=(section == null) ? sectionKey : section.getCeilingEntity();
+    Class<?>[] entities=dynamicDaoHelper.getAllPolymorphicEntitiesFromCeiling(Class.forName(className),em.unwrap(Session.class).getSessionFactory(),true,true);
+    return entities[entities.length - 1].getName();
+  }
+ catch (  ClassNotFoundException e) {
+    throw ExceptionHelper.refineException(RuntimeException.class,RuntimeException.class,e);
+  }
+}

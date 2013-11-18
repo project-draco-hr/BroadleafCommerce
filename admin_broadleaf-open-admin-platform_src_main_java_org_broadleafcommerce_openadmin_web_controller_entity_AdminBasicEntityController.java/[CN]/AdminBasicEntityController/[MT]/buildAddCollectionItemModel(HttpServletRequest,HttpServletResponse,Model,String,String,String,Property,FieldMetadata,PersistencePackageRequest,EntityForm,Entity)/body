@@ -2,15 +2,16 @@
   if (entityForm != null) {
     entityForm.clearFieldsMap();
   }
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
   if (md instanceof BasicCollectionMetadata) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     if (fmd.getAddMethodType().equals(AddMethodType.PERSIST)) {
       ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
       if (entityForm == null) {
-        entityForm=formService.createEntityForm(collectionMetadata);
+        entityForm=formService.createEntityForm(collectionMetadata,sectionCrumbs);
       }
  else {
-        formService.populateEntityForm(collectionMetadata,entityForm);
+        formService.populateEntityForm(collectionMetadata,entityForm,sectionCrumbs);
         formService.populateEntityFormFieldValues(collectionMetadata,entity,entityForm);
       }
       entityForm.getTabs().iterator().next().getIsVisible();
@@ -19,7 +20,7 @@
     }
  else {
       DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
-      ListGrid listGrid=formService.buildCollectionListGrid(id,drs,collectionProperty,sectionKey);
+      ListGrid listGrid=formService.buildCollectionListGrid(id,drs,collectionProperty,sectionKey,sectionCrumbs);
       listGrid.setPathOverride(request.getRequestURL().toString());
       model.addAttribute("listGrid",listGrid);
       model.addAttribute("viewType","modal/simpleSelectEntity");
@@ -31,7 +32,7 @@
     ppr.setType(PersistencePackageRequest.Type.STANDARD);
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
-    ListGrid listGrid=formService.buildMainListGrid(drs,collectionMetadata,sectionKey);
+    ListGrid listGrid=formService.buildMainListGrid(drs,collectionMetadata,sectionKey,sectionCrumbs);
     listGrid.setSubCollectionFieldName(collectionField);
     listGrid.setPathOverride(request.getRequestURL().toString());
     listGrid.setFriendlyName(collectionMetadata.getPolymorphicEntities().getFriendlyName());
