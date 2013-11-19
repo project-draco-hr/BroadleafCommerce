@@ -52,7 +52,9 @@
         sortCriteria.setSortAscending(adornedTargetList.getSortAscending());
         List<FilterMapping> filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
         int totalRecords=getTotalRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings);
-        fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),Long.valueOf(totalRecords + 1));
+        Class<?> type=fieldManager.getField(instance.getClass(),adornedTargetList.getSortField()).getType();
+        boolean isBigDecimal=BigDecimal.class.isAssignableFrom(type);
+        fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),isBigDecimal ? new BigDecimal(totalRecords + 1) : Long.valueOf(totalRecords + 1));
       }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
       persistenceManager.getDynamicEntityDao().clear();
