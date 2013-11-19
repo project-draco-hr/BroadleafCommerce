@@ -2,18 +2,14 @@
   if (refineType.isAssignableFrom(e.getClass())) {
     return wrapException(e,wrapType,message);
   }
-  Throwable rootCause=e;
-  boolean eof=false;
-  while (!eof) {
-    if (rootCause.getCause() != null) {
-      rootCause=rootCause.getCause();
-      if (refineType.isAssignableFrom(rootCause.getClass())) {
-        return wrapException(e,wrapType,message);
-      }
-    }
- else {
-      eof=true;
-    }
+  if (e.getCause() != null) {
+    return refineException(refineType,wrapType,message,e.getCause());
+  }
+  if (e instanceof UndeclaredThrowableException) {
+    return refineException(refineType,wrapType,message,((UndeclaredThrowableException)e).getUndeclaredThrowable());
+  }
+  if (e instanceof InvocationTargetException) {
+    return refineException(refineType,wrapType,message,((InvocationTargetException)e).getTargetException());
   }
   return wrapException(e,wrapType,message);
 }
