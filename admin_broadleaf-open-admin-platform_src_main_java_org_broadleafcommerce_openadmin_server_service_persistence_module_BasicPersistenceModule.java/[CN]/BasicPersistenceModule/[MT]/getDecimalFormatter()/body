@@ -1,3 +1,7 @@
 {
-  return decimalFormat;
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Locale locale=brc.getJavaLocale();
+  DecimalFormat format=(DecimalFormat)NumberFormat.getInstance(locale);
+  format.applyPattern("0.########");
+  return format;
 }
