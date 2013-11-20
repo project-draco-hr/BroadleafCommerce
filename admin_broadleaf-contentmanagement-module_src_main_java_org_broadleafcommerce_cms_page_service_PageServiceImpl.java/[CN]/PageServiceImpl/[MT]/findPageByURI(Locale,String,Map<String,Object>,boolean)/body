@@ -8,10 +8,10 @@
     if (context.isProductionSandBox()) {
       returnList=getPageListFromCache(key);
     }
-    if (CollectionUtils.isEmpty(returnList)) {
+    if (returnList == null) {
       List<Page> pageList=pageDao.findPageByURI(locale,languageOnlyLocale,uri);
       returnList=buildPageDTOList(pageList,secure);
-      if (context.isProductionSandBox() && !CollectionUtils.isEmpty(returnList)) {
+      if (context.isProductionSandBox()) {
         Collections.sort(returnList,new BeanComparator("priority"));
         addPageListToCache(returnList,key);
       }

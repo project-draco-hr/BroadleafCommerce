@@ -7,10 +7,10 @@
   if (context.isProductionSandBox()) {
     contentDTOList=getStructuredContentListFromCache(cacheKey);
   }
-  if (CollectionUtils.isEmpty(contentDTOList)) {
+  if (contentDTOList == null) {
     List<StructuredContent> contentList=structuredContentDao.findActiveStructuredContentByType(contentType,locale,languageOnlyLocale);
     contentDTOList=buildStructuredContentDTOList(contentList,secure);
-    if (context.isProductionSandBox() && !CollectionUtils.isEmpty(contentDTOList)) {
+    if (context.isProductionSandBox()) {
       addStructuredContentListToCache(cacheKey,contentDTOList);
     }
   }

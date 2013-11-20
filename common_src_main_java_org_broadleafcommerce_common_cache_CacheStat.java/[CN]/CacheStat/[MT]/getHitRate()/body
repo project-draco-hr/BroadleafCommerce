@@ -1,0 +1,8 @@
+{
+  if (getRequestCount() == 0) {
+    return new BigDecimal(-1);
+  }
+  BigDecimal percentage=new BigDecimal(getCacheHitCount()).divide(new BigDecimal(getRequestCount()),2,BigDecimal.ROUND_HALF_UP);
+  percentage=percentage.multiply(new BigDecimal(100)).setScale(2,BigDecimal.ROUND_HALF_UP);
+  return percentage;
+}

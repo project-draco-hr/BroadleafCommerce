@@ -1,7 +1,9 @@
 {
   Element cacheElement=getPageCache().get(key);
   if (cacheElement != null && cacheElement.getValue() != null) {
+    statisticsService.addCacheStat(CacheStatType.PAGE_CACHE_HIT_RATE.toString(),true);
     return (List<PageDTO>)cacheElement.getValue();
   }
+  statisticsService.addCacheStat(CacheStatType.PAGE_CACHE_HIT_RATE.toString(),false);
   return null;
 }

@@ -1,0 +1,14 @@
+{
+  CacheStat myStat=getCacheStat(key);
+  if (isHit) {
+    myStat.incrementHit();
+  }
+  myStat.incrementRequest();
+  if (myStat.getLastLogTime() + logResolution < SystemTime.asMillis()) {
+    myStat.setLastLogTime(SystemTime.asMillis());
+    BigDecimal percentage=myStat.getHitRate();
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Cache hit percentage for " + key + " is: "+ percentage.toString()+ "%");
+    }
+  }
+}
