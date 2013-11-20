@@ -1,3 +1,7 @@
 {
-  return EqualsBuilder.reflectionEquals(this,o);
+  if (o instanceof OfferCodeImpl) {
+    OfferCodeImpl that=(OfferCodeImpl)o;
+    return new EqualsBuilder().append(this.id,that.id).append(this.offer,that.offer).append(this.offerCode,that.offerCode).build();
+  }
+  return false;
 }

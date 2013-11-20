@@ -1,3 +1,7 @@
 {
-  return EqualsBuilder.reflectionEquals(this,o);
+  if (o instanceof OfferAuditImpl) {
+    OfferAuditImpl that=(OfferAuditImpl)o;
+    return new EqualsBuilder().append(this.id,that.id).append(this.customerId,that.customerId).append(this.offerId,that.offerId).append(this.offerCodeId,that.offerCodeId).append(this.redeemedDate,that.redeemedDate).append(this.orderId,that.orderId).build();
+  }
+  return false;
 }
