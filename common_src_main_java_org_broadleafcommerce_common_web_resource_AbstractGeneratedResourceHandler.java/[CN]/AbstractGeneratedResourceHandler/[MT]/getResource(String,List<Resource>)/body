@@ -1,6 +1,12 @@
 {
   Element e=getGeneratedResourceCache().get(path);
   Resource r=null;
+  if (e == null) {
+    statisticsService.addCacheStat(CacheStatType.GENERATED_RESOURCE_CACHE_HIT_RATE.toString(),false);
+  }
+ else {
+    statisticsService.addCacheStat(CacheStatType.GENERATED_RESOURCE_CACHE_HIT_RATE.toString(),true);
+  }
   boolean shouldGenerate=false;
   if (e == null || e.getObjectValue() == null) {
     shouldGenerate=true;
