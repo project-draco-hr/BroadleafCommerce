@@ -1,10 +1,10 @@
 {
-  CheckoutSeed seed=context.getSeedData();
-  Order order=seed.getOrder();
-  if (order != null) {
-    Set<Offer> appliedOffers=offerService.getUniqueOffersFromOrder(order);
-    Map<Offer,OfferCode> offerToCodeMapping=offerService.getOffersRetrievedFromCodes(order.getAddedOfferCodes(),appliedOffers);
-    saveOfferIds(appliedOffers,offerToCodeMapping,order);
-  }
+  Order order=context.getSeedData().getOrder();
+  Set<Offer> appliedOffers=offerService.getUniqueOffersFromOrder(order);
+  Map<Offer,OfferCode> offerToCodeMapping=offerService.getOffersRetrievedFromCodes(order.getAddedOfferCodes(),appliedOffers);
+  List<OfferAudit> audits=saveOfferIds(appliedOffers,offerToCodeMapping,order);
+  Map<String,Object> state=new HashMap<String,Object>();
+  state.put(SAVED_AUDITS,audits);
+  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),state);
   return context;
 }
