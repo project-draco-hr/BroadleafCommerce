@@ -107,6 +107,10 @@
             clazz.addInterface(i);
           }
         }
+        ClassFile classFile=clazz.getClassFile();
+        ClassFile templateFile=template.getClassFile();
+        ConstPool constantPool=classFile.getConstPool();
+        buildClassLevelAnnotations(classFile,templateFile,constantPool);
         CtField[] fieldsToCopy=template.getDeclaredFields();
         for (        CtField field : fieldsToCopy) {
           if (field.hasAnnotation(NonCopied.class)) {
