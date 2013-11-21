@@ -1,6 +1,6 @@
 {
   for (  Offer offer : offers) {
-    OfferAudit audit=offerAuditDao.create();
+    OfferAudit audit=offerAuditService.create();
     audit.setCustomerId(order.getCustomer().getId());
     audit.setOfferId(offer.getId());
     audit.setOrderId(order.getId());
@@ -9,6 +9,6 @@
       audit.setOfferCodeId(codeUsedToRetrieveOffer.getId());
     }
     audit.setRedeemedDate(SystemTime.asDate());
-    offerAuditDao.save(audit);
+    audit=offerAuditService.save(audit);
   }
 }

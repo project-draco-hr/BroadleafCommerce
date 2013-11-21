@@ -1,6 +1,6 @@
 {
   if (offer.isLimitedUsePerCustomer()) {
-    Long currentUses=offerAuditDao.countUsesByCustomer(customer.getId(),offer.getId());
+    Long currentUses=offerAuditService.countUsesByCustomer(customer.getId(),offer.getId());
     if (currentUses >= offer.getMaxUsesPerCustomer()) {
       return false;
     }
