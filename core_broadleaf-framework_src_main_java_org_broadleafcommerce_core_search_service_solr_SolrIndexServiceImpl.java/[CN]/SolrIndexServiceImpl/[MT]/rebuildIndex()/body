@@ -4,10 +4,7 @@
   if (SolrContext.isSingleCoreMode()) {
     deleteAllDocuments();
   }
-  BroadleafRequestContext savedContext=BroadleafRequestContext.getBroadleafRequestContext();
-  HashMap savedPricing=SkuPricingConsiderationContext.getSkuPricingConsiderationContext();
-  DynamicSkuPricingService savedPricingService=SkuPricingConsiderationContext.getSkuPricingService();
-  DynamicSkuActiveDatesService savedActiveDateServcie=SkuActiveDateConsiderationContext.getSkuActiveDatesService();
+  Object[] pack=saveState();
   try {
     Long numProducts=productDao.readCountAllActiveProducts();
     if (LOG.isDebugEnabled()) {
@@ -18,24 +15,13 @@
       buildIncrementalIndex(page,pageSize);
       page++;
     }
-    try {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("Optimizing the index...");
-      }
-      SolrContext.getReindexServer().optimize();
-    }
- catch (    SolrServerException e) {
-      throw new ServiceException("Could not rebuild index",e);
-    }
+    optimizeIndex(SolrContext.getReindexServer());
   }
  catch (  ServiceException e) {
     throw e;
   }
  finally {
-    BroadleafRequestContext.setBroadleafRequestContext(savedContext);
-    SkuPricingConsiderationContext.setSkuPricingConsiderationContext(savedPricing);
-    SkuPricingConsiderationContext.setSkuPricingService(savedPricingService);
-    SkuActiveDateConsiderationContext.setSkuActiveDatesService(savedActiveDateServcie);
+    restoreState(pack);
   }
   shs.swapActiveCores();
   if (!SolrContext.isSingleCoreMode()) {
