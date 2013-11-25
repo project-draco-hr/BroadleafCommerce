@@ -1,21 +1,20 @@
 {
-  Map<Long,Long> offerIdToAllowedUsesMap=new HashMap<Long,Long>();
-  CheckoutSeed seed=context.getSeedData();
-  Order order=seed.getOrder();
-  if (order != null) {
-    addOfferIds(order.getOrderAdjustments(),offerIdToAllowedUsesMap);
-    if (order.getOrderItems() != null) {
-      for (      OrderItem item : order.getOrderItems()) {
-        addOfferIds(item.getOrderItemAdjustments(),offerIdToAllowedUsesMap);
+  Order order=context.getSeedData().getOrder();
+  Set<Offer> appliedOffers=offerService.getUniqueOffersFromOrder(order);
+  for (  Offer offer : appliedOffers) {
+    if (offer.isLimitedUsePerCustomer()) {
+      Long currentUses=offerAuditService.countUsesByCustomer(order.getCustomer().getId(),offer.getId());
+      if (currentUses >= offer.getMaxUsesPerCustomer()) {
+        throw new OfferMaxUseExceededException("The customer has used this offer more than the maximum allowed number of times.");
       }
     }
-    if (order.getFulfillmentGroups() != null) {
-      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
-        addOfferIds(fg.getFulfillmentGroupAdjustments(),offerIdToAllowedUsesMap);
+  }
+  for (  OfferCode code : order.getAddedOfferCodes()) {
+    if (code.isLimitedUse()) {
+      Long currentCodeUses=offerAuditService.countOfferCodeUses(code.getId());
+      if (currentCodeUses >= code.getMaxUses()) {
+        throw new OfferMaxUseExceededException("Offer code " + code.getOfferCode() + " with id "+ code.getId()+ " has been than the maximum allowed number of times.");
       }
-    }
-    if (!checkOffers(offerIdToAllowedUsesMap,order)) {
-      throw new OfferMaxUseExceededException("The customer has used this offer code more than the maximum allowed number of times.");
     }
   }
   return context;
