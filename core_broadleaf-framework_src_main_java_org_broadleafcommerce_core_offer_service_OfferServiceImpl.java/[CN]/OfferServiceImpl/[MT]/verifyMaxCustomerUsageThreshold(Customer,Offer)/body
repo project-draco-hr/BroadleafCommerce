@@ -1,10 +1,8 @@
 {
-  if (customer != null && customer.getId() != null && offer != null && offer.getId() != null) {
-    if (offer.getMaxUsesPerCustomer() != null && offer.getMaxUsesPerCustomer() > 0) {
-      Long currentUses=offerAuditDao.countUsesByCustomer(customer.getId(),offer.getId());
-      if (currentUses >= offer.getMaxUsesPerCustomer()) {
-        return false;
-      }
+  if (offer.isLimitedUsePerCustomer()) {
+    Long currentUses=offerAuditService.countUsesByCustomer(customer.getId(),offer.getId());
+    if (currentUses >= offer.getMaxUsesPerCustomer()) {
+      return false;
     }
   }
   return true;

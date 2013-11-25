@@ -1,6 +1,9 @@
 {
   if (!qualifiedItemOffers.isEmpty()) {
     calculatePotentialSavings(qualifiedItemOffers,order);
+    for (    PromotableCandidateItemOffer itemOffer : qualifiedItemOffers) {
+      itemOffer.resetUses();
+    }
     Collections.sort(qualifiedItemOffers,ItemOfferComparator.INSTANCE);
     if (qualifiedItemOffers.size() > 1) {
       determineBestPermutation(qualifiedItemOffers,order);

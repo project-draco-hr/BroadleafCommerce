@@ -24,7 +24,7 @@
       }
       int itemQtyAvailableToBeUsedAsTarget=priceDetail.getQuantityAvailableToBeUsedAsTarget(itemOffer);
       if (itemQtyAvailableToBeUsedAsTarget > 0) {
-        if ((promotion.getMaxUses() == 0) || (itemOffer.getUses() < promotion.getMaxUses())) {
+        if (promotion.isUnlimitedUsePerOrder() || (itemOffer.getUses() < promotion.getMaxUsesPerOrder())) {
           int qtyToMarkAsTarget=Math.min(receiveQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
           receiveQtyNeeded-=qtyToMarkAsTarget;
           if (!checkOnly) {

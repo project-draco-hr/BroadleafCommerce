@@ -1,11 +1,6 @@
 {
   SecurityContextHolder.clearContext();
-  SessionFixationProtectionCookie.remove(response);
-  Cookie cookie=new Cookie("JSESSIONID","");
-  cookie.setMaxAge(0);
-  cookie.setPath("/");
-  cookie.setSecure(false);
-  cookie.setValue("-1");
-  response.addCookie(cookie);
+  cookieUtils.invalidateCookie(response,SessionFixationProtectionCookie.COOKIE_NAME);
+  cookieUtils.setCookieValue(response,"JSESSIONID","-1","/",0,false);
   response.sendRedirect("/");
 }

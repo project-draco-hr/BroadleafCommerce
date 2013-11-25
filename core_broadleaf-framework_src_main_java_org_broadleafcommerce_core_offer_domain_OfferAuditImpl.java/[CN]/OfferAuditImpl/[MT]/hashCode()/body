@@ -1,9 +1,8 @@
 {
-  final int prime=31;
-  int result=1;
-  result=prime * result + ((customerId == null) ? 0 : customerId.hashCode());
-  result=prime * result + ((offerId == null) ? 0 : offerId.hashCode());
-  result=prime * result + ((redeemedDate == null) ? 0 : redeemedDate.hashCode());
-  result=prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-  return result;
+  try {
+    return new HashCodeBuilder().append(customerId).append(offerId).append(getOfferCodeId()).append(redeemedDate).append(orderId).build();
+  }
+ catch (  UnsupportedOperationException e) {
+    return new HashCodeBuilder().append(customerId).append(offerId).append(redeemedDate).append(orderId).build();
+  }
 }

@@ -1,14 +1,7 @@
 {
-  CriteriaBuilder cb=em.getCriteriaBuilder();
-  CriteriaQuery<Long> cq=cb.createQuery(Long.class);
-  cq.select(cb.count(cq.from(OfferAuditImpl.class)));
-  Root<OfferAuditImpl> from=cq.from(OfferAuditImpl.class);
-  Predicate customerIdClause=cb.equal(from.get("customerId"),customerId);
-  Predicate offerIdClause=cb.equal(from.get("offerId"),offerId);
-  cq.where(cb.and(customerIdClause,offerIdClause));
-  TypedQuery<Long> query=em.createQuery(cq);
+  TypedQuery<Long> query=new TypedQueryBuilder<OfferAudit>(OfferAudit.class,"offerAudit").addRestriction("offerAudit.customerId","=",customerId).addRestriction("offerAudit.offerId","=",offerId).toCountQuery(em);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
-  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Offer");
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
   Long result=query.getSingleResult();
   return result;
 }

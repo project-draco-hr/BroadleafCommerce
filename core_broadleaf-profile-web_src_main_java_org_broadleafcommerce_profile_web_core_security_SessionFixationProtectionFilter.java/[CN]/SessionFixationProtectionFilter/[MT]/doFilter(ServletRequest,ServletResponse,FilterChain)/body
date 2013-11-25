@@ -7,7 +7,7 @@
   }
   String activeIdSessionValue=(String)session.getAttribute(SESSION_ATTR);
   if (StringUtils.isNotBlank(activeIdSessionValue) && request.isSecure()) {
-    String activeIdCookieValue=SessionFixationProtectionCookie.readActiveID(request);
+    String activeIdCookieValue=cookieUtils.getCookieValue(request,SessionFixationProtectionCookie.COOKIE_NAME);
     String decryptedActiveIdValue=encryptionModule.decrypt(activeIdCookieValue);
     if (!activeIdSessionValue.equals(decryptedActiveIdValue)) {
       abortUser(request,response);
@@ -25,7 +25,7 @@
     }
     String encryptedActiveIdValue=encryptionModule.encrypt(token);
     session.setAttribute(SESSION_ATTR,token);
-    SessionFixationProtectionCookie.writeActiveID(response,encryptedActiveIdValue);
+    cookieUtils.setCookieValue(response,SessionFixationProtectionCookie.COOKIE_NAME,encryptedActiveIdValue,"/",-1,true);
   }
   chain.doFilter(request,response);
 }
