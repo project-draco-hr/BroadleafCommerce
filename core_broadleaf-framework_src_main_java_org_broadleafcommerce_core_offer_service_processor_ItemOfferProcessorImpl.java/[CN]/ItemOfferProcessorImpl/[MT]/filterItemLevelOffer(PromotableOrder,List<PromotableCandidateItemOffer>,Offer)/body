@@ -6,8 +6,8 @@
     if (couldOfferApplyToOrder(offer,order,promotableOrderItem)) {
       if (!isNewFormat) {
         PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,order);
-        if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
-          candidate.getCandidateTargets().add(promotableOrderItem);
+        if (!candidate.getLegacyCandidateTargets().contains(promotableOrderItem)) {
+          candidate.getLegacyCandidateTargets().add(promotableOrderItem);
         }
         offerCreated=true;
         continue;
@@ -19,8 +19,8 @@
       if (couldOfferApplyToOrder(offer,order,promotableOrderItem,fulfillmentGroup)) {
         if (!isNewFormat) {
           PromotableCandidateItemOffer candidate=createCandidateItemOffer(qualifiedItemOffers,offer,order);
-          if (!candidate.getCandidateTargets().contains(promotableOrderItem)) {
-            candidate.getCandidateTargets().add(promotableOrderItem);
+          if (!candidate.getLegacyCandidateTargets().contains(promotableOrderItem)) {
+            candidate.getLegacyCandidateTargets().add(promotableOrderItem);
           }
           offerCreated=true;
           continue;
@@ -41,7 +41,7 @@
       if (candidateOffer == null) {
         candidateOffer=createCandidateItemOffer(qualifiedItemOffers,offer,order);
       }
-      candidateOffer.getCandidateTargets().addAll(candidates.getCandidateTargets());
+      candidateOffer.getCandidateTargetsMap().putAll(candidates.getCandidateTargetsMap());
     }
   }
 }

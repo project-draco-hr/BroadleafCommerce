@@ -1,27 +1,29 @@
 {
   Offer promotion=itemOffer.getOffer();
-  List<PromotableOrderItem> promotableItems=itemOffer.getCandidateTargets();
-  List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
-  int receiveQtyNeeded=0;
-  for (  OfferItemCriteria targetCriteria : itemOffer.getOffer().getTargetItemCriteria()) {
-    receiveQtyNeeded+=targetCriteria.getQuantity();
+  if (itemOffer.getCandidateTargetsMap().keySet().isEmpty()) {
+    return false;
   }
-  Collections.sort(priceDetails,getTargetItemComparator(promotion.getApplyDiscountToSalePrice()));
-  for (  PromotableOrderItemPriceDetail priceDetail : priceDetails) {
-    if (receiveQtyNeeded > 0) {
-      int itemQtyAvailableToBeUsedAsTarget=priceDetail.getQuantityAvailableToBeUsedAsTarget(itemOffer);
+  for (  OfferItemCriteria itemCriteria : itemOffer.getCandidateTargetsMap().keySet()) {
+    List<PromotableOrderItem> promotableItems=itemOffer.getCandidateTargetsMap().get(itemCriteria);
+    List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
+    Collections.sort(priceDetails,getTargetItemComparator(itemOffer.getOffer().getApplyDiscountToSalePrice()));
+    int targetQtyNeeded=itemCriteria.getQuantity();
+    for (    PromotableOrderItemPriceDetail detail : priceDetails) {
+      int itemQtyAvailableToBeUsedAsTarget=detail.getQuantityAvailableToBeUsedAsTarget(itemOffer);
       if (itemQtyAvailableToBeUsedAsTarget > 0) {
         if (promotion.isUnlimitedUsePerOrder() || (itemOffer.getUses() < promotion.getMaxUsesPerOrder())) {
-          int qtyToMarkAsTarget=Math.min(receiveQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
-          receiveQtyNeeded-=qtyToMarkAsTarget;
-          priceDetail.addPromotionDiscount(itemOffer,itemOffer.getOffer().getTargetItemCriteria(),qtyToMarkAsTarget);
+          int qtyToMarkAsTarget=Math.min(targetQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
+          targetQtyNeeded-=qtyToMarkAsTarget;
+          detail.addPromotionDiscount(itemOffer,itemCriteria,qtyToMarkAsTarget);
         }
       }
+      if (targetQtyNeeded == 0) {
+        break;
+      }
     }
-    if (receiveQtyNeeded == 0) {
-      itemOffer.addUse();
-      break;
+    if (targetQtyNeeded != 0) {
+      return false;
     }
   }
-  return (receiveQtyNeeded == 0);
+  return true;
 }
