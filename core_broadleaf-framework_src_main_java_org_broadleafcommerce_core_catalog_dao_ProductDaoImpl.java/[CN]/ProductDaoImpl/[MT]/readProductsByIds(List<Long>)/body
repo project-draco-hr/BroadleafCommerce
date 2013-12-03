@@ -2,9 +2,13 @@
   if (productIds == null || productIds.size() == 0) {
     return null;
   }
+  if (productIds.size() > 100) {
+    logger.warn("Not recommended to use the readProductsByIds method for long lists of productIds, since " + "Hibernate is required to transform the distinct results. The list of requested" + "product ids was (" + productIds.size() + ") in length.");
+  }
   CriteriaBuilder builder=em.getCriteriaBuilder();
   CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
   Root<ProductImpl> product=criteria.from(ProductImpl.class);
+  product.fetch("defaultSku",JoinType.LEFT).fetch("skuMedia",JoinType.LEFT);
   criteria.select(product);
   criteria.where(product.get("id").as(Long.class).in(sandBoxHelper.mergeCloneIds(em,ProductImpl.class,productIds.toArray(new Long[productIds.size()])))).distinct(true);
   TypedQuery<Product> query=em.createQuery(criteria);
