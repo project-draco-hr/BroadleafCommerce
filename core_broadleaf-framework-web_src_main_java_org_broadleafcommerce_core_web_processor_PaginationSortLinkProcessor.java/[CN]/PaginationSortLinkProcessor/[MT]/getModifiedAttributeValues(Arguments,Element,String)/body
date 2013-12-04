@@ -1,0 +1,16 @@
+{
+  Map<String,String> attributes=new HashMap<String,String>();
+  HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  String baseUrl=request.getRequestURL().toString();
+  Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
+  String sort=element.getAttributeValue(attributeName);
+  if (StringUtils.isNotBlank(sort)) {
+    params.put(ProductSearchCriteria.SORT_STRING,new String[]{sort});
+  }
+ else {
+    params.remove(ProductSearchCriteria.SORT_STRING);
+  }
+  String url=ProcessorUtils.getUrl(baseUrl,params);
+  attributes.put("href",url);
+  return attributes;
+}
