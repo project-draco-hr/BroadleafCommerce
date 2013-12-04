@@ -1,4 +1,11 @@
 {
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().findProductByURI(uri,holder);
+    if (result != null && ExtensionResultStatusType.NOT_HANDLED != result) {
+      return (Product)holder.getResult();
+    }
+  }
   List<Product> products=productDao.findProductByURI(uri);
   if (products == null || products.size() == 0) {
     return null;
