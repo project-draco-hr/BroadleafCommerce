@@ -5,7 +5,7 @@
   if (extensionManager != null) {
     ExtensionResultHolder holder=new ExtensionResultHolder();
     ExtensionResultStatusType result=extensionManager.getProxy().findAllPossibleChildCategories(parentCategory,unparsedMaxResults,holder);
-    if (result != null && ExtensionResultStatusType.NOT_HANDLED != result) {
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
       addToModel(arguments,resultVar,holder.getResult());
       return;
     }

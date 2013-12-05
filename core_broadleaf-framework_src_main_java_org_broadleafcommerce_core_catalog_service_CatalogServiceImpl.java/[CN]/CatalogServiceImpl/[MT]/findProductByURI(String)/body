@@ -2,7 +2,7 @@
   if (extensionManager != null) {
     ExtensionResultHolder holder=new ExtensionResultHolder();
     ExtensionResultStatusType result=extensionManager.getProxy().findProductByURI(uri,holder);
-    if (result != null && ExtensionResultStatusType.NOT_HANDLED != result) {
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
       return (Product)holder.getResult();
     }
   }
