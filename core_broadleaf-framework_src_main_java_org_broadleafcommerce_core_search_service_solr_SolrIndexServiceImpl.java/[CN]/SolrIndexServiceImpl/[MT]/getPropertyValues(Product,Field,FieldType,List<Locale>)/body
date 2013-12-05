@@ -4,9 +4,16 @@
   if (extensionManager != null) {
     ExtensionResultStatusType result=extensionManager.getProxy().addPropertyValues(product,field,fieldType,values,propertyName,locales);
     if (ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
-      final Object propertyValue;
+      Object propertyValue;
       if (propertyName.contains(ATTR_MAP)) {
         propertyValue=PropertyUtils.getMappedProperty(product,ATTR_MAP,propertyName.substring(ATTR_MAP.length() + 1));
+        if (propertyValue != null) {
+          try {
+            propertyValue=PropertyUtils.getProperty(propertyValue,"value");
+          }
+ catch (          NoSuchMethodException e) {
+          }
+        }
       }
  else {
         propertyValue=PropertyUtils.getProperty(product,propertyName);

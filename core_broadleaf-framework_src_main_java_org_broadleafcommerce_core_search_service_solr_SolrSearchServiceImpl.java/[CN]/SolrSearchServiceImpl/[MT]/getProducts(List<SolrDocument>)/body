@@ -1,7 +1,6 @@
 {
   final List<Long> productIds=new ArrayList<Long>();
-  SolrDocumentList docs=response.getResults();
-  for (  SolrDocument doc : docs) {
+  for (  SolrDocument doc : responseDocuments) {
     productIds.add((Long)doc.getFieldValue(shs.getProductIdFieldName()));
   }
   List<Product> products=productDao.readProductsByIds(productIds);
