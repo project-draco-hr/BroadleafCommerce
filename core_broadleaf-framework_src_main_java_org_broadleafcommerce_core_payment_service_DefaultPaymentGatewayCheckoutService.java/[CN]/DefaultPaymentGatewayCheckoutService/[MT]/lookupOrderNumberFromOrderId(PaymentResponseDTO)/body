@@ -1,3 +1,7 @@
 {
-  return null;
+  Order order=orderService.findOrderById(Long.parseLong(responseDTO.getOrderId()));
+  if (order == null) {
+    throw new IllegalArgumentException("An order with ID " + responseDTO.getOrderId() + " cannot be found for the"+ " given payment response.");
+  }
+  return order.getOrderNumber();
 }

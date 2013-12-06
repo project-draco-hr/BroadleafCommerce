@@ -4,7 +4,6 @@
   }
   Long orderId=Long.parseLong(responseDTO.getOrderId());
   Order order=orderService.findOrderById(orderId);
-  List<OrderPayment> payments=order.getPayments();
   PaymentType type=null;
   if (responseDTO.getCreditCard() instanceof CreditCardDTO) {
     type=PaymentType.CREDIT_CARD;
