@@ -2,11 +2,19 @@
   if (!responseDTO.getValid()) {
     throw new IllegalArgumentException("Invalid payment responses cannot be parsed into the order payment domain");
   }
+  if (configService == null) {
+    throw new IllegalArgumentException("Config service cannot be null");
+  }
   Long orderId=Long.parseLong(responseDTO.getOrderId());
   Order order=orderService.findOrderById(orderId);
   PaymentType type=null;
   if (responseDTO.getCreditCard() instanceof CreditCardDTO) {
     type=PaymentType.CREDIT_CARD;
+  }
+  if (!configService.handlesMultiplePayments()) {
+    for (    OrderPayment payment : order.getPayments()) {
+      markPaymentAsInvalid(payment.getId());
+    }
   }
   OrderPayment payment=orderPaymentService.create();
   payment.setType(type);
@@ -16,6 +24,7 @@
   transaction.setRawResponse(responseDTO.getRawResponse());
   transaction.setSuccess(responseDTO.getSuccessful());
   payment.addTransaction(transaction);
+  payment=orderPaymentService.save(payment);
   orderService.addPaymentToOrder(order,payment,null);
-  return null;
+  return payment.getId();
 }
