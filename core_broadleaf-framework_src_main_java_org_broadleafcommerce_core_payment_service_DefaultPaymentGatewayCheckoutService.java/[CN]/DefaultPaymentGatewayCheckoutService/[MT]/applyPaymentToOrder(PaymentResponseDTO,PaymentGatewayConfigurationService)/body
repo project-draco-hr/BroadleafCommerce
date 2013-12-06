@@ -12,6 +12,7 @@
     type=PaymentType.CREDIT_CARD;
   }
   if (!configService.handlesMultiplePayments()) {
+    PaymentGatewayType gateway=configService.getGatewayType();
     for (    OrderPayment payment : order.getPayments()) {
       markPaymentAsInvalid(payment.getId());
     }
