@@ -1,0 +1,10 @@
+{
+  Query query=em.createNamedQuery("BC_READ_GIFT_CARD_BY_REFERENCE_NUMBER");
+  query.setParameter("referenceNumber",referenceNumber);
+  List<GiftCardPayment> infos=query.getResultList();
+  GiftCardPayment response=(infos == null || infos.size() == 0) ? null : infos.get(0);
+  if (response != null) {
+    response.setEncryptionModule(encryptionModule);
+  }
+  return response;
+}

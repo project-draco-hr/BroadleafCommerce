@@ -1,0 +1,19 @@
+{
+  OrderPayment paymentInfoToRemove=null;
+  for (  OrderPayment info : order.getPayments()) {
+    if (info.equals(paymentInfo)) {
+      paymentInfoToRemove=info;
+    }
+  }
+  if (paymentInfoToRemove != null) {
+    try {
+      securePaymentInfoService.findAndRemoveSecurePaymentInfo(paymentInfoToRemove.getReferenceNumber(),paymentInfo.getType());
+    }
+ catch (    WorkflowException e) {
+      LOG.debug("No secure payment is associated with the OrderPayment",e);
+    }
+    order.getPayments().remove(paymentInfoToRemove);
+    paymentInfo=paymentInfoDao.readPaymentInfoById(paymentInfoToRemove.getId());
+    paymentInfoDao.delete(paymentInfo);
+  }
+}

@@ -3,16 +3,16 @@
   if (cart != null) {
     try {
       if (mapWrappers != null && !mapWrappers.isEmpty()) {
-        Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-        orderService.removePaymentsFromOrder(cart,PaymentInfoType.CREDIT_CARD);
+        Map<OrderPayment,Referenced> payments=new HashMap<OrderPayment,Referenced>();
+        orderService.removePaymentsFromOrder(cart,PaymentType.CREDIT_CARD);
         for (        PaymentReferenceMapWrapper mapWrapper : mapWrappers) {
-          PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
+          OrderPayment paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
           paymentInfo.setOrder(cart);
           Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
-          if (cart.getPaymentInfos() == null) {
-            cart.setPaymentInfos(new ArrayList<PaymentInfo>());
+          if (cart.getPayments() == null) {
+            cart.setPayments(new ArrayList<OrderPayment>());
           }
-          cart.getPaymentInfos().add(paymentInfo);
+          cart.getPayments().add(paymentInfo);
           payments.put(paymentInfo,referenced);
         }
         CheckoutResponse response=checkoutService.performCheckout(cart,payments);

@@ -1,20 +1,14 @@
 {
   Order cart=CartState.getCart();
   if (cart != null) {
-    try {
-      Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-      PaymentInfo paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
-      Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
-      payments.put(paymentInfo,referenced);
-      CompositePaymentResponse compositePaymentResponse=compositePaymentService.executePayment(cart,payments);
-      PaymentResponseItem responseItem=compositePaymentResponse.getPaymentResponse().getResponseItems().get(paymentInfo);
-      PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
-      paymentResponseItemWrapper.wrapDetails(responseItem,request);
-      return paymentResponseItemWrapper;
-    }
- catch (    PaymentException e) {
-      throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e);
-    }
+    Map<OrderPayment,Referenced> payments=new HashMap<OrderPayment,Referenced>();
+    OrderPayment paymentInfo=mapWrapper.getPaymentInfoWrapper().unwrap(request,context);
+    Referenced referenced=mapWrapper.getReferencedWrapper().unwrap(request,context);
+    payments.put(paymentInfo,referenced);
+    PaymentResponseItem responseItem=new PaymentResponseItemImpl();
+    PaymentResponseItemWrapper paymentResponseItemWrapper=context.getBean(PaymentResponseItemWrapper.class);
+    paymentResponseItemWrapper.wrapDetails(responseItem,request);
+    return paymentResponseItemWrapper;
   }
   throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
 }

@@ -1,0 +1,10 @@
+{
+  Query query=em.createNamedQuery("BC_READ_CREDIT_CARD_BY_REFERENCE_NUMBER");
+  query.setParameter("referenceNumber",referenceNumber);
+  List<CreditCardPayment> infos=query.getResultList();
+  CreditCardPayment response=(infos == null || infos.size() == 0) ? null : infos.get(0);
+  if (response != null) {
+    response.setEncryptionModule(encryptionModule);
+  }
+  return response;
+}

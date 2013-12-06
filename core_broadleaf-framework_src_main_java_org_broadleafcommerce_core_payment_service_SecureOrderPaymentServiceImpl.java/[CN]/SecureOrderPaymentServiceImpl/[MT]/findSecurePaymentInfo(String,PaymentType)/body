@@ -1,0 +1,24 @@
+{
+  if (paymentType == PaymentType.CREDIT_CARD) {
+    CreditCardPayment ccinfo=findCreditCardInfo(referenceNumber);
+    if (ccinfo == null) {
+      throw new WorkflowException("No credit card info associated with credit card payment type with reference number: " + referenceNumber);
+    }
+    return ccinfo;
+  }
+ else   if (paymentType == PaymentType.BANK_ACCOUNT) {
+    BankAccountPayment bankinfo=findBankAccountInfo(referenceNumber);
+    if (bankinfo == null) {
+      throw new WorkflowException("No bank account info associated with bank account payment type with reference number: " + referenceNumber);
+    }
+    return bankinfo;
+  }
+ else   if (paymentType == PaymentType.GIFT_CARD) {
+    GiftCardPayment gcinfo=findGiftCardInfo(referenceNumber);
+    if (gcinfo == null) {
+      throw new WorkflowException("No bank account info associated with gift card payment type with reference number: " + referenceNumber);
+    }
+    return gcinfo;
+  }
+  return null;
+}

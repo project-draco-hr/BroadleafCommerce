@@ -6,21 +6,21 @@
   FulfillmentGroup group=buildFulfillmentGroup(order,address);
   addSampleItemToOrder(order,group);
   order.setTotalShipping(new Money(0D));
-  Map<PaymentInfo,Referenced> map=addPaymentToOrder(order,address);
+  Map<OrderPayment,Referenced> map=addPaymentToOrder(order,address);
   orderService.save(order,true);
   CheckoutResponse response=checkoutService.performCheckout(order,map);
-  for (  PaymentInfo paymentInfo : response.getInfos().keySet()) {
+  for (  OrderPayment paymentInfo : response.getInfos().keySet()) {
     assert(paymentInfo.getReferenceNumber().equals("abc123"));
     assert(response.getInfos().get(paymentInfo).getReferenceNumber().equals("abc123"));
   }
   Referenced referenced=null;
   try {
-    referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentInfoType.CREDIT_CARD);
+    referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentType.CREDIT_CARD);
   }
  catch (  Exception e) {
   }
   try {
-    referenced=securePaymentInfoService.findSecurePaymentInfo("1234",PaymentInfoType.CREDIT_CARD);
+    referenced=securePaymentInfoService.findSecurePaymentInfo("1234",PaymentType.CREDIT_CARD);
   }
  catch (  Exception e) {
   }

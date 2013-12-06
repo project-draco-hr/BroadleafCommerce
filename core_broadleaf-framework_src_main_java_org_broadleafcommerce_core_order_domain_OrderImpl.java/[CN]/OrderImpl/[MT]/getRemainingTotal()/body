@@ -4,9 +4,9 @@
     return null;
   }
   Money totalPayments=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,getCurrency());
-  for (  PaymentInfo pi : getPaymentInfos()) {
-    if (pi.getAmount() != null) {
-      totalPayments=totalPayments.add(pi.getAmount());
+  for (  OrderPayment payment : getPayments()) {
+    if (payment.getAmount() != null) {
+      totalPayments=totalPayments.add(payment.getAmount());
     }
   }
   return myTotal.subtract(totalPayments);

@@ -5,7 +5,7 @@
   sb.append("_gaq.push(['_setAccount', '" + webPropertyId + "']);");
   sb.append("_gaq.push(['_trackPageview']);");
   if (order != null) {
-    Address paymentAddress=order.getPaymentInfos().get(0).getAddress();
+    Address paymentAddress=order.getPayments().get(0).getBillingAddress();
     sb.append("_gaq.push(['_addTrans','" + order.getId() + "'");
     sb.append(",'" + order.getName() + "'");
     sb.append(",'" + order.getTotal() + "'");

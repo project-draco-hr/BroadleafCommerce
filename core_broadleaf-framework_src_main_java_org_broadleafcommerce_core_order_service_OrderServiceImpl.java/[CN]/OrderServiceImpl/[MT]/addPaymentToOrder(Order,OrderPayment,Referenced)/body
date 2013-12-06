@@ -1,0 +1,10 @@
+{
+  payment.setOrder(order);
+  order.getPayments().add(payment);
+  order=persist(order);
+  int paymentIndex=order.getPayments().size() - 1;
+  if (securePaymentInfo != null) {
+    securePaymentInfoService.save(securePaymentInfo);
+  }
+  return order.getPayments().get(paymentIndex);
+}

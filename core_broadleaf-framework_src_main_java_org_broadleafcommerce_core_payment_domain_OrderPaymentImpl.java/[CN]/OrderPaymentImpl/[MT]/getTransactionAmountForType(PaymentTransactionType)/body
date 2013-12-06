@@ -1,0 +1,9 @@
+{
+  Money amount=BroadleafCurrencyUtils.getMoney(BigDecimal.ZERO,getOrder().getCurrency());
+  for (  PaymentTransaction trans : getTransactions()) {
+    if (type.equals(trans.getType())) {
+      amount=amount.add(trans.getAmount());
+    }
+  }
+  return amount;
+}

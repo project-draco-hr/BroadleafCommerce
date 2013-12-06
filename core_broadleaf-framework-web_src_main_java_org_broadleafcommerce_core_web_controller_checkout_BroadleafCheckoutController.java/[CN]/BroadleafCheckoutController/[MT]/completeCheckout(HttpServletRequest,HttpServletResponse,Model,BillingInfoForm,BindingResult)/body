@@ -1,28 +1,22 @@
 {
   Order cart=CartState.getCart();
   if (cart != null && !(cart instanceof NullOrderImpl)) {
-    Map<PaymentInfo,Referenced> payments=new HashMap<PaymentInfo,Referenced>();
-    Iterator<PaymentInfo> paymentInfoItr=cart.getPaymentInfos().iterator();
+    Map<OrderPayment,Referenced> payments=new HashMap<OrderPayment,Referenced>();
+    Iterator<OrderPayment> paymentInfoItr=cart.getPayments().iterator();
     while (paymentInfoItr.hasNext()) {
-      PaymentInfo paymentInfo=paymentInfoItr.next();
-      if (!PaymentInfoType.CUSTOMER_CREDIT.equals(paymentInfo.getType()) && !PaymentInfoType.GIFT_CARD.equals(paymentInfo.getType())) {
+      OrderPayment paymentInfo=paymentInfoItr.next();
+      if (!PaymentType.CUSTOMER_CREDIT.equals(paymentInfo.getType()) && !PaymentType.GIFT_CARD.equals(paymentInfo.getType())) {
         paymentInfoItr.remove();
         orderService.removePaymentFromOrder(cart,paymentInfo);
       }
     }
-    List<PaymentInfoType> paymentInfoTypes=createPaymentInfoTypeList(billingForm);
+    List<PaymentType> paymentInfoTypes=createPaymentInfoTypeList(billingForm);
     paymentInfoServiceExtensionManager.getProxy().addAdditionalPaymentInfos(payments,paymentInfoTypes,request,response,model,billingForm,result);
     if (result.hasErrors()) {
       return handleCheckoutError(request,model);
     }
     try {
-      CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
-      Map<PaymentInfo,PaymentResponseItem> paymentResponseItemMap=checkoutResponse.getPaymentResponse().getResponseItems();
-      for (      PaymentResponseItem paymentResponseItem : paymentResponseItemMap.values()) {
-        if (!paymentResponseItem.getTransactionSuccess()) {
-          return handleCheckoutError(request,model);
-        }
-      }
+      CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart);
     }
  catch (    CheckoutException workflowException) {
       return handleCheckoutError(request,model);

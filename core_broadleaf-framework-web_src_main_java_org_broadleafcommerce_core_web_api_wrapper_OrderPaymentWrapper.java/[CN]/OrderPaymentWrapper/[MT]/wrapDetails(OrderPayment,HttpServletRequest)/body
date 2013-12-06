@@ -1,0 +1,19 @@
+{
+  this.id=model.getId();
+  if (model.getOrder() != null) {
+    this.orderId=model.getOrder().getId();
+  }
+  if (model.getType() != null) {
+    this.type=model.getType().getType();
+  }
+  if (model.getBillingAddress() != null) {
+    AddressWrapper addressWrapper=(AddressWrapper)context.getBean(AddressWrapper.class.getName());
+    addressWrapper.wrapDetails(model.getBillingAddress(),request);
+    this.billingAddress=addressWrapper;
+  }
+  if (model.getAmount() != null) {
+    this.amount=model.getAmount().getAmount();
+    this.currency=model.getAmount().getCurrency();
+  }
+  this.referenceNumber=model.getReferenceNumber();
+}

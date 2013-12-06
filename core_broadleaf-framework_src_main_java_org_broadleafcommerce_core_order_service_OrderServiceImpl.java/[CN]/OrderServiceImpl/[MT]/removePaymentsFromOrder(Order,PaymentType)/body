@@ -1,0 +1,20 @@
+{
+  List<OrderPayment> infos=new ArrayList<OrderPayment>();
+  for (  OrderPayment paymentInfo : order.getPayments()) {
+    if (paymentInfoType == null || paymentInfoType.equals(paymentInfo.getType())) {
+      infos.add(paymentInfo);
+    }
+  }
+  order.getPayments().removeAll(infos);
+  for (  OrderPayment paymentInfo : infos) {
+    try {
+      securePaymentInfoService.findAndRemoveSecurePaymentInfo(paymentInfo.getReferenceNumber(),paymentInfo.getType());
+    }
+ catch (    WorkflowException e) {
+      LOG.debug("No secure payment is associated with the OrderPayment",e);
+    }
+    order.getPayments().remove(paymentInfo);
+    paymentInfo=paymentInfoDao.readPaymentInfoById(paymentInfo.getId());
+    paymentInfoDao.delete(paymentInfo);
+  }
+}
