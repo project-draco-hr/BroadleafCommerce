@@ -1,5 +1,5 @@
 {
-  if (!responseDTO.getValid()) {
+  if (!responseDTO.isValid()) {
     throw new IllegalArgumentException("Invalid payment responses cannot be parsed into the order payment domain");
   }
   if (configService == null) {
@@ -23,7 +23,7 @@
   PaymentTransaction transaction=orderPaymentService.createTransaction();
   transaction.setAmount(responseDTO.getAmount());
   transaction.setRawResponse(responseDTO.getRawResponse());
-  transaction.setSuccess(responseDTO.getSuccessful());
+  transaction.setSuccess(responseDTO.isSuccessful());
   payment.addTransaction(transaction);
   payment=orderPaymentService.save(payment);
   orderService.addPaymentToOrder(order,payment,null);
