@@ -1,10 +1,10 @@
 {
+  CtClass clazz=null;
   try {
     boolean mySkipOverlaps=skipOverlaps;
     boolean myRenameMethodOverlaps=renameMethodOverlaps;
     String convertedClassName=className.replace('/','.');
     ClassPool classPool=null;
-    CtClass clazz=null;
     String xformKey=convertedClassName;
     String[] xformVals=null;
     Boolean[] xformSkipOverlaps=null;
@@ -201,6 +201,11 @@
   }
 catch (  Exception e) {
     throw new RuntimeException("Unable to transform class",e);
+  }
+ finally {
+    if (clazz != null) {
+      clazz.detach();
+    }
   }
   return null;
 }
