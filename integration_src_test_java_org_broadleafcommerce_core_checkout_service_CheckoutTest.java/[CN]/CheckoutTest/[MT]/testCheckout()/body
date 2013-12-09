@@ -6,9 +6,8 @@
   FulfillmentGroup group=buildFulfillmentGroup(order,address);
   addSampleItemToOrder(order,group);
   order.setTotalShipping(new Money(0D));
-  Map<OrderPayment,Referenced> map=addPaymentToOrder(order,address);
   orderService.save(order,true);
-  CheckoutResponse response=checkoutService.performCheckout(order,map);
+  CheckoutResponse response=checkoutService.performCheckout(order);
   for (  OrderPayment paymentInfo : response.getInfos().keySet()) {
     assert(paymentInfo.getReferenceNumber().equals("abc123"));
     assert(response.getInfos().get(paymentInfo).getReferenceNumber().equals("abc123"));
