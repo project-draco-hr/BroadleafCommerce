@@ -5,7 +5,7 @@
     String[] xformVals=xformTemplates.get(xformKey).split(",");
     logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying annotations into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
     try {
-      ClassPool classPool=ClassPool.getDefault();
+      ClassPool classPool=new ClassPool(true);
       CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
       clazz.defrost();
       for (      String xformVal : xformVals) {
