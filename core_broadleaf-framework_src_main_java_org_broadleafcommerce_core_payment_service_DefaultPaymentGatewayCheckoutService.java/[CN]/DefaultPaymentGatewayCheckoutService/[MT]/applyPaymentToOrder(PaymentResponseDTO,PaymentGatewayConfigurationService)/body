@@ -7,9 +7,18 @@
   }
   Long orderId=Long.parseLong(responseDTO.getOrderId());
   Order order=orderService.findOrderById(orderId);
-  PaymentType type=null;
-  if (responseDTO.getCreditCard() instanceof CreditCardDTO) {
-    type=PaymentType.CREDIT_CARD;
+  Customer customer=order.getCustomer();
+  if (customer.isAnonymous()) {
+    GatewayCustomerDTO<PaymentResponseDTO> gatewayCustomer=responseDTO.getCustomer();
+    if (StringUtils.isEmpty(customer.getFirstName())) {
+      customer.setFirstName(gatewayCustomer.getFirstName());
+    }
+    if (StringUtils.isEmpty(customer.getLastName())) {
+      customer.setLastName(gatewayCustomer.getLastName());
+    }
+    if (StringUtils.isEmpty(customer.getEmailAddress())) {
+      customer.setEmailAddress(gatewayCustomer.getEmail());
+    }
   }
   if (!configService.handlesMultiplePayments()) {
     PaymentGatewayType gateway=configService.getGatewayType();
