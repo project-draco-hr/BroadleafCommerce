@@ -31,6 +31,17 @@
   OrderPayment payment=orderPaymentService.create();
   payment.setType(responseDTO.getPaymentType());
   payment.setAmount(responseDTO.getAmount());
+  Address billingAddress=addressService.create();
+  billingAddress.setAddressLine1(responseDTO.getBillTo().getAddressLine1());
+  billingAddress.setAddressLine2(responseDTO.getBillTo().getAddressLine2());
+  billingAddress.setCity(responseDTO.getBillTo().getAddressCityLocality());
+  State state=stateService.findStateByAbbreviation(responseDTO.getBillTo().getAddressStateRegion());
+  billingAddress.setState(state);
+  Country country=countryService.findCountryByAbbreviation(responseDTO.getBillTo().getAddressCountryCode());
+  billingAddress.setCountry(country);
+  Phone billingPhone=phoneService.create();
+  billingPhone.setPhoneNumber(responseDTO.getBillTo().getAddressPhone());
+  billingAddress.setPhonePrimary(billingPhone);
   PaymentTransaction transaction=orderPaymentService.createTransaction();
   transaction.setAmount(responseDTO.getAmount());
   transaction.setRawResponse(responseDTO.getRawResponse());
