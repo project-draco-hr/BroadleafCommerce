@@ -1,0 +1,50 @@
+{
+  Long orderPaymentId=null;
+  try {
+    PaymentResponseDTO responseDTO=getWebResponseService().translateWebResponse(request);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("HTTPRequest translated to Raw Response: " + responseDTO.getRawResponse());
+    }
+    orderPaymentId=applyPaymentToOrder(responseDTO);
+    if (!responseDTO.isSuccessful()) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("The Response DTO is marked as unsuccessful. Delegating to the " + "payment module to handle an unsuccessful transaction");
+      }
+      handleUnsuccessfulTransaction(model,redirectAttributes,responseDTO);
+      return getErrorViewRedirect();
+    }
+    if (!responseDTO.isValid()) {
+      throw new PaymentException("The validity of the response cannot be confirmed." + "Check the Tamper Proof Seal for more details.");
+    }
+    String orderId=responseDTO.getOrderId();
+    if (orderId == null) {
+      throw new RuntimeException("Order ID must be set on the Payment Response DTO");
+    }
+    if (getConfigurationService().completeCheckoutOnCallback()) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("The Gateway is configured to complete checkout on callback. " + "Initiating Checkout with Order ID: " + orderId);
+      }
+      String orderNumber=initiateCheckout(Long.parseLong(orderId));
+      return getConfirmationViewRedirect(orderNumber);
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("The Gateway is configured to not complete checkout. " + "Redirecting to the Order Review Page for Order ID: " + orderId);
+      }
+      return getOrderReviewRedirect();
+    }
+  }
+ catch (  Exception e) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("An exception was caught either from processing the response and applying the payment to " + "the order, or an activity in the checkout workflow threw an exception. Attempting to " + "mark the payment as invalid and delegating to the payment module to handle any other "+ "exception processing. The error caught was: "+ e.getMessage());
+    }
+    if (orderPaymentId != null) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("The Payment with ID: [" + orderPaymentId + "] has been applied to the order."+ " Attempting to mark it as invalid and continue processing the exception.");
+      }
+      markPaymentAsInvalid(orderPaymentId);
+    }
+    handleProcessingException(e,redirectAttributes);
+  }
+  return getErrorViewRedirect();
+}
