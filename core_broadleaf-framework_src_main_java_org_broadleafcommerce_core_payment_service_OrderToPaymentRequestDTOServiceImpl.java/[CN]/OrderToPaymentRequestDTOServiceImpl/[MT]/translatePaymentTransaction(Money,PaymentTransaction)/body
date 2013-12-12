@@ -1,0 +1,8 @@
+{
+  PaymentRequestDTO requestDTO=new PaymentRequestDTO().transactionTotal(transactionAmount.toString());
+  Map<String,Serializable> additionalFields=paymentTransaction.getAdditionalFields();
+  for (  String key : additionalFields.keySet()) {
+    requestDTO.additionalField(key,additionalFields.get(key));
+  }
+  return requestDTO;
+}

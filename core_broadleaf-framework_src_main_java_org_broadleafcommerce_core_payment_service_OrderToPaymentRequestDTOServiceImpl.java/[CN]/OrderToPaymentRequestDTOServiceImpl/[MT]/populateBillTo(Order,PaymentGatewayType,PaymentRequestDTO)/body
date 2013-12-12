@@ -1,0 +1,21 @@
+{
+  List<OrderPayment> payments=order.getPayments();
+  for (  OrderPayment payment : payments) {
+    if (paymentGatewayType.equals(payment.getGatewayType())) {
+      Address billAddress=payment.getBillingAddress();
+      String stateAbbr=null;
+      String countryAbbr=null;
+      String phone=null;
+      if (billAddress.getState() != null) {
+        stateAbbr=billAddress.getState().getAbbreviation();
+      }
+      if (billAddress.getCountry() != null) {
+        countryAbbr=billAddress.getCountry().getAbbreviation();
+      }
+      if (billAddress.getPhonePrimary() != null) {
+        phone=billAddress.getPhonePrimary().getPhoneNumber();
+      }
+      requestDTO.billTo().addressFirstName(billAddress.getFirstName()).addressLastName(billAddress.getLastName()).addressCompanyName(billAddress.getCompanyName()).addressLine1(billAddress.getAddressLine1()).addressLine2(billAddress.getAddressLine2()).addressCityLocality(billAddress.getCity()).addressStateRegion(stateAbbr).addressPostalCode(billAddress.getPostalCode()).addressCountryCode(countryAbbr).addressPhone(phone).addressEmail(billAddress.getEmailAddress());
+    }
+  }
+}
