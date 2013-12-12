@@ -1,0 +1,8 @@
+{
+  PaymentRequestDTO requestDTO=new PaymentRequestDTO().orderId(order.getId().toString()).orderCurrencyCode(order.getCurrency().getCurrencyCode()).transactionTotal(order.getTotal().toString()).shippingTotal(order.getTotalShipping().toString()).taxTotal(order.getTotalTax().toString());
+  populateCustomerInfo(order,requestDTO);
+  populateShipTo(order,requestDTO);
+  populateBillTo(order,paymentType,requestDTO);
+  populateDefaultLineItemsAndSubtotal(order,requestDTO);
+  return requestDTO;
+}
