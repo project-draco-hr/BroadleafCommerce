@@ -1,0 +1,10 @@
+{
+  String countryCacheKey=getCacheKey(translation.getEntityType(),translation.getEntityId(),translation.getFieldName(),translation.getLocaleCode());
+  String languageOnlyLocaleCode=translation.getLocaleCode();
+  if (languageOnlyLocaleCode.contains("_")) {
+    languageOnlyLocaleCode=languageOnlyLocaleCode.substring(0,languageOnlyLocaleCode.indexOf("_"));
+  }
+  String nonCountryCacheKey=getCacheKey(translation.getEntityType(),translation.getEntityId(),translation.getFieldName(),languageOnlyLocaleCode);
+  getCache().remove(countryCacheKey);
+  getCache().remove(nonCountryCacheKey);
+}

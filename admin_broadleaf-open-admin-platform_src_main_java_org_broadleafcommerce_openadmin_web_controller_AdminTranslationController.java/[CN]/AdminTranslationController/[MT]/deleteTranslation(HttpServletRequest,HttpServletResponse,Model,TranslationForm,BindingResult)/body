@@ -1,5 +1,17 @@
 {
   adminRemoteSecurityService.securityCheck(form.getCeilingEntity(),EntityOperationType.UPDATE);
-  translationService.deleteTranslationById(form.getTranslationId());
+  SectionCrumb sectionCrumb=new SectionCrumb();
+  sectionCrumb.setSectionIdentifier(TranslationImpl.class.getName());
+  sectionCrumb.setSectionId(String.valueOf(form.getTranslationId()));
+  List<SectionCrumb> sectionCrumbs=Arrays.asList(sectionCrumb);
+  EntityForm entityForm=formService.buildTranslationForm(form);
+  entityForm.setCeilingEntityClassname(Translation.class.getName());
+  entityForm.setEntityType(TranslationImpl.class.getName());
+  Field id=new Field();
+  id.setName("id");
+  id.setValue(String.valueOf(form.getTranslationId()));
+  entityForm.getFields().put("id",id);
+  entityForm.setId(String.valueOf(form.getTranslationId()));
+  service.removeEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs);
   return viewTranslation(request,response,model,form,result);
 }
