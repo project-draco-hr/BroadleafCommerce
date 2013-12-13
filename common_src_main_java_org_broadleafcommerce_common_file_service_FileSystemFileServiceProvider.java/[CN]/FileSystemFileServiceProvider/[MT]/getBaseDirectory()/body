@@ -1,0 +1,14 @@
+{
+  if (baseDirectory == null) {
+    if (fileSystemBaseDirectory != null && !"".equals(fileSystemBaseDirectory)) {
+      baseDirectory=fileSystemBaseDirectory;
+    }
+ else {
+      baseDirectory=DEFAULT_STORAGE_DIRECTORY;
+    }
+    if (!baseDirectory.endsWith("/")) {
+      baseDirectory=fileSystemBaseDirectory.trim() + "/";
+    }
+  }
+  return getSiteDirectory(baseDirectory);
+}
