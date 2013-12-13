@@ -1,0 +1,46 @@
+{
+  Map<Long,OrderItemPriceDetailAdjustment> itemAdjustmentMap=buildItemDetailAdjustmentMap(itemDetail);
+  if (itemDetail.getQuantity() != promotableDetail.getQuantity()) {
+    itemDetail.setQuantity(promotableDetail.getQuantity());
+  }
+  if (promotableDetail.isAdjustmentsFinalized()) {
+    itemDetail.setUseSalePrice(promotableDetail.useSaleAdjustments());
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment adjustment : promotableDetail.getCandidateItemAdjustments()) {
+    OrderItemPriceDetailAdjustment itemAdjustment=itemAdjustmentMap.remove(adjustment.getOfferId());
+    if (itemAdjustment != null) {
+      if (!itemAdjustment.getValue().equals(adjustment.getAdjustmentValue())) {
+        updateItemAdjustment(itemAdjustment,adjustment);
+      }
+    }
+ else {
+      final OrderItemPriceDetailAdjustment newItemAdjustment;
+      ExtensionResultHolder resultHolder=new ExtensionResultHolder();
+      if (extensionManager != null) {
+        extensionManager.getProxy().createOrderItemPriceDetailAdjustment(resultHolder,itemDetail);
+      }
+      if (resultHolder != null && resultHolder.getContextMap().containsKey("OrderItemPriceDetailAdjustment")) {
+        newItemAdjustment=(OrderItemPriceDetailAdjustment)resultHolder.getContextMap().get("OrderItemPriceDetailAdjustment");
+      }
+ else {
+        newItemAdjustment=offerDao.createOrderItemPriceDetailAdjustment();
+      }
+      newItemAdjustment.init(itemDetail,adjustment.getOffer(),null);
+      updateItemAdjustment(newItemAdjustment,adjustment);
+      itemDetail.getOrderItemPriceDetailAdjustments().add(newItemAdjustment);
+    }
+  }
+  if (itemAdjustmentMap.size() > 0) {
+    List<Long> adjustmentIdsToRemove=new ArrayList<Long>();
+    for (    OrderItemPriceDetailAdjustment adjustmentToRemove : itemAdjustmentMap.values()) {
+      adjustmentIdsToRemove.add(adjustmentToRemove.getOffer().getId());
+    }
+    Iterator<OrderItemPriceDetailAdjustment> iterator=itemDetail.getOrderItemPriceDetailAdjustments().iterator();
+    while (iterator.hasNext()) {
+      OrderItemPriceDetailAdjustment adj=iterator.next();
+      if (adjustmentIdsToRemove.contains(adj.getOffer().getId())) {
+        iterator.remove();
+      }
+    }
+  }
+}

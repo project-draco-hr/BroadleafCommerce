@@ -1,0 +1,10 @@
+{
+  Map<String,Object> contextMap=new HashMap<String,Object>();
+  if (extensionManager != null) {
+    extensionManager.getProxy().applyItemOffer(order,itemOffer,contextMap);
+    if (contextMap.get(OfferServiceExtensionManager.STOP_PROCESSING) != null) {
+      return !Boolean.TRUE.equals(contextMap.get(OfferServiceExtensionManager.STOP_PROCESSING));
+    }
+  }
+  return Boolean.TRUE;
+}
