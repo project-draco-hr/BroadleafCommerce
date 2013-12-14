@@ -1,0 +1,52 @@
+{
+  String actionUrl=(String)responseDTO.getResponseMap().get(NullPaymentGatewayConstants.TRANSPARENT_REDIRECT_URL);
+  Map<String,String> actionValue=new HashMap<String,String>();
+  actionValue.put(getFormActionURLKey(),actionUrl);
+  formParameters.put(getFormActionURLKey(),actionValue);
+  Map<String,String> hiddenFields=new HashMap<String,String>();
+  hiddenFields.put(NullPaymentGatewayConstants.TRANSACTION_AMT,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.TRANSACTION_AMT).toString());
+  hiddenFields.put(NullPaymentGatewayConstants.ORDER_ID,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.ORDER_ID).toString());
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_FIRST_NAME) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_FIRST_NAME,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_FIRST_NAME).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_LAST_NAME) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_LAST_NAME,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_LAST_NAME).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE1) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE1,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE1).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE2) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE2,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE2).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_CITY) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_CITY,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_CITY).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_STATE) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_STATE,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_STATE).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ZIP) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.BILLING_ZIP,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.BILLING_ZIP).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_FIRST_NAME) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_FIRST_NAME,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_FIRST_NAME).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_LAST_NAME) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_LAST_NAME,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_LAST_NAME).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE1) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE1,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE1).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE2) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE2,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE2).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_CITY) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_CITY,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_CITY).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_STATE) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_STATE,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_STATE).toString());
+  }
+  if (responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ZIP) != null) {
+    hiddenFields.put(NullPaymentGatewayConstants.SHIPPING_ZIP,responseDTO.getResponseMap().get(NullPaymentGatewayConstants.SHIPPING_ZIP).toString());
+  }
+  formParameters.put(getHiddenParamsKey(),hiddenFields);
+}

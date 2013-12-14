@@ -1,0 +1,14 @@
+{
+  Assert.isTrue(requestDTO.getTransactionTotal() != null,"The Transaction Total on the Payment Request DTO must not be null");
+  Assert.isTrue(requestDTO.getOrderId() != null,"The Order ID on the Payment Request DTO must not be null");
+  PaymentResponseDTO responseDTO=new PaymentResponseDTO(PaymentType.CREDIT_CARD).responseMap(NullPaymentGatewayConstants.ORDER_ID,requestDTO.getOrderId()).responseMap(NullPaymentGatewayConstants.TRANSACTION_AMT,requestDTO.getTransactionTotal()).responseMap(NullPaymentGatewayConstants.TRANSPARENT_REDIRECT_URL,configurationService.getTransparentRedirectUrl());
+  AddressDTO billTo=requestDTO.getBillTo();
+  if (billTo != null) {
+    responseDTO.responseMap(NullPaymentGatewayConstants.BILLING_FIRST_NAME,billTo.getAddressFirstName()).responseMap(NullPaymentGatewayConstants.BILLING_LAST_NAME,billTo.getAddressLastName()).responseMap(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE1,billTo.getAddressLine1()).responseMap(NullPaymentGatewayConstants.BILLING_ADDRESS_LINE2,billTo.getAddressLine2()).responseMap(NullPaymentGatewayConstants.BILLING_CITY,billTo.getAddressCityLocality()).responseMap(NullPaymentGatewayConstants.BILLING_STATE,billTo.getAddressStateRegion()).responseMap(NullPaymentGatewayConstants.BILLING_ZIP,billTo.getAddressPostalCode());
+  }
+  AddressDTO shipTo=requestDTO.getShipTo();
+  if (shipTo != null) {
+    responseDTO.responseMap(NullPaymentGatewayConstants.SHIPPING_FIRST_NAME,shipTo.getAddressFirstName()).responseMap(NullPaymentGatewayConstants.SHIPPING_LAST_NAME,shipTo.getAddressLastName()).responseMap(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE1,shipTo.getAddressLine1()).responseMap(NullPaymentGatewayConstants.SHIPPING_ADDRESS_LINE2,shipTo.getAddressLine2()).responseMap(NullPaymentGatewayConstants.SHIPPING_CITY,shipTo.getAddressCityLocality()).responseMap(NullPaymentGatewayConstants.SHIPPING_STATE,shipTo.getAddressStateRegion()).responseMap(NullPaymentGatewayConstants.SHIPPING_ZIP,shipTo.getAddressPostalCode());
+  }
+  return responseDTO;
+}
