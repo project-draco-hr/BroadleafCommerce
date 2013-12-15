@@ -7,17 +7,17 @@
     staticAssetStorageDao.save(storage);
   }
  else   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType())) {
+    FileWorkArea tempWorkArea=broadleafFileService.initializeWorkArea();
+    String destFileName=tempWorkArea.getFilePathLocation() + removeLeadingSlash(staticAsset.getFullUrl());
     InputStream input=file.getInputStream();
     byte[] buffer=new byte[fileBufferSize];
-    String destFileName=generateStorageFileName(staticAsset.getFullUrl(),false);
-    String tempFileName=destFileName.substring(0,destFileName.lastIndexOf("/") + 1) + UUID.randomUUID().toString();
-    File tmpFile=new File(tempFileName);
-    if (!tmpFile.getParentFile().exists()) {
-      if (!tmpFile.getParentFile().mkdirs()) {
+    File destFile=new File(destFileName);
+    if (!destFile.getParentFile().exists()) {
+      if (!destFile.getParentFile().mkdirs()) {
         throw new RuntimeException("Unable to create parent directories for file: " + destFileName);
       }
     }
-    OutputStream output=new FileOutputStream(tmpFile);
+    OutputStream output=new FileOutputStream(destFile);
     boolean deleteFile=false;
     try {
       int bytesRead;
@@ -30,18 +30,11 @@
         }
         output.write(buffer,0,bytesRead);
       }
+      broadleafFileService.addOrUpdateResource(tempWorkArea,destFile);
     }
   finally {
       output.close();
-      if (deleteFile && tmpFile.exists()) {
-        tmpFile.delete();
-      }
-    }
-    File newFile=new File(destFileName);
-    if (!tmpFile.renameTo(newFile)) {
-      if (!newFile.exists()) {
-        throw new RuntimeException("Unable to rename temp file to create file named: " + destFileName);
-      }
+      broadleafFileService.closeWorkArea(tempWorkArea);
     }
   }
 }
