@@ -10,7 +10,12 @@
       destFile.getParentFile().mkdirs();
     }
     try {
-      FileUtils.copyFile(srcFile,destFile);
+      if (removeResourcesFromWorkArea) {
+        FileUtils.moveFile(srcFile,destFile);
+      }
+ else {
+        FileUtils.copyFile(srcFile,destFile);
+      }
     }
  catch (    IOException ioe) {
       throw new FileServiceException("Error copying resource named " + fileName + " from workArea "+ area.getFilePathLocation()+ " to "+ resourceName,ioe);

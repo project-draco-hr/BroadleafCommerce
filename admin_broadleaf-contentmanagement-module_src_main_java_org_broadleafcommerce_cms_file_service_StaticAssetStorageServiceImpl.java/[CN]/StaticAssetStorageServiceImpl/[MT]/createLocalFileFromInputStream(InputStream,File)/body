@@ -1,12 +1,15 @@
 {
   BufferedOutputStream bos=null;
+  FileWorkArea workArea=null;
   try {
     if (!baseLocalFile.getParentFile().exists()) {
       if (!baseLocalFile.getParentFile().mkdirs()) {
         throw new RuntimeException("Unable to create middle directories for file: " + baseLocalFile.getAbsolutePath());
       }
     }
-    bos=new BufferedOutputStream(new FileOutputStream(baseLocalFile));
+    workArea=broadleafFileService.initializeWorkArea();
+    File tmpFile=new File(appendTrailingSlash(workArea.getFilePathLocation()) + baseLocalFile.getName());
+    bos=new BufferedOutputStream(new FileOutputStream(tmpFile));
     boolean eof=false;
     int temp;
     while (!eof) {
@@ -18,11 +21,17 @@
         bos.write(temp);
       }
     }
+    FileUtils.moveFile(tmpFile,baseLocalFile);
   }
   finally {
     try {
-      bos.flush();
-      bos.close();
+      if (bos != null) {
+        bos.flush();
+        bos.close();
+      }
+      if (workArea != null) {
+        broadleafFileService.closeWorkArea(workArea);
+      }
     }
  catch (    Throwable e) {
     }
