@@ -1,7 +1,6 @@
 {
   super.postProcessPersistenceUnitInfo(newPU);
   ConfigurationOnlyState state=ConfigurationOnlyState.getState();
-  newPU.addJarFileUrl(newPU.getPersistenceUnitRootUrl());
   String persistenceUnitName=newPU.getPersistenceUnitName();
   MutablePersistenceUnitInfo temp;
   PersistenceUnitInfo pui=getMergedUnit(persistenceUnitName,newPU);
@@ -12,7 +11,6 @@
  else {
     temp=(MutablePersistenceUnitInfo)pui;
   }
-  temp.setPersistenceUnitRootUrl(null);
   List<String> managedClassNames=newPU.getManagedClassNames();
   for (  String managedClassName : managedClassNames) {
     if (!temp.getManagedClassNames().contains(managedClassName)) {
@@ -27,7 +25,7 @@
   }
   temp.setExcludeUnlistedClasses(newPU.excludeUnlistedClasses());
   for (  URL url : newPU.getJarFileUrls()) {
-    if (!temp.getJarFileUrls().contains(url)) {
+    if (!temp.getJarFileUrls().contains(url) && !temp.getPersistenceUnitRootUrl().equals(url)) {
       temp.addJarFileUrl(url);
     }
   }
