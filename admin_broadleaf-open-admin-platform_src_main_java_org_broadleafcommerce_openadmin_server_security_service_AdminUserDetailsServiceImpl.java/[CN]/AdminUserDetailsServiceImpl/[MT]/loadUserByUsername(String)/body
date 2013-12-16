@@ -12,5 +12,6 @@
   for (  AdminPermission permission : adminUser.getAllPermissions()) {
     authorities.add(new SimpleGrantedAuthority(permission.getName()));
   }
+  authorities.add(new GrantedAuthorityImpl(AdminSecurityService.DEFAULT_PERMISSION));
   return new AdminUserDetails(adminUser.getId(),username,adminUser.getPassword(),true,true,true,true,authorities);
 }
