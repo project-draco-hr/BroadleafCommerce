@@ -8,10 +8,6 @@
   order.setTotalShipping(new Money(0D));
   orderService.save(order,true);
   CheckoutResponse response=checkoutService.performCheckout(order);
-  for (  OrderPayment paymentInfo : response.getInfos().keySet()) {
-    assert(paymentInfo.getReferenceNumber().equals("abc123"));
-    assert(response.getInfos().get(paymentInfo).getReferenceNumber().equals("abc123"));
-  }
   Referenced referenced=null;
   try {
     referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentType.CREDIT_CARD);
@@ -25,5 +21,4 @@
   }
   assert(referenced == null);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
-  assert(response.getPaymentResponse().getResponseItems().size() > 0);
 }
