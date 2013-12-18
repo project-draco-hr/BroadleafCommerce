@@ -1,0 +1,15 @@
+{
+  List<Long> ids=new ArrayList<Long>();
+  if (includeCurrent) {
+    ids.add(this.getId());
+  }
+  if (includeInherited) {
+    SandBox current=this;
+    while (current.getParentSandBox() != null) {
+      current=current.getParentSandBox();
+      ids.add(current.getId());
+    }
+    Collections.reverse(ids);
+  }
+  return ids;
+}

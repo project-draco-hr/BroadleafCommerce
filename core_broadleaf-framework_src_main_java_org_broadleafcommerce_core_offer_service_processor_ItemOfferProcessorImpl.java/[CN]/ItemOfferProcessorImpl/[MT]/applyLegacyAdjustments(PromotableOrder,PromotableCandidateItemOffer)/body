@@ -1,5 +1,5 @@
 {
-  for (  PromotableOrderItem item : itemOffer.getCandidateTargets()) {
+  for (  PromotableOrderItem item : itemOffer.getLegacyCandidateTargets()) {
     for (    PromotableOrderItemPriceDetail itemPriceDetail : item.getPromotableOrderItemPriceDetails()) {
       if (!itemOffer.getOffer().isStackable() || !itemOffer.getOffer().isCombinableWithOtherOffers()) {
         if (itemPriceDetail.getCandidateItemAdjustments().size() != 0) {
@@ -11,7 +11,7 @@
           continue;
         }
       }
-      applyOrderItemAdjustment(itemOffer,itemPriceDetail);
+      offerServiceUtilities.applyOrderItemAdjustment(itemOffer,itemPriceDetail);
     }
   }
 }

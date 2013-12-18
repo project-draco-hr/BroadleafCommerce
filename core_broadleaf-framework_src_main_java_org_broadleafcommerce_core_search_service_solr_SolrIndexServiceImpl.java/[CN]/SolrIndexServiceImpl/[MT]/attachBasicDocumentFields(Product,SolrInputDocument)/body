@@ -15,7 +15,9 @@
       }
       count++;
     }
-    document.addField(categorySortFieldName,index);
+    if (document.getField(categorySortFieldName) == null) {
+      document.addField(categorySortFieldName,index);
+    }
   }
   Set<Category> fullCategoryHierarchy=new HashSet<Category>();
   for (  CategoryProductXref categoryXref : product.getAllParentCategoryXrefs()) {

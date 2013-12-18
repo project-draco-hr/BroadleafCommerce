@@ -1,7 +1,7 @@
 {
-  Date myDate=getDateFactoringInDateResolution(currentDate);
+  Date currentDate=getCurrentDateAfterFactoringInDateResolution();
   TypedQuery<ProductBundle> query=em.createNamedQuery("BC_READ_AUTOMATIC_PRODUCT_BUNDLES",ProductBundle.class);
-  query.setParameter("currentDate",myDate);
+  query.setParameter("currentDate",currentDate);
   query.setParameter("autoBundle",Boolean.TRUE);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");

@@ -10,9 +10,11 @@
   String countryCacheKey=getCacheKey(entityType,entityId,property,localeCountryCode);
   Element countryValue=getCache().get(countryCacheKey);
   if (countryValue != null) {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
     translation=(Translation)countryValue.getObjectValue();
   }
  else {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
     translation=getTranslation(entityType,entityId,property,localeCountryCode);
     if (translation == null) {
       translation=new TranslationImpl();
@@ -23,9 +25,11 @@
     String nonCountryCacheKey=getCacheKey(entityType,entityId,property,localeCode);
     Element nonCountryValue=getCache().get(nonCountryCacheKey);
     if (nonCountryValue != null) {
+      statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
       translation=(Translation)nonCountryValue.getObjectValue();
     }
  else {
+      statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
       translation=getTranslation(entityType,entityId,property,localeCode);
       if (translation == null) {
         translation=new TranslationImpl();

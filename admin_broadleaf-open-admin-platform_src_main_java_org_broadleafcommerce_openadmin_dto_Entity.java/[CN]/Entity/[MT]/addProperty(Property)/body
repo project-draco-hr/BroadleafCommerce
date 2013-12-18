@@ -1,8 +1,13 @@
 {
+  boolean exists=findProperty(property.getName()) != null;
   Property[] allProps=getProperties();
-  Property[] newProps=new Property[allProps.length + 1];
+  Property[] newProps=new Property[exists ? allProps.length : allProps.length + 1];
+  int count=0;
   for (int j=0; j < allProps.length; j++) {
-    newProps[j]=allProps[j];
+    if (!allProps[j].getName().equals(property.getName())) {
+      newProps[count]=allProps[j];
+      count++;
+    }
   }
   newProps[newProps.length - 1]=property;
   setProperties(newProps);

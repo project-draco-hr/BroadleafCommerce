@@ -1,12 +1,13 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,requestParams);
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,requestParams,sectionCrumbs);
   ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  ppr=getSectionPersistencePackageRequest(mainClassName);
+  ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,requestParams,sectionKey);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,requestParams,sectionKey,sectionCrumbs);
   model.addAttribute("listGrid",listGrid);
   model.addAttribute("currentParams",new ObjectMapper().writeValueAsString(requestParams));
   setModelAttributes(model,sectionKey);

@@ -1,9 +1,3 @@
 {
-  Date myDate=getDateFactoringInDateResolution(currentDate);
-  TypedQuery<Product> query=em.createNamedQuery("BC_READ_ACTIVE_PRODUCTS_BY_CATEGORY",Product.class);
-  query.setParameter("categoryId",categoryId);
-  query.setParameter("currentDate",myDate);
-  query.setHint(QueryHints.HINT_CACHEABLE,true);
-  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
-  return query.getResultList();
+  return readActiveProductsByCategoryInternal(categoryId,currentDate);
 }

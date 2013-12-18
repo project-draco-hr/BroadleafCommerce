@@ -1,6 +1,6 @@
 {
   try {
-    String deleteQuery="*:*";
+    String deleteQuery=shs.getNamespaceFieldName() + ":(\"" + shs.getCurrentNamespace()+ "\")";
     LOG.debug("Deleting by query: " + deleteQuery);
     SolrContext.getReindexServer().deleteByQuery(deleteQuery);
     SolrContext.getReindexServer().commit();

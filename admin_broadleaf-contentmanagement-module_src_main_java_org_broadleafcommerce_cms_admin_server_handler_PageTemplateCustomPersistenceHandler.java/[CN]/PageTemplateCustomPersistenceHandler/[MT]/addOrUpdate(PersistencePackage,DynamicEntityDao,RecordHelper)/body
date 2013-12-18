@@ -18,19 +18,27 @@
         templateFieldNames.add(definition.getName());
       }
     }
+    Map<String,String> dirtyFieldsOrigVals=new HashMap<String,String>();
+    List<String> dirtyFields=new ArrayList<String>();
     Map<String,PageField> pageFieldMap=page.getPageFields();
     for (    Property property : persistencePackage.getEntity().getProperties()) {
       if (templateFieldNames.contains(property.getName())) {
         PageField pageField=pageFieldMap.get(property.getName());
         if (pageField != null) {
+          boolean isDirty=(pageField.getValue() == null && property.getValue() != null) || (pageField.getValue() != null && property.getValue() == null);
+          if (!isDirty && pageField.getValue() != null && property.getValue() != null && !pageField.getValue().trim().equals(property.getValue().trim())) {
+            dirtyFields.add(property.getName());
+            dirtyFieldsOrigVals.put(property.getName(),pageField.getValue());
+          }
           pageField.setValue(property.getValue());
         }
  else {
           pageField=new PageFieldImpl();
-          pageFieldMap.put(property.getName(),pageField);
           pageField.setFieldKey(property.getName());
-          pageField.setPage(page);
           pageField.setValue(property.getValue());
+          dynamicEntityDao.persist(pageField);
+          pageFieldMap.put(property.getName(),pageField);
+          dirtyFields.add(property.getName());
         }
       }
     }
@@ -42,11 +50,16 @@
     }
     if (removeItems.size() > 0) {
       for (      String removeKey : removeItems) {
-        PageField pageField=pageFieldMap.remove(removeKey);
-        pageField.setPage(null);
+        pageFieldMap.remove(removeKey);
       }
     }
-    return fetchEntityBasedOnId(pageId);
+    Collections.sort(dirtyFields);
+    Entity entity=fetchEntityBasedOnId(pageId,dirtyFields);
+    for (    Map.Entry<String,String> entry : dirtyFieldsOrigVals.entrySet()) {
+      entity.getPMap().get(entry.getKey()).setOriginalValue(entry.getValue());
+      entity.getPMap().get(entry.getKey()).setOriginalDisplayValue(entry.getValue());
+    }
+    return entity;
   }
  catch (  ValidationException e) {
     throw e;

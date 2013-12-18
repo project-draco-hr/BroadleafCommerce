@@ -1,4 +1,10 @@
 {
   Element e=getBundleVersionsCache().get(unversionedBundleName);
+  if (e == null) {
+    statisticsService.addCacheStat(CacheStatType.RESOURCE_BUNDLING_CACHE_HIT_RATE.toString(),false);
+  }
+ else {
+    statisticsService.addCacheStat(CacheStatType.RESOURCE_BUNDLING_CACHE_HIT_RATE.toString(),true);
+  }
   return e == null ? null : (String)e.getValue();
 }

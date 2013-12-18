@@ -2,21 +2,7 @@
   for (  OfferItemCriteria itemCriteria : itemOffer.getCandidateQualifiersMap().keySet()) {
     List<PromotableOrderItem> promotableItems=itemOffer.getCandidateQualifiersMap().get(itemCriteria);
     List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
-    Collections.sort(priceDetails,getQualifierItemComparator(itemOffer.getOffer().getApplyDiscountToSalePrice()));
-    int qualifierQtyNeeded=itemCriteria.getQuantity();
-    for (    PromotableOrderItemPriceDetail detail : priceDetails) {
-      if (qualifierQtyNeeded > 0) {
-        int itemQtyAvailableToBeUsedAsQualifier=detail.getQuantityAvailableToBeUsedAsQualifier(itemOffer);
-        if (itemQtyAvailableToBeUsedAsQualifier > 0) {
-          int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
-          qualifierQtyNeeded-=qtyToMarkAsQualifier;
-          detail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
-        }
-      }
-      if (qualifierQtyNeeded == 0) {
-        break;
-      }
-    }
+    int qualifierQtyNeeded=offerServiceUtilities.markQualifiersForCriteria(itemOffer,itemCriteria,priceDetails);
     if (qualifierQtyNeeded != 0) {
       return false;
     }

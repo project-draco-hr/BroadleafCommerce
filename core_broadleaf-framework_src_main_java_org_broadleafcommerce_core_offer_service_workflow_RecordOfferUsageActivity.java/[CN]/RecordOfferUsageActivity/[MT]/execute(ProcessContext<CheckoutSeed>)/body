@@ -1,25 +1,10 @@
 {
-  Set<Long> appliedOfferIds=new HashSet<Long>();
-  CheckoutSeed seed=context.getSeedData();
-  Order order=seed.getOrder();
-  if (order != null) {
-    addOfferIds(order.getOrderAdjustments(),appliedOfferIds);
-    if (order.getOrderItems() != null) {
-      for (      OrderItem item : order.getOrderItems()) {
-        addOfferIds(item.getOrderItemAdjustments(),appliedOfferIds);
-        if (item.getOrderItemPriceDetails() != null) {
-          for (          OrderItemPriceDetail detail : item.getOrderItemPriceDetails()) {
-            addOfferIds(detail.getOrderItemPriceDetailAdjustments(),appliedOfferIds);
-          }
-        }
-      }
-    }
-    if (order.getFulfillmentGroups() != null) {
-      for (      FulfillmentGroup fg : order.getFulfillmentGroups()) {
-        addOfferIds(fg.getFulfillmentGroupAdjustments(),appliedOfferIds);
-      }
-    }
-    saveOfferIds(appliedOfferIds,order);
-  }
+  Order order=context.getSeedData().getOrder();
+  Set<Offer> appliedOffers=offerService.getUniqueOffersFromOrder(order);
+  Map<Offer,OfferCode> offerToCodeMapping=offerService.getOffersRetrievedFromCodes(order.getAddedOfferCodes(),appliedOffers);
+  List<OfferAudit> audits=saveOfferIds(appliedOffers,offerToCodeMapping,order);
+  Map<String,Object> state=new HashMap<String,Object>();
+  state.put(SAVED_AUDITS,audits);
+  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),state);
   return context;
 }

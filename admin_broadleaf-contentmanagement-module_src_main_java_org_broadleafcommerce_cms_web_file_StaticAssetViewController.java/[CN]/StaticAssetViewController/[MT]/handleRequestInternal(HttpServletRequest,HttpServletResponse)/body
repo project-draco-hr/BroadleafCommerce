@@ -1,16 +1,8 @@
 {
   String fullUrl=removeAssetPrefix(request.getRequestURI());
   try {
-    Long sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ID_VAR);
-    if (sandBoxId == null) {
-      sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
-    }
-    SandBox sandBox=null;
-    if (sandBoxId != null) {
-      sandBox=sandBoxDao.retrieve(sandBoxId);
-    }
     try {
-      Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
+      Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,convertParameterMap(request.getParameterMap()));
       return new ModelAndView(viewResolverName,model);
     }
  catch (    AssetNotFoundException e) {

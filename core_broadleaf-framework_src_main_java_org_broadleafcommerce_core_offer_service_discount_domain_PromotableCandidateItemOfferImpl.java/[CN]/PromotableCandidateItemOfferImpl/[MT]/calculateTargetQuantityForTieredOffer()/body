@@ -1,7 +1,10 @@
 {
   int returnQty=0;
-  for (  PromotableOrderItem promotableOrderItem : candidateTargets) {
-    returnQty+=promotableOrderItem.getQuantity();
+  for (  OfferItemCriteria itemCriteria : getCandidateQualifiersMap().keySet()) {
+    List<PromotableOrderItem> candidateTargets=getCandidateTargetsMap().get(itemCriteria);
+    for (    PromotableOrderItem promotableOrderItem : candidateTargets) {
+      returnQty+=promotableOrderItem.getQuantity();
+    }
   }
   return returnQty;
 }

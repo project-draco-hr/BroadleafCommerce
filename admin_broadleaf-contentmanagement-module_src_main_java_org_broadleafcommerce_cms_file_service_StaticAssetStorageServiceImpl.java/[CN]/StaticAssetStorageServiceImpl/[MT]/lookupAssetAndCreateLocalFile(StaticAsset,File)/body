@@ -1,0 +1,13 @@
+{
+  if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType())) {
+    return broadleafFileService.getResource(staticAsset.getFullUrl());
+  }
+ else {
+    StaticAssetStorage storage=readStaticAssetStorageByStaticAssetId(staticAsset.getId());
+    if (storage != null) {
+      InputStream is=storage.getFileData().getBinaryStream();
+      createLocalFileFromInputStream(is,baseLocalFile);
+    }
+  }
+  return baseLocalFile;
+}

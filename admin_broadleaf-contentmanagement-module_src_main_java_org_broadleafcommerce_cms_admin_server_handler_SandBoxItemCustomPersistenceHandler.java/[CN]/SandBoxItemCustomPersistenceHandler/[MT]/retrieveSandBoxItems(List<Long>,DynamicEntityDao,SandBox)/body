@@ -1,9 +1,0 @@
-{
-  if (CollectionUtils.isEmpty(ids)) {
-    throw new IllegalArgumentException("The passed in ids parameter is empty");
-  }
-  Criteria criteria=dynamicEntityDao.createCriteria(SandBoxItemImpl.class);
-  criteria.add(Restrictions.in("id",ids));
-  criteria.add(Restrictions.or(Restrictions.eq("originalSandBoxId",mySandBox.getId()),Restrictions.eq("sandBoxId",mySandBox.getId())));
-  return criteria.list();
-}

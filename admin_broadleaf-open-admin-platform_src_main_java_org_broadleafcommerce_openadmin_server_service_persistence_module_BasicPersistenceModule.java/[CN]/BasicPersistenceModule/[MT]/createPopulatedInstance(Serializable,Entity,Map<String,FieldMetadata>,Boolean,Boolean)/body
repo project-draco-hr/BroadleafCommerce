@@ -18,7 +18,7 @@
     for (    Property property : entity.getProperties()) {
       BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
       Class<?> returnType;
-      if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+      if (!property.getName().contains(FieldManager.MAPFIELDSEPARATOR) && !property.getName().startsWith("__")) {
         Field field=fieldManager.getField(instance.getClass(),property.getName());
         if (field == null) {
           LOG.debug("Unable to find a bean property for the reported property: " + property.getName() + ". Ignoring property.");

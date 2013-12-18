@@ -15,7 +15,7 @@
   }
   List<Offer> globalOffers=lookupAutomaticDeliveryOffers();
   for (  Offer globalOffer : globalOffers) {
-    if (!offers.contains(globalOffer)) {
+    if (!offers.contains(globalOffer) && verifyMaxCustomerUsageThreshold(order.getCustomer(),globalOffer)) {
       offers.add(globalOffer);
     }
   }

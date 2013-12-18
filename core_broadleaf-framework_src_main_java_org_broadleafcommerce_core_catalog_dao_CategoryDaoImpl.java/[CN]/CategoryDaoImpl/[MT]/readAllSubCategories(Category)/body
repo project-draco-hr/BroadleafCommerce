@@ -1,6 +1,6 @@
 {
   TypedQuery<Category> query=em.createNamedQuery("BC_READ_ALL_SUBCATEGORIES",Category.class);
-  query.setParameter("defaultParentCategory",category);
+  query.setParameter("defaultParentCategoryId",sandBoxHelper.mergeCloneIds(em,CategoryImpl.class,category.getId()));
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
   return query.getResultList();

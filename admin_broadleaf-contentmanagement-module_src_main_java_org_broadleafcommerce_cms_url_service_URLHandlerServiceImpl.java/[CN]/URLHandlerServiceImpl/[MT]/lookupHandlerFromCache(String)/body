@@ -1,9 +1,16 @@
 {
-  String key=buildKey(requestURI);
-  URLHandler handler=getUrlHandlerFromCache(key);
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  String[] keys=CacheManager.getInstance().getCacheNames();
+  URLHandler handler=null;
+  String key=buildKey(context.getSandBox(),requestURI);
+  if (context.isProductionSandBox()) {
+    handler=getUrlHandlerFromCache(key);
+  }
   if (handler == null) {
     handler=findURLHandlerByURIInternal(requestURI);
-    getUrlHandlerCache().put(new Element(key,handler));
+    if (context.isProductionSandBox() && handler instanceof NullURLHandler) {
+      getUrlHandlerCache().put(new Element(key,handler));
+    }
   }
   if (handler == null || handler instanceof NullURLHandler) {
     return null;

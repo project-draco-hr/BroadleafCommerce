@@ -1,12 +1,13 @@
 {
+  SessionFactory sessionFactory=((HibernateEntityManager)entityManager).getSession().getSessionFactory();
   String[] tokens=fieldName.split("\\.");
   Field field=null;
   for (int j=0; j < tokens.length; j++) {
     String propertyName=tokens[j];
     field=getSingleField(clazz,propertyName);
     if (field != null && j < tokens.length - 1) {
-      Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
-      if (entities.length > 0) {
+      Class<?>[] entities=helper.getAllPolymorphicEntitiesFromCeiling(field.getType(),sessionFactory,true,true);
+      if (!ArrayUtils.isEmpty(entities)) {
         String peekAheadToken=tokens[j + 1];
         List<Class<?>> matchedClasses=new ArrayList<Class<?>>();
         for (        Class<?> entity : entities) {
@@ -23,21 +24,15 @@
         if (matchedClasses.size() > 1) {
           LOG.warn("Found the property (" + peekAheadToken + ") in more than one class of an inheritance hierarchy. This may lead to unwanted behavior, as the system does not know which class was intended. Do not use the same property name in different levels of the inheritance hierarchy. Defaulting to the first class found ("+ matchedClasses.get(0).getName()+ ")");
         }
-        if (getSingleField(entities[0],peekAheadToken) != null) {
-          Class<?> matchedClass=entities[0];
-          PersistentClass persistentClass=dynamicEntityDao.getPersistentClass(matchedClass.getName());
-          if (persistentClass != null && matchedClasses.size() == 1) {
-            Class<?> entityClass;
+        if (getSingleField(matchedClasses.get(0),peekAheadToken) != null) {
+          clazz=matchedClasses.get(0);
+          Class<?>[] entities2=helper.getAllPolymorphicEntitiesFromCeiling(clazz,sessionFactory,true,true);
+          if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
             try {
-              entityClass=entityConfiguration.lookupEntityClass(field.getType().getName());
-              clazz=entityClass;
+              clazz=entityConfiguration.lookupEntityClass(field.getType().getName());
             }
  catch (            Exception e) {
-              clazz=matchedClass;
             }
-          }
- else {
-            clazz=matchedClass;
           }
         }
  else {

@@ -1,7 +1,8 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
-  ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(sectionClassName)).getDynamicResultSet().getClassMetaData();
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,null,null);
+  ClassMetadata cmd=service.getClassMetadata(getSectionPersistencePackageRequest(sectionClassName,sectionCrumbs)).getDynamicResultSet().getClassMetaData();
   if (StringUtils.isBlank(entityType)) {
     if (cmd.getPolymorphicEntities().getChildren().length == 0) {
       entityType=cmd.getPolymorphicEntities().getFullyQualifiedClassname();
@@ -19,7 +20,7 @@
     model.addAttribute("viewType","modal/entityTypeSelection");
   }
  else {
-    EntityForm entityForm=formService.createEntityForm(cmd);
+    EntityForm entityForm=formService.createEntityForm(cmd,sectionCrumbs);
     entityForm.setCeilingEntityClassname(cmd.getCeilingType());
     entityForm.setEntityType(entityType);
     formService.removeNonApplicableFields(cmd,entityForm,entityType);

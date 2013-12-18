@@ -1,0 +1,44 @@
+{
+  List<?> templateAttributes=templateClassFile.getAttributes();
+  Iterator<?> templateItr=templateAttributes.iterator();
+  Annotation templateEntityListeners=null;
+  while (templateItr.hasNext()) {
+    Object object=templateItr.next();
+    if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+      AnnotationsAttribute attr=(AnnotationsAttribute)object;
+      Annotation[] items=attr.getAnnotations();
+      for (      Annotation annotation : items) {
+        String typeName=annotation.getTypeName();
+        if (typeName.equals(EntityListeners.class.getName())) {
+          templateEntityListeners=annotation;
+        }
+      }
+    }
+  }
+  if (templateEntityListeners != null) {
+    AnnotationsAttribute annotationsAttribute=new AnnotationsAttribute(constantPool,AnnotationsAttribute.visibleTag);
+    List<?> attributes=classFile.getAttributes();
+    Iterator<?> itr=attributes.iterator();
+    Annotation existingEntityListeners=null;
+    while (itr.hasNext()) {
+      Object object=itr.next();
+      if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+        AnnotationsAttribute attr=(AnnotationsAttribute)object;
+        Annotation[] items=attr.getAnnotations();
+        for (        Annotation annotation : items) {
+          String typeName=annotation.getTypeName();
+          if (typeName.equals(EntityListeners.class.getName())) {
+            logger.debug("Stripping out previous EntityListeners annotation at the class level - will merge into new EntityListeners");
+            existingEntityListeners=annotation;
+            continue;
+          }
+          annotationsAttribute.addAnnotation(annotation);
+        }
+        itr.remove();
+      }
+    }
+    Annotation entityListeners=getEntityListeners(constantPool,existingEntityListeners,templateEntityListeners);
+    annotationsAttribute.addAnnotation(entityListeners);
+    classFile.addAttribute(annotationsAttribute);
+  }
+}

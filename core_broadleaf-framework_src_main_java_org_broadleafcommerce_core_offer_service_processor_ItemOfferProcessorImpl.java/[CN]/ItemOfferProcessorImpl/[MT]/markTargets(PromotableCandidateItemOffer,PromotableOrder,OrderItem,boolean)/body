@@ -1,0 +1,21 @@
+{
+  Offer promotion=itemOffer.getOffer();
+  if (itemOffer.getCandidateTargetsMap().keySet().isEmpty()) {
+    return false;
+  }
+  OrderItem relatedQualifierRoot=offerServiceUtilities.findRelatedQualifierRoot(relatedQualifier);
+  for (  OfferItemCriteria itemCriteria : itemOffer.getCandidateTargetsMap().keySet()) {
+    List<PromotableOrderItem> promotableItems=itemOffer.getCandidateTargetsMap().get(itemCriteria);
+    List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
+    offerServiceUtilities.sortTargetItemDetails(priceDetails,itemOffer.getOffer().getApplyDiscountToSalePrice());
+    int targetQtyNeeded=itemCriteria.getQuantity();
+    targetQtyNeeded=offerServiceUtilities.markTargetsForCriteria(itemOffer,relatedQualifier,checkOnly,promotion,relatedQualifierRoot,itemCriteria,priceDetails,targetQtyNeeded);
+    if (targetQtyNeeded != 0) {
+      return false;
+    }
+  }
+  if (!checkOnly) {
+    itemOffer.addUse();
+  }
+  return true;
+}

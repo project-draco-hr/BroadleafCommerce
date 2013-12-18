@@ -1,11 +1,13 @@
 {
-  if (itemOfferCanBeApplied(order,itemOffer)) {
-    applyItemQualifiersAndTargets(itemOffer,order);
-    if (itemOffer.isLegacyOffer()) {
-      applyLegacyAdjustments(order,itemOffer);
-    }
+  if (applyItemOfferExtension(order,itemOffer)) {
+    if (offerServiceUtilities.itemOfferCanBeApplied(itemOffer,order.getAllPromotableOrderItemPriceDetails())) {
+      applyItemQualifiersAndTargets(itemOffer,order);
+      if (itemOffer.isLegacyOffer()) {
+        applyLegacyAdjustments(order,itemOffer);
+      }
  else {
-      applyAdjustments(order,itemOffer);
+        applyAdjustments(order,itemOffer);
+      }
     }
   }
 }

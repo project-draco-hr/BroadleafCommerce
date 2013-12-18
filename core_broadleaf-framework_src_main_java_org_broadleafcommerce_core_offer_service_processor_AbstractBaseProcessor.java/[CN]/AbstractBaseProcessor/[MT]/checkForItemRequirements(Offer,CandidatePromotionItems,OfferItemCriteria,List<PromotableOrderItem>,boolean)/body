@@ -1,0 +1,23 @@
+{
+  boolean matchFound=false;
+  int criteriaQuantity=criteria.getQuantity();
+  if (criteriaQuantity > 0) {
+    for (    PromotableOrderItem item : promotableOrderItems) {
+      if (couldOrderItemMeetOfferRequirement(criteria,item)) {
+        if (isQualifier) {
+          candidates.addQualifier(criteria,item);
+        }
+ else {
+          candidates.addTarget(criteria,item);
+        }
+        matchFound=true;
+      }
+    }
+  }
+  if (isQualifier) {
+    candidates.setMatchedQualifier(matchFound);
+  }
+ else {
+    candidates.setMatchedTarget(matchFound);
+  }
+}

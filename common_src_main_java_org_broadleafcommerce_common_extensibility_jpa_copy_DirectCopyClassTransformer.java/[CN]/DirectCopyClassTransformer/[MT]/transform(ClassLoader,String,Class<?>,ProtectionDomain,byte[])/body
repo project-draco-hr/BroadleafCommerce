@@ -1,12 +1,14 @@
 {
+  CtClass clazz=null;
   try {
     boolean mySkipOverlaps=skipOverlaps;
     boolean myRenameMethodOverlaps=renameMethodOverlaps;
     String convertedClassName=className.replace('/','.');
     ClassPool classPool=null;
-    CtClass clazz=null;
     String xformKey=convertedClassName;
     String[] xformVals=null;
+    Boolean[] xformSkipOverlaps=null;
+    Boolean[] xformRenameMethodOverlaps=null;
     if (!xformTemplates.isEmpty()) {
       if (xformTemplates.containsKey(xformKey)) {
         xformVals=xformTemplates.get(xformKey).split(",");
@@ -31,6 +33,8 @@
         List<?> attributes=clazz.getClassFile().getAttributes();
         Iterator<?> itr=attributes.iterator();
         List<String> templates=new ArrayList<String>();
+        List<Boolean> skips=new ArrayList<Boolean>();
+        List<Boolean> renames=new ArrayList<Boolean>();
         check: {
           while (itr.hasNext()) {
             Object object=itr.next();
@@ -53,14 +57,22 @@
                     }
                     BooleanMemberValue skipAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("skipOverlaps");
                     if (skipAnnot != null) {
-                      mySkipOverlaps=skipAnnot.getValue();
+                      skips.add(skipAnnot.getValue());
+                    }
+ else {
+                      skips.add(mySkipOverlaps);
                     }
                     BooleanMemberValue renameAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("renameMethodOverlaps");
                     if (renameAnnot != null) {
-                      myRenameMethodOverlaps=renameAnnot.getValue();
+                      renames.add(renameAnnot.getValue());
                     }
-                    xformVals=templates.toArray(new String[templates.size()]);
+ else {
+                      renames.add(myRenameMethodOverlaps);
+                    }
                   }
+                  xformVals=templates.toArray(new String[templates.size()]);
+                  xformSkipOverlaps=skips.toArray(new Boolean[skips.size()]);
+                  xformRenameMethodOverlaps=renames.toArray(new Boolean[renames.size()]);
                   break check;
                 }
               }
@@ -72,6 +84,7 @@
     if (xformVals != null && xformVals.length > 0) {
       logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
       clazz.defrost();
+      int index=0;
       for (      String xformVal : xformVals) {
         String trimmed=xformVal.trim();
         classPool.appendClassPath(new LoaderClassPath(Class.forName(trimmed).getClassLoader()));
@@ -82,7 +95,7 @@
             CtClass[] myInterfaces=clazz.getInterfaces();
             for (            CtClass myInterface : myInterfaces) {
               if (myInterface.getName().equals(i.getName())) {
-                if (mySkipOverlaps) {
+                if (xformSkipOverlaps[index]) {
                   break checkInterfaces;
                 }
  else {
@@ -94,6 +107,10 @@
             clazz.addInterface(i);
           }
         }
+        ClassFile classFile=clazz.getClassFile();
+        ClassFile templateFile=template.getClassFile();
+        ConstPool constantPool=classFile.getConstPool();
+        buildClassLevelAnnotations(classFile,templateFile,constantPool);
         CtField[] fieldsToCopy=template.getDeclaredFields();
         for (        CtField field : fieldsToCopy) {
           if (field.hasAnnotation(NonCopied.class)) {
@@ -102,7 +119,7 @@
  else {
             try {
               clazz.getDeclaredField(field.getName());
-              if (mySkipOverlaps) {
+              if (xformSkipOverlaps[index]) {
                 logger.debug(String.format("Skipping overlapped field [%s]",field.getName()));
                 continue;
               }
@@ -143,7 +160,7 @@
             try {
               CtClass[] paramTypes=method.getParameterTypes();
               CtMethod originalMethod=clazz.getDeclaredMethod(method.getName(),paramTypes);
-              if (mySkipOverlaps) {
+              if (xformSkipOverlaps[index]) {
                 logger.debug(String.format("Skipping overlapped method [%s]",methodDescription(originalMethod)));
                 continue;
               }
@@ -155,7 +172,7 @@
                 transformedMethods.add(methodDescription(originalMethod));
               }
               logger.debug(String.format("Removing method [%s]",method.getName()));
-              if (myRenameMethodOverlaps) {
+              if (xformRenameMethodOverlaps[index]) {
                 originalMethod.setName(renameMethodPrefix + method.getName());
               }
  else {
@@ -169,6 +186,7 @@
             clazz.addMethod(copiedMethod);
           }
         }
+        index++;
       }
       if (xformTemplates.isEmpty()) {
         annotationTransformedClasses.add(convertedClassName);
@@ -183,6 +201,11 @@
   }
 catch (  Exception e) {
     throw new RuntimeException("Unable to transform class",e);
+  }
+ finally {
+    if (clazz != null) {
+      clazz.detach();
+    }
   }
   return null;
 }

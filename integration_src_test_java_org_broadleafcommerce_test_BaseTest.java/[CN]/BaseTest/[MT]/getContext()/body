@@ -9,6 +9,8 @@
       }
       String[] strArray=new String[additionalContexts.size()];
       mergeContext=new MergeClassPathXMLApplicationContext(contexts,additionalContexts.toArray(strArray));
+      RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+      mergeContext.getBeanFactory().registerScope("request",new RequestScope());
     }
   }
  catch (  Exception e) {

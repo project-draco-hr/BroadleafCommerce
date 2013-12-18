@@ -1,0 +1,40 @@
+{
+  StaticAsset staticAsset=findStaticAsset(fullUrl);
+  if (staticAsset == null) {
+    throw new AssetNotFoundException("Unable to find an asset for the url (" + fullUrl + ")");
+  }
+  String mimeType=staticAsset.getMimeType();
+  Map<String,String> convertedParameters=namedOperationManager.manageNamedParameters(parameterMap);
+  String cachedFileName=constructCacheFileName(staticAsset,convertedParameters);
+  File cacheFile=getFileFromLocalRepository(cachedFileName);
+  if (cacheFile.exists()) {
+    return buildModel(cacheFile.getAbsolutePath(),mimeType);
+  }
+  String baseCachedFileName=constructCacheFileName(staticAsset,null);
+  File baseLocalFile=getFileFromLocalRepository(baseCachedFileName);
+  if (!baseLocalFile.exists()) {
+    if (broadleafFileService.checkForResourceOnClassPath(staticAsset.getFullUrl())) {
+      cacheFile=broadleafFileService.getSharedLocalResource(cachedFileName);
+      baseLocalFile=broadleafFileService.getSharedLocalResource(baseCachedFileName);
+      createLocalFileFromClassPathResource(staticAsset,baseLocalFile);
+    }
+ else {
+      baseLocalFile=lookupAssetAndCreateLocalFile(staticAsset,baseLocalFile);
+    }
+  }
+  if (convertedParameters.isEmpty()) {
+    return buildModel(baseLocalFile.getAbsolutePath(),mimeType);
+  }
+ else {
+    FileInputStream assetStream=new FileInputStream(baseLocalFile);
+    BufferedInputStream original=new BufferedInputStream(assetStream);
+    original.mark(0);
+    Operation[] operations=artifactService.buildOperations(convertedParameters,original,staticAsset.getMimeType());
+    InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
+    createLocalFileFromInputStream(converted,cacheFile);
+    if ("image/gif".equals(mimeType)) {
+      mimeType="image/png";
+    }
+    return buildModel(cacheFile.getAbsolutePath(),mimeType);
+  }
+}

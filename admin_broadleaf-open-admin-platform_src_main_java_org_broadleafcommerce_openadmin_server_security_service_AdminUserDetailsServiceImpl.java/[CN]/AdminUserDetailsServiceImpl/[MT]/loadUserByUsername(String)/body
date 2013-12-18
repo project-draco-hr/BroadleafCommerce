@@ -6,11 +6,12 @@
   List<GrantedAuthority> authorities=new ArrayList<GrantedAuthority>();
   for (  AdminRole role : adminUser.getAllRoles()) {
     for (    AdminPermission permission : role.getAllPermissions()) {
-      authorities.add(new GrantedAuthorityImpl(permission.getName()));
+      authorities.add(new SimpleGrantedAuthority(permission.getName()));
     }
   }
   for (  AdminPermission permission : adminUser.getAllPermissions()) {
-    authorities.add(new GrantedAuthorityImpl(permission.getName()));
+    authorities.add(new SimpleGrantedAuthority(permission.getName()));
   }
-  return new User(username,adminUser.getPassword(),true,true,true,true,authorities);
+  authorities.add(new GrantedAuthorityImpl(AdminSecurityService.DEFAULT_PERMISSION));
+  return new AdminUserDetails(adminUser.getId(),username,adminUser.getPassword(),true,true,true,true,authorities);
 }

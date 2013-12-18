@@ -2,15 +2,15 @@
   List<StructuredContentDTO> contentDTOList=null;
   Locale languageOnlyLocale=findLanguageOnlyLocale(locale);
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  String cacheKey=buildNameKey(context.getSandbox(),languageOnlyLocale,"any",contentName);
+  String cacheKey=buildNameKey(context.getSandBox(),languageOnlyLocale,"any",contentName);
   cacheKey=cacheKey + "-" + secure;
   if (context.isProductionSandBox()) {
     contentDTOList=getStructuredContentListFromCache(cacheKey);
   }
-  if (CollectionUtils.isEmpty(contentDTOList)) {
+  if (contentDTOList == null) {
     List<StructuredContent> productionContentList=structuredContentDao.findActiveStructuredContentByName(contentName,locale,languageOnlyLocale);
     contentDTOList=buildStructuredContentDTOList(productionContentList,secure);
-    if (context.isProductionSandBox() && !CollectionUtils.isEmpty(contentDTOList)) {
+    if (context.isProductionSandBox()) {
       addStructuredContentListToCache(cacheKey,contentDTOList);
     }
   }

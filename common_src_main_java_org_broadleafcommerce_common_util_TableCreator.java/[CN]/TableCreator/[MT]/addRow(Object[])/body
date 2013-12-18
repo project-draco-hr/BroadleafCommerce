@@ -1,0 +1,12 @@
+{
+  if (data.length != cols.length) {
+    throw new IllegalArgumentException("Wrong number of data elements. Needed [" + cols.length + "] "+ "but received ["+ data.length+ "]");
+  }
+  sb.append('|');
+  for (int i=0; i < data.length; i++) {
+    String trimmed=StringUtils.left(String.valueOf(data[i]),cols[i].width);
+    sb.append(' ').append(StringUtils.rightPad(trimmed,cols[i].width)).append(" |");
+  }
+  sb.append("\r\n");
+  return this;
+}

@@ -1,0 +1,7 @@
+{
+  TypedQuery<Long> query=new TypedQueryBuilder<OfferAudit>(OfferAudit.class,"offerAudit").addRestriction("offerAudit.offerCodeId","=",offerCodeId).toCountQuery(em);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Offer");
+  Long result=query.getSingleResult();
+  return result;
+}

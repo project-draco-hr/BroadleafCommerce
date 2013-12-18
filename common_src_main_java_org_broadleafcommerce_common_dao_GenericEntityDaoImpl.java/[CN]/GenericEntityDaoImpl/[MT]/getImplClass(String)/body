@@ -1,0 +1,12 @@
+{
+  Class<?> clazz=entityConfiguration.lookupEntityClass(className);
+  if (clazz == null) {
+    try {
+      clazz=Class.forName(className);
+    }
+ catch (    ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  return clazz;
+}

@@ -19,6 +19,9 @@
  else {
         Field field=ef.findField(p.getName());
         if (field != null) {
+          if (entityProp != null) {
+            field.setDirty(entityProp.getIsDirty());
+          }
           if (basicFM.getFieldType() == SupportedFieldType.RULE_SIMPLE || basicFM.getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
             RuleBuilderField rbf=(RuleBuilderField)field;
             if (entity.getPMap().containsKey(rbf.getJsonFieldName())) {

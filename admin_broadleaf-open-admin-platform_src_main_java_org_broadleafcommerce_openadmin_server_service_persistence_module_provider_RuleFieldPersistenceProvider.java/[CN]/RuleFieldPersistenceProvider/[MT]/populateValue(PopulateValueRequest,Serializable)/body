@@ -4,6 +4,7 @@
   }
   boolean dirty=false;
   try {
+    setNonDisplayableValues(populateValueRequest);
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case RULE_WITH_QUANTITY:
 {
@@ -19,7 +20,7 @@ case RULE_WITH_QUANTITY:
  catch (        FieldNotAvailableException e) {
           throw new IllegalArgumentException(e);
         }
-        dirty=populateQuantityBaseRuleCollection(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
+        dirty=populateQuantityBaseRuleCollection(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
         break;
       }
 case RULE_SIMPLE:

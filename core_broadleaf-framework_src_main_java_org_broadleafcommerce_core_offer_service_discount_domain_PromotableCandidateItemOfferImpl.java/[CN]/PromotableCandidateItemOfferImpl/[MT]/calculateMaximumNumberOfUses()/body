@@ -6,6 +6,6 @@
     numberOfUsesForThisItemCriteria=Math.min(numberOfUsesForThisItemCriteria,temp);
   }
   maxMatchesFound=Math.min(maxMatchesFound,numberOfUsesForThisItemCriteria);
-  int offerMaxUses=getOffer().getMaxUses() == 0 ? maxMatchesFound : getOffer().getMaxUses();
+  int offerMaxUses=getOffer().isUnlimitedUsePerOrder() ? maxMatchesFound : getOffer().getMaxUsesPerOrder();
   return Math.min(maxMatchesFound,offerMaxUses);
 }

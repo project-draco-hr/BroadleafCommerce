@@ -1,0 +1,11 @@
+{
+  TransactionStatus status;
+  try {
+    status=TransactionUtils.createTransaction(propagationBehavior,isolationLevel,transactionManager,false);
+  }
+ catch (  RuntimeException e) {
+    LOG.error("Could not start transaction",e);
+    throw e;
+  }
+  return status;
+}

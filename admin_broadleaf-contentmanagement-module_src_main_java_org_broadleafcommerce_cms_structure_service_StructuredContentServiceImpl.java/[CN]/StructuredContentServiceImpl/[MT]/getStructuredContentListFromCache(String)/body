@@ -1,7 +1,9 @@
 {
   Element scElement=getStructuredContentCache().get(key);
   if (scElement != null) {
+    statisticsService.addCacheStat(CacheStatType.STRUCTURED_CONTENT_CACHE_HIT_RATE.toString(),true);
     return (List<StructuredContentDTO>)scElement.getValue();
   }
+  statisticsService.addCacheStat(CacheStatType.STRUCTURED_CONTENT_CACHE_HIT_RATE.toString(),false);
   return null;
 }

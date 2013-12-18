@@ -20,7 +20,7 @@
     if (adornedTargetList.getSortField() != null && entity.findProperty(adornedTargetList.getSortField()).getValue() != null) {
       myRecord=records.get(index);
       Integer requestedSequence=Integer.valueOf(entity.findProperty(adornedTargetList.getSortField()).getValue());
-      Integer previousSequence=Integer.parseInt(String.valueOf(getFieldManager().getFieldValue(myRecord,adornedTargetList.getSortField())));
+      Integer previousSequence=new BigDecimal(String.valueOf(getFieldManager().getFieldValue(myRecord,adornedTargetList.getSortField()))).intValue();
       if (!previousSequence.equals(requestedSequence)) {
         myRecord=records.remove(index);
         myRecord=createPopulatedInstance(myRecord,entity,mergedProperties,false);
@@ -31,8 +31,10 @@
           records.add(requestedSequence - 1,myRecord);
         }
         index=1;
+        Class<?> type=fieldManager.getField(myRecord.getClass(),adornedTargetList.getSortField()).getType();
+        boolean isBigDecimal=BigDecimal.class.isAssignableFrom(type);
         for (        Serializable record : records) {
-          fieldManager.setFieldValue(record,adornedTargetList.getSortField(),Long.valueOf(index));
+          fieldManager.setFieldValue(record,adornedTargetList.getSortField(),isBigDecimal ? new BigDecimal(index) : Long.valueOf(index));
           index++;
         }
       }

@@ -1,0 +1,9 @@
+{
+  TypedQuery<SandBox> query=new TypedQueryBuilder<SandBox>(SandBox.class,"sandbox").addRestriction("sandbox.sandboxType","=",SandBoxType.USER.getType()).addRestriction("sandbox.author","=",authorId).addRestriction("sandbox.parentSandBox.id","=",parentSandBoxId).toQuery(sandBoxEntityManager);
+  try {
+    return query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+    return null;
+  }
+}

@@ -5,6 +5,8 @@
   ListGrid listGrid=(ListGrid)model.asMap().get("listGrid");
   listGrid.setPathOverride("/" + sectionKey + "/"+ id+ "/chooseAsset");
   listGrid.setListGridType(Type.ASSET);
+  String userAgent=request.getHeader("User-Agent");
+  model.addAttribute("isIE",userAgent.contains("MSIE"));
   model.addAttribute("viewType","modal/selectAsset");
   model.addAttribute("currentUrl",request.getRequestURL().toString());
   model.addAttribute("modalHeaderType","selectAsset");

@@ -1,35 +1,47 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName)).getDynamicResultSet().getClassMetaData();
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   FieldMetadata md=collectionProperty.getMetadata();
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
+  SectionCrumb nextCrumb=new SectionCrumb();
+  if (md instanceof MapMetadata) {
+    nextCrumb.setSectionIdentifier(((MapMetadata)md).getValueClassName());
+  }
+ else {
+    nextCrumb.setSectionIdentifier(((CollectionMetadata)md).getCollectionCeilingEntity());
+  }
+  nextCrumb.setSectionId(collectionItemId);
+  if (!sectionCrumbs.contains(nextCrumb)) {
+    sectionCrumbs.add(nextCrumb);
+  }
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
   Entity parentEntity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
-  ppr=PersistencePackageRequest.fromMetadata(md);
+  ppr=PersistencePackageRequest.fromMetadata(md,sectionCrumbs);
   if (md instanceof BasicCollectionMetadata && ((BasicCollectionMetadata)md).getAddMethodType().equals(AddMethodType.PERSIST)) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     if (entity == null) {
       entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true).getDynamicResultSet().getRecords()[0];
     }
-    Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity);
+    Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,sectionCrumbs);
     if (entityForm == null) {
-      entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap);
+      entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap,sectionCrumbs);
     }
  else {
       entityForm.clearFieldsMap();
-      formService.populateEntityForm(collectionMetadata,entity,subRecordsMap,entityForm);
+      formService.populateEntityForm(collectionMetadata,entity,subRecordsMap,entityForm,sectionCrumbs);
       entityForm.removeAllActions();
     }
     entityForm.removeAction(DefaultEntityFormActions.DELETE);
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/simpleEditEntity");
   }
- else   if (md instanceof AdornedTargetCollectionMetadata && ((AdornedTargetCollectionMetadata)md).getMaintainedAdornedTargetFields().length > 0) {
+ else   if (md instanceof AdornedTargetCollectionMetadata) {
     AdornedTargetCollectionMetadata fmd=(AdornedTargetCollectionMetadata)md;
     if (entity == null) {
-      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId).getDynamicResultSet().getRecords()[0];
+      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId,sectionCrumbs).getDynamicResultSet().getRecords()[0];
     }
     boolean populateTypeAndId=true;
     if (entityForm == null) {
@@ -47,8 +59,8 @@
       Property p=cmd.getPMap().get(field);
       if (p != null && p.getMetadata() instanceof AdornedTargetCollectionMetadata) {
         Property alternateIdProperty=entity.getPMap().get(BasicPersistenceModule.ALTERNATE_ID_PROPERTY);
-        DynamicResultSet drs=service.getRecordsForCollection(cmd,entity,p,null,null,null,alternateIdProperty.getValue()).getDynamicResultSet();
-        ListGrid listGrid=formService.buildCollectionListGrid(alternateIdProperty.getValue(),drs,p,ppr.getAdornedList().getAdornedTargetEntityClassname());
+        DynamicResultSet drs=service.getRecordsForCollection(cmd,entity,p,null,null,null,alternateIdProperty.getValue(),sectionCrumbs).getDynamicResultSet();
+        ListGrid listGrid=formService.buildCollectionListGrid(alternateIdProperty.getValue(),drs,p,ppr.getAdornedList().getAdornedTargetEntityClassname(),sectionCrumbs);
         listGrid.setListGridType(ListGrid.Type.INLINE);
         listGrid.getToolbarActions().add(DefaultListGridActions.ADD);
         entityForm.addListGrid(listGrid,EntityForm.DEFAULT_TAB_NAME,EntityForm.DEFAULT_TAB_ORDER);
@@ -56,8 +68,8 @@
  else       if (p != null && p.getMetadata() instanceof MapMetadata) {
         MapMetadata mmd=(MapMetadata)p.getMetadata();
         Property alternateIdProperty=entity.getPMap().get(BasicPersistenceModule.ALTERNATE_ID_PROPERTY);
-        DynamicResultSet drs=service.getRecordsForCollection(cmd,entity,p,null,null,null,alternateIdProperty.getValue()).getDynamicResultSet();
-        ListGrid listGrid=formService.buildCollectionListGrid(alternateIdProperty.getValue(),drs,p,mmd.getTargetClass());
+        DynamicResultSet drs=service.getRecordsForCollection(cmd,entity,p,null,null,null,alternateIdProperty.getValue(),sectionCrumbs).getDynamicResultSet();
+        ListGrid listGrid=formService.buildCollectionListGrid(alternateIdProperty.getValue(),drs,p,mmd.getTargetClass(),sectionCrumbs);
         listGrid.setListGridType(ListGrid.Type.INLINE);
         listGrid.getToolbarActions().add(DefaultListGridActions.ADD);
         entityForm.addListGrid(listGrid,EntityForm.DEFAULT_TAB_NAME,EntityForm.DEFAULT_TAB_ORDER);
@@ -82,7 +94,7 @@
     MapMetadata fmd=(MapMetadata)md;
     ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
     if (entity == null) {
-      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId).getEntity();
+      entity=service.getAdvancedCollectionRecord(mainMetadata,parentEntity,collectionProperty,collectionItemId,sectionCrumbs).getEntity();
     }
     boolean populateTypeAndId=true;
     if (entityForm == null) {

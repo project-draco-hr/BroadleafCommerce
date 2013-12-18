@@ -1,8 +1,3 @@
 {
-  CriteriaQuery<Product> criteria=getCriteriaForActiveProducts(currentDate);
-  int firstResult=page * pageSize;
-  TypedQuery<Product> query=em.createQuery(criteria);
-  query.setHint(QueryHints.HINT_CACHEABLE,true);
-  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Catalog");
-  return query.setFirstResult(firstResult).setMaxResults(pageSize).getResultList();
+  return readAllActiveProductsInternal(page,pageSize,currentDate);
 }

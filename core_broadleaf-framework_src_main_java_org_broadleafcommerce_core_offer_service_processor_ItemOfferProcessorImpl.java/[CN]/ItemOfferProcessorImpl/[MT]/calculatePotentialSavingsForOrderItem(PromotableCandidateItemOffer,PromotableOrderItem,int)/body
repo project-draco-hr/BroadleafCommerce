@@ -1,0 +1,15 @@
+{
+  if (extensionManager != null) {
+    Map<String,Object> contextMap=new HashMap<String,Object>();
+    extensionManager.getProxy().calculatePotentialSavings(itemOffer,item,quantity,contextMap);
+    Object o=contextMap.get("savings");
+    if (o != null && o instanceof Money) {
+      return (Money)o;
+    }
+    o=contextMap.get("quantity");
+    if (o != null && o instanceof Integer) {
+      quantity=((Integer)o).intValue();
+    }
+  }
+  return itemOffer.calculateSavingsForOrderItem(item,quantity);
+}

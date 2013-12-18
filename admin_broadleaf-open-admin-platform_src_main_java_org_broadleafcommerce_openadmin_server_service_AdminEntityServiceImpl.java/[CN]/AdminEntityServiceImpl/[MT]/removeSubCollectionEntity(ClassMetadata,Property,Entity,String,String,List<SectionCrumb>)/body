@@ -1,0 +1,61 @@
+{
+  List<Property> properties=new ArrayList<Property>();
+  Property p;
+  String parentId=getContextSpecificRelationshipId(mainMetadata,parentEntity,field.getName());
+  Entity entity=new Entity();
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(field.getMetadata(),sectionCrumbs).withEntity(entity);
+  if (field.getMetadata() instanceof BasicCollectionMetadata) {
+    BasicCollectionMetadata fmd=(BasicCollectionMetadata)field.getMetadata();
+    p=new Property();
+    p.setName("id");
+    p.setValue(itemId);
+    properties.add(p);
+    p=new Property();
+    p.setName(ppr.getForeignKey().getManyToField());
+    p.setValue(parentId);
+    properties.add(p);
+    entity.setType(new String[]{fmd.getCollectionCeilingEntity()});
+  }
+ else   if (field.getMetadata() instanceof AdornedTargetCollectionMetadata) {
+    AdornedTargetList adornedList=ppr.getAdornedList();
+    p=new Property();
+    p.setName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty());
+    p.setValue(parentId);
+    properties.add(p);
+    p=new Property();
+    p.setName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty());
+    p.setValue(itemId);
+    properties.add(p);
+    entity.setType(new String[]{adornedList.getAdornedTargetEntityClassname()});
+  }
+ else   if (field.getMetadata() instanceof MapMetadata) {
+    MapMetadata fmd=(MapMetadata)field.getMetadata();
+    p=new Property();
+    p.setName("symbolicId");
+    p.setValue(getContextSpecificRelationshipId(mainMetadata,parentEntity,field.getName()));
+    properties.add(p);
+    p=new Property();
+    p.setName("priorKey");
+    p.setValue(priorKey);
+    properties.add(p);
+    MapStructure mapStructure=ppr.getMapStructure();
+    p=new Property();
+    p.setName(mapStructure.getKeyPropertyName());
+    p.setValue(itemId);
+    properties.add(p);
+    entity.setType(new String[]{fmd.getTargetClass()});
+  }
+  String sectionField=field.getName();
+  if (sectionField.contains(".")) {
+    sectionField=sectionField.substring(0,sectionField.lastIndexOf("."));
+  }
+  ppr.setSectionEntityField(sectionField);
+  Property parentNameProp=parentEntity.getPMap().get(AdminMainEntity.MAIN_ENTITY_NAME_PROPERTY);
+  if (parentNameProp != null) {
+    ppr.setRequestingEntityName(parentNameProp.getValue());
+  }
+  Property[] propArr=new Property[properties.size()];
+  properties.toArray(propArr);
+  ppr.getEntity().setProperties(propArr);
+  return remove(ppr);
+}

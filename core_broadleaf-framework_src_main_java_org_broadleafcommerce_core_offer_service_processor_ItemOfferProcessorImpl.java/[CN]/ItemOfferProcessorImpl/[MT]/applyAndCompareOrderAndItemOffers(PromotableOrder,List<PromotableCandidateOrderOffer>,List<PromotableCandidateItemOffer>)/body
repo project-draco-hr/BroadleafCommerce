@@ -1,6 +1,9 @@
 {
   if (!qualifiedItemOffers.isEmpty()) {
     calculatePotentialSavings(qualifiedItemOffers,order);
+    for (    PromotableCandidateItemOffer itemOffer : qualifiedItemOffers) {
+      itemOffer.resetUses();
+    }
     Collections.sort(qualifiedItemOffers,ItemOfferComparator.INSTANCE);
     if (qualifiedItemOffers.size() > 1) {
       determineBestPermutation(qualifiedItemOffers,order);
@@ -10,6 +13,9 @@
     }
   }
   chooseSaleOrRetailAdjustments(order);
+  if (extensionManager != null) {
+    extensionManager.getProxy().chooseSaleOrRetailAdjustments(order);
+  }
   order.setOrderSubTotalToPriceWithAdjustments();
   if (!qualifiedOrderOffers.isEmpty()) {
     Collections.sort(qualifiedOrderOffers,OrderOfferComparator.INSTANCE);

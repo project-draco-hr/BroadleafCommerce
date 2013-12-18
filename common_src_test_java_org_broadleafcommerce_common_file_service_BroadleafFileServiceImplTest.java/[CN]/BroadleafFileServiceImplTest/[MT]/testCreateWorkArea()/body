@@ -1,0 +1,10 @@
+{
+  FileWorkArea workArea1=bfs.initializeWorkArea();
+  File f1=new File(workArea1.getFilePathLocation());
+  assertTrue(f1.exists());
+  FileWorkArea workArea2=bfs.initializeWorkArea();
+  assertFalse(workArea2.getFilePathLocation().equals(workArea1.getFilePathLocation()));
+  bfs.closeWorkArea(workArea1);
+  assertFalse(f1.exists());
+  bfs.closeWorkArea(workArea2);
+}

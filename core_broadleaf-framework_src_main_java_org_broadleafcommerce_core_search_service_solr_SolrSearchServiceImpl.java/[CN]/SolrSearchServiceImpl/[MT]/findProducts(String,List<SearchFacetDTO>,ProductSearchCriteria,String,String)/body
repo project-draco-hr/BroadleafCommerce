@@ -4,7 +4,7 @@
   if (filterQueries != null) {
     solrQuery.setFilterQueries(filterQueries);
   }
-  solrQuery.addFilterQuery(shs.getNamespaceFieldName() + ":" + shs.getCurrentNamespace());
+  solrQuery.addFilterQuery(shs.getNamespaceFieldName() + ":(\"" + shs.getCurrentNamespace()+ "\")");
   solrQuery.set("defType","edismax");
   solrQuery.set("qf",buildQueryFieldsString());
   attachSortClause(solrQuery,searchCriteria,defaultSort);
@@ -20,11 +20,13 @@
     }
   }
   QueryResponse response;
+  List<SolrDocument> responseDocuments;
   try {
     response=SolrContext.getServer().query(solrQuery);
+    responseDocuments=getResponseDocuments(response);
     if (LOG.isTraceEnabled()) {
       LOG.trace(response.toString());
-      for (      SolrDocument doc : response.getResults()) {
+      for (      SolrDocument doc : responseDocuments) {
         LOG.trace(doc);
       }
     }
@@ -34,10 +36,10 @@
   }
   setFacetResults(namedFacetMap,response);
   sortFacetResults(namedFacetMap);
-  List<Product> products=getProducts(response);
+  List<Product> products=getProducts(responseDocuments);
   ProductSearchResult result=new ProductSearchResult();
   result.setFacets(facets);
   result.setProducts(products);
-  setPagingAttributes(result,response,searchCriteria);
+  setPagingAttributes(result,responseDocuments,searchCriteria);
   return result;
 }

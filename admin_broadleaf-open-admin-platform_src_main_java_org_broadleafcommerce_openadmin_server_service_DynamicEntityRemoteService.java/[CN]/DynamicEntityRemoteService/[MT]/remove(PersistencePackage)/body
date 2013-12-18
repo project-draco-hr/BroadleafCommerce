@@ -1,12 +1,16 @@
 {
-  try {
-    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
-    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
-    return persistenceManager.remove(persistencePackage);
+  return persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<PersistenceResponse,ServiceException>(){
+    @Override public PersistenceResponse execute() throws ServiceException {
+      try {
+        PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+        return persistenceManager.remove(persistencePackage);
+      }
+ catch (      ServiceException e) {
+        LOG.error("Problem removing " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+        String message=exploitProtectionService.cleanString(e.getMessage());
+        throw recreateSpecificServiceException(e,message,e.getCause());
+      }
+    }
   }
- catch (  ServiceException e) {
-    LOG.error("Problem removing " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
-    String message=exploitProtectionService.cleanString(e.getMessage());
-    throw recreateSpecificServiceException(e,message,e.getCause());
-  }
+);
 }

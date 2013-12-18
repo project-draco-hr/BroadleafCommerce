@@ -1,0 +1,17 @@
+{
+  FileSystemFileServiceProvider provider=new FileSystemFileServiceProvider();
+  provider.fileSystemBaseDirectory="/test";
+  provider.maxGeneratedDirectoryDepth=2;
+  File file=provider.getResource("/product/myproductimage.jpg");
+  assertTrue(file.getAbsolutePath().equals("/test/35/ec/myproductimage.jpg"));
+  BroadleafRequestContext brc=new BroadleafRequestContext();
+  BroadleafRequestContext.setBroadleafRequestContext(brc);
+  Site site=new SiteImpl();
+  site.setId(125L);
+  brc.setSite(site);
+  file=provider.getResource("/product/myproductimage.jpg");
+  assertTrue(file.getAbsolutePath().equals("/test/7f/site-125/35/ec/myproductimage.jpg"));
+  provider.maxGeneratedDirectoryDepth=3;
+  file=provider.getResource("/product/myproductimage.jpg");
+  assertTrue(file.getAbsolutePath().equals("/test/7f/site-125/35/ec/52/myproductimage.jpg"));
+}

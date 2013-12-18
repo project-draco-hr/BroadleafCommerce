@@ -6,7 +6,8 @@
     SandBoxContext.setSandBoxContext(null);
   }
  else {
-    SandBox sandBox=sandBoxService.retrieveUserSandBox(adminUser);
+    Long overrideSandBoxId=adminUser.getOverrideSandBox() == null ? null : adminUser.getOverrideSandBox().getId();
+    SandBox sandBox=sandBoxService.retrieveUserSandBox(adminUser.getId(),overrideSandBoxId,adminUser.getLogin());
     session.setAttribute(SANDBOX_ADMIN_ID_VAR,sandBox.getId());
     session.removeAttribute(SANDBOX_ID_VAR);
     AdminSandBoxContext context=new AdminSandBoxContext();

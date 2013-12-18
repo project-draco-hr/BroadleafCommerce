@@ -1,0 +1,38 @@
+{
+  TransactionStatus status=TransactionUtils.createTransaction("readProducts",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
+  if (LOG.isDebugEnabled()) {
+    LOG.debug(String.format("Building index - page: [%s], pageSize: [%s]",page,pageSize));
+  }
+  StopWatch s=new StopWatch();
+  try {
+    List<Product> products=readAllActiveProducts(page,pageSize);
+    List<Field> fields=fieldDao.readAllProductFields();
+    List<Locale> locales=getAllLocales();
+    Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
+    for (    Product product : products) {
+      documents.add(buildDocument(product,fields,locales));
+    }
+    logDocuments(documents);
+    if (!CollectionUtils.isEmpty(documents)) {
+      SolrServer server=useReindexServer ? SolrContext.getReindexServer() : SolrContext.getServer();
+      server.add(documents);
+      server.commit();
+    }
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
+  }
+ catch (  SolrServerException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new ServiceException("Could not rebuild index",e);
+  }
+catch (  IOException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new ServiceException("Could not rebuild index",e);
+  }
+catch (  RuntimeException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw e;
+  }
+  if (LOG.isDebugEnabled()) {
+    LOG.debug(String.format("Built index - page: [%s], pageSize: [%s] in [%s]",page,pageSize,s.toLapString()));
+  }
+}

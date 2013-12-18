@@ -1,0 +1,140 @@
+{
+  FieldMetadata fmd=field.getMetadata();
+  PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(fmd,sectionCrumbs);
+  ClassMetadata cmd=adminEntityService.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  List<Field> headerFields=new ArrayList<Field>();
+  ListGrid.Type type=null;
+  boolean editable=false;
+  boolean sortable=false;
+  boolean readOnly=false;
+  boolean hideIdColumn=false;
+  boolean canFilterAndSort=true;
+  String idProperty="id";
+  for (  Property property : cmd.getProperties()) {
+    if (property.getMetadata() instanceof BasicFieldMetadata && SupportedFieldType.ID == ((BasicFieldMetadata)property.getMetadata()).getFieldType() && !property.getName().contains(".")) {
+      idProperty=property.getName();
+      break;
+    }
+  }
+  if (fmd instanceof BasicFieldMetadata) {
+    readOnly=((BasicFieldMetadata)fmd).getReadOnly();
+    for (    Property p : cmd.getProperties()) {
+      if (p.getMetadata() instanceof BasicFieldMetadata) {
+        BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
+        if (SupportedFieldType.ID.equals(md.getFieldType())) {
+          idProperty=md.getName();
+        }
+        if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
+          Field hf=createHeaderField(p,md);
+          headerFields.add(hf);
+        }
+      }
+    }
+    type=ListGrid.Type.TO_ONE;
+  }
+ else   if (fmd instanceof BasicCollectionMetadata) {
+    readOnly=!((BasicCollectionMetadata)fmd).isMutable();
+    for (    Property p : cmd.getProperties()) {
+      if (p.getMetadata() instanceof BasicFieldMetadata) {
+        BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
+        if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
+          Field hf=createHeaderField(p,md);
+          headerFields.add(hf);
+        }
+      }
+    }
+    type=ListGrid.Type.BASIC;
+    if (((BasicCollectionMetadata)fmd).getAddMethodType().equals(AddMethodType.PERSIST)) {
+      editable=true;
+    }
+  }
+ else   if (fmd instanceof AdornedTargetCollectionMetadata) {
+    readOnly=!((AdornedTargetCollectionMetadata)fmd).isMutable();
+    AdornedTargetCollectionMetadata atcmd=(AdornedTargetCollectionMetadata)fmd;
+    for (    String fieldName : atcmd.getGridVisibleFields()) {
+      Property p=cmd.getPMap().get(fieldName);
+      BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
+      Field hf=createHeaderField(p,md);
+      headerFields.add(hf);
+    }
+    type=ListGrid.Type.ADORNED;
+    if (atcmd.getMaintainedAdornedTargetFields().length > 0) {
+      editable=true;
+    }
+    AdornedTargetList adornedList=(AdornedTargetList)atcmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+    sortable=StringUtils.isNotBlank(adornedList.getSortField());
+  }
+ else   if (fmd instanceof MapMetadata) {
+    readOnly=!((MapMetadata)fmd).isMutable();
+    MapMetadata mmd=(MapMetadata)fmd;
+    Property p2=cmd.getPMap().get("key");
+    BasicFieldMetadata keyMd=(BasicFieldMetadata)p2.getMetadata();
+    keyMd.setFriendlyName("Key");
+    Field hf=createHeaderField(p2,keyMd);
+    headerFields.add(hf);
+    if (mmd.isSimpleValue()) {
+      Property valueProperty=cmd.getPMap().get("value");
+      BasicFieldMetadata valueMd=(BasicFieldMetadata)valueProperty.getMetadata();
+      valueMd.setFriendlyName("Value");
+      hf=createHeaderField(valueProperty,valueMd);
+      headerFields.add(hf);
+      idProperty="key";
+      hideIdColumn=true;
+    }
+ else {
+      for (      Property p : cmd.getProperties()) {
+        if (p.getMetadata() instanceof BasicFieldMetadata) {
+          BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
+          if (md.getTargetClass().equals(mmd.getValueClassName())) {
+            if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
+              hf=createHeaderField(p,md);
+              headerFields.add(hf);
+            }
+          }
+        }
+      }
+    }
+    type=ListGrid.Type.MAP;
+    editable=true;
+    canFilterAndSort=false;
+  }
+  String ceilingType="";
+  if (fmd instanceof BasicFieldMetadata) {
+    ceilingType=cmd.getCeilingType();
+  }
+ else   if (fmd instanceof CollectionMetadata) {
+    ceilingType=((CollectionMetadata)fmd).getCollectionCeilingEntity();
+  }
+  if (CollectionUtils.isEmpty(headerFields)) {
+    String message="There are no listgrid header fields configured for the class " + ceilingType + " and property '"+ field.getName()+ "'.";
+    if (type == ListGrid.Type.ADORNED || type == ListGrid.Type.ADORNED_WITH_FORM) {
+      message+=" Please configure 'gridVisibleFields' in your @AdminPresentationAdornedTargetCollection configuration";
+    }
+ else {
+      message+=" Please mark some @AdminPresentation fields with 'prominent = true'";
+    }
+    LOG.error(message);
+  }
+  ListGrid listGrid=createListGrid(ceilingType,headerFields,type,drs,sectionKey,fmd.getOrder(),idProperty,sectionCrumbs);
+  listGrid.setSubCollectionFieldName(field.getName());
+  listGrid.setFriendlyName(field.getMetadata().getFriendlyName());
+  if (StringUtils.isEmpty(listGrid.getFriendlyName())) {
+    listGrid.setFriendlyName(field.getName());
+  }
+  listGrid.setContainingEntityId(containingEntityId);
+  listGrid.setReadOnly(readOnly);
+  listGrid.setHideIdColumn(hideIdColumn);
+  listGrid.setCanFilterAndSort(canFilterAndSort);
+  if (editable) {
+    listGrid.getRowActions().add(DefaultListGridActions.UPDATE);
+  }
+  if (readOnly) {
+    listGrid.getRowActions().add(DefaultListGridActions.VIEW);
+  }
+  if (sortable) {
+    listGrid.setCanFilterAndSort(false);
+    listGrid.getToolbarActions().add(DefaultListGridActions.REORDER);
+  }
+  listGrid.getRowActions().add(DefaultListGridActions.REMOVE);
+  return listGrid;
+}

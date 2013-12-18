@@ -1,0 +1,15 @@
+{
+  if (refineType.isAssignableFrom(e.getClass())) {
+    throw (G)e;
+  }
+  if (e.getCause() != null) {
+    processException(refineType,wrapType,message,e.getCause());
+  }
+  if (e instanceof UndeclaredThrowableException) {
+    processException(refineType,wrapType,message,((UndeclaredThrowableException)e).getUndeclaredThrowable());
+  }
+  if (e instanceof InvocationTargetException) {
+    processException(refineType,wrapType,message,((InvocationTargetException)e).getTargetException());
+  }
+  throw wrapException(e,wrapType,message);
+}

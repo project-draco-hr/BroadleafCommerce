@@ -1,9 +1,5 @@
 {
   TypedQuery<T> q=em.createQuery(toQueryString(),rootClass);
-  for (  Entry<String,Object> entry : paramMap.entrySet()) {
-    if (entry.getValue() != null) {
-      q.setParameter(entry.getKey(),entry.getValue());
-    }
-  }
+  fillParameterMap(q);
   return q;
 }

@@ -2,7 +2,9 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
+  boolean dirty=false;
   try {
+    setNonDisplayableValues(populateValueRequest);
     Class<?> valueType=null;
     if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
       valueType=populateValueRequest.getReturnType();
@@ -28,12 +30,34 @@
  catch (      FieldNotAvailableException e) {
         throw new IllegalArgumentException(e);
       }
+      populateValueRequest.getProperty().setOriginalValue(convertMediaToJson(media));
+      boolean persist=false;
       if (media == null) {
         media=(Media)valueType.newInstance();
+        persist=true;
       }
-      updateMediaFields(media,newMedia);
-      populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
-      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
+      Map description=BeanUtils.describe(media);
+      for (      Object temp : description.keySet()) {
+        String property=(String)temp;
+        String[] ignoredProperties=sandBoxHelper.getSandBoxDiscriminatorFieldList();
+        ignoredProperties=(String[])ArrayUtils.add(ignoredProperties,"id");
+        Arrays.sort(ignoredProperties);
+        if (Arrays.binarySearch(ignoredProperties,property) < 0) {
+          String prop1=String.valueOf(description.get(property));
+          String prop2=String.valueOf(BeanUtils.getProperty(newMedia,property));
+          if (!prop1.equals(prop2)) {
+            dirty=true;
+            break;
+          }
+        }
+      }
+      if (dirty) {
+        updateMediaFields(media,newMedia);
+        if (persist) {
+          populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
+        }
+        populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
+      }
     }
  else {
       throw new UnsupportedOperationException("MediaFields only work with Media types.");
@@ -42,5 +66,6 @@
  catch (  Exception e) {
     throw new PersistenceException(e);
   }
+  populateValueRequest.getProperty().setIsDirty(dirty);
   return FieldProviderResponse.HANDLED;
 }

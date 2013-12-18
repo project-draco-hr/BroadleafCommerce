@@ -1,0 +1,17 @@
+{
+  List<OfferAudit> audits=new ArrayList<OfferAudit>(offers.size());
+  for (  Offer offer : offers) {
+    OfferAudit audit=offerAuditService.create();
+    audit.setCustomerId(order.getCustomer().getId());
+    audit.setOfferId(offer.getId());
+    audit.setOrderId(order.getId());
+    OfferCode codeUsedToRetrieveOffer=offerToCodeMapping.get(offer);
+    if (codeUsedToRetrieveOffer != null) {
+      audit.setOfferCodeId(codeUsedToRetrieveOffer.getId());
+    }
+    audit.setRedeemedDate(SystemTime.asDate());
+    audit=offerAuditService.save(audit);
+    audits.add(audit);
+  }
+  return audits;
+}

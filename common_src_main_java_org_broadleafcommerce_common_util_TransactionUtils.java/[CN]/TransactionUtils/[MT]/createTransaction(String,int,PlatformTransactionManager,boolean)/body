@@ -1,7 +1,3 @@
 {
-  DefaultTransactionDefinition def=new DefaultTransactionDefinition();
-  def.setName(name);
-  def.setReadOnly(isReadOnly);
-  def.setPropagationBehavior(propagationBehavior);
-  return transactionManager.getTransaction(def);
+  return createTransaction(name,propagationBehavior,TransactionDefinition.ISOLATION_DEFAULT,transactionManager,isReadOnly);
 }

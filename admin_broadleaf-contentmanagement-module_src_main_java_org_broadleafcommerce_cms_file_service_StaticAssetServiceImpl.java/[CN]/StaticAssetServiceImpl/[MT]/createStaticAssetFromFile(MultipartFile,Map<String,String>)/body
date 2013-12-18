@@ -3,13 +3,13 @@
     properties=new HashMap<String,String>();
   }
   String fullUrl=buildAssetURL(properties,file.getOriginalFilename());
-  StaticAsset newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl,null);
+  StaticAsset newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl);
   int count=0;
   while (newAsset != null) {
     count++;
-    newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false),null);
+    newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false));
     if (newAsset == null) {
-      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true),null);
+      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true));
     }
   }
   if (count > 0) {

@@ -1,0 +1,24 @@
+{
+  IdGeneration idGeneration=null;
+  int retryCount=0;
+  boolean stale=true;
+  while (stale) {
+    try {
+      idGeneration=idGenerationDao.findNextId(idType,batchSize);
+      stale=false;
+    }
+ catch (    OptimisticLockException e) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Error saving batch start for " + idType + ".  Requerying table.");
+      }
+    }
+catch (    Exception e) {
+      throw new RuntimeException("Unable to retrieve id range for " + idType,e);
+    }
+    if (retryCount >= 10) {
+      throw new RuntimeException("Unable to retrieve id range for " + idType + ". Tried "+ retryCount+ " times, but the version for this entity continues to be concurrently modified.");
+    }
+    retryCount++;
+  }
+  return idGeneration;
+}

@@ -1,0 +1,8 @@
+{
+  boolean underCodeMaxUses=true;
+  if (code.isLimitedUse()) {
+    Long currentCodeUses=offerAuditService.countOfferCodeUses(code.getId());
+    underCodeMaxUses=currentCodeUses < code.getMaxUses();
+  }
+  return underCodeMaxUses && verifyMaxCustomerUsageThreshold(customer,code.getOffer());
+}

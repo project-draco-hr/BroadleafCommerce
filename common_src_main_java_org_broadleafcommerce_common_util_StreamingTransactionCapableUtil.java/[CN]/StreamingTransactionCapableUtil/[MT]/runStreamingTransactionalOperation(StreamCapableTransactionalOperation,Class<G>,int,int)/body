@@ -1,0 +1,24 @@
+{
+  final Long totalCount=streamOperation.retrieveTotalCount();
+  final Holder holder=new Holder();
+  holder.setVal(0);
+  StreamCapableTransactionalOperation operation=new StreamCapableTransactionalOperationAdapter(){
+    @Override public void execute() throws Throwable {
+      Object[] items=streamOperation.retrievePage(holder.getVal(),pageSize);
+      streamOperation.pagedExecute(items);
+      if (((Collection)items[0]).size() == 0) {
+        holder.setVal(totalCount.intValue());
+      }
+ else {
+        holder.setVal(holder.getVal() + ((Collection)items[0]).size());
+      }
+    }
+  }
+;
+  while (holder.getVal() < totalCount) {
+    runTransactionalOperation(operation,exceptionType,transactionBehavior,isolationLevel);
+    if (em != null) {
+      em.clear();
+    }
+  }
+}

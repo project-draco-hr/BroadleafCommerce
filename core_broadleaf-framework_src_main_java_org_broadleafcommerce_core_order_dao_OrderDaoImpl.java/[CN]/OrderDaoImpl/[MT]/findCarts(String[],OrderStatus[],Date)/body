@@ -1,0 +1,26 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Order> criteria=builder.createQuery(Order.class);
+  Root<OrderImpl> root=criteria.from(OrderImpl.class);
+  criteria.select(root);
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  List<String> statusList=new ArrayList<String>();
+  if (statuses != null) {
+    for (    OrderStatus status : statuses) {
+      statusList.add(status.getType());
+    }
+  }
+ else {
+    statusList.add("IN_PROCESS");
+  }
+  restrictions.add(root.get("status").in(statusList));
+  if (names != null) {
+    restrictions.add(root.get("name").in(Arrays.asList(names)));
+  }
+  if (dateCreatedMinThreshold != null) {
+    restrictions.add(builder.lessThan(root.get("auditable").get("dateCreated").as(Date.class),dateCreatedMinThreshold));
+  }
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  TypedQuery<Order> query=em.createQuery(criteria);
+  return query.getResultList();
+}

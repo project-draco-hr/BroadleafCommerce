@@ -1,4 +1,5 @@
 {
+  boolean dirty=false;
   try {
     Class<?> valueType=null;
     String valueClassName=populateValueRequest.getMetadata().getMapFieldValueClass();
@@ -24,6 +25,12 @@
       if (assignableValue == null) {
         assignableValue=(ValueAssignable)valueType.newInstance();
         persistValue=true;
+        dirty=true;
+      }
+ else {
+        dirty=assignableValue.getValue().equals(populateValueRequest.getProperty().getValue());
+        populateValueRequest.getProperty().setOriginalValue(String.valueOf(assignableValue));
+        populateValueRequest.getProperty().setOriginalDisplayValue(String.valueOf(assignableValue));
       }
       assignableValue.setName(key);
       assignableValue.setValue(populateValueRequest.getProperty().getValue());
@@ -66,5 +73,6 @@
  catch (  Exception e) {
     throw new PersistenceException(e);
   }
+  populateValueRequest.getProperty().setIsDirty(dirty);
   return FieldProviderResponse.HANDLED;
 }

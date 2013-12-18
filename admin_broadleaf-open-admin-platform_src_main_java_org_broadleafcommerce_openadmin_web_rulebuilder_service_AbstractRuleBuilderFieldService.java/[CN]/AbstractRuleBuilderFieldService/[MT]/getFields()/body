@@ -1,3 +1,13 @@
 {
+  if (!handlersInitialized) {
+synchronized (handlersInitialized) {
+      if (!handlersInitialized) {
+        if (extensionManager != null) {
+          extensionManager.getProxy().addFields(fields,getName());
+        }
+      }
+    }
+    handlersInitialized=true;
+  }
   return fields;
 }

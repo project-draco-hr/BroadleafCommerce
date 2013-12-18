@@ -1,13 +1,14 @@
 {
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName)).getDynamicResultSet().getClassMetaData();
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   String priorKey=request.getParameter("key");
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
-  PersistenceResponse persistenceResponse=service.removeSubCollectionEntity(mainMetadata,collectionProperty,entity,collectionItemId,priorKey);
-  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse);
+  PersistenceResponse persistenceResponse=service.removeSubCollectionEntity(mainMetadata,collectionProperty,entity,collectionItemId,priorKey,sectionCrumbs);
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse,sectionCrumbs);
   model.addAttribute("listGrid",listGrid);
   setModelAttributes(model,sectionKey);
   return "views/standaloneListGrid";

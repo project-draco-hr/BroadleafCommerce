@@ -35,7 +35,7 @@
     for (    Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
       Entity subResponse;
       try {
-        subPackage.getValue().setCustomCriteria(new String[]{subPackage.getValue().getCustomCriteria()[0],idVal});
+        subPackage.getValue().getCustomCriteria()[1]=idVal;
         checkHandler: {
           for (          CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
             if (handler.canHandleAdd(subPackage.getValue())) {

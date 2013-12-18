@@ -1,5 +1,8 @@
 {
   Class<?>[] pEntities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(testClass);
+  if (ArrayUtils.isEmpty(pEntities)) {
+    return pEntities;
+  }
   Class<?> topConcreteClass=pEntities[pEntities.length - 1];
   List<Class<?>> temp=new ArrayList<Class<?>>(pEntities.length);
   temp.addAll(Arrays.asList(pEntities));

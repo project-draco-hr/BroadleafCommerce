@@ -1,0 +1,17 @@
+{
+  TransactionStatus status=TransactionUtils.createTransaction("createSandBox",TransactionDefinition.PROPAGATION_REQUIRES_NEW,transactionManager);
+  try {
+    SandBox userSandBox=new SandBoxImpl();
+    userSandBox.setName(approvalSandBox.getName());
+    userSandBox.setAuthor(authorId);
+    userSandBox.setParentSandBox(approvalSandBox);
+    userSandBox.setSandBoxType(SandBoxType.USER);
+    userSandBox=persist(userSandBox);
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
+    return userSandBox;
+  }
+ catch (  Exception ex) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new RuntimeException(ex);
+  }
+}

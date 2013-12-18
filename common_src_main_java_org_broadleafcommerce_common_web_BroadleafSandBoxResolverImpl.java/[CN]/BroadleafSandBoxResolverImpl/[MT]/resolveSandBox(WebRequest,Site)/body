@@ -8,7 +8,7 @@
   }
  else {
     Long sandboxId=null;
-    if ((request.getParameter("blClearSandBox") == null) || (request.getParameter("blSandboxDateTimeRibbonProduction") == null)) {
+    if ((request.getParameter("blClearSandBox") == null) && (request.getParameter("blSandboxDateTimeRibbonProduction") == null)) {
       sandboxId=lookupSandboxId(request);
     }
  else {
@@ -26,9 +26,6 @@
       if (currentSandbox != null && !SandBoxType.PRODUCTION.equals(currentSandbox.getSandBoxType())) {
         setContentTime(request);
       }
-    }
-    if (currentSandbox == null && site != null) {
-      currentSandbox=site.getProductionSandbox();
     }
   }
   if (LOG.isTraceEnabled()) {

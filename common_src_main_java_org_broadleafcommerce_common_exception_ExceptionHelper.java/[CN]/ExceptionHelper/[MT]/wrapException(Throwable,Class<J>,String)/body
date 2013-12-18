@@ -1,0 +1,17 @@
+{
+  if (e instanceof RuntimeException) {
+    return (RuntimeException)e;
+  }
+  try {
+    if (StringUtils.isEmpty(message)) {
+      return wrapType.getConstructor(Throwable.class).newInstance(e);
+    }
+ else {
+      return wrapType.getConstructor(String.class,Throwable.class).newInstance(message,e);
+    }
+  }
+ catch (  Exception e1) {
+    LOG.error("Could not wrap exception",e1);
+    throw new RuntimeException(e);
+  }
+}

@@ -46,7 +46,8 @@
           value=newEntity;
         }
  catch (        Exception e) {
-          Class<?>[] entities=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(field.getType());
+          SessionFactory sessionFactory=entityManager.unwrap(Session.class).getSessionFactory();
+          Class<?>[] entities=helper.getAllPolymorphicEntitiesFromCeiling(field.getType(),sessionFactory,true,true);
           if (!ArrayUtils.isEmpty(entities)) {
             Object newEntity=entities[0].newInstance();
             SortableValue val=new SortableValue(bean,(Serializable)newEntity,j,sb.toString());

@@ -1,0 +1,15 @@
+{
+  SortedSet<String> names=new TreeSet<String>();
+  for (  Map.Entry<String,CacheStat> stats : cacheStats.entrySet()) {
+    names.add(stats.getKey());
+  }
+  MBeanAttributeInfo[] attrs=new MBeanAttributeInfo[names.size()];
+  Iterator<String> it=names.iterator();
+  for (int i=0; i < attrs.length; i++) {
+    String name=it.next();
+    attrs[i]=new MBeanAttributeInfo(name,"java.lang.Double",name,true,false,false);
+  }
+  attrs=ArrayUtils.add(attrs,new MBeanAttributeInfo("LOG_RESOLUTION","java.lang.Double","LOG_RESOLUTION",true,true,false));
+  MBeanOperationInfo[] opers={new MBeanOperationInfo("activate","Activate statistic logging",null,"void",MBeanOperationInfo.ACTION),new MBeanOperationInfo("disable","Disable statistic logging",null,"void",MBeanOperationInfo.ACTION)};
+  return new MBeanInfo("org.broadleafcommerce:name=StatisticsService." + appName,"Runtime Statistics",attrs,null,opers,null);
+}

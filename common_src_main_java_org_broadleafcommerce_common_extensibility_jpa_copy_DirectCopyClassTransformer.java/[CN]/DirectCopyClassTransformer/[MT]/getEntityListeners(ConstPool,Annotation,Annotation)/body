@@ -1,0 +1,18 @@
+{
+  Annotation listeners=new Annotation(EntityListeners.class.getName(),constantPool);
+  ArrayMemberValue listenerArray=new ArrayMemberValue(constantPool);
+  Set<MemberValue> listenerMemberValues=new HashSet<MemberValue>();
+{
+    ArrayMemberValue templateListenerValues=(ArrayMemberValue)templateEntityListeners.getMemberValue("value");
+    listenerMemberValues.addAll(Arrays.asList(templateListenerValues.getValue()));
+    logger.debug("Adding template values to new EntityListeners");
+  }
+  if (existingEntityListeners != null) {
+    ArrayMemberValue oldListenerValues=(ArrayMemberValue)existingEntityListeners.getMemberValue("value");
+    listenerMemberValues.addAll(Arrays.asList(oldListenerValues.getValue()));
+    logger.debug("Adding previous values to new EntityListeners");
+  }
+  listenerArray.setValue(listenerMemberValues.toArray(new MemberValue[listenerMemberValues.size()]));
+  listeners.addMemberValue("value",listenerArray);
+  return listeners;
+}
