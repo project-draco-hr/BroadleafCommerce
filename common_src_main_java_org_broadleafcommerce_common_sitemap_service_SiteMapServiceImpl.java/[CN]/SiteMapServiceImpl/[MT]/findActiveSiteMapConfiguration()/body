@@ -1,0 +1,16 @@
+{
+  List<ModuleConfiguration> configurations=moduleConfigurationService.findActiveConfigurationsByType(ModuleConfigurationType.SITE_MAP);
+  SiteMapConfiguration smc=null;
+  if (configurations != null && !configurations.isEmpty()) {
+    for (    ModuleConfiguration configuration : configurations) {
+      if (configuration.getIsDefault()) {
+        smc=(SiteMapConfiguration)configuration;
+        break;
+      }
+    }
+    if (smc == null) {
+      smc=(SiteMapConfiguration)configurations.get(0);
+    }
+  }
+  return smc;
+}

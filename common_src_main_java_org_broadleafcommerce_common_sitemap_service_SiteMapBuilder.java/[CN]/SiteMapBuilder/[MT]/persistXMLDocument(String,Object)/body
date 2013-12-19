@@ -1,0 +1,27 @@
+{
+  try {
+    JAXBContext context=JAXBContext.newInstance(xmlObject.getClass());
+    Marshaller m=context.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
+    m.setProperty(Marshaller.JAXB_FRAGMENT,true);
+    File file=new File(fileWorkArea.getFilePathLocation() + fileName);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Persisting SiteMap document " + file.getAbsolutePath());
+    }
+    if (!file.exists()) {
+      file.createNewFile();
+    }
+    Writer writer=new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+    writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    m.marshal(xmlObject,writer);
+    writer.close();
+  }
+ catch (  IOException ioe) {
+    LOG.error("IOException occurred persisting XML Document",ioe);
+    throw new RuntimeException("Error persisting XML document when trying to build Sitemap",ioe);
+  }
+catch (  JAXBException je) {
+    LOG.error("JAXBException occurred persisting XML Document",je);
+    throw new RuntimeException("Error persisting XML document when trying to build Sitemap",je);
+  }
+}

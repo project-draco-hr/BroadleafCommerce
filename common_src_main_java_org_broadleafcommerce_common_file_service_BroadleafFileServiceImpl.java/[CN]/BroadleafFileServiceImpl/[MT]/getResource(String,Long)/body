@@ -1,0 +1,16 @@
+{
+  File returnFile=getLocalResource(name);
+  if (returnFile != null && returnFile.exists()) {
+    if (localTimeout != null) {
+      long lastModified=returnFile.lastModified();
+      long now=System.currentTimeMillis();
+      if ((now - lastModified) <= localTimeout.longValue()) {
+        return returnFile;
+      }
+    }
+ else {
+      return returnFile;
+    }
+  }
+  return getResource(name);
+}

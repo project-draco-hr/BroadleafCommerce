@@ -1,0 +1,19 @@
+{
+  int pageNum=0;
+  List<Product> products;
+  do {
+    products=productDao.readAllActiveProducts(pageNum++,pageSize);
+    for (    Product product : products) {
+      if (StringUtils.isEmpty(product.getUrl())) {
+        continue;
+      }
+      SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
+      siteMapUrl.setLoc(generateUri(siteMapBuilder,product));
+      siteMapUrl.setChangeFreqType(smgc.getSiteMapChangeFreq());
+      siteMapUrl.setPriorityType(smgc.getSiteMapPriority());
+      siteMapUrl.setLastModDate(generateDate(product));
+      siteMapBuilder.addUrl(siteMapUrl);
+    }
+  }
+ while (products.size() == pageSize);
+}

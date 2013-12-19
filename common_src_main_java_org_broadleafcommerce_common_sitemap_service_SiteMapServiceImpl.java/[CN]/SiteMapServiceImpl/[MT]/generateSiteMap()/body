@@ -1,0 +1,42 @@
+{
+  SiteMapGenerationResponse smgr=new SiteMapGenerationResponse();
+  SiteMapConfiguration smc=findActiveSiteMapConfiguration();
+  if (smc == null) {
+    if (LOG.isWarnEnabled()) {
+      LOG.warn("No SiteMap generated since no active configuration was found.");
+    }
+    smgr.setHasError(true);
+    smgr.setErrorCode("No SiteMap Configuration Found");
+    return smgr;
+  }
+  FileWorkArea fileWorkArea=broadleafFileService.initializeWorkArea();
+  SiteMapBuilder siteMapBuilder=new SiteMapBuilder(smc,fileWorkArea,baseUrlResolver.getSiteBaseUrl());
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("File work area initalized with path " + fileWorkArea.getFilePathLocation());
+  }
+  for (  SiteMapGeneratorConfiguration currentConfiguration : smc.getSiteMapGeneratorConfigurations()) {
+    if (currentConfiguration.isDisabled()) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Skipping disabled sitemap generator configuration" + currentConfiguration.getId());
+      }
+      continue;
+    }
+    SiteMapGenerator generator=selectSiteMapGenerator(currentConfiguration);
+    if (generator != null) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("SiteMapGenerator found, adding entries" + generator.getClass());
+      }
+      generator.addSiteMapEntries(currentConfiguration,siteMapBuilder);
+    }
+ else {
+      LOG.warn("No site map generator found to process generator configuration for " + currentConfiguration.getSiteMapGeneratorType());
+    }
+  }
+  siteMapBuilder.persistSiteMap();
+  if (gzipSiteMapFiles) {
+    gzipAndDeleteFiles(fileWorkArea,siteMapBuilder.getIndexedFileNames());
+  }
+  broadleafFileService.addOrUpdateResources(fileWorkArea,true);
+  broadleafFileService.closeWorkArea(fileWorkArea);
+  return smgr;
+}
