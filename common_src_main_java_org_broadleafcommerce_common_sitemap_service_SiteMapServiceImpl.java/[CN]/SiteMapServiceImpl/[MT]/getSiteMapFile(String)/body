@@ -1,0 +1,30 @@
+{
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Method getSiteMapFile() invoked for " + fileName);
+  }
+  File siteMapFile=broadleafFileService.getResource(fileName,getSiteMapTimeout());
+  if (siteMapFile.exists()) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Returning existing SiteMap");
+    }
+    return siteMapFile;
+  }
+ else {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Generating SiteMap");
+    }
+    generateSiteMap();
+    siteMapFile=broadleafFileService.getResource(fileName,getSiteMapTimeout());
+    if (siteMapFile.exists()) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Returning SiteMap file " + fileName);
+      }
+    }
+ else {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Sitemap file " + fileName + " not found after call to generate siteMap.xml");
+      }
+    }
+    return siteMapFile;
+  }
+}

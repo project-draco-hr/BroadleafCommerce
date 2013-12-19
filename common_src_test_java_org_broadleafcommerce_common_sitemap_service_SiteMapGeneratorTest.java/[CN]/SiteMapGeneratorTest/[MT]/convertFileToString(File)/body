@@ -1,0 +1,14 @@
+{
+  FileInputStream fin=new FileInputStream(file);
+  BufferedReader br=new BufferedReader(new InputStreamReader(fin));
+  StringBuilder sb=new StringBuilder();
+  String line;
+  while ((line=br.readLine()) != null) {
+    if (line.contains("</lastmod>")) {
+      continue;
+    }
+    line=line.replaceAll("\\s+","");
+    sb.append(line);
+  }
+  return sb.toString();
+}

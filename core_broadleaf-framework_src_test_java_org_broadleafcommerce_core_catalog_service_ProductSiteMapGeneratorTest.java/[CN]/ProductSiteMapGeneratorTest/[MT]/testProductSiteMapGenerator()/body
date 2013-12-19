@@ -1,0 +1,33 @@
+{
+  Product p1=new ProductImpl();
+  p1.setUrl("/hot-sauces/sudden_death_sauce");
+  Product p2=new ProductImpl();
+  p2.setUrl("hot-sauces/sweet_death_sauce");
+  Product p3=new ProductImpl();
+  p3.setUrl("/hot-sauces/hoppin_hot_sauce");
+  Product p4=new ProductImpl();
+  p4.setUrl("/hot-sauces/day_of_the_dead_chipotle_hot_sauce");
+  List<Product> products=new ArrayList<Product>();
+  products.add(p1);
+  products.add(p2);
+  products.add(p3);
+  products.add(p4);
+  ProductDao productDao=EasyMock.createMock(ProductDao.class);
+  EasyMock.expect(productDao.readAllActiveProducts(EasyMock.eq(0),EasyMock.eq(5))).andReturn(products);
+  EasyMock.replay(productDao);
+  ProductSiteMapGenerator psmg=new ProductSiteMapGenerator();
+  psmg.setProductDao(productDao);
+  psmg.setPageSize(5);
+  SiteMapGeneratorConfiguration smgc=new SiteMapGeneratorConfigurationImpl();
+  smgc.setDisabled(false);
+  smgc.setSiteMapGeneratorType(SiteMapGeneratorType.PRODUCT);
+  smgc.setSiteMapChangeFreq(SiteMapChangeFreqType.HOURLY);
+  smgc.setSiteMapPriority(SiteMapPriorityType.POINT5);
+  testGenerator(smgc,psmg);
+  File file1=fileService.getResource("/sitemap_index.xml");
+  File file2=fileService.getResource("/sitemap1.xml");
+  File file3=fileService.getResource("/sitemap2.xml");
+  compareFiles(file1,"src/test/resources/org/broadleafcommerce/sitemap/product/sitemap_index.xml");
+  compareFiles(file2,"src/test/resources/org/broadleafcommerce/sitemap/product/sitemap1.xml");
+  compareFiles(file3,"src/test/resources/org/broadleafcommerce/sitemap/product/sitemap2.xml");
+}

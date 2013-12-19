@@ -1,0 +1,17 @@
+{
+  String now=FormatUtil.formatDateUsingW3C(new Date());
+  persistIndexedURLSetWrapper(currentURLSetWrapper);
+  SiteMapIndexWrapper siteMapIndexWrapper=new SiteMapIndexWrapper();
+  for (  String fileName : indexedFileNames) {
+    SiteMapWrapper siteMapWrapper=new SiteMapWrapper();
+    String fileLoc=BroadleafFileUtils.buildFilePath(baseUrl,fileName);
+    siteMapWrapper.setLoc(fileLoc);
+    siteMapWrapper.setLastmod(now);
+    siteMapIndexWrapper.getSiteMapWrappers().add(siteMapWrapper);
+  }
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Persisting sitemap.xml file for indexed site map ");
+  }
+  indexedFileNames.add(siteMapConfig.getIndexedSiteMapFileName());
+  persistXMLDocument(siteMapConfig.getIndexedSiteMapFileName(),siteMapIndexWrapper);
+}

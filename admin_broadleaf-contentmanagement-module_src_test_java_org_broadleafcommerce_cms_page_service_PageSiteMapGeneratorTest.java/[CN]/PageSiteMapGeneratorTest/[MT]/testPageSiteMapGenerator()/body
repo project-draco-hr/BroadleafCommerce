@@ -1,0 +1,30 @@
+{
+  Page p1=new PageImpl();
+  p1.setFullUrl("/about_us");
+  Page p2=new PageImpl();
+  p2.setFullUrl("faq");
+  Page p3=new PageImpl();
+  p3.setFullUrl("/new-to-hot-sauce");
+  List<Page> pages=new ArrayList<Page>();
+  pages.add(p1);
+  pages.add(p2);
+  pages.add(p3);
+  PageDao pageDao=EasyMock.createMock(PageDao.class);
+  EasyMock.expect(pageDao.readOnlineAndIncludedPages(5,0,"fullUrl")).andReturn(pages);
+  EasyMock.replay(pageDao);
+  PageSiteMapGenerator psmg=new PageSiteMapGenerator();
+  psmg.setPageDao(pageDao);
+  psmg.setRowLimit(5);
+  SiteMapGeneratorConfiguration smgc=new SiteMapGeneratorConfigurationImpl();
+  smgc.setDisabled(false);
+  smgc.setSiteMapGeneratorType(SiteMapGeneratorType.PAGE);
+  smgc.setSiteMapChangeFreq(SiteMapChangeFreqType.HOURLY);
+  smgc.setSiteMapPriority(SiteMapPriorityType.POINT5);
+  testGenerator(smgc,psmg);
+  File file1=fileService.getResource("/sitemap_index.xml");
+  File file2=fileService.getResource("/sitemap1.xml");
+  File file3=fileService.getResource("/sitemap2.xml");
+  compareFiles(file1,"src/test/resources/org/broadleafcommerce/sitemap/page/sitemap_index.xml");
+  compareFiles(file2,"src/test/resources/org/broadleafcommerce/sitemap/page/sitemap1.xml");
+  compareFiles(file3,"src/test/resources/org/broadleafcommerce/sitemap/page/sitemap2.xml");
+}
