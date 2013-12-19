@@ -10,13 +10,13 @@
   Customer customer=order.getCustomer();
   if (customer.isAnonymous()) {
     GatewayCustomerDTO<PaymentResponseDTO> gatewayCustomer=responseDTO.getCustomer();
-    if (StringUtils.isEmpty(customer.getFirstName())) {
+    if (StringUtils.isEmpty(customer.getFirstName()) && gatewayCustomer != null) {
       customer.setFirstName(gatewayCustomer.getFirstName());
     }
-    if (StringUtils.isEmpty(customer.getLastName())) {
+    if (StringUtils.isEmpty(customer.getLastName()) && gatewayCustomer != null) {
       customer.setLastName(gatewayCustomer.getLastName());
     }
-    if (StringUtils.isEmpty(customer.getEmailAddress())) {
+    if (StringUtils.isEmpty(customer.getEmailAddress()) && gatewayCustomer != null) {
       customer.setEmailAddress(gatewayCustomer.getEmail());
     }
   }
@@ -31,17 +31,27 @@
   OrderPayment payment=orderPaymentService.create();
   payment.setType(responseDTO.getPaymentType());
   payment.setAmount(responseDTO.getAmount());
-  Address billingAddress=addressService.create();
-  billingAddress.setAddressLine1(responseDTO.getBillTo().getAddressLine1());
-  billingAddress.setAddressLine2(responseDTO.getBillTo().getAddressLine2());
-  billingAddress.setCity(responseDTO.getBillTo().getAddressCityLocality());
-  State state=stateService.findStateByAbbreviation(responseDTO.getBillTo().getAddressStateRegion());
-  billingAddress.setState(state);
-  Country country=countryService.findCountryByAbbreviation(responseDTO.getBillTo().getAddressCountryCode());
-  billingAddress.setCountry(country);
-  Phone billingPhone=phoneService.create();
-  billingPhone.setPhoneNumber(responseDTO.getBillTo().getAddressPhone());
-  billingAddress.setPhonePrimary(billingPhone);
+  Address billingAddress=null;
+  if (responseDTO.getBillTo() != null) {
+    billingAddress=addressService.create();
+    AddressDTO<PaymentResponseDTO> billToDTO=responseDTO.getBillTo();
+    billingAddress.setAddressLine1(billToDTO.getAddressLine1());
+    billingAddress.setAddressLine2(billToDTO.getAddressLine2());
+    billingAddress.setCity(billToDTO.getAddressCityLocality());
+    State state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
+    if (state == null) {
+      Log.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
+    }
+    billingAddress.setState(state);
+    Country country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
+    if (country == null) {
+      Log.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
+    }
+    billingAddress.setCountry(country);
+    Phone billingPhone=phoneService.create();
+    billingPhone.setPhoneNumber(billToDTO.getAddressPhone());
+    billingAddress.setPhonePrimary(billingPhone);
+  }
   PaymentTransaction transaction=orderPaymentService.createTransaction();
   transaction.setAmount(responseDTO.getAmount());
   transaction.setRawResponse(responseDTO.getRawResponse());
@@ -50,8 +60,10 @@
   for (  Entry<String,Serializable> entry : responseDTO.getResponseMap().entrySet()) {
     transaction.getAdditionalFields().put(entry.getKey(),entry.getValue());
   }
-  payment.addTransaction(transaction);
+  payment.setOrder(order);
   payment=orderPaymentService.save(payment);
+  transaction.setOrderPayment(payment);
+  payment.addTransaction(transaction);
   orderService.addPaymentToOrder(order,payment,null);
   return payment.getId();
 }
