@@ -1,0 +1,15 @@
+{
+  PaymentResponseDTO responseDTO=new PaymentResponseDTO(PaymentType.THIRD_PARTY_ACCOUNT).rawResponse(webResponsePrintService.printRequest(request));
+  Map<String,String[]> paramMap=request.getParameterMap();
+  Money amount=Money.ZERO;
+  if (paramMap.containsKey(NullPaymentGatewayConstants.TRANSACTION_AMT)) {
+    String amt=paramMap.get(NullPaymentGatewayConstants.TRANSACTION_AMT)[0];
+    amount=new Money(amt);
+  }
+  PaymentTransactionType type=PaymentTransactionType.AUTHORIZE_AND_CAPTURE;
+  if (!configurationService.isPerformAuthorizeAndCapture()) {
+    type=PaymentTransactionType.AUTHORIZE;
+  }
+  responseDTO.successful(true).completeCheckoutOnCallback(Boolean.parseBoolean(paramMap.get(NullPaymentGatewayConstants.COMPLETE_CHECKOUT_ON_CALLBACK)[0])).amount(amount).paymentTransactionType(type).orderId(paramMap.get(NullPaymentGatewayConstants.ORDER_ID)[0]).responseMap(NullPaymentGatewayConstants.RESULT_MESSAGE,paramMap.get(NullPaymentGatewayConstants.RESULT_MESSAGE)[0]);
+  return responseDTO;
+}

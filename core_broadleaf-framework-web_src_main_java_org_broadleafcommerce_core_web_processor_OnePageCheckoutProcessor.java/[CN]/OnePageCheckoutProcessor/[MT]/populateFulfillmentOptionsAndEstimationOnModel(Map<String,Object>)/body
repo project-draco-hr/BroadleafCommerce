@@ -1,7 +1,7 @@
 {
   List<FulfillmentOption> fulfillmentOptions=fulfillmentOptionService.readAllFulfillmentOptions();
   Order cart=CartState.getCart();
-  if (!(cart instanceof NullOrderImpl) && cart.getFulfillmentGroups().size() > 0 && hasValidShippingAddresses(cart)) {
+  if (!(cart instanceof NullOrderImpl) && cart.getFulfillmentGroups().size() > 0 && hasPopulatedShippingAddress(cart)) {
     Set<FulfillmentOption> options=new HashSet<FulfillmentOption>();
     options.addAll(fulfillmentOptions);
     FulfillmentEstimationResponse estimateResponse=null;
@@ -10,7 +10,7 @@
     }
  catch (    FulfillmentPriceException e) {
     }
-    model.addAttribute("estimateResponse",estimateResponse);
+    localVars.put("estimateResponse",estimateResponse);
   }
-  model.addAttribute("fulfillmentOptions",fulfillmentOptions);
+  localVars.put("fulfillmentOptions",fulfillmentOptions);
 }

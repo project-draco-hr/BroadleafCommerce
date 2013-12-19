@@ -1,0 +1,74 @@
+{
+  boolean orderInfoPopulated=hasPopulatedOrderInfo(CartState.getCart());
+  boolean billingPopulated=hasPopulatedBillingAddress(CartState.getCart());
+  boolean shippingPopulated=hasPopulatedShippingAddress(CartState.getCart());
+  localVars.put("orderInfoPopulated",orderInfoPopulated);
+  localVars.put("billingPopulated",billingPopulated);
+  localVars.put("shippingPopulated",shippingPopulated);
+  boolean showOrderInfoSection=true;
+  boolean showBillingInfoSection=true;
+  boolean showShippingInfoSection=true;
+  boolean showPaymentInfoSection=true;
+  boolean showAllPaymentMethods=true;
+  int numShippableFulfillmentGroups=calculateNumShippableFulfillmentGroups();
+  if (numShippableFulfillmentGroups == 0) {
+    showShippingInfoSection=false;
+  }
+  boolean orderContainsThirdPartyPayment=false;
+  if (CartState.getCart().getPayments() != null) {
+    for (    OrderPayment payment : CartState.getCart().getPayments()) {
+      if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
+        orderContainsThirdPartyPayment=true;
+      }
+    }
+  }
+  if (orderContainsThirdPartyPayment) {
+    showBillingInfoSection=false;
+    showAllPaymentMethods=false;
+  }
+  localVars.put("showOrderInfoSection",showOrderInfoSection);
+  localVars.put("showBillingInfoSection",showBillingInfoSection);
+  localVars.put("showShippingInfoSection",showShippingInfoSection);
+  localVars.put("showPaymentInfoSection",showPaymentInfoSection);
+  localVars.put("showAllPaymentMethods",showAllPaymentMethods);
+  ViewState orderInfoViewState=ViewState.SHOW_FORM_VIEW;
+  ViewState billingInfoViewState=ViewState.SHOW_HELP_VIEW;
+  ViewState shippingInfoViewState=ViewState.SHOW_HELP_VIEW;
+  ViewState paymentInfoViewState=ViewState.SHOW_HELP_VIEW;
+  if (orderInfoPopulated && billingPopulated && shippingPopulated) {
+    paymentInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+ else   if (orderInfoPopulated && billingPopulated) {
+    shippingInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+ else   if (orderInfoPopulated) {
+    billingInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+  if (orderInfoPopulated) {
+    orderInfoViewState=ViewState.SHOW_SAVED_VIEW;
+  }
+  if (billingPopulated) {
+    billingInfoViewState=ViewState.SHOW_SAVED_VIEW;
+  }
+  if (shippingPopulated) {
+    shippingInfoViewState=ViewState.SHOW_SAVED_VIEW;
+  }
+  BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
+  HttpServletRequest request=blcContext.getRequest();
+  String editOrderInfo=request.getParameter("edit-order-info");
+  if (BooleanUtils.toBoolean(editOrderInfo)) {
+    orderInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+  String editBilling=request.getParameter("edit-billing");
+  if (BooleanUtils.toBoolean(editBilling)) {
+    billingInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+  String editShipping=request.getParameter("edit-shipping");
+  if (BooleanUtils.toBoolean(editShipping)) {
+    shippingInfoViewState=ViewState.SHOW_FORM_VIEW;
+  }
+  localVars.put("orderInfoViewState",orderInfoViewState);
+  localVars.put("billingInfoViewState",billingInfoViewState);
+  localVars.put("shippingInfoViewState",shippingInfoViewState);
+  localVars.put("paymentInfoViewState",paymentInfoViewState);
+}

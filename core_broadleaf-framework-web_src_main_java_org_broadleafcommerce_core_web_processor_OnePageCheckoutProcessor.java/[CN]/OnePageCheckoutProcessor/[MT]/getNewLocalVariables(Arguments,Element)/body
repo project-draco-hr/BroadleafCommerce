@@ -1,0 +1,16 @@
+{
+  OrderInfoForm orderInfoForm=(OrderInfoForm)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("orderInfoForm"));
+  ShippingInfoForm shippingInfoForm=(ShippingInfoForm)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("shippingInfoForm"));
+  BillingInfoForm billingInfoForm=(BillingInfoForm)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("billingInfoForm"));
+  prepopulateCheckoutForms(CartState.getCart(),orderInfoForm,shippingInfoForm,billingInfoForm);
+  Map<String,Object> localVars=new HashMap<String,Object>();
+  int numShippableFulfillmentGroups=calculateNumShippableFulfillmentGroups();
+  localVars.put("numShippableFulfillmentGroups",numShippableFulfillmentGroups);
+  populateFulfillmentOptionsAndEstimationOnModel(localVars);
+  populateSectionViewStates(localVars);
+  localVars.put("states",stateService.findStates());
+  localVars.put("countries",countryService.findCountries());
+  localVars.put("expirationMonths",populateExpirationMonths());
+  localVars.put("expirationYears",populateExpirationYears());
+  return localVars;
+}

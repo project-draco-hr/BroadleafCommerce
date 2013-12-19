@@ -1,5 +1,8 @@
 {
   Order cart=CartState.getCart();
+  if (shippingForm.isUseBillingAddress()) {
+    copyBillingAddressToShippingAddress(cart,shippingForm);
+  }
   shippingInfoFormValidator.validate(shippingForm,result);
   if (result.hasErrors()) {
     return getCheckoutView();
