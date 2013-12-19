@@ -1,7 +1,9 @@
 {
   String pageTitle=element.getAttributeValue("pageTitle");
   try {
-    pageTitle=(String)StandardExpressionProcessor.processExpression(arguments,pageTitle);
+    final IStandardExpressionParser expressionParser=StandardExpressions.getExpressionParser(arguments.getConfiguration());
+    Expression expression=(Expression)expressionParser.parseExpression(arguments.getConfiguration(),arguments,pageTitle);
+    pageTitle=(String)expression.execute(arguments.getConfiguration(),arguments);
   }
  catch (  TemplateProcessingException e) {
   }
