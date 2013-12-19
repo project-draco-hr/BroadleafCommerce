@@ -11,6 +11,9 @@
     }
     try {
       if (removeResourcesFromWorkArea) {
+        if (destFile.exists()) {
+          FileUtils.deleteQuietly(destFile);
+        }
         FileUtils.moveFile(srcFile,destFile);
       }
  else {
