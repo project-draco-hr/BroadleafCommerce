@@ -1,8 +1,15 @@
 {
   CheckoutSeed seed=null;
   try {
-    order=orderService.save(order,false);
     seed=new CheckoutSeed(order,new HashMap<String,Object>());
+    Object lockObject=putLock(order.getId());
+    if (lockObject != null) {
+      throw new CheckoutException("This order is already in the process of being submitted, unable to checkout order -- id: " + order.getId(),seed);
+    }
+    if (hasOrderBeenCompleted(order)) {
+      throw new CheckoutException("This order has already been submitted, unable to checkout order -- id: " + order.getId(),seed);
+    }
+    order=orderService.save(order,false);
     ProcessContext<CheckoutSeed> context=(ProcessContext<CheckoutSeed>)checkoutWorkflow.doActivities(seed);
     order=orderService.save(seed.getOrder(),false);
     order.getOrderMessages().addAll(((ActivityMessages)context).getActivityMessages());
@@ -17,5 +24,8 @@ catch (  WorkflowException e) {
   }
 catch (  RequiredAttributeNotProvidedException e) {
     throw new CheckoutException("Unable to checkout order -- id: " + order.getId(),e.getCause(),seed);
+  }
+ finally {
+    removeLock(order.getId());
   }
 }
