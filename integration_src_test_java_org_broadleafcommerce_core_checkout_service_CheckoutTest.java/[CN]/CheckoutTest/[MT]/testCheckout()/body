@@ -6,6 +6,7 @@
   FulfillmentGroup group=buildFulfillmentGroup(order,address);
   addSampleItemToOrder(order,group);
   order.setTotalShipping(new Money(0D));
+  addPaymentToOrder(order,address);
   orderService.save(order,true);
   CheckoutResponse response=checkoutService.performCheckout(order);
   Referenced referenced=null;

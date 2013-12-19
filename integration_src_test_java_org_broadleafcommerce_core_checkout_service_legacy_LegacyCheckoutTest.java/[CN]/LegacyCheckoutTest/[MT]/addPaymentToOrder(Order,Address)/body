@@ -5,6 +5,9 @@
   payment.setReferenceNumber("1234");
   payment.setType(PaymentType.CREDIT_CARD);
   payment.setOrder(order);
+  PaymentTransaction tx=new PaymentTransactionImpl();
+  tx.setAmount(payment.getAmount());
+  tx.setType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
   CreditCardPayment cc=new CreditCardPayment(){
     private static final long serialVersionUID=1L;
     private String referenceNumber="1234";
@@ -52,7 +55,5 @@
   }
 ;
   order.getPayments().add(payment);
-  Map<OrderPayment,Referenced> map=new HashMap<OrderPayment,Referenced>();
-  map.put(payment,cc);
-  return map;
+  return payment;
 }

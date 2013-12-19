@@ -6,9 +6,9 @@
   FulfillmentGroup group=buildFulfillmentGroup(order,address);
   addSampleItemToOrder(order,group);
   order.setTotalShipping(new Money(0D));
-  Map<OrderPayment,Referenced> map=addPaymentToOrder(order,address);
+  addPaymentToOrder(order,address);
   orderService.save(order,true);
-  CheckoutResponse response=checkoutService.performCheckout(order,map);
+  CheckoutResponse response=checkoutService.performCheckout(order);
   Referenced referenced=null;
   try {
     referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentType.CREDIT_CARD);
