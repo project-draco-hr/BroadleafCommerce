@@ -9,17 +9,5 @@
   addPaymentToOrder(order,address);
   orderService.save(order,true);
   CheckoutResponse response=checkoutService.performCheckout(order);
-  Referenced referenced=null;
-  try {
-    referenced=securePaymentInfoService.findSecurePaymentInfo("abc123",PaymentType.CREDIT_CARD);
-  }
- catch (  Exception e) {
-  }
-  try {
-    referenced=securePaymentInfoService.findSecurePaymentInfo("1234",PaymentType.CREDIT_CARD);
-  }
- catch (  Exception e) {
-  }
-  assert(referenced == null);
   assert(order.getTotal().greaterThan(order.getSubTotal()));
 }

@@ -8,6 +8,8 @@
   PaymentTransaction tx=new PaymentTransactionImpl();
   tx.setAmount(payment.getAmount());
   tx.setType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
+  tx.setOrderPayment(payment);
+  payment.getTransactions().add(tx);
   CreditCardPayment cc=new CreditCardPayment(){
     private static final long serialVersionUID=1L;
     private String referenceNumber="1234";
