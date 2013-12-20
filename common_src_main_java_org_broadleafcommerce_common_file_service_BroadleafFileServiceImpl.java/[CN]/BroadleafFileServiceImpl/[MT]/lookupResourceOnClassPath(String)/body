@@ -1,0 +1,15 @@
+{
+  if (fileServiceClasspathDirectory != null && !"".equals(fileServiceClasspathDirectory)) {
+    try {
+      String resourceName=BroadleafFileUtils.buildFilePath(fileServiceClasspathDirectory,name);
+      ClassPathResource resource=new ClassPathResource(resourceName);
+      if (resource.exists()) {
+        return resource;
+      }
+    }
+ catch (    Exception e) {
+      LOG.error("Error getting resource from classpath",e);
+    }
+  }
+  return null;
+}

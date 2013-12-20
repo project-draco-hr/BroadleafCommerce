@@ -1,0 +1,18 @@
+{
+  sortQualifierItemDetails(priceDetails,itemOffer.getOffer().getApplyDiscountToSalePrice());
+  int qualifierQtyNeeded=itemCriteria.getQuantity();
+  for (  PromotableOrderItemPriceDetail detail : priceDetails) {
+    if (qualifierQtyNeeded > 0) {
+      int itemQtyAvailableToBeUsedAsQualifier=detail.getQuantityAvailableToBeUsedAsQualifier(itemOffer);
+      if (itemQtyAvailableToBeUsedAsQualifier > 0) {
+        int qtyToMarkAsQualifier=Math.min(qualifierQtyNeeded,itemQtyAvailableToBeUsedAsQualifier);
+        qualifierQtyNeeded-=qtyToMarkAsQualifier;
+        detail.addPromotionQualifier(itemOffer,itemCriteria,qtyToMarkAsQualifier);
+      }
+    }
+    if (qualifierQtyNeeded == 0) {
+      break;
+    }
+  }
+  return qualifierQtyNeeded;
+}

@@ -2,6 +2,14 @@
   String resultVar=element.getAttributeValue("resultVar");
   String parentCategory=element.getAttributeValue("parentCategory");
   String unparsedMaxResults=element.getAttributeValue("maxResults");
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().findAllPossibleChildCategories(parentCategory,unparsedMaxResults,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      addToModel(arguments,resultVar,holder.getResult());
+      return;
+    }
+  }
   List<Category> categories=catalogService.findCategoriesByName(parentCategory);
   if (categories != null && categories.size() > 0) {
     List<CategoryXref> subcategories=categories.get(0).getChildCategoryXrefs();

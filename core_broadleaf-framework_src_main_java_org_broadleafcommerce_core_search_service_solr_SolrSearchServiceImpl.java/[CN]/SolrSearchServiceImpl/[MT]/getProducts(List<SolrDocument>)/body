@@ -1,0 +1,16 @@
+{
+  final List<Long> productIds=new ArrayList<Long>();
+  for (  SolrDocument doc : responseDocuments) {
+    productIds.add((Long)doc.getFieldValue(shs.getProductIdFieldName()));
+  }
+  List<Product> products=productDao.readProductsByIds(productIds);
+  if (products != null) {
+    Collections.sort(products,new Comparator<Product>(){
+      public int compare(      Product o1,      Product o2){
+        return new Integer(productIds.indexOf(o1.getId())).compareTo(productIds.indexOf(o2.getId()));
+      }
+    }
+);
+  }
+  return products;
+}

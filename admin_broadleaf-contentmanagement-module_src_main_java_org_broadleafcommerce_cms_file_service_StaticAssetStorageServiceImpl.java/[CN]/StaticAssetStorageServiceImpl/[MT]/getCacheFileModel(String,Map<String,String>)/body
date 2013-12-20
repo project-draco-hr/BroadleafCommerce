@@ -5,53 +5,36 @@
   }
   String mimeType=staticAsset.getMimeType();
   Map<String,String> convertedParameters=namedOperationManager.manageNamedParameters(parameterMap);
-  String returnFilePath=null;
-  if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType()) && convertedParameters.isEmpty()) {
-    InputStream classPathInputStream=getResourceFromClasspath(staticAsset);
-    if (classPathInputStream != null) {
-      String cacheName=constructCacheFileName(staticAsset,convertedParameters,true);
-      File cacheFile=new File(cacheName);
-      if (!cacheFile.exists()) {
-        createCacheFile(classPathInputStream,cacheFile);
-      }
-      returnFilePath=cacheFile.getAbsolutePath();
+  String cachedFileName=constructCacheFileName(staticAsset,convertedParameters);
+  File cacheFile=getFileFromLocalRepository(cachedFileName);
+  if (cacheFile.exists()) {
+    return buildModel(cacheFile.getAbsolutePath(),mimeType);
+  }
+  String baseCachedFileName=constructCacheFileName(staticAsset,null);
+  File baseLocalFile=getFileFromLocalRepository(baseCachedFileName);
+  if (!baseLocalFile.exists()) {
+    if (broadleafFileService.checkForResourceOnClassPath(staticAsset.getFullUrl())) {
+      cacheFile=broadleafFileService.getSharedLocalResource(cachedFileName);
+      baseLocalFile=broadleafFileService.getSharedLocalResource(baseCachedFileName);
+      createLocalFileFromClassPathResource(staticAsset,baseLocalFile);
     }
  else {
-      returnFilePath=generateStorageFileName(staticAsset.getFullUrl(),false);
+      baseLocalFile=lookupAssetAndCreateLocalFile(staticAsset,baseLocalFile);
     }
   }
- else {
-    String sharedCacheName=constructCacheFileName(staticAsset,convertedParameters,true);
-    File cacheFile=new File(sharedCacheName);
-    if (!cacheFile.exists()) {
-      String cacheName=constructCacheFileName(staticAsset,convertedParameters,false);
-      cacheFile=new File(cacheName);
-    }
-    if (!cacheFile.exists()) {
-      InputStream original=findInputStreamForStaticAsset(staticAsset);
-      boolean useSharedFile=shouldUseSharedFile(original);
-      if (!convertedParameters.isEmpty()) {
-        Operation[] operations=artifactService.buildOperations(convertedParameters,original,staticAsset.getMimeType());
-        InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
-        createCacheFile(converted,cacheFile);
-        if ("image/gif".equals(mimeType)) {
-          mimeType="image/png";
-        }
-      }
- else {
-        if (useSharedFile) {
-          cacheFile=new File(sharedCacheName);
-          createCacheFile(original,cacheFile);
-        }
- else {
-          createCacheFile(original,cacheFile);
-        }
-      }
-    }
-    returnFilePath=cacheFile.getAbsolutePath();
+  if (convertedParameters.isEmpty()) {
+    return buildModel(baseLocalFile.getAbsolutePath(),mimeType);
   }
-  Map<String,String> model=new HashMap<String,String>(2);
-  model.put("cacheFilePath",returnFilePath);
-  model.put("mimeType",mimeType);
-  return model;
+ else {
+    FileInputStream assetStream=new FileInputStream(baseLocalFile);
+    BufferedInputStream original=new BufferedInputStream(assetStream);
+    original.mark(0);
+    Operation[] operations=artifactService.buildOperations(convertedParameters,original,staticAsset.getMimeType());
+    InputStream converted=artifactService.convert(original,operations,staticAsset.getMimeType());
+    createLocalFileFromInputStream(converted,cacheFile);
+    if ("image/gif".equals(mimeType)) {
+      mimeType="image/png";
+    }
+    return buildModel(cacheFile.getAbsolutePath(),mimeType);
+  }
 }

@@ -16,21 +16,16 @@
     if (unmatchedDetailsIterator.hasNext()) {
       OrderItemPriceDetail existingDetail=unmatchedDetailsIterator.next();
       existingDetail.setUseSalePrice(true);
-      updatePriceDetail(existingDetail,priceDetail);
+      offerServiceUtilities.updatePriceDetail(existingDetail,priceDetail);
       unmatchedDetailsIterator.remove();
     }
  else {
       OrderItemPriceDetail newPriceDetail=orderItemDao.createOrderItemPriceDetail();
       newPriceDetail.setOrderItem(orderItem);
-      updatePriceDetail(newPriceDetail,priceDetail);
+      offerServiceUtilities.updatePriceDetail(newPriceDetail,priceDetail);
       orderItem.getOrderItemPriceDetails().add(newPriceDetail);
     }
   }
   Iterator<OrderItemPriceDetail> pdIterator=orderItem.getOrderItemPriceDetails().iterator();
-  while (pdIterator.hasNext()) {
-    OrderItemPriceDetail currentDetail=pdIterator.next();
-    if (unmatchedDetailsMap.containsKey(currentDetail.getId())) {
-      pdIterator.remove();
-    }
-  }
+  offerServiceUtilities.removeUnmatchedPriceDetails(unmatchedDetailsMap,pdIterator);
 }

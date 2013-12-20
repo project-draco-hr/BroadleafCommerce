@@ -1,0 +1,23 @@
+{
+  for (  SiteMapUrlEntry urlEntry : ((CustomUrlSiteMapGeneratorConfiguration)smgc).getCustomURLEntries()) {
+    if (StringUtils.isEmpty(urlEntry.getLocation())) {
+      continue;
+    }
+    SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
+    siteMapUrl.setLoc(generateUri(siteMapBuilder,urlEntry));
+    if (urlEntry.getSiteMapChangeFreq() != null) {
+      siteMapUrl.setChangeFreqType(urlEntry.getSiteMapChangeFreq());
+    }
+ else {
+      siteMapUrl.setChangeFreqType(smgc.getSiteMapChangeFreq());
+    }
+    if (urlEntry.getSiteMapPriority() != null) {
+      siteMapUrl.setPriorityType(urlEntry.getSiteMapPriority());
+    }
+ else {
+      siteMapUrl.setPriorityType(smgc.getSiteMapPriority());
+    }
+    siteMapUrl.setLastModDate(generateDate(urlEntry));
+    siteMapBuilder.addUrl(siteMapUrl);
+  }
+}

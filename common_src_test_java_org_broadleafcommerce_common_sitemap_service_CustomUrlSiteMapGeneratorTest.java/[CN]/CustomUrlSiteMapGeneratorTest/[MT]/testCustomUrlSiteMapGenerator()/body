@@ -1,0 +1,32 @@
+{
+  SiteMapUrlEntry urlEntry1=new SiteMapUrlEntryImpl();
+  urlEntry1.setLastMod(new Date());
+  urlEntry1.setLocation("http://www.heatclinic.com/1");
+  urlEntry1.setSiteMapChangeFreq(SiteMapChangeFreqType.HOURLY);
+  urlEntry1.setSiteMapPriority(SiteMapPriorityType.POINT5);
+  SiteMapUrlEntry urlEntry2=new SiteMapUrlEntryImpl();
+  urlEntry2.setLastMod(new Date());
+  urlEntry2.setLocation("2");
+  urlEntry2.setSiteMapChangeFreq(SiteMapChangeFreqType.HOURLY);
+  urlEntry2.setSiteMapPriority(SiteMapPriorityType.POINT5);
+  SiteMapUrlEntry urlEntry3=new SiteMapUrlEntryImpl();
+  urlEntry3.setLastMod(new Date());
+  urlEntry3.setLocation("/3");
+  urlEntry3.setSiteMapChangeFreq(SiteMapChangeFreqType.HOURLY);
+  urlEntry3.setSiteMapPriority(SiteMapPriorityType.POINT5);
+  List<SiteMapUrlEntry> urlEntries=new ArrayList<SiteMapUrlEntry>();
+  urlEntries.add(urlEntry1);
+  urlEntries.add(urlEntry2);
+  urlEntries.add(urlEntry3);
+  CustomUrlSiteMapGeneratorConfiguration smgc=new CustomUrlSiteMapGeneratorConfigurationImpl();
+  smgc.setDisabled(false);
+  smgc.setSiteMapGeneratorType(SiteMapGeneratorType.CUSTOM);
+  smgc.setCustomURLEntries(urlEntries);
+  testGenerator(smgc,new CustomUrlSiteMapGenerator());
+  File file1=fileService.getResource("/sitemap_index.xml");
+  File file2=fileService.getResource("/sitemap1.xml");
+  File file3=fileService.getResource("/sitemap2.xml");
+  compareFiles(file1,"src/test/resources/org/broadleafcommerce/sitemap/custom/sitemap_index.xml");
+  compareFiles(file2,"src/test/resources/org/broadleafcommerce/sitemap/custom/sitemap1.xml");
+  compareFiles(file3,"src/test/resources/org/broadleafcommerce/sitemap/custom/sitemap2.xml");
+}

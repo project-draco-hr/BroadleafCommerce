@@ -27,7 +27,9 @@ synchronized (expressionCache) {
       return (Boolean)test;
     }
  catch (    Exception e) {
-      LOG.info("Unable to parse and/or execute the mvel expression (" + rule + "). Reporting to the logs and returning false for the match expression",e);
+      if (!TEST_MODE) {
+        LOG.info("Unable to parse and/or execute the mvel expression (" + rule + "). Reporting to the logs and returning false for the match expression",e);
+      }
       return false;
     }
   }

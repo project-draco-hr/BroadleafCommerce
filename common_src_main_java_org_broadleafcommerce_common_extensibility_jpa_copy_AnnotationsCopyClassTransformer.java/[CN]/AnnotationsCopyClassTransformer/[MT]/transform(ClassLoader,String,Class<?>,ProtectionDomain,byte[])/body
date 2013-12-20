@@ -4,9 +4,10 @@
     String xformKey=convertedClassName;
     String[] xformVals=xformTemplates.get(xformKey).split(",");
     logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying annotations into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
+    CtClass clazz=null;
     try {
       ClassPool classPool=ClassPool.getDefault();
-      CtClass clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+      clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
       clazz.defrost();
       for (      String xformVal : xformVals) {
         String trimmed=xformVal.trim();
@@ -42,6 +43,11 @@
     }
  catch (    Exception e) {
       throw new RuntimeException("Unable to transform class",e);
+    }
+ finally {
+      if (clazz != null) {
+        clazz.detach();
+      }
     }
   }
   return null;

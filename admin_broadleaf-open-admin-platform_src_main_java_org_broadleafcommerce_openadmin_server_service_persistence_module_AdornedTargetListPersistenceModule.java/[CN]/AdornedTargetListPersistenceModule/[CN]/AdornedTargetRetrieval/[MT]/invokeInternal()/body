@@ -24,6 +24,11 @@
     }
   }
   cto.setCriteriaMap(convertedCto);
+  for (  Entry<String,FilterAndSortCriteria> entry : convertedCto.entrySet()) {
+    if (convertedMergedPropertiesTarget.containsKey(entry.getKey())) {
+      convertedMergedPropertiesTarget.get(entry.getKey()).setInheritedFromType(entities[0].getName());
+    }
+  }
   List<FilterMapping> filterMappings2=getBasicFilterMappings(persistencePerspective,cto,convertedMergedPropertiesTarget,ceilingEntityFullyQualifiedClassname);
   for (  FilterMapping fm : filterMappings2) {
     fm.setInheritedFromClass(entities[0]);

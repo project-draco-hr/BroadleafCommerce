@@ -1,4 +1,11 @@
 {
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().findProductByURI(uri,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      return (List<Product>)holder.getResult();
+    }
+  }
   String urlKey=uri.substring(uri.lastIndexOf('/'));
   Query query;
   query=em.createNamedQuery("BC_READ_PRODUCTS_BY_OUTGOING_URL");

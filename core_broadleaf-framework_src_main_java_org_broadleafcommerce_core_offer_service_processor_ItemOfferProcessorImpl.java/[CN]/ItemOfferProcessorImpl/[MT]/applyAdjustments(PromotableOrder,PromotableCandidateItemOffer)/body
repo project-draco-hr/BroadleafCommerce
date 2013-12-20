@@ -1,16 +1,4 @@
 {
   List<PromotableOrderItemPriceDetail> itemPriceDetails=order.getAllPromotableOrderItemPriceDetails();
-  for (  PromotableOrderItemPriceDetail itemPriceDetail : itemPriceDetails) {
-    for (    PromotionDiscount discount : itemPriceDetail.getPromotionDiscounts()) {
-      if (discount.getPromotion().equals(itemOffer.getOffer())) {
-        if (itemOffer.getOffer().isTotalitarianOffer() || !itemOffer.getOffer().isCombinableWithOtherOffers()) {
-          if (adjustmentIsNotGoodEnoughToBeApplied(itemOffer,itemPriceDetail)) {
-            break;
-          }
-        }
-        applyOrderItemAdjustment(itemOffer,itemPriceDetail);
-        break;
-      }
-    }
-  }
+  offerServiceUtilities.applyAdjustmentsForItemPriceDetails(itemOffer,itemPriceDetails);
 }

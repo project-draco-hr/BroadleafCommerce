@@ -1,0 +1,28 @@
+{
+  int rowOffset=0;
+  List<Page> pages;
+  String previousUrl="";
+  do {
+    pages=pageDao.readOnlineAndIncludedPages(rowLimit,rowOffset,"fullUrl");
+    rowOffset+=pages.size();
+    for (    Page page : pages) {
+      if (page.getExcludeFromSiteMap()) {
+        continue;
+      }
+      String currentURL=page.getFullUrl();
+      if (previousUrl.equals(currentURL)) {
+        continue;
+      }
+ else {
+        previousUrl=currentURL;
+      }
+      SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
+      siteMapUrl.setLoc(generateUri(siteMapBuilder,page));
+      siteMapUrl.setChangeFreqType(smgc.getSiteMapChangeFreq());
+      siteMapUrl.setPriorityType(smgc.getSiteMapPriority());
+      siteMapUrl.setLastModDate(generateDate(page));
+      siteMapBuilder.addUrl(siteMapUrl);
+    }
+  }
+ while (pages.size() == rowLimit);
+}

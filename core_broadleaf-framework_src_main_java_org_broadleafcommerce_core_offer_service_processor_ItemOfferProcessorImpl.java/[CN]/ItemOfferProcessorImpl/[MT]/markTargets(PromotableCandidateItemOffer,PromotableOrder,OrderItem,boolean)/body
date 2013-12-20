@@ -3,39 +3,13 @@
   if (itemOffer.getCandidateTargetsMap().keySet().isEmpty()) {
     return false;
   }
-  OrderItem relatedQualifierRoot=null;
-  if (relatedQualifier != null) {
-    relatedQualifierRoot=relatedQualifier;
-    while (relatedQualifierRoot.getParentOrderItem() != null) {
-      relatedQualifierRoot=relatedQualifierRoot.getParentOrderItem();
-    }
-  }
+  OrderItem relatedQualifierRoot=offerServiceUtilities.findRelatedQualifierRoot(relatedQualifier);
   for (  OfferItemCriteria itemCriteria : itemOffer.getCandidateTargetsMap().keySet()) {
     List<PromotableOrderItem> promotableItems=itemOffer.getCandidateTargetsMap().get(itemCriteria);
     List<PromotableOrderItemPriceDetail> priceDetails=buildPriceDetailListFromOrderItems(promotableItems);
-    Collections.sort(priceDetails,getTargetItemComparator(itemOffer.getOffer().getApplyDiscountToSalePrice()));
+    offerServiceUtilities.sortTargetItemDetails(priceDetails,itemOffer.getOffer().getApplyDiscountToSalePrice());
     int targetQtyNeeded=itemCriteria.getQuantity();
-    for (    PromotableOrderItemPriceDetail priceDetail : priceDetails) {
-      if (relatedQualifier != null) {
-        OrderItem thisItem=priceDetail.getPromotableOrderItem().getOrderItem();
-        if (!relatedQualifierRoot.isAParentOf(thisItem) && !thisItem.isAParentOf(relatedQualifierRoot) && !thisItem.equals(relatedQualifierRoot)) {
-          continue;
-        }
-      }
-      int itemQtyAvailableToBeUsedAsTarget=priceDetail.getQuantityAvailableToBeUsedAsTarget(itemOffer);
-      if (itemQtyAvailableToBeUsedAsTarget > 0) {
-        if (promotion.isUnlimitedUsePerOrder() || (itemOffer.getUses() < promotion.getMaxUsesPerOrder())) {
-          int qtyToMarkAsTarget=Math.min(targetQtyNeeded,itemQtyAvailableToBeUsedAsTarget);
-          targetQtyNeeded-=qtyToMarkAsTarget;
-          if (!checkOnly) {
-            priceDetail.addPromotionDiscount(itemOffer,itemCriteria,qtyToMarkAsTarget);
-          }
-        }
-      }
-      if (targetQtyNeeded == 0) {
-        break;
-      }
-    }
+    targetQtyNeeded=offerServiceUtilities.markTargetsForCriteria(itemOffer,relatedQualifier,checkOnly,promotion,relatedQualifierRoot,itemCriteria,priceDetails,targetQtyNeeded);
     if (targetQtyNeeded != 0) {
       return false;
     }

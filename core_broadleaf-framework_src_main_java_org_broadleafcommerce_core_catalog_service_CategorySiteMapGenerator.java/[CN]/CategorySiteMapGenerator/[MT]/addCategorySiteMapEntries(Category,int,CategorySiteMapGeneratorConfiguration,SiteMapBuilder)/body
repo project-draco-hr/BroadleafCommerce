@@ -1,0 +1,26 @@
+{
+  int rowOffset=0;
+  List<Category> categories;
+  do {
+    categories=categoryDao.readActiveSubCategoriesByCategory(parentCategory,rowLimit,rowOffset);
+    rowOffset+=categories.size();
+    for (    Category category : categories) {
+      if (StringUtils.isEmpty(category.getUrl())) {
+        continue;
+      }
+      if (currentDepth < categorySMGC.getEndingDepth()) {
+        addCategorySiteMapEntries(category,currentDepth + 1,categorySMGC,siteMapBuilder);
+      }
+      if (currentDepth < categorySMGC.getStartingDepth()) {
+        continue;
+      }
+      SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
+      siteMapUrl.setLoc(generateUri(siteMapBuilder,category));
+      siteMapUrl.setChangeFreqType(categorySMGC.getSiteMapChangeFreq());
+      siteMapUrl.setPriorityType(categorySMGC.getSiteMapPriority());
+      siteMapUrl.setLastModDate(generateDate(category));
+      siteMapBuilder.addUrl(siteMapUrl);
+    }
+  }
+ while (categories.size() == rowLimit);
+}

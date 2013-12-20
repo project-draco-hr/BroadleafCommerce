@@ -12,7 +12,8 @@
         for (        PromotableOrderItemPriceDetail detail : order.getAllPromotableOrderItemPriceDetails()) {
           PromotableOrderItem item=detail.getPromotableOrderItem();
           for (          PromotionDiscount discount : detail.getPromotionDiscounts()) {
-            potentialSavings=potentialSavings.add(itemOffer.calculateSavingsForOrderItem(item,discount.getQuantity()));
+            Money itemSavings=calculatePotentialSavingsForOrderItem(itemOffer,item,discount.getQuantity());
+            potentialSavings=potentialSavings.add(itemSavings);
           }
           detail.getPromotionDiscounts().clear();
           detail.getPromotionQualifiers().clear();

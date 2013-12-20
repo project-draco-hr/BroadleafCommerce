@@ -3,6 +3,7 @@
   Product product=(Product)request.getAttribute(ProductHandlerMapping.CURRENT_PRODUCT_ATTRIBUTE_NAME);
   assert(product != null);
   model.addObject(MODEL_ATTRIBUTE_NAME,product);
+  addDeepLink(model,deepLinkService,product);
   if (StringUtils.isNotEmpty(product.getDisplayTemplate())) {
     model.setViewName(product.getDisplayTemplate());
   }

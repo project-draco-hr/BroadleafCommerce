@@ -1,0 +1,13 @@
+{
+  if (!StringUtils.isEmpty(indexedSiteMapFilePattern) && indexedSiteMapFilePattern.contains("###")) {
+    return indexedSiteMapFilePattern;
+  }
+  String siteMapFileName=getSiteMapFileName();
+  int pos=siteMapFileName.indexOf(".xml");
+  if (pos > 0) {
+    return siteMapFileName.substring(0,pos) + "###" + siteMapFileName.substring(pos);
+  }
+ else {
+    return "sitemap###.xml";
+  }
+}

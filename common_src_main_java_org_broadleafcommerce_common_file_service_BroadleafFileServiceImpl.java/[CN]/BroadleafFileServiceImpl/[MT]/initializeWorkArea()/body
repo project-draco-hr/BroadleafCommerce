@@ -1,0 +1,16 @@
+{
+  StringBuilder baseDirectory=getBaseDirectory(false);
+  String tempDirectory=getTempDirectory(baseDirectory);
+  FileWorkArea fw=new FileWorkArea();
+  fw.setFilePathLocation(tempDirectory);
+  File tmpDir=new File(tempDirectory);
+  if (!tmpDir.exists()) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Creating temp directory named " + tempDirectory);
+    }
+    if (!tmpDir.mkdirs()) {
+      throw new FileServiceException("Unable to create temporary working directory for " + tempDirectory);
+    }
+  }
+  return fw;
+}

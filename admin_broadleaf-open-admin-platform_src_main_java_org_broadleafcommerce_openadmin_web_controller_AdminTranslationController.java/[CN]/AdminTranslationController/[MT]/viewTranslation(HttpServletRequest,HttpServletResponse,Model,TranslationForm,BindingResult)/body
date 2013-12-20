@@ -1,5 +1,7 @@
 {
-  extensionManager.applyTransformation(form);
+  if (extensionManager != null) {
+    extensionManager.getProxy().applyTransformation(form);
+  }
   adminRemoteSecurityService.securityCheck(form.getCeilingEntity(),EntityOperationType.FETCH);
   List<Translation> translations=translationService.getTranslations(form.getCeilingEntity(),form.getEntityId(),form.getPropertyName());
   ListGrid lg=formService.buildListGrid(translations,form.getIsRte());

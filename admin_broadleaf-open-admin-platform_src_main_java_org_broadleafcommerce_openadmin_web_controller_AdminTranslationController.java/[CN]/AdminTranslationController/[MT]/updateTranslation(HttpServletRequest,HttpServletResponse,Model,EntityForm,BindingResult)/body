@@ -1,6 +1,17 @@
 {
-  TranslationForm form=getTranslationForm(entityForm);
+  final TranslationForm form=getTranslationForm(entityForm);
   adminRemoteSecurityService.securityCheck(form.getCeilingEntity(),EntityOperationType.UPDATE);
-  translationService.update(form.getTranslationId(),form.getLocaleCode(),form.getTranslatedValue());
+  SectionCrumb sectionCrumb=new SectionCrumb();
+  sectionCrumb.setSectionIdentifier(TranslationImpl.class.getName());
+  sectionCrumb.setSectionId(String.valueOf(form.getTranslationId()));
+  List<SectionCrumb> sectionCrumbs=Arrays.asList(sectionCrumb);
+  entityForm.setCeilingEntityClassname(Translation.class.getName());
+  entityForm.setEntityType(TranslationImpl.class.getName());
+  Field id=new Field();
+  id.setName("id");
+  id.setValue(String.valueOf(form.getTranslationId()));
+  entityForm.getFields().put("id",id);
+  entityForm.setId(String.valueOf(form.getTranslationId()));
+  service.updateEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
   return viewTranslation(request,response,model,form,result);
 }

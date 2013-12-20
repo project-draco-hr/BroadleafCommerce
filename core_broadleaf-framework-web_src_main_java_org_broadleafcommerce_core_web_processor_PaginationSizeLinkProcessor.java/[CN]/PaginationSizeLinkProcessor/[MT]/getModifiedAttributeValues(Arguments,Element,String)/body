@@ -1,0 +1,16 @@
+{
+  Map<String,String> attributes=new HashMap<String,String>();
+  HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  String baseUrl=request.getRequestURL().toString();
+  Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
+  Integer pageSize=Integer.parseInt(element.getAttributeValue(attributeName));
+  if (pageSize != null && pageSize > 1) {
+    params.put(ProductSearchCriteria.PAGE_SIZE_STRING,new String[]{pageSize.toString()});
+  }
+ else {
+    params.remove(ProductSearchCriteria.PAGE_SIZE_STRING);
+  }
+  String url=ProcessorUtils.getUrl(baseUrl,params);
+  attributes.put("href",url);
+  return attributes;
+}

@@ -12,11 +12,7 @@
     for (    Product product : products) {
       documents.add(buildDocument(product,fields,locales));
     }
-    if (LOG.isTraceEnabled()) {
-      for (      SolrInputDocument document : documents) {
-        LOG.trace(document);
-      }
-    }
+    logDocuments(documents);
     if (!CollectionUtils.isEmpty(documents)) {
       SolrServer server=useReindexServer ? SolrContext.getReindexServer() : SolrContext.getServer();
       server.add(documents);

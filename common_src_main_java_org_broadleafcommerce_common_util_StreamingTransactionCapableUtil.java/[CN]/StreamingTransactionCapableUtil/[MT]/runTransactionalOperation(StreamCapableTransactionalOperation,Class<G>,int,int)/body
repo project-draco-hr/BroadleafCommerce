@@ -1,0 +1,14 @@
+{
+  TransactionStatus status=startTransaction(transactionBehavior,isolationLevel);
+  boolean isError=false;
+  try {
+    operation.execute();
+  }
+ catch (  Throwable e) {
+    isError=true;
+    ExceptionHelper.processException(exceptionType,RuntimeException.class,e);
+  }
+ finally {
+    endTransaction(status,isError,exceptionType);
+  }
+}
