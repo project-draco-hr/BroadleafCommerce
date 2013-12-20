@@ -6,10 +6,17 @@
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     AdminUser adminInstance=(AdminUser)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     dynamicEntityDao.detach(adminInstance);
+    String passwordBefore=adminInstance.getPassword();
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    if (StringUtils.isNotEmpty(adminInstance.getPassword())) {
-      adminInstance.setUnencodedPassword(adminInstance.getPassword());
-      adminInstance.setPassword(null);
+    Property passwordProperty=entity.getPMap().get("password");
+    if (passwordProperty != null) {
+      if (StringUtils.isNotEmpty(passwordProperty.getValue())) {
+        adminInstance.setUnencodedPassword(passwordProperty.getValue());
+        adminInstance.setPassword(null);
+      }
+ else {
+        adminInstance.setPassword(passwordBefore);
+      }
     }
     if (!adminRemoteSecurityService.getPersistentAdminUser().getId().equals(adminInstance.getId())) {
       adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);

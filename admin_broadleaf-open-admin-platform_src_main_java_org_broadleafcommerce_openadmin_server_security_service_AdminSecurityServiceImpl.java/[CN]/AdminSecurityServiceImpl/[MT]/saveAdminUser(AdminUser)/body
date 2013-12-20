@@ -1,6 +1,16 @@
 {
+  boolean encodePasswordNeeded=false;
+  String unencodedPassword=user.getUnencodedPassword();
   if (user.getUnencodedPassword() != null) {
-    user.setPassword(passwordEncoder.encodePassword(user.getUnencodedPassword(),getSalt(user)));
+    encodePasswordNeeded=true;
+    user.setPassword(unencodedPassword);
   }
-  return adminUserDao.saveAdminUser(user);
+  if (user.getPassword() == null) {
+    user.setPassword(generateSecurePassword());
+  }
+  AdminUser returnUser=adminUserDao.saveAdminUser(user);
+  if (encodePasswordNeeded) {
+    returnUser.setPassword(passwordEncoder.encodePassword(unencodedPassword,getSalt(returnUser,unencodedPassword)));
+  }
+  return adminUserDao.saveAdminUser(returnUser);
 }
