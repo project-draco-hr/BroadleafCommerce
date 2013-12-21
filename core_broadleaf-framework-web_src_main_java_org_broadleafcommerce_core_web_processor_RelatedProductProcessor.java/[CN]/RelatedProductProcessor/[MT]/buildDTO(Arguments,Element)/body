@@ -5,21 +5,25 @@
   String quantityStr=element.getAttributeValue("quantity");
   String typeStr=element.getAttributeValue("type");
   if (productIdStr != null) {
-    Object productId=StandardExpressionProcessor.processExpression(args,productIdStr);
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(args.getConfiguration()).parseExpression(args.getConfiguration(),args,productIdStr);
+    Object productId=expression.execute(args.getConfiguration(),args);
     if (productId instanceof BigDecimal) {
       productId=new Long(((BigDecimal)productId).toPlainString());
     }
     relatedProductDTO.setProductId((Long)productId);
   }
   if (categoryIdStr != null) {
-    Object categoryId=StandardExpressionProcessor.processExpression(args,categoryIdStr);
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(args.getConfiguration()).parseExpression(args.getConfiguration(),args,categoryIdStr);
+    Object categoryId=expression.execute(args.getConfiguration(),args);
     if (categoryId instanceof BigDecimal) {
       categoryId=new Long(((BigDecimal)categoryId).toPlainString());
     }
     relatedProductDTO.setCategoryId((Long)categoryId);
   }
   if (quantityStr != null) {
-    relatedProductDTO.setQuantity(((BigDecimal)StandardExpressionProcessor.processExpression(args,quantityStr)).intValue());
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(args.getConfiguration()).parseExpression(args.getConfiguration(),args,quantityStr);
+    int quantity=((BigDecimal)expression.execute(args.getConfiguration(),args)).intValue();
+    relatedProductDTO.setQuantity(quantity);
   }
   if (typeStr != null && RelatedProductTypeEnum.getInstance(typeStr) != null) {
     relatedProductDTO.setType(RelatedProductTypeEnum.getInstance(typeStr));

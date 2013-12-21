@@ -1,5 +1,6 @@
 {
-  Long productId=(Long)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue("productId"));
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue("productId"));
+  Long productId=(Long)expression.execute(arguments.getConfiguration(),arguments);
   Product product=catalogService.findProductById(productId);
   if (product != null) {
     addAllProductOptionsToModel(arguments,product);

@@ -4,7 +4,8 @@
   HttpServletRequest request=blcContext.getRequest();
   String baseUrl=request.getRequestURL().toString();
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
-  SearchFacetDTO facet=(SearchFacetDTO)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  SearchFacetDTO facet=(SearchFacetDTO)expression.execute(arguments.getConfiguration(),arguments);
   String key=facet.getFacet().getField().getAbbreviation();
   params.remove(key);
   params.remove(ProductSearchCriteria.PAGE_NUMBER);

@@ -1,6 +1,7 @@
 {
   String href="#";
-  AdminSection section=(AdminSection)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  AdminSection section=(AdminSection)expression.execute(arguments.getConfiguration(),arguments);
   if (section != null) {
     HttpServletRequest request=((SpringWebContext)arguments.getContext()).getHttpServletRequest();
     href=request.getContextPath() + section.getUrl();

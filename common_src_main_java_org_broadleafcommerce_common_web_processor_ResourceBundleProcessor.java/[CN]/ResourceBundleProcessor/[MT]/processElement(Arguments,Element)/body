@@ -17,7 +17,8 @@
         throw new RuntimeException(e);
       }
     }
-    String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + versionedBundle+ "'}");
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + versionedBundle+ "'}");
+    String value=(String)expression.execute(arguments.getConfiguration(),arguments);
     Element e=getElement(value);
     parent.insertAfter(element,e);
   }
@@ -28,7 +29,8 @@
     }
     for (    String file : files) {
       file=file.trim();
-      String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + file+ "'}");
+      Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
+      String value=(String)expression.execute(arguments.getConfiguration(),arguments);
       Element e=getElement(value);
       parent.insertBefore(element,e);
     }
