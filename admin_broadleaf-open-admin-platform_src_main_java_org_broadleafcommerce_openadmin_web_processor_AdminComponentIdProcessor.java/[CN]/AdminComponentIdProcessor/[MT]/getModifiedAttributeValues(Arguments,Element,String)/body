@@ -1,5 +1,6 @@
 {
-  Object component=StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  Object component=expression.execute(arguments.getConfiguration(),arguments);
   String fieldName="";
   String id="";
   if (component instanceof ListGrid) {

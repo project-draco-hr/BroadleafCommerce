@@ -3,7 +3,8 @@
     try {
       String csrfToken=eps.getCSRFToken();
       if ("multipart/form-data".equalsIgnoreCase(element.getAttributeValueFromNormalizedName("enctype"))) {
-        String action=(String)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValueFromNormalizedName("th:action"));
+        Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValueFromNormalizedName("th:action"));
+        String action=(String)expression.execute(arguments.getConfiguration(),arguments);
         String csrfQueryParameter="?" + eps.getCsrfTokenParameter() + "="+ csrfToken;
         element.removeAttribute("th:action");
         element.setAttribute("action",action + csrfQueryParameter);

@@ -1,5 +1,6 @@
 {
-  ProductOptionValue productOptionValue=(ProductOptionValue)StandardExpressionProcessor.processExpression(arguments,element.getAttributeValue(attributeName));
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  ProductOptionValue productOptionValue=(ProductOptionValue)expression.execute(arguments.getConfiguration(),arguments);
   ProductOptionValueDTO dto=new ProductOptionValueDTO();
   dto.setOptionId(productOptionValue.getProductOption().getId());
   dto.setValueId(productOptionValue.getId());
