@@ -1,14 +1,8 @@
 {
   String fullUrl=removeAssetPrefix(request.getRequestURI());
   try {
-    Long sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ID_VAR);
-    if (sandBoxId == null) {
-      sandBoxId=(Long)request.getSession().getAttribute(SANDBOX_ADMIN_ID_VAR);
-    }
-    SandBox sandBox=null;
-    if (sandBoxId != null) {
-      sandBox=sandBoxDao.retrieve(sandBoxId);
-    }
+    Site site=siteResolver.resolveSite(new ServletWebRequest(request,response));
+    SandBox sandBox=sandboxResolver.resolveSandBox(new ServletWebRequest(request,response),site);
     try {
       Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,sandBox,convertParameterMap(request.getParameterMap()));
       return new ModelAndView(viewResolverName,model);
