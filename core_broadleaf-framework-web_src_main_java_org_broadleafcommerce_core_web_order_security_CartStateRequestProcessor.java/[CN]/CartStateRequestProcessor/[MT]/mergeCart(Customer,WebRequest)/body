@@ -1,0 +1,16 @@
+{
+  Customer anonymousCustomer=customerStateRequestProcessor.resolveAnonymousCustomer(request);
+  MergeCartResponse mergeCartResponse;
+  try {
+    Order cart=orderService.findCartForCustomer(anonymousCustomer);
+    mergeCartResponse=mergeCartService.mergeCart(customer,cart);
+  }
+ catch (  PricingException e) {
+    throw new RuntimeException(e);
+  }
+catch (  RemoveFromCartException e) {
+    throw new RuntimeException(e);
+  }
+  request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
+  return mergeCartResponse.getOrder();
+}

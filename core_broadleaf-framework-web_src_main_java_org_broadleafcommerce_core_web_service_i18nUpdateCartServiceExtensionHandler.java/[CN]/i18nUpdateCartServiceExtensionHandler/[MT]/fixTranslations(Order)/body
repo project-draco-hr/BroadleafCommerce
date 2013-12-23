@@ -1,0 +1,13 @@
+{
+  for (  DiscreteOrderItem orderItem : cart.getDiscreteOrderItems()) {
+    Sku sku=orderItem.getSku();
+    translateOrderItem(orderItem,sku);
+  }
+  for (  OrderItem orderItem : cart.getOrderItems()) {
+    if (orderItem instanceof BundleOrderItem) {
+      BundleOrderItem bundleItem=(BundleOrderItem)orderItem;
+      Sku sku=bundleItem.getSku();
+      translateOrderItem(orderItem,sku);
+    }
+  }
+}

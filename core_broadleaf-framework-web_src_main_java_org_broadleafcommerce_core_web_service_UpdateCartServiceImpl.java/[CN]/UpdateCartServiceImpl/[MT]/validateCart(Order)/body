@@ -1,14 +1,2 @@
 {
-  if (BroadleafRequestContext.hasLocale()) {
-    BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
-    String validationMsg;
-    if (!brc.getLocale().getLocaleCode().matches(cart.getLocale().getLocaleCode())) {
-      validationMsg="The cart Locale [" + cart.getLocale().getLocaleCode() + "] does not match the current locale ["+ brc.getLocale().getLocaleCode()+ "]";
-      LOG.error(validationMsg);
-      throw new IllegalArgumentException(validationMsg);
-    }
-  }
-  if (extensionManager != null) {
-    extensionManager.getProxy().validateCart(cart);
-  }
 }

@@ -1,0 +1,29 @@
+{
+  if (extensionManager != null) {
+    ExtensionResultHolder erh=new ExtensionResultHolder();
+    extensionManager.getProxy().updateAndValidateCart(cart,erh);
+    Boolean clearCart=(Boolean)erh.getContextMap().get("clearCart");
+    Boolean repriceCart=(Boolean)erh.getContextMap().get("repriceCart");
+    Boolean saveCart=(Boolean)erh.getContextMap().get("saveCart");
+    if (clearCart != null && clearCart.booleanValue()) {
+      orderService.cancelOrder(cart);
+      cart=orderService.createNewCartForCustomer(cart.getCustomer());
+    }
+ else {
+      try {
+        if (repriceCart != null && repriceCart.booleanValue()) {
+          cart.updatePrices();
+          orderService.save(cart,true);
+        }
+ else         if (saveCart != null && saveCart.booleanValue()) {
+          orderService.save(cart,false);
+        }
+      }
+ catch (      PricingException pe) {
+        LOG.error("Pricing Exception while validating cart.   Clearing cart.",pe);
+        orderService.cancelOrder(cart);
+        cart=orderService.createNewCartForCustomer(cart.getCustomer());
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  if (BroadleafRequestContext.hasLocale()) {
+    BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+    if (!brc.getLocale().getLocaleCode().matches(cart.getLocale().getLocaleCode())) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("The cart Locale [" + cart.getLocale().getLocaleCode() + "] does not match the current locale ["+ brc.getLocale().getLocaleCode()+ "]");
+      }
+      if (clearCartOnLocaleSwitch) {
+        resultHolder.getContextMap().put("clearCart",Boolean.TRUE);
+      }
+ else {
+        fixTranslations(cart);
+        cart.setLocale(brc.getLocale());
+        resultHolder.getContextMap().put("saveCart",Boolean.TRUE);
+      }
+    }
+  }
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}
