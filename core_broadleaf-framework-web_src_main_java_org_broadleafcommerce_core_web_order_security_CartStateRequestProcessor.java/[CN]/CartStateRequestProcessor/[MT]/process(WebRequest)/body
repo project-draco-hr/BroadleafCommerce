@@ -1,35 +1,30 @@
 {
   Customer customer=(Customer)request.getAttribute(CustomerStateRequestProcessor.getCustomerRequestAttributeName(),WebRequest.SCOPE_REQUEST);
-  if (customer != null) {
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("Looking up cart for customer " + customer.getId());
-    }
-    Order cart=orderService.findCartForCustomer(customer);
-    if (cart == null) {
-      cart=orderService.getNullOrder();
-    }
- else {
-      try {
-        updateCartService.validateCart(cart);
-      }
- catch (      IllegalArgumentException e) {
-        if (copyCartWhenSpecifiedStateChanges) {
-          UpdateCartResponse updateCartResponse=updateCartService.copyCartToCurrentContext(cart);
-          request.setAttribute("updateCartResponse",updateCartResponse,WebRequest.SCOPE_REQUEST);
-        }
- else {
-          orderService.cancelOrder(cart);
-          cart=orderService.createNewCartForCustomer(customer);
-        }
-      }
-    }
-    request.setAttribute(cartRequestAttributeName,cart,WebRequest.SCOPE_REQUEST);
-    Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
-    if (ruleMap == null) {
-      ruleMap=new HashMap<String,Object>();
-    }
-    ruleMap.put("order",cart);
-    ruleMap.put("cart",cart);
-    request.setAttribute(BLC_RULE_MAP_PARAM,ruleMap,WebRequest.SCOPE_REQUEST);
+  if (customer == null) {
+    return;
   }
+  Order cart=null;
+  if (mergeCartNeeded(customer,request)) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Merge cart required, calling mergeCart " + customer.getId());
+    }
+    cart=mergeCart(customer,request);
+  }
+ else {
+    cart=orderService.findCartForCustomer(customer);
+  }
+  if (cart == null) {
+    cart=orderService.getNullOrder();
+  }
+ else {
+    updateCartService.updateAndValidateCart(cart);
+  }
+  request.setAttribute(cartRequestAttributeName,cart,WebRequest.SCOPE_REQUEST);
+  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
+  if (ruleMap == null) {
+    ruleMap=new HashMap<String,Object>();
+  }
+  ruleMap.put("order",cart);
+  ruleMap.put("cart",cart);
+  request.setAttribute(BLC_RULE_MAP_PARAM,ruleMap,WebRequest.SCOPE_REQUEST);
 }

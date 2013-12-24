@@ -1,11 +1,7 @@
 {
   if (doi.getSku() != null && extensionManager != null) {
-    ExtensionResultHolder erh=new ExtensionResultHolder();
-    extensionManager.getProxy().isAvailable(doi,currency,erh);
-    Object result=erh.getResult();
-    if (result != null && result instanceof Boolean) {
-      return ((Boolean)result).booleanValue();
-    }
+    Sku sku=doi.getSku();
+    return sku.isAvailable();
   }
   return false;
 }
