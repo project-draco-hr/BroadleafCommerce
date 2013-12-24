@@ -1,0 +1,15 @@
+{
+  if (value == null) {
+    return new PropertyValidationResult(succeedForNullValues);
+  }
+  if (isFullUrl(value) && ignoreFullUrls) {
+    return new PropertyValidationResult(true);
+  }
+  if (requireLeadingSlash && !value.startsWith("/")) {
+    return new PropertyValidationResult(false,ERROR_KEY_BEGIN_WITH_SLASH);
+  }
+  if (!allowTrailingSlash && value.endsWith("/")) {
+    return new PropertyValidationResult(false,ERROR_KEY_CANNOT_END_WITH_SLASH);
+  }
+  return new PropertyValidationResult(true);
+}

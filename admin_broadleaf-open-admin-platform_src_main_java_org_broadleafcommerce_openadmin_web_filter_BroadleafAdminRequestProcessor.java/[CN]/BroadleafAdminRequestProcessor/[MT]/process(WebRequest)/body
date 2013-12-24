@@ -16,6 +16,8 @@
   brc.setMessageSource(messageSource);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
   brc.setTimeZone(timeZone);
+  BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
+  brc.setBroadleafCurrency(currency);
   AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
   if (adminUser == null) {
     request.removeAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);

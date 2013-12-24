@@ -1,16 +1,16 @@
 {
   String fullUrl=removeAssetPrefix(request.getRequestURI());
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  context.setSite(siteResolver.resolveSite(new ServletWebRequest(request,response)));
   try {
-    try {
-      Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,convertParameterMap(request.getParameterMap()));
-      return new ModelAndView(viewResolverName,model);
-    }
- catch (    AssetNotFoundException e) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      return null;
-    }
+    Map<String,String> model=staticAssetStorageService.getCacheFileModel(fullUrl,convertParameterMap(request.getParameterMap()));
+    return new ModelAndView(viewResolverName,model);
   }
- catch (  Exception e) {
+ catch (  AssetNotFoundException e) {
+    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    return null;
+  }
+catch (  Exception e) {
     LOG.error("Unable to retrieve static asset",e);
     throw new RuntimeException(e);
   }
