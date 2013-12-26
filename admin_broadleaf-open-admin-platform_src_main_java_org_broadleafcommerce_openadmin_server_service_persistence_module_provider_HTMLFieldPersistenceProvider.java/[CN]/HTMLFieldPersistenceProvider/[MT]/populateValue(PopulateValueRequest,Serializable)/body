@@ -1,0 +1,14 @@
+{
+  if (!canHandlePersistence(populateValueRequest,instance)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  try {
+    String requestedValue=populateValueRequest.getRequestedValue();
+    String fixedValue=fixAssetPathsForStorage(requestedValue);
+    populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),fixedValue);
+  }
+ catch (  Exception e) {
+    throw new PersistenceException(e);
+  }
+  return FieldProviderResponse.HANDLED;
+}

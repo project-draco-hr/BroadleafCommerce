@@ -1,0 +1,21 @@
+{
+  String contextPath="/";
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc != null) {
+    HttpServletRequest request=brc.getRequest();
+    if (request != null) {
+      contextPath=request.getContextPath();
+    }
+  }
+  if (!contextPath.endsWith("/")) {
+    contextPath=contextPath + "/";
+  }
+  if (staticAssetUrlPrefix != null) {
+    String tmpPrefix=staticAssetUrlPrefix;
+    if (tmpPrefix.startsWith("/")) {
+      tmpPrefix=tmpPrefix.substring(1);
+    }
+    return val.replaceAll("(?<=src=\").*?(?=" + tmpPrefix + ")",contextPath);
+  }
+  return val;
+}
