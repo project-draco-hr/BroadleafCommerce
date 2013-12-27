@@ -3,7 +3,14 @@
     if (BroadleafRequestContext.getBroadleafRequestContext() != null) {
       Locale locale=BroadleafRequestContext.getBroadleafRequestContext().getLocale();
       if (locale != null) {
-        prefixList.add(locale.getLocaleCode());
+        String localeCode=locale.getLocaleCode();
+        if (!Boolean.TRUE.equals(locale.getUseCountryInSearchIndex())) {
+          int pos=localeCode.indexOf("_");
+          if (pos > 0) {
+            localeCode=localeCode.substring(0,pos);
+          }
+        }
+        prefixList.add(localeCode);
         return ExtensionResultStatusType.HANDLED_CONTINUE;
       }
     }

@@ -1,9 +1,23 @@
 {
+  Set<String> processedLocaleCodes=new HashSet<String>();
   ExtensionResultStatusType result=ExtensionResultStatusType.NOT_HANDLED;
   if (field.getTranslatable()) {
     result=ExtensionResultStatusType.HANDLED;
     for (    Locale locale : locales) {
       String localeCode=locale.getLocaleCode();
+      if (!Boolean.TRUE.equals(locale.getUseCountryInSearchIndex())) {
+        int pos=localeCode.indexOf("_");
+        if (pos > 0) {
+          localeCode=localeCode.substring(0,pos);
+          if (processedLocaleCodes.contains(localeCode)) {
+            continue;
+          }
+ else {
+            locale=localeService.findLocaleByCode(localeCode);
+          }
+        }
+      }
+      processedLocaleCodes.add(localeCode);
       TranslationConsiderationContext.setTranslationConsiderationContext(translationEnabled);
       TranslationConsiderationContext.setTranslationService(translationService);
       BroadleafRequestContext tempContext=BroadleafRequestContext.getBroadleafRequestContext();
