@@ -6,6 +6,10 @@
     SandBoxContext.setSandBoxContext(null);
   }
  else {
+    BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+    if (brc != null) {
+      brc.getAdditionalProperties().put("adminUser",adminUser);
+    }
     Long overrideSandBoxId=adminUser.getOverrideSandBox() == null ? null : adminUser.getOverrideSandBox().getId();
     SandBox sandBox=sandBoxService.retrieveUserSandBox(adminUser.getId(),overrideSandBoxId,adminUser.getLogin());
     session.setAttribute(SANDBOX_ADMIN_ID_VAR,sandBox.getId());
