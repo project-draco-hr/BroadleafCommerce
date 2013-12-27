@@ -1,0 +1,18 @@
+{
+  int dotPos=firstKey.indexOf(".");
+  if (dotPos > 0) {
+    String keyNumberToMatch=firstKey.substring(dotPos);
+    Iterator<Object> iter=props.keySet().iterator();
+    while (iter.hasNext()) {
+      Object keyObj=iter.next();
+      if (keyObj instanceof String) {
+        String keyStr=(String)keyObj;
+        dotPos=keyStr.indexOf(".");
+        String keyNumber=keyStr.substring(dotPos);
+        if (keyNumber.equals(keyNumberToMatch)) {
+          iter.remove();
+        }
+      }
+    }
+  }
+}

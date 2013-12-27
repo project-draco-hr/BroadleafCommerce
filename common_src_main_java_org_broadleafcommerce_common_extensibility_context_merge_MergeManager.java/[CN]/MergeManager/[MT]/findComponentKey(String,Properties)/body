@@ -1,0 +1,15 @@
+{
+  for (  Map.Entry<Object,Object> entry : props.entrySet()) {
+    Object value=entry.getValue();
+    if (value instanceof String) {
+      String valueStr=(String)value;
+      if (valueStr.contains(componentIdStr)) {
+        Object key=entry.getKey();
+        if (key instanceof String) {
+          return (String)key;
+        }
+      }
+    }
+  }
+  return null;
+}
