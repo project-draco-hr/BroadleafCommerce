@@ -23,7 +23,7 @@
   if (!configService.handlesMultiplePayments()) {
     PaymentGatewayType gateway=configService.getGatewayType();
     for (    OrderPayment payment : order.getPayments()) {
-      if (payment.getGatewayType().equals(gateway)) {
+      if (payment.getGatewayType() == null || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
         markPaymentAsInvalid(payment.getId());
       }
     }
