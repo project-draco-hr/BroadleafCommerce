@@ -20,13 +20,18 @@
       customer.setEmailAddress(gatewayCustomer.getEmail());
     }
   }
+  List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
   if (!configService.handlesMultiplePayments()) {
     PaymentGatewayType gateway=configService.getGatewayType();
     for (    OrderPayment payment : order.getPayments()) {
       if (payment.getGatewayType() == null || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
-        markPaymentAsInvalid(payment.getId());
+        paymentsToInvalidate.add(payment);
       }
     }
+  }
+  for (  OrderPayment payment : paymentsToInvalidate) {
+    order.getPayments().remove(payment);
+    markPaymentAsInvalid(payment.getId());
   }
   OrderPayment payment=orderPaymentService.create();
   payment.setType(responseDTO.getPaymentType());
@@ -35,6 +40,8 @@
   if (responseDTO.getBillTo() != null) {
     billingAddress=addressService.create();
     AddressDTO<PaymentResponseDTO> billToDTO=responseDTO.getBillTo();
+    billingAddress.setFirstName(billToDTO.getAddressFirstName());
+    billingAddress.setLastName(billToDTO.getAddressLastName());
     billingAddress.setAddressLine1(billToDTO.getAddressLine1());
     billingAddress.setAddressLine2(billToDTO.getAddressLine2());
     billingAddress.setCity(billToDTO.getAddressCityLocality());
@@ -43,14 +50,18 @@
       Log.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
     }
     billingAddress.setState(state);
+    billingAddress.setPostalCode(billToDTO.getAddressPostalCode());
     Country country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
     if (country == null) {
       Log.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
     }
     billingAddress.setCountry(country);
-    Phone billingPhone=phoneService.create();
-    billingPhone.setPhoneNumber(billToDTO.getAddressPhone());
-    billingAddress.setPhonePrimary(billingPhone);
+    if (billToDTO.getAddressPhone() != null) {
+      Phone billingPhone=phoneService.create();
+      billingPhone.setPhoneNumber(billToDTO.getAddressPhone());
+      billingAddress.setPhonePrimary(billingPhone);
+    }
+    payment.setBillingAddress(billingAddress);
   }
   PaymentTransaction transaction=orderPaymentService.createTransaction();
   transaction.setAmount(responseDTO.getAmount());
@@ -59,6 +70,12 @@
   transaction.setType(responseDTO.getPaymentTransactionType());
   for (  Entry<String,Serializable> entry : responseDTO.getResponseMap().entrySet()) {
     transaction.getAdditionalFields().put(entry.getKey(),entry.getValue());
+  }
+  if (PaymentType.CREDIT_CARD.equals(responseDTO.getPaymentType()) && responseDTO.getCreditCard().creditCardPopulated()) {
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.NAME_ON_CARD.getType(),responseDTO.getCreditCard().getCreditCardHolderName());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.CARD_TYPE.getType(),responseDTO.getCreditCard().getCreditCardType());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.EXP_DATE.getType(),responseDTO.getCreditCard().getCreditCardExpDate());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.LAST_FOUR.getType(),responseDTO.getCreditCard().getCreditCardLastFour());
   }
   payment.setOrder(order);
   payment=orderPaymentService.save(payment);

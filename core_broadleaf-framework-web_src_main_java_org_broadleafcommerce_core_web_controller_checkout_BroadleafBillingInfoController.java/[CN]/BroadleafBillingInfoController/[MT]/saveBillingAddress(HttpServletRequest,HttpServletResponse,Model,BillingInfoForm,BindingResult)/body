@@ -18,11 +18,11 @@
     }
   }
   if (!found) {
-    OrderPayment p=orderPaymentService.create();
-    p.setType(PaymentType.CREDIT_CARD);
-    p.setBillingAddress(billingForm.getAddress());
-    p.setOrder(cart);
-    cart.getPayments().add(p);
+    OrderPayment tempOrderPayment=orderPaymentService.create();
+    tempOrderPayment.setType(PaymentType.CREDIT_CARD);
+    tempOrderPayment.setBillingAddress(billingForm.getAddress());
+    tempOrderPayment.setOrder(cart);
+    cart.getPayments().add(tempOrderPayment);
   }
   orderService.save(cart,true);
   if (isAjaxRequest(request)) {
