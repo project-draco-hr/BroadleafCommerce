@@ -1,5 +1,6 @@
 {
   Order order=context.getSeedData().getOrder();
+  Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
   for (  OrderPayment payment : order.getPayments()) {
     for (    PaymentTransaction tx : payment.getTransactions()) {
       if (!tx.getConfirmed()) {
@@ -9,16 +10,39 @@
           throw new CheckoutException(msg,context.getSeedData());
         }
  else {
-          PaymentResponseDTO response=paymentGatewayConfiguration.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(tx.getAmount(),tx));
-          if (response.isSuccessful()) {
+          PaymentResponseDTO responseDTO=paymentGatewayConfiguration.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+          if (responseDTO.isSuccessful()) {
+            PaymentTransaction transaction=orderPaymentService.createTransaction();
+            transaction.setAmount(responseDTO.getAmount());
+            transaction.setRawResponse(responseDTO.getRawResponse());
+            transaction.setSuccess(responseDTO.isSuccessful());
+            transaction.setType(responseDTO.getPaymentTransactionType());
+            transaction.setParentTransaction(tx);
+            transaction.setOrderPayment(payment);
+            additionalTransactions.put(payment,transaction);
+          }
+ else {
+            String msg="Unable to Confirm Transaction with id: " + tx.getId();
+            LOG.error(msg);
+            throw new CheckoutException(msg,context.getSeedData());
           }
         }
       }
     }
   }
+  for (  OrderPayment payment : order.getPayments()) {
+    if (additionalTransactions.containsKey(payment)) {
+      payment.addTransaction(additionalTransactions.get(payment));
+    }
+  }
   Money paymentSum=new Money(BigDecimal.ZERO);
   for (  OrderPayment payment : order.getPayments()) {
-    paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE)).add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE));
+    if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
+      paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.CONFIRMED));
+    }
+ else {
+      paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE)).add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE));
+    }
   }
   if (paymentSum.lessThan(order.getTotal())) {
     throw new IllegalArgumentException("There are not enough payments to pay for the total order. The sum of " + "the payments is " + paymentSum.getAmount().toPlainString() + " and the order total is "+ order.getTotal().getAmount().toPlainString());
