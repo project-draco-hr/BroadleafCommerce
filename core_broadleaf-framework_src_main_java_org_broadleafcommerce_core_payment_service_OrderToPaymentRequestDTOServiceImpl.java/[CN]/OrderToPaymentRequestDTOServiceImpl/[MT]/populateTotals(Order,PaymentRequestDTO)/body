@@ -1,3 +1,15 @@
 {
-  requestDTO.transactionTotal(order.getTotalAfterAppliedPayments().toString()).orderCurrencyCode(order.getCurrency().getCurrencyCode());
+  String total=ZERO_TOTAL;
+  String shippingTotal=ZERO_TOTAL;
+  String taxTotal=ZERO_TOTAL;
+  if (order.getTotalAfterAppliedPayments() != null) {
+    total=order.getTotalAfterAppliedPayments().toString();
+  }
+  if (order.getTotalShipping() != null) {
+    shippingTotal=order.getTotalShipping().toString();
+  }
+  if (order.getTotalTax() != null) {
+    taxTotal=order.getTotalTax().toString();
+  }
+  requestDTO.transactionTotal(total).shippingTotal(shippingTotal).taxTotal(taxTotal).orderCurrencyCode(order.getCurrency().getCurrencyCode());
 }

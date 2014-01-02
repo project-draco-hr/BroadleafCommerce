@@ -1,9 +1,12 @@
 {
-  PaymentRequestDTO requestDTO=new PaymentRequestDTO().orderId(order.getId().toString()).orderCurrencyCode(order.getCurrency().getCurrencyCode());
-  populateCustomerInfo(order,requestDTO);
-  populateShipTo(order,requestDTO);
-  populateBillTo(order,requestDTO);
-  populateTotals(order,requestDTO);
-  populateDefaultLineItemsAndSubtotal(order,requestDTO);
-  return requestDTO;
+  if (order != null) {
+    PaymentRequestDTO requestDTO=new PaymentRequestDTO().orderId(order.getId().toString()).orderCurrencyCode(order.getCurrency().getCurrencyCode());
+    populateCustomerInfo(order,requestDTO);
+    populateShipTo(order,requestDTO);
+    populateBillTo(order,requestDTO);
+    populateTotals(order,requestDTO);
+    populateDefaultLineItemsAndSubtotal(order,requestDTO);
+    return requestDTO;
+  }
+  return null;
 }
