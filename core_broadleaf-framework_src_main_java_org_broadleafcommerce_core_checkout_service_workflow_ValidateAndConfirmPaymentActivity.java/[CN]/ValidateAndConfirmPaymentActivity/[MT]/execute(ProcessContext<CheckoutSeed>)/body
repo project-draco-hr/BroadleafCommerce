@@ -4,6 +4,9 @@
   for (  OrderPayment payment : order.getPayments()) {
     for (    PaymentTransaction tx : payment.getTransactions()) {
       if (!tx.getConfirmed()) {
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Transaction is not confirmed. Proceeding to confirm transaction.");
+        }
         if (paymentGatewayConfiguration == null || paymentGatewayConfiguration.getTransactionConfirmationService() == null) {
           String msg="There are unconfirmed payment transactions on this payment but no payment gateway" + " configuration or transaction confirmation service configured";
           LOG.error(msg);
@@ -11,6 +14,9 @@
         }
  else {
           PaymentResponseDTO responseDTO=paymentGatewayConfiguration.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+          if (LOG.isTraceEnabled()) {
+            LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
+          }
           if (responseDTO.isSuccessful()) {
             PaymentTransaction transaction=orderPaymentService.createTransaction();
             transaction.setAmount(responseDTO.getAmount());
