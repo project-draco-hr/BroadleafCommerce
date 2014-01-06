@@ -1,12 +1,13 @@
 {
-  Customer customer=(Customer)request.getAttribute(CustomerStateRequestProcessor.getCustomerRequestAttributeName(),WebRequest.SCOPE_REQUEST);
+  Customer customer=CustomerState.getCustomer();
   if (customer == null) {
+    LOG.warn("No customer was found on the current request, no cart will be added to the current request. Ensure that the" + " blCustomerStateFilter occurs prior to the blCartStateFilter");
     return;
   }
   Order cart=null;
   if (mergeCartNeeded(customer,request)) {
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("Merge cart required, calling mergeCart " + customer.getId());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Merge cart required, calling mergeCart " + customer.getId());
     }
     cart=mergeCart(customer,request);
   }
