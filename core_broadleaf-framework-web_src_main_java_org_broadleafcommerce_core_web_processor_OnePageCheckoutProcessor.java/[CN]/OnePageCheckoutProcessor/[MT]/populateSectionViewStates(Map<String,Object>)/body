@@ -27,14 +27,37 @@
   localVars.put("showBillingInfoSection",showBillingInfoSection);
   localVars.put("showAllPaymentMethods",showAllPaymentMethods);
   List<CheckoutSectionDTO> drawnSections=new LinkedList<CheckoutSectionDTO>();
-  drawnSections.add(new CheckoutSectionDTO(CheckoutSectionViewType.ORDER_INFO,orderInfoPopulated));
+  CheckoutSectionDTO orderInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.ORDER_INFO,orderInfoPopulated);
+  CheckoutSectionDTO billingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.BILLING_INFO,billingPopulated);
+  CheckoutSectionDTO shippingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.SHIPPING_INFO,shippingPopulated);
+  CheckoutSectionDTO paymentInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.PAYMENT_INFO,false);
+  String orderInfoHelpMessage=(String)localVars.get("orderInfoHelpMessage");
+  String billingInfoHelpMessage=(String)localVars.get("billingInfoHelpMessage");
+  String shippingInfoHelpMessage=(String)localVars.get("shippingInfoHelpMessage");
+  drawnSections.add(orderInfoSection);
   if (showBillingInfoSection) {
-    drawnSections.add(new CheckoutSectionDTO(CheckoutSectionViewType.BILLING_INFO,billingPopulated));
+    billingInfoSection.setHelpMessage(orderInfoHelpMessage);
+    drawnSections.add(billingInfoSection);
   }
   if (showShippingInfoSection) {
-    drawnSections.add(new CheckoutSectionDTO(CheckoutSectionViewType.SHIPPING_INFO,shippingPopulated));
+    if (showBillingInfoSection) {
+      shippingInfoSection.setHelpMessage(billingInfoHelpMessage);
+    }
+ else {
+      shippingInfoSection.setHelpMessage(orderInfoHelpMessage);
+    }
+    drawnSections.add(shippingInfoSection);
   }
-  drawnSections.add(new CheckoutSectionDTO(CheckoutSectionViewType.PAYMENT_INFO,false));
+  if (showShippingInfoSection) {
+    paymentInfoSection.setHelpMessage(shippingInfoHelpMessage);
+  }
+ else   if (showBillingInfoSection) {
+    paymentInfoSection.setHelpMessage(billingInfoHelpMessage);
+  }
+ else {
+    paymentInfoSection.setHelpMessage(orderInfoHelpMessage);
+  }
+  drawnSections.add(paymentInfoSection);
   CheckoutSectionDTO firstSection=drawnSections.get(0);
   firstSection.setState(CheckoutSectionStateType.FORM);
   for (ListIterator<CheckoutSectionDTO> itr=drawnSections.listIterator(); itr.hasNext(); ) {
