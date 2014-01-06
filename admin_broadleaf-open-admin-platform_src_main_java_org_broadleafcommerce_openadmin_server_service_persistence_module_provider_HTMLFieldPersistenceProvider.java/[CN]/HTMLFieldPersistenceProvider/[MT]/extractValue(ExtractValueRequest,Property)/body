@@ -1,0 +1,16 @@
+{
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  if (extractValueRequest.getRequestedValue() != null) {
+    String val=extractValueRequest.getRequestedValue().toString();
+    if (val != null) {
+      if (val.contains(staticAssetUrlPrefix)) {
+        val=fixAssetPathsForDisplay(val);
+      }
+    }
+    property.setValue(val);
+    property.setDisplayValue(extractValueRequest.getDisplayVal());
+  }
+  return FieldProviderResponse.HANDLED;
+}
