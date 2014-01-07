@@ -1,18 +1,19 @@
 {
   Order order=context.getSeedData().getOrder();
+  Map<String,Object> rollbackState=new HashMap<String,Object>();
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
   for (  OrderPayment payment : order.getPayments()) {
     for (    PaymentTransaction tx : payment.getTransactions()) {
       if (PaymentTransactionType.UNCONFIRMED.equals(tx.getType())) {
         if (LOG.isTraceEnabled()) {
-          LOG.trace("Transaction is not confirmed. Proceeding to confirm transaction.");
+          LOG.trace("Transaction " + tx.getId() + " is not confirmed. Proceeding to confirm transaction.");
         }
-        if (paymentGatewayConfiguration == null || paymentGatewayConfiguration.getTransactionConfirmationService() == null) {
+        if (paymentGatewayConfiguration == null && paymentGatewayConfiguration.getRollbackService() == null) {
           String msg="There are unconfirmed payment transactions on this payment but no payment gateway" + " configuration or transaction confirmation service configured";
           LOG.error(msg);
           throw new CheckoutException(msg,context.getSeedData());
         }
- else {
+        if (paymentGatewayConfiguration != null && paymentGatewayConfiguration.getTransactionConfirmationService() != null) {
           PaymentResponseDTO responseDTO=paymentGatewayConfiguration.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
           if (LOG.isTraceEnabled()) {
             LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
@@ -28,11 +29,13 @@
             additionalTransactions.put(payment,transaction);
           }
  else {
-            String msg="Unable to Confirm Transaction with id: " + tx.getId();
+            String msg="Transaction confirmation attempt with id: " + tx.getId() + " was unsuccessful";
             LOG.error(msg);
             throw new CheckoutException(msg,context.getSeedData());
           }
         }
+        rollbackState.put(CONFIRMED_TRANSACTIONS,additionalTransactions.values());
+        ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
       }
     }
   }
