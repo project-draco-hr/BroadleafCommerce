@@ -1,17 +1,18 @@
 {
   CheckoutSeed seed=processContext.getSeedData();
-  if (paymentGatewayConfiguration == null && paymentGatewayConfiguration.getRollbackService() == null) {
+  if (paymentConfigurationServiceProvider == null) {
     throw new RollbackFailureException("There is no rollback service configured for the payment gateway configuration, cannot rollback unconfirmed" + " payments");
   }
   Collection<PaymentTransaction> transactions=(Collection<PaymentTransaction>)stateConfiguration.get(ValidateAndConfirmPaymentActivity.CONFIRMED_TRANSACTIONS);
   for (  PaymentTransaction tx : transactions) {
     PaymentRequestDTO rollbackRequest=transactionToPaymentRequestDTOService.translatePaymentTransaction(tx.getAmount(),tx);
+    PaymentGatewayConfigurationService cfg=paymentConfigurationServiceProvider.getGatewayConfigurationService(tx.getOrderPayment().getGatewayType());
     try {
       if (PaymentTransactionType.AUTHORIZE.equals(tx.getType())) {
-        paymentGatewayConfiguration.getRollbackService().rollbackAuthorize(rollbackRequest);
+        cfg.getRollbackService().rollbackAuthorize(rollbackRequest);
       }
  else       if (PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType())) {
-        paymentGatewayConfiguration.getRollbackService().rollbackAuthorizeAndCapture(rollbackRequest);
+        cfg.getRollbackService().rollbackAuthorizeAndCapture(rollbackRequest);
       }
  else {
         LOG.warn("The transaction with id " + tx.getId() + " will NOT rolled back as it is not an AUTHORIZE or AUTHORIZE_AND_CAPTURE transaction but is"+ " of type "+ tx.getType()+ ". If you need to roll back transactions of this type then provide a customized rollback handler for"+ " confirming transactions.");

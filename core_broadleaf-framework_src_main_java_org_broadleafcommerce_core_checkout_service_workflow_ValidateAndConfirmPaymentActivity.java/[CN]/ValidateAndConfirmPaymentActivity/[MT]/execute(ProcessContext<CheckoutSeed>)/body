@@ -8,31 +8,30 @@
         if (LOG.isTraceEnabled()) {
           LOG.trace("Transaction " + tx.getId() + " is not confirmed. Proceeding to confirm transaction.");
         }
-        if (paymentGatewayConfiguration == null && paymentGatewayConfiguration.getRollbackService() == null) {
+        if (paymentConfigurationServiceProvider == null) {
           String msg="There are unconfirmed payment transactions on this payment but no payment gateway" + " configuration or transaction confirmation service configured";
           LOG.error(msg);
           throw new CheckoutException(msg,context.getSeedData());
         }
-        if (paymentGatewayConfiguration != null && paymentGatewayConfiguration.getTransactionConfirmationService() != null) {
-          PaymentResponseDTO responseDTO=paymentGatewayConfiguration.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
-          if (LOG.isTraceEnabled()) {
-            LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
-          }
-          if (responseDTO.isSuccessful()) {
-            PaymentTransaction transaction=orderPaymentService.createTransaction();
-            transaction.setAmount(responseDTO.getAmount());
-            transaction.setRawResponse(responseDTO.getRawResponse());
-            transaction.setSuccess(responseDTO.isSuccessful());
-            transaction.setType(responseDTO.getPaymentTransactionType());
-            transaction.setParentTransaction(tx);
-            transaction.setOrderPayment(payment);
-            additionalTransactions.put(payment,transaction);
-          }
+        PaymentGatewayConfigurationService cfg=paymentConfigurationServiceProvider.getGatewayConfigurationService(tx.getOrderPayment().getGatewayType());
+        PaymentResponseDTO responseDTO=cfg.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+        if (LOG.isTraceEnabled()) {
+          LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
+        }
+        if (responseDTO.isSuccessful()) {
+          PaymentTransaction transaction=orderPaymentService.createTransaction();
+          transaction.setAmount(responseDTO.getAmount());
+          transaction.setRawResponse(responseDTO.getRawResponse());
+          transaction.setSuccess(responseDTO.isSuccessful());
+          transaction.setType(responseDTO.getPaymentTransactionType());
+          transaction.setParentTransaction(tx);
+          transaction.setOrderPayment(payment);
+          additionalTransactions.put(payment,transaction);
+        }
  else {
-            String msg="Transaction confirmation attempt with id: " + tx.getId() + " was unsuccessful";
-            LOG.error(msg);
-            throw new CheckoutException(msg,context.getSeedData());
-          }
+          String msg="Transaction confirmation attempt with id: " + tx.getId() + " was unsuccessful";
+          LOG.error(msg);
+          throw new CheckoutException(msg,context.getSeedData());
         }
         rollbackState.put(CONFIRMED_TRANSACTIONS,additionalTransactions.values());
         ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);

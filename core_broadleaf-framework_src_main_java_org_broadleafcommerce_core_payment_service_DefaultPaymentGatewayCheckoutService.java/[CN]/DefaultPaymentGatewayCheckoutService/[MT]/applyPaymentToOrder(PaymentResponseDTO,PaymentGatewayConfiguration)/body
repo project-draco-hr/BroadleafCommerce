@@ -2,7 +2,7 @@
   if (!responseDTO.isValid()) {
     throw new IllegalArgumentException("Invalid payment responses cannot be parsed into the order payment domain");
   }
-  if (configService == null) {
+  if (config == null) {
     throw new IllegalArgumentException("Config service cannot be null");
   }
   Long orderId=Long.parseLong(responseDTO.getOrderId());
@@ -21,8 +21,8 @@
     }
   }
   List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
-  if (!configService.handlesMultiplePayments()) {
-    PaymentGatewayType gateway=configService.getGatewayType();
+  if (!config.handlesMultiplePayments()) {
+    PaymentGatewayType gateway=config.getGatewayType();
     for (    OrderPayment payment : order.getPayments()) {
       if (payment.getGatewayType() == null || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
         paymentsToInvalidate.add(payment);
