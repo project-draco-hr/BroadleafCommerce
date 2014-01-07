@@ -3,7 +3,7 @@
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
   for (  OrderPayment payment : order.getPayments()) {
     for (    PaymentTransaction tx : payment.getTransactions()) {
-      if (!tx.getConfirmed()) {
+      if (PaymentTransactionType.UNCONFIRMED.equals(tx.getType())) {
         if (LOG.isTraceEnabled()) {
           LOG.trace("Transaction is not confirmed. Proceeding to confirm transaction.");
         }
@@ -43,12 +43,7 @@
   }
   Money paymentSum=new Money(BigDecimal.ZERO);
   for (  OrderPayment payment : order.getPayments()) {
-    if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
-      paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.CONFIRMED));
-    }
- else {
-      paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE)).add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE));
-    }
+    paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE)).add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE));
   }
   if (paymentSum.lessThan(order.getTotal())) {
     throw new IllegalArgumentException("There are not enough payments to pay for the total order. The sum of " + "the payments is " + paymentSum.getAmount().toPlainString() + " and the order total is "+ order.getTotal().getAmount().toPlainString());
