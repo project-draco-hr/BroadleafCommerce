@@ -98,7 +98,19 @@
       Entity invalid=getRecords(mergedProperties,entityList,null,null)[0];
       invalid.setValidationErrors(entity.getValidationErrors());
       invalid.overridePropertyValues(entity);
-      throw new ValidationException(invalid,"The entity has failed validation");
+      StringBuilder sb=new StringBuilder();
+      for (      Map.Entry<String,List<String>> entry : invalid.getValidationErrors().entrySet()) {
+        Iterator<String> itr=entry.getValue().iterator();
+        while (itr.hasNext()) {
+          sb.append(entry.getKey());
+          sb.append(" : ");
+          sb.append(itr.next());
+          if (itr.hasNext()) {
+            sb.append(" / ");
+          }
+        }
+      }
+      throw new ValidationException(invalid,"The entity has failed validation - " + sb.toString());
     }
  else {
       fieldManager.persistMiddleEntities();
