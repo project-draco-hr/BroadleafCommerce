@@ -1,5 +1,14 @@
 {
-  TypedQuery<SandBox> query=new TypedQueryBuilder<SandBox>(SandBox.class,"sandbox").addRestriction("sandbox.sandboxType","=",SandBoxType.USER.getType()).addRestriction("sandbox.author","=",authorId).addRestriction("sandbox.parentSandBox.id","=",parentSandBoxId).toQuery(sandBoxEntityManager);
+  CriteriaBuilder builder=sandBoxEntityManager.getCriteriaBuilder();
+  CriteriaQuery<SandBox> criteria=builder.createQuery(SandBox.class);
+  Root<SandBoxManagementImpl> sandbox=criteria.from(SandBoxManagementImpl.class);
+  criteria.select(sandbox.get("sandBox").as(SandBox.class));
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(sandbox.get("sandBox").get("sandboxType"),SandBoxType.USER.getType()));
+  restrictions.add(builder.equal(sandbox.get("sandBox").get("author"),authorId));
+  restrictions.add(builder.equal(sandbox.get("sandBox").get("parentSandBox").get("id"),parentSandBoxId));
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   try {
     return query.getSingleResult();
   }

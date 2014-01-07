@@ -1,4 +1,9 @@
 {
-  TypedQuery<SandBox> query=new TypedQueryBuilder<SandBox>(SandBox.class,"sandbox").addRestriction("sandbox.sandboxType","=",sandboxType.getType()).toQuery(sandBoxEntityManager);
+  CriteriaBuilder builder=sandBoxEntityManager.getCriteriaBuilder();
+  CriteriaQuery<SandBox> criteria=builder.createQuery(SandBox.class);
+  Root<SandBoxManagementImpl> sandbox=criteria.from(SandBoxManagementImpl.class);
+  criteria.select(sandbox.get("sandBox").as(SandBox.class));
+  criteria.where(builder.equal(sandbox.get("sandBox").get("sandboxType"),sandboxType.getType()));
+  TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   return query.getResultList();
 }

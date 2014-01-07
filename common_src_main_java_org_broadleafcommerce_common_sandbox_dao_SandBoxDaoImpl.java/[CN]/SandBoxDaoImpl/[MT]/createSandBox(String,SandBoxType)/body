@@ -7,6 +7,10 @@
       approvalSandbox.setName(sandBoxName);
       approvalSandbox.setSandBoxType(sandBoxType);
       approvalSandbox=persist(approvalSandbox);
+      SandBoxManagement mgmt=new SandBoxManagementImpl();
+      mgmt.setSandBox(approvalSandbox);
+      sandBoxEntityManager.persist(mgmt);
+      sandBoxEntityManager.flush();
     }
     TransactionUtils.finalizeTransaction(status,transactionManager,false);
     return approvalSandbox;

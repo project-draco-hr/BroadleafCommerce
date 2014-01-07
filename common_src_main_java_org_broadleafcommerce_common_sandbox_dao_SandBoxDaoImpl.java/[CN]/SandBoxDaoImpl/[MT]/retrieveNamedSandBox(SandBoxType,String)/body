@@ -1,12 +1,17 @@
 {
-  Query query=sandBoxEntityManager.createNamedQuery("BC_READ_SANDBOX_BY_TYPE_AND_NAME");
-  query.setParameter("sandboxType",sandboxType.getType());
-  query.setParameter("sandboxName",sandboxName);
-  SandBox response=null;
+  CriteriaBuilder builder=sandBoxEntityManager.getCriteriaBuilder();
+  CriteriaQuery<SandBox> criteria=builder.createQuery(SandBox.class);
+  Root<SandBoxManagementImpl> sandbox=criteria.from(SandBoxManagementImpl.class);
+  criteria.select(sandbox.get("sandBox").as(SandBox.class));
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(sandbox.get("sandBox").get("sandboxType"),SandBoxType.USER.getType()));
+  restrictions.add(builder.equal(sandbox.get("sandBox").get("name"),sandboxName));
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   try {
-    response=(SandBox)query.getSingleResult();
+    return query.getSingleResult();
   }
  catch (  NoResultException e) {
+    return null;
   }
-  return response;
 }

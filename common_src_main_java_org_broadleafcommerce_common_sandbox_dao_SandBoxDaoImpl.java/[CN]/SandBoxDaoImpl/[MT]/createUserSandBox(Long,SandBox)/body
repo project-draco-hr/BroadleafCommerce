@@ -7,6 +7,10 @@
     userSandBox.setParentSandBox(approvalSandBox);
     userSandBox.setSandBoxType(SandBoxType.USER);
     userSandBox=persist(userSandBox);
+    SandBoxManagement mgmt=new SandBoxManagementImpl();
+    mgmt.setSandBox(userSandBox);
+    sandBoxEntityManager.persist(mgmt);
+    sandBoxEntityManager.flush();
     TransactionUtils.finalizeTransaction(status,transactionManager,false);
     return userSandBox;
   }

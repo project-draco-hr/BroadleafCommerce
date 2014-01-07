@@ -6,6 +6,10 @@
     defaultSB.setSandBoxType(SandBoxType.DEFAULT);
     defaultSB.setColor("#0B9098");
     defaultSB=persist(defaultSB);
+    SandBoxManagement mgmt=new SandBoxManagementImpl();
+    mgmt.setSandBox(defaultSB);
+    sandBoxEntityManager.persist(mgmt);
+    sandBoxEntityManager.flush();
     TransactionUtils.finalizeTransaction(status,transactionManager,false);
     return defaultSB;
   }
