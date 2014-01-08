@@ -2,6 +2,7 @@
   Order order=context.getSeedData().getOrder();
   Map<String,Object> rollbackState=new HashMap<String,Object>();
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
+  List<PaymentTransaction> confirmedTransactions=new ArrayList<PaymentTransaction>();
   for (  OrderPayment payment : order.getPayments()) {
     for (    PaymentTransaction tx : payment.getTransactions()) {
       if (PaymentTransactionType.UNCONFIRMED.equals(tx.getType())) {
@@ -34,11 +35,12 @@
           LOG.error(msg);
           throw new CheckoutException(msg,context.getSeedData());
         }
-        rollbackState.put(CONFIRMED_TRANSACTIONS,additionalTransactions.values());
-        ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
       }
+      confirmedTransactions.add(tx);
     }
   }
+  rollbackState.put(CONFIRMED_TRANSACTIONS,confirmedTransactions);
+  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
   for (  OrderPayment payment : order.getPayments()) {
     if (additionalTransactions.containsKey(payment)) {
       payment.addTransaction(additionalTransactions.get(payment));
