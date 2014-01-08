@@ -8,8 +8,7 @@
     Customer newCustomer=customerService.registerCustomer(registerCustomerForm.getCustomer(),registerCustomerForm.getPassword(),registerCustomerForm.getPasswordConfirm());
     assert(newCustomer != null);
     ProviderSignInUtils.handlePostSignUp(newCustomer.getUsername(),new ServletWebRequest(request));
-    Authentication auth=loginService.loginCustomer(registerCustomerForm.getCustomer());
-    mergeCartProcessor.execute(request,response,auth);
+    loginService.loginCustomer(registerCustomerForm.getCustomer());
     String redirectUrl=registerCustomerForm.getRedirectUrl();
     if (StringUtils.isNotBlank(redirectUrl) && redirectUrl.contains(":")) {
       redirectUrl=null;
