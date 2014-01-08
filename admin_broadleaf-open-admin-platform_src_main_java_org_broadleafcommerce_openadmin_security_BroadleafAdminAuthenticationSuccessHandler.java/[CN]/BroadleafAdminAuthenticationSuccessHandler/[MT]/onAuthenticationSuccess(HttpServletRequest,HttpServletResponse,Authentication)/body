@@ -1,4 +1,8 @@
 {
+  AdminUser user=adminRemoteSecurityService.getPersistentAdminUser();
+  if (user != null && user.getLastUsedSandBoxId() != null) {
+    request.getSession(false).setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,user.getLastUsedSandBoxId());
+  }
   SavedRequest savedRequest=requestCache.getRequest(request,response);
   if (savedRequest == null) {
     super.onAuthenticationSuccess(request,response,authentication);

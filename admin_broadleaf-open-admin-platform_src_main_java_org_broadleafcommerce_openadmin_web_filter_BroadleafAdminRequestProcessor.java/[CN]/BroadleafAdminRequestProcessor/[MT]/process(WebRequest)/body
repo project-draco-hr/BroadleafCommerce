@@ -60,6 +60,11 @@
         sandBox=sandBoxService.createUserSandBox(adminUser.getId(),defaultSandBox);
       }
     }
+    Long previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    if (previouslySetSandBoxId != null && !sandBox.getId().equals(previouslySetSandBoxId)) {
+      adminUser.setLastUsedSandBoxId(sandBox.getId());
+      adminUser=adminSecurityService.saveAdminUser(adminUser);
+    }
     request.setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,sandBox.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
     brc.setSandBox(sandBox);
     brc.getAdditionalProperties().put("adminUser",adminUser);
