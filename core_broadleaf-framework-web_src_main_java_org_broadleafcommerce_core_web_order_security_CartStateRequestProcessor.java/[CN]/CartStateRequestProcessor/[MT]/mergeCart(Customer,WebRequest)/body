@@ -1,5 +1,5 @@
 {
-  Customer anonymousCustomer=CustomerStateRequestProcessor.getAnonymousCustomer(request);
+  Customer anonymousCustomer=customerStateRequestProcessor.getAnonymousCustomer(request);
   MergeCartResponse mergeCartResponse;
   try {
     Order cart=orderService.findCartForCustomer(anonymousCustomer);
@@ -11,6 +11,8 @@
 catch (  RemoveFromCartException e) {
     throw new RuntimeException(e);
   }
+  request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+  request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerIdSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
   request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
   return mergeCartResponse.getOrder();
 }

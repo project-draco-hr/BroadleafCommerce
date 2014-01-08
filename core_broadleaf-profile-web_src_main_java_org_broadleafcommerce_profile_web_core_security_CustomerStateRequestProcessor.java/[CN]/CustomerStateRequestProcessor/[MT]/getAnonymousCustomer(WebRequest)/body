@@ -1,3 +1,10 @@
 {
-  return (Customer)request.getAttribute(getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+  Customer anonymousCustomer=(Customer)request.getAttribute(getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+  if (anonymousCustomer == null) {
+    Long customerId=(Long)request.getAttribute(getAnonymousCustomerIdSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+    if (customerId != null) {
+      anonymousCustomer=customerService.readCustomerById(customerId);
+    }
+  }
+  return anonymousCustomer;
 }
