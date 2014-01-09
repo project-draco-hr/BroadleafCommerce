@@ -13,7 +13,10 @@
   String shippingInfoHelpMessage=(String)expression.execute(arguments.getConfiguration(),arguments);
   prepopulateCheckoutForms(CartState.getCart(),orderInfoForm,shippingInfoForm,billingInfoForm);
   Map<String,Object> localVars=new HashMap<String,Object>();
-  localVars.put("paymentRequestDTO",orderToPaymentRequestDTOService.translateOrder(CartState.getCart()));
+  Order cart=CartState.getCart();
+  if (cart != null && !(cart instanceof NullOrderImpl)) {
+    localVars.put("paymentRequestDTO",orderToPaymentRequestDTOService.translateOrder(cart));
+  }
   int numShippableFulfillmentGroups=calculateNumShippableFulfillmentGroups();
   localVars.put("numShippableFulfillmentGroups",numShippableFulfillmentGroups);
   populateFulfillmentOptionsAndEstimationOnModel(localVars);
