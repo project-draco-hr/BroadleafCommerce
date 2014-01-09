@@ -1,0 +1,39 @@
+{
+  Order cart=CartState.getCart();
+  List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
+  for (  OrderPayment payment : cart.getPayments()) {
+    if (payment.isActive()) {
+      if (payment.getTransactions() == null || payment.getTransactions().isEmpty()) {
+        paymentsToInvalidate.add(payment);
+      }
+ else {
+        for (        PaymentTransaction transaction : payment.getTransactions()) {
+          if (!PaymentTransactionType.UNCONFIRMED.equals(transaction.getType())) {
+            paymentsToInvalidate.add(payment);
+          }
+        }
+      }
+    }
+  }
+  for (  OrderPayment payment : paymentsToInvalidate) {
+    cart.getPayments().remove(payment);
+    if (paymentGatewayCheckoutService != null) {
+      paymentGatewayCheckoutService.markPaymentAsInvalid(payment.getId());
+    }
+  }
+  OrderPayment passthroughPayment=orderPaymentService.create();
+  passthroughPayment.setType(paymentType);
+  passthroughPayment.setPaymentGatewayType(PaymentGatewayType.PASSTHROUGH);
+  passthroughPayment.setAmount(cart.getTotalAfterAppliedPayments());
+  passthroughPayment.setOrder(cart);
+  PaymentTransaction transaction=orderPaymentService.createTransaction();
+  transaction.setAmount(cart.getTotalAfterAppliedPayments());
+  transaction.setRawResponse("Passthrough Payment");
+  transaction.setSuccess(true);
+  transaction.setType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
+  transaction.setOrderPayment(passthroughPayment);
+  passthroughPayment.addTransaction(transaction);
+  orderService.addPaymentToOrder(cart,passthroughPayment,null);
+  orderService.save(cart,true);
+  return processCompleteCheckoutOrderFinalized(redirectAttributes);
+}

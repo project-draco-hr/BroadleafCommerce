@@ -1,4 +1,7 @@
 {
-  model.addAttribute("paymentRequestDTO",dtoTranslationService.translateOrder(CartState.getCart()));
+  Order cart=CartState.getCart();
+  if (cart != null && !(cart instanceof NullOrderImpl)) {
+    model.addAttribute("paymentRequestDTO",dtoTranslationService.translateOrder(CartState.getCart()));
+  }
   return getCartView();
 }
