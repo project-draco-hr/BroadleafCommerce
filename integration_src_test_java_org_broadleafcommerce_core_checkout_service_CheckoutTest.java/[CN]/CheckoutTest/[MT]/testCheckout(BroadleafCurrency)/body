@@ -2,6 +2,8 @@
   String userName="customer1";
   Customer customer=customerService.readCustomerByUsername(userName);
   Order order=orderService.createNewCartForCustomer(customer);
+  usCurrency=currencyService.save(usCurrency);
+  order.setCurrency(usCurrency);
   Address address=buildAddress();
   FulfillmentGroup group=buildFulfillmentGroup(order,address);
   addSampleItemToOrder(order,group);

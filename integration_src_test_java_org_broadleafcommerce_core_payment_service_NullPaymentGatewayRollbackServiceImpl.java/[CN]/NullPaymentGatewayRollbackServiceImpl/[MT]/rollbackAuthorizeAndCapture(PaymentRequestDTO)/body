@@ -1,0 +1,6 @@
+{
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Null Payment Gateway - Rolling back authorize and capture transaction with amount: " + transactionToBeRolledBack.getTransactionTotal());
+  }
+  return new PaymentResponseDTO(PaymentType.CREDIT_CARD,NullPaymentGatewayType.NULL_GATEWAY).rawResponse("rollback authorize and capture - successful").successful(true).paymentTransactionType(PaymentTransactionType.VOID).amount(new Money(transactionToBeRolledBack.getTransactionTotal()));
+}
