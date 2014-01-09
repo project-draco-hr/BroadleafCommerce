@@ -28,6 +28,7 @@
           transaction.setParentTransaction(tx);
           transaction.setOrderPayment(payment);
           transaction.setAdditionalFields(responseDTO.getResponseMap());
+          confirmedTransactions.add(transaction);
           additionalTransactions.put(payment,transaction);
         }
  else {
@@ -36,7 +37,9 @@
           throw new CheckoutException(msg,context.getSeedData());
         }
       }
-      confirmedTransactions.add(tx);
+ else       if (PaymentTransactionType.AUTHORIZE.equals(tx.getType()) || PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType())) {
+        confirmedTransactions.add(tx);
+      }
     }
   }
   rollbackState.put(CONFIRMED_TRANSACTIONS,confirmedTransactions);

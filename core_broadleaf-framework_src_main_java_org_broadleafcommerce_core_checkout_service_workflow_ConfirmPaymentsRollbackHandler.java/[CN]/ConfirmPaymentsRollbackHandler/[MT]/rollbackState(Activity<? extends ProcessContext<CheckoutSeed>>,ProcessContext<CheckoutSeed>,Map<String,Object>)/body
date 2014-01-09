@@ -57,8 +57,14 @@
   }
  else {
     for (    OrderPayment payment : paymentsToInvalidate) {
-      paymentGatewayCheckoutService.markPaymentAsInvalid(payment.getId());
       order.getPayments().remove(payment);
+      paymentGatewayCheckoutService.markPaymentAsInvalid(payment.getId());
+    }
+    try {
+      orderService.save(order,false);
+    }
+ catch (    PricingException e) {
+      throw new RollbackFailureException("Unable to save the order with invalidated payments.");
     }
   }
 }
