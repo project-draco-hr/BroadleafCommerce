@@ -1,0 +1,91 @@
+{
+  boolean orderInfoPopulated=hasPopulatedOrderInfo(CartState.getCart());
+  boolean billingPopulated=hasPopulatedBillingAddress(CartState.getCart());
+  boolean shippingPopulated=hasPopulatedShippingAddress(CartState.getCart());
+  localVars.put("orderInfoPopulated",orderInfoPopulated);
+  localVars.put("billingPopulated",billingPopulated);
+  localVars.put("shippingPopulated",shippingPopulated);
+  boolean showBillingInfoSection=true;
+  boolean showShippingInfoSection=true;
+  boolean showAllPaymentMethods=true;
+  int numShippableFulfillmentGroups=calculateNumShippableFulfillmentGroups();
+  if (numShippableFulfillmentGroups == 0) {
+    showShippingInfoSection=false;
+  }
+  boolean orderContainsThirdPartyPayment=false;
+  if (CartState.getCart().getPayments() != null) {
+    for (    OrderPayment payment : CartState.getCart().getPayments()) {
+      if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType()) && payment.isActive()) {
+        orderContainsThirdPartyPayment=true;
+      }
+    }
+  }
+  if (orderContainsThirdPartyPayment) {
+    showBillingInfoSection=false;
+    showAllPaymentMethods=false;
+  }
+  localVars.put("showBillingInfoSection",showBillingInfoSection);
+  localVars.put("showAllPaymentMethods",showAllPaymentMethods);
+  List<CheckoutSectionDTO> drawnSections=new LinkedList<CheckoutSectionDTO>();
+  CheckoutSectionDTO orderInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.ORDER_INFO,orderInfoPopulated);
+  CheckoutSectionDTO billingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.BILLING_INFO,billingPopulated);
+  CheckoutSectionDTO shippingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.SHIPPING_INFO,shippingPopulated);
+  CheckoutSectionDTO paymentInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.PAYMENT_INFO,false);
+  String orderInfoHelpMessage=(String)localVars.get("orderInfoHelpMessage");
+  String billingInfoHelpMessage=(String)localVars.get("billingInfoHelpMessage");
+  String shippingInfoHelpMessage=(String)localVars.get("shippingInfoHelpMessage");
+  drawnSections.add(orderInfoSection);
+  if (showBillingInfoSection) {
+    billingInfoSection.setHelpMessage(orderInfoHelpMessage);
+    drawnSections.add(billingInfoSection);
+  }
+  if (showShippingInfoSection) {
+    if (showBillingInfoSection) {
+      shippingInfoSection.setHelpMessage(billingInfoHelpMessage);
+    }
+ else {
+      shippingInfoSection.setHelpMessage(orderInfoHelpMessage);
+    }
+    drawnSections.add(shippingInfoSection);
+  }
+  if (showShippingInfoSection) {
+    paymentInfoSection.setHelpMessage(shippingInfoHelpMessage);
+  }
+ else   if (showBillingInfoSection) {
+    paymentInfoSection.setHelpMessage(billingInfoHelpMessage);
+  }
+ else {
+    paymentInfoSection.setHelpMessage(orderInfoHelpMessage);
+  }
+  drawnSections.add(paymentInfoSection);
+  CheckoutSectionDTO firstSection=drawnSections.get(0);
+  firstSection.setState(CheckoutSectionStateType.FORM);
+  for (ListIterator<CheckoutSectionDTO> itr=drawnSections.listIterator(); itr.hasNext(); ) {
+    CheckoutSectionDTO previousSection=null;
+    if (itr.hasPrevious()) {
+      previousSection=drawnSections.get(itr.previousIndex());
+    }
+    CheckoutSectionDTO section=itr.next();
+    if (previousSection != null && previousSection.isPopulated()) {
+      section.setState(CheckoutSectionStateType.FORM);
+    }
+    if (section.isPopulated()) {
+      section.setState(CheckoutSectionStateType.SAVED);
+    }
+    BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
+    HttpServletRequest request=blcContext.getRequest();
+    boolean editOrderInfo=BooleanUtils.toBoolean(request.getParameter("edit-order-info"));
+    boolean editBillingInfo=BooleanUtils.toBoolean(request.getParameter("edit-billing"));
+    boolean editShippingInfo=BooleanUtils.toBoolean(request.getParameter("edit-shipping"));
+    if (CheckoutSectionViewType.ORDER_INFO.equals(section.getView()) && editOrderInfo) {
+      section.setState(CheckoutSectionStateType.FORM);
+    }
+ else     if (CheckoutSectionViewType.BILLING_INFO.equals(section.getView()) && editBillingInfo) {
+      section.setState(CheckoutSectionStateType.FORM);
+    }
+ else     if (CheckoutSectionViewType.SHIPPING_INFO.equals(section.getView()) && editShippingInfo) {
+      section.setState(CheckoutSectionStateType.FORM);
+    }
+  }
+  localVars.put("checkoutSectionDTOs",drawnSections);
+}

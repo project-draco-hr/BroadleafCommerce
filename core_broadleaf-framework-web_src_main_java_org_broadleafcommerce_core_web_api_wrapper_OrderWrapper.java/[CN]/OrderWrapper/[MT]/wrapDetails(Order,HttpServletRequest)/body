@@ -21,10 +21,10 @@
       this.fulfillmentGroups.add(fulfillmentGroupWrapper);
     }
   }
-  if (model.getPaymentInfos() != null && !model.getPaymentInfos().isEmpty()) {
-    this.paymentInfos=new ArrayList<PaymentInfoWrapper>();
-    for (    PaymentInfo paymentInfo : model.getPaymentInfos()) {
-      PaymentInfoWrapper paymentInfoWrapper=(PaymentInfoWrapper)context.getBean(PaymentInfoWrapper.class.getName());
+  if (model.getPayments() != null && !model.getPayments().isEmpty()) {
+    this.paymentInfos=new ArrayList<OrderPaymentWrapper>();
+    for (    OrderPayment paymentInfo : model.getPayments()) {
+      OrderPaymentWrapper paymentInfoWrapper=(OrderPaymentWrapper)context.getBean(OrderPaymentWrapper.class.getName());
       paymentInfoWrapper.wrapSummary(paymentInfo,request);
       this.paymentInfos.add(paymentInfoWrapper);
     }

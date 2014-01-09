@@ -1,0 +1,28 @@
+{
+  if (orderInfoForm != null) {
+    orderInfoForm.setEmailAddress(cart.getEmailAddress());
+  }
+  FulfillmentGroup firstShippableFulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart);
+  if (firstShippableFulfillmentGroup != null) {
+    FulfillmentOption fulfillmentOption=firstShippableFulfillmentGroup.getFulfillmentOption();
+    if (fulfillmentOption != null) {
+      shippingForm.setAddress(firstShippableFulfillmentGroup.getAddress());
+      shippingForm.setFulfillmentOption(fulfillmentOption);
+      shippingForm.setFulfillmentOptionId(fulfillmentOption.getId());
+    }
+ else {
+      CustomerAddress defaultAddress=customerAddressService.findDefaultCustomerAddress(CustomerState.getCustomer().getId());
+      if (defaultAddress != null) {
+        shippingForm.setAddress(defaultAddress.getAddress());
+        shippingForm.setAddressName(defaultAddress.getAddressName());
+      }
+    }
+  }
+  if (cart.getPayments() != null) {
+    for (    OrderPayment payment : cart.getPayments()) {
+      if (PaymentType.CREDIT_CARD.equals(payment.getType())) {
+        billingForm.setAddress(payment.getBillingAddress());
+      }
+    }
+  }
+}

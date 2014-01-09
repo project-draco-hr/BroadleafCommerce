@@ -1,14 +1,14 @@
 {
-  PaymentInfo paymentInfo=null;
-  if (order.getPaymentInfos().size() > 0) {
-    paymentInfo=order.getPaymentInfos().get(0);
+  OrderPayment paymentInfo=null;
+  if (order.getPayments().size() > 0) {
+    paymentInfo=order.getPayments().get(0);
   }
   Address address=null;
-  if (paymentInfo == null || paymentInfo.getAddress() == null) {
+  if (paymentInfo == null || paymentInfo.getBillingAddress() == null) {
     address=order.getFulfillmentGroups().get(0).getAddress();
   }
  else {
-    address=paymentInfo.getAddress();
+    address=paymentInfo.getBillingAddress();
   }
   return address;
 }

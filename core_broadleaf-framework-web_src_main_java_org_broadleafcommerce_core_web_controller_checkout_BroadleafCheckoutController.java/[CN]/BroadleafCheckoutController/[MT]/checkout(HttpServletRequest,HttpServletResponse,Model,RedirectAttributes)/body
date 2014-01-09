@@ -2,6 +2,7 @@
   Order cart=CartState.getCart();
   if (!(cart instanceof NullOrderImpl)) {
     model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
+    model.addAttribute("paymentRequestDTO",dtoTranslationService.translateOrder(cart));
   }
   populateModelWithReferenceData(request,model);
   return getCheckoutView();

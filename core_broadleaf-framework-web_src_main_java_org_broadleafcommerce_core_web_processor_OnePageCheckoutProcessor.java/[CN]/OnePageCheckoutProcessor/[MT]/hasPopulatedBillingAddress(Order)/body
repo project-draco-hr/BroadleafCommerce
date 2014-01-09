@@ -1,0 +1,11 @@
+{
+  if (cart.getPayments() == null) {
+    return false;
+  }
+  for (  OrderPayment payment : cart.getPayments()) {
+    if (PaymentType.CREDIT_CARD.equals(payment.getType()) && payment.getBillingAddress() != null) {
+      return true;
+    }
+  }
+  return false;
+}

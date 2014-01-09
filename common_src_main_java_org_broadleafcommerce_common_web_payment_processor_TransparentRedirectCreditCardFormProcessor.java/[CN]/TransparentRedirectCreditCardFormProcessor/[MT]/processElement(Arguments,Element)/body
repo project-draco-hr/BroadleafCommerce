@@ -1,0 +1,52 @@
+{
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue("paymentRequestDTO"));
+  PaymentRequestDTO requestDTO=(PaymentRequestDTO)expression.execute(arguments.getConfiguration(),arguments);
+  element.removeAttribute("paymentRequestDTO");
+  Map<String,Map<String,String>> formParameters=new HashMap<String,Map<String,String>>();
+  Map<String,String> configurationSettings=new HashMap<String,String>();
+  Map<String,Attribute> attributeMap=element.getAttributeMap();
+  List<String> keysToRemove=new ArrayList<String>();
+  for (  String key : attributeMap.keySet()) {
+    if (key.startsWith("config-")) {
+      final int trimLength="config-".length();
+      String configParam=key.substring(trimLength);
+      configurationSettings.put(configParam,attributeMap.get(key).getValue());
+      keysToRemove.add(key);
+    }
+  }
+  for (  String keyToRemove : keysToRemove) {
+    element.removeAttribute(keyToRemove);
+  }
+  try {
+    extensionManager.getProxy().createTransparentRedirectForm(formParameters,requestDTO,configurationSettings);
+  }
+ catch (  PaymentException e) {
+    throw new RuntimeException("Unable to Create the Transparent Redirect Form",e);
+  }
+  StringBuilder formActionKey=new StringBuilder("formActionKey");
+  StringBuilder formHiddenParamsKey=new StringBuilder("formHiddenParamsKey");
+  extensionManager.getProxy().setFormActionKey(formActionKey);
+  extensionManager.getProxy().setFormHiddenParamsKey(formHiddenParamsKey);
+  String actionUrl="";
+  Map<String,String> actionValue=formParameters.get(formActionKey.toString());
+  if (actionValue != null && actionValue.size() > 0) {
+    String key=(String)actionValue.keySet().toArray()[0];
+    actionUrl=actionValue.get(key);
+  }
+  element.setAttribute("action",actionUrl);
+  Map<String,String> hiddenFields=formParameters.get(formHiddenParamsKey.toString());
+  if (hiddenFields != null && !hiddenFields.isEmpty()) {
+    for (    String key : hiddenFields.keySet()) {
+      Element hiddenNode=new Element("input");
+      hiddenNode.setAttribute("type","hidden");
+      hiddenNode.setAttribute("name",key);
+      hiddenNode.setAttribute("value",hiddenFields.get(key));
+      element.addChild(hiddenNode);
+    }
+  }
+  Element newElement=element.cloneElementNodeWithNewName(element.getParent(),"form",false);
+  newElement.setRecomputeProcessorsImmediately(true);
+  element.getParent().insertAfter(element,newElement);
+  element.getParent().removeChild(element);
+  return ProcessorResult.OK;
+}

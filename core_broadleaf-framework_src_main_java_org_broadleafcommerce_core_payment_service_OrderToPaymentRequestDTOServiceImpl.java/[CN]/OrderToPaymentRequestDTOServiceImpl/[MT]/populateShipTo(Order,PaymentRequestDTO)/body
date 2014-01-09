@@ -1,0 +1,22 @@
+{
+  List<FulfillmentGroup> fgs=order.getFulfillmentGroups();
+  if (fgs != null && fgs.size() > 0) {
+    FulfillmentGroup defaultFg=fgs.get(0);
+    if (defaultFg.getAddress() != null) {
+      Address fgAddress=defaultFg.getAddress();
+      String stateAbbr=null;
+      String countryAbbr=null;
+      String phone=null;
+      if (fgAddress.getState() != null) {
+        stateAbbr=fgAddress.getState().getAbbreviation();
+      }
+      if (fgAddress.getCountry() != null) {
+        countryAbbr=fgAddress.getCountry().getAbbreviation();
+      }
+      if (fgAddress.getPhonePrimary() != null) {
+        phone=fgAddress.getPhonePrimary().getPhoneNumber();
+      }
+      requestDTO.shipTo().addressFirstName(fgAddress.getFirstName()).addressLastName(fgAddress.getLastName()).addressCompanyName(fgAddress.getCompanyName()).addressLine1(fgAddress.getAddressLine1()).addressLine2(fgAddress.getAddressLine2()).addressCityLocality(fgAddress.getCity()).addressStateRegion(stateAbbr).addressPostalCode(fgAddress.getPostalCode()).addressCountryCode(countryAbbr).addressPhone(phone).addressEmail(fgAddress.getEmailAddress());
+    }
+  }
+}

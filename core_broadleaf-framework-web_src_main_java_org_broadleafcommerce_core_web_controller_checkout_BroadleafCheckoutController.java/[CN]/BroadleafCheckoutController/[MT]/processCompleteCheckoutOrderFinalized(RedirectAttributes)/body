@@ -1,0 +1,13 @@
+{
+  Order cart=CartState.getCart();
+  if (cart != null && !(cart instanceof NullOrderImpl)) {
+    try {
+      String orderNumber=initiateCheckout(cart.getId());
+      return getConfirmationViewRedirect(orderNumber);
+    }
+ catch (    Exception e) {
+      handleProcessingException(e,redirectAttributes);
+    }
+  }
+  return getCheckoutPageRedirect();
+}

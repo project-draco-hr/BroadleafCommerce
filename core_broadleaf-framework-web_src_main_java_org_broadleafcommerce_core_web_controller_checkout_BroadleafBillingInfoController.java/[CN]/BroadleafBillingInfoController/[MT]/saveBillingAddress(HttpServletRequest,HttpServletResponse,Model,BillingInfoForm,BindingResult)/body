@@ -1,0 +1,35 @@
+{
+  Order cart=CartState.getCart();
+  if (billingForm.isUseShippingAddress()) {
+    copyShippingAddressToBillingAddress(cart,billingForm);
+  }
+  billingInfoFormValidator.validate(billingForm,result);
+  if (result.hasErrors()) {
+    return getCheckoutView();
+  }
+  if ((billingForm.getAddress().getPhonePrimary() != null) && (StringUtils.isEmpty(billingForm.getAddress().getPhonePrimary().getPhoneNumber()))) {
+    billingForm.getAddress().setPhonePrimary(null);
+  }
+  boolean found=false;
+  for (  OrderPayment p : cart.getPayments()) {
+    if (PaymentType.CREDIT_CARD.equals(p.getType())) {
+      p.setBillingAddress(billingForm.getAddress());
+      found=true;
+    }
+  }
+  if (!found) {
+    OrderPayment tempOrderPayment=orderPaymentService.create();
+    tempOrderPayment.setType(PaymentType.CREDIT_CARD);
+    tempOrderPayment.setBillingAddress(billingForm.getAddress());
+    tempOrderPayment.setOrder(cart);
+    cart.getPayments().add(tempOrderPayment);
+  }
+  orderService.save(cart,true);
+  if (isAjaxRequest(request)) {
+    checkoutControllerExtensionManager.getProxy().addAdditionalModelVariables(model);
+    return getCheckoutView();
+  }
+ else {
+    return getCheckoutPageRedirect();
+  }
+}

@@ -1,0 +1,12 @@
+{
+  Customer customer=order.getCustomer();
+  String phoneNumber=null;
+  if (customer.getCustomerPhones() != null && !customer.getCustomerPhones().isEmpty()) {
+    for (    CustomerPhone phone : customer.getCustomerPhones()) {
+      if (phone.getPhone().isDefault()) {
+        phoneNumber=phone.getPhone().getPhoneNumber();
+      }
+    }
+  }
+  requestDTO.customer().customerId(customer.getId().toString()).firstName(customer.getFirstName()).lastName(customer.getLastName()).email(customer.getEmailAddress()).phone(phoneNumber);
+}

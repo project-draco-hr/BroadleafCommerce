@@ -1,0 +1,18 @@
+{
+  OrderPaymentService paymentInfoService=(OrderPaymentService)context.getBean("blOrderPaymentService");
+  OrderPayment paymentInfo=paymentInfoService.create();
+  paymentInfo.setType(PaymentType.getInstance(this.type));
+  if (this.billingAddress != null) {
+    paymentInfo.setBillingAddress(this.billingAddress.unwrap(request,context));
+  }
+  if (this.amount != null) {
+    if (this.currency != null) {
+      paymentInfo.setAmount(new Money(this.amount,this.currency));
+    }
+ else {
+      paymentInfo.setAmount(new Money(this.amount));
+    }
+  }
+  paymentInfo.setReferenceNumber(this.referenceNumber);
+  return paymentInfo;
+}

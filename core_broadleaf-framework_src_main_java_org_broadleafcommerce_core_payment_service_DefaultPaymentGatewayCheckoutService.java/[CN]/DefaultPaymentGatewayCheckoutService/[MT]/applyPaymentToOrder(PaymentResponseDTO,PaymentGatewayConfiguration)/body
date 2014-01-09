@@ -1,0 +1,87 @@
+{
+  if (!responseDTO.isValid()) {
+    throw new IllegalArgumentException("Invalid payment responses cannot be parsed into the order payment domain");
+  }
+  if (config == null) {
+    throw new IllegalArgumentException("Config service cannot be null");
+  }
+  Long orderId=Long.parseLong(responseDTO.getOrderId());
+  Order order=orderService.findOrderById(orderId);
+  Customer customer=order.getCustomer();
+  if (customer.isAnonymous()) {
+    GatewayCustomerDTO<PaymentResponseDTO> gatewayCustomer=responseDTO.getCustomer();
+    if (StringUtils.isEmpty(customer.getFirstName()) && gatewayCustomer != null) {
+      customer.setFirstName(gatewayCustomer.getFirstName());
+    }
+    if (StringUtils.isEmpty(customer.getLastName()) && gatewayCustomer != null) {
+      customer.setLastName(gatewayCustomer.getLastName());
+    }
+    if (StringUtils.isEmpty(customer.getEmailAddress()) && gatewayCustomer != null) {
+      customer.setEmailAddress(gatewayCustomer.getEmail());
+    }
+  }
+  List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
+  if (!config.handlesMultiplePayments()) {
+    PaymentGatewayType gateway=config.getGatewayType();
+    for (    OrderPayment payment : order.getPayments()) {
+      if (payment.getGatewayType() == null || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
+        paymentsToInvalidate.add(payment);
+      }
+    }
+  }
+  for (  OrderPayment payment : paymentsToInvalidate) {
+    order.getPayments().remove(payment);
+    markPaymentAsInvalid(payment.getId());
+  }
+  OrderPayment payment=orderPaymentService.create();
+  payment.setType(responseDTO.getPaymentType());
+  payment.setPaymentGatewayType(responseDTO.getPaymentGatewayType());
+  payment.setAmount(responseDTO.getAmount());
+  Address billingAddress=null;
+  if (responseDTO.getBillTo() != null) {
+    billingAddress=addressService.create();
+    AddressDTO<PaymentResponseDTO> billToDTO=responseDTO.getBillTo();
+    billingAddress.setFirstName(billToDTO.getAddressFirstName());
+    billingAddress.setLastName(billToDTO.getAddressLastName());
+    billingAddress.setAddressLine1(billToDTO.getAddressLine1());
+    billingAddress.setAddressLine2(billToDTO.getAddressLine2());
+    billingAddress.setCity(billToDTO.getAddressCityLocality());
+    State state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
+    if (state == null) {
+      Log.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
+    }
+    billingAddress.setState(state);
+    billingAddress.setPostalCode(billToDTO.getAddressPostalCode());
+    Country country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
+    if (country == null) {
+      Log.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
+    }
+    billingAddress.setCountry(country);
+    if (billToDTO.getAddressPhone() != null) {
+      Phone billingPhone=phoneService.create();
+      billingPhone.setPhoneNumber(billToDTO.getAddressPhone());
+      billingAddress.setPhonePrimary(billingPhone);
+    }
+    payment.setBillingAddress(billingAddress);
+  }
+  PaymentTransaction transaction=orderPaymentService.createTransaction();
+  transaction.setAmount(responseDTO.getAmount());
+  transaction.setRawResponse(responseDTO.getRawResponse());
+  transaction.setSuccess(responseDTO.isSuccessful());
+  transaction.setType(responseDTO.getPaymentTransactionType());
+  for (  Entry<String,String> entry : responseDTO.getResponseMap().entrySet()) {
+    transaction.getAdditionalFields().put(entry.getKey(),entry.getValue());
+  }
+  if (PaymentType.CREDIT_CARD.equals(responseDTO.getPaymentType()) && responseDTO.getCreditCard().creditCardPopulated()) {
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.NAME_ON_CARD.getType(),responseDTO.getCreditCard().getCreditCardHolderName());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.CARD_TYPE.getType(),responseDTO.getCreditCard().getCreditCardType());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.EXP_DATE.getType(),responseDTO.getCreditCard().getCreditCardExpDate());
+    transaction.getAdditionalFields().put(PaymentAdditionalFieldType.LAST_FOUR.getType(),responseDTO.getCreditCard().getCreditCardLastFour());
+  }
+  payment.setOrder(order);
+  payment=orderPaymentService.save(payment);
+  transaction.setOrderPayment(payment);
+  payment.addTransaction(transaction);
+  orderService.addPaymentToOrder(order,payment,null);
+  return payment.getId();
+}

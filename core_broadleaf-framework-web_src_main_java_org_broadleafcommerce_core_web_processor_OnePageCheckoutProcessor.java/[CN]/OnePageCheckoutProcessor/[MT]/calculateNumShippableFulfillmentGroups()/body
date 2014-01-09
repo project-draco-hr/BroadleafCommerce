@@ -1,0 +1,12 @@
+{
+  int numShippableFulfillmentGroups=0;
+  List<FulfillmentGroup> fulfillmentGroups=CartState.getCart().getFulfillmentGroups();
+  if (fulfillmentGroups != null) {
+    for (    FulfillmentGroup fulfillmentGroup : fulfillmentGroups) {
+      if (fulfillmentGroupService.isShippable(fulfillmentGroup.getType())) {
+        numShippableFulfillmentGroups++;
+      }
+    }
+  }
+  return numShippableFulfillmentGroups;
+}

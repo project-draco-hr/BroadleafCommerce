@@ -1,0 +1,10 @@
+{
+  Base64 encoder=new Base64(true);
+  Mac sha1Mac=Mac.getInstance("HmacSHA1");
+  SecretKeySpec publicKeySpec=new SecretKeySpec(secretKey.getBytes(),"HmacSHA1");
+  sha1Mac.init(publicKeySpec);
+  String customerOrderString=customerId + orderId;
+  byte[] publicBytes=sha1Mac.doFinal(customerOrderString.getBytes());
+  String publicDigest=encoder.encodeToString(publicBytes);
+  return publicDigest.replaceAll("\\r|\\n","");
+}

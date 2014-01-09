@@ -1,0 +1,13 @@
+{
+  Order order=orderService.findOrderById(orderId);
+  if (order == null || order instanceof NullOrderImpl) {
+    throw new IllegalArgumentException("Could not order with id " + orderId);
+  }
+  try {
+    CheckoutResponse response=checkoutService.performCheckout(order);
+  }
+ catch (  CheckoutException e) {
+    throw new Exception(e);
+  }
+  return order.getOrderNumber();
+}

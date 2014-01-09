@@ -1,0 +1,16 @@
+{
+  if (formParameters != null && requestDTO != null && configurationSettings != null) {
+    for (    String config : configurationSettings.keySet()) {
+      requestDTO.additionalField(config,configurationSettings.get(config));
+    }
+    PaymentResponseDTO responseDTO;
+    if (getConfiguration().isPerformAuthorizeAndCapture()) {
+      responseDTO=getTransparentRedirectService().createAuthorizeAndCaptureForm(requestDTO);
+    }
+ else {
+      responseDTO=getTransparentRedirectService().createAuthorizeForm(requestDTO);
+    }
+    populateFormParameters(formParameters,responseDTO);
+  }
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}

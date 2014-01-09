@@ -1,11 +1,16 @@
 {
-  PaymentInfo payment=new PaymentInfoImpl();
-  payment.setAddress(address);
+  OrderPayment payment=new OrderPaymentImpl();
+  payment.setBillingAddress(address);
   payment.setAmount(new Money(15D + (15D * 0.05D)));
   payment.setReferenceNumber("1234");
-  payment.setType(PaymentInfoType.CREDIT_CARD);
+  payment.setType(PaymentType.CREDIT_CARD);
   payment.setOrder(order);
-  CreditCardPaymentInfo cc=new CreditCardPaymentInfo(){
+  PaymentTransaction tx=new PaymentTransactionImpl();
+  tx.setAmount(payment.getAmount());
+  tx.setType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
+  tx.setOrderPayment(payment);
+  payment.getTransactions().add(tx);
+  CreditCardPayment cc=new CreditCardPayment(){
     private static final long serialVersionUID=1L;
     private String referenceNumber="1234";
     @Override public String getCvvCode(){
@@ -51,8 +56,6 @@
     }
   }
 ;
-  order.getPaymentInfos().add(payment);
-  Map<PaymentInfo,Referenced> map=new HashMap<PaymentInfo,Referenced>();
-  map.put(payment,cc);
-  return map;
+  order.getPayments().add(payment);
+  return payment;
 }

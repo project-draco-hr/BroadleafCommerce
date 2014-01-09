@@ -1,0 +1,12 @@
+{
+  R response;
+  try {
+    response=communicateWithVendor(paymentRequest);
+  }
+ catch (  Exception e) {
+    incrementFailure();
+    throw new PaymentException(e);
+  }
+  clearStatus();
+  return response;
+}
