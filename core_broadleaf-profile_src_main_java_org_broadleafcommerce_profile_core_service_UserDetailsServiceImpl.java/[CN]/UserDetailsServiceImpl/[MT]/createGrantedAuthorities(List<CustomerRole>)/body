@@ -1,8 +1,14 @@
 {
+  boolean roleUserFound=false;
   List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();
-  grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
   for (  CustomerRole role : customerRoles) {
-    grantedAuthorities.add(new GrantedAuthorityImpl(role.getRoleName()));
+    grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+    if (role.getRoleName().equals("ROLE_USER")) {
+      roleUserFound=true;
+    }
+  }
+  if (!roleUserFound) {
+    grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
   }
   return grantedAuthorities;
 }
