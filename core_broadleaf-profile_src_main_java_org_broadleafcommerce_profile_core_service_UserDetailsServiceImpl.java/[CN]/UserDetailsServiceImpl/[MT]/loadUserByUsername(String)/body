@@ -1,22 +1,8 @@
 {
-  org.broadleafcommerce.profile.core.domain.Customer customer=customerService.readCustomerByUsername(username);
+  Customer customer=customerService.readCustomerByUsername(username);
   if (customer == null) {
     throw new UsernameNotFoundException("The customer was not found");
   }
-  User returnUser=null;
-  boolean pwChangeRequired=customer.isPasswordChangeRequired();
   List<GrantedAuthority> grantedAuthorities=createGrantedAuthorities(roleService.findCustomerRolesByCustomerId(customer.getId()));
-  if (pwChangeRequired) {
-    if (forcePasswordChange) {
-      returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,grantedAuthorities);
-    }
- else {
-      grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_PASSWORD_CHANGE_REQUIRED"));
-      returnUser=new User(username,customer.getPassword(),true,true,true,true,grantedAuthorities);
-    }
-  }
- else {
-    returnUser=new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,grantedAuthorities);
-  }
-  return returnUser;
+  return new CustomerUserDetails(customer.getId(),username,customer.getPassword(),!customer.isDeactivated(),true,!customer.isPasswordChangeRequired(),true,grantedAuthorities);
 }
