@@ -24,7 +24,7 @@
   if (!config.handlesMultiplePayments()) {
     PaymentGatewayType gateway=config.getGatewayType();
     for (    OrderPayment payment : order.getPayments()) {
-      if (payment.getGatewayType() == null || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
+      if (payment.getGatewayType() == PaymentGatewayType.TEMPORARY || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
         paymentsToInvalidate.add(payment);
       }
     }
