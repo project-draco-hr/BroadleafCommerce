@@ -8,5 +8,6 @@
       }
     }
   }
-  requestDTO.customer().customerId(customer.getId().toString()).firstName(customer.getFirstName()).lastName(customer.getLastName()).email(customer.getEmailAddress()).phone(phoneNumber);
+  String orderEmail=(customer.getEmailAddress() == null) ? order.getEmailAddress() : customer.getEmailAddress();
+  requestDTO.customer().customerId(customer.getId().toString()).firstName(customer.getFirstName()).lastName(customer.getLastName()).email(orderEmail).phone(phoneNumber);
 }
