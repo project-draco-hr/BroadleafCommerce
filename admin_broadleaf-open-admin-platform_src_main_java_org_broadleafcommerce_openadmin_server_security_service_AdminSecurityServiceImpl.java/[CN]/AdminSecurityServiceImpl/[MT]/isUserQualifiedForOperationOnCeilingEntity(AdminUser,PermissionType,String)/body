@@ -1,3 +1,7 @@
 {
-  return adminPermissionDao.isUserQualifiedForOperationOnCeilingEntity(adminUser,permissionType,ceilingEntityFullyQualifiedName);
+  boolean response=adminPermissionDao.isUserQualifiedForOperationOnCeilingEntity(adminUser,permissionType,ceilingEntityFullyQualifiedName);
+  if (!response) {
+    response=adminPermissionDao.isUserQualifiedForOperationOnCeilingEntityViaDefaultPermissions(ceilingEntityFullyQualifiedName);
+  }
+  return response;
 }

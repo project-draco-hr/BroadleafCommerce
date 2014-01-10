@@ -20,6 +20,14 @@
         }
       }
     }
+    for (    String defaultPermission : AdminSecurityService.DEFAULT_PERMISSIONS) {
+      for (      AdminPermission authorizedPermission : authorizedPermissions) {
+        if (authorizedPermission.getName().equals(defaultPermission)) {
+          response=true;
+          break checkAuth;
+        }
+      }
+    }
   }
   if (response) {
     for (    SectionAuthorization sectionAuthorization : additionalSectionAuthorizations) {

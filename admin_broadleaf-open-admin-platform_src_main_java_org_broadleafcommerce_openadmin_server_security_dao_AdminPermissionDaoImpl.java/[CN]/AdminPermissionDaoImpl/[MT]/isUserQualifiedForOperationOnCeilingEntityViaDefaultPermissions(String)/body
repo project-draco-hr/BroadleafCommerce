@@ -1,0 +1,23 @@
+{
+  List<String> testClasses=new ArrayList<String>();
+  testClasses.add(ceilingEntityFullyQualifiedName);
+  try {
+    for (    Object interfaze : ClassUtils.getAllInterfaces(Class.forName(ceilingEntityFullyQualifiedName))) {
+      testClasses.add(((Class<?>)interfaze).getName());
+    }
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  for (  String testClass : testClasses) {
+    Query query=em.createNamedQuery("BC_COUNT_BY_PERMISSION_AND_CEILING_ENTITY");
+    query.setParameter("permissionNames",Arrays.asList(AdminSecurityService.DEFAULT_PERMISSIONS));
+    query.setParameter("ceilingEntity",testClass);
+    query.setHint(QueryHints.HINT_CACHEABLE,true);
+    Long count=(Long)query.getSingleResult();
+    if (count > 0) {
+      return true;
+    }
+  }
+  return false;
+}
