@@ -82,6 +82,11 @@
   payment=orderPaymentService.save(payment);
   transaction.setOrderPayment(payment);
   payment.addTransaction(transaction);
-  orderService.addPaymentToOrder(order,payment,null);
+  if (transaction.getSuccess()) {
+    orderService.addPaymentToOrder(order,payment,null);
+  }
+ else {
+    markPaymentAsInvalid(payment.getId());
+  }
   return payment.getId();
 }

@@ -36,13 +36,8 @@
   }
  catch (  Exception e) {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("An exception was caught either from processing the response and applying the payment to " + "the order, or an activity in the checkout workflow threw an exception. Attempting to " + "mark the payment as invalid and delegating to the payment module to handle any other "+ "exception processing. The error caught was: "+ e.getMessage());
-    }
-    if (orderPaymentId != null) {
-      if (LOG.isTraceEnabled()) {
-        LOG.trace("The Payment with ID: [" + orderPaymentId + "] has been applied to the order."+ " Attempting to mark it as invalid and continue processing the exception.");
-      }
-      markPaymentAsInvalid(orderPaymentId);
+      LOG.trace("HTTPRequest - " + webResponsePrintService.printRequest(request));
+      LOG.trace("An exception was caught either from processing the response and applying the payment to " + "the order, or an activity in the checkout workflow threw an exception. Attempting to " + "mark the payment as invalid and delegating to the payment module to handle any other "+ "exception processing. The error caught was: " + e.getMessage() + " : "+ e.toString());
     }
     handleProcessingException(e,redirectAttributes);
   }

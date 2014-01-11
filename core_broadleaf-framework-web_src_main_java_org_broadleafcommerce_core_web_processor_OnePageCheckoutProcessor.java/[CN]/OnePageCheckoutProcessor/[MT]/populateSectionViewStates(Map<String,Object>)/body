@@ -72,6 +72,12 @@
     if (section.isPopulated()) {
       section.setState(CheckoutSectionStateType.SAVED);
     }
+    if (CheckoutSectionViewType.PAYMENT_INFO.equals(section.getView())) {
+      if (showBillingInfoSection && !billingPopulated) {
+        section.setState(CheckoutSectionStateType.INACTIVE);
+        section.setHelpMessage(billingInfoHelpMessage);
+      }
+    }
     BroadleafRequestContext blcContext=BroadleafRequestContext.getBroadleafRequestContext();
     HttpServletRequest request=blcContext.getRequest();
     boolean editOrderInfo=BooleanUtils.toBoolean(request.getParameter("edit-order-info"));
