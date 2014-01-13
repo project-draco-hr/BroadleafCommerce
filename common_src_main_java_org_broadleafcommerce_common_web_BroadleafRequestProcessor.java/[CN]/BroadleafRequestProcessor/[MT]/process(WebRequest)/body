@@ -16,6 +16,24 @@
     requestDTO=new RequestDTOImpl(request);
   }
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
+  Boolean reprocessRequest=(Boolean)request.getAttribute(BroadleafRequestProcessor.REPROCESS_PARAM_NAME,WebRequest.SCOPE_REQUEST);
+  if (reprocessRequest != null && reprocessRequest) {
+    if (request instanceof ServletWebRequest) {
+      HttpServletRequest hsr=((ServletWebRequest)request).getRequest();
+      hsr.getSession(false).invalidate();
+      StringBuffer url=hsr.getRequestURL();
+      if (hsr.getQueryString() != null) {
+        url.append('?').append(hsr.getQueryString());
+      }
+      try {
+        ((ServletWebRequest)request).getResponse().sendRedirect(url.toString());
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+      return;
+    }
+  }
   if (currentSandbox != null) {
     SandBoxContext previewSandBoxContext=new SandBoxContext();
     previewSandBoxContext.setSandBoxId(currentSandbox.getId());
