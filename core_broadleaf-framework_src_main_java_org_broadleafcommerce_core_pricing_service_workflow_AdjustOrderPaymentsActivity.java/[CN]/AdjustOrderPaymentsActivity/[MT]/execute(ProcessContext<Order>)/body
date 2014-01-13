@@ -1,17 +1,19 @@
 {
   Order order=context.getSeedData();
-  Money difference=new Money(BigDecimal.ZERO);
-  Money paymentSum=new Money(BigDecimal.ZERO);
+  OrderPayment unconfirmedThirdParty=null;
+  Money appliedPaymentsWithoutThirdParty=Money.ZERO;
   for (  OrderPayment payment : order.getPayments()) {
-    paymentSum=paymentSum.add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE)).add(payment.getSuccessfulTransactionAmountForType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE));
-  }
-  if (!paymentSum.equals(order.getTotal())) {
-    difference=order.getTotal().subtract(paymentSum);
-    for (    OrderPayment payment : order.getPayments()) {
-      if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
-        payment.setAmount(payment.getAmount().add(difference));
-      }
+    PaymentTransaction initialTransaction=payment.getInitialTransaction();
+    if (initialTransaction != null && PaymentTransactionType.UNCONFIRMED.equals(initialTransaction.getType()) && PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
+      unconfirmedThirdParty=payment;
     }
+ else     if (payment.isActive() && payment.getAmount() != null) {
+      appliedPaymentsWithoutThirdParty.add(payment.getAmount());
+    }
+  }
+  if (unconfirmedThirdParty != null) {
+    Money difference=order.getTotal().subtract(appliedPaymentsWithoutThirdParty);
+    unconfirmedThirdParty.setAmount(difference);
   }
   context.setSeedData(order);
   return context;
