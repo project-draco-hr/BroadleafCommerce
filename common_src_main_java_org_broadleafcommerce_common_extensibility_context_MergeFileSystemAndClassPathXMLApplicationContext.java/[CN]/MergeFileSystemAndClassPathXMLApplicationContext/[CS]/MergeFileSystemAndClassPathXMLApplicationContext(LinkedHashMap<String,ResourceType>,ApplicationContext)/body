@@ -1,11 +1,11 @@
 {
-  super(parent);
+  this(parent);
   ResourceInputStream[] resources=new ResourceInputStream[locations.size()];
   int j=0;
   for (  Map.Entry<String,ResourceType> entry : locations.entrySet()) {
 switch (entry.getValue()) {
 case CLASSPATH:
-      resources[j]=new ResourceInputStream(MergeClassPathXMLApplicationContext.class.getClassLoader().getResourceAsStream(entry.getKey()),entry.getKey());
+      resources[j]=new ResourceInputStream(getClassLoader(parent).getResourceAsStream(entry.getKey()),entry.getKey());
     break;
 case FILESYSTEM:
   try {

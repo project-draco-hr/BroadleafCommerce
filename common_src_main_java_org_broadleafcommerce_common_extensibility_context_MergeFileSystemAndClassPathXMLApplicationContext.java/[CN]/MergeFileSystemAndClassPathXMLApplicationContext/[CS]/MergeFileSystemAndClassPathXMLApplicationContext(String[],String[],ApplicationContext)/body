@@ -1,11 +1,11 @@
 {
-  super(parent);
+  this(parent);
   ResourceInputStream[] classPathSources;
   ResourceInputStream[] fileSystemSources;
   try {
     classPathSources=new ResourceInputStream[classPathLocations.length];
     for (int j=0; j < classPathLocations.length; j++) {
-      classPathSources[j]=new ResourceInputStream(MergeClassPathXMLApplicationContext.class.getClassLoader().getResourceAsStream(classPathLocations[j]),classPathLocations[j]);
+      classPathSources[j]=new ResourceInputStream(getClassLoader(parent).getResourceAsStream(classPathLocations[j]),classPathLocations[j]);
     }
     fileSystemSources=new ResourceInputStream[fileSystemLocations.length];
     for (int j=0; j < fileSystemSources.length; j++) {
