@@ -1,12 +1,12 @@
 {
-  super(parent);
+  this(parent);
   ResourceInputStream[] sources=new ResourceInputStream[sourceLocations.length];
   for (int j=0; j < sourceLocations.length; j++) {
-    sources[j]=new ResourceInputStream(MergeClassPathXMLApplicationContext.class.getClassLoader().getResourceAsStream(sourceLocations[j]),sourceLocations[j]);
+    sources[j]=new ResourceInputStream(getClassLoader(parent).getResourceAsStream(sourceLocations[j]),sourceLocations[j]);
   }
   ResourceInputStream[] patches=new ResourceInputStream[patchLocations.length];
   for (int j=0; j < patches.length; j++) {
-    patches[j]=new ResourceInputStream(MergeClassPathXMLApplicationContext.class.getClassLoader().getResourceAsStream(patchLocations[j]),patchLocations[j]);
+    patches[j]=new ResourceInputStream(getClassLoader(parent).getResourceAsStream(patchLocations[j]),patchLocations[j]);
   }
   ImportProcessor importProcessor=new ImportProcessor(this);
   try {
