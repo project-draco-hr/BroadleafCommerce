@@ -1,7 +1,7 @@
 {
   List<FulfillmentGroup> fgs=order.getFulfillmentGroups();
   if (fgs != null && fgs.size() > 0) {
-    FulfillmentGroup defaultFg=fgs.get(0);
+    FulfillmentGroup defaultFg=fgService.getFirstShippableFulfillmentGroup(order);
     if (defaultFg.getAddress() != null) {
       Address fgAddress=defaultFg.getAddress();
       String stateAbbr=null;
