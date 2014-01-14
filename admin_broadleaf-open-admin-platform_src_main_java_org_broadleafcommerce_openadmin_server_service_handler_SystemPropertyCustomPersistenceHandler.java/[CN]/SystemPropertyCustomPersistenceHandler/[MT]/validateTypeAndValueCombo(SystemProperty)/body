@@ -1,0 +1,34 @@
+{
+  boolean validated=false;
+  if (prop.getPropertyType().equals(SystemPropertyFieldType.BOOLEAN_TYPE)) {
+    String value=prop.getValue().toUpperCase();
+    if (value != null && (value.equals("TRUE") || value.equals("FALSE"))) {
+      validated=true;
+    }
+  }
+ else   if (prop.getPropertyType().equals(SystemPropertyFieldType.INT_TYPE)) {
+    try {
+      Integer.parseInt(prop.getValue());
+      validated=true;
+    }
+ catch (    Exception e) {
+    }
+  }
+ else   if (prop.getPropertyType().equals(SystemPropertyFieldType.DOUBLE_TYPE)) {
+    try {
+      Double.parseDouble(prop.getValue());
+      validated=true;
+    }
+ catch (    Exception e) {
+    }
+  }
+ else   if (prop.getPropertyType().equals(SystemPropertyFieldType.STRING_TYPE)) {
+    validated=true;
+  }
+  if (!validated) {
+    Entity errorEntity=new Entity();
+    errorEntity.addValidationError("value","valueIllegalForPropertyType");
+    return errorEntity;
+  }
+  return null;
+}
