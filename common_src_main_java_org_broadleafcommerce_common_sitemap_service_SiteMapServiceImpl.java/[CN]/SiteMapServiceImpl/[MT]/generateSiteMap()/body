@@ -10,7 +10,7 @@
     return smgr;
   }
   FileWorkArea fileWorkArea=broadleafFileService.initializeWorkArea();
-  SiteMapBuilder siteMapBuilder=new SiteMapBuilder(smc,fileWorkArea,baseUrlResolver.getSiteBaseUrl(),gzipSiteMapFiles);
+  SiteMapBuilder siteMapBuilder=new SiteMapBuilder(smc,fileWorkArea,baseUrlResolver.getSiteBaseUrl(),getGzipSiteMapFiles());
   if (LOG.isTraceEnabled()) {
     LOG.trace("File work area initalized with path " + fileWorkArea.getFilePathLocation());
   }
@@ -33,7 +33,7 @@
     }
   }
   siteMapBuilder.persistSiteMap();
-  if (gzipSiteMapFiles) {
+  if (getGzipSiteMapFiles()) {
     gzipAndDeleteFiles(fileWorkArea,siteMapBuilder.getIndexedFileNames());
   }
   broadleafFileService.addOrUpdateResources(fileWorkArea,true);

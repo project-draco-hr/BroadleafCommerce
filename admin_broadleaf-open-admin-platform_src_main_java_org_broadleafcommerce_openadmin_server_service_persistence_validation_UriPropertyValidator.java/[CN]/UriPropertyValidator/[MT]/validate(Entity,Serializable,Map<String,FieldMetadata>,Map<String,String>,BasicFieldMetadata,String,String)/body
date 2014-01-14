@@ -2,13 +2,13 @@
   if (value == null) {
     return new PropertyValidationResult(succeedForNullValues);
   }
-  if (isFullUrl(value) && ignoreFullUrls) {
+  if (isFullUrl(value) && getIgnoreFullUrls()) {
     return new PropertyValidationResult(true);
   }
-  if (requireLeadingSlash && !value.startsWith("/")) {
+  if (getRequireLeadingSlash() && !value.startsWith("/")) {
     return new PropertyValidationResult(false,ERROR_KEY_BEGIN_WITH_SLASH);
   }
-  if (!allowTrailingSlash && value.endsWith("/")) {
+  if (!getAllowTrailingSlash() && value.endsWith("/")) {
     return new PropertyValidationResult(false,ERROR_KEY_CANNOT_END_WITH_SLASH);
   }
   return new PropertyValidationResult(true);

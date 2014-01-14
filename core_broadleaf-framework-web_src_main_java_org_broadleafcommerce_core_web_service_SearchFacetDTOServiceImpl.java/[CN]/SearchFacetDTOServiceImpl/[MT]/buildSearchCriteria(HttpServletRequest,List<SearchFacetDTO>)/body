@@ -1,6 +1,6 @@
 {
   ProductSearchCriteria searchCriteria=new ProductSearchCriteria();
-  searchCriteria.setPageSize(defaultPageSize);
+  searchCriteria.setPageSize(getDefaultPageSize());
   Map<String,String[]> facets=new HashMap<String,String[]>();
   for (Iterator<Entry<String,String[]>> iter=request.getParameterMap().entrySet().iterator(); iter.hasNext(); ) {
     Map.Entry<String,String[]> entry=iter.next();
@@ -13,9 +13,7 @@
     }
  else     if (key.equals(ProductSearchCriteria.PAGE_SIZE_STRING)) {
       int requestedPageSize=Integer.parseInt(entry.getValue()[0]);
-      if (maxPageSize == null) {
-        maxPageSize=requestedPageSize;
-      }
+      int maxPageSize=getMaxPageSize();
       searchCriteria.setPageSize(Math.min(requestedPageSize,maxPageSize));
     }
  else     if (key.equals(ProductSearchCriteria.QUERY_STRING)) {

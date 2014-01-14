@@ -1,0 +1,21 @@
+{
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    extensionManager.getProxy().resolveProperty(name,holder);
+    if (holder.getResult() != null) {
+      if (holder.getResult() instanceof String) {
+        return holder.getResult().toString();
+      }
+ else       if (holder.getResult() instanceof SystemProperty) {
+        return ((SystemProperty)holder.getResult()).getValue();
+      }
+    }
+  }
+  SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
+  if (property == null || property.getValue() == null) {
+    return propMgr.getProperty(name);
+  }
+ else {
+    return property.getValue();
+  }
+}
