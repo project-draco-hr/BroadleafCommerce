@@ -6,7 +6,8 @@
   ValidationUtils.rejectIfEmptyOrWhitespace(errors,"newPassword","newPassword.required");
   ValidationUtils.rejectIfEmptyOrWhitespace(errors,"newPasswordConfirm","newPasswordConfirm.required");
   if (!errors.hasErrors()) {
-    if (!currentPassword.equals(CustomerState.getCustomer().getPassword())) {
+    String encryptedCurrentPassword=customerService.encodePassword(currentPassword,CustomerState.getCustomer());
+    if (!encryptedCurrentPassword.equals(CustomerState.getCustomer().getPassword())) {
       errors.rejectValue("currentPassword","currentPassword.invalid");
     }
     if (!passwordConfirm.equals(password)) {
