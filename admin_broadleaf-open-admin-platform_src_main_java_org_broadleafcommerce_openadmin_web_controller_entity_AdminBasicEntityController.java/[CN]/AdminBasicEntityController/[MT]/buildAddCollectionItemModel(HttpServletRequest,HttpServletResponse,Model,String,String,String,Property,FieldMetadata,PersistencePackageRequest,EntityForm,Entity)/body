@@ -9,11 +9,14 @@
       ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
       if (entityForm == null) {
         entityForm=formService.createEntityForm(collectionMetadata,sectionCrumbs);
+        entityForm.setCeilingEntityClassname(ppr.getCeilingEntityClassname());
+        entityForm.setEntityType(ppr.getCeilingEntityClassname());
       }
  else {
         formService.populateEntityForm(collectionMetadata,entityForm,sectionCrumbs);
         formService.populateEntityFormFieldValues(collectionMetadata,entity,entityForm);
       }
+      formService.removeNonApplicableFields(collectionMetadata,entityForm,ppr.getCeilingEntityClassname());
       entityForm.getTabs().iterator().next().getIsVisible();
       model.addAttribute("entityForm",entityForm);
       model.addAttribute("viewType","modal/simpleAddEntity");
