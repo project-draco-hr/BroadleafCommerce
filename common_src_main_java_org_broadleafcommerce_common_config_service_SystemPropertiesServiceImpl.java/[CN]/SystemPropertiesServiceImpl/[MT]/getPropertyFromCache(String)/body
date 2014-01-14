@@ -1,0 +1,10 @@
+{
+  if (!isInSandbox()) {
+    String key=buildKey(propertyName);
+    Element cacheElement=getSystemPropertyCache().get(key);
+    if (cacheElement != null && cacheElement.getObjectValue() != null) {
+      return (String)cacheElement.getObjectValue();
+    }
+  }
+  return null;
+}

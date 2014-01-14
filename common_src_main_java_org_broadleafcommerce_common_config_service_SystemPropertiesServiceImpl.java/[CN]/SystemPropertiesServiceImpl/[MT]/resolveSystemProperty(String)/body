@@ -3,19 +3,22 @@
     ExtensionResultHolder holder=new ExtensionResultHolder();
     extensionManager.getProxy().resolveProperty(name,holder);
     if (holder.getResult() != null) {
-      if (holder.getResult() instanceof String) {
-        return holder.getResult().toString();
-      }
- else       if (holder.getResult() instanceof SystemProperty) {
-        return ((SystemProperty)holder.getResult()).getValue();
-      }
+      return (String)holder.getResult();
     }
+  }
+  String result=getPropertyFromCache(name);
+  if (result != null) {
+    return result;
   }
   SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
   if (property == null || property.getValue() == null) {
-    return propMgr.getProperty(name);
+    result=propMgr.getProperty(name);
   }
  else {
-    return property.getValue();
+    result=property.getValue();
   }
+  if (result != null) {
+    addPropertyToCache(name,result);
+  }
+  return result;
 }
