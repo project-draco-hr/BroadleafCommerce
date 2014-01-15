@@ -10,7 +10,10 @@
     List<Locale> locales=getAllLocales();
     Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
     for (    Product product : products) {
-      documents.add(buildDocument(product,fields,locales));
+      SolrInputDocument doc=buildDocument(product,fields,locales);
+      if (doc != null) {
+        documents.add(doc);
+      }
     }
     logDocuments(documents);
     if (!CollectionUtils.isEmpty(documents)) {
