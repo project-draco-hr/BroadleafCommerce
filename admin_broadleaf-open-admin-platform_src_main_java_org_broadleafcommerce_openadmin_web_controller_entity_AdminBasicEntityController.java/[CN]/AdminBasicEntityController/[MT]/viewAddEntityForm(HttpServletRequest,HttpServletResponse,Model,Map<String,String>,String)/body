@@ -17,6 +17,11 @@
     List<ClassTree> entityTypes=getAddEntityTypes(cmd.getPolymorphicEntities());
     model.addAttribute("entityTypes",entityTypes);
     model.addAttribute("viewType","modal/entityTypeSelection");
+    String requestUri=request.getRequestURI();
+    if (!request.getContextPath().equals("/") && requestUri.startsWith(request.getContextPath())) {
+      requestUri=requestUri.substring(request.getContextPath().length() + 1,requestUri.length());
+    }
+    model.addAttribute("currentUri",requestUri);
   }
  else {
     EntityForm entityForm=formService.createEntityForm(cmd);
