@@ -7,7 +7,7 @@
   FieldMetadata md=collectionProperty.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md,sectionCrumbs).withCustomCriteria(new String[]{id});
   BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
-  ClassMetadata cmd=service.getClassMetadata(ppr);
+  ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   String entityType=null;
   if (request.getParameter("entityType") != null) {
     entityType=request.getParameter("entityType");
@@ -40,8 +40,8 @@
  else {
     ppr=ppr.withCeilingEntityClassname(entityType);
   }
-  ClassMetadata collectionMetadata=service.getClassMetadata(ppr);
-  EntityForm entityForm=formService.createEntityForm(collectionMetadata);
+  ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  EntityForm entityForm=formService.createEntityForm(collectionMetadata,sectionCrumbs);
   entityForm.setCeilingEntityClassname(ppr.getCeilingEntityClassname());
   entityForm.setEntityType(ppr.getCeilingEntityClassname());
   formService.removeNonApplicableFields(collectionMetadata,entityForm,ppr.getCeilingEntityClassname());
