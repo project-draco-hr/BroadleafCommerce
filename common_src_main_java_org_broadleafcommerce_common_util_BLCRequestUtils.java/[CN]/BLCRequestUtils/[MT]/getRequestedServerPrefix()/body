@@ -1,0 +1,12 @@
+{
+  HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  String scheme=request.getScheme();
+  StringBuilder serverPrefix=new StringBuilder(scheme);
+  serverPrefix.append("://");
+  serverPrefix.append(request.getServerName());
+  if ((scheme.equalsIgnoreCase("http") && request.getServerPort() != 80) || (scheme.equalsIgnoreCase("https") && request.getServerPort() != 443)) {
+    serverPrefix.append(":");
+    serverPrefix.append(request.getServerPort());
+  }
+  return serverPrefix.toString();
+}
