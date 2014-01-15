@@ -16,6 +16,7 @@
     return builder.between(path,directValues.get(0),directValues.get(1));
   }
  else {
-    return builder.equal(path,directValues.get(0));
+    Date secondFromNow=new Date(((Date)directValues.get(0)).getTime() + 1000);
+    return builder.between(path,directValues.get(0),secondFromNow);
   }
 }
