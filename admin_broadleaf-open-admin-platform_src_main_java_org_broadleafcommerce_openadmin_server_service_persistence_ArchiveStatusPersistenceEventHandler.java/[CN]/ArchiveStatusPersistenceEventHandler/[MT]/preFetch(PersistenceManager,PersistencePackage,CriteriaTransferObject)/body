@@ -1,0 +1,26 @@
+{
+  try {
+    Class<?>[] entityClasses=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
+    boolean isArchivable=false;
+    for (    Class<?> entity : entityClasses) {
+      if (Status.class.isAssignableFrom(entity)) {
+        isArchivable=true;
+        break;
+      }
+    }
+    if (isArchivable && !persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
+      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("archiveStatus.archived")).withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+        @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path<Character> explicitPath,        List<Character> directValues){
+          return builder.or(builder.equal(explicitPath,'N'),builder.isNull(explicitPath));
+        }
+      }
+));
+      cto.getAdditionalFilterMappings().add(filterMapping);
+    }
+    return new PersistenceManagerEventHandlerResponse().withStatus(PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.HANDLED);
+  }
+ catch (  ClassNotFoundException e) {
+    LOG.error("Could not find the class " + persistencePackage.getCeilingEntityFullyQualifiedClassname() + " to "+ "compute polymorphic entity types for. Assuming that the entity is not archivable");
+    return new PersistenceManagerEventHandlerResponse().withStatus(PersistenceManagerEventHandlerResponse.PersistenceManagerEventHandlerResponseStatus.NOT_HANDLED);
+  }
+}
