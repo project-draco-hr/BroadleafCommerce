@@ -1,7 +1,7 @@
 {
   Object salt=null;
   if (saltSource != null) {
-    salt=saltSource.getSalt(new User(customer.getUsername(),customer.getUnencodedPassword(),new ArrayList<GrantedAuthority>()));
+    salt=saltSource.getSalt(new CustomerUserDetails(customer.getId(),customer.getUsername(),customer.getUnencodedPassword(),new ArrayList<GrantedAuthority>()));
   }
   return salt;
 }

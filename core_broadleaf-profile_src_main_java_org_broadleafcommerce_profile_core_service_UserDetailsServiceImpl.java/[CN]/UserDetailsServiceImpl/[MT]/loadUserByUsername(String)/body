@@ -4,5 +4,5 @@
     throw new UsernameNotFoundException("The customer was not found");
   }
   List<GrantedAuthority> grantedAuthorities=createGrantedAuthorities(roleService.findCustomerRolesByCustomerId(customer.getId()));
-  return new User(username,customer.getPassword(),true,true,!customer.isPasswordChangeRequired(),true,grantedAuthorities);
+  return new CustomerUserDetails(customer.getId(),username,customer.getPassword(),!customer.isDeactivated(),true,!customer.isPasswordChangeRequired(),true,grantedAuthorities);
 }
