@@ -1,13 +1,11 @@
 {
   RollbackStateLocal rollbackStateLocal=getRollbackStateLocal();
-  List<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
+  Stack<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
   if (containers != null) {
-    Iterator<StateContainer> itr=containers.iterator();
-    while (itr.hasNext()) {
-      StateContainer stateContainer=itr.next();
+    while (!containers.empty()) {
+      StateContainer stateContainer=containers.pop();
       if ((region == null && stateContainer.getRegion() == null) || (region != null && region.equals(stateContainer.getRegion()))) {
         stateContainer.getRollbackHandler().rollbackState(stateContainer.getActivity(),stateContainer.getProcessContext(),stateContainer.getStateItems());
-        itr.remove();
       }
     }
   }

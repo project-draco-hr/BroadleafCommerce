@@ -1,8 +1,8 @@
 {
   RollbackStateLocal rollbackStateLocal=getRollbackStateLocal();
-  List<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
+  Stack<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
   if (containers == null) {
-    containers=new ArrayList<StateContainer>();
+    containers=new Stack<StateContainer>();
     stateMap.put(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId(),containers);
   }
   StateContainer stateContainer=new StateContainer();
@@ -11,5 +11,5 @@
   stateContainer.setRegion(region);
   stateContainer.setActivity(activity);
   stateContainer.setProcessContext(processContext);
-  containers.add(stateContainer);
+  containers.push(stateContainer);
 }

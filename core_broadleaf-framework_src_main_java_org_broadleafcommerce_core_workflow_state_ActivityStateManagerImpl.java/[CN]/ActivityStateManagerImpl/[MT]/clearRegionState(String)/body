@@ -1,12 +1,10 @@
 {
   RollbackStateLocal rollbackStateLocal=getRollbackStateLocal();
-  List<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
+  Stack<StateContainer> containers=stateMap.get(rollbackStateLocal.getThreadId() + "_" + rollbackStateLocal.getWorkflowId());
   if (containers != null) {
-    Iterator<StateContainer> itr=containers.iterator();
-    while (itr.hasNext()) {
-      String myRegion=itr.next().getRegion();
+    while (!containers.empty()) {
+      String myRegion=containers.pop().getRegion();
       if ((region == null && myRegion == null) || (region != null && region.equals(myRegion))) {
-        itr.remove();
         break;
       }
     }
