@@ -1,0 +1,24 @@
+{
+  boolean canCreate=true;
+  try {
+    adminRemoteSecurityService.securityCheck(sectionClassName,EntityOperationType.ADD);
+  }
+ catch (  ServiceException e) {
+    if (e instanceof SecurityServiceException) {
+      canCreate=false;
+    }
+  }
+  if (canCreate) {
+    checkReadOnly: {
+      for (      Property property : cmd.getProperties()) {
+        if (property.getMetadata() instanceof BasicFieldMetadata) {
+          if (((BasicFieldMetadata)property.getMetadata()).getReadOnly() == null || !((BasicFieldMetadata)property.getMetadata()).getReadOnly()) {
+            break checkReadOnly;
+          }
+        }
+      }
+      canCreate=false;
+    }
+  }
+  return canCreate;
+}
