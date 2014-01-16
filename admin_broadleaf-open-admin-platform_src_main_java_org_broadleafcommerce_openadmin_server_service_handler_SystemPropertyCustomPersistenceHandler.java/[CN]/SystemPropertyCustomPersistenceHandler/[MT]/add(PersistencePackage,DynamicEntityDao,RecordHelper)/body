@@ -1,0 +1,19 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    SystemProperty adminInstance=(SystemProperty)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(SystemProperty.class.getName(),persistencePerspective);
+    adminInstance=(SystemProperty)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    Entity errorEntity=validateTypeAndValueCombo(adminInstance);
+    if (errorEntity != null) {
+      entity.setValidationErrors(errorEntity.getValidationErrors());
+      return entity;
+    }
+    adminInstance=(SystemProperty)dynamicEntityDao.merge(adminInstance);
+    return helper.getRecord(adminProperties,adminInstance,null,null);
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to perform fetch for entity: " + SystemProperty.class.getName(),e);
+  }
+}
