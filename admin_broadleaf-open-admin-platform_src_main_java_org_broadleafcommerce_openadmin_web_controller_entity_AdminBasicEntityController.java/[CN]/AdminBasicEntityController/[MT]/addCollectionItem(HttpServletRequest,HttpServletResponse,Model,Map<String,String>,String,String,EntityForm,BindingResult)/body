@@ -3,6 +3,12 @@
   String mainClassName=getClassNameForSection(sectionKey);
   ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName));
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
+  if (StringUtils.isBlank(entityForm.getEntityType())) {
+    FieldMetadata fmd=collectionProperty.getMetadata();
+    if (fmd instanceof BasicCollectionMetadata) {
+      entityForm.setEntityType(((BasicCollectionMetadata)fmd).getCollectionCeilingEntity());
+    }
+  }
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false);
   Entity savedEntity=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity);
