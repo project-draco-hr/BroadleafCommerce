@@ -1,0 +1,88 @@
+{
+  if (beanName.equals(targetRef)) {
+    if (bean instanceof ListFactoryBean || bean instanceof List) {
+      Object beanToRemove=applicationContext.getBean(beanRef);
+      try {
+        List sourceList;
+        if (bean instanceof ListFactoryBean) {
+          Field field=ListFactoryBean.class.getDeclaredField("sourceList");
+          field.setAccessible(true);
+          sourceList=(List)field.get(bean);
+        }
+ else {
+          sourceList=(List)bean;
+        }
+        Iterator itr=sourceList.iterator();
+        while (itr.hasNext()) {
+          Object member=itr.next();
+          if (member.equals(beanToRemove)) {
+            itr.remove();
+          }
+        }
+      }
+ catch (      Exception e) {
+        throw new BeanCreationException(e.getMessage());
+      }
+    }
+ else     if (bean instanceof SetFactoryBean || bean instanceof Set) {
+      Object beanToRemove=applicationContext.getBean(beanRef);
+      try {
+        Set sourceSet;
+        if (bean instanceof SetFactoryBean) {
+          Field field=SetFactoryBean.class.getDeclaredField("sourceSet");
+          field.setAccessible(true);
+          sourceSet=(Set)field.get(bean);
+        }
+ else {
+          sourceSet=(Set)bean;
+        }
+        List tempList=new ArrayList(sourceSet);
+        Iterator itr=tempList.iterator();
+        while (itr.hasNext()) {
+          Object member=itr.next();
+          if (member.equals(beanToRemove)) {
+            itr.remove();
+          }
+        }
+        sourceSet.clear();
+        sourceSet.addAll(tempList);
+      }
+ catch (      Exception e) {
+        throw new BeanCreationException(e.getMessage());
+      }
+    }
+ else     if (bean instanceof MapFactoryBean || bean instanceof Map) {
+      try {
+        Map sourceMap;
+        if (bean instanceof MapFactoryBean) {
+          Field field=MapFactoryBean.class.getDeclaredField("sourceMap");
+          field.setAccessible(true);
+          sourceMap=(Map)field.get(bean);
+        }
+ else {
+          sourceMap=(Map)bean;
+        }
+        Object key;
+        if (mapKey != null) {
+          key=mapKey;
+        }
+ else {
+          key=applicationContext.getBean(mapKeyRef);
+        }
+        Map referenceMap=new LinkedHashMap(sourceMap);
+        for (        Object sourceKey : referenceMap.keySet()) {
+          if (sourceKey.equals(key)) {
+            sourceMap.remove(key);
+          }
+        }
+      }
+ catch (      Exception e) {
+        throw new BeanCreationException(e.getMessage());
+      }
+    }
+ else {
+      throw new IllegalArgumentException("Bean (" + beanName + ") is specified as a merge target, "+ "but is not"+ " of type ListFactoryBean, SetFactoryBean or MapFactoryBean");
+    }
+  }
+  return bean;
+}
