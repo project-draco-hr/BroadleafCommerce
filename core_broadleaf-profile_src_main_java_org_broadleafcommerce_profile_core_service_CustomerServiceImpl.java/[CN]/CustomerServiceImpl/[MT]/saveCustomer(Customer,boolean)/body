@@ -3,7 +3,7 @@
     customer.setRegistered(true);
   }
   if (customer.getUnencodedPassword() != null) {
-    customer.setPassword(passwordEncoder.encodePassword(customer.getUnencodedPassword(),getSalt(customer)));
+    customer.setPassword(passwordEncoder.encodePassword(customer.getUnencodedPassword(),getSalt(customer,customer.getUnencodedPassword())));
   }
   if (customer.getUnencodedChallengeAnswer() != null && !customer.getUnencodedChallengeAnswer().equals(customer.getChallengeAnswer())) {
     customer.setChallengeAnswer(passwordEncoder.encodePassword(customer.getUnencodedChallengeAnswer(),getSalt(customer)));
