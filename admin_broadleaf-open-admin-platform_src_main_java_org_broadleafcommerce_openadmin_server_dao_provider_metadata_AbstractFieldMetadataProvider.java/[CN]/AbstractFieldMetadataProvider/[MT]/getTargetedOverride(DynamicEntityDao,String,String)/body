@@ -1,0 +1,30 @@
+{
+  if (metadataOverrides != null && (configurationKey != null || ceilingEntityFullyQualifiedClassname != null)) {
+    if (metadataOverrides.containsKey(configurationKey)) {
+      return metadataOverrides.get(configurationKey);
+    }
+    if (metadataOverrides.containsKey(ceilingEntityFullyQualifiedClassname)) {
+      return metadataOverrides.get(ceilingEntityFullyQualifiedClassname);
+    }
+    Class<?> test;
+    try {
+      test=Class.forName(ceilingEntityFullyQualifiedClassname);
+    }
+ catch (    ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    if (test.isInterface()) {
+      Class<?>[] types=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(test);
+      return metadataOverrides.get(types[types.length - 1].getName());
+    }
+ else {
+      Class<?>[] types=test.getInterfaces();
+      for (      Class<?> type : types) {
+        if (metadataOverrides.containsKey(type.getName())) {
+          return metadataOverrides.get(type.getName());
+        }
+      }
+    }
+  }
+  return null;
+}
