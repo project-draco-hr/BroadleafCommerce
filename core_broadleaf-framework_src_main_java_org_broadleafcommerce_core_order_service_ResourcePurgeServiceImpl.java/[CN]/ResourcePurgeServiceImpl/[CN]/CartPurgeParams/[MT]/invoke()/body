@@ -1,0 +1,29 @@
+{
+  nameArray=null;
+  statusArray=null;
+  dateCreatedMinThreshold=null;
+  isPreview=null;
+  for (  Map.Entry<String,String> entry : config.entrySet()) {
+    if (PurgeCartVariableNames.STATUS.toString().equals(entry.getKey())) {
+      String[] temp=entry.getValue().split(",");
+      statusArray=new OrderStatus[temp.length];
+      int index=0;
+      for (      String name : temp) {
+        OrderStatus orderStatus=OrderStatus.getInstance(name);
+        statusArray[index]=orderStatus;
+        index++;
+      }
+    }
+    if (PurgeCartVariableNames.NAME.toString().equals(entry.getKey())) {
+      nameArray=entry.getValue().split(",");
+    }
+    if (PurgeCartVariableNames.SECONDS_OLD.toString().equals(entry.getKey())) {
+      Long secondsOld=Long.parseLong(entry.getValue());
+      dateCreatedMinThreshold=new Date(SystemTime.asMillis() - (secondsOld * 1000));
+    }
+    if (PurgeCartVariableNames.IS_PREVIEW.toString().equals(entry.getKey())) {
+      isPreview=Boolean.parseBoolean(entry.getValue());
+    }
+  }
+  return this;
+}
