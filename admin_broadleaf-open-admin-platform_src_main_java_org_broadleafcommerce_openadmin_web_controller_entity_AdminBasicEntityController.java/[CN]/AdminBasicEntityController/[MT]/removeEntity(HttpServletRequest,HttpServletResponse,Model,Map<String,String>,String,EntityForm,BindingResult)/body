@@ -1,5 +1,18 @@
 {
   String sectionKey=getSectionKey(pathVars);
-  service.removeEntity(entityForm,getSectionCustomCriteria());
+  try {
+    service.removeEntity(entityForm,getSectionCustomCriteria());
+  }
+ catch (  ServiceException e) {
+    if (e.containsCause(ConstraintViolationException.class)) {
+      FlashMap fm=new FlashMap();
+      fm.put("headerFlash","delete.unsuccessful");
+      fm.put("headerFlashAlert",true);
+      request.setAttribute(DispatcherServlet.OUTPUT_FLASH_MAP_ATTRIBUTE,fm);
+      LOG.error("Could not delete record",e);
+      return "redirect:/" + sectionKey + "/"+ id;
+    }
+    throw e;
+  }
   return "redirect:/" + sectionKey;
 }

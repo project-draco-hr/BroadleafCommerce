@@ -1,0 +1,11 @@
+{
+  Throwable current=this;
+  do {
+    if (clazz.isAssignableFrom(current.getClass())) {
+      return true;
+    }
+    current=current.getCause();
+  }
+ while (current.getCause() != null);
+  return false;
+}
