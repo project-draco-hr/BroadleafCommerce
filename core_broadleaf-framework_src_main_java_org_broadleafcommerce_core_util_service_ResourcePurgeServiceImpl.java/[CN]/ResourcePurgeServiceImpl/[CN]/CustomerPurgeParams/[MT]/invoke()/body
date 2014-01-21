@@ -1,0 +1,22 @@
+{
+  isRegistered=null;
+  isDeactivated=null;
+  dateCreatedMinThreshold=null;
+  isPreview=null;
+  for (  Map.Entry<String,String> entry : config.entrySet()) {
+    if (PurgeCustomerVariableNames.SECONDS_OLD.toString().equals(entry.getKey())) {
+      Long secondsOld=Long.parseLong(entry.getValue());
+      dateCreatedMinThreshold=new Date(SystemTime.asMillis() - (secondsOld * 1000));
+    }
+    if (PurgeCustomerVariableNames.IS_REGISTERED.toString().equals(entry.getKey())) {
+      isRegistered=Boolean.parseBoolean(entry.getValue());
+    }
+    if (PurgeCustomerVariableNames.IS_DEACTIVATED.toString().equals(entry.getKey())) {
+      isDeactivated=Boolean.parseBoolean(entry.getValue());
+    }
+    if (PurgeCustomerVariableNames.IS_PREVIEW.toString().equals(entry.getKey())) {
+      isPreview=Boolean.parseBoolean(entry.getValue());
+    }
+  }
+  return this;
+}

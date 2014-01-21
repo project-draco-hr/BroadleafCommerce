@@ -1,0 +1,29 @@
+{
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Purging customers");
+  }
+  if (MapUtils.isEmpty(config)) {
+    throw new IllegalArgumentException("Cannot purge customers since there was no configuration provided. " + "In the absence of config params, all customers would be candidates for deletion.");
+  }
+  try {
+    transUtil.runStreamingTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+      @Override public void pagedExecute(      Object[] param) throws Throwable {
+        List<Customer> customers=(List<Customer>)param[0];
+        for (        Customer customer : customers) {
+          deleteCustomer(customer);
+        }
+      }
+      @Override public Object[] retrievePage(      int startPos,      int pageSize){
+        List<Customer> results=getCustomersToPurge(config,startPos,pageSize);
+        return new Object[]{results};
+      }
+      @Override public Long retrieveTotalCount(){
+        return getCustomersToPurgeLength(config);
+      }
+    }
+,RuntimeException.class);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to purge customers",e);
+  }
+}

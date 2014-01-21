@@ -1,0 +1,8 @@
+{
+  CustomerPurgeParams purgeParams=new CustomerPurgeParams(config).invoke();
+  Boolean isRegistered=purgeParams.getIsRegistered();
+  Boolean isDeactivated=purgeParams.getIsDeactivated();
+  Date dateCreatedMinThreshold=purgeParams.getDateCreatedMinThreshold();
+  Boolean isPreview=purgeParams.getIsPreview();
+  return resourcePurgeDao.findCustomers(dateCreatedMinThreshold,isRegistered,isDeactivated,isPreview,startPos,length);
+}

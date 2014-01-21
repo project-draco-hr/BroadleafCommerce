@@ -1,0 +1,8 @@
+{
+  CartPurgeParams purgeParams=new CartPurgeParams(config).invoke();
+  String[] nameArray=purgeParams.getNameArray();
+  OrderStatus[] statusArray=purgeParams.getStatusArray();
+  Date dateCreatedMinThreshold=purgeParams.getDateCreatedMinThreshold();
+  Boolean isPreview=purgeParams.getIsPreview();
+  return resourcePurgeDao.findCartsCount(nameArray,statusArray,dateCreatedMinThreshold,isPreview);
+}

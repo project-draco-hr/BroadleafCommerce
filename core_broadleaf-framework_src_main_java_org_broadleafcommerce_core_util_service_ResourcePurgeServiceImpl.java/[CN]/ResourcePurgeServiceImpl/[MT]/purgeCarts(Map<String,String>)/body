@@ -1,0 +1,29 @@
+{
+  if (LOG.isDebugEnabled()) {
+    LOG.debug("Purging carts (non-submitted orders)");
+  }
+  if (MapUtils.isEmpty(config)) {
+    throw new IllegalArgumentException("Cannot purge carts since there was no configuration provided. " + "In the absence of config params, all carts would be candidates for deletion.");
+  }
+  try {
+    transUtil.runStreamingTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+      @Override public void pagedExecute(      Object[] param) throws Throwable {
+        List<Order> orders=(List<Order>)param[0];
+        for (        Order cart : orders) {
+          deleteCart(cart);
+        }
+      }
+      @Override public Object[] retrievePage(      int startPos,      int pageSize){
+        List<Order> results=getCartsToPurge(config,startPos,pageSize);
+        return new Object[]{results};
+      }
+      @Override public Long retrieveTotalCount(){
+        return getCartsToPurgeLength(config);
+      }
+    }
+,RuntimeException.class);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to purge carts",e);
+  }
+}
