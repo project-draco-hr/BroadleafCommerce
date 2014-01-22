@@ -5,7 +5,7 @@
   CustomerForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
     token=token.toLowerCase();
-    fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(token,null));
+    fpst=customerForgotPasswordSecurityTokenDao.readToken(encodePassword(token,null));
     if (fpst == null) {
       response.addErrorCode("invalidToken");
     }
