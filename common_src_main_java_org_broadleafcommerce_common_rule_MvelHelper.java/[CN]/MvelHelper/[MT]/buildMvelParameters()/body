@@ -1,0 +1,18 @@
+{
+  Map<String,Object> mvelParameters=new HashMap<String,Object>();
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc != null && brc.getRequest() != null) {
+    TimeDTO timeDto=new TimeDTO(SystemTime.asCalendar());
+    HttpServletRequest request=brc.getRequest();
+    RequestDTO requestDto=(RequestDTO)brc.getRequestDTO();
+    mvelParameters.put("time",timeDto);
+    mvelParameters.put("request",requestDto);
+    Map<String,Object> blcRuleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM);
+    if (blcRuleMap != null) {
+      for (      String mapKey : blcRuleMap.keySet()) {
+        mvelParameters.put(mapKey,blcRuleMap.get(mapKey));
+      }
+    }
+  }
+  return mvelParameters;
+}
