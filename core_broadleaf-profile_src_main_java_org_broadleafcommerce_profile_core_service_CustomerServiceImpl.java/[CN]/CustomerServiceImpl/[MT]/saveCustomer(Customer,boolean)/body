@@ -3,10 +3,10 @@
     customer.setRegistered(true);
   }
   if (customer.getUnencodedPassword() != null) {
-    customer.setPassword(passwordEncoder.encodePassword(customer.getUnencodedPassword(),getSalt(customer,customer.getUnencodedPassword())));
+    customer.setPassword(encodePassword(customer.getUnencodedPassword(),customer));
   }
   if (customer.getUnencodedChallengeAnswer() != null && !customer.getUnencodedChallengeAnswer().equals(customer.getChallengeAnswer())) {
-    customer.setChallengeAnswer(passwordEncoder.encodePassword(customer.getUnencodedChallengeAnswer(),getSalt(customer)));
+    customer.setChallengeAnswer(encodePassword(customer.getUnencodedChallengeAnswer(),customer));
   }
   return customerDao.save(customer);
 }
