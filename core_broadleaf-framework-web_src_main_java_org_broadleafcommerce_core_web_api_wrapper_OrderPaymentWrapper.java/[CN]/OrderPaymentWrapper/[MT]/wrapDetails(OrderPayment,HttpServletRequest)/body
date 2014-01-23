@@ -6,6 +6,9 @@
   if (model.getType() != null) {
     this.type=model.getType().getType();
   }
+  if (model.getGatewayType() != null) {
+    this.gatewayType=model.getGatewayType().getType();
+  }
   if (model.getBillingAddress() != null) {
     AddressWrapper addressWrapper=(AddressWrapper)context.getBean(AddressWrapper.class.getName());
     addressWrapper.wrapDetails(model.getBillingAddress(),request);
@@ -14,6 +17,14 @@
   if (model.getAmount() != null) {
     this.amount=model.getAmount().getAmount();
     this.currency=model.getAmount().getCurrency();
+  }
+  if (model.getTransactions() != null && !model.getTransactions().isEmpty()) {
+    this.transactions=new ArrayList<PaymentTransactionWrapper>();
+    for (    PaymentTransaction transaction : model.getTransactions()) {
+      PaymentTransactionWrapper transactionWrapper=(PaymentTransactionWrapper)context.getBean(PaymentTransactionWrapper.class.getName());
+      transactionWrapper.wrapSummary(transaction,request);
+      this.transactions.add(transactionWrapper);
+    }
   }
   this.referenceNumber=model.getReferenceNumber();
 }

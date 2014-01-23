@@ -1,0 +1,14 @@
+{
+  Order cart=CartState.getCart();
+  if (cart != null && cart.getPayments() != null && !cart.getPayments().isEmpty()) {
+    List<OrderPayment> payments=cart.getPayments();
+    List<OrderPaymentWrapper> paymentWrappers=new ArrayList<OrderPaymentWrapper>();
+    for (    OrderPayment payment : payments) {
+      OrderPaymentWrapper orderPaymentWrapper=(OrderPaymentWrapper)context.getBean(OrderPaymentWrapper.class.getName());
+      orderPaymentWrapper.wrapSummary(payment,request);
+      paymentWrappers.add(orderPaymentWrapper);
+    }
+    return paymentWrappers;
+  }
+  throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+}

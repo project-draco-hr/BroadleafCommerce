@@ -1,0 +1,29 @@
+{
+  this.id=model.getId();
+  if (model.getOrderPayment() != null) {
+    this.orderPaymentId=model.getOrderPayment().getId();
+  }
+  if (model.getParentTransaction() != null) {
+    this.parentTransactionId=model.getParentTransaction().getId();
+  }
+  if (model.getType() != null) {
+    this.type=model.getType().getType();
+  }
+  this.customerIpAddress=model.getCustomerIpAddress();
+  this.rawResponse=model.getRawResponse();
+  this.success=model.getSuccess();
+  if (model.getAmount() != null) {
+    this.amount=model.getAmount().getAmount();
+    this.currency=model.getAmount().getCurrency();
+  }
+  if (model.getAdditionalFields() != null && !model.getAdditionalFields().isEmpty()) {
+    List<MapElementWrapper> mapElementWrappers=new ArrayList<MapElementWrapper>();
+    for (    String key : model.getAdditionalFields().keySet()) {
+      MapElementWrapper mapElementWrapper=new MapElementWrapper();
+      mapElementWrapper.setKey(key);
+      mapElementWrapper.setValue(model.getAdditionalFields().get(key));
+      mapElementWrappers.add(mapElementWrapper);
+    }
+    this.additionalFields=mapElementWrappers;
+  }
+}

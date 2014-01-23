@@ -1,0 +1,28 @@
+{
+  OrderPaymentService orderPaymentService=(OrderPaymentService)context.getBean("blOrderPaymentService");
+  PaymentTransaction transaction=orderPaymentService.createTransaction();
+  if (this.parentTransactionId != null) {
+    PaymentTransaction parentTransaction=orderPaymentService.readTransactionById(this.parentTransactionId);
+    transaction.setParentTransaction(parentTransaction);
+  }
+  transaction.setType(PaymentTransactionType.getInstance(this.type));
+  if (this.additionalFields != null && !this.additionalFields.isEmpty()) {
+    Map<String,String> fields=new HashMap<String,String>();
+    for (    MapElementWrapper mapElementWrapper : this.additionalFields) {
+      fields.put(mapElementWrapper.getKey(),mapElementWrapper.getValue());
+    }
+    transaction.setAdditionalFields(fields);
+  }
+  if (this.amount != null) {
+    if (this.currency != null) {
+      transaction.setAmount(new Money(this.amount,this.currency));
+    }
+ else {
+      transaction.setAmount(new Money(this.amount));
+    }
+  }
+  transaction.setCustomerIpAddress(this.customerIpAddress);
+  transaction.setRawResponse(this.rawResponse);
+  transaction.setSuccess(this.success);
+  return transaction;
+}

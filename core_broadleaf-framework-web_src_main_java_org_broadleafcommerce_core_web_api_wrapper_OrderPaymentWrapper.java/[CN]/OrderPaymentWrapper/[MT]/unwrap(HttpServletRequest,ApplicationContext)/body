@@ -1,18 +1,31 @@
 {
-  OrderPaymentService paymentInfoService=(OrderPaymentService)context.getBean("blOrderPaymentService");
-  OrderPayment paymentInfo=paymentInfoService.create();
-  paymentInfo.setType(PaymentType.getInstance(this.type));
+  OrderPaymentService orderPaymentService=(OrderPaymentService)context.getBean("blOrderPaymentService");
+  OrderPayment payment=orderPaymentService.create();
+  OrderService orderService=(OrderService)context.getBean("blOrderService");
+  Order order=orderService.findOrderById(this.orderId);
+  if (order != null) {
+    payment.setOrder(order);
+  }
+  payment.setType(PaymentType.getInstance(this.type));
+  payment.setPaymentGatewayType(PaymentGatewayType.getInstance(this.gatewayType));
+  payment.setReferenceNumber(this.referenceNumber);
   if (this.billingAddress != null) {
-    paymentInfo.setBillingAddress(this.billingAddress.unwrap(request,context));
+    payment.setBillingAddress(this.billingAddress.unwrap(request,context));
   }
   if (this.amount != null) {
     if (this.currency != null) {
-      paymentInfo.setAmount(new Money(this.amount,this.currency));
+      payment.setAmount(new Money(this.amount,this.currency));
     }
  else {
-      paymentInfo.setAmount(new Money(this.amount));
+      payment.setAmount(new Money(this.amount));
     }
   }
-  paymentInfo.setReferenceNumber(this.referenceNumber);
-  return paymentInfo;
+  if (this.transactions != null && !this.transactions.isEmpty()) {
+    for (    PaymentTransactionWrapper transactionWrapper : this.transactions) {
+      PaymentTransaction transaction=transactionWrapper.unwrap(request,context);
+      transaction.setOrderPayment(payment);
+      payment.addTransaction(transaction);
+    }
+  }
+  return payment;
 }
