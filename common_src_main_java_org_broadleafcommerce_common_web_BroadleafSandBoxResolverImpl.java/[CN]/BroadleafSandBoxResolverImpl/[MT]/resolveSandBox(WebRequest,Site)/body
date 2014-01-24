@@ -7,6 +7,12 @@
     }
     request.setAttribute(SANDBOX_VAR,currentSandbox,WebRequest.SCOPE_REQUEST);
   }
+ else   if (crossAppAuthService != null && !crossAppAuthService.isAuthedFromAdmin()) {
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Sandbox preview attempted without authentication");
+    }
+    request.setAttribute(SANDBOX_VAR,currentSandbox,WebRequest.SCOPE_REQUEST);
+  }
  else {
     Long sandboxId=null;
     if ((request.getParameter("blClearSandBox") == null) && (request.getParameter("blSandboxDateTimeRibbonProduction") == null)) {

@@ -27,7 +27,10 @@
     requestProcessor.process(new ServletWebRequest(request,response));
     filterChain.doFilter(request,response);
   }
- catch (  SiteNotFoundException e) {
+ catch (  HaltFilterChainException e) {
+    return;
+  }
+catch (  SiteNotFoundException e) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
   }
  finally {

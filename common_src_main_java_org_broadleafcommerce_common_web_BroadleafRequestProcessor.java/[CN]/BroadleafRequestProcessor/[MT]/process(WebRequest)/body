@@ -18,9 +18,10 @@
   SandBox currentSandbox=sandboxResolver.resolveSandBox(request,site);
   Boolean reprocessRequest=(Boolean)request.getAttribute(BroadleafRequestProcessor.REPROCESS_PARAM_NAME,WebRequest.SCOPE_REQUEST);
   if (reprocessRequest != null && reprocessRequest) {
+    LOG.debug("Reprocessing request");
     if (request instanceof ServletWebRequest) {
       HttpServletRequest hsr=((ServletWebRequest)request).getRequest();
-      hsr.getSession(false).invalidate();
+      clearBroadleafSessionAttrs(request);
       StringBuffer url=hsr.getRequestURL();
       if (hsr.getQueryString() != null) {
         url.append('?').append(hsr.getQueryString());
@@ -31,7 +32,7 @@
  catch (      IOException e) {
         throw new RuntimeException(e);
       }
-      return;
+      throw new HaltFilterChainException("Reprocess required, redirecting user");
     }
   }
   if (currentSandbox != null) {
