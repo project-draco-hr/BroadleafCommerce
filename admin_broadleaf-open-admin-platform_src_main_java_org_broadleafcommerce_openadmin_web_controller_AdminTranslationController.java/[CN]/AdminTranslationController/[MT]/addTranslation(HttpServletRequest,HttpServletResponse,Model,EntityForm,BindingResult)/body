@@ -8,7 +8,14 @@
   entityForm.setEntityType(TranslationImpl.class.getName());
   Field entityType=new Field();
   entityType.setName("entityType");
-  entityType.setValue(TranslatedEntity.getInstance(form.getCeilingEntity()).getFriendlyType());
+  String ceilingEntity=form.getCeilingEntity();
+  TranslatedEntity translatedEntity=TranslatedEntity.getInstance(ceilingEntity);
+  if (translatedEntity == null && ceilingEntity.endsWith("Impl")) {
+    int pos=ceilingEntity.lastIndexOf("Impl");
+    ceilingEntity=ceilingEntity.substring(0,pos);
+    translatedEntity=TranslatedEntity.getInstance(ceilingEntity);
+  }
+  entityType.setValue(translatedEntity.getFriendlyType());
   Field fieldName=new Field();
   fieldName.setName("fieldName");
   fieldName.setValue(form.getPropertyName());
