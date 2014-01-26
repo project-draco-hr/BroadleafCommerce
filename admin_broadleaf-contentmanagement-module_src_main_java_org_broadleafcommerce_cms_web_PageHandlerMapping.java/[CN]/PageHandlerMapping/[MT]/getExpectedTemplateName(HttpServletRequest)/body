@@ -1,0 +1,10 @@
+{
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null) {
+    Page page=(Page)context.getRequest().getAttribute(PAGE_ATTRIBUTE_NAME);
+    if (page != null && page.getPageTemplate() != null) {
+      return page.getPageTemplate().getTemplatePath();
+    }
+  }
+  return null;
+}

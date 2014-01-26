@@ -1,0 +1,10 @@
+{
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null) {
+    Category category=(Category)context.getRequest().getAttribute(CURRENT_CATEGORY_ATTRIBUTE_NAME);
+    if (category != null && category.getDisplayTemplate() != null) {
+      return category.getDisplayTemplate();
+    }
+  }
+  return getDefaultTemplateName();
+}
