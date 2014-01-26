@@ -12,7 +12,7 @@
       int length=nodeList.getLength();
       for (int j=0; j < length; j++) {
         Element element=(Element)nodeList.item(j);
-        Resource resource=applicationContext.getResource(element.getAttribute("resource"));
+        Resource resource=loader.getResource(element.getAttribute("resource"));
         ResourceInputStream ris=new ResourceInputStream(resource.getInputStream(),resource.getURL().toString());
         resourceList.addEmbeddedResource(ris);
         element.getParentNode().removeChild(element);
