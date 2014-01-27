@@ -22,8 +22,15 @@
     ccReference.setExpirationMonth(Integer.parseInt(billingForm.getCreditCardExpMonth()));
     ccReference.setExpirationYear(Integer.parseInt(billingForm.getCreditCardExpYear()));
     payments.put(ccInfo,ccReference);
-    CheckoutResponse checkoutResponse=checkoutService.performCheckout(cart,payments);
-    if (!checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess()) {
+    CheckoutResponse checkoutResponse=null;
+    boolean checkoutError=false;
+    try {
+      checkoutResponse=checkoutService.performCheckout(cart,payments);
+    }
+ catch (    CheckoutException ex) {
+      checkoutError=true;
+    }
+    if (checkoutError || (checkoutResponse != null && !checkoutResponse.getPaymentResponse().getResponseItems().get(ccInfo).getTransactionSuccess())) {
       populateModelWithShippingReferenceData(request,model);
       result.rejectValue("creditCardNumber","payment.exception",null,null);
       return getCheckoutView();
