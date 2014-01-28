@@ -21,8 +21,19 @@
         logger.warn(convertedClassName + " has already been transformed by a previous instance of DirectCopyTransfomer. " + "Skipping this annotation based transformation. Generally, annotation-based transformation is handled "+ "by bean id blAnnotationDirectCopyClassTransformer with template tokens being added to "+ "blDirectCopyTransformTokenMap via EarlyStageMergeBeanPostProcessor.");
       }
       boolean isValidPattern=true;
-      for (      String pattern : ignorePatterns) {
-        isValidPattern=!convertedClassName.matches(pattern);
+      List<DirectCopyIgnorePattern> matchedPatterns=new ArrayList<DirectCopyIgnorePattern>();
+      for (      DirectCopyIgnorePattern pattern : ignorePatterns) {
+        boolean isPatternMatch=false;
+        for (        String patternString : pattern.getPatterns()) {
+          isPatternMatch=convertedClassName.matches(patternString);
+          if (isPatternMatch) {
+            break;
+          }
+        }
+        if (isPatternMatch) {
+          matchedPatterns.add(pattern);
+        }
+        isValidPattern=!(isPatternMatch && pattern.getTemplateTokenPatterns() == null);
         if (!isValidPattern) {
           return null;
         }
@@ -52,7 +63,16 @@
                     for (                    MemberValue memberValue : annot.getValue()) {
                       String val=((StringMemberValue)memberValue).getValue();
                       if (val != null && templateTokens.containsKey(val)) {
-                        templates.add(templateTokens.get(val));
+                        templateCheck: {
+                          for (                          DirectCopyIgnorePattern matchedPattern : matchedPatterns) {
+                            for (                            String ignoreToken : matchedPattern.getTemplateTokenPatterns()) {
+                              if (val.matches(ignoreToken)) {
+                                break templateCheck;
+                              }
+                            }
+                          }
+                          templates.add(templateTokens.get(val));
+                        }
                       }
                     }
                     BooleanMemberValue skipAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("skipOverlaps");
