@@ -1,11 +1,7 @@
 {
-  Date now=SystemTime.asDate();
   List<OfferCode> offerCodesToRemove=new ArrayList<OfferCode>();
   for (  OfferCode offerCode : offerCodes) {
-    if ((offerCode.getStartDate() != null) && (offerCode.getStartDate().after(now))) {
-      offerCodesToRemove.add(offerCode);
-    }
- else     if (offerCode.getEndDate() != null && offerCode.getEndDate().before(now)) {
+    if (!offerCode.isActive()) {
       offerCodesToRemove.add(offerCode);
     }
   }
