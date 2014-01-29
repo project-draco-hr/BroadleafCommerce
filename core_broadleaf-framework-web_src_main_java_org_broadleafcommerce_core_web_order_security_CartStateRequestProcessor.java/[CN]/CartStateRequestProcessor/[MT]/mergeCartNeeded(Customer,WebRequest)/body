@@ -1,4 +1,7 @@
 {
+  if (crossAppAuthService != null && crossAppAuthService.isAuthedFromAdmin()) {
+    return false;
+  }
   Customer anonymousCustomer=customerStateRequestProcessor.getAnonymousCustomer(request);
   return (anonymousCustomer != null && customer.getId() != null && !customer.getId().equals(anonymousCustomer.getId()));
 }
