@@ -8,11 +8,19 @@
   if (!response.getHasErrors()) {
     String token=PasswordUtils.generateTemporaryPassword(getPasswordTokenLength());
     token=token.toLowerCase();
+    Object salt=getSalt(customer,token);
+    String saltString=null;
+    if (salt != null) {
+      saltString=Hex.encodeHexString(salt.toString().getBytes());
+    }
     CustomerForgotPasswordSecurityToken fpst=new CustomerForgotPasswordSecurityTokenImpl();
     fpst.setCustomerId(customer.getId());
-    fpst.setToken(encodePassword(token,null));
+    fpst.setToken(passwordEncoder.encodePassword(token,saltString));
     fpst.setCreateDate(SystemTime.asDate());
     customerForgotPasswordSecurityTokenDao.saveToken(fpst);
+    if (saltString != null) {
+      token=token + '-' + saltString;
+    }
     HashMap<String,Object> vars=new HashMap<String,Object>();
     vars.put("token",token);
     if (!StringUtils.isEmpty(resetPasswordUrl)) {
