@@ -4,14 +4,14 @@
     LOG.warn("No customer was found on the current request, no cart will be added to the current request. Ensure that the" + " blCustomerStateFilter occurs prior to the blCartStateFilter");
     return;
   }
-  Order cart=null;
-  if (mergeCartNeeded(customer,request)) {
+  Order cart=getOverrideCart(request);
+  if (cart == null && mergeCartNeeded(customer,request)) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Merge cart required, calling mergeCart " + customer.getId());
     }
     cart=mergeCart(customer,request);
   }
- else {
+ else   if (cart == null) {
     cart=orderService.findCartForCustomer(customer);
   }
   if (cart == null) {

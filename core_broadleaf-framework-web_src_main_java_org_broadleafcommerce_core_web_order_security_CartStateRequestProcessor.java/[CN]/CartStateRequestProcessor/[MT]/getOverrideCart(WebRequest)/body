@@ -1,0 +1,8 @@
+{
+  Long orderId=(Long)request.getAttribute(OVERRIDE_CART_ATTR_NAME,WebRequest.SCOPE_GLOBAL_SESSION);
+  Order cart=orderService.findOrderById(orderId);
+  if (cart == null || cart.getStatus().equals(OrderStatus.SUBMITTED) || cart.getStatus().equals(OrderStatus.CANCELLED)) {
+    return null;
+  }
+  return cart;
+}
