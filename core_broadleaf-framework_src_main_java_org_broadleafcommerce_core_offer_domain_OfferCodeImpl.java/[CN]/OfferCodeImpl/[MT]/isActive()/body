@@ -1,3 +1,10 @@
 {
-  return DateUtil.isActive(offerCodeStartDate,offerCodeEndDate,true) && 'Y' != getArchived();
+  boolean datesActive;
+  if (offerCodeStartDate == null) {
+    datesActive=DateUtil.isActive(getOffer().getStartDate(),getOffer().getEndDate(),true);
+  }
+ else {
+    datesActive=DateUtil.isActive(offerCodeStartDate,offerCodeEndDate,true);
+  }
+  return datesActive && 'Y' != getArchived();
 }
