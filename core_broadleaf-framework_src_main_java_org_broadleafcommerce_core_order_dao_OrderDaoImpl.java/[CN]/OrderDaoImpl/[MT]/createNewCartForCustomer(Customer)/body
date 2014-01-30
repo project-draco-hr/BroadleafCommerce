@@ -18,5 +18,8 @@
     extensionManager.getProxy().attachAdditionalDataToNewCart(customer,order);
   }
   order=save(order);
+  if (extensionManager != null) {
+    extensionManager.getProxy().processPostSaveNewCart(customer,order);
+  }
   return order;
 }

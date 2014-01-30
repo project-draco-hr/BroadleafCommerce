@@ -1,5 +1,11 @@
 {
   Order cart=CartState.getCart();
+  try {
+    orderService.preValidateCartOperation(cart);
+  }
+ catch (  IllegalCartOperationException ex) {
+    model.addAttribute("cartRequiresLock",true);
+  }
   if (!(cart instanceof NullOrderImpl)) {
     model.addAttribute("orderMultishipOptions",orderMultishipOptionService.getOrGenerateOrderMultishipOptions(cart));
     model.addAttribute("paymentRequestDTO",dtoTranslationService.translateOrder(cart));

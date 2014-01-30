@@ -1,4 +1,5 @@
 {
+  preValidateCartOperation(order);
   Set<Offer> addedOffers=offerService.getUniqueOffersFromOrder(order);
   if (!order.getAddedOfferCodes().contains(offerCode) && !addedOffers.contains(offerCode.getOffer())) {
     if (!offerService.verifyMaxCustomerUsageThreshold(order.getCustomer(),offerCode)) {

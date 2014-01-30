@@ -1,0 +1,10 @@
+{
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  extensionManager.getProxy().preValidateCartOperation(cart,erh);
+  if (erh.getThrowable() instanceof IllegalCartOperationException) {
+    throw ((IllegalCartOperationException)erh.getThrowable());
+  }
+ else   if (erh.getThrowable() != null) {
+    throw new RuntimeException(erh.getThrowable());
+  }
+}
