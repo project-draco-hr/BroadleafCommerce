@@ -25,6 +25,14 @@
  catch (  ValidationException e) {
     response=e.getEntity();
   }
+catch (  ServiceException e) {
+    if (e.getCause() instanceof ValidationException) {
+      response=((ValidationException)e.getCause()).getEntity();
+    }
+ else {
+      throw e;
+    }
+  }
   Map<String,List<String>> subPackageValidationErrors=new HashMap<String,List<String>>();
   for (  Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
     try {
@@ -48,6 +56,14 @@
  catch (    ValidationException e) {
       subPackage.getValue().setEntity(e.getEntity());
     }
+catch (    ServiceException e) {
+      if (e.getCause() instanceof ValidationException) {
+        response=((ValidationException)e.getCause()).getEntity();
+      }
+ else {
+        throw e;
+      }
+    }
   }
   for (  Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
     for (    Map.Entry<String,List<String>> error : subPackage.getValue().getEntity().getValidationErrors().entrySet()) {
@@ -56,7 +72,8 @@
   }
   response.getValidationErrors().putAll(subPackageValidationErrors);
   if (response.isValidationFailure()) {
-    throw new ValidationException(response,"The entity has failed validation");
+    PersistenceResponse validationResponse=executeValidationProcessors(persistencePackage,new PersistenceResponse().withEntity(response));
+    throw new ValidationException(validationResponse.getEntity(),"The entity has failed validation");
   }
   return executePostUpdateHandlers(persistencePackage,new PersistenceResponse().withEntity(response));
 }
