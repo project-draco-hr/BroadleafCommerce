@@ -7,8 +7,8 @@
   for (  AdminRole role : adminUser.getAllRoles()) {
     for (    AdminPermission permission : role.getAllPermissions()) {
       if (permission.isFriendly()) {
-        for (        AdminPermissionXref permissionXref : permission.getAllChildPermissions()) {
-          authorities.add(new SimpleGrantedAuthority(permissionXref.getChildPermission().getName()));
+        for (        AdminPermission childPermission : permission.getAllChildPermissions()) {
+          authorities.add(new SimpleGrantedAuthority(childPermission.getName()));
         }
       }
  else {
@@ -18,8 +18,8 @@
   }
   for (  AdminPermission permission : adminUser.getAllPermissions()) {
     if (permission.isFriendly()) {
-      for (      AdminPermissionXref permissionXref : permission.getAllChildPermissions()) {
-        authorities.add(new SimpleGrantedAuthority(permissionXref.getChildPermission().getName()));
+      for (      AdminPermission childPermission : permission.getAllChildPermissions()) {
+        authorities.add(new SimpleGrantedAuthority(childPermission.getName()));
       }
     }
  else {
