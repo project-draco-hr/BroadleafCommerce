@@ -12,7 +12,7 @@
   if (md instanceof BasicFieldMetadata) {
     String idProp=((BasicFieldMetadata)md).getForeignKeyProperty();
     String displayProp=((BasicFieldMetadata)md).getForeignKeyDisplayValueProperty();
-    List<String> filterValues=Arrays.asList(ids.split(FILTER_VALUE_SEPARATOR_REGEX));
+    List<String> filterValues=BLCArrayUtils.asList(ids.split(FILTER_VALUE_SEPARATOR_REGEX));
     ppr.addFilterAndSortCriteria(new FilterAndSortCriteria(idProp,filterValues));
     DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
     Map<String,String> returnMap=new HashMap<String,String>();
