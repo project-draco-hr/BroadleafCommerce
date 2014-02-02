@@ -7,6 +7,11 @@
       return new ArrayList<StructuredContentDTO>();
     }
   }
+  ExtensionResultHolder resultHolder=new ExtensionResultHolder();
+  extensionManager.getProxy().modifyStructuredContentDtoList(structuredContentList,resultHolder);
+  if (resultHolder.getResult() != null) {
+    structuredContentList=(List<StructuredContentDTO>)resultHolder.getResult();
+  }
   Iterator<StructuredContentDTO> structuredContentIterator=structuredContentList.iterator();
   List<StructuredContentDTO> returnList=new ArrayList<StructuredContentDTO>();
   List<StructuredContentDTO> tmpList=new ArrayList<StructuredContentDTO>();
