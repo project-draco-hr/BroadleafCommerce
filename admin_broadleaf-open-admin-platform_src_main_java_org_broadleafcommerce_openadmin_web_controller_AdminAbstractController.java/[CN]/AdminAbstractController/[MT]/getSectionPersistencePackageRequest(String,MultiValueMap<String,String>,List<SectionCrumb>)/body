@@ -1,6 +1,3 @@
 {
-  FilterAndSortCriteria[] fascs=getCriteria(requestParams);
-  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(sectionClassName).withCustomCriteria(getSectionCustomCriteria()).withFilterAndSortCriteria(fascs).withStartIndex(getStartIndex(requestParams)).withMaxIndex(getMaxIndex(requestParams)).withSectionCrumbs(sectionCrumbs);
-  attachSectionSpecificInfo(ppr);
-  return ppr;
+  return getSectionPersistencePackageRequest(sectionClassName,requestParams,sectionCrumbs,null);
 }

@@ -2,7 +2,7 @@
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
   List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,requestParams,sectionCrumbs);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,requestParams,sectionCrumbs,pathVars);
   ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);

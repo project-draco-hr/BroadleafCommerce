@@ -2,7 +2,7 @@
   String sectionKey=getSectionKey(pathVars);
   String sectionClassName=getClassNameForSection(sectionKey);
   List<SectionCrumb> crumbs=getSectionCrumbs(request,sectionKey,id);
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,crumbs);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,crumbs,pathVars);
   ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Entity entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,crumbs);
