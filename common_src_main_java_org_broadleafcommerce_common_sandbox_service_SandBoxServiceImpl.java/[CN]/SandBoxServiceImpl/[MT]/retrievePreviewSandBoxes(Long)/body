@@ -7,15 +7,15 @@
   candidateBoxes.addAll(approvalBoxes);
   candidateBoxes.addAll(defaultBoxes);
   returnList.addAll(authorBoxes);
-  for (  SandBox candidateBox : candidateBoxes) {
+  for (  SandBox cb : candidateBoxes) {
     boolean match=false;
     for (    SandBox authorBox : authorBoxes) {
-      if (authorBox.getParentSandBox().getId().equals(candidateBox.getId())) {
+      if (authorBox.getId().equals(cb.getId()) || (authorBox.getParentSandBox() != null && authorBox.getParentSandBox().getId().equals(cb.getId()))) {
         match=true;
       }
     }
     if (!match) {
-      returnList.add(candidateBox);
+      returnList.add(cb);
     }
   }
   return returnList;
