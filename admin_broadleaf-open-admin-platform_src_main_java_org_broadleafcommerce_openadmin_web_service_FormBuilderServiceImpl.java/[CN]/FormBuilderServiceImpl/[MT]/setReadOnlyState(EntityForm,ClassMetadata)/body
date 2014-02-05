@@ -15,15 +15,15 @@
       }
     }
   }
-  if (!readOnly) {
-    entityForm.setReadOnly();
-  }
   try {
     adminRemoteSecurityService.securityCheck(entityForm.getCeilingEntityClassname(),EntityOperationType.UPDATE);
   }
  catch (  ServiceException e) {
     if (e instanceof SecurityServiceException) {
-      entityForm.setReadOnly();
+      readOnly=true;
     }
+  }
+  if (readOnly) {
+    entityForm.setReadOnly();
   }
 }
