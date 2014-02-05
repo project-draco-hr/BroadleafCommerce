@@ -1,0 +1,29 @@
+{
+  boolean readOnly=true;
+  for (  Property property : cmd.getProperties()) {
+    FieldMetadata fieldMetadata=property.getMetadata();
+    if (fieldMetadata instanceof BasicFieldMetadata) {
+      if (!((BasicFieldMetadata)fieldMetadata).getReadOnly()) {
+        readOnly=false;
+        break;
+      }
+    }
+ else {
+      if (((CollectionMetadata)fieldMetadata).isMutable()) {
+        readOnly=false;
+        break;
+      }
+    }
+  }
+  if (!readOnly) {
+    entityForm.setReadOnly();
+  }
+  try {
+    adminRemoteSecurityService.securityCheck(entityForm.getCeilingEntityClassname(),EntityOperationType.UPDATE);
+  }
+ catch (  ServiceException e) {
+    if (e instanceof SecurityServiceException) {
+      entityForm.setReadOnly();
+    }
+  }
+}
