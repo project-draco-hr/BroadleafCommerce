@@ -2,5 +2,12 @@
   if (!em.contains(salesOrder)) {
     salesOrder=readOrderById(salesOrder.getId());
   }
+  for (  OrderPayment payment : salesOrder.getPayments()) {
+    payment.setOrder(null);
+    payment.setArchived('Y');
+    for (    PaymentTransaction transaction : payment.getTransactions()) {
+      transaction.setArchived('Y');
+    }
+  }
   em.remove(salesOrder);
 }
