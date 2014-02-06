@@ -20,12 +20,17 @@
       }
     }
   }
+  Money orderTotalAfterAppliedPayments=CartState.getCart().getTotalAfterAppliedPayments();
   if (orderContainsThirdPartyPayment) {
     showBillingInfoSection=false;
     showAllPaymentMethods=false;
   }
+ else   if (orderTotalAfterAppliedPayments != null && orderTotalAfterAppliedPayments.isZero()) {
+    showAllPaymentMethods=false;
+  }
   localVars.put("showBillingInfoSection",showBillingInfoSection);
   localVars.put("showAllPaymentMethods",showAllPaymentMethods);
+  localVars.put("orderContainsThirdPartyPayment",orderContainsThirdPartyPayment);
   List<CheckoutSectionDTO> drawnSections=new LinkedList<CheckoutSectionDTO>();
   CheckoutSectionDTO orderInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.ORDER_INFO,orderInfoPopulated);
   CheckoutSectionDTO billingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.BILLING_INFO,billingPopulated);

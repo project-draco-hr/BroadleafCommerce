@@ -2,7 +2,7 @@
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
   List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs)).getDynamicResultSet().getClassMetaData();
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   if (StringUtils.isBlank(entityForm.getEntityType())) {
     FieldMetadata fmd=collectionProperty.getMetadata();
@@ -10,7 +10,7 @@
       entityForm.setEntityType(((BasicCollectionMetadata)fmd).getCollectionCeilingEntity());
     }
   }
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
   PersistenceResponse persistenceResponse=service.addSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity,sectionCrumbs);
   Entity savedEntity=persistenceResponse.getEntity();

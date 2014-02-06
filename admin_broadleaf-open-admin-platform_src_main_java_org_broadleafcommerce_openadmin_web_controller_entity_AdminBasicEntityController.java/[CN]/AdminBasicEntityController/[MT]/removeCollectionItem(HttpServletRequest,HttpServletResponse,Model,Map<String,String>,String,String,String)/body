@@ -2,10 +2,10 @@
   String sectionKey=getSectionKey(pathVars);
   String mainClassName=getClassNameForSection(sectionKey);
   List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
-  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs)).getDynamicResultSet().getClassMetaData();
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   String priorKey=request.getParameter("key");
-  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
   PersistenceResponse persistenceResponse=service.removeSubCollectionEntity(mainMetadata,collectionProperty,entity,collectionItemId,priorKey,sectionCrumbs);
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse,sectionCrumbs);

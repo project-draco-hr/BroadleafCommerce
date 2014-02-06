@@ -1,14 +1,9 @@
 {
-  OrderPayment paymentInfo=null;
-  if (order.getPayments().size() > 0) {
-    paymentInfo=order.getPayments().get(0);
-  }
   Address address=null;
-  if (paymentInfo == null || paymentInfo.getBillingAddress() == null) {
-    address=order.getFulfillmentGroups().get(0).getAddress();
-  }
- else {
-    address=paymentInfo.getBillingAddress();
+  for (  OrderPayment payment : order.getPayments()) {
+    if (payment.isActive() && PaymentType.CREDIT_CARD.equals(payment.getType())) {
+      address=payment.getBillingAddress();
+    }
   }
   return address;
 }

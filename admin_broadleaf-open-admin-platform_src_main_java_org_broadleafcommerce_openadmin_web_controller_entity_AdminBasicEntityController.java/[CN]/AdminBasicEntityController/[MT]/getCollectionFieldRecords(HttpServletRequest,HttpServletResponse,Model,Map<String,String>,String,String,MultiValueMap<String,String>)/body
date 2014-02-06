@@ -5,7 +5,7 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,requestParams,sectionCrumbs,pathVars);
   ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
-  ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs);
+  ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars);
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,requestParams,sectionKey,sectionCrumbs);
   model.addAttribute("listGrid",listGrid);

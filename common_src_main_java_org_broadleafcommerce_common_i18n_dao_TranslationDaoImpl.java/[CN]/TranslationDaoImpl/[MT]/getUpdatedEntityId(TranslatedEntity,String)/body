@@ -1,0 +1,14 @@
+{
+  Class<?> clazz=entityConfiguration.lookupEntityClass(entity.getType());
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  try {
+    Long id=Long.parseLong(entityId);
+    ExtensionResultStatusType result=extensionManager.getProxy().overrideRequestedId(erh,em,clazz,id);
+    if (result.equals(ExtensionResultStatusType.HANDLED)) {
+      return String.valueOf((Long)erh.getResult());
+    }
+  }
+ catch (  NumberFormatException e) {
+  }
+  return entityId;
+}

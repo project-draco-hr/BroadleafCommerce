@@ -9,6 +9,11 @@
     assert(newCustomer != null);
     ProviderSignInUtils.handlePostSignUp(newCustomer.getUsername(),new ServletWebRequest(request));
     loginService.loginCustomer(registerCustomerForm.getCustomer());
+    Order cart=CartState.getCart();
+    if (cart != null && !(cart instanceof NullOrderImpl) && cart.getEmailAddress() == null) {
+      cart.setEmailAddress(newCustomer.getEmailAddress());
+      orderService.save(cart,false);
+    }
     String redirectUrl=registerCustomerForm.getRedirectUrl();
     if (StringUtils.isNotBlank(redirectUrl) && redirectUrl.contains(":")) {
       redirectUrl=null;
