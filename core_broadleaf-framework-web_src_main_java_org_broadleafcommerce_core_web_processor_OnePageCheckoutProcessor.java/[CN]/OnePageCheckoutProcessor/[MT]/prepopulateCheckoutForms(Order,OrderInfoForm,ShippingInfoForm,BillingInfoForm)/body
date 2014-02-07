@@ -6,7 +6,9 @@
   if (firstShippableFulfillmentGroup != null) {
     FulfillmentOption fulfillmentOption=firstShippableFulfillmentGroup.getFulfillmentOption();
     if (fulfillmentOption != null) {
-      shippingForm.setAddress(firstShippableFulfillmentGroup.getAddress());
+      if (firstShippableFulfillmentGroup.getAddress() != null) {
+        shippingForm.setAddress(firstShippableFulfillmentGroup.getAddress());
+      }
       shippingForm.setFulfillmentOption(fulfillmentOption);
       shippingForm.setFulfillmentOptionId(fulfillmentOption.getId());
     }
