@@ -1,0 +1,23 @@
+{
+  String login=entity.findProperty("login").getValue();
+  String email=entity.findProperty("email").getValue();
+  boolean skipLoginCheck=false;
+  boolean skipEmailCheck=!getRequireUniqueEmailAddress();
+  if (!isAdd) {
+    if (StringUtils.equals(login,adminInstance.getLogin())) {
+      skipLoginCheck=true;
+    }
+    if (!getRequireUniqueEmailAddress() || StringUtils.equals(email,adminInstance.getEmail())) {
+      skipEmailCheck=true;
+    }
+  }
+  if (!skipLoginCheck && adminSecurityService.readAdminUserByUserName(login) != null) {
+    entity.addValidationError("login","admin.nonUniqueUsernameError");
+    return entity;
+  }
+  if (!skipEmailCheck && CollectionUtils.isNotEmpty(adminSecurityService.readAdminUsersByEmail(email))) {
+    entity.addValidationError("email","admin.nonUniqueEmailError");
+    return entity;
+  }
+  return null;
+}

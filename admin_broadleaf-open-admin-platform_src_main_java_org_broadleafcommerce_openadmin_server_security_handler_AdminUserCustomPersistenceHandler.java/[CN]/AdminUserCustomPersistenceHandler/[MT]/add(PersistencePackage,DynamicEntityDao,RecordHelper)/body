@@ -6,6 +6,10 @@
     AdminUser adminInstance=(AdminUser)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminUser.class.getName(),persistencePerspective);
     adminInstance=(AdminUser)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    Entity errorEntity=validateLegalUsernameAndEmail(entity,adminInstance,true);
+    if (errorEntity != null) {
+      return errorEntity;
+    }
     adminInstance.setUnencodedPassword(adminInstance.getPassword());
     adminInstance.setPassword(null);
     adminInstance=adminSecurityService.saveAdminUser(adminInstance);
