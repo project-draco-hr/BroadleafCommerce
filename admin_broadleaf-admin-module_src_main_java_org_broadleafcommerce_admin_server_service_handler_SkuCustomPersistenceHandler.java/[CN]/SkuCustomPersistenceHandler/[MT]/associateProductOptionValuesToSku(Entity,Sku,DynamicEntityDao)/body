@@ -1,18 +1,15 @@
 {
   List<Long> productOptionValueIds=new ArrayList<Long>();
   for (  Property property : getProductOptionProperties(entity)) {
-    productOptionValueIds.add(Long.parseLong(property.getValue()));
+    Long propId=Long.parseLong(property.getValue());
+    productOptionValueIds.add(propId);
+    property.setIsDirty(true);
   }
   if (adminInstance.getProductOptionValues().size() > 0) {
     adminInstance.getProductOptionValues().clear();
     dynamicEntityDao.merge(adminInstance);
   }
-  List<ProductOption> productOptions=adminInstance.getProduct().getProductOptions();
-  for (  ProductOption option : productOptions) {
-    for (    ProductOptionValue value : option.getAllowedValues()) {
-      if (productOptionValueIds.contains(value.getId())) {
-        adminInstance.getProductOptionValues().add(value);
-      }
-    }
+  for (  Long id : productOptionValueIds) {
+    adminInstance.getProductOptionValues().add((ProductOptionValue)dynamicEntityDao.find(ProductOptionValueImpl.class,id));
   }
 }
