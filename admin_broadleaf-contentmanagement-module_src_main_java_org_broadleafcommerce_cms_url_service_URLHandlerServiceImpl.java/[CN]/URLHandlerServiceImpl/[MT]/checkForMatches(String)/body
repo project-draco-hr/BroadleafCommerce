@@ -1,0 +1,32 @@
+{
+  URLHandler currentHandler=null;
+  try {
+    List<URLHandler> urlHandlers=findAllURLHandlers();
+    for (    URLHandler urlHandler : urlHandlers) {
+      currentHandler=urlHandler;
+      Pattern p=urlPatternMap.get(urlHandler.getIncomingURL());
+      if (p == null) {
+        p=Pattern.compile(urlHandler.getIncomingURL());
+        urlPatternMap.put(urlHandler.getIncomingURL(),p);
+      }
+      Matcher m=p.matcher(requestURI);
+      if (m.find()) {
+        String newUrl=m.replaceFirst(urlHandler.getNewURL());
+        if (newUrl.equals(urlHandler.getNewURL())) {
+          return urlHandler;
+        }
+ else {
+          return new URLHandlerDTO(newUrl,urlHandler.getUrlRedirectType());
+        }
+      }
+    }
+  }
+ catch (  RuntimeException re) {
+    if (currentHandler != null) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Error parsing URL Handler (incoming =" + currentHandler.getIncomingURL() + "), outgoing = ( "+ currentHandler.getNewURL()+ "), "+ requestURI);
+      }
+    }
+  }
+  return null;
+}
