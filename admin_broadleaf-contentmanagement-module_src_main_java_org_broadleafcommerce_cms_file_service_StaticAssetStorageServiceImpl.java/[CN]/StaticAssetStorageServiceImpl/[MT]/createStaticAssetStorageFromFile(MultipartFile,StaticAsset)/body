@@ -14,7 +14,9 @@
     File destFile=new File(destFileName);
     if (!destFile.getParentFile().exists()) {
       if (!destFile.getParentFile().mkdirs()) {
-        throw new RuntimeException("Unable to create parent directories for file: " + destFileName);
+        if (!destFile.getParentFile().exists()) {
+          throw new RuntimeException("Unable to create parent directories for file: " + destFileName);
+        }
       }
     }
     OutputStream output=new FileOutputStream(destFile);
