@@ -1,0 +1,21 @@
+{
+  Set<String> query_params=new HashSet<String>();
+  int pos=url.indexOf("?");
+  if (pos > 0) {
+    String query=url.substring(pos);
+    String[] pairs=query.split("&");
+    for (    String pair : pairs) {
+      int idx=pair.indexOf("=");
+      String param="";
+      String value=null;
+      if (idx > 0) {
+        param=pair.substring(0,idx);
+      }
+ else {
+        param=pair;
+      }
+      query_params.add(param);
+    }
+  }
+  return query_params;
+}

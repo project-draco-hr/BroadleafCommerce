@@ -1,0 +1,30 @@
+{
+  if (getPreserveQueryStringOnRedirect()) {
+    try {
+      Map parameterMap=request.getParameterMap();
+      if (parameterMap != null && parameterMap.size() > 0) {
+        Set<String> queryParams=getExistingQueryParams(url);
+        String symbol="?";
+        for (        Object keyVal : parameterMap.keySet()) {
+          String key=(String)keyVal;
+          if (!queryParams.contains(key)) {
+            if (url.contains("?")) {
+              symbol="&";
+            }
+            String param=URLEncoder.encode(key,"UTF-8");
+            String value=URLEncoder.encode(request.getParameter(key),"UTF-8");
+            url=url + symbol + param;
+            if (!StringUtils.isEmpty(value)) {
+              url=url + "=" + value;
+            }
+          }
+        }
+      }
+    }
+ catch (    Exception e) {
+      LOG.error("Error adjusting query string in URLHandlerFilter",e);
+    }
+    return url;
+  }
+  return url;
+}
