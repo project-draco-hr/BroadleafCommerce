@@ -20,6 +20,9 @@
       @Override public Long retrieveTotalCount(){
         return getCartsToPurgeLength(config);
       }
+      @Override public boolean shouldRetryOnTransactionLockAcquisitionFailure(){
+        return true;
+      }
     }
 ,RuntimeException.class);
   }
