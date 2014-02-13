@@ -4,7 +4,13 @@
   SiteMapIndexWrapper siteMapIndexWrapper=new SiteMapIndexWrapper();
   for (  String fileName : indexedFileNames) {
     SiteMapWrapper siteMapWrapper=new SiteMapWrapper();
-    String fileLoc=BroadleafFileUtils.buildFilePath(baseUrl,fileName);
+    String fileLoc=null;
+    if (gzipSiteMapFiles) {
+      fileLoc=BroadleafFileUtils.buildFilePath(baseUrl,fileName + ".gz");
+    }
+ else {
+      fileLoc=BroadleafFileUtils.buildFilePath(baseUrl,fileName);
+    }
     siteMapWrapper.setLoc(fileLoc);
     siteMapWrapper.setLastmod(now);
     siteMapIndexWrapper.getSiteMapWrappers().add(siteMapWrapper);
