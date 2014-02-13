@@ -3,8 +3,14 @@
   FileWorkArea workArea=null;
   try {
     if (!baseLocalFile.getParentFile().exists()) {
-      if (!baseLocalFile.getParentFile().mkdirs()) {
-        throw new RuntimeException("Unable to create middle directories for file: " + baseLocalFile.getAbsolutePath());
+      boolean directoriesCreated=false;
+      if (!baseLocalFile.getParentFile().exists()) {
+        directoriesCreated=baseLocalFile.getParentFile().mkdirs();
+        if (!directoriesCreated) {
+          if (!baseLocalFile.getParentFile().exists()) {
+            throw new RuntimeException("Unable to create middle directories for file: " + baseLocalFile.getAbsolutePath());
+          }
+        }
       }
     }
     workArea=broadleafFileService.initializeWorkArea();

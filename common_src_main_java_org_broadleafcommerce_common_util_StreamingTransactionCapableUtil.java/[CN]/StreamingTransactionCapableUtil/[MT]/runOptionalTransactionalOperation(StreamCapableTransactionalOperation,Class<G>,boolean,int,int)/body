@@ -1,19 +1,55 @@
 {
-  TransactionStatus status=null;
-  if (useTransaction) {
-    status=startTransaction(transactionBehavior,isolationLevel);
+  int maxCount=operation.retryMaxCountOverrideForLockAcquisitionFailure();
+  if (maxCount == -1) {
+    maxCount=retryMax;
   }
-  boolean isError=false;
-  try {
-    operation.execute();
-  }
- catch (  Throwable e) {
-    isError=true;
-    ExceptionHelper.processException(exceptionType,RuntimeException.class,e);
-  }
+  int tryCount=0;
+  boolean retry=false;
+  do {
+    tryCount++;
+    try {
+      TransactionStatus status=null;
+      if (useTransaction) {
+        status=startTransaction(transactionBehavior,isolationLevel);
+      }
+      boolean isError=false;
+      try {
+        operation.execute();
+        retry=false;
+      }
+ catch (      Throwable e) {
+        isError=true;
+        ExceptionHelper.processException(exceptionType,RuntimeException.class,e);
+      }
  finally {
-    if (useTransaction) {
-      endTransaction(status,isError,exceptionType);
+        if (useTransaction) {
+          endTransaction(status,isError,exceptionType);
+        }
+      }
+    }
+ catch (    RuntimeException e) {
+      checkException: {
+        if (operation.shouldRetryOnTransactionLockAcquisitionFailure()) {
+          Exception result=ExceptionHelper.refineException(LockAcquisitionException.class,RuntimeException.class,e);
+          if (result.getClass().equals(LockAcquisitionException.class)) {
+            if (tryCount < maxCount) {
+              try {
+                Thread.sleep(300);
+              }
+ catch (              InterruptedException ie) {
+              }
+              if (LOG.isDebugEnabled()) {
+                LOG.debug("Unable to acquire a transaction lock. Retrying - count(" + tryCount + ").");
+              }
+              retry=true;
+              break checkException;
+            }
+            LOG.warn("Unable to acquire a transaction lock after " + maxCount + " tries.");
+          }
+        }
+        throw e;
+      }
     }
   }
+ while (tryCount < maxCount && retry && operation.shouldRetryOnTransactionLockAcquisitionFailure());
 }
