@@ -6,7 +6,7 @@
       InputStream is=null;
       try {
         is=r.getInputStream();
-        StreamUtils.copy(r.getInputStream(),baos);
+        StreamUtils.copy(is,baos);
       }
  catch (      IOException e) {
         throw new RuntimeException(e);
@@ -20,11 +20,9 @@
         }
       }
       if (versionedBundleName.endsWith(".js")) {
-        baos.write(";\r\n".getBytes());
+        baos.write(";".getBytes());
       }
- else {
-        baos.write("\r\n".getBytes());
-      }
+      baos.write(System.getProperty("line.separator").getBytes());
     }
     bytes=baos.toByteArray();
   }

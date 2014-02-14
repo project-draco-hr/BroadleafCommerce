@@ -3,12 +3,42 @@
   if (bundlingService.hasBundle(path)) {
     return bundlingService.getBundle(path);
   }
+  Resource unminifiedResource=null;
   if (handlers != null) {
     for (    AbstractGeneratedResourceHandler handler : handlers) {
       if (handler.canHandle(path)) {
-        return handler.getResource(path,getLocations());
+        unminifiedResource=handler.getResource(path,getLocations());
       }
     }
   }
-  return super.getResource(request);
+  if (unminifiedResource == null) {
+    unminifiedResource=super.getResource(request);
+  }
+  if (!minifyService.getEnabled() || !minifyService.getAllowSingleMinification()) {
+    return unminifiedResource;
+  }
+  LOG.warn("Minifying individual file - this should only be used in development to trace down particular " + "files that are causing an exception in the minification service. The results of the minification " + "performed outside of a bundle are not stored to disk.");
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  byte[] bytes=null;
+  InputStream is=null;
+  try {
+    is=unminifiedResource.getInputStream();
+    StreamUtils.copy(is,baos);
+    bytes=baos.toByteArray();
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    try {
+      is.close();
+      baos.close();
+    }
+ catch (    IOException e2) {
+      throw new RuntimeException("Could not close input stream",e2);
+    }
+  }
+  LOG.debug("Attempting to minifiy " + unminifiedResource.getFilename());
+  byte[] minifiedBytes=minifyService.minify(unminifiedResource.getFilename(),bytes);
+  return new GeneratedResource(minifiedBytes,unminifiedResource.getFilename());
 }
