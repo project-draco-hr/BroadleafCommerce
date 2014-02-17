@@ -23,6 +23,10 @@
       customer.setEmailAddress(gatewayCustomer.getEmail());
     }
   }
+  GatewayCustomerDTO<PaymentResponseDTO> gatewayCustomer=responseDTO.getCustomer();
+  if (order.getEmailAddress() == null && gatewayCustomer != null) {
+    order.setEmailAddress(gatewayCustomer.getEmail());
+  }
   populateShippingInfo(responseDTO,order);
   List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
   if (!config.handlesMultiplePayments()) {
