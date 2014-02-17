@@ -1,4 +1,9 @@
 {
   AdminSection section=adminNavigationService.findAdminSectionByURI("/" + sectionKey);
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  extensionManager.getProxy().overrideClassNameForSection(erh,sectionKey,section);
+  if (erh.getContextMap().get(AbstractAdminAbstractControllerExtensionHandler.NEW_CLASS_NAME) != null) {
+    return (String)erh.getContextMap().get(AbstractAdminAbstractControllerExtensionHandler.NEW_CLASS_NAME);
+  }
   return (section == null) ? sectionKey : section.getCeilingEntity();
 }
