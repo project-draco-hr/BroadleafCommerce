@@ -3,8 +3,10 @@
   CriteriaQuery<URLHandler> criteria=builder.createQuery(URLHandler.class);
   Root<URLHandlerImpl> handler=criteria.from(URLHandlerImpl.class);
   criteria.select(handler);
+  TypedQuery<URLHandler> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
   try {
-    return em.createQuery(criteria).getResultList();
+    return query.getResultList();
   }
  catch (  NoResultException e) {
     return new ArrayList<URLHandler>();

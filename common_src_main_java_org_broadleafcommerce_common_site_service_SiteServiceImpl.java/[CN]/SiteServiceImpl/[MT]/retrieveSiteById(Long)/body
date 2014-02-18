@@ -1,7 +1,14 @@
 {
-  Site response=siteDao.retrieve(id);
-  if (response != null) {
-    response=response.clone();
+  final Site[] response=new Site[1];
+  transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+    @Override public void execute() throws Throwable {
+      Site temp=siteDao.retrieve(id);
+      if (temp != null) {
+        temp=temp.clone();
+      }
+      response[0]=temp;
+    }
   }
-  return response;
+,RuntimeException.class,!TransactionSynchronizationManager.hasResource(((JpaTransactionManager)transUtil.getTransactionManager()).getEntityManagerFactory()));
+  return response[0];
 }

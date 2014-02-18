@@ -1,4 +1,13 @@
 {
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null && context.getAdditionalProperties().containsKey("blProductEntityExtensionManager")) {
+    ProductEntityExtensionManager extensionManager=(ProductEntityExtensionManager)context.getAdditionalProperties().get("blProductEntityExtensionManager");
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().getAllParentCategories(this,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      return (List<Category>)holder.getResult();
+    }
+  }
   List<Category> parents=new ArrayList<Category>();
   for (  CategoryProductXref xref : allParentCategoryXrefs) {
     parents.add(xref.getCategory());

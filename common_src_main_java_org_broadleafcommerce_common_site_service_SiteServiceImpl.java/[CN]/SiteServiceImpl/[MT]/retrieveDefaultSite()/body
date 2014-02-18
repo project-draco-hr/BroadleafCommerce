@@ -1,3 +1,10 @@
 {
-  return siteDao.retrieveDefaultSite().clone();
+  final Site[] response=new Site[1];
+  transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+    @Override public void execute() throws Throwable {
+      response[0]=siteDao.retrieveDefaultSite().clone();
+    }
+  }
+,RuntimeException.class,!TransactionSynchronizationManager.hasResource(((JpaTransactionManager)transUtil.getTransactionManager()).getEntityManagerFactory()));
+  return response[0];
 }

@@ -1,3 +1,12 @@
 {
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null && context.getAdditionalProperties().containsKey("blCategoryEntityExtensionManager")) {
+    CategoryEntityExtensionManager extensionManager=(CategoryEntityExtensionManager)context.getAdditionalProperties().get("blCategoryEntityExtensionManager");
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().getCrossSaleProducts(this,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      return (List<RelatedProduct>)holder.getResult();
+    }
+  }
   return crossSaleProducts;
 }
