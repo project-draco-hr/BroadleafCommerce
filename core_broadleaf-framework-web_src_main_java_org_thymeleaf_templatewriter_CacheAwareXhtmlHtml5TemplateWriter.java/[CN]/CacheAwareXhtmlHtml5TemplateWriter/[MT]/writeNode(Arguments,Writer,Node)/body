@@ -2,7 +2,7 @@
   if (node instanceof CacheableNode) {
     CacheableNode cn=(CacheableNode)node;
     Element element=getCache().get(cn.getCacheKey());
-    String valueToWrite=null;
+    String valueToWrite;
     if (element != null && element.getObjectValue() != null) {
       if (LOG.isTraceEnabled()) {
         LOG.trace("Read template from cache - " + cn.getCacheKey());
@@ -16,7 +16,7 @@
       element=new Element(cn.getCacheKey(),valueToWrite);
       getCache().put(element);
     }
-    writer.write((String)element.getObjectValue());
+    writer.write(valueToWrite);
   }
  else {
     super.writeNode(arguments,writer,node);
