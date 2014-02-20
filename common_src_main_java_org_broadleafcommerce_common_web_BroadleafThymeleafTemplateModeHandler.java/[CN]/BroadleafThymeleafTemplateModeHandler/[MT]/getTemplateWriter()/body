@@ -1,6 +1,9 @@
 {
   if (handler.getTemplateWriter() instanceof AbstractGeneralTemplateWriter) {
-    return new CacheAwareGeneralTemplateWriter((AbstractGeneralTemplateWriter)handler.getTemplateWriter());
+    if (writer == null) {
+      writer=new CacheAwareGeneralTemplateWriter((AbstractGeneralTemplateWriter)handler.getTemplateWriter());
+    }
+    return writer;
   }
  else {
     return handler.getTemplateWriter();
