@@ -1,3 +1,8 @@
 {
-  return handler.getTemplateWriter();
+  if (handler.getTemplateWriter() instanceof AbstractGeneralTemplateWriter) {
+    return new CacheAwareGeneralTemplateWriter((AbstractGeneralTemplateWriter)handler.getTemplateWriter());
+  }
+ else {
+    return handler.getTemplateWriter();
+  }
 }
