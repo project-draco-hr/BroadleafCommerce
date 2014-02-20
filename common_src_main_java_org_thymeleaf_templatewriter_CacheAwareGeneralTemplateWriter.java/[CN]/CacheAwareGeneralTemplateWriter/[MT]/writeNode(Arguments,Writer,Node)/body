@@ -1,20 +1,33 @@
 {
-  if (node instanceof CacheableNode) {
-    CacheableNode cn=(CacheableNode)node;
-    Element element=getCache().get(cn.getCacheKey());
+  if (!(node instanceof org.thymeleaf.dom.Element)) {
+    super.writeNode(arguments,writer,node);
+    return;
+  }
+  org.thymeleaf.dom.Element e=(org.thymeleaf.dom.Element)node;
+  String cacheKey=e.getAttributeValueFromNormalizedName("cachekey");
+  boolean forceGenerate=new Random().nextBoolean();
+  if (StringUtils.isNotBlank(cacheKey)) {
+    Element element=getCache().get(cacheKey);
     String valueToWrite;
+    if (forceGenerate) {
+      element=null;
+    }
+    long start=System.currentTimeMillis();
     if (element != null && element.getObjectValue() != null) {
       if (LOG.isTraceEnabled()) {
-        LOG.trace("Read template from cache - " + cn.getCacheKey());
+        LOG.trace("Read template from cache - " + cacheKey);
       }
       valueToWrite=(String)element.getObjectValue();
+      System.out.println("It took " + (System.currentTimeMillis() - start) + "ms to read from cache");
     }
  else {
+      e.removeAttribute("cachekey");
       StringWriter w2=new StringWriter();
-      super.writeNode(arguments,w2,cn.getDelegateNode());
+      super.writeNode(arguments,w2,node);
       valueToWrite=w2.toString();
-      element=new Element(cn.getCacheKey(),valueToWrite);
+      element=new Element(cacheKey,valueToWrite);
       getCache().put(element);
+      System.out.println("It took " + (System.currentTimeMillis() - start) + "ms to generate");
     }
     writer.write(valueToWrite);
   }
