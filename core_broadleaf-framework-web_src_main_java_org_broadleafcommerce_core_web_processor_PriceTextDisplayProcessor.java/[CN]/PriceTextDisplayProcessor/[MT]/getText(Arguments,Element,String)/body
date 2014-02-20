@@ -1,22 +1,19 @@
 {
-  Money price;
-  try {
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
-    price=(Money)expression.execute(arguments.getConfiguration(),arguments);
+  Money price=null;
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  Object result=expression.execute(arguments.getConfiguration(),arguments);
+  if (result instanceof Money) {
+    price=(Money)result;
   }
- catch (  ClassCastException e) {
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
-    Number value=(Number)expression.execute(arguments.getConfiguration(),arguments);
-    price=new Money(value.doubleValue());
+ else   if (result instanceof Number) {
+    price=new Money(((Number)result).doubleValue());
   }
   if (price == null) {
     return "Not Available";
   }
   BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
   if (brc.getJavaLocale() != null) {
-    NumberFormat format=NumberFormat.getCurrencyInstance(brc.getJavaLocale());
-    format.setCurrency(price.getCurrency());
-    return format.format(price.getAmount());
+    return BroadleafCurrencyUtils.getNumberFormatFromCache(brc.getJavaLocale(),price.getCurrency()).format(price.getAmount());
   }
  else {
     return "$ " + price.getAmount().toString();

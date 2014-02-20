@@ -4,9 +4,7 @@
   }
   BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
   if (brc.getJavaLocale() != null) {
-    NumberFormat format=NumberFormat.getCurrencyInstance(brc.getJavaLocale());
-    format.setCurrency(price.getCurrency());
-    return format.format(price.getAmount());
+    return BroadleafCurrencyUtils.getNumberFormatFromCache(brc.getJavaLocale(),price.getCurrency()).format(price.getAmount());
   }
  else {
     return "$ " + price.getAmount().toString();
