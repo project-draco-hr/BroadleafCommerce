@@ -11,7 +11,7 @@
     }
  else {
       StringWriter w2=new StringWriter();
-      delegateWriter.writeNode(arguments,w2,cn.getDelegateNode());
+      super.writeNode(arguments,w2,cn.getDelegateNode());
       valueToWrite=w2.toString();
       element=new Element(cn.getCacheKey(),valueToWrite);
       getCache().put(element);
@@ -19,6 +19,6 @@
     writer.write(valueToWrite);
   }
  else {
-    delegateWriter.writeNode(arguments,writer,node);
+    super.writeNode(arguments,writer,node);
   }
 }
