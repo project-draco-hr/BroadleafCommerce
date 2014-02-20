@@ -1,0 +1,24 @@
+{
+  if (node instanceof CacheableNode) {
+    CacheableNode cn=(CacheableNode)node;
+    Element element=getCache().get(cn.getCacheKey());
+    String valueToWrite=null;
+    if (element != null && element.getObjectValue() != null) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Read template from cache - " + cn.getCacheKey());
+      }
+      valueToWrite=(String)element.getObjectValue();
+    }
+ else {
+      StringWriter w2=new StringWriter();
+      super.writeNode(arguments,w2,cn.getDelegateNode());
+      valueToWrite=w2.toString();
+      element=new Element(cn.getCacheKey(),valueToWrite);
+      getCache().put(element);
+    }
+    writer.write((String)element.getObjectValue());
+  }
+ else {
+    super.writeNode(arguments,writer,node);
+  }
+}

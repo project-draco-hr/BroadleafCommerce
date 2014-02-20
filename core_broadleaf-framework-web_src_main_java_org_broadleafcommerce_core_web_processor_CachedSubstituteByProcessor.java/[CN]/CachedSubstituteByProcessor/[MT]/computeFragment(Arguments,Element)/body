@@ -1,0 +1,12 @@
+{
+  String template=element.getAttributeValue("template");
+  List<Node> nodes=computeFragmentInternal(arguments,element,"template",template);
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValueFromNormalizedName("cachekey"));
+  String cacheKey=(String)expression.execute(arguments.getConfiguration(),arguments);
+  List<Node> cacheableNodes=new ArrayList<Node>(nodes.size());
+  for (int i=0; i < nodes.size(); i++) {
+    CacheableNode cn=new CacheableNode(nodes.get(i),cacheKey + ":" + i);
+    cacheableNodes.add(cn);
+  }
+  return cacheableNodes;
+}
