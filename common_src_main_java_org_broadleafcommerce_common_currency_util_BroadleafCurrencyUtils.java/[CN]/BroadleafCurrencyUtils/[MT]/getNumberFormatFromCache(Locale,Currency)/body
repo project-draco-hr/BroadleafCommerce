@@ -1,0 +1,9 @@
+{
+  String key=locale.toString() + currency.getCurrencyCode();
+  if (!FORMAT_CACHE.containsKey(key)) {
+    NumberFormat format=NumberFormat.getCurrencyInstance(locale);
+    format.setCurrency(currency);
+    FORMAT_CACHE.put(key,format);
+  }
+  return FORMAT_CACHE.get(key);
+}

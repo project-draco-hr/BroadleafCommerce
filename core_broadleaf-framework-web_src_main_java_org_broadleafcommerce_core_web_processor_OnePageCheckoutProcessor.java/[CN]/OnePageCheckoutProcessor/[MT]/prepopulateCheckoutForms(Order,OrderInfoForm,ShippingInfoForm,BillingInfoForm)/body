@@ -4,13 +4,8 @@
   }
   FulfillmentGroup firstShippableFulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart);
   if (firstShippableFulfillmentGroup != null) {
-    FulfillmentOption fulfillmentOption=firstShippableFulfillmentGroup.getFulfillmentOption();
-    if (fulfillmentOption != null) {
-      if (firstShippableFulfillmentGroup.getAddress() != null) {
-        shippingForm.setAddress(firstShippableFulfillmentGroup.getAddress());
-      }
-      shippingForm.setFulfillmentOption(fulfillmentOption);
-      shippingForm.setFulfillmentOptionId(fulfillmentOption.getId());
+    if (firstShippableFulfillmentGroup.getAddress() != null) {
+      shippingForm.setAddress(firstShippableFulfillmentGroup.getAddress());
     }
  else {
       CustomerAddress defaultAddress=customerAddressService.findDefaultCustomerAddress(CustomerState.getCustomer().getId());
@@ -18,6 +13,11 @@
         shippingForm.setAddress(defaultAddress.getAddress());
         shippingForm.setAddressName(defaultAddress.getAddressName());
       }
+    }
+    FulfillmentOption fulfillmentOption=firstShippableFulfillmentGroup.getFulfillmentOption();
+    if (fulfillmentOption != null) {
+      shippingForm.setFulfillmentOption(fulfillmentOption);
+      shippingForm.setFulfillmentOptionId(fulfillmentOption.getId());
     }
   }
   if (cart.getPayments() != null) {

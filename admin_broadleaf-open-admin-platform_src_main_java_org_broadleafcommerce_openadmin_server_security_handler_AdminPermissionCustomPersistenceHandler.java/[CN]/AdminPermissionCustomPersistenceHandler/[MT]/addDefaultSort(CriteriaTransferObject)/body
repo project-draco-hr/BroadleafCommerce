@@ -1,0 +1,14 @@
+{
+  boolean userSort=false;
+  for (  FilterAndSortCriteria fasc : cto.getCriteriaMap().values()) {
+    if (fasc.getSortDirection() != null) {
+      userSort=true;
+      break;
+    }
+  }
+  if (!userSort) {
+    FilterAndSortCriteria sortFasc=new FilterAndSortCriteria("description");
+    sortFasc.setSortAscending(true);
+    cto.add(sortFasc);
+  }
+}

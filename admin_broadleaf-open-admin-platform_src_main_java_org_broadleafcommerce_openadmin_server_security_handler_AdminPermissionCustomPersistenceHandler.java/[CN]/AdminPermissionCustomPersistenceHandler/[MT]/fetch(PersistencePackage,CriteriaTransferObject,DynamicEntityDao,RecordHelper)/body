@@ -1,22 +1,7 @@
 {
-  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
-  try {
-    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(AdminPermissionImpl.class.getName(),persistencePerspective);
-    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
-    cto.setMaxResults(500);
-    List<Serializable> records=helper.getPersistentRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
-    Iterator<Serializable> itr=records.iterator();
-    while (itr.hasNext()) {
-      AdminPermissionImpl perm=(AdminPermissionImpl)itr.next();
-      if (!perm.isFriendly()) {
-        itr.remove();
-      }
-    }
-    Entity[] payload=helper.getRecords(originalProps,records);
-    return new DynamicResultSet(payload,records.size());
-  }
- catch (  Exception e) {
-    throw new ServiceException("Unable to perform fetch for entity: " + ceilingEntityFullyQualifiedClassname,e);
-  }
+  addFriendlyRestriction(cto);
+  addDefaultSort(cto);
+  PersistenceModule myModule=helper.getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
+  DynamicResultSet results=myModule.fetch(persistencePackage,cto);
+  return results;
 }

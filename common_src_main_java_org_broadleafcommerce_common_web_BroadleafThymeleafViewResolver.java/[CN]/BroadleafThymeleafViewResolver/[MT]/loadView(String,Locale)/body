@@ -18,7 +18,17 @@
       viewName=getFullPageLayout();
     }
   }
-  AbstractThymeleafView view=(AbstractThymeleafView)super.loadView(viewName,locale);
+  AbstractThymeleafView view=null;
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  extensionManager.getProxy().overrideView(erh);
+  String templateOverride=(String)erh.getContextMap().get(EXTENSION_TEMPLATE_ATTR_NAME);
+  if (templateOverride != null && isAjaxRequest()) {
+    view=(AbstractThymeleafView)super.loadView(templateOverride,locale);
+    view.addStaticVariable("wrappedTemplate",viewName);
+  }
+ else {
+    view=(AbstractThymeleafView)super.loadView(viewName,locale);
+  }
   if (!isAjaxRequest()) {
     view.addStaticVariable("templateName",originalViewName);
   }

@@ -4,11 +4,11 @@
     currentHierarchy.add(this);
   }
   List<Category> myParentCategories=new ArrayList<Category>();
-  if (defaultParentCategory != null) {
-    myParentCategories.add(defaultParentCategory);
+  if (getDefaultParentCategory() != null) {
+    myParentCategories.add(getDefaultParentCategory());
   }
-  if (allParentCategoryXrefs != null && allParentCategoryXrefs.size() > 0) {
-    for (    CategoryXref parent : allParentCategoryXrefs) {
+  if (!CollectionUtils.isEmpty(getAllParentCategoryXrefs())) {
+    for (    CategoryXref parent : getAllParentCategoryXrefs()) {
       myParentCategories.add(parent.getCategory());
     }
   }
