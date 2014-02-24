@@ -12,6 +12,13 @@
     }
   }
   if (unminifiedResource == null) {
+    ExtensionResultHolder erh=new ExtensionResultHolder();
+    extensionManager.getProxy().getOverrideResource(path,erh);
+    if (erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR) != null) {
+      unminifiedResource=(Resource)erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR);
+    }
+  }
+  if (unminifiedResource == null) {
     unminifiedResource=super.getResource(request);
   }
   try {
