@@ -1,12 +1,12 @@
 {
   CriteriaBuilder builder=em.getCriteriaBuilder();
   CriteriaQuery<Product> criteria=builder.createQuery(Product.class);
-  Root<CategoryImpl> category=criteria.from(CategoryImpl.class);
-  Join<Category,Product> product=category.join("allProducts");
+  Root<ProductImpl> product=criteria.from(ProductImpl.class);
   Join<Product,Sku> sku=product.join("defaultSku");
+  ListJoin<Product,CategoryProductXref> categoryXref=product.joinList("allParentCategoryXrefs");
   criteria.select(product);
   List<Predicate> restrictions=new ArrayList<Predicate>();
-  restrictions.add(builder.equal(category.get("id"),categoryId));
+  restrictions.add(builder.equal(categoryXref.get("categoryProductXref").get("category").get("id"),categoryId));
   attachProductSearchCriteria(searchCriteria,product,sku,restrictions);
   attachActiveRestriction(currentDate,product,sku,restrictions);
   attachOrderBy(searchCriteria,product,sku,criteria);

@@ -21,6 +21,7 @@
  else {
     throw new IllegalArgumentException("Invalid facet fieldName specified: " + fieldName);
   }
+  criteria.where(pathToUse.get(fieldName).as(fieldValueClass).isNotNull());
   criteria.distinct(true).select(pathToUse.get(fieldName).as(fieldValueClass));
   return em.createQuery(criteria).getResultList();
 }
