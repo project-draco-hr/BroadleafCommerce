@@ -115,7 +115,7 @@
             CtClass[] myInterfaces=clazz.getInterfaces();
             for (            CtClass myInterface : myInterfaces) {
               if (myInterface.getName().equals(i.getName())) {
-                if (xformSkipOverlaps[index]) {
+                if (xformSkipOverlaps != null && xformSkipOverlaps[index]) {
                   break checkInterfaces;
                 }
  else {
@@ -144,7 +144,7 @@
               if (!originalSignature.equals(mySignature)) {
                 throw new IllegalArgumentException("Field with name (" + field.getName() + ") and signature "+ "("+ field.getSignature()+ ") is targeted for weaving into ("+ clazz.getName()+ "). "+ "An incompatible field of the same name and signature of ("+ ctField.getSignature()+ ") "+ "already exists. The field in the target class should be updated to a different name, "+ "or made to have a matching type.");
               }
-              if (xformSkipOverlaps[index]) {
+              if (xformSkipOverlaps != null && xformSkipOverlaps[index]) {
                 logger.debug(String.format("Skipping overlapped field [%s]",field.getName()));
                 continue;
               }
@@ -185,7 +185,7 @@
             try {
               CtClass[] paramTypes=method.getParameterTypes();
               CtMethod originalMethod=clazz.getDeclaredMethod(method.getName(),paramTypes);
-              if (xformSkipOverlaps[index]) {
+              if (xformSkipOverlaps != null && xformSkipOverlaps[index]) {
                 logger.debug(String.format("Skipping overlapped method [%s]",methodDescription(originalMethod)));
                 continue;
               }
@@ -197,7 +197,7 @@
                 transformedMethods.add(methodDescription(originalMethod));
               }
               logger.debug(String.format("Removing method [%s]",method.getName()));
-              if (xformRenameMethodOverlaps[index]) {
+              if (xformRenameMethodOverlaps != null && xformRenameMethodOverlaps[index]) {
                 originalMethod.setName(renameMethodPrefix + method.getName());
               }
  else {
