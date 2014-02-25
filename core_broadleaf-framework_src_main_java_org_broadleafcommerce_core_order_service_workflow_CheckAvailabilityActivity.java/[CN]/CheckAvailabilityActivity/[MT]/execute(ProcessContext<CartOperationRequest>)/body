@@ -1,0 +1,36 @@
+{
+  CartOperationRequest request=context.getSeedData();
+  Sku sku;
+  Long orderItemId=request.getItemRequest().getOrderItemId();
+  if (orderItemId != null) {
+    OrderItem orderItem=orderItemService.readOrderItemById(orderItemId);
+    if (orderItem instanceof DiscreteOrderItem) {
+      sku=((DiscreteOrderItem)orderItem).getSku();
+    }
+ else     if (orderItem instanceof BundleOrderItem) {
+      sku=((BundleOrderItem)orderItem).getSku();
+    }
+ else {
+      LOG.warn("Could not check availability; did not recognize passed-in item " + orderItem.getClass().getName());
+      return context;
+    }
+  }
+ else {
+    Long skuId=request.getItemRequest().getSkuId();
+    sku=catalogService.findSkuById(skuId);
+  }
+  if (!sku.isAvailable()) {
+    throw new InventoryUnavailableException("The referenced Sku " + sku.getId() + " is marked as unavailable",sku.getId(),request.getItemRequest().getQuantity(),0);
+  }
+  if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+    Integer requestedQuantity=request.getItemRequest().getQuantity();
+    ExtensionResultStatusType status=extensionManager.getProxy().checkAvailability(sku,requestedQuantity,context);
+    if (ExtensionResultStatusType.NOT_HANDLED.equals(status)) {
+      boolean available=isInventoryAvailable(sku,requestedQuantity,context);
+      if (!available) {
+        throw new InventoryUnavailableException(sku.getId(),requestedQuantity,inventoryService.retrieveQuantityAvailable(sku));
+      }
+    }
+  }
+  return context;
+}

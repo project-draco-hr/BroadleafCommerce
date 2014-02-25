@@ -1,0 +1,14 @@
+{
+  if (quantity < 1) {
+    throw new IllegalArgumentException("Quantity " + quantity + " is not valid. Must be greater than zero.");
+  }
+  if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+    int inventoryAvailable=retrieveQuantityAvailable(sku);
+    int newInventory=inventoryAvailable + quantity;
+    sku.setQuantityAvailable(newInventory);
+    catalogService.saveSku(sku);
+  }
+ else {
+    LOG.info("Not incrementing inventory as the Sku has been marked as always available");
+  }
+}
