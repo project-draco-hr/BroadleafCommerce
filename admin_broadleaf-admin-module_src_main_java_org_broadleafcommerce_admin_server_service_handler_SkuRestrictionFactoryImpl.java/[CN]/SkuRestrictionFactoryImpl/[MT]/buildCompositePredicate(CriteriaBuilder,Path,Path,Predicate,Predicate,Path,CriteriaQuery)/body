@@ -1,0 +1,15 @@
+{
+  Subquery<Long> additionalSkusSubQuery=criteria.subquery(Long.class);
+  Root<SkuImpl> subRoot=additionalSkusSubQuery.from(SkuImpl.class);
+  additionalSkusSubQuery.select(subRoot.get("id").as(Long.class));
+  List<Predicate> subRestrictions=new ArrayList<Predicate>();
+  subRestrictions.add(builder.and(builder.isNull(targetPropertyPath),builder.isNotNull(productPath),defaultSkuExpression));
+  additionalSkusSubQuery.where(subRestrictions.toArray(new Predicate[subRestrictions.size()]));
+  Subquery<Long> defaultSkusSubquery=criteria.subquery(Long.class);
+  Root<SkuImpl> defaultSkusRoot=defaultSkusSubquery.from(SkuImpl.class);
+  defaultSkusSubquery.select(defaultSkusRoot.get("id").as(Long.class));
+  List<Predicate> defaultSkusRestrictions=new ArrayList<Predicate>();
+  defaultSkusRestrictions.add(builder.and(builder.isNotNull(targetPropertyPath),propertyExpression));
+  defaultSkusSubquery.where(defaultSkusRestrictions.toArray(new Predicate[defaultSkusRestrictions.size()]));
+  return builder.or(skuIdPath.in(additionalSkusSubQuery),skuIdPath.in(defaultSkusSubquery));
+}

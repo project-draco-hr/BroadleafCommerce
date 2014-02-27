@@ -7,6 +7,7 @@
         Path targetPropertyPath=fieldPathBuilder.getPath(root,fieldPath,builder);
         Path defaultSkuPropertyPath=fieldPathBuilder.getPath(root,getSkuPropertyPrefix() + DEFAULT_SKU_PATH_PREFIX + fullPropertyName.replace(getSkuPropertyPrefix(),""),builder);
         Path productPath=fieldPathBuilder.getPath(root,getSkuPropertyPrefix() + "product",builder);
+        Path skuIdPath=fieldPathBuilder.getPath(root,getSkuPropertyPrefix() + "id",builder);
         Predicate propertyExpression;
         Predicate defaultSkuExpression;
         if (delegateRestriction.getPredicateProvider() instanceof LikePredicateProvider) {
@@ -58,7 +59,7 @@
  else {
           throw new IllegalArgumentException("Unknown PredicateProvider instance: " + delegateRestriction.getPredicateProvider().getClass().getName());
         }
-        return buildCompositePredicate(builder,targetPropertyPath,productPath,propertyExpression,defaultSkuExpression);
+        return buildCompositePredicate(builder,targetPropertyPath,productPath,propertyExpression,defaultSkuExpression,skuIdPath,fieldPathBuilder.getCriteria());
       }
       return delegateRestriction.getPredicateProvider().buildPredicate(builder,fieldPathBuilder,root,ceilingEntity,fullPropertyName,explicitPath,directValues);
     }
