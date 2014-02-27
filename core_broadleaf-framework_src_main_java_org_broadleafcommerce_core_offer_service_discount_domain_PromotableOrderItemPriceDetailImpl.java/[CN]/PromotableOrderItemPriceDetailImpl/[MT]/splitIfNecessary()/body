@@ -3,7 +3,7 @@
   for (  PromotionDiscount discount : promotionDiscounts) {
     if (discount.getQuantity() != quantity) {
       Long offerId=discount.getCandidateItemOffer().getOffer().getId();
-      return this.split(discount.getQuantity(),offerId);
+      return this.split(discount.getQuantity(),offerId,!CollectionUtils.isEmpty(discount.getCandidateItemOffer().getOffer().getQualifyingItemCriteria()));
     }
   }
   return returnDetail;
