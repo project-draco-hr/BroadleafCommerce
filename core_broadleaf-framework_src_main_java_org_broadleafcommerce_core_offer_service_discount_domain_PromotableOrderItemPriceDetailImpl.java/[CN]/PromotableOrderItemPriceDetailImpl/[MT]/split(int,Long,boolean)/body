@@ -9,17 +9,19 @@
       newDetail.getPromotionDiscounts().add(newDiscount);
     }
   }
-  Iterator<PromotionQualifier> qualifiers=promotionQualifiers.iterator();
-  while (qualifiers.hasNext()) {
-    PromotionQualifier currentQualifier=qualifiers.next();
-    Long qualifierOfferId=currentQualifier.getPromotion().getId();
-    if (qualifierOfferId.equals(offerId) && currentQualifier.getQuantity() <= splitItemQty) {
-      qualifiers.remove();
-      newDetail.getPromotionQualifiers().add(currentQualifier);
-    }
+  if (hasQualifiers) {
+    Iterator<PromotionQualifier> qualifiers=promotionQualifiers.iterator();
+    while (qualifiers.hasNext()) {
+      PromotionQualifier currentQualifier=qualifiers.next();
+      Long qualifierOfferId=currentQualifier.getPromotion().getId();
+      if (qualifierOfferId.equals(offerId) && currentQualifier.getQuantity() <= splitItemQty) {
+        qualifiers.remove();
+        newDetail.getPromotionQualifiers().add(currentQualifier);
+      }
  else {
-      PromotionQualifier newQualifier=currentQualifier.split(splitItemQty);
-      newDetail.getPromotionQualifiers().add(newQualifier);
+        PromotionQualifier newQualifier=currentQualifier.split(splitItemQty);
+        newDetail.getPromotionQualifiers().add(newQualifier);
+      }
     }
   }
   for (  PromotableOrderItemPriceDetailAdjustment existingAdjustment : promotableOrderItemPriceDetailAdjustments) {
