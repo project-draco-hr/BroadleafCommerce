@@ -1,0 +1,14 @@
+{
+  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(className);
+  ClassMetadata md=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  if (md.getPMap().containsKey("name")) {
+    return "name";
+  }
+  if (md.getPMap().containsKey("friendlyName")) {
+    return "friendlyName";
+  }
+  if (md.getPMap().containsKey("templateName")) {
+    return "templateName";
+  }
+  return "id";
+}

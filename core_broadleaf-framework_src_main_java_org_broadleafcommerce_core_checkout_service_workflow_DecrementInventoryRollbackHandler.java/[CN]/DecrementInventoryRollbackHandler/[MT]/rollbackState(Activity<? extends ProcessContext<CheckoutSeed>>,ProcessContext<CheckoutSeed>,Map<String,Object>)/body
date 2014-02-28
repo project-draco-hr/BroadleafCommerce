@@ -1,0 +1,46 @@
+{
+  ExtensionResultStatusType extensionResult=extensionManager.getProxy().rollbackInventoryOperation(processContext,stateConfiguration);
+  if (ExtensionResultStatusType.NOT_HANDLED.equals(extensionResult)) {
+    if (stateConfiguration == null || (stateConfiguration.get(ROLLBACK_BLC_INVENTORY_DECREMENTED) == null && stateConfiguration.get(ROLLBACK_BLC_INVENTORY_INCREMENTED) == null)) {
+      return;
+    }
+    String orderId="(Not Known)";
+    if (stateConfiguration.get(ROLLBACK_BLC_ORDER_ID) != null) {
+      orderId=String.valueOf(stateConfiguration.get(ROLLBACK_BLC_ORDER_ID));
+    }
+    @SuppressWarnings("unchecked") Map<Sku,Integer> inventoryToIncrement=(Map<Sku,Integer>)stateConfiguration.get(ROLLBACK_BLC_INVENTORY_DECREMENTED);
+    @SuppressWarnings("unchecked") Map<Sku,Integer> inventoryToDecrement=(Map<Sku,Integer>)stateConfiguration.get(ROLLBACK_BLC_INVENTORY_INCREMENTED);
+    if (inventoryToIncrement != null && !inventoryToIncrement.isEmpty()) {
+      try {
+        inventoryService.incrementInventory(inventoryToIncrement);
+      }
+ catch (      Exception ex) {
+        RollbackFailureException rfe=new RollbackFailureException("An unexpected error occured in the error handler of the checkout workflow trying to compensate for inventory. This happend for order ID: " + orderId + ". This should be corrected manually!",ex);
+        rfe.setActivity(activity);
+        rfe.setProcessContext(processContext);
+        rfe.setStateItems(stateConfiguration);
+        throw rfe;
+      }
+    }
+    if (inventoryToDecrement != null && !inventoryToDecrement.isEmpty()) {
+      try {
+        inventoryService.decrementInventory(inventoryToDecrement);
+      }
+ catch (      InventoryUnavailableException e) {
+        RollbackFailureException rfe=new RollbackFailureException("While trying roll back (decrement) inventory, we found that there was none left decrement.",e);
+        rfe.setActivity(activity);
+        rfe.setProcessContext(processContext);
+        rfe.setStateItems(stateConfiguration);
+        throw rfe;
+      }
+catch (      RuntimeException ex) {
+        LOG.error("An unexpected error occured in the error handler of the checkout workflow trying to compensate for inventory. This happend for order ID: " + orderId + ". This should be corrected manually!",ex);
+        RollbackFailureException rfe=new RollbackFailureException("An unexpected error occured in the error handler of the checkout workflow " + "trying to compensate for inventory. This happend for order ID: " + orderId + ". This should be corrected manually!",ex);
+        rfe.setActivity(activity);
+        rfe.setProcessContext(processContext);
+        rfe.setStateItems(stateConfiguration);
+        throw rfe;
+      }
+    }
+  }
+}

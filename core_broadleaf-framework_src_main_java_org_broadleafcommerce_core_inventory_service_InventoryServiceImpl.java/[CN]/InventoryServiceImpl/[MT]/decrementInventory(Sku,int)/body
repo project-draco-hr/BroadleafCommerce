@@ -1,0 +1,25 @@
+{
+  if (quantity < 1) {
+    throw new IllegalArgumentException("Quantity " + quantity + " is not valid. Must be greater than zero.");
+  }
+  if (checkBasicAvailablility(sku)) {
+    if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+      Integer inventoryAvailable=retrieveQuantityAvailable(sku);
+      if (inventoryAvailable == null) {
+        return;
+      }
+      if (inventoryAvailable < quantity) {
+        throw new InventoryUnavailableException("There was not enough inventory to fulfill this request.",sku.getId(),quantity,inventoryAvailable);
+      }
+      int newInventory=inventoryAvailable - quantity;
+      sku.setQuantityAvailable(newInventory);
+      catalogService.saveSku(sku);
+    }
+ else {
+      LOG.info("Not decrementing inventory as the Sku has been marked as always available");
+    }
+  }
+ else {
+    throw new InventoryUnavailableException("The Sku has been marked as unavailable",sku.getId(),quantity,0);
+  }
+}

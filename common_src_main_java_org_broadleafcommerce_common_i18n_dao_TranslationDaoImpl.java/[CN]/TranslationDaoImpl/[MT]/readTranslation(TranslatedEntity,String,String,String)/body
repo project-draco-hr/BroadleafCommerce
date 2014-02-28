@@ -7,10 +7,12 @@
   criteria.where(builder.equal(translation.get("entityType"),entity.getFriendlyType()),builder.equal(translation.get("entityId"),entityId),builder.equal(translation.get("fieldName"),fieldName),builder.equal(translation.get("localeCode"),localeCode));
   TypedQuery<Translation> query=em.createQuery(criteria);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
-  try {
-    return query.getSingleResult();
+  List<Translation> translations=query.getResultList();
+  if (translations.size() > 1) {
+    throw new IllegalStateException("Found multiple translations for: " + entity.getFriendlyType() + "|"+ entityId+ "|"+ fieldName+ "|"+ localeCode);
   }
- catch (  NoResultException e) {
-    return null;
+  if (!translations.isEmpty()) {
+    return translations.get(0);
   }
+  return null;
 }

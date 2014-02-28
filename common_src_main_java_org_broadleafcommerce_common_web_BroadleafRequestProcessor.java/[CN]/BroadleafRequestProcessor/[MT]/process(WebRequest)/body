@@ -7,6 +7,9 @@
     brc.setIgnoreSite(true);
   }
   brc.setAdmin(false);
+  if (enforceProductionWorkflowUpdate) {
+    brc.getAdditionalProperties().put("site.enforce.production.workflow.update",enforceProductionWorkflowUpdate);
+  }
   BroadleafRequestContext.setBroadleafRequestContext(brc);
   Locale locale=localeResolver.resolveLocale(request);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);

@@ -1,0 +1,10 @@
+{
+  for (  Entry<Sku,Integer> entry : skuQuantities.entrySet()) {
+    Sku sku=entry.getKey();
+    Integer quantity=entry.getValue();
+    if (quantity == null) {
+      throw new IllegalArgumentException("Quantity was null for skuId " + sku.getId());
+    }
+    decrementInventory(entry.getKey(),quantity);
+  }
+}

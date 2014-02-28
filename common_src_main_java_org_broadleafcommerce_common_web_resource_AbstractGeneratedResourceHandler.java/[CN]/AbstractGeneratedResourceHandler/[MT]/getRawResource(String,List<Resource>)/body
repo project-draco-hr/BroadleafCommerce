@@ -1,4 +1,9 @@
 {
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  extensionManager.getProxy().getOverrideResource(path,erh);
+  if (erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR) != null) {
+    return (Resource)erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR);
+  }
   for (  Resource location : locations) {
     try {
       Resource resource=location.createRelative(path);
