@@ -1,0 +1,17 @@
+{
+  String template=element.getAttributeValue("template");
+  String cacheKeyAttrValue=element.getAttributeValueFromNormalizedName("cachekey");
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,cacheKeyAttrValue);
+  String cacheKey=(String)expression.execute(arguments.getConfiguration(),arguments);
+  element.setAttribute("blcCacheKey",cacheKey);
+  net.sf.ehcache.Element cacheElement=getCache().get(cacheKey);
+  if (cacheElement != null && cacheElement.getObjectValue() != null) {
+    element.clearChildren();
+  }
+ else {
+    final List<Node> fragmentNodes=computeFragment(arguments,element,"template",template);
+    element.clearChildren();
+    element.setChildren(fragmentNodes);
+  }
+  return ProcessorResult.OK;
+}
