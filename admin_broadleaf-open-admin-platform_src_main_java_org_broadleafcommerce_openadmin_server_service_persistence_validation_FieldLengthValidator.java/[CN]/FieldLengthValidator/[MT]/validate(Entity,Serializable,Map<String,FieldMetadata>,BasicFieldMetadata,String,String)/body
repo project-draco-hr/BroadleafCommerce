@@ -1,0 +1,13 @@
+{
+  boolean valid=true;
+  String errorMessage="";
+  if (propertyMetadata.getLength() != null) {
+    valid=StringUtils.length(value) <= propertyMetadata.getLength();
+  }
+  if (!valid) {
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    MessageSource messages=context.getMessageSource();
+    errorMessage=messages.getMessage("fieldLengthValidationFailure",new Object[]{propertyMetadata.getLength(),StringUtils.length(value)},context.getJavaLocale());
+  }
+  return new PropertyValidationResult(valid,errorMessage);
+}
