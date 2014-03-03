@@ -1,23 +1,6 @@
 {
   String template=element.getAttributeValue("template");
-  String cacheKeyAttrValue=element.getAttributeValueFromNormalizedName("cachekey");
-  String customerCacheMethodAttrValue=element.getAttributeValueFromNormalizedName("customercachemethod");
-  String cacheKey="";
-  if (cacheKeyAttrValue != null) {
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,cacheKeyAttrValue);
-    cacheKey=(String)expression.execute(arguments.getConfiguration(),arguments);
-  }
-  String customerCacheMethod="";
-  if (customerCacheMethodAttrValue != null) {
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,customerCacheMethodAttrValue);
-    customerCacheMethod=(String)expression.execute(arguments.getConfiguration(),arguments);
-  }
-  String blcCacheKey=buildCacheKey(template,cacheKey,customerCacheMethod);
-  if (blcCacheKey != null) {
-    element.setAttribute("blcCacheKey",blcCacheKey);
-  }
-  net.sf.ehcache.Element cacheElement=getCache().get(blcCacheKey);
-  if (cacheElement != null && cacheElement.getObjectValue() != null) {
+  if (checkCacheForElement(arguments,element,template)) {
     element.clearChildren();
   }
  else {

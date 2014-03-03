@@ -6,13 +6,11 @@
   org.thymeleaf.dom.Element e=(org.thymeleaf.dom.Element)node;
   String cacheKey=e.getAttributeValueFromNormalizedName("blccachekey");
   if (StringUtils.isNotBlank(cacheKey)) {
-    Element element=getCache().get(cacheKey);
-    String valueToWrite;
-    if (element != null && element.getObjectValue() != null) {
+    String valueToWrite=e.getAttributeValueFromNormalizedName("blcacheresponse");
+    if (valueToWrite != null) {
       if (LOG.isTraceEnabled()) {
         LOG.trace("Read template from cache - " + cacheKey);
       }
-      valueToWrite=(String)element.getObjectValue();
     }
  else {
       StringWriter w2=new StringWriter();
@@ -22,7 +20,7 @@
         writeNode(arguments,w2,children[i]);
       }
       valueToWrite=w2.toString();
-      element=new Element(cacheKey,valueToWrite);
+      Element element=new Element(cacheKey,valueToWrite);
       getCache().put(element);
     }
     writer.write(valueToWrite);

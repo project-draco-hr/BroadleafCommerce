@@ -1,0 +1,18 @@
+{
+  String cacheKeyParam="";
+  String cacheKeyAttrValue=element.getAttributeValueFromNormalizedName("cachekey");
+  if (cacheKeyAttrValue != null) {
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,cacheKeyAttrValue);
+    cacheKeyParam=(String)expression.execute(arguments.getConfiguration(),arguments);
+  }
+  String cacheKey=cacheKeyResolver.resolveCacheKey(template,cacheKeyParam);
+  element.setAttribute("blCacheKey",cacheKey);
+  net.sf.ehcache.Element cacheElement=getCache().get(cacheKey);
+  if (cacheElement != null && !cacheElement.isExpired()) {
+    element.setAttribute("blCacheResponse",(String)cacheElement.getObjectValue());
+    return true;
+  }
+ else {
+    return false;
+  }
+}
