@@ -1,17 +1,32 @@
 {
-  File file=new File(getFilePath(resource.getDescription()));
-  if (!file.getParentFile().exists()) {
-    if (!file.getParentFile().mkdirs()) {
-      if (!file.getParentFile().exists()) {
-        throw new RuntimeException("Unable to create middle directories for file: " + file.getAbsolutePath());
+  FileWorkArea tempWorkArea=fileService.initializeWorkArea();
+  String tempFilename=tempWorkArea.getFilePathLocation() + getFilePath(resource.getDescription());
+  File tempFile=new File(tempFilename);
+  if (!tempFile.getParentFile().exists()) {
+    if (!tempFile.getParentFile().mkdirs()) {
+      if (!tempFile.getParentFile().exists()) {
+        throw new RuntimeException("Unable to create parent directories for file: " + tempFilename);
       }
     }
   }
+  BufferedOutputStream out=null;
   try {
-    BufferedOutputStream out=new BufferedOutputStream(new FileOutputStream(file));
+    out=new BufferedOutputStream(new FileOutputStream(tempFile));
     StreamUtils.copy(resource.getInputStream(),out);
+    fileService.addOrUpdateResource(tempWorkArea,tempFile,true);
   }
  catch (  IOException e) {
     throw new RuntimeException(e);
+  }
+ finally {
+    if (out != null) {
+      try {
+        out.close();
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    fileService.closeWorkArea(tempWorkArea);
   }
 }
