@@ -1,0 +1,16 @@
+{
+  BroadleafRequestContext oldBrc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (oldBrc == null || oldBrc.getSite() == null) {
+    HttpServletRequest req=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    HttpSession session=req.getSession(false);
+    SecurityContext ctx=readSecurityContextFromSession(session);
+    if (ctx != null) {
+      SecurityContextHolder.setContext(ctx);
+    }
+    BroadleafRequestContext newBrc=new BroadleafRequestContext();
+    newBrc.setSite(siteResolver.resolveSite(req));
+    newBrc.setSandBox(sbResolver.resolveSandBox(req,newBrc.getSite()));
+    BroadleafRequestContext.setBroadleafRequestContext(newBrc);
+    newBrc.setTheme(themeResolver.resolveTheme(req,newBrc.getSite()));
+  }
+}
