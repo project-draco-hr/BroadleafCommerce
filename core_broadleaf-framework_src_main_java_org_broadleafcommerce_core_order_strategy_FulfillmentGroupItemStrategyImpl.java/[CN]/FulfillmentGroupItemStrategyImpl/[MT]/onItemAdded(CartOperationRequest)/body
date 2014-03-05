@@ -31,15 +31,25 @@
         }
         fulfillmentGroup=fulfillmentGroups.get(type);
       }
+      boolean createdFulfillmentGroup=false;
       if (fulfillmentGroup == null) {
         fulfillmentGroup=fulfillmentGroupService.createEmptyFulfillmentGroup();
         fulfillmentGroup.setType(type);
         fulfillmentGroup.setOrder(order);
         fulfillmentGroup=fulfillmentGroupService.save(fulfillmentGroup);
         order.getFulfillmentGroups().add(fulfillmentGroup);
+        createdFulfillmentGroup=true;
       }
       fulfillmentGroup=addItemToFulfillmentGroup(order,doi,doi.getQuantity() * orderItem.getQuantity(),fulfillmentGroup);
       order=fulfillmentGroup.getOrder();
+      if (createdFulfillmentGroup) {
+        if (type == null) {
+          nullFulfillmentTypeGroup=fulfillmentGroup;
+        }
+ else {
+          fulfillmentGroups.put(type,fulfillmentGroup);
+        }
+      }
     }
   }
  else   if (orderItem instanceof DiscreteOrderItem) {
