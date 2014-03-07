@@ -1,0 +1,19 @@
+{
+  final String dialectPrefix=Attribute.getPrefixFromAttributeName(attributeName);
+  final String fragmentSignatureAttributeName=getFragmentSignatureUnprefixedAttributeName(arguments,element,attributeName,attributeValue);
+  final StandardFragment fragment=StandardFragmentProcessor.computeStandardFragmentSpec(arguments.getConfiguration(),arguments,attributeValue,dialectPrefix,fragmentSignatureAttributeName);
+  final List<Node> extractedNodes=fragment.extractFragment(arguments.getConfiguration(),arguments,arguments.getTemplateRepository());
+  final boolean removeHostNode=getRemoveHostNode(arguments,element);
+  final boolean isWholeDocument=(fragment.getFragmentSpec() instanceof WholeFragmentSpec);
+  if (extractedNodes == null || removeHostNode || isWholeDocument) {
+    return extractedNodes;
+  }
+  final Element containerElement=new Element("container");
+  for (  final Node extractedNode : extractedNodes) {
+    containerElement.addChild(extractedNode);
+    containerElement.extractChild(extractedNode);
+  }
+  final List<Node> extractedChildren=containerElement.getChildren();
+  containerElement.clearChildren();
+  return extractedChildren;
+}
