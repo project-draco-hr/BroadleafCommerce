@@ -7,13 +7,12 @@
     document.addField(shs.getExplicitCategoryFieldName(),categoryXref.getCategory().getId());
     String categorySortFieldName=shs.getCategorySortFieldName(categoryXref.getCategory());
     int index=-1;
-    int count=0;
-    for (    CategoryProductXref productXref : categoryXref.getCategory().getAllProductXrefs()) {
-      if (productXref.getProduct().equals(product)) {
-        index=count;
-        break;
-      }
-      count++;
+    if (!categoryProductCache.containsKey(categoryXref.getCategory().getId())) {
+      categoryProductCache.put(categoryXref.getCategory().getId(),solrIndexDao.readProductIdsByCategory(categoryXref.getCategory().getId()));
+    }
+    int position=categoryProductCache.get(categoryXref.getCategory().getId()).indexOf(product.getId());
+    if (position >= 0) {
+      index=position;
     }
     document.addField(categorySortFieldName,index);
   }
