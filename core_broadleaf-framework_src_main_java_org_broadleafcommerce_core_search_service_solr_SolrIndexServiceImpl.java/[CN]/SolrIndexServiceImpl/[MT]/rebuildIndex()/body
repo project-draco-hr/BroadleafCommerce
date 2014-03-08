@@ -6,6 +6,7 @@
   }
   Object[] pack=saveState();
   try {
+    categoryProductCache=new HashMap<Long,List<Long>>();
     Long numProducts=productDao.readCountAllActiveProducts();
     if (LOG.isDebugEnabled()) {
       LOG.debug("There are " + numProducts + " total products");
@@ -21,6 +22,7 @@
     throw e;
   }
  finally {
+    categoryProductCache=null;
     restoreState(pack);
   }
   shs.swapActiveCores();
