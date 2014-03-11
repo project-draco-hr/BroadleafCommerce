@@ -1,0 +1,37 @@
+{
+  Map<Long,Set<Long>> nextLevel=new HashMap<Long,Set<Long>>();
+  Long[] categoryIds=categoryHierarchy.keySet().toArray(new Long[categoryHierarchy.keySet().size()]);
+  int batchSize=800;
+  int count=0;
+  int pos=0;
+  while (pos < categoryIds.length) {
+    int remaining=categoryIds.length - pos;
+    int mySize=remaining > batchSize ? batchSize : remaining;
+    Long[] temp=new Long[mySize];
+    System.arraycopy(categoryIds,pos,temp,0,mySize);
+    TypedQuery<ParentCategoryByCategory> query=em.createNamedQuery("BC_READ_PARENT_CATEGORY_IDS_BY_CATEGORIES",ParentCategoryByCategory.class);
+    query.setParameter("categoryIds",Arrays.asList(temp));
+    List<ParentCategoryByCategory> results=query.getResultList();
+    for (    ParentCategoryByCategory item : results) {
+      Set<Long> hierarchy=categoryHierarchy.get(item.getChild());
+      if (item.getParent() != null) {
+        hierarchy.add(item.getParent());
+        if (!nextLevel.containsKey(item.getParent())) {
+          nextLevel.put(item.getParent(),new HashSet<Long>());
+        }
+      }
+      if (item.getDefaultParent() != null) {
+        hierarchy.add(item.getDefaultParent());
+        if (!nextLevel.containsKey(item.getDefaultParent())) {
+          nextLevel.put(item.getDefaultParent(),new HashSet<Long>());
+        }
+      }
+    }
+    count++;
+    pos=(count * batchSize) < categoryIds.length ? (count * batchSize) : categoryIds.length;
+  }
+  if (!nextLevel.isEmpty()) {
+    readFullCategoryHierarchy(nextLevel);
+  }
+  categoryHierarchy.putAll(nextLevel);
+}

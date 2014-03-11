@@ -1,10 +1,13 @@
 {
   try {
-    Map<Long,List<Long>> cache=new HashMap<Long,List<Long>>();
+    CatalogStructure cache=new CatalogStructure();
     SolrIndexCachedOperation.setCache(cache);
     cacheOperation.execute();
   }
   finally {
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Cleaning up Solr index cache from memory - size approx: " + getCacheSizeInMemoryApproximation(SolrIndexCachedOperation.getCache()) + " bytes");
+    }
     SolrIndexCachedOperation.clearCache();
   }
 }

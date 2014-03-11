@@ -1,0 +1,7 @@
+{
+  document.addField(shs.getCategoryFieldName(),shs.getCategoryId(categoryId));
+  Set<Long> parents=cache.getParentCategoriesByCategory().get(categoryId);
+  for (  Long parent : parents) {
+    buildFullCategoryHierarchy(document,cache,parent);
+  }
+}
