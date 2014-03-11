@@ -15,12 +15,14 @@
       }
     }
   }
-  try {
-    adminRemoteSecurityService.securityCheck(entityForm.getCeilingEntityClassname(),EntityOperationType.UPDATE);
-  }
- catch (  ServiceException e) {
-    if (e instanceof SecurityServiceException) {
-      readOnly=true;
+  if (!readOnly) {
+    try {
+      adminRemoteSecurityService.securityCheck(entityForm.getCeilingEntityClassname(),EntityOperationType.UPDATE);
+    }
+ catch (    ServiceException e) {
+      if (e instanceof SecurityServiceException) {
+        readOnly=true;
+      }
     }
   }
   if (readOnly) {
