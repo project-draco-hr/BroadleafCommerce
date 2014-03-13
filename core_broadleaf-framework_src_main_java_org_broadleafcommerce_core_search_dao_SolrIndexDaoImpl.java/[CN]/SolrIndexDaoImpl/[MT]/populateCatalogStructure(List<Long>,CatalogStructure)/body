@@ -2,6 +2,7 @@
   Map<Long,Set<Long>> parentCategoriesByProduct=new HashMap<Long,Set<Long>>();
   Map<Long,Set<Long>> parentCategoriesByCategory=new HashMap<Long,Set<Long>>();
   Long[] products=productIds.toArray(new Long[productIds.size()]);
+  BiMap<Long,Long> sandBoxProductToOriginalMap=sandBoxHelper.getSandBoxToOriginalMap(em,ProductImpl.class,products);
   int batchSize=800;
   int count=0;
   int pos=0;
@@ -11,14 +12,23 @@
     Long[] temp=new Long[mySize];
     System.arraycopy(products,pos,temp,0,mySize);
     TypedQuery<ParentCategoryByProduct> query=em.createNamedQuery("BC_READ_PARENT_CATEGORY_IDS_BY_PRODUCTS",ParentCategoryByProduct.class);
-    query.setParameter("productIds",Arrays.asList(temp));
+    query.setParameter("productIds",sandBoxHelper.mergeCloneIds(em,ProductImpl.class,temp));
     List<ParentCategoryByProduct> results=query.getResultList();
     for (    ParentCategoryByProduct item : results) {
-      if (!catalogStructure.getParentCategoriesByProduct().containsKey(item.getProduct())) {
-        if (!parentCategoriesByProduct.containsKey(item.getProduct())) {
-          parentCategoriesByProduct.put(item.getProduct(),new HashSet<Long>());
+      Long sandBoxProductVal=item.getProduct();
+      BiMap<Long,Long> reverse=sandBoxProductToOriginalMap.inverse();
+      if (reverse.containsKey(sandBoxProductVal)) {
+        sandBoxProductVal=reverse.get(sandBoxProductVal);
+      }
+      if (!catalogStructure.getParentCategoriesByProduct().containsKey(sandBoxProductVal)) {
+        if (!parentCategoriesByProduct.containsKey(sandBoxProductVal)) {
+          parentCategoriesByProduct.put(sandBoxProductVal,new HashSet<Long>());
         }
-        parentCategoriesByProduct.get(item.getProduct()).add(item.getParent());
+        Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getParent());
+        if (sandBoxVal == null) {
+          sandBoxVal=item.getParent();
+        }
+        parentCategoriesByProduct.get(sandBoxProductVal).add(sandBoxVal);
       }
     }
     for (    Map.Entry<Long,Set<Long>> entry : parentCategoriesByProduct.entrySet()) {
@@ -28,7 +38,14 @@
           parentCategoriesByCategory.put(categoryId,hierarchy);
         }
         if (!catalogStructure.getProductsByCategory().containsKey(categoryId)) {
-          catalogStructure.getProductsByCategory().put(categoryId,readProductIdsByCategory(categoryId));
+          List<Long> categoryChildren=readProductIdsByCategory(categoryId);
+          for (          Map.Entry<Long,Long> sandBoxProduct : sandBoxProductToOriginalMap.entrySet()) {
+            int index=categoryChildren.indexOf(sandBoxProduct.getValue());
+            if (index >= 0) {
+              categoryChildren.set(index,sandBoxProduct.getKey());
+            }
+          }
+          catalogStructure.getProductsByCategory().put(categoryId,categoryChildren);
         }
       }
     }
