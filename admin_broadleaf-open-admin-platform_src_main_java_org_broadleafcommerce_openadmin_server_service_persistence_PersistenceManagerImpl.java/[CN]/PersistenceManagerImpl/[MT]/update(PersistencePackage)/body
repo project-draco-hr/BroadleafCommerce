@@ -37,25 +37,13 @@ catch (  ServiceException e) {
   for (  Map.Entry<String,PersistencePackage> subPackage : persistencePackage.getSubPackages().entrySet()) {
     try {
       checkHandler: {
-        PersistencePackage pp=subPackage.getValue();
-        final String securityCeilingEntityName;
-        if (StringUtils.isEmpty(pp.getSecurityCeilingEntityFullyQualifiedClassname())) {
-          securityCeilingEntityName=pp.getCeilingEntityFullyQualifiedClassname();
-        }
- else {
-          securityCeilingEntityName=pp.getSecurityCeilingEntityFullyQualifiedClassname();
-        }
         for (        CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
-          if (handler.canHandleUpdate(pp)) {
-            if (!handler.willHandleSecurity(pp)) {
-              adminRemoteSecurityService.securityCheck(securityCeilingEntityName,EntityOperationType.UPDATE);
-            }
-            Entity subResponse=handler.update(pp,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
-            pp.setEntity(subResponse);
+          if (handler.canHandleUpdate(subPackage.getValue())) {
+            Entity subResponse=handler.update(subPackage.getValue(),dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
+            subPackage.getValue().setEntity(subResponse);
             break checkHandler;
           }
         }
-        adminRemoteSecurityService.securityCheck(securityCeilingEntityName,EntityOperationType.UPDATE);
         PersistenceModule subModule=getCompatibleModule(subPackage.getValue().getPersistencePerspective().getOperationTypes().getUpdateType());
         Entity subResponse=subModule.update(persistencePackage);
         subPackage.getValue().setEntity(subResponse);
