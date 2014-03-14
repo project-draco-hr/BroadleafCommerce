@@ -29,6 +29,9 @@ persistencePerspective.setOperationTypes(request.getOperationTypesOverride());
 }
 PersistencePackage pp=new PersistencePackage();
 pp.setCeilingEntityFullyQualifiedClassname(request.getCeilingEntityClassname());
+if (!StringUtils.isEmpty(request.getSecurityCeilingEntityClassname())) {
+pp.setSecurityCeilingEntityFullyQualifiedClassname(request.getSecurityCeilingEntityClassname());
+}
 if (!ArrayUtils.isEmpty(request.getSectionCrumbs())) {
 SectionCrumb[] converted=new SectionCrumb[request.getSectionCrumbs().length];
 int index=0;
