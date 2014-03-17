@@ -18,7 +18,7 @@
       SolrIndexCachedOperation.setCache(cache);
     }
     List<Product> products=readAllActiveProducts(page,pageSize);
-    List<Long> productIds=(List<Long>)CollectionUtils.collect(products,new TypedTransformer<Long>(){
+    List<Long> productIds=BLCCollectionUtils.collectList(products,new TypedTransformer<Long>(){
       @Override public Long transform(      Object input){
         return ((Product)input).getId();
       }
