@@ -24,7 +24,18 @@
         val=extractValueRequest.getDataFormatProvider().getDecimalFormatter().format(extractValueRequest.getRequestedValue());
       }
  else       if (BigDecimal.class.isAssignableFrom(extractValueRequest.getRequestedValue().getClass())) {
-        val=extractValueRequest.getDataFormatProvider().getDecimalFormatter().format(extractValueRequest.getRequestedValue());
+        BigDecimal decimal=(BigDecimal)extractValueRequest.getRequestedValue();
+        DecimalFormat format=extractValueRequest.getDataFormatProvider().getDecimalFormatter();
+        StringBuilder sb=new StringBuilder();
+        sb.append("0");
+        if (decimal.scale() > 0) {
+          sb.append(".");
+          for (int j=0; j < decimal.scale(); j++) {
+            sb.append("0");
+          }
+        }
+        format.applyPattern(sb.toString());
+        val=format.format(extractValueRequest.getRequestedValue());
       }
  else       if (extractValueRequest.getMetadata().getForeignKeyClass() != null) {
         try {
