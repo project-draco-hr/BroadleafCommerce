@@ -1,5 +1,9 @@
 {
-  document.addField(shs.getCategoryFieldName(),shs.getCategoryId(categoryId));
+  Long catIdToAdd=shs.getCategoryId(categoryId);
+  Collection<Object> existingValues=document.getFieldValues(shs.getCategoryFieldName());
+  if (existingValues == null || !existingValues.contains(catIdToAdd)) {
+    document.addField(shs.getCategoryFieldName(),catIdToAdd);
+  }
   Set<Long> parents=cache.getParentCategoriesByCategory().get(categoryId);
   for (  Long parent : parents) {
     buildFullCategoryHierarchy(document,cache,parent);

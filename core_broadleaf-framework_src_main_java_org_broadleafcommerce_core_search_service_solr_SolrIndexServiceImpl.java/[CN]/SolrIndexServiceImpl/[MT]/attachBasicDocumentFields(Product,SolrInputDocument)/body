@@ -17,14 +17,15 @@
     if (cache.getParentCategoriesByProduct().containsKey(product.getId())) {
       for (      Long categoryId : cache.getParentCategoriesByProduct().get(product.getId())) {
         document.addField(shs.getExplicitCategoryFieldName(),shs.getCategoryId(categoryId));
-        String categorySortFieldName=shs.getCategorySortFieldName(categoryId);
-        int index=-1;
-        int position=cache.getProductsByCategory().get(categoryId).indexOf(product.getId());
-        if (position >= 0) {
-          index=position;
+        String categorySortFieldName=shs.getCategorySortFieldName(shs.getCategoryId(categoryId));
+        String displayOrderKey=categoryId + "-" + shs.getProductId(product.getId());
+        BigDecimal displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
+        if (displayOrder == null) {
+          displayOrderKey=categoryId + "-" + product.getId();
+          displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         }
         if (document.getField(categorySortFieldName) == null) {
-          document.addField(categorySortFieldName,index);
+          document.addField(categorySortFieldName,displayOrder);
         }
         buildFullCategoryHierarchy(document,cache,categoryId);
       }

@@ -38,14 +38,24 @@
           parentCategoriesByCategory.put(categoryId,hierarchy);
         }
         if (!catalogStructure.getProductsByCategory().containsKey(categoryId)) {
-          List<Long> categoryChildren=readProductIdsByCategory(categoryId);
+          List<ProductsByCategoryWithOrder> categoryChildren=readProductIdsByCategory(categoryId);
+          for (          ProductsByCategoryWithOrder child : categoryChildren) {
+            catalogStructure.getDisplayOrdersByCategoryProduct().put(categoryId + "-" + child.getProductId(),child.getDisplayOrder());
+          }
           for (          Map.Entry<Long,Long> sandBoxProduct : sandBoxProductToOriginalMap.entrySet()) {
-            int index=categoryChildren.indexOf(sandBoxProduct.getValue());
-            if (index >= 0) {
-              categoryChildren.set(index,sandBoxProduct.getKey());
+            for (            ProductsByCategoryWithOrder child : categoryChildren) {
+              if (child.getProductId().equals(sandBoxProduct.getValue())) {
+                child.setProductId(sandBoxProduct.getKey());
+              }
             }
           }
-          catalogStructure.getProductsByCategory().put(categoryId,categoryChildren);
+          List<Long> categoryChildProductIds=BLCCollectionUtils.collectList(categoryChildren,new TypedTransformer<Long>(){
+            @Override public Long transform(            Object input){
+              return ((ProductsByCategoryWithOrder)input).getProductId();
+            }
+          }
+);
+          catalogStructure.getProductsByCategory().put(categoryId,categoryChildProductIds);
         }
       }
     }
