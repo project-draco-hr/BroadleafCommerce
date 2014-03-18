@@ -5,14 +5,13 @@
     Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,cacheKeyAttrValue);
     cacheKeyParam=(String)expression.execute(arguments.getConfiguration(),arguments);
   }
-  String cacheKey=cacheKeyResolver.resolveCacheKey(template,cacheKeyParam);
-  element.setAttribute("cachekey",cacheKey);
-  net.sf.ehcache.Element cacheElement=getCache().get(cacheKey);
-  if (cacheElement != null && !cacheElement.isExpired()) {
-    element.setAttribute("blcacheresponse",(String)cacheElement.getObjectValue());
-    return true;
+  if (cacheKeyParam != null) {
+    if ("none".equals(cacheKeyParam)) {
+      return null;
+    }
+    return templateName + "_" + cacheKeyParam;
   }
  else {
-    return false;
+    return templateName;
   }
 }
