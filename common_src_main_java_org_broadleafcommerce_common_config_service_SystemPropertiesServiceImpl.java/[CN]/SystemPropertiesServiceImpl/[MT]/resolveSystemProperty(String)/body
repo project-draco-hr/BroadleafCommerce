@@ -6,7 +6,13 @@
       return holder.getResult().toString();
     }
   }
-  String result=getPropertyFromCache(name);
+  String result;
+  if (BroadleafRequestContext.getBroadleafRequestContext().getSandBox() == null) {
+    result=getPropertyFromCache(name);
+  }
+ else {
+    result=null;
+  }
   if (result != null) {
     return result;
   }
