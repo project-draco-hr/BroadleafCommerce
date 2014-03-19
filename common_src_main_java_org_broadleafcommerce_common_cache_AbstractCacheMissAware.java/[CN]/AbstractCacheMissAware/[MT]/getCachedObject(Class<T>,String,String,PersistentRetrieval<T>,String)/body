@@ -14,6 +14,9 @@
     if (context.isProductionSandBox() && response.equals(nullResponse)) {
       statisticsService.addCacheStat(statisticsName,false);
       getCache(cacheName).put(new Element(key,response));
+      if (getLogger().isTraceEnabled()) {
+        getLogger().trace("Caching [" + key + "] as null in the ["+ cacheName+ "] cache.");
+      }
     }
   }
  else {

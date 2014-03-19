@@ -1,4 +1,7 @@
 {
   String key=buildKey(params);
+  if (getLogger().isTraceEnabled()) {
+    getLogger().trace("Evicting [" + key + "] from the ["+ cacheName+ "] cache.");
+  }
   getCache(cacheName).remove(key);
 }
