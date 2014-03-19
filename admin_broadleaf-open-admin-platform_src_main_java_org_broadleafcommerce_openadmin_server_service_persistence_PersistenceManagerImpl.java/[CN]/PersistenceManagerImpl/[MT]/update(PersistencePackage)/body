@@ -11,13 +11,13 @@
       for (      CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
         if (handler.canHandleUpdate(persistencePackage)) {
           if (!handler.willHandleSecurity(persistencePackage)) {
-            adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+            adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.UPDATE);
           }
           response=handler.update(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
           break checkRoot;
         }
       }
-      adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.UPDATE);
+      adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.UPDATE);
       PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getUpdateType());
       response=myModule.update(persistencePackage);
     }

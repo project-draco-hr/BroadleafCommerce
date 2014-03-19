@@ -8,13 +8,13 @@
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleRemove(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
-        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
+        adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.REMOVE);
       }
       handler.remove(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
       return executePostRemoveHandlers(persistencePackage,new PersistenceResponse());
     }
   }
-  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.REMOVE);
+  adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.REMOVE);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType());
   myModule.remove(persistencePackage);
   return executePostRemoveHandlers(persistencePackage,new PersistenceResponse());
