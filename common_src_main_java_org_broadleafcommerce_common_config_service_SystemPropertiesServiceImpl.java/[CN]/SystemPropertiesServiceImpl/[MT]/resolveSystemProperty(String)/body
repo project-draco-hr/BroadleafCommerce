@@ -17,11 +17,16 @@
     return result;
   }
   SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
-  if (property == null || property.getValue() == null) {
+  if (property == null || StringUtils.isEmpty(property.getValue())) {
     result=propMgr.getProperty(name);
   }
  else {
-    result=property.getValue();
+    if ("_blank_".equals(property.getValue())) {
+      result="";
+    }
+ else {
+      result=property.getValue();
+    }
   }
   if (result != null) {
     addPropertyToCache(name,result);
