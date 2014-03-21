@@ -34,6 +34,7 @@
       updateMediaFields(media,newMedia);
       populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
       populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
+      return FieldProviderResponse.HANDLED_BREAK;
     }
  else {
       throw new UnsupportedOperationException("MediaFields only work with Media types.");
@@ -42,5 +43,4 @@
  catch (  Exception e) {
     throw new PersistenceException(e);
   }
-  return FieldProviderResponse.HANDLED;
 }
