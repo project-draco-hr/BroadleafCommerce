@@ -10,11 +10,11 @@
     }
     if (envPrefix != null) {
       String trailing="";
-      if (envPrefix.endsWith("/")) {
-        trailing="/";
+      if (envPrefix.endsWith(File.separator)) {
+        trailing=File.separator;
       }
       returnValue=returnValue.replaceAll(getStaticAssetUrlPrefix() + trailing,envPrefix);
-      returnValue=returnValue.replaceAll("/" + envPrefix,envPrefix);
+      returnValue=returnValue.replaceAll(File.separator + envPrefix,envPrefix);
     }
   }
   return returnValue;
