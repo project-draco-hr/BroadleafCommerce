@@ -1,35 +1,35 @@
 {
   Order cart=CartState.getCart();
-  if (cart != null) {
-    try {
-      OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
-      orderItemRequestDTO.setOrderItemId(itemId);
-      orderItemRequestDTO.setQuantity(quantity);
-      Order order=orderService.updateItemQuantity(cart.getId(),orderItemRequestDTO,priceOrder);
-      order=orderService.save(order,priceOrder);
-      OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-      wrapper.wrapDetails(order,request);
-      return wrapper;
+  if (cart == null || cart instanceof NullOrderImpl) {
+    throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+  }
+  try {
+    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+    orderItemRequestDTO.setOrderItemId(itemId);
+    orderItemRequestDTO.setQuantity(quantity);
+    Order order=orderService.updateItemQuantity(cart.getId(),orderItemRequestDTO,priceOrder);
+    order=orderService.save(order,priceOrder);
+    OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+    wrapper.wrapDetails(order,request);
+    return wrapper;
+  }
+ catch (  UpdateCartException e) {
+    if (e.getCause() instanceof ItemNotFoundException) {
+      throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode(),null,null,e.getCause()).addMessage(BroadleafWebServicesException.CART_ITEM_NOT_FOUND,itemId);
     }
- catch (    UpdateCartException e) {
-      if (e.getCause() instanceof ItemNotFoundException) {
-        throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode(),null,null,e.getCause()).addMessage(BroadleafWebServicesException.CART_ITEM_NOT_FOUND,itemId);
-      }
  else {
-        throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.UPDATE_CART_ERROR);
-      }
-    }
-catch (    RemoveFromCartException e) {
-      if (e.getCause() instanceof ItemNotFoundException) {
-        throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode(),null,null,e.getCause()).addMessage(BroadleafWebServicesException.CART_ITEM_NOT_FOUND,itemId);
-      }
- else {
-        throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.UPDATE_CART_ERROR);
-      }
-    }
-catch (    PricingException pe) {
-      throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,pe).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
+      throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.UPDATE_CART_ERROR);
     }
   }
-  throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+catch (  RemoveFromCartException e) {
+    if (e.getCause() instanceof ItemNotFoundException) {
+      throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode(),null,null,e.getCause()).addMessage(BroadleafWebServicesException.CART_ITEM_NOT_FOUND,itemId);
+    }
+ else {
+      throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.UPDATE_CART_ERROR);
+    }
+  }
+catch (  PricingException pe) {
+    throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,pe).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
+  }
 }
