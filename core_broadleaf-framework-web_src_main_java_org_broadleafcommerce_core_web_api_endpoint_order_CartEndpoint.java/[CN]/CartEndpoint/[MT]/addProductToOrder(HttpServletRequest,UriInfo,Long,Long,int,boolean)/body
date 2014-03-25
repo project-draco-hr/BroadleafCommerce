@@ -1,39 +1,39 @@
 {
   Order cart=CartState.getCart();
-  if (cart != null) {
-    try {
-      MultivaluedMap<String,String> multiValuedMap=uriInfo.getQueryParameters();
-      HashMap<String,String> productOptions=new HashMap<String,String>();
-      Set<String> keySet=multiValuedMap.keySet();
-      for (      String key : keySet) {
-        if (multiValuedMap.getFirst(key) != null) {
-          if (key.startsWith("productOption.")) {
-            productOptions.put(StringUtils.removeStart(key,"productOption."),multiValuedMap.getFirst(key));
-          }
+  if (cart == null || cart instanceof NullOrderImpl) {
+    throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
+  }
+  try {
+    MultivaluedMap<String,String> multiValuedMap=uriInfo.getQueryParameters();
+    HashMap<String,String> productOptions=new HashMap<String,String>();
+    Set<String> keySet=multiValuedMap.keySet();
+    for (    String key : keySet) {
+      if (multiValuedMap.getFirst(key) != null) {
+        if (key.startsWith("productOption.")) {
+          productOptions.put(StringUtils.removeStart(key,"productOption."),multiValuedMap.getFirst(key));
         }
       }
-      OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
-      orderItemRequestDTO.setProductId(productId);
-      orderItemRequestDTO.setCategoryId(categoryId);
-      orderItemRequestDTO.setQuantity(quantity);
-      if (productOptions.size() > 0) {
-        orderItemRequestDTO.setItemAttributes(productOptions);
-      }
-      Order order=orderService.addItem(cart.getId(),orderItemRequestDTO,priceOrder);
-      order=orderService.save(order,priceOrder);
-      OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
-      wrapper.wrapDetails(order,request);
-      return wrapper;
     }
- catch (    PricingException e) {
-      throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured pricing the order.").build());
+    OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+    orderItemRequestDTO.setProductId(productId);
+    orderItemRequestDTO.setCategoryId(categoryId);
+    orderItemRequestDTO.setQuantity(quantity);
+    if (productOptions.size() > 0) {
+      orderItemRequestDTO.setItemAttributes(productOptions);
     }
-catch (    AddToCartException e) {
-      if (e.getCause() != null) {
-        throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("" + e.getCause()).build());
-      }
-      throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured adding the item to the cart." + e.getCause()).build());
-    }
+    Order order=orderService.addItem(cart.getId(),orderItemRequestDTO,priceOrder);
+    order=orderService.save(order,priceOrder);
+    OrderWrapper wrapper=(OrderWrapper)context.getBean(OrderWrapper.class.getName());
+    wrapper.wrapDetails(order,request);
+    return wrapper;
   }
-  throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
+ catch (  PricingException e) {
+    throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured pricing the order.").build());
+  }
+catch (  AddToCartException e) {
+    if (e.getCause() != null) {
+      throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("" + e.getCause()).build());
+    }
+    throw new WebApplicationException(e,Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("An error occured adding the item to the cart." + e.getCause()).build());
+  }
 }

@@ -1,6 +1,6 @@
 {
   Order cart=CartState.getCart();
-  if (cart == null) {
+  if (cart == null || cart instanceof NullOrderImpl) {
     throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Cart could not be found").build());
   }
   OfferCode offerCode=offerService.lookupOfferCodeByCode(promoCode);
