@@ -1,0 +1,13 @@
+{
+  try {
+    Field skippableField=Node.class.getDeclaredField("skippable");
+    skippableField.setAccessible(true);
+    skippableField.setBoolean(element,true);
+  }
+ catch (  Exception e) {
+    if (LOG.isWarnEnabled()) {
+      LOG.warn("Error setting skippable field, possible thymeleaf / framework mismatch. Broadleaf assumes that " + "the thymeleaf node class has a property called skippable.   This error should not effect " + "functionality but likely does impact performance.",e);
+    }
+    element.setRecomputeProcessorsImmediately(true);
+  }
+}
