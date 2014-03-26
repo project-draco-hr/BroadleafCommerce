@@ -4,10 +4,20 @@
     return bundlingService.getBundle(path);
   }
   Resource unminifiedResource=null;
-  if (handlers != null) {
-    for (    AbstractGeneratedResourceHandler handler : handlers) {
+  if (sortedHandlers == null && handlers != null) {
+    sortedHandlers=new ArrayList<AbstractGeneratedResourceHandler>(handlers);
+    Collections.sort(sortedHandlers,new Comparator<AbstractGeneratedResourceHandler>(){
+      @Override public int compare(      AbstractGeneratedResourceHandler o1,      AbstractGeneratedResourceHandler o2){
+        return new Integer(o1.getOrder()).compareTo(o2.getOrder());
+      }
+    }
+);
+  }
+  if (sortedHandlers != null) {
+    for (    AbstractGeneratedResourceHandler handler : sortedHandlers) {
       if (handler.canHandle(path)) {
         unminifiedResource=handler.getResource(path,getLocations());
+        break;
       }
     }
   }
