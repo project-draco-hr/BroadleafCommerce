@@ -1,6 +1,6 @@
 {
   if (isCachingEnabled()) {
-    String cacheKey=cacheKeyResolver.resolveCacheKey(arguments,element,template);
+    String cacheKey=cacheKeyResolver.resolveCacheKey(arguments,element,template,cacheKeyAttrValue);
     if (!StringUtils.isEmpty(cacheKey)) {
       element.setNodeProperty("cacheKey",cacheKey);
       net.sf.ehcache.Element cacheElement=getCache().get(cacheKey);
