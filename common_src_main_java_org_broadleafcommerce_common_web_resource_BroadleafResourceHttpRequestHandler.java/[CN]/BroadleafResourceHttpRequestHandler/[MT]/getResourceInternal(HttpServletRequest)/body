@@ -5,13 +5,7 @@
   }
   Resource unminifiedResource=null;
   if (sortedHandlers == null && handlers != null) {
-    sortedHandlers=new ArrayList<AbstractGeneratedResourceHandler>(handlers);
-    Collections.sort(sortedHandlers,new Comparator<AbstractGeneratedResourceHandler>(){
-      @Override public int compare(      AbstractGeneratedResourceHandler o1,      AbstractGeneratedResourceHandler o2){
-        return new Integer(o1.getOrder()).compareTo(o2.getOrder());
-      }
-    }
-);
+    sortHandlers();
   }
   if (sortedHandlers != null) {
     for (    AbstractGeneratedResourceHandler handler : sortedHandlers) {
