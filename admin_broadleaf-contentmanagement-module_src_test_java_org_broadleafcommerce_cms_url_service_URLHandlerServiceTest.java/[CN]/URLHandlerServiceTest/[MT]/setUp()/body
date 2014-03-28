@@ -1,0 +1,7 @@
+{
+  handlerService=new URLHandlerServiceImpl();
+  URLHandlerDao handlerDao=EasyMock.createMock(URLHandlerDao.class);
+  handlerService.urlHandlerDao=handlerDao;
+  EasyMock.expect(handlerDao.findAllURLHandlers()).andReturn(buildUrlHandlerList());
+  EasyMock.replay(handlerDao);
+}
