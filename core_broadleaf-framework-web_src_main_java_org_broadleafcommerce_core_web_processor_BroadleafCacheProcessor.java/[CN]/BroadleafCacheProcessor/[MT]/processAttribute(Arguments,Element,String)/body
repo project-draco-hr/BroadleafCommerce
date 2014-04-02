@@ -1,12 +1,11 @@
 {
-  final String cacheKeyAttrValue=element.getAttributeValue(attributeName);
-  element.removeAttribute(attributeName);
-  fixElement(element,arguments);
-  String template=element.getAttributeValue("template");
-  if (checkCacheForElement(arguments,element,template,cacheKeyAttrValue)) {
-    element.clearChildren();
-    element.clearAttributes();
-    element.setRecomputeProcessorsImmediately(true);
+  if (shouldCache(arguments,element,attributeName)) {
+    fixElement(element,arguments);
+    if (checkCacheForElement(arguments,element)) {
+      element.clearChildren();
+      element.clearAttributes();
+      element.setRecomputeProcessorsImmediately(true);
+    }
   }
   return ProcessorResult.OK;
 }

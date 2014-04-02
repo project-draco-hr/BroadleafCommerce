@@ -1,0 +1,15 @@
+{
+  List<Long> outOfStockProducts=new ArrayList<Long>();
+  Set<Product> products=(Set<Product>)((Map<String,Object>)arguments.getExpressionEvaluationRoot()).get("blcAllDisplayedProducts");
+  if (products != null) {
+    for (    Product product : products) {
+      if (product.getDefaultSku() != null) {
+        Integer qtyAvailable=inventoryService.retrieveQuantityAvailable(product.getDefaultSku());
+        if (qtyAvailable != null && qtyAvailable == 0) {
+          outOfStockProducts.add(product.getId());
+        }
+      }
+    }
+  }
+  attrMap.put("outOfStockProducts",outOfStockProducts);
+}

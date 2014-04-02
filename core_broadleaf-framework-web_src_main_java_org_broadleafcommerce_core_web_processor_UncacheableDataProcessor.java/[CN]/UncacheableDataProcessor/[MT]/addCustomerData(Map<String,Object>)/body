@@ -1,0 +1,20 @@
+{
+  Customer customer=CustomerState.getCustomer();
+  String firstName="";
+  String lastName="";
+  String anonymous="false";
+  if (customer != null) {
+    if (!StringUtils.isEmpty(customer.getFirstName())) {
+      firstName=customer.getFirstName();
+    }
+    if (!StringUtils.isEmpty(customer.getLastName())) {
+      lastName=customer.getLastName();
+    }
+    if (customer.isAnonymous()) {
+      anonymous="true";
+    }
+  }
+  attrMap.put("firstName",firstName);
+  attrMap.put("lastName",lastName);
+  attrMap.put("anonymous",anonymous);
+}
