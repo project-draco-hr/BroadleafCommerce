@@ -44,14 +44,15 @@
     ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackRegion(),getRollbackHandler(),rollbackState);
   }
   if (!skuInventoryMap.isEmpty()) {
-    ExtensionResultStatusType extensionResult=extensionManager.getProxy().decrementInventory(skuInventoryMap,context,rollbackState);
-    if (ExtensionResultStatusType.NOT_HANDLED.equals(extensionResult)) {
-      inventoryService.decrementInventory(skuInventoryMap);
-      if (getRollbackHandler() != null && !getAutomaticallyRegisterRollbackHandler()) {
-        rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_INVENTORY_DECREMENTED,skuInventoryMap);
-        rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_ORDER_ID,seed.getOrder().getId());
-      }
+    Map<String,Object> contextualInfo=new HashMap<String,Object>();
+    contextualInfo.put(ContextualInventoryService.ORDER_KEY,context.getSeedData().getOrder());
+    contextualInfo.put(ContextualInventoryService.ROLLBACK_STATE_KEY,new HashMap<String,Object>());
+    inventoryService.decrementInventory(skuInventoryMap,contextualInfo);
+    if (getRollbackHandler() != null && !getAutomaticallyRegisterRollbackHandler()) {
+      rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_INVENTORY_DECREMENTED,skuInventoryMap);
+      rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_ORDER_ID,seed.getOrder().getId());
     }
+    rollbackState.putAll((Map<String,Object>)contextualInfo.get(ContextualInventoryService.ROLLBACK_STATE_KEY));
   }
   return context;
 }

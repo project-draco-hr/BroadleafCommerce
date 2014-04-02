@@ -1,0 +1,21 @@
+{
+  ExtensionResultStatusType res=extensionManager.getProxy().incrementInventory(skuQuantities,context);
+  if (ExtensionResultStatusType.NOT_HANDLED.equals(res)) {
+    for (    Entry<Sku,Integer> entry : skuQuantities.entrySet()) {
+      Sku sku=entry.getKey();
+      Integer quantity=entry.getValue();
+      if (quantity == null || quantity < 1) {
+        throw new IllegalArgumentException("Quantity " + quantity + " is not valid. Must be greater than zero and not null.");
+      }
+      if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+        int inventoryAvailable=retrieveQuantityAvailable(sku);
+        int newInventory=inventoryAvailable + quantity;
+        sku.setQuantityAvailable(newInventory);
+        catalogService.saveSku(sku);
+      }
+ else {
+        LOG.info("Not incrementing inventory as the Sku has been marked as always available");
+      }
+    }
+  }
+}

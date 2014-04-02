@@ -1,0 +1,27 @@
+{
+  ExtensionResultHolder<Map<Sku,Integer>> holder=new ExtensionResultHolder<Map<Sku,Integer>>();
+  ExtensionResultStatusType res=extensionManager.getProxy().retrieveQuantitiesAvailable(skus,context,holder);
+  if (ExtensionResultStatusType.NOT_HANDLED.equals(res)) {
+    Map<Sku,Integer> inventories=new HashMap<Sku,Integer>();
+    for (    Sku sku : skus) {
+      if (checkBasicAvailablility(sku)) {
+        if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+          inventories.put(sku,sku.getQuantityAvailable());
+        }
+ else         if (sku.getInventoryType() == null || InventoryType.ALWAYS_AVAILABLE.equals(sku.getInventoryType())) {
+          inventories.put(sku,null);
+        }
+ else {
+          inventories.put(sku,0);
+        }
+      }
+ else {
+        inventories.put(sku,0);
+      }
+    }
+    return inventories;
+  }
+ else {
+    return holder.getResult();
+  }
+}
