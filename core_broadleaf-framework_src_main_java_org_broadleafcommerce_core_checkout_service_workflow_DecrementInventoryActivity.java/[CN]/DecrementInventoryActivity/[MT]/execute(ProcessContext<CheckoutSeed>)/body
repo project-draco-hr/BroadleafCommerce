@@ -52,7 +52,7 @@
       rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_INVENTORY_DECREMENTED,skuInventoryMap);
       rollbackState.put(DecrementInventoryRollbackHandler.ROLLBACK_BLC_ORDER_ID,seed.getOrder().getId());
     }
-    rollbackState.putAll((Map<String,Object>)contextualInfo.get(ContextualInventoryService.ROLLBACK_STATE_KEY));
+    rollbackState.put(DecrementInventoryRollbackHandler.EXTENDED_ROLLBACK_STATE,contextualInfo.get(ContextualInventoryService.ROLLBACK_STATE_KEY));
   }
   return context;
 }

@@ -6,6 +6,9 @@
     for (    Sku sku : skus) {
       if (checkBasicAvailablility(sku)) {
         if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
+          if (sku.getQuantityAvailable() == null) {
+            inventories.put(sku,0);
+          }
           inventories.put(sku,sku.getQuantityAvailable());
         }
  else         if (sku.getInventoryType() == null || InventoryType.ALWAYS_AVAILABLE.equals(sku.getInventoryType())) {

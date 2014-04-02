@@ -8,8 +8,11 @@
         throw new IllegalArgumentException("Quantity " + quantity + " is not valid. Must be greater than zero and not null.");
       }
       if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
-        int inventoryAvailable=retrieveQuantityAvailable(sku);
-        int newInventory=inventoryAvailable + quantity;
+        Integer currentInventoryAvailable=retrieveQuantityAvailable(sku);
+        if (currentInventoryAvailable == null) {
+          throw new IllegalArgumentException("The current inventory for this Sku is null");
+        }
+        int newInventory=currentInventoryAvailable + quantity;
         sku.setQuantityAvailable(newInventory);
         catalogService.saveSku(sku);
       }
