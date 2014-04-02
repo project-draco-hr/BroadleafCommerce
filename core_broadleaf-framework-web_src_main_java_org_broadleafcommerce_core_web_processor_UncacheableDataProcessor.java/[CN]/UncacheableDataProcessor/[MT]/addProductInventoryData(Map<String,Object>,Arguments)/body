@@ -4,8 +4,8 @@
   if (products != null) {
     for (    Product product : products) {
       if (product.getDefaultSku() != null) {
-        Integer qtyAvailable=inventoryService.retrieveQuantityAvailable(product.getDefaultSku());
-        if (qtyAvailable != null && qtyAvailable == 0) {
+        Boolean qtyAvailable=inventoryService.isAvailable(product.getDefaultSku(),1);
+        if (qtyAvailable != null && !qtyAvailable) {
           outOfStockProducts.add(product.getId());
         }
       }

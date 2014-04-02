@@ -3,5 +3,12 @@
   addCartData(attrMap);
   addCustomerData(attrMap);
   addProductInventoryData(attrMap,arguments);
+  try {
+    attrMap.put("csrfToken",eps.getCSRFToken());
+    attrMap.put("csrfTokenParameter",eps.getCsrfTokenParameter());
+  }
+ catch (  ServiceException e) {
+    throw new RuntimeException("Could not get a CSRF token for this session",e);
+  }
   return StringUtil.getMapAsJson(attrMap);
 }

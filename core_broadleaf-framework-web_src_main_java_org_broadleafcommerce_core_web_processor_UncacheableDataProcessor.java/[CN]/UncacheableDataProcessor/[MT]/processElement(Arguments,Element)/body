@@ -2,9 +2,9 @@
   StringBuffer sb=new StringBuffer();
   sb.append("<SCRIPT>\n");
   sb.append("  var params = \n");
-  sb.append(buildContentMap(arguments));
+  sb.append(buildContentMap(arguments)).append("\n");
   sb.append(getUncacheableDataFunction(arguments,element));
-  sb.append("</SCRIPT>");
+  sb.append("\n</SCRIPT>");
   Node contentNode=new Macro(sb.toString());
   element.clearChildren();
   element.getParent().insertAfter(element,contentNode);
