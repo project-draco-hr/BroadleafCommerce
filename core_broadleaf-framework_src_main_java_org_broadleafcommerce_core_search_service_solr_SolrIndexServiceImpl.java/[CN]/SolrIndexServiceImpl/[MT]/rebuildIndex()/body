@@ -6,12 +6,18 @@
   }
   Object[] pack=saveState();
   try {
-    Long numProducts=productDao.readCountAllActiveProducts();
+    Long numItemsToIndex=null;
+    if (useSku) {
+      numItemsToIndex=skuDao.readCountAllActiveSkus();
+    }
+ else {
+      numItemsToIndex=productDao.readCountAllActiveProducts();
+    }
     if (LOG.isDebugEnabled()) {
-      LOG.debug("There are " + numProducts + " total products");
+      LOG.debug("There are " + numItemsToIndex + " total items to index");
     }
     int page=0;
-    while ((page * pageSize) < numProducts) {
+    while ((page * pageSize) < numItemsToIndex) {
       buildIncrementalIndex(page,pageSize);
       page++;
     }

@@ -1,18 +1,23 @@
 {
-  TransactionStatus status=TransactionUtils.createTransaction("readProducts",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
+  TransactionStatus status=TransactionUtils.createTransaction("readItemsToIndex",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
   if (LOG.isDebugEnabled()) {
     LOG.debug(String.format("Building index - page: [%s], pageSize: [%s]",page,pageSize));
   }
   StopWatch s=new StopWatch();
   try {
-    List<Product> products=readAllActiveProducts(page,pageSize);
-    List<Field> fields=fieldDao.readAllProductFields();
-    List<Locale> locales=getAllLocales();
     Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
-    for (    Product product : products) {
-      SolrInputDocument doc=buildDocument(product,fields,locales);
-      if (doc != null) {
-        documents.add(doc);
+    List<Locale> locales=getAllLocales();
+    if (useSku) {
+      List<Sku> skus=readAllActiveSkus(page,pageSize);
+    }
+ else {
+      List<Product> products=readAllActiveProducts(page,pageSize);
+      List<Field> fields=fieldDao.readAllProductFields();
+      for (      Product product : products) {
+        SolrInputDocument doc=buildDocument(product,fields,locales);
+        if (doc != null) {
+          documents.add(doc);
+        }
       }
     }
     logDocuments(documents);
