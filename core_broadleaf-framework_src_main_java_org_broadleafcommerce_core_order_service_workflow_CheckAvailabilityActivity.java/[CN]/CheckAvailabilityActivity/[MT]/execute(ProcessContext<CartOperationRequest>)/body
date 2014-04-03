@@ -24,9 +24,11 @@
   }
   if (InventoryType.CHECK_QUANTITY.equals(sku.getInventoryType())) {
     Integer requestedQuantity=request.getItemRequest().getQuantity();
-    boolean available=isInventoryAvailable(sku,requestedQuantity,context);
+    Map<String,Object> inventoryContext=new HashMap<String,Object>();
+    inventoryContext.put(ContextualInventoryService.ORDER_KEY,context.getSeedData().getOrder());
+    boolean available=inventoryService.isAvailable(sku,requestedQuantity,inventoryContext);
     if (!available) {
-      throw new InventoryUnavailableException(sku.getId(),requestedQuantity,inventoryService.retrieveQuantityAvailable(sku));
+      throw new InventoryUnavailableException(sku.getId(),requestedQuantity,inventoryService.retrieveQuantityAvailable(sku,inventoryContext));
     }
   }
   return context;
