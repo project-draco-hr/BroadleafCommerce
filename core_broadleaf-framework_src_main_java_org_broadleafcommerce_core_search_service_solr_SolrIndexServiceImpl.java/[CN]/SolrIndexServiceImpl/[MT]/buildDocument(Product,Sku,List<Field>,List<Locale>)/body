@@ -1,13 +1,13 @@
 {
   SolrInputDocument document=new SolrInputDocument();
-  attachBasicDocumentFields(product,document);
+  attachBasicDocumentFields(product,sku,document);
   List<String> addedProperties=new ArrayList<String>();
   for (  Field field : fields) {
     try {
       if (field.getSearchable()) {
         List<FieldType> searchableFieldTypes=shs.getSearchableFieldTypes(field);
         for (        FieldType sft : searchableFieldTypes) {
-          Map<String,Object> propertyValues=getPropertyValues(product,field,sft,locales);
+          Map<String,Object> propertyValues=getPropertyValues(product,sku,field,sft,locales);
           for (          Entry<String,Object> entry : propertyValues.entrySet()) {
             String prefix=entry.getKey();
             prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
@@ -20,7 +20,7 @@
       }
       FieldType facetType=field.getFacetFieldType();
       if (facetType != null) {
-        Map<String,Object> propertyValues=getPropertyValues(product,field,facetType,locales);
+        Map<String,Object> propertyValues=getPropertyValues(product,sku,field,facetType,locales);
         for (        Entry<String,Object> entry : propertyValues.entrySet()) {
           String prefix=entry.getKey();
           prefix=StringUtils.isBlank(prefix) ? prefix : prefix + "_";
@@ -33,6 +33,9 @@
       }
     }
  catch (    Exception e) {
+      if (useSku) {
+        LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for sku id["+ sku.getId()+ "]",e);
+      }
       LOG.trace("Could not get value for property[" + field.getQualifiedFieldName() + "] for product id["+ product.getId()+ "]",e);
     }
   }

@@ -1,0 +1,41 @@
+{
+  String propertyName=field.getPropertyName();
+  Map<String,Object> values=new HashMap<String,Object>();
+  if (extensionManager != null) {
+    ExtensionResultStatusType result=null;
+    if (useSku) {
+      result=extensionManager.getProxy().addPropertyValues(sku,field,fieldType,values,propertyName,locales);
+    }
+ else {
+      result=extensionManager.getProxy().addPropertyValues(product,field,fieldType,values,propertyName,locales);
+    }
+    if (ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
+      Object propertyValue;
+      if (propertyName.contains(ATTR_MAP)) {
+        if (useSku) {
+          propertyValue=PropertyUtils.getMappedProperty(sku,ATTR_MAP,propertyName.substring(ATTR_MAP.length() + 1));
+        }
+ else {
+          propertyValue=PropertyUtils.getMappedProperty(product,ATTR_MAP,propertyName.substring(ATTR_MAP.length() + 1));
+        }
+        if (propertyValue != null) {
+          try {
+            propertyValue=PropertyUtils.getProperty(propertyValue,"value");
+          }
+ catch (          NoSuchMethodException e) {
+          }
+        }
+      }
+ else {
+        if (useSku) {
+          propertyValue=PropertyUtils.getProperty(sku,propertyName);
+        }
+ else {
+          propertyValue=PropertyUtils.getProperty(product,propertyName);
+        }
+      }
+      values.put("",propertyValue);
+    }
+  }
+  return values;
+}

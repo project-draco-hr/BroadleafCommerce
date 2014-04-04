@@ -9,12 +9,19 @@
     List<Locale> locales=getAllLocales();
     if (useSku) {
       List<Sku> skus=readAllActiveSkus(page,pageSize);
+      List<Field> fields=fieldDao.readAllSkuFields();
+      for (      Sku sku : skus) {
+        SolrInputDocument doc=buildDocument(null,sku,fields,locales);
+        if (doc != null) {
+          documents.add(doc);
+        }
+      }
     }
  else {
       List<Product> products=readAllActiveProducts(page,pageSize);
       List<Field> fields=fieldDao.readAllProductFields();
       for (      Product product : products) {
-        SolrInputDocument doc=buildDocument(product,fields,locales);
+        SolrInputDocument doc=buildDocument(product,null,fields,locales);
         if (doc != null) {
           documents.add(doc);
         }
