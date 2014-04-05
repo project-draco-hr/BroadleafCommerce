@@ -7,10 +7,10 @@
   Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
   Integer page=(Integer)expression.execute(arguments.getConfiguration(),arguments);
   if (page != null && page > 1) {
-    params.put(ProductSearchCriteria.PAGE_NUMBER,new String[]{page.toString()});
+    params.put(SearchCriteria.PAGE_NUMBER,new String[]{page.toString()});
   }
  else {
-    params.remove(ProductSearchCriteria.PAGE_NUMBER);
+    params.remove(SearchCriteria.PAGE_NUMBER);
   }
   String url=ProcessorUtils.getUrl(baseUrl,params);
   attrs.put("href",url);

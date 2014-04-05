@@ -23,7 +23,7 @@
         iter.remove();
       }
     }
-    parameters.remove(ProductSearchCriteria.PAGE_NUMBER);
+    parameters.remove(SearchCriteria.PAGE_NUMBER);
     parameters.put(fieldName,activeFieldFilters.toArray(new String[activeFieldFilters.size()]));
     parameters.remove("facetField");
     String newUrl=ProcessorUtils.getUrl(request.getRequestURL().toString(),parameters);
@@ -39,8 +39,8 @@
     }
     if (StringUtils.isNotEmpty(query)) {
       List<SearchFacetDTO> availableFacets=getSearchService().getSearchFacets();
-      ProductSearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
-      ProductSearchResult result=getSearchService().findProductsByQuery(query,searchCriteria);
+      SearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
+      SearchResult result=getSearchService().findSearchResultsByQuery(query,searchCriteria);
       facetService.setActiveFacetResults(result.getFacets(),request);
       model.addAttribute(PRODUCTS_ATTRIBUTE_NAME,result.getProducts());
       model.addAttribute(FACETS_ATTRIBUTE_NAME,result.getFacets());
