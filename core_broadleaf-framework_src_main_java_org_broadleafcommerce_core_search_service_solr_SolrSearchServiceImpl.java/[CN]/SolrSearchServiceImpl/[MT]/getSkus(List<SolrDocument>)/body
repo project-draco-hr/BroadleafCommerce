@@ -3,7 +3,7 @@
   for (  SolrDocument doc : responseDocuments) {
     skuIds.add((Long)doc.getFieldValue(shs.getSkuIdFieldName()));
   }
-  List<Sku> skus=skuDao.readSkusById(skuIds);
+  List<Sku> skus=skuDao.readSkusByIds(skuIds);
   if (skus != null) {
     Collections.sort(skus,new Comparator<Sku>(){
       public int compare(      Sku o1,      Sku o2){
