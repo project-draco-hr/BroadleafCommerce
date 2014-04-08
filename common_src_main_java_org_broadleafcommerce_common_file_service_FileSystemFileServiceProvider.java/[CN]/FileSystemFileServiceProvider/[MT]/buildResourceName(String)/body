@@ -1,8 +1,8 @@
 {
   StringBuilder resourceName=new StringBuilder();
   String fileHash=null;
-  if (!url.startsWith("/")) {
-    fileHash=DigestUtils.md5Hex("/" + url);
+  if (!url.startsWith(File.separator)) {
+    fileHash=DigestUtils.md5Hex(File.separator + url);
   }
  else {
     fileHash=DigestUtils.md5Hex(url);
@@ -12,9 +12,9 @@
       LOG.warn("Property maxGeneratedDirectoryDepth set to high, ignoring values past 4 - value set to" + maxGeneratedDirectoryDepth);
       break;
     }
-    resourceName=resourceName.append(fileHash.substring(i * 2,(i + 1) * 2)).append('/');
+    resourceName=resourceName.append(fileHash.substring(i * 2,(i + 1) * 2)).append(File.separator);
   }
-  int pos=url.lastIndexOf("/");
+  int pos=url.lastIndexOf(File.separator);
   if (pos >= 0 && (pos < url.length() - 1)) {
     resourceName=resourceName.append(url.substring(pos + 1));
   }

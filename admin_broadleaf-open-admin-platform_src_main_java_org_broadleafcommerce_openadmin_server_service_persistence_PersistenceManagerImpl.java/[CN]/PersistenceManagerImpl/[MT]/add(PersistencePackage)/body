@@ -11,13 +11,13 @@
       for (      CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
         if (handler.canHandleAdd(persistencePackage)) {
           if (!handler.willHandleSecurity(persistencePackage)) {
-            adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
+            adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.ADD);
           }
           response=handler.add(persistencePackage,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
           break checkRoot;
         }
       }
-      adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
+      adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.ADD);
       PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getAddType());
       response=myModule.add(persistencePackage);
     }
@@ -49,15 +49,11 @@
         checkHandler: {
           for (          CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
             if (handler.canHandleAdd(subPackage.getValue())) {
-              if (!handler.willHandleSecurity(subPackage.getValue())) {
-                adminRemoteSecurityService.securityCheck(subPackage.getValue().getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
-              }
               subResponse=handler.add(subPackage.getValue(),dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
               subPackage.getValue().setEntity(subResponse);
               break checkHandler;
             }
           }
-          adminRemoteSecurityService.securityCheck(subPackage.getValue().getCeilingEntityFullyQualifiedClassname(),EntityOperationType.ADD);
           PersistenceModule subModule=getCompatibleModule(subPackage.getValue().getPersistencePerspective().getOperationTypes().getAddType());
           subResponse=subModule.add(persistencePackage);
           subPackage.getValue().setEntity(subResponse);

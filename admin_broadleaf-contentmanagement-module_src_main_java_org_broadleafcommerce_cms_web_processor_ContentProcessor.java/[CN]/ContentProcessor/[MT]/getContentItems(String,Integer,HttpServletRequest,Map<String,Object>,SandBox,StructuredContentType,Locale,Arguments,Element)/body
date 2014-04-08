@@ -1,13 +1,7 @@
 {
   List<StructuredContentDTO> contentItems;
   if (structuredContentType == null) {
-    if (contentName == null || "".equals(contentName)) {
-      contentItems=new ArrayList<StructuredContentDTO>();
-      extensionManager.getProxy().lookupContentByElementAttribute(contentItems,currentSandbox,locale,maxResults,mvelParameters,isSecure(request),element);
-    }
- else {
-      contentItems=structuredContentService.lookupStructuredContentItemsByName(contentName,locale,maxResults,mvelParameters,isSecure(request));
-    }
+    contentItems=structuredContentService.lookupStructuredContentItemsByName(contentName,locale,maxResults,mvelParameters,isSecure(request));
   }
  else {
     if (contentName == null || "".equals(contentName)) {

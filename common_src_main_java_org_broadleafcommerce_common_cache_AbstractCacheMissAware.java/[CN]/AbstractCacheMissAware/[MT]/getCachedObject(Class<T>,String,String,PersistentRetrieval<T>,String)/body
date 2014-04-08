@@ -1,0 +1,29 @@
+{
+  T nullResponse=getNullObject(responseClass);
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  String key=buildKey(params);
+  T response=null;
+  if (context.isProductionSandBox()) {
+    response=getObjectFromCache(key,cacheName);
+  }
+  if (response == null) {
+    response=retrieval.retrievePersistentObject();
+    if (response == null) {
+      response=nullResponse;
+    }
+    if (context.isProductionSandBox() && response.equals(nullResponse)) {
+      statisticsService.addCacheStat(statisticsName,false);
+      getCache(cacheName).put(new Element(key,response));
+      if (getLogger().isTraceEnabled()) {
+        getLogger().trace("Caching [" + key + "] as null in the ["+ cacheName+ "] cache.");
+      }
+    }
+  }
+ else {
+    statisticsService.addCacheStat(statisticsName,true);
+  }
+  if (response.equals(nullResponse)) {
+    return null;
+  }
+  return response;
+}

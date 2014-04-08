@@ -4,7 +4,8 @@
   query.setParameter("searchTerm",searchTerm);
   query.setParameter("now",getCurrentDateAfterFactoringInDateResolution());
   query.setMaxResults(1);
-  @SuppressWarnings("unchecked") List<SearchRedirect> results=query.getResultList();
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  List<SearchRedirect> results=query.getResultList();
   if (results != null && !results.isEmpty()) {
     return results.get(0);
   }

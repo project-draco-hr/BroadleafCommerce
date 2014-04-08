@@ -17,7 +17,12 @@
       if (maxTier != null) {
         return maxTier.getAmount();
       }
-      return BigDecimal.ZERO;
+      if (OfferDiscountType.FIX_PRICE.equals(offer.getDiscountType())) {
+        return BigDecimal.valueOf(Integer.MAX_VALUE);
+      }
+ else {
+        return BigDecimal.ZERO;
+      }
     }
   }
   return offer.getValue();

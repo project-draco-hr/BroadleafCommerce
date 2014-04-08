@@ -7,6 +7,9 @@
     brc.setIgnoreSite(true);
   }
   brc.setAdmin(false);
+  if (enforceProductionWorkflowUpdate) {
+    brc.getAdditionalProperties().put("site.enforce.production.workflow.update",enforceProductionWorkflowUpdate);
+  }
   BroadleafRequestContext.setBroadleafRequestContext(brc);
   Locale locale=localeResolver.resolveLocale(request);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
@@ -41,10 +44,10 @@
     previewSandBoxContext.setPreviewMode(true);
     SandBoxContext.setSandBoxContext(previewSandBoxContext);
   }
-  Theme theme=themeResolver.resolveTheme(request);
   brc.setLocale(locale);
   brc.setBroadleafCurrency(currency);
   brc.setSandBox(currentSandbox);
+  Theme theme=themeResolver.resolveTheme(request);
   brc.setTheme(theme);
   brc.setMessageSource(messageSource);
   brc.setTimeZone(timeZone);

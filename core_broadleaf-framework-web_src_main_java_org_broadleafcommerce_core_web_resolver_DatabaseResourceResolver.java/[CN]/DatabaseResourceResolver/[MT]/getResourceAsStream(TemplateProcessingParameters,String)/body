@@ -1,0 +1,8 @@
+{
+  ExtensionResultHolder erh=new ExtensionResultHolder();
+  ExtensionResultStatusType result=extensionManager.getProxy().resolveResource(erh,params,resourceName);
+  if (result == ExtensionResultStatusType.HANDLED) {
+    return (InputStream)erh.getContextMap().get(DatabaseResourceResolverExtensionHandler.IS_KEY);
+  }
+  return null;
+}

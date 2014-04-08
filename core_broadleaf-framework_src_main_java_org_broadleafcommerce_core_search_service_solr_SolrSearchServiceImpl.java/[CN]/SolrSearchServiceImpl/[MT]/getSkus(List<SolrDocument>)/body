@@ -6,7 +6,7 @@
   List<Sku> skus=skuDao.readSkusByIds(skuIds);
   if (skus != null) {
     Collections.sort(skus,new Comparator<Sku>(){
-      public int compare(      Sku o1,      Sku o2){
+      @Override public int compare(      Sku o1,      Sku o2){
         return new Integer(skuIds.indexOf(o1.getId())).compareTo(skuIds.indexOf(o2.getId()));
       }
     }

@@ -1,3 +1,4 @@
 {
-  return BLCSystemProperty.resolveBooleanSystemProperty("bundle.enabled");
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  return BLCSystemProperty.resolveBooleanSystemProperty("bundle.enabled") && brc.getSandBox() == null;
 }

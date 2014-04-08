@@ -1,18 +1,17 @@
 {
-  ExtensionResultStatusType extensionResult=extensionManager.getProxy().rollbackInventoryOperation(processContext,stateConfiguration);
-  if (ExtensionResultStatusType.NOT_HANDLED.equals(extensionResult)) {
-    if (stateConfiguration == null || (stateConfiguration.get(ROLLBACK_BLC_INVENTORY_DECREMENTED) == null && stateConfiguration.get(ROLLBACK_BLC_INVENTORY_INCREMENTED) == null)) {
-      return;
-    }
+  if (shouldExecute(activity,processContext,stateConfiguration)) {
     String orderId="(Not Known)";
     if (stateConfiguration.get(ROLLBACK_BLC_ORDER_ID) != null) {
       orderId=String.valueOf(stateConfiguration.get(ROLLBACK_BLC_ORDER_ID));
     }
     @SuppressWarnings("unchecked") Map<Sku,Integer> inventoryToIncrement=(Map<Sku,Integer>)stateConfiguration.get(ROLLBACK_BLC_INVENTORY_DECREMENTED);
     @SuppressWarnings("unchecked") Map<Sku,Integer> inventoryToDecrement=(Map<Sku,Integer>)stateConfiguration.get(ROLLBACK_BLC_INVENTORY_INCREMENTED);
+    Map<String,Object> contextualInformation=new HashMap<String,Object>();
+    contextualInformation.put(ContextualInventoryService.ROLLBACK_STATE_KEY,stateConfiguration.get(EXTENDED_ROLLBACK_STATE));
+    contextualInformation.put(ContextualInventoryService.ORDER_KEY,processContext.getSeedData().getOrder());
     if (inventoryToIncrement != null && !inventoryToIncrement.isEmpty()) {
       try {
-        inventoryService.incrementInventory(inventoryToIncrement);
+        inventoryService.incrementInventory(inventoryToIncrement,contextualInformation);
       }
  catch (      Exception ex) {
         RollbackFailureException rfe=new RollbackFailureException("An unexpected error occured in the error handler of the checkout workflow trying to compensate for inventory. This happend for order ID: " + orderId + ". This should be corrected manually!",ex);
@@ -24,7 +23,7 @@
     }
     if (inventoryToDecrement != null && !inventoryToDecrement.isEmpty()) {
       try {
-        inventoryService.decrementInventory(inventoryToDecrement);
+        inventoryService.decrementInventory(inventoryToDecrement,contextualInformation);
       }
  catch (      InventoryUnavailableException e) {
         RollbackFailureException rfe=new RollbackFailureException("While trying roll back (decrement) inventory, we found that there was none left decrement.",e);

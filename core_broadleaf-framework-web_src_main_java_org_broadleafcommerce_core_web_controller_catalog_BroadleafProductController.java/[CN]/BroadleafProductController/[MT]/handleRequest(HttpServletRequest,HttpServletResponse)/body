@@ -3,6 +3,9 @@
   Product product=(Product)request.getAttribute(ProductHandlerMapping.CURRENT_PRODUCT_ATTRIBUTE_NAME);
   assert(product != null);
   model.addObject(MODEL_ATTRIBUTE_NAME,product);
+  Set<Product> allProductsSet=new HashSet<Product>();
+  allProductsSet.add(product);
+  model.addObject(ALL_PRODUCTS_ATTRIBUTE_NAME,new HashSet<Product>(allProductsSet));
   addDeepLink(model,deepLinkService,product);
   if (StringUtils.isNotEmpty(product.getDisplayTemplate())) {
     model.setViewName(product.getDisplayTemplate());

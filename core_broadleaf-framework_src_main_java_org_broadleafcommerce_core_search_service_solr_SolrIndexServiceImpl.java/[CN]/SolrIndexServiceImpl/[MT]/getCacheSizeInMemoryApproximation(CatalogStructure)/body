@@ -1,0 +1,17 @@
+{
+  try {
+    if (structure == null) {
+      return 0;
+    }
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    ObjectOutputStream oos=new ObjectOutputStream(baos);
+    oos.writeObject(structure);
+    IOUtils.closeQuietly(oos);
+    int size=baos.size();
+    IOUtils.closeQuietly(baos);
+    return size;
+  }
+ catch (  IOException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+}

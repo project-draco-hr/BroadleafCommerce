@@ -1,0 +1,11 @@
+{
+  if (shouldCache(arguments,element,attributeName)) {
+    fixElement(element,arguments);
+    if (checkCacheForElement(arguments,element)) {
+      element.clearChildren();
+      element.clearAttributes();
+      element.setRecomputeProcessorsImmediately(true);
+    }
+  }
+  return ProcessorResult.OK;
+}

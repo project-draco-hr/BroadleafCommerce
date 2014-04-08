@@ -1,0 +1,48 @@
+{
+  if (ArrayUtils.isEmpty(ceilingNames)) {
+    throw new SecurityServiceException("Security Check Failed: ceilingNames not specified");
+  }
+  AdminUser persistentAdminUser=getPersistentAdminUser();
+  PermissionType permissionType;
+switch (operationType) {
+case ADD:
+    permissionType=PermissionType.CREATE;
+  break;
+case FETCH:
+permissionType=PermissionType.READ;
+break;
+case REMOVE:
+permissionType=PermissionType.DELETE;
+break;
+case UPDATE:
+permissionType=PermissionType.UPDATE;
+break;
+case INSPECT:
+permissionType=PermissionType.READ;
+break;
+default :
+permissionType=PermissionType.OTHER;
+break;
+}
+SecurityServiceException primaryException=null;
+boolean isQualified=false;
+for (String ceilingEntityFullyQualifiedName : ceilingNames) {
+isQualified=securityService.isUserQualifiedForOperationOnCeilingEntity(persistentAdminUser,permissionType,ceilingEntityFullyQualifiedName);
+if (!isQualified) {
+if (primaryException == null) {
+primaryException=new SecurityServiceException("Security Check Failed for entity operation: " + operationType.toString() + " ("+ ceilingEntityFullyQualifiedName+ ")");
+}
+}
+ else {
+break;
+}
+}
+if (!isQualified) {
+if (!securityService.doesOperationExistForCeilingEntity(permissionType,ceilingNames[0])) {
+if (LOG.isWarnEnabled()) {
+LOG.warn("Detected security request for an unregistered ceiling entity (" + ceilingNames[0] + "). "+ "As a result, the request failed. Please make sure to configure security for any ceiling entities "+ "referenced via the admin. This is usually accomplished by adding records in the "+ "BLC_ADMIN_PERMISSION_ENTITY table. Note, depending on how the entity in question is used, you "+ "may need to add to BLC_ADMIN_PERMISSION, BLC_ADMIN_ROLE_PERMISSION_XREF and BLC_ADMIN_SEC_PERM_XREF.",primaryException);
+}
+}
+throw primaryException;
+}
+}

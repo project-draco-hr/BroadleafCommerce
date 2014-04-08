@@ -1,0 +1,28 @@
+{
+  String nullString="null";
+  StringBuffer sb=new StringBuffer("{");
+  boolean firstIteration=true;
+  for (  Entry<String,Object> entry : objectMap.entrySet()) {
+    if (!firstIteration) {
+      sb.append(',');
+    }
+    sb.append(JSONObject.quote(entry.getKey()));
+    sb.append(':');
+    Object value=entry.getValue();
+    if (value == null) {
+      sb.append(nullString);
+    }
+ else     if (value instanceof Boolean) {
+      sb.append(((Boolean)value).booleanValue());
+    }
+ else     if (value instanceof String) {
+      sb.append(JSONObject.quote(value.toString()));
+    }
+ else {
+      sb.append(value.toString());
+    }
+    firstIteration=false;
+  }
+  sb.append("}");
+  return sb.toString();
+}

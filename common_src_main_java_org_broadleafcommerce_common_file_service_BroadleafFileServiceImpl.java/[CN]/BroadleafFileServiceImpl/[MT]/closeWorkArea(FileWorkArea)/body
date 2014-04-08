@@ -1,10 +1,12 @@
 {
   File tempDirectory=new File(fwArea.getFilePathLocation());
   try {
-    FileUtils.deleteDirectory(tempDirectory);
+    if (tempDirectory.exists()) {
+      FileUtils.deleteDirectory(tempDirectory);
+    }
     for (int i=1; i < maxGeneratedDirectoryDepth; i++) {
       tempDirectory=tempDirectory.getParentFile();
-      if (tempDirectory.list().length == 0) {
+      if (tempDirectory.list().length == 0 && tempDirectory.exists()) {
         FileUtils.deleteDirectory(tempDirectory);
       }
     }

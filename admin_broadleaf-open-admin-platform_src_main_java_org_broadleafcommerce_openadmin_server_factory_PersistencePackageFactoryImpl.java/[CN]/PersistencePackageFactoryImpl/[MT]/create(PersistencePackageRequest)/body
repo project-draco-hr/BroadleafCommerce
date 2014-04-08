@@ -29,12 +29,20 @@ persistencePerspective.setOperationTypes(request.getOperationTypesOverride());
 }
 PersistencePackage pp=new PersistencePackage();
 pp.setCeilingEntityFullyQualifiedClassname(request.getCeilingEntityClassname());
+if (!StringUtils.isEmpty(request.getSecurityCeilingEntityClassname())) {
+pp.setSecurityCeilingEntityFullyQualifiedClassname(request.getSecurityCeilingEntityClassname());
+}
 if (!ArrayUtils.isEmpty(request.getSectionCrumbs())) {
 SectionCrumb[] converted=new SectionCrumb[request.getSectionCrumbs().length];
 int index=0;
 for (SectionCrumb crumb : request.getSectionCrumbs()) {
 SectionCrumb temp=new SectionCrumb();
+try {
 temp.setSectionIdentifier(getClassNameForSection(crumb.getSectionIdentifier()));
+}
+ catch (Exception e) {
+temp.setSectionIdentifier(request.getCeilingEntityClassname());
+}
 temp.setSectionId(crumb.getSectionId());
 converted[index]=temp;
 index++;

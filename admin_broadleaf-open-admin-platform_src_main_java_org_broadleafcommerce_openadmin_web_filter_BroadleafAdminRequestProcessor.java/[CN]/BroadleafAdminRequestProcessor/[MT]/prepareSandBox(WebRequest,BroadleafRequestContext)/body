@@ -1,0 +1,53 @@
+{
+  AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
+  if (adminUser == null) {
+    request.removeAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
+ else {
+    SandBox sandBox=null;
+    if (StringUtils.isNotBlank(request.getParameter(SANDBOX_REQ_PARAM))) {
+      Long sandBoxId=Long.parseLong(request.getParameter(SANDBOX_REQ_PARAM));
+      sandBox=sandBoxService.retrieveUserSandBoxForParent(adminUser.getId(),sandBoxId);
+      if (sandBox == null) {
+        SandBox approvalOrUserSandBox=sandBoxService.retrieveSandBoxById(sandBoxId);
+        if (approvalOrUserSandBox.getSandBoxType().equals(SandBoxType.USER)) {
+          sandBox=approvalOrUserSandBox;
+        }
+ else {
+          sandBox=sandBoxService.createUserSandBox(adminUser.getId(),approvalOrUserSandBox);
+        }
+      }
+    }
+    if (sandBox == null) {
+      Long previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      if (previouslySetSandBoxId != null) {
+        sandBox=sandBoxService.retrieveSandBoxById(previouslySetSandBoxId);
+      }
+    }
+    if (sandBox == null) {
+      List<SandBox> defaultSandBoxes=sandBoxService.retrieveSandBoxesByType(SandBoxType.DEFAULT);
+      if (defaultSandBoxes.size() > 1) {
+        throw new IllegalStateException("Only one sandbox should be configured as default");
+      }
+      SandBox defaultSandBox;
+      if (defaultSandBoxes.size() == 1) {
+        defaultSandBox=defaultSandBoxes.get(0);
+      }
+ else {
+        defaultSandBox=sandBoxService.createDefaultSandBox();
+      }
+      sandBox=sandBoxService.retrieveUserSandBoxForParent(adminUser.getId(),defaultSandBox.getId());
+      if (sandBox == null) {
+        sandBox=sandBoxService.createUserSandBox(adminUser.getId(),defaultSandBox);
+      }
+    }
+    Long previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    if (previouslySetSandBoxId != null && !sandBox.getId().equals(previouslySetSandBoxId)) {
+      adminUser.setLastUsedSandBoxId(sandBox.getId());
+      adminUser=adminSecurityService.saveAdminUser(adminUser);
+    }
+    request.setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,sandBox.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+    brc.setSandBox(sandBox);
+    brc.getAdditionalProperties().put("adminUser",adminUser);
+  }
+}

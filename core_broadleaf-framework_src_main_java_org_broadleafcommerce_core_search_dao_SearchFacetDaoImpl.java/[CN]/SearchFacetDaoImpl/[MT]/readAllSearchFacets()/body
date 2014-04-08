@@ -4,5 +4,7 @@
   Root<SearchFacetImpl> facet=criteria.from(SearchFacetImpl.class);
   criteria.select(facet);
   criteria.where(builder.equal(facet.get("showOnSearch").as(Boolean.class),true));
-  return em.createQuery(criteria).getResultList();
+  TypedQuery<SearchFacet> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  return query.getResultList();
 }

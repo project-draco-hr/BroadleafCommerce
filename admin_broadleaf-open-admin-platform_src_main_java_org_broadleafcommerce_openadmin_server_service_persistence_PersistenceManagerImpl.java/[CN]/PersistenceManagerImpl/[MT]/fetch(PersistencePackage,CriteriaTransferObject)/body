@@ -8,13 +8,13 @@
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleFetch(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
-        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.FETCH);
+        adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.FETCH);
       }
       DynamicResultSet results=handler.fetch(persistencePackage,cto,dynamicEntityDao,(RecordHelper)getCompatibleModule(OperationType.BASIC));
       return executePostFetchHandlers(persistencePackage,cto,new PersistenceResponse().withDynamicResultSet(results));
     }
   }
-  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.FETCH);
+  adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.FETCH);
   PersistenceModule myModule=getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
   try {
     DynamicResultSet results=myModule.fetch(persistencePackage,cto);

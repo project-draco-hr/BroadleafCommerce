@@ -1,0 +1,15 @@
+{
+  Tab newTab=new Tab();
+  FieldGroup newFg=new FieldGroup();
+  newTab.getFieldGroups().add(newFg);
+  for (  Tab tab : getTabs()) {
+    for (    FieldGroup fg : tab.getFieldGroups()) {
+      for (      Field field : fg.getFields()) {
+        newFg.addField(field);
+      }
+    }
+  }
+  getTabs().clear();
+  getTabs().add(newTab);
+  return newFg;
+}

@@ -2,11 +2,11 @@
   LOG.info("Rebuilding the solr index...");
   StopWatch s=new StopWatch();
   if (SolrContext.isSingleCoreMode()) {
-    deleteAllDocuments();
+    SolrIndexServiceImpl.this.deleteAllDocuments();
   }
   Object[] pack=saveState();
   try {
-    Long numItemsToIndex=null;
+    final Long numItemsToIndex;
     if (useSku) {
       numItemsToIndex=skuDao.readCountAllActiveSkus();
     }
@@ -21,12 +21,19 @@
       buildIncrementalIndex(page,pageSize);
       page++;
     }
+    performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
+      @Override public void execute() throws ServiceException {
+        int page=0;
+        while ((page * pageSize) < numItemsToIndex) {
+          buildIncrementalIndex(page,pageSize);
+          page++;
+        }
+      }
+    }
+);
     optimizeIndex(SolrContext.getReindexServer());
   }
- catch (  ServiceException e) {
-    throw e;
-  }
- finally {
+  finally {
     restoreState(pack);
   }
   shs.swapActiveCores();

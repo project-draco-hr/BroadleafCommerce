@@ -1,12 +1,17 @@
 {
   boolean notHandled=true;
   for (  ExtensionHandler handler : getHandlers()) {
-    ExtensionResultStatusType result=(ExtensionResultStatusType)method.invoke(handler,args);
-    if (!ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
-      notHandled=false;
+    try {
+      ExtensionResultStatusType result=(ExtensionResultStatusType)method.invoke(handler,args);
+      if (!ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
+        notHandled=false;
+      }
+      if (!shouldContinue(result,handler,method,args)) {
+        break;
+      }
     }
-    if (!shouldContinue(result,handler,method,args)) {
-      break;
+ catch (    InvocationTargetException e) {
+      throw e.getCause();
     }
   }
   if (notHandled) {

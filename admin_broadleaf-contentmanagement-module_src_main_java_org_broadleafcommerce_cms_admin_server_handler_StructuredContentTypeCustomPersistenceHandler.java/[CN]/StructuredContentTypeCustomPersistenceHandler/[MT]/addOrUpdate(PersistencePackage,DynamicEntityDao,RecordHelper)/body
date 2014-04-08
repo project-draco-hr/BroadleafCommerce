@@ -26,7 +26,7 @@
         StructuredContentField structuredContentField=structuredContentFieldMap.get(property.getName());
         if (structuredContentField != null) {
           boolean isDirty=(structuredContentField.getValue() == null && property.getValue() != null) || (structuredContentField.getValue() != null && property.getValue() == null);
-          if (!isDirty && structuredContentField.getValue() != null && property.getValue() != null && !structuredContentField.getValue().trim().equals(property.getValue().trim())) {
+          if (isDirty || (structuredContentField.getValue() != null && property.getValue() != null && !structuredContentField.getValue().trim().equals(property.getValue().trim()))) {
             dirtyFields.add(property.getName());
             dirtyFieldsOrigVals.put(property.getName(),structuredContentField.getValue());
           }

@@ -1,0 +1,14 @@
+{
+  List<Sku> skus=catalogService.findSkusByIds(ids);
+  if (CollectionUtils.isNotEmpty(skus)) {
+    Map<Sku,Integer> quantities=inventoryService.retrieveQuantitiesAvailable(new HashSet<Sku>(skus));
+    List<InventoryWrapper> out=new ArrayList<InventoryWrapper>();
+    for (    Map.Entry<Sku,Integer> entry : quantities.entrySet()) {
+      InventoryWrapper wrapper=(InventoryWrapper)context.getBean(InventoryWrapper.class.getName());
+      wrapper.wrapSummary(entry.getKey(),entry.getValue(),request);
+      out.add(wrapper);
+    }
+    return out;
+  }
+  throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.SKU_NOT_FOUND,skus.toArray());
+}
