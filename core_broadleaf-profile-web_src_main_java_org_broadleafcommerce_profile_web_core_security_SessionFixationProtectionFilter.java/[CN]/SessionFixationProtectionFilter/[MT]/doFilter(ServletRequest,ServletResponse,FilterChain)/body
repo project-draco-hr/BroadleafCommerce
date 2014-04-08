@@ -5,7 +5,7 @@
   if (SecurityContextHolder.getContext() == null) {
     chain.doFilter(request,response);
   }
-  String activeIdSessionValue=session == null ? null : (String)session.getAttribute(SESSION_ATTR);
+  String activeIdSessionValue=(session == null) ? null : (String)session.getAttribute(SESSION_ATTR);
   if (StringUtils.isNotBlank(activeIdSessionValue) && request.isSecure()) {
     String activeIdCookieValue=cookieUtils.getCookieValue(request,SessionFixationProtectionCookie.COOKIE_NAME);
     String decryptedActiveIdValue=encryptionModule.decrypt(activeIdCookieValue);
@@ -15,7 +15,7 @@
       return;
     }
   }
- else   if (request.isSecure()) {
+ else   if (request.isSecure() && session != null) {
     String token;
     try {
       token=RandomGenerator.generateRandomId("SHA1PRNG",32);

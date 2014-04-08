@@ -1,0 +1,13 @@
+{
+  Method method=ReflectionUtils.findMethod(target.getClass(),methodName,test.getClass());
+  if (method == null) {
+    Class[] interfaces=ClassUtils.getAllInterfaces(test);
+    for (    Class clazz : interfaces) {
+      method=ReflectionUtils.findMethod(targetClass,methodName,clazz);
+      if (method != null) {
+        break;
+      }
+    }
+  }
+  return method;
+}

@@ -1,0 +1,60 @@
+{
+  String path=(String)request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+  if (bundlingService.hasBundle(path)) {
+    return bundlingService.getBundle(path);
+  }
+  Resource unminifiedResource=null;
+  if (sortedHandlers == null && handlers != null) {
+    sortHandlers();
+  }
+  if (sortedHandlers != null) {
+    for (    AbstractGeneratedResourceHandler handler : sortedHandlers) {
+      if (handler.canHandle(path)) {
+        unminifiedResource=handler.getResource(path,getLocations());
+        break;
+      }
+    }
+  }
+  if (unminifiedResource == null) {
+    ExtensionResultHolder erh=new ExtensionResultHolder();
+    extensionManager.getProxy().getOverrideResource(path,erh);
+    if (erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR) != null) {
+      unminifiedResource=(Resource)erh.getContextMap().get(ResourceRequestExtensionHandler.RESOURCE_ATTR);
+    }
+  }
+  if (unminifiedResource == null) {
+    unminifiedResource=super.getResource(request);
+  }
+  try {
+    if (!minifyService.getEnabled() || !minifyService.getAllowSingleMinification()) {
+      return unminifiedResource;
+    }
+  }
+  finally {
+    ThreadLocalManager.remove();
+  }
+  LOG.warn("Minifying individual file - this should only be used in development to trace down particular " + "files that are causing an exception in the minification service. The results of the minification " + "performed outside of a bundle are not stored to disk.");
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  byte[] bytes=null;
+  InputStream is=null;
+  try {
+    is=unminifiedResource.getInputStream();
+    StreamUtils.copy(is,baos);
+    bytes=baos.toByteArray();
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    try {
+      is.close();
+      baos.close();
+    }
+ catch (    IOException e2) {
+      throw new RuntimeException("Could not close input stream",e2);
+    }
+  }
+  LOG.debug("Attempting to minifiy " + unminifiedResource.getFilename());
+  byte[] minifiedBytes=minifyService.minify(unminifiedResource.getFilename(),bytes);
+  return new GeneratedResource(minifiedBytes,unminifiedResource.getFilename());
+}

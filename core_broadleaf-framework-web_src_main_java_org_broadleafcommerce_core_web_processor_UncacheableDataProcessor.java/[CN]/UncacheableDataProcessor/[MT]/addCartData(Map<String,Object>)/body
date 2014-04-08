@@ -1,0 +1,27 @@
+{
+  Order cart=CartState.getCart();
+  int cartQty=0;
+  List<Long> cartItemIdsWithOptions=new ArrayList<Long>();
+  List<Long> cartItemIdsWithoutOptions=new ArrayList<Long>();
+  if (cart != null && cart.getOrderItems() != null) {
+    cartQty=cart.getItemCount();
+    for (    OrderItem item : cart.getOrderItems()) {
+      if (item instanceof SkuAccessor) {
+        Sku sku=((SkuAccessor)item).getSku();
+        if (sku != null && sku.getProduct() != null) {
+          Product product=sku.getProduct();
+          List<ProductOptionXref> optionXrefs=product.getProductOptionXrefs();
+          if (optionXrefs == null || optionXrefs.isEmpty()) {
+            cartItemIdsWithoutOptions.add(product.getId());
+          }
+ else {
+            cartItemIdsWithOptions.add(product.getId());
+          }
+        }
+      }
+    }
+  }
+  attrMap.put("cartItemCount",cartQty);
+  attrMap.put("cartItemIdsWithOptions",cartItemIdsWithOptions);
+  attrMap.put("cartItemIdsWithoutOptions",cartItemIdsWithoutOptions);
+}

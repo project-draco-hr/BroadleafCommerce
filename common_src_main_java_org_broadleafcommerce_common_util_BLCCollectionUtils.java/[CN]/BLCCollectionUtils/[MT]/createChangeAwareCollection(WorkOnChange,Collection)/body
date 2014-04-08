@@ -1,0 +1,25 @@
+{
+  T proxy=(T)Proxy.newProxyInstance(BLCCollectionUtils.class.getClassLoader(),ClassUtils.getAllInterfacesForClass(original.getClass()),new InvocationHandler(){
+    @Override public Object invoke(    Object proxy,    Method method,    Object[] args) throws Throwable {
+      if (method.getName().startsWith("add") || method.getName().startsWith("remove") || method.getName().startsWith("clear")) {
+        work.doWork(original);
+      }
+      if (method.getName().equals("iterator")) {
+        final Iterator itr=(Iterator)method.invoke(original,args);
+        Iterator proxyItr=(Iterator)Proxy.newProxyInstance(getClass().getClassLoader(),ClassUtils.getAllInterfacesForClass(itr.getClass()),new InvocationHandler(){
+          @Override public Object invoke(          Object proxy,          Method method,          Object[] args) throws Throwable {
+            if (method.getName().equals("remove")) {
+              work.doWork(original);
+            }
+            return method.invoke(itr,args);
+          }
+        }
+);
+        return proxyItr;
+      }
+      return method.invoke(original,args);
+    }
+  }
+);
+  return proxy;
+}

@@ -1,0 +1,32 @@
+{
+  boolean elementAdded=false;
+  boolean removeElement=false;
+  Set<String> attributeNames=element.getAttributeMap().keySet();
+  for (  String a : attributeNames) {
+    String attrName=a.toLowerCase();
+    if (attrName.startsWith("th")) {
+      if (attrName.equals("th:substituteby") || (attrName.equals("th:replace") || attrName.equals("th:include"))) {
+        if (!elementAdded) {
+          Element extraDiv=new Element("div");
+          String attrValue=element.getAttributeValue(attrName);
+          element.removeAttribute(attrName);
+          extraDiv.setAttribute(attrName,attrValue);
+          element.addChild(extraDiv);
+          elementAdded=true;
+          element.setNodeProperty("templateName",attrValue);
+          element.setRecomputeProcessorsImmediately(true);
+        }
+      }
+ else       if (attrName.equals("th:remove")) {
+        Attribute attr=element.getAttributeMap().get(attrName);
+        if ("tag".equals(attr.getValue())) {
+          removeElement=true;
+          element.setAttribute(attrName,"none");
+        }
+      }
+    }
+  }
+  if (!elementAdded || removeElement) {
+    element.setNodeProperty("blcOutputParentNode",Boolean.TRUE);
+  }
+}

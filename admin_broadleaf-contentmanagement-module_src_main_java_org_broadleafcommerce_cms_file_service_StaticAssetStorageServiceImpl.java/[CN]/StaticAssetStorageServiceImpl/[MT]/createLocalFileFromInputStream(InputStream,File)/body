@@ -1,5 +1,5 @@
 {
-  BufferedOutputStream bos=null;
+  FileOutputStream tos=null;
   FileWorkArea workArea=null;
   try {
     if (!baseLocalFile.getParentFile().exists()) {
@@ -14,32 +14,18 @@
       }
     }
     workArea=broadleafFileService.initializeWorkArea();
-    File tmpFile=new File(appendTrailingSlash(workArea.getFilePathLocation()) + baseLocalFile.getName());
-    bos=new BufferedOutputStream(new FileOutputStream(tmpFile));
-    boolean eof=false;
-    int temp;
-    while (!eof) {
-      temp=is.read();
-      if (temp < 0) {
-        eof=true;
-      }
- else {
-        bos.write(temp);
-      }
-    }
+    File tmpFile=new File(FilenameUtils.concat(workArea.getFilePathLocation(),baseLocalFile.getName()));
+    tos=new FileOutputStream(tmpFile);
+    IOUtils.copy(is,tos);
+    is.close();
+    tos.close();
     FileUtils.moveFile(tmpFile,baseLocalFile);
   }
   finally {
-    try {
-      if (bos != null) {
-        bos.flush();
-        bos.close();
-      }
-      if (workArea != null) {
-        broadleafFileService.closeWorkArea(workArea);
-      }
-    }
- catch (    Throwable e) {
+    IOUtils.closeQuietly(is);
+    IOUtils.closeQuietly(tos);
+    if (workArea != null) {
+      broadleafFileService.closeWorkArea(workArea);
     }
   }
 }

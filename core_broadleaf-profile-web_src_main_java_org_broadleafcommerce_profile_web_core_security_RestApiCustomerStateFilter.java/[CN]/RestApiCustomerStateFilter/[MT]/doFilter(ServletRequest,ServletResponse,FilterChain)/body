@@ -17,6 +17,9 @@
         servletRequest.setAttribute(CustomerStateRequestProcessor.getCustomerRequestAttributeName(),customer);
       }
     }
+    if (customerId == null) {
+      LOG.warn("No customer ID was found for the API request. In order to look up a customer for the request" + " send a request parameter or request header for the '" + customerIdAttributeName + "' attribute");
+    }
   }
   filterChain.doFilter(request,servletResponse);
 }

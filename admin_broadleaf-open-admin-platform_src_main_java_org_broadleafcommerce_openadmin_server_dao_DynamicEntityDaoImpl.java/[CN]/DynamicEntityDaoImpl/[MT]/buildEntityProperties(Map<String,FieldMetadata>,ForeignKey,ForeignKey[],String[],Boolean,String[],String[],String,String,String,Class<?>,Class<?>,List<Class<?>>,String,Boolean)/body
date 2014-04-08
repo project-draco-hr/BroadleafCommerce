@@ -13,6 +13,27 @@
   Map<String,FieldMetadata> convertedFields=new HashMap<String,FieldMetadata>(newFields.size());
   for (  Map.Entry<String,FieldMetadata> key : newFields.entrySet()) {
     convertedFields.put(propertyName + '.' + key.getKey(),key.getValue());
+    if (key.getValue() instanceof BasicFieldMetadata) {
+      for (      Map.Entry<String,Map<String,String>> entry : ((BasicFieldMetadata)key.getValue()).getValidationConfigurations().entrySet()) {
+        Class<?> validatorImpl=null;
+        try {
+          validatorImpl=Class.forName(entry.getKey());
+        }
+ catch (        ClassNotFoundException e) {
+          Object bean=applicationContext.getBean(entry.getKey());
+          if (bean != null) {
+            validatorImpl=bean.getClass();
+          }
+        }
+        if (validatorImpl != null && FieldNamePropertyValidator.class.isAssignableFrom(validatorImpl)) {
+          for (          Map.Entry<String,String> configs : entry.getValue().entrySet()) {
+            if (newFields.containsKey(configs.getValue())) {
+              configs.setValue(propertyName + "." + configs.getValue());
+            }
+          }
+        }
+      }
+    }
   }
   fields.putAll(convertedFields);
 }

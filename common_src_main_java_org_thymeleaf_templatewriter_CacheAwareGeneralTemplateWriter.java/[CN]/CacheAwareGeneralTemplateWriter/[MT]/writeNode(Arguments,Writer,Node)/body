@@ -1,0 +1,37 @@
+{
+  if (!(node instanceof org.thymeleaf.dom.Element)) {
+    super.writeNode(arguments,writer,node);
+    return;
+  }
+  org.thymeleaf.dom.Element e=(org.thymeleaf.dom.Element)node;
+  String cacheKey=(String)e.getNodeProperty("cacheKey");
+  if (StringUtils.isNotBlank(cacheKey)) {
+    String valueToWrite=(String)e.getNodeProperty("blCacheResponse");
+    if (valueToWrite != null) {
+      if (LOG.isTraceEnabled()) {
+        LOG.trace("Read template from cache - " + cacheKey);
+      }
+    }
+ else {
+      Boolean outputParentNode=(Boolean)e.getNodeProperty("blcOutputParentNode");
+      StringWriter w2=new StringWriter();
+      if (Boolean.TRUE.equals(outputParentNode)) {
+        super.writeNode(arguments,w2,e);
+      }
+ else {
+        final Node[] children=e.unsafeGetChildrenNodeArray();
+        final int childrenLen=e.numChildren();
+        for (int i=0; i < childrenLen; i++) {
+          super.writeNode(arguments,w2,children[i]);
+        }
+      }
+      valueToWrite=w2.toString();
+      Element element=new Element(cacheKey,valueToWrite);
+      getCache().put(element);
+    }
+    writer.write(valueToWrite);
+  }
+ else {
+    super.writeNode(arguments,writer,node);
+  }
+}

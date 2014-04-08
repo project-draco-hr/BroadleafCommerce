@@ -1,0 +1,25 @@
+{
+  String key=target.getClass().getName() + "." + methodName+ "("+ changed.getClass().getName()+ ")";
+  Method method;
+  if (methodCache.containsKey(key)) {
+    method=methodCache.get(key);
+  }
+ else {
+    method=searchForMethod(target.getClass(),changed);
+    if (method != null) {
+      methodCache.put(key,method);
+    }
+  }
+  if (method == null) {
+    throw new IllegalArgumentException("Unable to find the method (" + methodName + ") on the class ("+ target.getClass().getName()+ ")");
+  }
+  try {
+    method.invoke(target,changed);
+  }
+ catch (  IllegalAccessException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  InvocationTargetException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+}

@@ -1,0 +1,14 @@
+{
+  String uri=request.getRequestURI();
+  if (!StringUtils.isEmpty(globalAdminPrefix)) {
+    if (globalAdminPrefix.equals(getContextName(request))) {
+      return true;
+    }
+ else {
+      if (!StringUtils.isEmpty(globalAdminUrl)) {
+        return uri.startsWith(globalAdminUrl);
+      }
+    }
+  }
+  return false;
+}

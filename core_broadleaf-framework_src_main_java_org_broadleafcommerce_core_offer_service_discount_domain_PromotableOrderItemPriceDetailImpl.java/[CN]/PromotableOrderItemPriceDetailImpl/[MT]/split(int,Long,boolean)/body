@@ -1,0 +1,32 @@
+{
+  int originalQty=quantity;
+  quantity=discountQty;
+  int splitItemQty=originalQty - discountQty;
+  PromotableOrderItemPriceDetail newDetail=promotableOrderItem.createNewDetail(splitItemQty);
+  for (  PromotionDiscount existingDiscount : promotionDiscounts) {
+    PromotionDiscount newDiscount=existingDiscount.split(discountQty);
+    if (newDiscount != null) {
+      newDetail.getPromotionDiscounts().add(newDiscount);
+    }
+  }
+  if (hasQualifiers) {
+    Iterator<PromotionQualifier> qualifiers=promotionQualifiers.iterator();
+    while (qualifiers.hasNext()) {
+      PromotionQualifier currentQualifier=qualifiers.next();
+      Long qualifierOfferId=currentQualifier.getPromotion().getId();
+      if (qualifierOfferId.equals(offerId) && currentQualifier.getQuantity() <= splitItemQty) {
+        qualifiers.remove();
+        newDetail.getPromotionQualifiers().add(currentQualifier);
+      }
+ else {
+        PromotionQualifier newQualifier=currentQualifier.split(splitItemQty);
+        newDetail.getPromotionQualifiers().add(newQualifier);
+      }
+    }
+  }
+  for (  PromotableOrderItemPriceDetailAdjustment existingAdjustment : promotableOrderItemPriceDetailAdjustments) {
+    PromotableOrderItemPriceDetailAdjustment newAdjustment=existingAdjustment.copy();
+    newDetail.addCandidateItemPriceDetailAdjustment(newAdjustment);
+  }
+  return newDetail;
+}

@@ -2,6 +2,7 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
+  FieldProviderResponse response=FieldProviderResponse.HANDLED;
   boolean dirty=false;
   try {
     setNonDisplayableValues(populateValueRequest);
@@ -57,6 +58,7 @@
           populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
         }
         populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),media);
+        response=FieldProviderResponse.HANDLED_BREAK;
       }
     }
  else {
@@ -67,5 +69,5 @@
     throw new PersistenceException(e);
   }
   populateValueRequest.getProperty().setIsDirty(dirty);
-  return FieldProviderResponse.HANDLED;
+  return response;
 }

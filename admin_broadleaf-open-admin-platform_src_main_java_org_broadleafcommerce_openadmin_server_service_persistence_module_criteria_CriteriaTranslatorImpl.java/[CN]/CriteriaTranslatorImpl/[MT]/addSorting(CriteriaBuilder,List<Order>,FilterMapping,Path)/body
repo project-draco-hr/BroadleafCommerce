@@ -1,8 +1,12 @@
 {
+  Expression exp=path;
+  if (filterMapping.getNullsLast() != null && filterMapping.getNullsLast()) {
+    exp=criteriaBuilder.coalesce(path,99999999999L);
+  }
   if (SortDirection.ASCENDING == filterMapping.getSortDirection()) {
-    sorts.add(criteriaBuilder.asc(path));
+    sorts.add(criteriaBuilder.asc(exp));
   }
  else {
-    sorts.add(criteriaBuilder.desc(path));
+    sorts.add(criteriaBuilder.desc(exp));
   }
 }

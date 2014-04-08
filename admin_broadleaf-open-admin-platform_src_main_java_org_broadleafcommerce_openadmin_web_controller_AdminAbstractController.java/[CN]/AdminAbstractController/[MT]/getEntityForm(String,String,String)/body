@@ -1,0 +1,13 @@
+{
+  SectionCrumb sc=new SectionCrumb();
+  sc.setSectionId(id);
+  sc.setSectionIdentifier("structured-content/all");
+  List<SectionCrumb> crumbs=new ArrayList<SectionCrumb>(1);
+  crumbs.add(sc);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,crumbs,null);
+  ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  Entity entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
+  Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,crumbs);
+  EntityForm entityForm=formService.createEntityForm(cmd,entity,subRecordsMap,crumbs);
+  return entityForm;
+}

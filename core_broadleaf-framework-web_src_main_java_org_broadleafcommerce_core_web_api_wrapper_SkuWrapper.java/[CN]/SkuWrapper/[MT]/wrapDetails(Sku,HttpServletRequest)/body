@@ -7,6 +7,9 @@
   this.retailPrice=model.getRetailPrice();
   this.salePrice=model.getSalePrice();
   this.active=model.isActive();
+  if (model.getInventoryType() != null) {
+    this.inventoryType=model.getInventoryType().getType();
+  }
   if (model.getWeight() != null) {
     weight=(WeightWrapper)context.getBean(WeightWrapper.class.getName());
     weight.wrapDetails(model.getWeight(),request);

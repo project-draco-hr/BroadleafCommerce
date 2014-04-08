@@ -6,16 +6,27 @@
       return holder.getResult().toString();
     }
   }
-  String result=getPropertyFromCache(name);
+  String result;
+  if (BroadleafRequestContext.getBroadleafRequestContext().getSandBox() == null) {
+    result=getPropertyFromCache(name);
+  }
+ else {
+    result=null;
+  }
   if (result != null) {
     return result;
   }
   SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
-  if (property == null || property.getValue() == null) {
+  if (property == null || StringUtils.isEmpty(property.getValue())) {
     result=propMgr.getProperty(name);
   }
  else {
-    result=property.getValue();
+    if ("_blank_".equals(property.getValue())) {
+      result="";
+    }
+ else {
+      result=property.getValue();
+    }
   }
   if (result != null) {
     addPropertyToCache(name,result);

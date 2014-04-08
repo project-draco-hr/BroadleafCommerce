@@ -1,0 +1,49 @@
+{
+  Map<Long,Set<Long>> nextLevel=new HashMap<Long,Set<Long>>();
+  Long[] categoryIds=categoryHierarchy.keySet().toArray(new Long[categoryHierarchy.keySet().size()]);
+  int batchSize=800;
+  int count=0;
+  int pos=0;
+  while (pos < categoryIds.length) {
+    int remaining=categoryIds.length - pos;
+    int mySize=remaining > batchSize ? batchSize : remaining;
+    Long[] temp=new Long[mySize];
+    System.arraycopy(categoryIds,pos,temp,0,mySize);
+    TypedQuery<ParentCategoryByCategory> query=em.createNamedQuery("BC_READ_PARENT_CATEGORY_IDS_BY_CATEGORIES",ParentCategoryByCategory.class);
+    query.setParameter("categoryIds",sandBoxHelper.mergeCloneIds(em,CategoryImpl.class,temp));
+    List<ParentCategoryByCategory> results=query.getResultList();
+    for (    ParentCategoryByCategory item : results) {
+      Long childSandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getChild());
+      if (childSandBoxVal == null) {
+        childSandBoxVal=item.getChild();
+      }
+      Set<Long> hierarchy=categoryHierarchy.get(childSandBoxVal);
+      if (item.getParent() != null) {
+        Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getParent());
+        if (sandBoxVal == null) {
+          sandBoxVal=item.getParent();
+        }
+        hierarchy.add(sandBoxVal);
+        if (!nextLevel.containsKey(sandBoxVal)) {
+          nextLevel.put(sandBoxVal,new HashSet<Long>());
+        }
+      }
+      if (item.getDefaultParent() != null) {
+        Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getDefaultParent());
+        if (sandBoxVal == null) {
+          sandBoxVal=item.getDefaultParent();
+        }
+        hierarchy.add(sandBoxVal);
+        if (!nextLevel.containsKey(sandBoxVal)) {
+          nextLevel.put(sandBoxVal,new HashSet<Long>());
+        }
+      }
+    }
+    count++;
+    pos=(count * batchSize) < categoryIds.length ? (count * batchSize) : categoryIds.length;
+  }
+  if (!nextLevel.isEmpty()) {
+    readFullCategoryHierarchy(nextLevel);
+  }
+  categoryHierarchy.putAll(nextLevel);
+}

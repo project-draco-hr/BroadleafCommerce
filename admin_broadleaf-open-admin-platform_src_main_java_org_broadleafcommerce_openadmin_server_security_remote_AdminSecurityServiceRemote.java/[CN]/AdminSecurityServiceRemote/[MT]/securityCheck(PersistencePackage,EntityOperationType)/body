@@ -1,0 +1,13 @@
+{
+  Set<String> ceilingNames=new HashSet<String>();
+  ceilingNames.add(persistencePackage.getCeilingEntityFullyQualifiedClassname());
+  if (!ArrayUtils.isEmpty(persistencePackage.getSectionCrumbs())) {
+    ceilingNames.addAll(CollectionUtils.transform(Arrays.asList(persistencePackage.getSectionCrumbs()),new Transformer(){
+      @Override public Object transform(      Object o){
+        return ((SectionCrumb)o).getSectionIdentifier();
+      }
+    }
+));
+  }
+  securityCheck(ceilingNames.toArray(new String[ceilingNames.size()]),operationType);
+}

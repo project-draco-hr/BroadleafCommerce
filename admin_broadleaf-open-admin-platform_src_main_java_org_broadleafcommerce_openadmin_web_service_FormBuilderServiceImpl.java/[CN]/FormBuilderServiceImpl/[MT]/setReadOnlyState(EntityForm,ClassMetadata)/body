@@ -15,12 +15,28 @@
       }
     }
   }
-  try {
-    adminRemoteSecurityService.securityCheck(entityForm.getCeilingEntityClassname(),EntityOperationType.UPDATE);
-  }
- catch (  ServiceException e) {
-    if (e instanceof SecurityServiceException) {
-      readOnly=true;
+  if (!readOnly) {
+    try {
+      String securityEntityClassname=entityForm.getCeilingEntityClassname();
+      if (!StringUtils.isEmpty(cmd.getSecurityCeilingType())) {
+        securityEntityClassname=cmd.getSecurityCeilingType();
+      }
+ else {
+        if (entityForm.getDynamicFormInfos() != null) {
+          for (          DynamicEntityFormInfo info : entityForm.getDynamicFormInfos().values()) {
+            if (!StringUtils.isEmpty(info.getSecurityCeilingClassName())) {
+              securityEntityClassname=info.getSecurityCeilingClassName();
+              break;
+            }
+          }
+        }
+      }
+      adminRemoteSecurityService.securityCheck(securityEntityClassname,EntityOperationType.UPDATE);
+    }
+ catch (    ServiceException e) {
+      if (e instanceof SecurityServiceException) {
+        readOnly=true;
+      }
     }
   }
   if (readOnly) {

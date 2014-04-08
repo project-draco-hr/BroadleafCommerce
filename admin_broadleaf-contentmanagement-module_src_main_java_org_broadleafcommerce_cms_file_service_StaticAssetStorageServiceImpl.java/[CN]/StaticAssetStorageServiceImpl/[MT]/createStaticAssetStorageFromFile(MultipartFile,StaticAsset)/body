@@ -32,10 +32,11 @@
         }
         output.write(buffer,0,bytesRead);
       }
-      broadleafFileService.addOrUpdateResource(tempWorkArea,destFile,true);
+      output.close();
+      broadleafFileService.addOrUpdateResource(tempWorkArea,destFile,deleteFile);
     }
   finally {
-      output.close();
+      IOUtils.closeQuietly(output);
       broadleafFileService.closeWorkArea(tempWorkArea);
     }
   }

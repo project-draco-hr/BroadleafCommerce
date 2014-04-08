@@ -1,0 +1,25 @@
+{
+  String cacheAttrValue=element.getAttributeValue(attributeName);
+  element.removeAttribute(attributeName);
+  if (StringUtils.isEmpty(cacheAttrValue)) {
+    return false;
+  }
+  cacheAttrValue=cacheAttrValue.toLowerCase();
+  if (!isCachingEnabled() || "false".equals(cacheAttrValue)) {
+    return false;
+  }
+ else   if ("true".equals(cacheAttrValue)) {
+    return true;
+  }
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(args.getConfiguration()).parseExpression(args.getConfiguration(),args,cacheAttrValue);
+  Object o=expression.execute(args.getConfiguration(),args);
+  if (o instanceof Boolean) {
+    return (Boolean)o;
+  }
+ else   if (o instanceof String) {
+    cacheAttrValue=(String)o;
+    cacheAttrValue=cacheAttrValue.toLowerCase();
+    return "true".equals(cacheAttrValue);
+  }
+  return false;
+}

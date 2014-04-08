@@ -8,13 +8,13 @@
   for (  CustomPersistenceHandler handler : getCustomPersistenceHandlers()) {
     if (handler.canHandleInspect(persistencePackage)) {
       if (!handler.willHandleSecurity(persistencePackage)) {
-        adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
+        adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.INSPECT);
       }
       DynamicResultSet results=handler.inspect(persistencePackage,dynamicEntityDao,this);
       return executePostInspectHandlers(persistencePackage,new PersistenceResponse().withDynamicResultSet(results));
     }
   }
-  adminRemoteSecurityService.securityCheck(persistencePackage.getCeilingEntityFullyQualifiedClassname(),EntityOperationType.INSPECT);
+  adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.INSPECT);
   Class<?>[] entities=getPolymorphicEntities(persistencePackage.getCeilingEntityFullyQualifiedClassname());
   Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
   for (  PersistenceModule module : modules) {
