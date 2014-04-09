@@ -8,24 +8,24 @@
     if (address != null) {
       Double postalCodeRate=lookupPostalCodeRate(fulfillmentGroupPostalCodeTaxRateMap,address.getPostalCode());
       if (postalCodeRate != null) {
-        return postalCodeRate;
+        return BigDecimal.valueOf(postalCodeRate);
       }
       Double cityCodeRate=lookupCityRate(fulfillmentGroupCityTaxRateMap,address.getCity());
       if (cityCodeRate != null) {
-        return cityCodeRate;
+        return BigDecimal.valueOf(cityCodeRate);
       }
       Double stateCodeRate=lookupStateRate(fulfillmentGroupStateTaxRateMap,address.getState());
       if (stateCodeRate != null) {
-        return stateCodeRate;
+        return BigDecimal.valueOf(stateCodeRate);
       }
       Double countryCodeRate=lookupCountryRate(fulfillmentGroupCountryTaxRateMap,address.getCountry());
       if (countryCodeRate != null) {
-        return countryCodeRate;
+        return BigDecimal.valueOf(countryCodeRate);
       }
     }
     if (defaultFulfillmentGroupTaxRate != null) {
-      return defaultFulfillmentGroupTaxRate;
+      return BigDecimal.valueOf(defaultFulfillmentGroupTaxRate);
     }
   }
-  return 0d;
+  return BigDecimal.ZERO;
 }
