@@ -1,5 +1,5 @@
 {
-  Query query=em.createNamedQuery("BC_READ_CUSTOMER_BY_EMAIL");
+  TypedQuery<Customer> query=em.createNamedQuery("BC_READ_CUSTOMER_BY_EMAIL",Customer.class);
   query.setParameter("email",emailAddress);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   query.setHint(QueryHints.HINT_CACHE_REGION,"query.Order");
