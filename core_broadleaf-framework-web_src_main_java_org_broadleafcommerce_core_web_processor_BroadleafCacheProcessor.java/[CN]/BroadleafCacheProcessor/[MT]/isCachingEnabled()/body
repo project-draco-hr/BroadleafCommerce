@@ -1,3 +1,14 @@
 {
-  return !systemPropertiesService.resolveBooleanSystemProperty("disableThymeleafTemplateCaching");
+  boolean disabled=!systemPropertiesService.resolveBooleanSystemProperty("disableThymeleafTemplateCaching");
+  if (!disabled) {
+    BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+    if (brc != null && brc.getWebRequest() != null) {
+      WebRequest request=brc.getWebRequest();
+      String disableCachingParam=request.getParameter("disableThymeleafTemplateCaching");
+      if ("true".equals(disableCachingParam)) {
+        return false;
+      }
+    }
+  }
+  return disabled;
 }
