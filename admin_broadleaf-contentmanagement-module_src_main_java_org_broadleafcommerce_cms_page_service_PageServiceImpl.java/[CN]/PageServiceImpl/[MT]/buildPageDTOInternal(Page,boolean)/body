@@ -10,11 +10,6 @@
       pageDTO.setLocaleCode(page.getPageTemplate().getLocale().getLocaleCode());
     }
   }
-  ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
-  templateOverrideManager.getProxy().getOverrideTemplate(erh,page);
-  if (StringUtils.isNotBlank(erh.getResult())) {
-    pageDTO.setTemplatePath(erh.getResult());
-  }
   String cmsPrefix=staticAssetPathService.getStaticAssetUrlPrefix();
   for (  String fieldKey : page.getPageFields().keySet()) {
     PageField pf=page.getPageFields().get(fieldKey);
