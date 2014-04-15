@@ -40,6 +40,9 @@
     if (result.getProducts() != null) {
       model.addObject(ALL_PRODUCTS_ATTRIBUTE_NAME,new HashSet<Product>(result.getProducts()));
     }
+    if (result.getSkus() != null) {
+      model.addObject(ALL_SKUS_ATTRIBUTE_NAME,new HashSet<Sku>(result.getSkus()));
+    }
     addDeepLink(model,deepLinkService,category);
     if (StringUtils.isNotEmpty(category.getDisplayTemplate())) {
       model.setViewName(category.getDisplayTemplate());

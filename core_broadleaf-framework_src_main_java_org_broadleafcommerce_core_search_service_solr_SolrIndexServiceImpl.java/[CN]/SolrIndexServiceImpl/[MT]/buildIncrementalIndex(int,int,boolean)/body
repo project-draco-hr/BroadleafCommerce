@@ -8,7 +8,6 @@
   try {
     Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
     List<Locale> locales=getAllLocales();
-    List<Field> fields=fieldDao.readAllProductFields();
     CatalogStructure cache=SolrIndexCachedOperation.getCache();
     if (cache != null) {
       cacheOperationManaged=true;
@@ -18,6 +17,7 @@
       SolrIndexCachedOperation.setCache(cache);
     }
     if (useSku) {
+      List<Field> fields=fieldDao.readAllSkuFields();
       List<Sku> skus=readAllActiveSkus(page,pageSize);
       List<Long> skuIds=BLCCollectionUtils.collectList(skus,new TypedTransformer<Long>(){
         @Override public Long transform(        Object input){
@@ -34,6 +34,7 @@
       }
     }
  else {
+      List<Field> fields=fieldDao.readAllProductFields();
       List<Product> products=readAllActiveProducts(page,pageSize);
       List<Long> productIds=BLCCollectionUtils.collectList(products,new TypedTransformer<Long>(){
         @Override public Long transform(        Object input){

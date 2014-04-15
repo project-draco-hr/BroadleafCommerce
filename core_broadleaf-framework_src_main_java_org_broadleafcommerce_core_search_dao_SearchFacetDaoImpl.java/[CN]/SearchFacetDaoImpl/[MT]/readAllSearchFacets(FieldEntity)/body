@@ -3,7 +3,7 @@
   CriteriaQuery<SearchFacet> criteria=builder.createQuery(SearchFacet.class);
   Root<SearchFacetImpl> facet=criteria.from(SearchFacetImpl.class);
   criteria.select(facet);
-  criteria.where(builder.equal(facet.get("showOnSearch").as(Boolean.class),true));
+  criteria.where(builder.equal(facet.get("showOnSearch").as(Boolean.class),true),builder.equal(facet.join("field").get("entityType").as(String.class),entityType.getType()));
   TypedQuery<SearchFacet> query=em.createQuery(criteria);
   query.setHint(QueryHints.HINT_CACHEABLE,true);
   return query.getResultList();
