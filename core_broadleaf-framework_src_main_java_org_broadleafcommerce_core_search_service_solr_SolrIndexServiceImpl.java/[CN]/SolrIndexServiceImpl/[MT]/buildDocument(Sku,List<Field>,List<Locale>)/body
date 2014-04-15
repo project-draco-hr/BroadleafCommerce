@@ -1,10 +1,4 @@
 {
-  if (!sku.isActive()) {
-    return null;
-  }
-  if (sku.getDefaultProduct() == null && !sku.getProduct().getCanSellWithoutOptions() && sku.getProductOptionValues().isEmpty()) {
-    return null;
-  }
   final SolrInputDocument document=new SolrInputDocument();
   attachBasicDocumentFields(sku,document);
   List<String> addedProperties=new ArrayList<String>();
