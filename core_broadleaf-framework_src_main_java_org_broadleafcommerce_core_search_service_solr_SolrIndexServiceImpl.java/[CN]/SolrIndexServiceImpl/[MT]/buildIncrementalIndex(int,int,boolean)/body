@@ -19,13 +19,13 @@
     if (useSku) {
       List<Field> fields=fieldDao.readAllSkuFields();
       List<Sku> skus=readAllActiveSkus(page,pageSize);
-      List<Long> skuIds=BLCCollectionUtils.collectList(skus,new TypedTransformer<Long>(){
+      List<Long> productIds=BLCCollectionUtils.collectList(skus,new TypedTransformer<Long>(){
         @Override public Long transform(        Object input){
-          return ((Sku)input).getId();
+          return ((Sku)input).getProduct().getId();
         }
       }
 );
-      solrIndexDao.populateProductCatalogStructure(skuIds,SolrIndexCachedOperation.getCache());
+      solrIndexDao.populateProductCatalogStructure(productIds,SolrIndexCachedOperation.getCache());
       for (      Sku sku : skus) {
         SolrInputDocument doc=buildDocument(sku,fields,locales);
         if (doc != null) {

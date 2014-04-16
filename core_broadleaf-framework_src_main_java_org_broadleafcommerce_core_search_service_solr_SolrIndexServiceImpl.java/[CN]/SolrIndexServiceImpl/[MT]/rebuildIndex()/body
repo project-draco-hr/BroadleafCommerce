@@ -16,11 +16,6 @@
     if (LOG.isDebugEnabled()) {
       LOG.debug("There are at most " + numItemsToIndex + " items to index");
     }
-    int page=0;
-    while ((page * pageSize) < numItemsToIndex) {
-      buildIncrementalIndex(page,pageSize);
-      page++;
-    }
     performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
       @Override public void execute() throws ServiceException {
         int page=0;
