@@ -18,12 +18,12 @@
   DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
   ListGrid listGrid=null;
   if (collectionField.contains("|")) {
-    listGrid=formService.buildMainListGrid(drs,mainMetadata,"/fjdklsfjdkls",sectionCrumbs);
+    listGrid=formService.buildMainListGrid(drs,mainMetadata,"/" + owningClass,sectionCrumbs);
     listGrid.setListGridType(ListGrid.Type.TO_ONE);
     listGrid.setSubCollectionFieldName(collectionField);
     listGrid.setPathOverride("/" + owningClass + "/"+ collectionField+ "/select");
     md=new BasicFieldMetadata();
-    md.setFriendlyName("zjklvjcxl");
+    md.setFriendlyName(mainMetadata.getPolymorphicEntities().getFriendlyName());
     collectionProperty=new Property();
     collectionProperty.setMetadata(md);
   }
