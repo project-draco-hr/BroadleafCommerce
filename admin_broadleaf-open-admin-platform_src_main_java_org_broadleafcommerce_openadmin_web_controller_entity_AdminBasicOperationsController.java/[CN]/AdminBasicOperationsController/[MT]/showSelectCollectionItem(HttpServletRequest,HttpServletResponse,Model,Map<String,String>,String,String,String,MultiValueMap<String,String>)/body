@@ -10,6 +10,7 @@
   ppr.setMaxIndex(getMaxIndex(requestParams));
   ppr.removeFilterAndSortCriteria("requestingEntityId");
   ppr.addCustomCriteria("requestingEntityId=" + requestingEntityId);
+  ppr.addCustomCriteria("owningClass=" + owningClass);
   if (md instanceof BasicFieldMetadata) {
     DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
     ListGrid listGrid=formService.buildCollectionListGrid(null,drs,collectionProperty,owningClass,sectionCrumbs);
