@@ -1,3 +1,9 @@
 {
-  return fieldType != null ? SupportedFieldType.valueOf(fieldType) : null;
+  if (fieldType == null) {
+    return null;
+  }
+  if (fieldType.startsWith(SupportedFieldType.ADDITIONAL_FOREIGN_KEY.toString() + '|')) {
+    return SupportedFieldType.ADDITIONAL_FOREIGN_KEY;
+  }
+  return SupportedFieldType.valueOf(fieldType);
 }
