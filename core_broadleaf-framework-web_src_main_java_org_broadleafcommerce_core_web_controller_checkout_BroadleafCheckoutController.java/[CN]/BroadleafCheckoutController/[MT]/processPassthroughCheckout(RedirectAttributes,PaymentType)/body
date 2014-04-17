@@ -31,6 +31,7 @@
   transaction.setRawResponse("Passthrough Payment");
   transaction.setSuccess(true);
   transaction.setType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
+  transaction.getAdditionalFields().put(PassthroughPaymentConstants.PASSTHROUGH_PAYMENT_TYPE,paymentType.getType());
   transaction.setOrderPayment(passthroughPayment);
   passthroughPayment.addTransaction(transaction);
   orderService.addPaymentToOrder(cart,passthroughPayment,null);

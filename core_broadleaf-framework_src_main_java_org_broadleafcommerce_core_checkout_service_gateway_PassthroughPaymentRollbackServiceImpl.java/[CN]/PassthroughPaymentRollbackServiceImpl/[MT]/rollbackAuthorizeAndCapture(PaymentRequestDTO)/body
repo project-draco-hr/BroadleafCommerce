@@ -1,0 +1,9 @@
+{
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Passthrough Payment Gateway - Rolling back authorize and capture transaction with amount: " + transactionToBeRolledBack.getTransactionTotal());
+  }
+  if (transactionToBeRolledBack.getAdditionalFields().containsKey(PassthroughPaymentConstants.PASSTHROUGH_PAYMENT_TYPE)) {
+    return new PaymentResponseDTO(PaymentType.getInstance((String)transactionToBeRolledBack.getAdditionalFields().get(PassthroughPaymentConstants.PASSTHROUGH_PAYMENT_TYPE)),PaymentGatewayType.PASSTHROUGH).rawResponse("rollback authorize and capture - successful").successful(true).paymentTransactionType(PaymentTransactionType.VOID).amount(new Money(transactionToBeRolledBack.getTransactionTotal()));
+  }
+  throw new PaymentException("Make sure transaction contains a Passthrough Payment Type");
+}
