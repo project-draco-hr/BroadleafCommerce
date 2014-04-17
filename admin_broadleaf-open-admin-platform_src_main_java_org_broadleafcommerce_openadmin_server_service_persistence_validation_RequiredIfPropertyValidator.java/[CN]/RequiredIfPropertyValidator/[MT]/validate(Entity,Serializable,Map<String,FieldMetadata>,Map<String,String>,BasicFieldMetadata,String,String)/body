@@ -1,12 +1,28 @@
 {
-  String compareFieldName=validationConfiguration.get("compareField");
+  String errorMessage="";
+  String compareFieldName=lookupCompareFieldName(propertyName,validationConfiguration);
   String compareFieldValue=validationConfiguration.get("compareFieldValue");
+  String compareFieldRegEx=validationConfiguration.get("compareFieldRegEx");
+  Property compareFieldProperty=null;
   boolean valid=true;
   if (StringUtils.isEmpty(value)) {
-    Property compareFieldProperty=entity.getPMap().get(compareFieldName);
-    if (compareFieldProperty != null && compareFieldValue != null) {
-      valid=!compareFieldValue.equals(compareFieldProperty.getValue());
+    compareFieldProperty=entity.getPMap().get(compareFieldName);
+    if (compareFieldProperty != null) {
+      if (compareFieldValue != null) {
+        valid=!compareFieldValue.equals(compareFieldProperty.getValue());
+      }
+ else       if (compareFieldRegEx != null) {
+        String expression=validationConfiguration.get("compareFieldRegEx");
+        valid=!compareFieldProperty.getValue().matches(expression);
+      }
     }
   }
-  return new PropertyValidationResult(valid,ERROR_MESSAGE);
+  if (!valid) {
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    MessageSource messages=context.getMessageSource();
+    FieldMetadata fmd=entityFieldMetadata.get(compareFieldName);
+    String fieldName=messages.getMessage(fmd.getFriendlyName(),null,context.getJavaLocale());
+    errorMessage=messages.getMessage("requiredIfValidationFailure",new Object[]{fieldName,compareFieldProperty.getValue()},context.getJavaLocale());
+  }
+  return new PropertyValidationResult(valid,errorMessage);
 }
