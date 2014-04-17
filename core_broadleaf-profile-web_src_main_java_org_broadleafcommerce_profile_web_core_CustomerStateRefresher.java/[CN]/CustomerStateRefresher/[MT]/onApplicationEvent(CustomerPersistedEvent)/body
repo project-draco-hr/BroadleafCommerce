@@ -10,7 +10,9 @@
       request.setAttribute(customerIdAttribute,dbCustomer.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
     }
     if (CustomerState.getCustomer() != null && CustomerState.getCustomer().getId().equals(dbCustomer.getId())) {
-      CustomerState.setCustomer(event.getCustomer());
+      Customer preMergedCustomer=CustomerState.getCustomer();
+      resetTransientFields(preMergedCustomer,dbCustomer);
+      CustomerState.setCustomer(dbCustomer);
     }
   }
 }

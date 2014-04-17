@@ -17,5 +17,14 @@
       }
     }
   }
-  return evaluatePageRules(returnList,locale,ruleDTOs);
+  PageDTO dto=evaluatePageRules(returnList,locale,ruleDTOs);
+  if (dto.getId() != null) {
+    Page page=findPageById(dto.getId());
+    ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
+    templateOverrideManager.getProxy().getOverrideTemplate(erh,page);
+    if (StringUtils.isNotBlank(erh.getResult())) {
+      dto.setTemplatePath(erh.getResult());
+    }
+  }
+  return dto;
 }

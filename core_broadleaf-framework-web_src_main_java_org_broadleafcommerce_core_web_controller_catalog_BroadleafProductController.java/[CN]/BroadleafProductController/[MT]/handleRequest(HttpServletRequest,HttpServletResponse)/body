@@ -7,7 +7,12 @@
   allProductsSet.add(product);
   model.addObject(ALL_PRODUCTS_ATTRIBUTE_NAME,new HashSet<Product>(allProductsSet));
   addDeepLink(model,deepLinkService,product);
-  if (StringUtils.isNotEmpty(product.getDisplayTemplate())) {
+  ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
+  templateOverrideManager.getProxy().getOverrideTemplate(erh,product);
+  if (StringUtils.isNotBlank(erh.getResult())) {
+    model.setViewName(erh.getResult());
+  }
+ else   if (StringUtils.isNotEmpty(product.getDisplayTemplate())) {
     model.setViewName(product.getDisplayTemplate());
   }
  else {

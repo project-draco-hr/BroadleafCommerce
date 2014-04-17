@@ -1,7 +1,10 @@
 {
   Expression exp=path;
   if (filterMapping.getNullsLast() != null && filterMapping.getNullsLast()) {
-    exp=criteriaBuilder.coalesce(path,99999999999L);
+    Object largeValue=getAppropriateLargeSortingValue(path.getJavaType());
+    if (largeValue != null) {
+      exp=criteriaBuilder.coalesce(path,largeValue);
+    }
   }
   if (SortDirection.ASCENDING == filterMapping.getSortDirection()) {
     sorts.add(criteriaBuilder.asc(exp));

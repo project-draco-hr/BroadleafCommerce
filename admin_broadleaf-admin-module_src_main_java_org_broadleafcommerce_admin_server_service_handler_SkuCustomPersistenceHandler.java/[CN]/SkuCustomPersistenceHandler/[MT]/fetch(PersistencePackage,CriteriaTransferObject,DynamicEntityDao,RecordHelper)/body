@@ -3,7 +3,7 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
-    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps,skuRestrictionFactory);
+    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
     applyProductOptionValueCriteria(filterMappings,cto,persistencePackage,null);
     applyAdditionalFetchCriteria(filterMappings,cto,persistencePackage);
     List<Serializable> records=helper.getPersistentRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());

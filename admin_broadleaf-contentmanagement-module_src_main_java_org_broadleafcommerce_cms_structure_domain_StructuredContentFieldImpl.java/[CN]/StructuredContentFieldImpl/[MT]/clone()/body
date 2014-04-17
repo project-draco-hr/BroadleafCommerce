@@ -1,0 +1,12 @@
+{
+  StructuredContentField clone=null;
+  try {
+    clone=(StructuredContentField)Class.forName(this.getClass().getName()).newInstance();
+    clone.setFieldKey(getFieldKey());
+    clone.setValue(getValue());
+  }
+ catch (  Exception e) {
+    throw new RuntimeException(e);
+  }
+  return clone;
+}
