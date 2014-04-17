@@ -10,7 +10,30 @@
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(md).withEntity(new Entity());
   if (md instanceof BasicCollectionMetadata) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
-    ppr.getEntity().setType(new String[]{entityForm.getEntityType()});
+    String entityType=null;
+    if (entityForm.getEntityType() != null) {
+      entityType=entityForm.getEntityType();
+    }
+ else {
+      Class<?> listClass=Class.forName(fmd.getCollectionCeilingEntity());
+      List<Class<?>> testClasses=new ArrayList<Class<?>>();
+      testClasses.add(listClass);
+      if (!listClass.isInterface()) {
+        testClasses.addAll(Arrays.asList(listClass.getInterfaces()));
+      }
+      String overrideClass=listClass.getName();
+      for (      Class<?> clazz : testClasses) {
+        try {
+          overrideClass=entityConfiguration.lookupEntityClass(clazz.getName()).getName();
+          break;
+        }
+ catch (        NoSuchBeanDefinitionException e) {
+        }
+      }
+      ppr.getEntity().setType(new String[]{overrideClass});
+      entityType=fmd.getCollectionCeilingEntity();
+    }
+    ppr.getEntity().setType(new String[]{entityType});
     if (fmd.getAddMethodType().equals(AddMethodType.LOOKUP)) {
       List<String> fieldsToRemove=new ArrayList<String>();
       String idProp=getIdProperty(mainMetadata);
