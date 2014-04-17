@@ -19,7 +19,16 @@
     IOUtils.copy(is,tos);
     is.close();
     tos.close();
-    FileUtils.moveFile(tmpFile,baseLocalFile);
+    if (!baseLocalFile.exists()) {
+      try {
+        FileUtils.moveFile(tmpFile,baseLocalFile);
+      }
+ catch (      FileExistsException e) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("File exists error moving file " + tmpFile.getAbsolutePath(),e);
+        }
+      }
+    }
   }
   finally {
     IOUtils.closeQuietly(is);
