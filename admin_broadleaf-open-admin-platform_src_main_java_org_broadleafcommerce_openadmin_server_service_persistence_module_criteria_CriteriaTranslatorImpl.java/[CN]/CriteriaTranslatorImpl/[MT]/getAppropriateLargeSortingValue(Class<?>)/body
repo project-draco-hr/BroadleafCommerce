@@ -1,0 +1,18 @@
+{
+  Object response=null;
+  if (Date.class.isAssignableFrom(javaType)) {
+    Calendar calendar=Calendar.getInstance();
+    calendar.add(Calendar.YEAR,500);
+    response=calendar.getTime();
+  }
+ else   if (Long.class.isAssignableFrom(javaType)) {
+    response=Long.MAX_VALUE;
+  }
+ else   if (Integer.class.isAssignableFrom(javaType)) {
+    response=Integer.MAX_VALUE;
+  }
+ else   if (BigDecimal.class.isAssignableFrom(javaType)) {
+    response=new BigDecimal(String.valueOf(Long.MAX_VALUE));
+  }
+  return response;
+}

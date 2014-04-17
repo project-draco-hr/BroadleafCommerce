@@ -1,0 +1,12 @@
+{
+  String compareFieldName=validationConfiguration.get("compareField");
+  String compareFieldValue=validationConfiguration.get("compareFieldValue");
+  boolean valid=true;
+  if (StringUtils.isEmpty(value)) {
+    Property compareFieldProperty=entity.getPMap().get(compareFieldName);
+    if (compareFieldProperty != null && compareFieldValue != null) {
+      valid=!compareFieldValue.equals(compareFieldProperty.getValue());
+    }
+  }
+  return new PropertyValidationResult(valid,ERROR_MESSAGE);
+}
