@@ -1,0 +1,14 @@
+{
+  if (!useSku) {
+    return null;
+  }
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null && context.getRequestURIWithoutContext() != null) {
+    Sku sku=catalogService.findSkuByURI(context.getRequestURIWithoutContext());
+    if (sku != null) {
+      context.getRequest().setAttribute(CURRENT_SKU_ATTRIBUTE_NAME,sku);
+      return controllerName;
+    }
+  }
+  return null;
+}
