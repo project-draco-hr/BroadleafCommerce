@@ -1,5 +1,8 @@
 {
-  Sku sku=findMatchingSku(product,attributeValues,messages);
+  Sku sku=null;
+  if (!useSku) {
+    sku=findMatchingSku(product,attributeValues,messages);
+  }
   if (sku == null && skuId != null) {
     sku=catalogService.findSkuById(skuId);
   }
