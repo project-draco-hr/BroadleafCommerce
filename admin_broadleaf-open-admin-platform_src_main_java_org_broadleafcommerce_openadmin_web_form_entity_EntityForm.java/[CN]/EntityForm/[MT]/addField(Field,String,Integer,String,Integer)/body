@@ -3,6 +3,11 @@
   groupOrder=groupOrder == null ? DEFAULT_GROUP_ORDER : groupOrder;
   tabName=tabName == null ? DEFAULT_TAB_NAME : tabName;
   tabOrder=tabOrder == null ? DEFAULT_TAB_ORDER : tabOrder;
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null && context.getMessageSource() != null) {
+    groupName=context.getMessageSource().getMessage(groupName,null,groupName,context.getJavaLocale());
+    tabName=context.getMessageSource().getMessage(tabName,null,tabName,context.getJavaLocale());
+  }
   Tab tab=findTab(tabName);
   if (tab == null) {
     tab=new Tab();
