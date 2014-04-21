@@ -1,4 +1,8 @@
 {
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null && context.getMessageSource() != null) {
+    tabName=context.getMessageSource().getMessage(tabName,null,tabName,context.getJavaLocale());
+  }
   Tab tab=findTab(tabName);
   if (tab == null) {
     tab=new Tab();
