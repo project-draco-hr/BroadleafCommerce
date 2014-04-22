@@ -22,7 +22,7 @@
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
   if (!isCount) {
     criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
-    if (firstResult != null && (criteria.getOrderList() == null || criteria.getOrderList().isEmpty())) {
+    if (firstResult != null && sorts.isEmpty()) {
       Map<String,Object> idMetaData=dynamicEntityDao.getIdMetadata(ceilingClass);
       if (idMetaData != null) {
         Object idFldName=idMetaData.get("name");
