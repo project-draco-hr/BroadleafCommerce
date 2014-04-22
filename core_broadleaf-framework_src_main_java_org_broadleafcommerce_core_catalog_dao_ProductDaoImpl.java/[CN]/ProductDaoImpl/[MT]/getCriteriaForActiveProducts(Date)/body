@@ -8,5 +8,6 @@
   List<Predicate> restrictions=new ArrayList<Predicate>();
   attachActiveRestriction(currentDate,product,sku,restrictions);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  criteria.orderBy(builder.asc(product.get("id")));
   return criteria;
 }
