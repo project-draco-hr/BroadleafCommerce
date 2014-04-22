@@ -25,6 +25,16 @@
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
   if (!isCount) {
     criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
+    if (firstResult != null && sorts.isEmpty()) {
+      Map<String,Object> idMetaData=dynamicEntityDao.getIdMetadata(ceilingClass);
+      if (idMetaData != null) {
+        Object idFldName=idMetaData.get("name");
+        Object type=idMetaData.get("type");
+        if ((idFldName instanceof String) && (type instanceof SingleColumnType)) {
+          criteria.orderBy(criteriaBuilder.asc(original.get((String)idFldName)));
+        }
+      }
+    }
   }
   TypedQuery<Serializable> response=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
   if (!isCount) {
