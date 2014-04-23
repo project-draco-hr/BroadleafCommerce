@@ -39,6 +39,9 @@
       }
     }
   }
+  if (!readOnly) {
+    readOnly=!rowLevelSecurityService.canUpdate(entity);
+  }
   if (readOnly) {
     entityForm.setReadOnly();
   }
