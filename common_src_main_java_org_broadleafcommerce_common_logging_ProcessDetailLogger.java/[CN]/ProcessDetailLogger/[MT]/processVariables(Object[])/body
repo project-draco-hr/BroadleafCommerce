@@ -1,0 +1,30 @@
+{
+  for (int j=0; j < variables.length; j++) {
+    Object[] temp=null;
+    if (variables[j] != null) {
+      if (variables[j].getClass().isArray()) {
+        temp=(Object[])variables[j];
+      }
+ else       if (variables[j] instanceof Collection) {
+        temp=((Collection)variables[j]).toArray(new Object[((Collection)variables[j]).size()]);
+      }
+    }
+    if (temp != null) {
+      String joined;
+      if (temp.length > listTemplateVariableMaxMemberCount) {
+        Object[] shorten=new Object[listTemplateVariableMaxMemberCount];
+        System.arraycopy(temp,0,shorten,0,listTemplateVariableMaxMemberCount);
+        joined=StringUtils.join(shorten,",");
+        joined+="...";
+      }
+ else {
+        joined=StringUtils.join(temp,",");
+      }
+      variables[j]=joined;
+    }
+    if (variables[j] instanceof String && ((String)variables[j]).length() > stringTemplateVariableMaxLength) {
+      variables[j]=((String)variables[j]).substring(0,stringTemplateVariableMaxLength - 1) + "...";
+    }
+  }
+  return variables;
+}
