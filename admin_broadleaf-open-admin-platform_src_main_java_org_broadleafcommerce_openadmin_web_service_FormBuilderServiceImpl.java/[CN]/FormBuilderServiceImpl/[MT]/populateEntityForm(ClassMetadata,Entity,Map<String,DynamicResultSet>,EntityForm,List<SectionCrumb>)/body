@@ -27,7 +27,7 @@
   if (CollectionUtils.isEmpty(ef.getActions())) {
     ef.addAction(DefaultEntityFormActions.SAVE);
   }
-  ef.addAction(DefaultEntityFormActions.DELETE);
+  addDeleteActionIfAllowed(ef,cmd,entity);
   setReadOnlyState(ef,cmd,entity);
   extensionManager.getProxy().modifyDetailEntityForm(ef);
 }
