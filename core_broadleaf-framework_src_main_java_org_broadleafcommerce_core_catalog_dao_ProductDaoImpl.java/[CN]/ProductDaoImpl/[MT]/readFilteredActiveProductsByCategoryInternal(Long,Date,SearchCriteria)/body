@@ -8,7 +8,7 @@
   criteria.select(product);
   List<Predicate> restrictions=new ArrayList<Predicate>();
   restrictions.add(category.get("id").in(sandBoxHelper.mergeCloneIds(em,CategoryImpl.class,categoryId)));
-  attachProductSearchCriteria(searchCriteria,product,sku,restrictions);
+  attachSearchCriteria(searchCriteria,product,sku,restrictions);
   attachActiveRestriction(currentDate,product,sku,restrictions);
   attachOrderBy(searchCriteria,product,sku,criteria);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));

@@ -7,7 +7,7 @@
   List<Predicate> restrictions=new ArrayList<Predicate>();
   String lq=query.toLowerCase();
   restrictions.add(builder.or(builder.like(builder.lower(sku.get("name").as(String.class)),'%' + lq + '%'),builder.like(builder.lower(sku.get("longDescription").as(String.class)),'%' + lq + '%')));
-  attachProductSearchCriteria(searchCriteria,product,sku,restrictions);
+  attachSearchCriteria(searchCriteria,product,sku,restrictions);
   attachActiveRestriction(currentDate,product,sku,restrictions);
   attachOrderBy(searchCriteria,product,sku,criteria);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
