@@ -27,7 +27,7 @@
     }
   }
   if (!readOnly) {
-    readOnly=!rowLevelSecurityService.canUpdate(entity);
+    readOnly=!rowLevelSecurityService.canUpdate(adminRemoteSecurityService.getPersistentAdminUser(),entity);
   }
   if (readOnly) {
     entityForm.setReadOnly();

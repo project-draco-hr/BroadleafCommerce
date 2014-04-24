@@ -10,7 +10,10 @@
     }
   }
   if (canDelete) {
-    canDelete=rowLevelSecurityService.canDelete(entity);
+    canDelete=rowLevelSecurityService.canUpdate(adminRemoteSecurityService.getPersistentAdminUser(),entity);
+  }
+  if (canDelete) {
+    canDelete=rowLevelSecurityService.canRemove(adminRemoteSecurityService.getPersistentAdminUser(),entity);
   }
   if (canDelete) {
     entityForm.addAction(DefaultEntityFormActions.DELETE);
