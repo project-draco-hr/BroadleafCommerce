@@ -69,7 +69,9 @@ catch (    FieldNotAvailableException e) {
           }
           PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,propertyName,propertyValue);
           if (!result.isValid()) {
-            submittedEntity.addValidationError(propertyName,result.getErrorMessage());
+            for (            String message : result.getErrorMessages()) {
+              submittedEntity.addValidationError(propertyName,message);
+            }
           }
         }
       }
