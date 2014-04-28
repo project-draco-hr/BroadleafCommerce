@@ -24,6 +24,29 @@
     responseMap.put("field",collectionField);
     return responseMap;
   }
+ else   if (md instanceof BasicCollectionMetadata) {
+    BasicCollectionMetadata cd=(BasicCollectionMetadata)md;
+    Map<String,Object> responseMap=new HashMap<String,Object>();
+    Entity entity=service.getRecord(ppr,collectionItemId,mainMetadata,false).getDynamicResultSet().getRecords()[0];
+    ClassMetadata collectionMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+    EntityForm entityForm=formService.createEntityForm(collectionMetadata,sectionCrumbs);
+    if (!StringUtils.isEmpty(cd.getSortProperty())) {
+      Field f=new Field().withName(cd.getSortProperty()).withFieldType(SupportedFieldType.HIDDEN.toString());
+      entityForm.addHiddenField(f);
+    }
+    formService.populateEntityFormFields(entityForm,entity);
+    if (!StringUtils.isEmpty(cd.getSortProperty())) {
+      int sequenceValue=Integer.parseInt(newSequence) + 1;
+      Field field=entityForm.findField(cd.getSortProperty());
+      field.setValue(String.valueOf(sequenceValue));
+    }
+    PersistenceResponse persistenceResponse=service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,parentEntity,collectionItemId,sectionCrumbs);
+    ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse,sectionCrumbs);
+    model.addAttribute("listGrid",listGrid);
+    responseMap.put("status","ok");
+    responseMap.put("field",collectionField);
+    return responseMap;
+  }
  else {
     throw new UnsupportedOperationException("Cannot handle sequencing for non adorned target collection fields.");
   }

@@ -47,6 +47,9 @@
     persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
     metadata.setPersistencePerspective(persistencePerspective);
   }
+  if (!StringUtils.isEmpty(collectionMetadata.getSortProperty())) {
+    metadata.setSortProperty(collectionMetadata.getSortProperty());
+  }
   String foreignKeyName=null;
   if (serverMetadata != null) {
     foreignKeyName=((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getManyToField();
@@ -126,6 +129,9 @@
   }
   if (collectionMetadata.getTabOrder() != null) {
     metadata.setTabOrder(collectionMetadata.getTabOrder());
+  }
+  if (collectionMetadata.getSortProperty() != null) {
+    metadata.setSortProperty(collectionMetadata.getSortProperty());
   }
   if (collectionMetadata.getCustomCriteria() != null) {
     metadata.setCustomCriteria(collectionMetadata.getCustomCriteria());
