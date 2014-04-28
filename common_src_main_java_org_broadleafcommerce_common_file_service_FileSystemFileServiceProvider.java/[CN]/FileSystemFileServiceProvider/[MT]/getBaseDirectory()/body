@@ -1,13 +1,10 @@
 {
   if (baseDirectory == null) {
-    if (StringUtils.isNotEmpty(fileSystemBaseDirectory)) {
+    if (StringUtils.isNotBlank(fileSystemBaseDirectory)) {
       baseDirectory=fileSystemBaseDirectory;
     }
  else {
       baseDirectory=DEFAULT_STORAGE_DIRECTORY;
-    }
-    if (!baseDirectory.endsWith(File.separator)) {
-      baseDirectory=baseDirectory.trim() + File.separator;
     }
   }
   return getSiteDirectory(baseDirectory);

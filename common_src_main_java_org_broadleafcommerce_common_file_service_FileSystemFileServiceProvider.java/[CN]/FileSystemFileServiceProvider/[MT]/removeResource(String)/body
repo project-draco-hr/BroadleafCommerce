@@ -1,5 +1,6 @@
 {
   String resourceName=buildResourceName(name);
-  File fileToRemove=new File(getBaseDirectory() + resourceName);
+  String filePathToRemove=FilenameUtils.normalize(getBaseDirectory() + File.separator + resourceName);
+  File fileToRemove=new File(filePathToRemove);
   return fileToRemove.delete();
 }

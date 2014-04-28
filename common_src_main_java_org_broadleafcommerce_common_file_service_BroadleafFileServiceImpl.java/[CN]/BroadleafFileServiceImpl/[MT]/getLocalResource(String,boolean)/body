@@ -1,5 +1,6 @@
 {
-  StringBuilder baseDirectory=getBaseDirectory(skipSite);
-  String filePath=BroadleafFileUtils.buildFilePath(baseDirectory.toString(),resourceName);
+  String baseDirectory=getBaseDirectory(skipSite);
+  String systemResourcePath=FilenameUtils.separatorsToSystem(resourceName);
+  String filePath=FilenameUtils.normalize(baseDirectory + File.separator + systemResourcePath);
   return new File(filePath);
 }
