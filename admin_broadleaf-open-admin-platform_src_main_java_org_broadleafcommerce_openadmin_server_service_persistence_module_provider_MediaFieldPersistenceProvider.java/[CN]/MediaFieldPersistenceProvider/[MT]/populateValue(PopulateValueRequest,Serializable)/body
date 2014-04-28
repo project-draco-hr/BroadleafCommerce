@@ -22,6 +22,9 @@
     if (valueType == null) {
       throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
     }
+ else     if (Media.class.equals(valueType)) {
+      valueType=MediaImpl.class;
+    }
     if (Media.class.isAssignableFrom(valueType)) {
       Media newMedia=convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue());
       Media media;
