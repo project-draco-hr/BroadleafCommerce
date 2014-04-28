@@ -13,8 +13,10 @@ catch (    FieldNotAvailableException e) {
     }
   }
   Entity entity;
+  boolean isUpdateRequest;
   if (idValue == null) {
     entity=submittedEntity;
+    isUpdateRequest=false;
   }
  else {
     entity=recordHelper.getRecord(propertiesMetadata,instance,null,null);
@@ -26,6 +28,7 @@ catch (    FieldNotAvailableException e) {
         }
       }
     }
+    isUpdateRequest=true;
   }
   List<String> types=getTypeHierarchy(entity);
   for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
@@ -66,7 +69,9 @@ catch (    FieldNotAvailableException e) {
           }
           PropertyValidationResult result=validator.validate(entity,instance,propertiesMetadata,configuration,(BasicFieldMetadata)metadata,propertyName,propertyValue);
           if (!result.isValid()) {
-            submittedEntity.addValidationError(propertyName,result.getErrorMessage());
+            for (            String message : result.getErrorMessages()) {
+              submittedEntity.addValidationError(propertyName,message);
+            }
           }
         }
       }

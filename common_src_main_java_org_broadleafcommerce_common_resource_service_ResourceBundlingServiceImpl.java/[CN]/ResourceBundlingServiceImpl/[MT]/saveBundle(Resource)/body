@@ -1,6 +1,6 @@
 {
   FileWorkArea tempWorkArea=fileService.initializeWorkArea();
-  String tempFilename=tempWorkArea.getFilePathLocation() + getFilePath(resource.getDescription());
+  String tempFilename=FilenameUtils.concat(tempWorkArea.getFilePathLocation(),FilenameUtils.separatorsToSystem(getResourcePath(resource.getDescription())));
   File tempFile=new File(tempFilename);
   if (!tempFile.getParentFile().exists()) {
     if (!tempFile.getParentFile().mkdirs()) {

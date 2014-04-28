@@ -1,7 +1,7 @@
 {
   for (  String fileName : fileNames) {
     try {
-      String fileNameWithPath=BroadleafFileUtils.buildFilePath(fileWorkArea.getFilePathLocation(),fileName);
+      String fileNameWithPath=FilenameUtils.normalize(fileWorkArea.getFilePathLocation() + File.separator + fileName);
       FileInputStream fis=new FileInputStream(fileNameWithPath);
       FileOutputStream fos=new FileOutputStream(fileNameWithPath + ".gz");
       GZIPOutputStream gzipOS=new GZIPOutputStream(fos);

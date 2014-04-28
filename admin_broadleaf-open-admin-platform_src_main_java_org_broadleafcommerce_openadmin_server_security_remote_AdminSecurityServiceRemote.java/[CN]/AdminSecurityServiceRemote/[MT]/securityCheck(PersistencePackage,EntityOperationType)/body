@@ -9,5 +9,24 @@
     }
 ));
   }
+  Entity entity=persistencePackage.getEntity();
+  GlobalValidationResult globalValidationResult=null;
+  if (operationType.equals(EntityOperationType.UPDATE)) {
+    globalValidationResult=rowLevelSecurityService.validateUpdateRequest(getPersistentAdminUser(),entity,persistencePackage);
+  }
+ else   if (operationType.equals(EntityOperationType.REMOVE)) {
+    globalValidationResult=rowLevelSecurityService.validateRemoveRequest(getPersistentAdminUser(),entity,persistencePackage);
+  }
+  if (globalValidationResult != null) {
+    if (!globalValidationResult.isValid()) {
+      if (StringUtils.isEmpty(globalValidationResult.getErrorMessage())) {
+        entity.addGlobalValidationError("rowLevelSecurityFailed");
+      }
+ else {
+        entity.addGlobalValidationErrors(globalValidationResult.getErrorMessages());
+      }
+      throw new ValidationException(entity,"Row level security check failed for " + operationType);
+    }
+  }
   securityCheck(ceilingNames.toArray(new String[ceilingNames.size()]),operationType);
 }

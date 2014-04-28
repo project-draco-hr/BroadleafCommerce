@@ -8,7 +8,7 @@
   }
  else   if (StorageType.FILESYSTEM.equals(staticAsset.getStorageType())) {
     FileWorkArea tempWorkArea=broadleafFileService.initializeWorkArea();
-    String destFileName=tempWorkArea.getFilePathLocation() + removeLeadingSlash(staticAsset.getFullUrl());
+    String destFileName=FilenameUtils.normalize(tempWorkArea.getFilePathLocation() + File.separator + FilenameUtils.separatorsToSystem(staticAsset.getFullUrl()));
     InputStream input=file.getInputStream();
     byte[] buffer=new byte[fileBufferSize];
     File destFile=new File(destFileName);
