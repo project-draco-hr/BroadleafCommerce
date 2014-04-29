@@ -1,7 +1,7 @@
 {
   GlobalValidationResult validationResult=new GlobalValidationResult(true);
   for (  RowLevelSecurityProvider provider : getProviders()) {
-    GlobalValidationResult providerValidation=provider.validateUpdateRequest(user,entity,persistencePackage);
+    GlobalValidationResult providerValidation=provider.validateUpdateRequest(currentUser,entity,persistencePackage);
     if (providerValidation.isNotValid()) {
       validationResult.setValid(false);
       validationResult.addErrorMessage(providerValidation.getErrorMessage());
