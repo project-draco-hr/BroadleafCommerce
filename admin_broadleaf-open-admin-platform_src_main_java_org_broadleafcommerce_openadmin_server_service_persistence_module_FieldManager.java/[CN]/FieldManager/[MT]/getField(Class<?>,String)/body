@@ -1,12 +1,12 @@
 {
-  SessionFactory sessionFactory=((HibernateEntityManager)entityManager).getSession().getSessionFactory();
+  PersistenceManager persistenceManager=getPersistenceManager();
   String[] tokens=fieldName.split("\\.");
   Field field=null;
   for (int j=0; j < tokens.length; j++) {
     String propertyName=tokens[j];
     field=getSingleField(clazz,propertyName);
     if (field != null && j < tokens.length - 1) {
-      Class<?>[] entities=helper.getAllPolymorphicEntitiesFromCeiling(field.getType(),sessionFactory,true,true);
+      Class<?>[] entities=persistenceManager.getUpDownInheritance(field.getType());
       if (!ArrayUtils.isEmpty(entities)) {
         String peekAheadToken=tokens[j + 1];
         List<Class<?>> matchedClasses=new ArrayList<Class<?>>();
@@ -29,7 +29,7 @@
         }
         if (getSingleField(matchedClasses.get(0),peekAheadToken) != null) {
           clazz=matchedClasses.get(0);
-          Class<?>[] entities2=helper.getAllPolymorphicEntitiesFromCeiling(clazz,sessionFactory,true,true);
+          Class<?>[] entities2=persistenceManager.getUpDownInheritance(clazz);
           if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
             try {
               clazz=entityConfiguration.lookupEntityClass(field.getType().getName());

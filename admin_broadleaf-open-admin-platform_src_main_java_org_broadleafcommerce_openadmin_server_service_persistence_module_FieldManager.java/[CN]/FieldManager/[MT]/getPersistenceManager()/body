@@ -1,0 +1,10 @@
+{
+  PersistenceManager persistenceManager;
+  try {
+    persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+  }
+ catch (  IllegalStateException e) {
+    persistenceManager=PersistenceManagerFactory.getPersistenceManager(TargetModeType.SANDBOX);
+  }
+  return persistenceManager;
+}
