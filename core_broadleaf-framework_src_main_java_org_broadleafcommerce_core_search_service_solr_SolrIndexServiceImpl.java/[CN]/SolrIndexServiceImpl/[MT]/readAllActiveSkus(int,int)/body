@@ -9,6 +9,9 @@
       if (sku.getDefaultProduct() != null && !sku.getProduct().getCanSellWithoutOptions() && !sku.getProduct().getAdditionalSkus().isEmpty()) {
         continue;
       }
+      if (sku.getDefaultProduct() instanceof ProductBundle) {
+        continue;
+      }
       skusToIndex.add(sku);
     }
   }
