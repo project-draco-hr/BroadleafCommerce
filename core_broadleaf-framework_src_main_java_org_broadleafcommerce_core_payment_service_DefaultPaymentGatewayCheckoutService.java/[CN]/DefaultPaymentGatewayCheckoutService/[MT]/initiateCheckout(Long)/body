@@ -3,11 +3,15 @@
   if (order == null || order instanceof NullOrderImpl) {
     throw new IllegalArgumentException("Could not order with id " + orderId);
   }
+  CheckoutResponse response;
   try {
-    CheckoutResponse response=checkoutService.performCheckout(order);
+    response=checkoutService.performCheckout(order);
   }
  catch (  CheckoutException e) {
     throw new Exception(e);
   }
-  return order.getOrderNumber();
+  if (response.getOrder().getOrderNumber() == null) {
+    LOG.error("Order Number for Order ID: " + order.getId() + " is null.");
+  }
+  return response.getOrder().getOrderNumber();
 }
