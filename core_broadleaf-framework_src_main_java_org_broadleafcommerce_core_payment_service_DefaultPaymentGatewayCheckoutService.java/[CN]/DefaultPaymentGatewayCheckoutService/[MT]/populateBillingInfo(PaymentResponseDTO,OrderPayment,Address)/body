@@ -10,13 +10,13 @@
     billingAddress.setCity(billToDTO.getAddressCityLocality());
     State state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
     if (state == null) {
-      Log.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
+      LOG.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
     }
     billingAddress.setState(state);
     billingAddress.setPostalCode(billToDTO.getAddressPostalCode());
     Country country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
     if (country == null) {
-      Log.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
+      LOG.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
     }
     billingAddress.setCountry(country);
     if (billToDTO.getAddressPhone() != null) {
