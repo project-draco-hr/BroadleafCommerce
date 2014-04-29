@@ -46,10 +46,10 @@
           value=newEntity;
         }
  catch (        Exception e) {
-          SessionFactory sessionFactory=entityManager.unwrap(Session.class).getSessionFactory();
-          Class<?>[] entities=helper.getAllPolymorphicEntitiesFromCeiling(field.getType(),sessionFactory,true,true);
+          PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+          Class<?>[] entities=persistenceManager.getUpDownInheritance(field.getType());
           if (!ArrayUtils.isEmpty(entities)) {
-            Object newEntity=entities[0].newInstance();
+            Object newEntity=entities[entities.length - 1].newInstance();
             SortableValue val=new SortableValue(bean,(Serializable)newEntity,j,sb.toString());
             middleFields.add(val);
             field.set(value,newEntity);
