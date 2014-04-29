@@ -1,0 +1,17 @@
+{
+  String securityEntityClassname=entityForm.getCeilingEntityClassname();
+  if (!StringUtils.isEmpty(cmd.getSecurityCeilingType())) {
+    securityEntityClassname=cmd.getSecurityCeilingType();
+  }
+ else {
+    if (entityForm.getDynamicFormInfos() != null) {
+      for (      DynamicEntityFormInfo info : entityForm.getDynamicFormInfos().values()) {
+        if (!StringUtils.isEmpty(info.getSecurityCeilingClassName())) {
+          securityEntityClassname=info.getSecurityCeilingClassName();
+          break;
+        }
+      }
+    }
+  }
+  return securityEntityClassname;
+}

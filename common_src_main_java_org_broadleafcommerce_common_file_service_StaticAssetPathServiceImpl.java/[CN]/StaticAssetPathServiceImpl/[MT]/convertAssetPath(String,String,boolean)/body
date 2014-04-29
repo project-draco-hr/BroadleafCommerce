@@ -9,12 +9,12 @@
       envPrefix=getStaticAssetEnvironmentUrlPrefix();
     }
     if (envPrefix != null) {
-      if (returnValue.startsWith(File.separator)) {
+      if (returnValue.startsWith("/")) {
         returnValue=returnValue.substring(1);
       }
       if (returnValue.startsWith(getStaticAssetUrlPrefix())) {
         returnValue=returnValue.substring(getStaticAssetUrlPrefix().trim().length());
-        if (returnValue.startsWith(File.separator)) {
+        if (returnValue.startsWith("/")) {
           returnValue=returnValue.substring(1);
         }
       }
@@ -23,19 +23,19 @@
   }
  else {
     if (returnValue != null && !ImportSupport.isAbsoluteUrl(returnValue)) {
-      if (!returnValue.startsWith(File.separator)) {
-        returnValue=File.separator + returnValue;
+      if (!returnValue.startsWith("/")) {
+        returnValue="/" + returnValue;
       }
       if (contextPath != null && !contextPath.equals("")) {
-        if (!contextPath.equals(File.separator)) {
-          if (contextPath.endsWith(File.separator)) {
+        if (!contextPath.equals("/")) {
+          if (contextPath.endsWith("/")) {
             returnValue=returnValue.substring(1);
           }
-          if (contextPath.startsWith(File.separator)) {
+          if (contextPath.startsWith("/")) {
             returnValue=contextPath + returnValue;
           }
  else {
-            returnValue=File.separator + contextPath + returnValue;
+            returnValue="/" + contextPath + returnValue;
           }
         }
       }

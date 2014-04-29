@@ -11,13 +11,13 @@
     shippingAddress.setCity(shipToDTO.getAddressCityLocality());
     State state=stateService.findStateByAbbreviation(shipToDTO.getAddressStateRegion());
     if (state == null) {
-      Log.warn("The given state from the response: " + shipToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
+      LOG.warn("The given state from the response: " + shipToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
     }
     shippingAddress.setState(state);
     shippingAddress.setPostalCode(shipToDTO.getAddressPostalCode());
     Country country=countryService.findCountryByAbbreviation(shipToDTO.getAddressCountryCode());
     if (country == null) {
-      Log.warn("The given country from the response: " + shipToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
+      LOG.warn("The given country from the response: " + shipToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
     }
     shippingAddress.setCountry(country);
     if (shipToDTO.getAddressPhone() != null) {

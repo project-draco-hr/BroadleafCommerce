@@ -7,7 +7,7 @@
     adminInstance=(Sku)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     Entity errorEntity=validateUniqueProductOptionValueCombination(adminInstance.getProduct(),getProductOptionProperties(entity),null);
     if (errorEntity != null) {
-      entity.setValidationErrors(errorEntity.getValidationErrors());
+      entity.setPropertyValidationErrors(errorEntity.getPropertyValidationErrors());
       return entity;
     }
     adminInstance=dynamicEntityDao.persist(adminInstance);

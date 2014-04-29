@@ -1,0 +1,21 @@
+{
+  boolean canDelete=true;
+  try {
+    String securityEntityClassname=getSecurityClassname(entityForm,cmd);
+    adminRemoteSecurityService.securityCheck(securityEntityClassname,EntityOperationType.REMOVE);
+  }
+ catch (  ServiceException e) {
+    if (e instanceof SecurityServiceException) {
+      canDelete=false;
+    }
+  }
+  if (canDelete) {
+    canDelete=rowLevelSecurityService.canUpdate(adminRemoteSecurityService.getPersistentAdminUser(),entity);
+  }
+  if (canDelete) {
+    canDelete=rowLevelSecurityService.canRemove(adminRemoteSecurityService.getPersistentAdminUser(),entity);
+  }
+  if (canDelete) {
+    entityForm.addAction(DefaultEntityFormActions.DELETE);
+  }
+}

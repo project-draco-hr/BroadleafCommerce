@@ -1,0 +1,35 @@
+{
+  boolean readOnly=true;
+  for (  Property property : cmd.getProperties()) {
+    FieldMetadata fieldMetadata=property.getMetadata();
+    if (fieldMetadata instanceof BasicFieldMetadata) {
+      readOnly=((BasicFieldMetadata)fieldMetadata).getReadOnly() != null && ((BasicFieldMetadata)fieldMetadata).getReadOnly();
+      if (!readOnly) {
+        break;
+      }
+    }
+ else {
+      readOnly=((CollectionMetadata)fieldMetadata).isMutable();
+      if (!readOnly) {
+        break;
+      }
+    }
+  }
+  if (!readOnly) {
+    try {
+      String securityEntityClassname=getSecurityClassname(entityForm,cmd);
+      adminRemoteSecurityService.securityCheck(securityEntityClassname,EntityOperationType.UPDATE);
+    }
+ catch (    ServiceException e) {
+      if (e instanceof SecurityServiceException) {
+        readOnly=true;
+      }
+    }
+  }
+  if (!readOnly) {
+    readOnly=!rowLevelSecurityService.canUpdate(adminRemoteSecurityService.getPersistentAdminUser(),entity);
+  }
+  if (readOnly) {
+    entityForm.setReadOnly();
+  }
+}
