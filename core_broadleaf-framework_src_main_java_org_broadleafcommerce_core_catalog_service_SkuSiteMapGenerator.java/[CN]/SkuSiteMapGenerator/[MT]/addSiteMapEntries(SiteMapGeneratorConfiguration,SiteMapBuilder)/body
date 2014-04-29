@@ -4,11 +4,11 @@
   do {
     skus=skuDao.readAllActiveSkus(pageNum++,pageSize);
     for (    Sku sku : skus) {
-      if (StringUtils.isEmpty(sku.getProduct().getUrl() + sku.getUrlKey())) {
-        continue;
-      }
       Product defaultProduct=sku.getDefaultProduct();
       if (defaultProduct != null && CollectionUtils.isNotEmpty(defaultProduct.getAdditionalSkus())) {
+        continue;
+      }
+      if (StringUtils.isEmpty(sku.getProduct().getUrl() + sku.getUrlKey())) {
         continue;
       }
       SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
