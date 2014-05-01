@@ -47,9 +47,6 @@
     persistencePerspective=new PersistencePerspective(dtoOperationTypes,new String[]{},new ForeignKey[]{});
     metadata.setPersistencePerspective(persistencePerspective);
   }
-  if (!StringUtils.isEmpty(collectionMetadata.getSortProperty())) {
-    metadata.setSortProperty(collectionMetadata.getSortProperty());
-  }
   String foreignKeyName=null;
   if (serverMetadata != null) {
     foreignKeyName=((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getManyToField();
@@ -66,18 +63,36 @@
   if (StringUtils.isEmpty(foreignKeyName)) {
     throw new IllegalArgumentException("Unable to infer a ManyToOne field name for the @AdminPresentationCollection annotated field(" + field.getName() + "). If not using the mappedBy property of @OneToMany or @ManyToMany, please make sure to explicitly define the manyToField property");
   }
+  String sortProperty=null;
+  if (serverMetadata != null) {
+    sortProperty=((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getSortField();
+  }
+  if (!StringUtils.isEmpty(collectionMetadata.getSortProperty())) {
+    sortProperty=collectionMetadata.getSortProperty();
+  }
+  Boolean isAscending=true;
+  if (serverMetadata != null) {
+    isAscending=((ForeignKey)serverMetadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY)).getSortAscending();
+  }
+  if (collectionMetadata.isSortAscending() != null) {
+    isAscending=collectionMetadata.isSortAscending();
+  }
   if (serverMetadata != null) {
     ForeignKey foreignKey=(ForeignKey)metadata.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
     foreignKey.setManyToField(foreignKeyName);
     foreignKey.setForeignKeyClass(resolvedClass.getName());
     foreignKey.setMutable(metadata.isMutable());
     foreignKey.setOriginatingField(field.getName());
+    foreignKey.setSortField(sortProperty);
+    foreignKey.setSortAscending(isAscending);
   }
  else {
     ForeignKey foreignKey=new ForeignKey(foreignKeyName,resolvedClass.getName(),null,ForeignKeyRestrictionType.ID_EQ);
-    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
     foreignKey.setMutable(metadata.isMutable());
     foreignKey.setOriginatingField(field.getName());
+    foreignKey.setSortField(sortProperty);
+    foreignKey.setSortAscending(isAscending);
+    persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.FOREIGNKEY,foreignKey);
   }
   String ceiling=null;
   checkCeiling: {

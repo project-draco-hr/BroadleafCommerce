@@ -3,7 +3,12 @@
   int totalRecords;
   PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
   try {
+    if (foreignKey != null && foreignKey.getSortField() != null) {
+      FilterAndSortCriteria sortCriteria=cto.get(foreignKey.getSortField());
+      sortCriteria.setSortAscending(foreignKey.getSortAscending());
+    }
     Map<String,FieldMetadata> mergedProperties=getMergedProperties(persistencePackage,cto);
     List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,persistencePackage.getFetchTypeFullyQualifiedClassname(),mergedProperties);
     if (CollectionUtils.isNotEmpty(cto.getAdditionalFilterMappings())) {
