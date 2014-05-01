@@ -11,6 +11,14 @@
       this.products.add(productSummary);
     }
   }
+  if (model.getSkus() != null) {
+    skus=new ArrayList<SkuWrapper>();
+    for (    Sku sku : model.getSkus()) {
+      SkuWrapper skuSummary=(SkuWrapper)context.getBean(SkuWrapper.class.getName());
+      skuSummary.wrapSummary(sku,request);
+      this.skus.add(skuSummary);
+    }
+  }
   if (model.getFacets() != null) {
     this.searchFacets=new ArrayList<SearchFacetWrapper>();
     for (    SearchFacetDTO facet : model.getFacets()) {
