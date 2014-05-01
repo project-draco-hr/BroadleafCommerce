@@ -1,6 +1,8 @@
 {
-  List<? extends PromotableProduct> relatedProducts=relatedProductsService.findRelatedProducts(buildDTO(arguments,element));
+  RelatedProductDTO relatedProductDTO=buildDTO(arguments,element);
+  List<? extends PromotableProduct> relatedProducts=relatedProductsService.findRelatedProducts(relatedProductDTO);
   addToModel(arguments,getRelatedProductsResultVar(element),relatedProducts);
+  addToModel(arguments,getRelatedSkusResultVar(element),getRelatedSkus(relatedProducts,relatedProductDTO.getQuantity()));
   addToModel(arguments,getProductsResultVar(element),convertRelatedProductsToProducts(relatedProducts));
   addCollectionToExistingSet(arguments,"blcAllProducts",buildProductList(relatedProducts));
 }
