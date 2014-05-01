@@ -29,6 +29,16 @@
     if (primaryKey == null) {
       Serializable instance=(Serializable)Class.forName(entity.getType()[0]).newInstance();
       instance=createPopulatedInstance(instance,entity,mergedProperties,false);
+      if (foreignKey != null && foreignKey.getSortField() != null) {
+        CriteriaTransferObject cto=new CriteriaTransferObject();
+        FilterAndSortCriteria sortCriteria=cto.get(foreignKey.getSortField());
+        sortCriteria.setSortAscending(foreignKey.getSortAscending());
+        List<FilterMapping> filterMappings=getFilterMappings(persistencePerspective,cto,persistencePackage.getCeilingEntityFullyQualifiedClassname(),mergedProperties);
+        int totalRecords=getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
+        Class<?> type=getFieldManager().getField(instance.getClass(),foreignKey.getSortField()).getType();
+        boolean isBigDecimal=BigDecimal.class.isAssignableFrom(type);
+        getFieldManager().setFieldValue(instance,foreignKey.getSortField(),isBigDecimal ? new BigDecimal(totalRecords + 1) : Long.valueOf(totalRecords + 1));
+      }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
       if (includeRealEntityObject) {
         entityResult.setEntityBackingObject(instance);
