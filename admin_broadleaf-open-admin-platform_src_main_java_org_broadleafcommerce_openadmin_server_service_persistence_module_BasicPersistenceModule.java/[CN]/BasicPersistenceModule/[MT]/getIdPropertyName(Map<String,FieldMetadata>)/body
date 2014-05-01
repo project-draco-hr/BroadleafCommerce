@@ -1,0 +1,10 @@
+{
+  Map<String,FieldMetadata> mergedProperties=filterOutCollectionMetadata(mergedUnfilteredProperties);
+  for (  String property : mergedProperties.keySet()) {
+    BasicFieldMetadata temp=(BasicFieldMetadata)mergedProperties.get(property);
+    if (temp.getFieldType() == SupportedFieldType.ID && !property.contains(".")) {
+      return property;
+    }
+  }
+  throw new RuntimeException("Could not find a primary key property in the passed merged properties list");
+}
