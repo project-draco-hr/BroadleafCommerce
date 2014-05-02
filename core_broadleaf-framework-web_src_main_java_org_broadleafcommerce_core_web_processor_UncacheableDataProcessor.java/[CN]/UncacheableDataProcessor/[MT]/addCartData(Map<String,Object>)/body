@@ -9,13 +9,18 @@
       if (item instanceof SkuAccessor) {
         Sku sku=((SkuAccessor)item).getSku();
         if (sku != null && sku.getProduct() != null) {
-          Product product=sku.getProduct();
-          List<ProductOptionXref> optionXrefs=product.getProductOptionXrefs();
-          if (optionXrefs == null || optionXrefs.isEmpty()) {
-            cartItemIdsWithoutOptions.add(product.getId());
+          if (useSku) {
+            cartItemIdsWithoutOptions.add(sku.getId());
           }
  else {
-            cartItemIdsWithOptions.add(product.getId());
+            Product product=sku.getProduct();
+            List<ProductOptionXref> optionXrefs=product.getProductOptionXrefs();
+            if (optionXrefs == null || optionXrefs.isEmpty()) {
+              cartItemIdsWithoutOptions.add(product.getId());
+            }
+ else {
+              cartItemIdsWithOptions.add(product.getId());
+            }
           }
         }
       }
