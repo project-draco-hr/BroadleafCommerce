@@ -1,7 +1,7 @@
 {
-  if (applicationContext.containsBean(PersistenceManagerFactory.getPersistenceManagerRef())) {
-    PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(PersistenceManagerFactory.getPersistenceManagerRef());
-    persistenceManager.setTargetMode(TargetModeType.SANDBOX);
+  if (applicationContext.containsBean(PersistenceManagerFactory.getPersistenceManagerRef()) && applicationContext.containsBean("blPersistenceManagerFactory")) {
+    applicationContext.getBean("blPersistenceManagerFactory");
+    PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager(TargetModeType.SANDBOX);
     dynamicEntityDao=persistenceManager.getDynamicEntityDao();
     setFields(new ArrayList<FieldData>());
     boolean contextWasNull=false;
