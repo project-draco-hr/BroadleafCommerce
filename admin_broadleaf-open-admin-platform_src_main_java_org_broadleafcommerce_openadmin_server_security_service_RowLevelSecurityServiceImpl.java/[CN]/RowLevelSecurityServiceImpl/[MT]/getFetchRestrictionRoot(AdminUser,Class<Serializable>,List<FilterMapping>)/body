@@ -1,0 +1,10 @@
+{
+  Class<Serializable> root=null;
+  for (  RowLevelSecurityProvider provider : getProviders()) {
+    Class<Serializable> providerRoot=provider.getFetchRestrictionRoot(currentUser,ceilingEntity,filterMappings);
+    if (providerRoot != null) {
+      root=providerRoot;
+    }
+  }
+  return root;
+}
