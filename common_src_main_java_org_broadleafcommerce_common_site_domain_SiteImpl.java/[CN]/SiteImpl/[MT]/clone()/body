@@ -20,6 +20,11 @@
       cloneCatalog.setName(catalog.getName());
       clone.getCatalogs().add(cloneCatalog);
     }
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    if (context != null && context.getAdditionalProperties().containsKey("blSiteNativeMethodEntityExtensionManager")) {
+      SiteNativeMethodEntityExtensionManager extensionManager=(SiteNativeMethodEntityExtensionManager)context.getAdditionalProperties().get("blSiteNativeMethodEntityExtensionManager");
+      extensionManager.getProxy().contributeClone(this,clone);
+    }
   }
  catch (  Exception e) {
     throw new RuntimeException(e);

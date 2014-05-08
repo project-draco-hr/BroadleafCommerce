@@ -1,0 +1,17 @@
+{
+  if (site == null) {
+    throw new IllegalArgumentException("Site cannot be null when instantiating a non-persistent site");
+  }
+  this.id=site.getId();
+  this.name=site.getName();
+  this.siteIdentifierType=site.getSiteIdentifierType();
+  this.siteIdentifierValue=site.getSiteIdentifierValue();
+  for (  Catalog catalog : getCatalogs()) {
+    Catalog cloneCatalog=new CatalogImpl();
+    cloneCatalog.setId(catalog.getId());
+    cloneCatalog.setName(catalog.getName());
+    this.catalogs.add(cloneCatalog);
+  }
+  this.deactivated=site.isDeactivated();
+  this.archiveStatus=site.getArchiveStatus();
+}

@@ -1,0 +1,16 @@
+{
+  final Site[] response=new Site[1];
+  transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+    @Override public void execute() throws Throwable {
+      Site site=siteDao.retrieve(id);
+      if (persistentResult) {
+        response[0]=site;
+      }
+ else {
+        response[0]=getNonPersistentSite(site);
+      }
+    }
+  }
+,RuntimeException.class,!TransactionSynchronizationManager.hasResource(((JpaTransactionManager)transUtil.getTransactionManager()).getEntityManagerFactory()));
+  return response[0];
+}
