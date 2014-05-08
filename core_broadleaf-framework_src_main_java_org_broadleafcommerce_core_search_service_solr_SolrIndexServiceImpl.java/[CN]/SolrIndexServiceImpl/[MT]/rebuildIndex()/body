@@ -2,25 +2,27 @@
   LOG.info("Rebuilding the solr index...");
   StopWatch s=new StopWatch();
   if (SolrContext.isSingleCoreMode()) {
-    deleteAllDocuments();
+    SolrIndexServiceImpl.this.deleteAllDocuments();
   }
   Object[] pack=saveState();
   try {
-    Long numProducts=productDao.readCountAllActiveProducts();
+    final Long numProducts=productDao.readCountAllActiveProducts();
     if (LOG.isDebugEnabled()) {
       LOG.debug("There are " + numProducts + " total products");
     }
-    int page=0;
-    while ((page * pageSize) < numProducts) {
-      buildIncrementalIndex(page,pageSize);
-      page++;
+    performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
+      @Override public void execute() throws ServiceException {
+        int page=0;
+        while ((page * pageSize) < numProducts) {
+          buildIncrementalIndex(page,pageSize);
+          page++;
+        }
+      }
     }
+);
     optimizeIndex(SolrContext.getReindexServer());
   }
- catch (  ServiceException e) {
-    throw e;
-  }
- finally {
+  finally {
     restoreState(pack);
   }
   shs.swapActiveCores();

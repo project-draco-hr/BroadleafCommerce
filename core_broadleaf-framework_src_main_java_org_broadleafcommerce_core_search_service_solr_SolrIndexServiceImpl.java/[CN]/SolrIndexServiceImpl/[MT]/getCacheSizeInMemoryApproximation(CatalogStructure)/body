@@ -1,0 +1,12 @@
+{
+  try {
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+    ObjectOutputStream oos=new ObjectOutputStream(baos);
+    oos.writeObject(structure);
+    oos.close();
+    return baos.size();
+  }
+ catch (  IOException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+}

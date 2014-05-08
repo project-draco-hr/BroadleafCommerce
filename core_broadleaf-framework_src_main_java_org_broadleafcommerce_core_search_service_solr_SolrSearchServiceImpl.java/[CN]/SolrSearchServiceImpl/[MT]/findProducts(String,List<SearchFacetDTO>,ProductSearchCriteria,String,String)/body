@@ -10,6 +10,7 @@
   attachSortClause(solrQuery,searchCriteria,defaultSort);
   attachActiveFacetFilters(solrQuery,namedFacetMap,searchCriteria);
   attachFacets(solrQuery,namedFacetMap);
+  modifySolrQuery(solrQuery,qualifiedSolrQuery,facets,searchCriteria,defaultSort);
   extensionManager.getProxy().modifySolrQuery(solrQuery,qualifiedSolrQuery,facets,searchCriteria,defaultSort);
   if (LOG.isTraceEnabled()) {
     try {
@@ -21,9 +22,11 @@
   }
   QueryResponse response;
   List<SolrDocument> responseDocuments;
+  int numResults=0;
   try {
     response=SolrContext.getServer().query(solrQuery);
     responseDocuments=getResponseDocuments(response);
+    numResults=(int)response.getResults().getNumFound();
     if (LOG.isTraceEnabled()) {
       LOG.trace(response.toString());
       for (      SolrDocument doc : responseDocuments) {
@@ -40,6 +43,6 @@
   ProductSearchResult result=new ProductSearchResult();
   result.setFacets(facets);
   result.setProducts(products);
-  setPagingAttributes(result,responseDocuments,searchCriteria);
+  setPagingAttributes(result,numResults,searchCriteria);
   return result;
 }

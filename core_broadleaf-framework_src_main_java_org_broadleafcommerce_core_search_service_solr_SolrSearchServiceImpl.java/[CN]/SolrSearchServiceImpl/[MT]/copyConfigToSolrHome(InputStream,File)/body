@@ -1,0 +1,35 @@
+{
+  BufferedInputStream bis=null;
+  BufferedOutputStream bos=null;
+  try {
+    bis=new BufferedInputStream(configIs);
+    bos=new BufferedOutputStream(new FileOutputStream(destFile,false));
+    boolean eof=false;
+    while (!eof) {
+      int temp=bis.read();
+      if (temp == -1) {
+        eof=true;
+      }
+ else {
+        bos.write(temp);
+      }
+    }
+    bos.flush();
+  }
+  finally {
+    if (bis != null) {
+      try {
+        bis.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+    if (bos != null) {
+      try {
+        bos.close();
+      }
+ catch (      Throwable e) {
+      }
+    }
+  }
+}

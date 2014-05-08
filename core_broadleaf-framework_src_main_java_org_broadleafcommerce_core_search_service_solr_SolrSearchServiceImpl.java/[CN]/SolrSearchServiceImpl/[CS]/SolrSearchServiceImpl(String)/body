@@ -10,7 +10,10 @@
     }
     solrServer=tempDir.getAbsolutePath();
   }
-  File solrXml=copyConfigToSolrHome(this.getClass().getResourceAsStream("/solr-default.xml"),solrServer,"solr-default.xml");
+  File solrXml=new File(new File(solrServer),"solr.xml");
+  if (!solrXml.exists()) {
+    copyConfigToSolrHome(this.getClass().getResourceAsStream("/solr-default.xml"),solrXml);
+  }
   LOG.debug(String.format("Using [%s] as solrhome",solrServer));
   LOG.debug(String.format("Using [%s] as solr.xml",solrXml.getAbsoluteFile()));
   if (LOG.isTraceEnabled()) {

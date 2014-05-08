@@ -1,0 +1,21 @@
+{
+  if (nullObject == null) {
+    Class<?>[] interfaces=(Class<?>[])ArrayUtils.add(ClassUtils.getAllInterfacesForClass(responseClass),Serializable.class);
+    nullObject=Proxy.newProxyInstance(getClass().getClassLoader(),interfaces,new InvocationHandler(){
+      @Override public Object invoke(      Object o,      Method method,      Object[] objects) throws Throwable {
+        if (method.getName().equals("equals")) {
+          return !(objects[0] == null) && objects[0].hashCode() == 31;
+        }
+ else         if (method.getName().equals("hashCode")) {
+          return 31;
+        }
+ else         if (method.getName().equals("toString")) {
+          return "Null_" + responseClass.getSimpleName();
+        }
+        throw new IllegalAccessException("Not a real object");
+      }
+    }
+);
+  }
+  return (T)nullObject;
+}

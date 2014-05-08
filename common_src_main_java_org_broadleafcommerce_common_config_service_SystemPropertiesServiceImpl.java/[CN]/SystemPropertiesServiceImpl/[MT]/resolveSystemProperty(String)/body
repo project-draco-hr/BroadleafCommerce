@@ -1,0 +1,35 @@
+{
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    extensionManager.getProxy().resolveProperty(name,holder);
+    if (holder.getResult() != null) {
+      return holder.getResult().toString();
+    }
+  }
+  String result;
+  if (BroadleafRequestContext.getBroadleafRequestContext().getSandBox() == null) {
+    result=getPropertyFromCache(name);
+  }
+ else {
+    result=null;
+  }
+  if (result != null) {
+    return result;
+  }
+  SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
+  if (property == null || StringUtils.isEmpty(property.getValue())) {
+    result=propMgr.getProperty(name);
+  }
+ else {
+    if ("_blank_".equals(property.getValue())) {
+      result="";
+    }
+ else {
+      result=property.getValue();
+    }
+  }
+  if (result != null) {
+    addPropertyToCache(name,result);
+  }
+  return result;
+}

@@ -1,9 +1,7 @@
 {
-  SystemProperty property=systemPropertiesDao.readSystemPropertyByName(name);
-  if (property == null || property.getValue() == null) {
+  String result=resolveSystemProperty(name);
+  if (result == null) {
     return defaultValue;
   }
- else {
-    return property.getValue();
-  }
+  return result;
 }
