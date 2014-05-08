@@ -1,6 +1,8 @@
 {
-  if (site == null) {
+  if (persistentSite == null) {
     return null;
   }
-  return site.clone();
+  Site clone=persistentSite.clone();
+  extensionManager.getProxy().contributeNonPersitentSiteProperties(persistentSite,clone);
+  return clone;
 }
