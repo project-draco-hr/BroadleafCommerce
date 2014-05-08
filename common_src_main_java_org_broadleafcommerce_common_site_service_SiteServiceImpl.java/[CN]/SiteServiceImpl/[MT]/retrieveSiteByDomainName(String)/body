@@ -1,24 +1,3 @@
 {
-  final Site[] response=new Site[1];
-  transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
-    @Override public void execute() throws Throwable {
-      String domainPrefix=null;
-      if (domainName != null) {
-        int pos=domainName.indexOf('.');
-        if (pos >= 0) {
-          domainPrefix=domainName.substring(0,pos);
-        }
- else {
-          domainPrefix=domainName;
-        }
-      }
-      Site temp=siteDao.retrieveSiteByDomainOrDomainPrefix(domainName,domainPrefix);
-      if (temp != null) {
-        temp=temp.clone();
-      }
-      response[0]=temp;
-    }
-  }
-,RuntimeException.class,!TransactionSynchronizationManager.hasResource(((JpaTransactionManager)transUtil.getTransactionManager()).getEntityManagerFactory()));
-  return response[0];
+  return retrieveNonPersistentSiteByDomainName(domainName);
 }
