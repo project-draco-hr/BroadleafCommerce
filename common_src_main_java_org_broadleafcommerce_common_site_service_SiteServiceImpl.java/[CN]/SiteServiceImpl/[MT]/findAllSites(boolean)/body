@@ -1,0 +1,18 @@
+{
+  final List<Site> response=new ArrayList<Site>();
+  transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+    @Override public void execute() throws Throwable {
+      List<Site> sites=siteDao.readAllActiveSites();
+      for (      Site site : sites) {
+        if (persistentResult) {
+          response.add(site);
+        }
+ else {
+          response.add(getNonPersistentSite(site));
+        }
+      }
+    }
+  }
+,RuntimeException.class,!TransactionSynchronizationManager.hasResource(((JpaTransactionManager)transUtil.getTransactionManager()).getEntityManagerFactory()));
+  return response;
+}
