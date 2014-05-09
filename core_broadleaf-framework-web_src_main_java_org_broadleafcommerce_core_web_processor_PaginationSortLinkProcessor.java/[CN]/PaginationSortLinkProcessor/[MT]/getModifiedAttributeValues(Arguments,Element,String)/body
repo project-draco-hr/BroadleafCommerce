@@ -5,12 +5,12 @@
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
   String sort=element.getAttributeValue(attributeName);
   if (StringUtils.isNotBlank(sort)) {
-    params.put(ProductSearchCriteria.SORT_STRING,new String[]{sort});
+    params.put(SearchCriteria.SORT_STRING,new String[]{sort});
   }
  else {
-    params.remove(ProductSearchCriteria.SORT_STRING);
+    params.remove(SearchCriteria.SORT_STRING);
   }
-  params.remove(ProductSearchCriteria.PAGE_NUMBER);
+  params.remove(SearchCriteria.PAGE_NUMBER);
   String url=ProcessorUtils.getUrl(baseUrl,params);
   attributes.put("href",url);
   return attributes;

@@ -6,14 +6,20 @@
   }
   Object[] pack=saveState();
   try {
-    final Long numProducts=productDao.readCountAllActiveProducts();
+    final Long numItemsToIndex;
+    if (useSku) {
+      numItemsToIndex=skuDao.readCountAllActiveSkus();
+    }
+ else {
+      numItemsToIndex=productDao.readCountAllActiveProducts();
+    }
     if (LOG.isDebugEnabled()) {
-      LOG.debug("There are " + numProducts + " total products");
+      LOG.debug("There are at most " + numItemsToIndex + " items to index");
     }
     performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
       @Override public void execute() throws ServiceException {
         int page=0;
-        while ((page * pageSize) < numProducts) {
+        while ((page * pageSize) < numItemsToIndex) {
           buildIncrementalIndex(page,pageSize);
           page++;
         }

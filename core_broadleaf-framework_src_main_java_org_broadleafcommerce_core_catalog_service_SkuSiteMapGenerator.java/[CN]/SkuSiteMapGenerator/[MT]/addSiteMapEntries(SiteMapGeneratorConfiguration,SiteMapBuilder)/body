@@ -1,0 +1,26 @@
+{
+  int pageNum=0;
+  List<Sku> skus;
+  do {
+    skus=skuDao.readAllActiveSkus(pageNum++,pageSize);
+    for (    Sku sku : skus) {
+      Product defaultProduct=sku.getDefaultProduct();
+      if (defaultProduct != null && CollectionUtils.isNotEmpty(defaultProduct.getAdditionalSkus())) {
+        continue;
+      }
+      if (defaultProduct instanceof ProductBundle) {
+        continue;
+      }
+      if (StringUtils.isEmpty(sku.getProduct().getUrl() + sku.getUrlKey())) {
+        continue;
+      }
+      SiteMapURLWrapper siteMapUrl=new SiteMapURLWrapper();
+      siteMapUrl.setLoc(generateUri(siteMapBuilder,sku));
+      siteMapUrl.setChangeFreqType(smgc.getSiteMapChangeFreq());
+      siteMapUrl.setPriorityType(smgc.getSiteMapPriority());
+      siteMapUrl.setLastModDate(generateDate(sku));
+      siteMapBuilder.addUrl(siteMapUrl);
+    }
+  }
+ while (skus.size() == pageSize);
+}

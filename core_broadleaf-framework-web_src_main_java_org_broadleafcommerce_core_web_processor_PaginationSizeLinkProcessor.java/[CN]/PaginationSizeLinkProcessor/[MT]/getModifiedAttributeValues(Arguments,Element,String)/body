@@ -5,10 +5,10 @@
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
   Integer pageSize=Integer.parseInt(element.getAttributeValue(attributeName));
   if (pageSize != null && pageSize > 1) {
-    params.put(ProductSearchCriteria.PAGE_SIZE_STRING,new String[]{pageSize.toString()});
+    params.put(SearchCriteria.PAGE_SIZE_STRING,new String[]{pageSize.toString()});
   }
  else {
-    params.remove(ProductSearchCriteria.PAGE_SIZE_STRING);
+    params.remove(SearchCriteria.PAGE_SIZE_STRING);
   }
   String url=ProcessorUtils.getUrl(baseUrl,params);
   attributes.put("href",url);

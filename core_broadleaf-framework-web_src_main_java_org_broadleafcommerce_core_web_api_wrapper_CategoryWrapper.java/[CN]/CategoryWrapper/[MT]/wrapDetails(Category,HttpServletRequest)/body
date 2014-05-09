@@ -27,12 +27,12 @@
   }
   if (productLimit != null && productOffset != null) {
     SearchService searchService=getSearchService();
-    ProductSearchCriteria searchCriteria=new ProductSearchCriteria();
+    SearchCriteria searchCriteria=new SearchCriteria();
     searchCriteria.setPage(productOffset);
     searchCriteria.setPageSize(productLimit);
     searchCriteria.setFilterCriteria(new HashMap<String,String[]>());
     try {
-      ProductSearchResult result=searchService.findExplicitProductsByCategory(category,searchCriteria);
+      SearchResult result=searchService.findExplicitSearchResultsByCategory(category,searchCriteria);
       List<Product> productList=result.getProducts();
       if (productList != null && !productList.isEmpty()) {
         if (products == null) {

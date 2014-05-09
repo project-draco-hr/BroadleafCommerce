@@ -1,0 +1,16 @@
+{
+  final List<Long> skuIds=new ArrayList<Long>();
+  for (  SolrDocument doc : responseDocuments) {
+    skuIds.add((Long)doc.getFieldValue(shs.getSkuIdFieldName()));
+  }
+  List<Sku> skus=skuDao.readSkusByIds(skuIds);
+  if (skus != null) {
+    Collections.sort(skus,new Comparator<Sku>(){
+      @Override public int compare(      Sku o1,      Sku o2){
+        return new Integer(skuIds.indexOf(o1.getId())).compareTo(skuIds.indexOf(o2.getId()));
+      }
+    }
+);
+  }
+  return skus;
+}

@@ -1,14 +1,13 @@
 {
+  TransactionStatus status=TransactionUtils.createTransaction("readItemsToIndex",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
   if (SolrIndexCachedOperation.getCache() == null) {
     LOG.warn("Consider using SolrIndexService.performCachedOperation() in combination with " + "SolrIndexService.buildIncrementalIndex() for better caching performance during solr indexing");
-  }
-  TransactionStatus status=TransactionUtils.createTransaction("readProducts",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
-  if (LOG.isDebugEnabled()) {
-    LOG.debug(String.format("Building index - page: [%s], pageSize: [%s]",page,pageSize));
   }
   StopWatch s=new StopWatch();
   boolean cacheOperationManaged=false;
   try {
+    Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
+    List<Locale> locales=getAllLocales();
     CatalogStructure cache=SolrIndexCachedOperation.getCache();
     if (cache != null) {
       cacheOperationManaged=true;
@@ -17,21 +16,38 @@
       cache=new CatalogStructure();
       SolrIndexCachedOperation.setCache(cache);
     }
-    List<Product> products=readAllActiveProducts(page,pageSize);
-    List<Long> productIds=BLCCollectionUtils.collectList(products,new TypedTransformer<Long>(){
-      @Override public Long transform(      Object input){
-        return ((Product)input).getId();
+    if (useSku) {
+      List<Field> fields=fieldDao.readAllSkuFields();
+      List<Sku> skus=readAllActiveSkus(page,pageSize);
+      List<Long> productIds=BLCCollectionUtils.collectList(skus,new TypedTransformer<Long>(){
+        @Override public Long transform(        Object input){
+          return ((Sku)input).getProduct().getId();
+        }
+      }
+);
+      solrIndexDao.populateProductCatalogStructure(productIds,SolrIndexCachedOperation.getCache());
+      for (      Sku sku : skus) {
+        SolrInputDocument doc=buildDocument(sku,fields,locales);
+        if (doc != null) {
+          documents.add(doc);
+        }
       }
     }
+ else {
+      List<Field> fields=fieldDao.readAllProductFields();
+      List<Product> products=readAllActiveProducts(page,pageSize);
+      List<Long> productIds=BLCCollectionUtils.collectList(products,new TypedTransformer<Long>(){
+        @Override public Long transform(        Object input){
+          return ((Product)input).getId();
+        }
+      }
 );
-    solrIndexDao.populateCatalogStructure(productIds,SolrIndexCachedOperation.getCache());
-    List<Field> fields=fieldDao.readAllProductFields();
-    List<Locale> locales=getAllLocales();
-    Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
-    for (    Product product : products) {
-      SolrInputDocument doc=buildDocument(product,fields,locales);
-      if (doc != null) {
-        documents.add(doc);
+      solrIndexDao.populateProductCatalogStructure(productIds,SolrIndexCachedOperation.getCache());
+      for (      Product product : products) {
+        SolrInputDocument doc=buildDocument(product,fields,locales);
+        if (doc != null) {
+          documents.add(doc);
+        }
       }
     }
     logDocuments(documents);

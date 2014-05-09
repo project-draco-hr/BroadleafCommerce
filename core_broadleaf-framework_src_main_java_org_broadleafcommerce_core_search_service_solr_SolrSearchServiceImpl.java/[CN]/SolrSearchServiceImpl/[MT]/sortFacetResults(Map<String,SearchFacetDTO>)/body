@@ -1,7 +1,7 @@
 {
   for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
     Collections.sort(entry.getValue().getFacetValues(),new Comparator<SearchFacetResultDTO>(){
-      public int compare(      SearchFacetResultDTO o1,      SearchFacetResultDTO o2){
+      @Override public int compare(      SearchFacetResultDTO o1,      SearchFacetResultDTO o2){
         if (o1.getValue() != null && o2.getValue() != null) {
           return o1.getValue().compareTo(o2.getValue());
         }

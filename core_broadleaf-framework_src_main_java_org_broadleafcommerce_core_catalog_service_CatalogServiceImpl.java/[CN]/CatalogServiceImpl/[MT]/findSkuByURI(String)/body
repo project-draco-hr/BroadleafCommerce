@@ -1,0 +1,24 @@
+{
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().findSkuByURI(uri,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      return (Sku)holder.getResult();
+    }
+  }
+  List<Sku> skus=skuDao.findSkuByURI(uri);
+  if (skus == null || skus.size() == 0) {
+    return null;
+  }
+ else   if (skus.size() == 1) {
+    return skus.get(0);
+  }
+ else {
+    for (    Sku sku : skus) {
+      if (uri.equals(sku.getProduct().getUrl() + sku.getUrlKey())) {
+        return sku;
+      }
+    }
+    return skus.get(0);
+  }
+}

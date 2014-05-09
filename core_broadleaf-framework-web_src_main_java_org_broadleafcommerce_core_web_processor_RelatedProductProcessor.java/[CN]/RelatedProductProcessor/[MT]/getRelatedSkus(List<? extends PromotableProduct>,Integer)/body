@@ -1,0 +1,27 @@
+{
+  List<Sku> relatedSkus=new ArrayList<Sku>();
+  if (relatedProducts != null) {
+    Integer numSkus=0;
+    for (    PromotableProduct promProduct : relatedProducts) {
+      Product relatedProduct=promProduct.getRelatedProduct();
+      List<Sku> additionalSkus=relatedProduct.getAdditionalSkus();
+      if (additionalSkus != null) {
+        for (        Sku additionalSku : additionalSkus) {
+          if (numSkus == maxQuantity) {
+            break;
+          }
+          relatedSkus.add(additionalSku);
+          numSkus++;
+        }
+      }
+ else {
+        if (numSkus == maxQuantity) {
+          break;
+        }
+        relatedSkus.add(relatedProduct.getDefaultSku());
+        numSkus++;
+      }
+    }
+  }
+  return relatedSkus;
+}

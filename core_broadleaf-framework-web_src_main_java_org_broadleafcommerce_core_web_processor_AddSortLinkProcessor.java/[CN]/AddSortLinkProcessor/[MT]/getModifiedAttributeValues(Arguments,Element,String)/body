@@ -4,7 +4,7 @@
   HttpServletRequest request=blcContext.getRequest();
   String baseUrl=request.getRequestURL().toString();
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
-  String key=ProductSearchCriteria.SORT_STRING;
+  String key=SearchCriteria.SORT_STRING;
   String sortField=element.getAttributeValue(attributeName);
   List<String[]> sortedFields=new ArrayList<String[]>();
   String[] paramValues=params.get(key);
@@ -42,7 +42,7 @@
  else {
     sortString+=" asc";
     classString+="asc ";
-    params.remove(ProductSearchCriteria.PAGE_NUMBER);
+    params.remove(SearchCriteria.PAGE_NUMBER);
   }
   if (allowMultipleSorts) {
     StringBuilder sortSb=new StringBuilder();

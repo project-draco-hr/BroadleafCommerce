@@ -6,7 +6,7 @@
     facets=(List<SearchFacetDTO>)element.getValue();
   }
   if (facets == null) {
-    facets=buildSearchFacetDtos(searchFacetDao.readAllSearchFacets());
+    facets=buildSearchFacetDtos(searchFacetDao.readAllSearchFacets(FieldEntity.PRODUCT));
     element=new Element(cacheKey,facets);
     cache.put(element);
   }

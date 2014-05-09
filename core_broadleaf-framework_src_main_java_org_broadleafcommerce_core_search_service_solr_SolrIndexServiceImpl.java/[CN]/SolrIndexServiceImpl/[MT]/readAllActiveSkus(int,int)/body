@@ -1,0 +1,19 @@
+{
+  List<Sku> skus=skuDao.readAllActiveSkus(page,pageSize);
+  ArrayList<Sku> skusToIndex=new ArrayList<Sku>();
+  if (skus != null && !skus.isEmpty()) {
+    for (    Sku sku : skus) {
+      if (!sku.isActive()) {
+        continue;
+      }
+      if (sku.getDefaultProduct() != null && !sku.getProduct().getCanSellWithoutOptions() && !sku.getProduct().getAdditionalSkus().isEmpty()) {
+        continue;
+      }
+      if (sku.getDefaultProduct() instanceof ProductBundle) {
+        continue;
+      }
+      skusToIndex.add(sku);
+    }
+  }
+  return skusToIndex;
+}

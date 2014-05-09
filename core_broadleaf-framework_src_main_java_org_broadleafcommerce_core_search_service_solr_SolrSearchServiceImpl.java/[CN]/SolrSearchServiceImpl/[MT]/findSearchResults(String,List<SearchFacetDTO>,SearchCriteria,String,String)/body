@@ -1,0 +1,60 @@
+{
+  Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
+  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setRows(searchCriteria.getPageSize()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  if (useSku) {
+    solrQuery.setFields(shs.getSkuIdFieldName());
+  }
+ else {
+    solrQuery.setFields(shs.getProductIdFieldName());
+  }
+  if (filterQueries != null) {
+    solrQuery.setFilterQueries(filterQueries);
+  }
+  solrQuery.addFilterQuery(shs.getNamespaceFieldName() + ":(\"" + shs.getCurrentNamespace()+ "\")");
+  solrQuery.set("defType","edismax");
+  solrQuery.set("qf",buildQueryFieldsString());
+  attachSortClause(solrQuery,searchCriteria,defaultSort);
+  attachActiveFacetFilters(solrQuery,namedFacetMap,searchCriteria);
+  attachFacets(solrQuery,namedFacetMap);
+  modifySolrQuery(solrQuery,qualifiedSolrQuery,facets,searchCriteria,defaultSort);
+  extensionManager.getProxy().modifySolrQuery(solrQuery,qualifiedSolrQuery,facets,searchCriteria,defaultSort);
+  if (LOG.isTraceEnabled()) {
+    try {
+      LOG.trace(URLDecoder.decode(solrQuery.toString(),"UTF-8"));
+    }
+ catch (    Exception e) {
+      LOG.trace("Couldn't UTF-8 URL Decode: " + solrQuery.toString());
+    }
+  }
+  QueryResponse response;
+  List<SolrDocument> responseDocuments;
+  int numResults=0;
+  try {
+    response=SolrContext.getServer().query(solrQuery);
+    responseDocuments=getResponseDocuments(response);
+    numResults=(int)response.getResults().getNumFound();
+    if (LOG.isTraceEnabled()) {
+      LOG.trace(response.toString());
+      for (      SolrDocument doc : responseDocuments) {
+        LOG.trace(doc);
+      }
+    }
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not perform search",e);
+  }
+  setFacetResults(namedFacetMap,response);
+  sortFacetResults(namedFacetMap);
+  SearchResult result=new SearchResult();
+  result.setFacets(facets);
+  setPagingAttributes(result,numResults,searchCriteria);
+  if (useSku) {
+    List<Sku> skus=getSkus(responseDocuments);
+    result.setSkus(skus);
+  }
+ else {
+    List<Product> products=getProducts(responseDocuments);
+    result.setProducts(products);
+  }
+  return result;
+}

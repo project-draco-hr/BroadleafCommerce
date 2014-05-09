@@ -1,0 +1,10 @@
+{
+  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+  if (context != null) {
+    Sku sku=(Sku)context.getRequest().getAttribute(SkuHandlerMapping.CURRENT_SKU_ATTRIBUTE_NAME);
+    if (sku != null && sku.getDisplayTemplate() != null) {
+      return sku.getDisplayTemplate();
+    }
+  }
+  return getDefaultSkuView();
+}

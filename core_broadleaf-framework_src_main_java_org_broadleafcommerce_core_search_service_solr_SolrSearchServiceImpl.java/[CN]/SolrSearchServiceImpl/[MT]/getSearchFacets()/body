@@ -1,3 +1,6 @@
 {
-  return buildSearchFacetDTOs(searchFacetDao.readAllSearchFacets());
+  if (useSku) {
+    return buildSearchFacetDTOs(searchFacetDao.readAllSearchFacets(FieldEntity.SKU));
+  }
+  return buildSearchFacetDTOs(searchFacetDao.readAllSearchFacets(FieldEntity.PRODUCT));
 }

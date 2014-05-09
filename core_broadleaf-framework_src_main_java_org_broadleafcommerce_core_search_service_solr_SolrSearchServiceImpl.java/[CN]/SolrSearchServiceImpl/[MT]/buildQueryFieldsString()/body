@@ -1,6 +1,12 @@
 {
   StringBuilder queryBuilder=new StringBuilder();
-  List<Field> fields=fieldDao.readAllProductFields();
+  List<Field> fields=null;
+  if (useSku) {
+    fields=fieldDao.readAllSkuFields();
+  }
+ else {
+    fields=fieldDao.readAllProductFields();
+  }
   for (  Field currentField : fields) {
     if (currentField.getSearchable()) {
       appendFieldToQuery(queryBuilder,currentField);
