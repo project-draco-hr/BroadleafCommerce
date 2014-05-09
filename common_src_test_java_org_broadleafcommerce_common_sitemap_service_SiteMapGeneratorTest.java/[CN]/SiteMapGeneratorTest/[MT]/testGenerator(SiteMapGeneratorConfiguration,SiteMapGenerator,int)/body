@@ -1,21 +1,5 @@
 {
   List<SiteMapGeneratorConfiguration> smgcList=new ArrayList<SiteMapGeneratorConfiguration>();
   smgcList.add(smgc);
-  SiteMapConfiguration smc=new SiteMapConfigurationImpl();
-  smc.setMaximumUrlEntriesPerFile(maxEntriesPerFile);
-  smc.setSiteMapGeneratorConfigurations(smgcList);
-  smc.setIndexedSiteMapFileName("sitemap_index.xml");
-  smgc.setSiteMapConfiguration(smc);
-  List<ModuleConfiguration> mcList=new ArrayList<ModuleConfiguration>();
-  mcList.add(smc);
-  ModuleConfigurationService mcs=EasyMock.createMock(ModuleConfigurationService.class);
-  EasyMock.expect(mcs.findActiveConfigurationsByType(ModuleConfigurationType.SITE_MAP)).andReturn(mcList);
-  EasyMock.replay(mcs);
-  List<SiteMapGenerator> smgList=new ArrayList<SiteMapGenerator>();
-  smgList.add(smg);
-  siteMapService.setGzipSiteMapFiles(false);
-  siteMapService.setModuleConfigurationService(mcs);
-  siteMapService.setSiteMapGenerators(smgList);
-  SiteMapGenerationResponse smgr=siteMapService.generateSiteMap();
-  Assert.assertFalse(smgr.isHasError());
+  testGenerator(smgcList,smg,maxEntriesPerFile);
 }
