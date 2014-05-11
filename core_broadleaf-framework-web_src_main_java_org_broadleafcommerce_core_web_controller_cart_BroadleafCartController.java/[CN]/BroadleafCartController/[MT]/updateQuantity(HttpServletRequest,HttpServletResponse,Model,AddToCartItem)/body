@@ -4,7 +4,12 @@
   cart=orderService.save(cart,false);
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();
-    extraData.put("productId",itemRequest.getProductId());
+    if (useSku) {
+      extraData.put("skuId",itemRequest.getSkuId());
+    }
+ else {
+      extraData.put("productId",itemRequest.getProductId());
+    }
     extraData.put("cartItemCount",cart.getItemCount());
     model.addAttribute("blcextradata",new ObjectMapper().writeValueAsString(extraData));
     return getCartView();
