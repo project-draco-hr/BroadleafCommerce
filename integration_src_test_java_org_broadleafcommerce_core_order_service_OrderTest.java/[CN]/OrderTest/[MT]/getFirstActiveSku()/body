@@ -1,0 +1,9 @@
+{
+  List<Sku> skus=skuDao.readAllSkus();
+  return CollectionUtils.find(skus,new Predicate<Sku>(){
+    @Override public boolean evaluate(    Sku sku){
+      return sku.isActive();
+    }
+  }
+);
+}
