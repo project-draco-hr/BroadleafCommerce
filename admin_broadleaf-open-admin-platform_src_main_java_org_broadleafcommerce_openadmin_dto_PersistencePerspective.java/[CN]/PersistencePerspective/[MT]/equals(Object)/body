@@ -1,6 +1,7 @@
 {
   if (this == o)   return true;
-  if (!(o instanceof PersistencePerspective))   return false;
+  if (o == null)   return false;
+  if (!getClass().isAssignableFrom(o.getClass()))   return false;
   PersistencePerspective that=(PersistencePerspective)o;
   if (!Arrays.equals(additionalForeignKeys,that.additionalForeignKeys))   return false;
   if (!Arrays.equals(additionalNonPersistentProperties,that.additionalNonPersistentProperties))   return false;

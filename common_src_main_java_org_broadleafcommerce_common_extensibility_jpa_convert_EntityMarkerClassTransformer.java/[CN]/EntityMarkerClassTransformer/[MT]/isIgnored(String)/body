@@ -1,0 +1,21 @@
+{
+  boolean isValidPattern=true;
+  List<DirectCopyIgnorePattern> matchedPatterns=new ArrayList<DirectCopyIgnorePattern>();
+  for (  DirectCopyIgnorePattern pattern : ignorePatterns) {
+    boolean isPatternMatch=false;
+    for (    String patternString : pattern.getPatterns()) {
+      isPatternMatch=convertedClassName.matches(patternString);
+      if (isPatternMatch) {
+        break;
+      }
+    }
+    if (isPatternMatch) {
+      matchedPatterns.add(pattern);
+    }
+    isValidPattern=!(isPatternMatch && pattern.getTemplateTokenPatterns() == null);
+    if (!isValidPattern) {
+      break;
+    }
+  }
+  return !isValidPattern;
+}

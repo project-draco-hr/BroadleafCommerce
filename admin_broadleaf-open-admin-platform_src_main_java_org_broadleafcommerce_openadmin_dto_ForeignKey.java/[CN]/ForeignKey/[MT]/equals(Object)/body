@@ -1,6 +1,7 @@
 {
   if (this == o)   return true;
-  if (!(o instanceof ForeignKey))   return false;
+  if (o == null)   return false;
+  if (!getClass().isAssignableFrom(o.getClass()))   return false;
   ForeignKey that=(ForeignKey)o;
   if (currentValue != null ? !currentValue.equals(that.currentValue) : that.currentValue != null)   return false;
   if (dataSourceName != null ? !dataSourceName.equals(that.dataSourceName) : that.dataSourceName != null)   return false;

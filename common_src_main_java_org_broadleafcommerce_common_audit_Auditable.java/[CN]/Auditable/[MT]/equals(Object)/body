@@ -1,6 +1,7 @@
 {
   if (this == o)   return true;
-  if (!(o instanceof Auditable))   return false;
+  if (o == null)   return false;
+  if (!getClass().isAssignableFrom(o.getClass()))   return false;
   Auditable auditable=(Auditable)o;
   if (createdBy != null ? !createdBy.equals(auditable.createdBy) : auditable.createdBy != null)   return false;
   if (dateCreated != null ? !dateCreated.equals(auditable.dateCreated) : auditable.dateCreated != null)   return false;

@@ -1,0 +1,30 @@
+{
+  String convertedClassName=className.replace('/','.');
+  if (isIgnored(convertedClassName)) {
+    return null;
+  }
+  try {
+    ClassFile classFile=new ClassFile(new DataInputStream(new ByteArrayInputStream(classfileBuffer)));
+    List<?> attributes=classFile.getAttributes();
+    Iterator<?> itr=attributes.iterator();
+    check: {
+      while (itr.hasNext()) {
+        Object object=itr.next();
+        if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+          for (          Annotation annotation : ((AnnotationsAttribute)object).getAnnotations()) {
+            if (annotation.getTypeName().equals(Entity.class.getName())) {
+              LOG.trace("Marking " + convertedClassName + " as transformed");
+              transformedClassNames.add(convertedClassName);
+              break check;
+            }
+          }
+        }
+      }
+    }
+  }
+ catch (  Exception e) {
+    LOG.error(e);
+    throw new IllegalClassFormatException("Unable to mark " + convertedClassName + " as transformed.");
+  }
+  return null;
+}

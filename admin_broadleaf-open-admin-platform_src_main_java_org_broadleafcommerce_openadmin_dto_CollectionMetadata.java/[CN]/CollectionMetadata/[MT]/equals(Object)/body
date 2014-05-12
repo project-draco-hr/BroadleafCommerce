@@ -1,6 +1,7 @@
 {
   if (this == o)   return true;
-  if (!(o instanceof CollectionMetadata))   return false;
+  if (o == null)   return false;
+  if (!getClass().isAssignableFrom(o.getClass()))   return false;
   CollectionMetadata metadata=(CollectionMetadata)o;
   if (mutable != metadata.mutable)   return false;
   if (collectionCeilingEntity != null ? !collectionCeilingEntity.equals(metadata.collectionCeilingEntity) : metadata.collectionCeilingEntity != null)   return false;
