@@ -3,7 +3,7 @@
   try {
     String pageId=persistencePackage.getCustomCriteria()[1];
     Page page=pageService.findPageById(Long.valueOf(pageId));
-    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(page.getPageTemplate().getFieldGroups(),PageTemplate.class);
+    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(getFieldGroups(page,null),PageTemplate.class);
     Map<String,FieldMetadata> md=new HashMap<String,FieldMetadata>();
     for (    Property property : properties) {
       md.put(property.getName(),property.getMetadata());
@@ -13,7 +13,7 @@
       throw new ValidationException(persistencePackage.getEntity(),"Page dynamic fields failed validation");
     }
     List<String> templateFieldNames=new ArrayList<String>(20);
-    for (    FieldGroup group : page.getPageTemplate().getFieldGroups()) {
+    for (    FieldGroup group : getFieldGroups(page,null)) {
       for (      FieldDefinition definition : group.getFieldDefinitions()) {
         templateFieldNames.add(definition.getName());
       }
