@@ -1,10 +1,10 @@
 {
   String returnPath=super.viewEntityForm(request,response,model,pathVars,id);
   EntityForm ef=(EntityForm)model.asMap().get("entityForm");
-  DynamicEntityFormInfo info=new DynamicEntityFormInfo().withCeilingClassName(PageTemplate.class.getName()).withSecurityCeilingClassName(Page.class.getName()).withCriteriaName("constructForm").withPropertyName("pageTemplate").withPropertyValue(ef.findField("pageTemplate").getValue());
+  DynamicEntityFormInfo info=getDynamicForm(ef,id);
   EntityForm dynamicForm=getDynamicFieldTemplateForm(info,id,null);
   ef.putDynamicFormInfo("pageTemplate",info);
   ef.putDynamicForm("pageTemplate",dynamicForm);
-  ef.findField("pageTemplate").setOnChangeTrigger("dynamicForm-pageTemplate");
+  addOnChangeTrigger(ef);
   return returnPath;
 }
