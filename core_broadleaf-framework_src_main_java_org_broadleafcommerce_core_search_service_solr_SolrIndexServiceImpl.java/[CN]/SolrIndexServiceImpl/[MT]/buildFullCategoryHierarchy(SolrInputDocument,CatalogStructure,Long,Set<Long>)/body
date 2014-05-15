@@ -6,6 +6,9 @@
   }
   Set<Long> parents=cache.getParentCategoriesByCategory().get(categoryId);
   for (  Long parent : parents) {
-    buildFullCategoryHierarchy(document,cache,parent);
+    if (!indexedParents.contains(parent)) {
+      indexedParents.add(parent);
+      buildFullCategoryHierarchy(document,cache,parent,indexedParents);
+    }
   }
 }
