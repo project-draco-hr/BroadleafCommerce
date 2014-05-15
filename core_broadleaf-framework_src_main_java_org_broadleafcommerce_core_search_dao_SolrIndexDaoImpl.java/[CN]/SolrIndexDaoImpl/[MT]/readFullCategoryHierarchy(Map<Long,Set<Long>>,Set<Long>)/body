@@ -17,6 +17,13 @@
       if (childSandBoxVal == null) {
         childSandBoxVal=item.getChild();
       }
+      if (builtCategories.contains(childSandBoxVal)) {
+        LOG.warn("Category circular reference identified for category id " + childSandBoxVal);
+        continue;
+      }
+ else {
+        builtCategories.add(childSandBoxVal);
+      }
       Set<Long> hierarchy=categoryHierarchy.get(childSandBoxVal);
       if (item.getParent() != null) {
         Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getParent());
@@ -43,7 +50,7 @@
     pos=(count * batchSize) < categoryIds.length ? (count * batchSize) : categoryIds.length;
   }
   if (!nextLevel.isEmpty()) {
-    readFullCategoryHierarchy(nextLevel);
+    readFullCategoryHierarchy(nextLevel,builtCategories);
   }
   categoryHierarchy.putAll(nextLevel);
 }
