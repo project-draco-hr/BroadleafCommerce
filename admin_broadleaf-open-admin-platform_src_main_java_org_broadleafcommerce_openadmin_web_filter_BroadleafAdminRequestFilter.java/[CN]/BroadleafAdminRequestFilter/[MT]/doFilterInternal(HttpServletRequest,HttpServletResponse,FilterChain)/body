@@ -7,8 +7,19 @@
     return;
   }
   try {
-    requestProcessor.process(new ServletWebRequest(request,response));
-    filterChain.doFilter(request,response);
+    persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<Void,RuntimeException>(){
+      @Override public Void execute(){
+        try {
+          requestProcessor.process(new ServletWebRequest(request,response));
+          filterChain.doFilter(request,response);
+          return null;
+        }
+ catch (        Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+);
   }
  catch (  SiteNotFoundException e) {
     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
