@@ -2,5 +2,8 @@
   if (template != null) {
     return template.getFieldGroups();
   }
-  return page.getPageTemplate().getFieldGroups();
+  if (page.getPageTemplate() != null) {
+    return page.getPageTemplate().getFieldGroups();
+  }
+  return new ArrayList<FieldGroup>(0);
 }

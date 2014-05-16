@@ -9,7 +9,7 @@
       returnList=getPageListFromCache(key);
     }
     if (returnList == null) {
-      List<Page> pageList=pageDao.findPageByURI(locale,languageOnlyLocale,uri);
+      List<Page> pageList=pageDao.findPageByURI(uri);
       returnList=buildPageDTOList(pageList,secure);
       if (context.isProductionSandBox()) {
         Collections.sort(returnList,new BeanComparator("priority"));
