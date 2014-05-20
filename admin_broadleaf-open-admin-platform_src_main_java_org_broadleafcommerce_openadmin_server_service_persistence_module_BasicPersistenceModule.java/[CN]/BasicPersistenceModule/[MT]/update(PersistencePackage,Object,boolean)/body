@@ -16,43 +16,9 @@
     Assert.isTrue(instance != null,"Entity not found");
     if (!entity.isValidationFailure()) {
       if (foreignKey != null && foreignKey.getSortField() != null && entity.findProperty(foreignKey.getSortField()) != null && entity.findProperty(foreignKey.getSortField()).getValue() != null) {
-        Integer requestedSequence=Integer.valueOf(entity.findProperty(foreignKey.getSortField()).getValue());
-        Integer previousSequence=new BigDecimal(String.valueOf(getFieldManager().getFieldValue(instance,foreignKey.getSortField()))).intValue();
-        final String idPropertyName=getIdPropertyName(mergedProperties);
-        final Object pKey=primaryKey;
-        instance=createPopulatedInstance(instance,entity,mergedProperties,false,persistencePackage.isValidateUnsubmittedProperties());
-        if (!previousSequence.equals(requestedSequence)) {
-          Serializable manyToField=(Serializable)getFieldManager().getFieldValue(instance,foreignKey.getManyToField());
-          List<Serializable> records=(List<Serializable>)getFieldManager().getFieldValue(manyToField,foreignKey.getOriginatingField());
-          Serializable myRecord=(Serializable)CollectionUtils.find(records,new TypedPredicate<Serializable>(){
-            @Override public boolean eval(            Serializable record){
-              try {
-                return (pKey.equals(getFieldManager().getFieldValue(record,idPropertyName)));
-              }
- catch (              IllegalAccessException e) {
-                return false;
-              }
-catch (              FieldNotAvailableException e) {
-                return false;
-              }
-            }
-          }
-);
-          records.remove(myRecord);
-          if (CollectionUtils.isEmpty(records)) {
-            records.add(myRecord);
-          }
- else {
-            records.add(requestedSequence - 1,myRecord);
-          }
-          int index=1;
-          Class<?> type=getFieldManager().getField(myRecord.getClass(),foreignKey.getSortField()).getType();
-          boolean isBigDecimal=BigDecimal.class.isAssignableFrom(type);
-          for (          Serializable record : records) {
-            getFieldManager().setFieldValue(record,foreignKey.getSortField(),isBigDecimal ? new BigDecimal(index) : Long.valueOf(index));
-            index++;
-          }
-        }
+        ExtensionResultHolder<Serializable> result=new ExtensionResultHolder<Serializable>();
+        extensionManager.getProxy().rebalanceForUpdate(this,persistencePackage,instance,mergedProperties,primaryKey,result);
+        instance=result.getResult();
       }
  else {
         instance=createPopulatedInstance(instance,entity,mergedProperties,false,persistencePackage.isValidateUnsubmittedProperties());

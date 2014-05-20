@@ -1,0 +1,22 @@
+{
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    ForeignKey foreignKey=(ForeignKey)persistencePerspective.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+    CriteriaTransferObject cto=new CriteriaTransferObject();
+    FilterAndSortCriteria sortCriteria=cto.get(foreignKey.getSortField());
+    sortCriteria.setSortAscending(foreignKey.getSortAscending());
+    List<FilterMapping> filterMappings=basicPersistenceModule.getFilterMappings(persistencePerspective,cto,persistencePackage.getCeilingEntityFullyQualifiedClassname(),mergedProperties);
+    int totalRecords=basicPersistenceModule.getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
+    Class<?> type=basicPersistenceModule.getFieldManager().getField(instance.getClass(),foreignKey.getSortField()).getType();
+    boolean isBigDecimal=BigDecimal.class.isAssignableFrom(type);
+    basicPersistenceModule.getFieldManager().setFieldValue(instance,foreignKey.getSortField(),isBigDecimal ? new BigDecimal(totalRecords + 1) : Long.valueOf(totalRecords + 1));
+    resultHolder.setResult(instance);
+  }
+ catch (  IllegalAccessException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  InstantiationException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+  return ExtensionResultStatusType.HANDLED;
+}
