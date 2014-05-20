@@ -27,6 +27,9 @@ catch (    FieldNotAvailableException e) {
           entity.addProperty(myProperty);
         }
       }
+ else       if (submittedEntity.findProperty(entry.getKey()) != null) {
+        entity.findProperty(entry.getKey()).setIsDirty(submittedEntity.findProperty(entry.getKey()).getIsDirty());
+      }
     }
     isUpdateRequest=true;
   }
