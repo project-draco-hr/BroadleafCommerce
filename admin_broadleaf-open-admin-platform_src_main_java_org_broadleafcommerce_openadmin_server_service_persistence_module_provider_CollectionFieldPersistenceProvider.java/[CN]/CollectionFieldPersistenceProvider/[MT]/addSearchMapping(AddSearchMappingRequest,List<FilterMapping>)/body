@@ -1,0 +1,44 @@
+{
+  if (!canHandleSearchMapping(addSearchMappingRequest,filterMappings)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  Class clazz;
+  try {
+    clazz=Class.forName(addSearchMappingRequest.getMergedProperties().get(addSearchMappingRequest.getPropertyName()).getInheritedFromType());
+  }
+ catch (  ClassNotFoundException e) {
+    throw new PersistenceException(e);
+  }
+  Field field=addSearchMappingRequest.getFieldManager().getField(clazz,addSearchMappingRequest.getPropertyName());
+  Class<?> targetType=null;
+  if (field != null) {
+    targetType=field.getType();
+  }
+  FilterAndSortCriteria fasc=addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName());
+  FilterMapping filterMapping=new FilterMapping().withInheritedFromClass(clazz).withFullPropertyName(addSearchMappingRequest.getPropertyName()).withFilterValues(fasc.getFilterValues()).withSortDirection(fasc.getSortDirection());
+  filterMappings.add(filterMapping);
+  if (CollectionUtils.isNotEmpty(addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName()).getFilterValues())) {
+    ForeignKey foreignKey=(ForeignKey)addSearchMappingRequest.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.FOREIGNKEY);
+    if (ForeignKeyRestrictionType.COLLECTION_SIZE_EQ.toString().equals(foreignKey.getRestrictionType().toString())) {
+      filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.COLLECTION_SIZE_EQUAL.getType(),addSearchMappingRequest.getPropertyName()));
+      filterMapping.setFieldPath(new FieldPath());
+    }
+ else {
+      Map<String,FieldMetadata> foreignKeyClassMd=addSearchMappingRequest.getRecordHelper().getSimpleMergedProperties(clazz.getName(),addSearchMappingRequest.getPersistencePerspective());
+      String primaryKeyProperty=null;
+      for (      Entry<String,FieldMetadata> entry : foreignKeyClassMd.entrySet()) {
+        if (entry.getValue() instanceof BasicFieldMetadata) {
+          if (SupportedFieldType.ID.equals(((BasicFieldMetadata)entry.getValue()).getFieldType())) {
+            primaryKeyProperty=entry.getKey();
+            break;
+          }
+        }
+      }
+      filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.LONG.getType(),addSearchMappingRequest.getPropertyName()));
+      String filterPath=addSearchMappingRequest.getPropertyName() + "." + primaryKeyProperty;
+      filterMapping.setFieldPath(new FieldPath().withTargetProperty(filterPath));
+    }
+    return FieldProviderResponse.HANDLED_BREAK;
+  }
+  return FieldProviderResponse.NOT_HANDLED;
+}
