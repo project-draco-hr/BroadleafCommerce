@@ -1,5 +1,5 @@
 {
-  TypedQuery<Page> q=new TypedQueryBuilder<Page>(Page.class,"p").addRestriction("fullUrl","=",uri).toQuery(em);
+  TypedQuery<Page> q=new TypedQueryBuilder<Page>(Page.class,"p").addRestriction("p.fullUrl","=",uri).addRestriction(new TQRestriction(Mode.OR).addChildRestriction(new TQRestriction("p.activeStartDate","IS NULL")).addChildRestriction(new TQRestriction("p.activeStartDate","<=",SystemTime.asDate()))).addRestriction(new TQRestriction(Mode.OR).addChildRestriction(new TQRestriction("p.activeEndDate","IS NULL")).addChildRestriction(new TQRestriction("p.activeEndDate",">=",SystemTime.asDate()))).toQuery(em);
   List<Page> pages=q.getResultList();
   return pages;
 }
