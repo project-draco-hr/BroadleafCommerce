@@ -14,9 +14,17 @@
     if (CollectionUtils.isNotEmpty(cto.getAdditionalFilterMappings())) {
       filterMappings.addAll(cto.getAdditionalFilterMappings());
     }
-    List<Serializable> records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
+    List<Serializable> records;
+    try {
+      records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
+      totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
+    }
+ catch (    CriteriaConversionException e) {
+      TypedQueryBuilder builder=getSpecialCaseQueryBuilder(e.getFieldPath(),filterMappings,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
+      records=builder.toQuery(getPersistenceManager().getDynamicEntityDao().getStandardEntityManager()).getResultList();
+      totalRecords=((Long)builder.toCountQuery(getPersistenceManager().getDynamicEntityDao().getStandardEntityManager()).getSingleResult()).intValue();
+    }
     payload=getRecords(mergedProperties,records,null,null);
-    totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
   }
  catch (  Exception e) {
     throw new ServiceException("Unable to fetch results for " + ceilingEntityFullyQualifiedClassname,e);
