@@ -1,0 +1,14 @@
+{
+  List<TQRestriction> restrictions=new ArrayList<TQRestriction>();
+  for (  FilterMapping mapping : filterMappings) {
+    if (mapping.getFieldPath() != null && mapping.getFieldPath().getTargetProperty() != null && mapping.getFieldPath().getTargetProperty().startsWith(specialExpression)) {
+      FilterValueConverter converter=mapping.getRestriction().getFilterValueConverter();
+      if (converter != null && CollectionUtils.isNotEmpty(mapping.getFilterValues())) {
+        Object val=converter.convert(mapping.getFilterValues().get(0));
+        String property=mapping.getFieldPath().getTargetProperty().substring(mapping.getFieldPath().getTargetProperty().lastIndexOf(".") + 1,mapping.getFieldPath().getTargetProperty().length());
+        restrictions.add(new TQRestriction("embeddedCollection." + property,"=",val));
+      }
+    }
+  }
+  return restrictions;
+}

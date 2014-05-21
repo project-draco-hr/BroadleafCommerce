@@ -1,0 +1,22 @@
+{
+  String specialPath=embeddedCollectionPath.getTargetProperty();
+  String[] pieces=specialPath.split("\\.");
+  if (pieces.length != 3) {
+    throw new CriteriaConversionException(String.format("Expected to find a target property of format [embedded field].[collection field].[property] for the embedded collection path (%s)",specialPath),embeddedCollectionPath);
+  }
+  String expression=specialPath.substring(0,specialPath.lastIndexOf("."));
+  TypedQueryBuilder builder;
+  try {
+    builder=new TypedQueryBuilder(Class.forName(collectionClass),"specialEntity").addJoin(new TQJoin("specialEntity." + expression,"embeddedCollection"));
+  }
+ catch (  Exception e) {
+    throw ExceptionHelper.refineException(e);
+  }
+  for (  TQRestriction restriction : buildSpecialRestrictions(expression,filterMappings)) {
+    builder=builder.addRestriction(restriction);
+  }
+  for (  TQRestriction restriction : buildStandardRestrictions(embeddedCollectionPath,filterMappings)) {
+    builder=builder.addRestriction(restriction);
+  }
+  return builder;
+}

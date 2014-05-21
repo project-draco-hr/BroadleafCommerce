@@ -1,0 +1,31 @@
+{
+  String expression=embeddedCollectionPath.getTargetProperty().substring(0,embeddedCollectionPath.getTargetProperty().lastIndexOf("."));
+  List<TQRestriction> restrictions=new ArrayList<TQRestriction>();
+  for (  FilterMapping mapping : filterMappings) {
+    checkProperty: {
+      String mappingProperty=mapping.getFieldPath() == null ? null : mapping.getFieldPath().getTargetProperty();
+      if (StringUtils.isEmpty(mappingProperty)) {
+        mappingProperty=mapping.getFullPropertyName();
+      }
+      if (!embeddedCollectionPath.getTargetProperty().equals(mappingProperty) && !StringUtils.isEmpty(mappingProperty)) {
+        PredicateProvider predicateProvider=mapping.getRestriction().getPredicateProvider();
+        if (predicateProvider != null) {
+          FilterValueConverter converter=mapping.getRestriction().getFilterValueConverter();
+          if (converter != null && CollectionUtils.isNotEmpty(mapping.getFilterValues())) {
+            Object val=converter.convert(mapping.getFilterValues().get(0));
+            if (predicateProvider instanceof LikePredicateProvider) {
+              restrictions.add(new TQRestriction("specialEntity." + mappingProperty,"LIKE",val + "%"));
+              break checkProperty;
+            }
+ else             if (predicateProvider instanceof EqPredicateProvider) {
+              restrictions.add(new TQRestriction("specialEntity." + mappingProperty,"=",val));
+              break checkProperty;
+            }
+          }
+        }
+        LOG.warn(String.format("Unable to filter the embedded collection (%s) on an additional property (%s)",expression,mappingProperty));
+      }
+    }
+  }
+  return restrictions;
+}
