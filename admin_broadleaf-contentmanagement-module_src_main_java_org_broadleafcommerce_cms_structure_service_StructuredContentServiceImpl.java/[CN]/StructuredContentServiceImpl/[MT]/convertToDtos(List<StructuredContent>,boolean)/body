@@ -1,0 +1,19 @@
+{
+  List<StructuredContentDTO> contentDTOList=new ArrayList<StructuredContentDTO>();
+  for (  StructuredContent sc : scs) {
+    String cacheKey="SC|" + sc.getId();
+    StructuredContentDTO dto=null;
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    if (context.isProductionSandBox()) {
+      dto=getSingleStructuredContentFromCache(cacheKey);
+    }
+    if (dto == null) {
+      dto=buildStructuredContentDTO(sc,isSecure);
+      if (context.isProductionSandBox()) {
+        addSingleStructuredContentToCache(cacheKey,dto);
+      }
+    }
+    contentDTOList.add(dto);
+  }
+  return hydrateForeignLookups(contentDTOList);
+}

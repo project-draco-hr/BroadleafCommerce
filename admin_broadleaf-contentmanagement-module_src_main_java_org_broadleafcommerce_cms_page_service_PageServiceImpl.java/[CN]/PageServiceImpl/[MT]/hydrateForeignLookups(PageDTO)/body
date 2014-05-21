@@ -1,0 +1,10 @@
+{
+  for (  Entry<String,Object> entry : page.getPageFields().entrySet()) {
+    if (entry.getValue() instanceof String && ((String)entry.getValue()).startsWith(FOREIGN_LOOKUP)) {
+      String clazz=((String)entry.getValue()).split("\\|")[1];
+      String id=((String)entry.getValue()).split("\\|")[2];
+      Object newValue=genericDao.readGenericEntity(genericDao.getImplClass(clazz),id);
+      entry.setValue(newValue);
+    }
+  }
+}

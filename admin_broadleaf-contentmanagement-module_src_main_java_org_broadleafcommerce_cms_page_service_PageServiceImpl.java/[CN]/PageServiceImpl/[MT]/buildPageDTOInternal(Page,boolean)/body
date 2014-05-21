@@ -14,7 +14,11 @@
   for (  String fieldKey : page.getPageFields().keySet()) {
     PageField pf=page.getPageFields().get(fieldKey);
     String originalValue=pf.getValue();
-    if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
+    FieldDefinition fd=getFieldDefinition(page,fieldKey);
+    if (fd != null && fd.getFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+      pageDTO.getPageFields().put(fieldKey,FOREIGN_LOOKUP + '|' + fd.getAdditionalForeignKeyClass()+ '|'+ originalValue);
+    }
+ else     if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
       String fldValue=staticAssetPathService.convertAllAssetPathsInContent(originalValue,secure);
       pageDTO.getPageFields().put(fieldKey,fldValue);
     }

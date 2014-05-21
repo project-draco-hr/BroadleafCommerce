@@ -23,6 +23,9 @@
       if (!CollectionUtils.isEmpty(dirtyFields) && dirtyFields.contains(property.getName())) {
         property.setIsDirty(true);
       }
+      if (StringUtils.isNotBlank(definition.getAdditionalForeignKeyClass())) {
+        property.getMetadata().setOwningClass(definition.getAdditionalForeignKeyClass());
+      }
     }
   }
   if (includeId) {
