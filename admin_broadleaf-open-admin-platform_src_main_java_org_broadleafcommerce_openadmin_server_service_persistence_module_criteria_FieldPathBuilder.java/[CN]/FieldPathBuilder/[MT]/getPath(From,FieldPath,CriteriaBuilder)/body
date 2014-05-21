@@ -43,15 +43,7 @@
       }
     }
     if (path.getParentPath() != null && path.getParentPath().getJavaType().isAnnotationPresent(Embeddable.class) && path instanceof PluralAttributePath) {
-      Class<?> myClass=((PluralAttributePath)path).getAttribute().getClass().getInterfaces()[0];
-      try {
-        From embeddedJoin=myRoot.join(((SingularAttributePath)path.getParentPath()).getAttribute());
-        Method join=embeddedJoin.getClass().getMethod("join",myClass);
-        path=(Path)join.invoke(embeddedJoin,((PluralAttributePath)path).getAttribute());
-      }
- catch (      Exception e) {
-        throw new RuntimeException(e);
-      }
+      throw new CriteriaConversionException(String.format("Unable to create a JPA criteria Path through an @Embeddable object to a collection that resides therein (%s)",fieldPath.getTargetProperty()),fieldPath);
     }
   }
   return path;

@@ -1,0 +1,26 @@
+{
+  Long embeddedCollectionPathValue=null;
+  String specialPath=embeddedCollectionPath.getTargetProperty();
+  for (  FilterMapping mapping : filterMappings) {
+    if (mapping.getFieldPath().getTargetProperty().equals(embeddedCollectionPath.getTargetProperty())) {
+      embeddedCollectionPathValue=Long.parseLong(mapping.getFilterValues().get(0));
+      break;
+    }
+  }
+  if (embeddedCollectionPathValue == null) {
+    throw new CriteriaConversionException(String.format("Expected to find a filter value for the embedded collection path (%s)",specialPath),embeddedCollectionPath);
+  }
+  String[] pieces=specialPath.split("\\.");
+  if (pieces.length != 3) {
+    throw new CriteriaConversionException(String.format("Expected to find a target property of format [embedded field].[collection field].[property] for the embedded collection path (%s)",specialPath),embeddedCollectionPath);
+  }
+  String expression=specialPath.substring(0,specialPath.lastIndexOf("."));
+  String property=specialPath.substring(specialPath.lastIndexOf(".") + 1,specialPath.length());
+  TypedQueryBuilder builder=new TypedQueryBuilder(collectionClass,"specialEntity").addJoin(new TQJoin("specialEntity." + expression,"embeddedCollection")).addRestriction("embeddedCollection." + property,"=",embeddedCollectionPathValue);
+  for (  FilterMapping mapping : filterMappings) {
+    if (!mapping.getFieldPath().getTargetProperty().equals(embeddedCollectionPath.getTargetProperty())) {
+      LOG.warn(String.format("Unable to filter the embedded collection (%s) on an additional property (%s)",specialPath,mapping.getFieldPath().getTargetProperty()));
+    }
+  }
+  return builder;
+}
