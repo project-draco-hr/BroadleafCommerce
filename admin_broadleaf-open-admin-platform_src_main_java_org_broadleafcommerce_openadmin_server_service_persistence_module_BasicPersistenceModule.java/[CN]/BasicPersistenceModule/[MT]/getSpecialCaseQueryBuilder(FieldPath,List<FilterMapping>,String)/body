@@ -18,5 +18,14 @@
   for (  TQRestriction restriction : buildStandardRestrictions(embeddedCollectionPath,filterMappings)) {
     builder=builder.addRestriction(restriction);
   }
+  for (  FilterMapping mapping : filterMappings) {
+    if (mapping.getSortDirection() != null) {
+      String mappingProperty=mapping.getFieldPath() == null ? null : mapping.getFieldPath().getTargetProperty();
+      if (StringUtils.isEmpty(mappingProperty)) {
+        mappingProperty=mapping.getFullPropertyName();
+      }
+      builder=builder.addOrder(new TQOrder("specialEntity." + mappingProperty,SortDirection.ASCENDING == mapping.getSortDirection()));
+    }
+  }
   return builder;
 }

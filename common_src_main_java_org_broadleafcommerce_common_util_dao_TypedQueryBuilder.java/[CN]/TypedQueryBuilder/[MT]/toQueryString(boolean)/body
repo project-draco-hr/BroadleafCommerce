@@ -17,5 +17,15 @@
       }
     }
   }
+  if (CollectionUtils.isNotEmpty(orders)) {
+    sb.append(" ORDER BY");
+    for (int j=0; j < orders.size(); j++) {
+      sb.append(" ");
+      sb.append(orders.get(j).toQl());
+      if (j < orders.size() - 1) {
+        sb.append(",");
+      }
+    }
+  }
   return sb.toString();
 }
