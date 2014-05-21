@@ -1,3 +1,10 @@
 {
-  getAdditionalFields().put(LAST_USED_SANDBOX,String.valueOf(sandBoxId));
+  AdminUserAttribute attr=getAdditionalFields().get(LAST_USED_SANDBOX);
+  if (attr == null) {
+    attr=new AdminUserAttributeImpl();
+    attr.setName(LAST_USED_SANDBOX);
+    attr.setAdminUser(this);
+    getAdditionalFields().put(LAST_USED_SANDBOX,attr);
+  }
+  attr.setValue(String.valueOf(sandBoxId));
 }

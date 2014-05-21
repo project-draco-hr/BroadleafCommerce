@@ -1,7 +1,7 @@
 {
-  String sandBox=getAdditionalFields().get(LAST_USED_SANDBOX);
-  if (StringUtils.isNotBlank(sandBox)) {
-    return Long.parseLong(sandBox);
+  AdminUserAttribute attr=getAdditionalFields().get(LAST_USED_SANDBOX);
+  if (attr != null && StringUtils.isNotBlank(attr.getValue())) {
+    return Long.parseLong(attr.getValue());
   }
   return null;
 }
