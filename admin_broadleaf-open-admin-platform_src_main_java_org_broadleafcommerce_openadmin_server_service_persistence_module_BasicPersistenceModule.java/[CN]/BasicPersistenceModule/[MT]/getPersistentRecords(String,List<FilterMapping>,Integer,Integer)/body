@@ -1,3 +1,9 @@
 {
-  return criteriaTranslator.translateQuery(persistenceManager.getDynamicEntityDao(),ceilingEntity,filterMappings,firstResult,maxResults).getResultList();
+  try {
+    return criteriaTranslator.translateQuery(persistenceManager.getDynamicEntityDao(),ceilingEntity,filterMappings,firstResult,maxResults).getResultList();
+  }
+ catch (  CriteriaConversionException e) {
+    TypedQueryBuilder builder=getSpecialCaseQueryBuilder(e.getFieldPath(),filterMappings,ceilingEntity);
+    return builder.toQuery(getPersistenceManager().getDynamicEntityDao().getStandardEntityManager()).getResultList();
+  }
 }

@@ -8,7 +8,10 @@
     billingAddress.setAddressLine1(billToDTO.getAddressLine1());
     billingAddress.setAddressLine2(billToDTO.getAddressLine2());
     billingAddress.setCity(billToDTO.getAddressCityLocality());
-    State state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
+    State state=null;
+    if (billToDTO.getAddressStateRegion() != null) {
+      state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
+    }
     if (state == null) {
       LOG.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
     }

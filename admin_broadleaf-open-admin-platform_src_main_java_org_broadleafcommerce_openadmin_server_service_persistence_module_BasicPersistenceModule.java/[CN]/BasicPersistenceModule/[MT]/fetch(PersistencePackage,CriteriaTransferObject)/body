@@ -14,16 +14,8 @@
     if (CollectionUtils.isNotEmpty(cto.getAdditionalFilterMappings())) {
       filterMappings.addAll(cto.getAdditionalFilterMappings());
     }
-    List<Serializable> records;
-    try {
-      records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
-      totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
-    }
- catch (    CriteriaConversionException e) {
-      TypedQueryBuilder builder=getSpecialCaseQueryBuilder(e.getFieldPath(),filterMappings,Class.forName(persistencePackage.getFetchTypeFullyQualifiedClassname()));
-      records=builder.toQuery(getPersistenceManager().getDynamicEntityDao().getStandardEntityManager()).getResultList();
-      totalRecords=((Long)builder.toCountQuery(getPersistenceManager().getDynamicEntityDao().getStandardEntityManager()).getSingleResult()).intValue();
-    }
+    List<Serializable> records=getPersistentRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
+    totalRecords=getTotalRecords(persistencePackage.getFetchTypeFullyQualifiedClassname(),filterMappings);
     payload=getRecords(mergedProperties,records,null,null);
   }
  catch (  Exception e) {
