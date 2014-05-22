@@ -9,7 +9,10 @@
     shippingAddress.setAddressLine1(shipToDTO.getAddressLine1());
     shippingAddress.setAddressLine2(shipToDTO.getAddressLine2());
     shippingAddress.setCity(shipToDTO.getAddressCityLocality());
-    State state=stateService.findStateByAbbreviation(shipToDTO.getAddressStateRegion());
+    State state=null;
+    if (shipToDTO.getAddressStateRegion() != null) {
+      state=stateService.findStateByAbbreviation(shipToDTO.getAddressStateRegion());
+    }
     if (state == null) {
       LOG.warn("The given state from the response: " + shipToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
     }
