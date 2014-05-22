@@ -2,41 +2,33 @@
   super.postProcessPersistenceUnitInfo(newPU);
   ConfigurationOnlyState state=ConfigurationOnlyState.getState();
   String persistenceUnitName=newPU.getPersistenceUnitName();
-  MutablePersistenceUnitInfo temp;
-  PersistenceUnitInfo pui=getMergedUnit(persistenceUnitName,newPU);
-  if (pui != null && Proxy.isProxyClass(pui.getClass())) {
-    Jpa2PersistenceUnitInfoDecorator dec=(Jpa2PersistenceUnitInfoDecorator)Proxy.getInvocationHandler(pui);
-    temp=(MutablePersistenceUnitInfo)dec.getTarget();
-  }
- else {
-    temp=(MutablePersistenceUnitInfo)pui;
-  }
+  MutablePersistenceUnitInfo pui=getMergedUnit(persistenceUnitName,newPU);
   List<String> managedClassNames=newPU.getManagedClassNames();
   for (  String managedClassName : managedClassNames) {
-    if (!temp.getManagedClassNames().contains(managedClassName)) {
-      temp.addManagedClassName(managedClassName);
+    if (!pui.getManagedClassNames().contains(managedClassName)) {
+      pui.addManagedClassName(managedClassName);
     }
   }
   List<String> mappingFileNames=newPU.getMappingFileNames();
   for (  String mappingFileName : mappingFileNames) {
-    if (!temp.getMappingFileNames().contains(mappingFileName)) {
-      temp.addMappingFileName(mappingFileName);
+    if (!pui.getMappingFileNames().contains(mappingFileName)) {
+      pui.addMappingFileName(mappingFileName);
     }
   }
-  temp.setExcludeUnlistedClasses(newPU.excludeUnlistedClasses());
+  pui.setExcludeUnlistedClasses(newPU.excludeUnlistedClasses());
   for (  URL url : newPU.getJarFileUrls()) {
-    if (!temp.getJarFileUrls().contains(url) && !temp.getPersistenceUnitRootUrl().equals(url)) {
-      temp.addJarFileUrl(url);
+    if (!pui.getJarFileUrls().contains(url) && !pui.getPersistenceUnitRootUrl().equals(url)) {
+      pui.addJarFileUrl(url);
     }
   }
-  if (temp.getProperties() == null) {
-    temp.setProperties(newPU.getProperties());
+  if (pui.getProperties() == null) {
+    pui.setProperties(newPU.getProperties());
   }
  else {
     Properties props=newPU.getProperties();
     if (props != null) {
       for (      Object key : props.keySet()) {
-        temp.getProperties().put(key,props.get(key));
+        pui.getProperties().put(key,props.get(key));
         for (        BroadleafClassTransformer transformer : classTransformers) {
           try {
             transformer.compileJPAProperties(props,key);
@@ -50,21 +42,21 @@
   }
   if (state == null || !state.isConfigurationOnly()) {
     if (newPU.getJtaDataSource() != null) {
-      temp.setJtaDataSource(newPU.getJtaDataSource());
+      pui.setJtaDataSource(newPU.getJtaDataSource());
     }
     if (newPU.getNonJtaDataSource() != null) {
-      temp.setNonJtaDataSource(newPU.getNonJtaDataSource());
+      pui.setNonJtaDataSource(newPU.getNonJtaDataSource());
     }
   }
  else {
-    temp.getProperties().setProperty("hibernate.hbm2ddl.auto","none");
-    temp.getProperties().setProperty("hibernate.temp.use_jdbc_metadata_defaults","false");
+    pui.getProperties().setProperty("hibernate.hbm2ddl.auto","none");
+    pui.getProperties().setProperty("hibernate.temp.use_jdbc_metadata_defaults","false");
   }
-  temp.setTransactionType(newPU.getTransactionType());
+  pui.setTransactionType(newPU.getTransactionType());
   if (newPU.getPersistenceProviderClassName() != null) {
-    temp.setPersistenceProviderClassName(newPU.getPersistenceProviderClassName());
+    pui.setPersistenceProviderClassName(newPU.getPersistenceProviderClassName());
   }
   if (newPU.getPersistenceProviderPackageName() != null) {
-    temp.setPersistenceProviderPackageName(newPU.getPersistenceProviderPackageName());
+    pui.setPersistenceProviderPackageName(newPU.getPersistenceProviderPackageName());
   }
 }

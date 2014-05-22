@@ -1,10 +1,6 @@
 {
   if (!mergedPus.containsKey(persistenceUnitName)) {
-    PersistenceUnitInfo puiToStore=newPU;
-    if (jpa2ApiPresent) {
-      puiToStore=(PersistenceUnitInfo)Proxy.newProxyInstance(SmartPersistenceUnitInfo.class.getClassLoader(),new Class[]{SmartPersistenceUnitInfo.class},new Jpa2PersistenceUnitInfoDecorator(newPU));
-    }
-    mergedPus.put(persistenceUnitName,puiToStore);
+    mergedPus.put(persistenceUnitName,newPU);
   }
-  return mergedPus.get(persistenceUnitName);
+  return (MutablePersistenceUnitInfo)mergedPus.get(persistenceUnitName);
 }
