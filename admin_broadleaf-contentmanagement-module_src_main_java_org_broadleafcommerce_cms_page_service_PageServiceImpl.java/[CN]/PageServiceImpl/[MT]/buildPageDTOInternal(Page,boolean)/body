@@ -30,5 +30,10 @@
   if (page.getQualifyingItemCriteria() != null && page.getQualifyingItemCriteria().size() > 0) {
     pageDTO.setItemCriteriaDTOList(buildItemCriteriaDTOList(page));
   }
+  for (  Entry<String,PageAttribute> entry : page.getAdditionalAttributes().entrySet()) {
+    pageDTO.getPageAttributes().put(entry.getKey(),entry.getValue().getValue());
+  }
+  pageDTO.getPageAttributes().put("title",page.getMetaTitle());
+  pageDTO.getPageAttributes().put("metaDescription",page.getMetaDescription());
   return pageDTO;
 }
