@@ -4,6 +4,12 @@
       other=CurrencyConversionContext.getCurrencyConversionService().convertCurrency(other,getCurrency(),amount.scale());
     }
  else {
+      if (this == Money.ZERO) {
+        return other;
+      }
+ else       if (other == Money.ZERO) {
+        return this;
+      }
       throw new UnsupportedOperationException("No currency conversion service is registered, cannot add different currency " + "types together (" + getCurrency().getCurrencyCode() + " "+ other.getCurrency().getCurrencyCode()+ ")");
     }
   }
