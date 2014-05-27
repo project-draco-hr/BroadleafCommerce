@@ -5,7 +5,7 @@
     }
  else {
       if (this == Money.ZERO) {
-        return other;
+        return new Money(amount.add(other.amount),other.currency,amount.scale() == 0 ? BankersRounding.getScaleForCurrency(other.currency) : amount.scale());
       }
  else       if (other == Money.ZERO) {
         return this;
