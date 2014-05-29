@@ -1,0 +1,22 @@
+{
+  String json="{\"data\":[{\"id\":1,\"quantity\":1,\"groupOperator\":\"AND\",\"groups\":[{\"id\":null,\"quantity\":null,\"groupOperator\":null,\"groups\":[],\"name\":\"category.name\",\"operator\":\"IEQUALS\",\"value\":\"merchandise\"}]}]}";
+  DataWrapper expected=new DataWrapper();
+  DataDTO leftSide=new DataDTO();
+  leftSide.setId(1l);
+  leftSide.setQuantity(1);
+  leftSide.setGroupOperator("AND");
+  ExpressionDTO rightSide=new ExpressionDTO();
+  rightSide.setName("category.name");
+  rightSide.setOperator("IEQUALS");
+  rightSide.setValue("merchandise");
+  leftSide.setGroups(new ArrayList<DataDTO>(Arrays.asList((DataDTO)rightSide)));
+  expected.setData(new ArrayList<DataDTO>(Arrays.asList(leftSide)));
+  RuleFieldPersistenceProvider provider=new RuleFieldPersistenceProvider();
+  DataWrapper wrapper=provider.convertJsonToDataWrapper(json);
+  assertEquals(expected,wrapper);
+  String expectedJson="{\"data\":[{\"id\":1,\"quantity\":1,\"groupOperator\":\"AND\",\"groups\":[{\"id\":null,\"quantity\":null,\"groupOperator\":null,\"groups\":[],\"name\":\"category.name\",\"operator\":\"IEQUALS\",\"value\":\"merchandise\",\"start\":null,\"end\":null}]}],\"error\":null,\"rawMvel\":null}";
+  String serializedWrapperJson=wrapper.serialize();
+  assertEquals(expectedJson,serializedWrapperJson);
+  DataWrapper serializedWrapper=provider.convertJsonToDataWrapper(serializedWrapperJson);
+  assertEquals(expected,serializedWrapper);
+}
