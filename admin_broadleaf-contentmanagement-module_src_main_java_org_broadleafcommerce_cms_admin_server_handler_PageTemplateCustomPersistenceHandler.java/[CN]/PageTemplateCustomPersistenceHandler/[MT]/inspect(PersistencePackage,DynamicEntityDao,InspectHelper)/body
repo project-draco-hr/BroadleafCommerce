@@ -1,18 +1,12 @@
 {
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
-    String pageId=persistencePackage.getCustomCriteria()[1];
-    String pageTemplateId=persistencePackage.getCustomCriteria().length > 3 ? persistencePackage.getCustomCriteria()[3] : null;
-    Page page=pageService.findPageById(Long.valueOf(pageId));
-    PageTemplate template=null;
-    if (pageTemplateId != null) {
-      template=pageService.findPageTemplateById(Long.valueOf(pageTemplateId));
-    }
+    List<FieldGroup> fieldGroups=getFieldGroups(persistencePackage,dynamicEntityDao);
     ClassMetadata metadata=new ClassMetadata();
     metadata.setCeilingType(PageTemplate.class.getName());
     ClassTree entities=new ClassTree(PageTemplateImpl.class.getName());
     metadata.setPolymorphicEntities(entities);
-    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(getFieldGroups(page,template),PageTemplate.class);
+    Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(fieldGroups,PageTemplate.class);
     metadata.setProperties(properties);
     DynamicResultSet results=new DynamicResultSet(metadata);
     return results;
