@@ -1,6 +1,7 @@
 {
   Boolean includeField=true;
-  if (!StringUtils.isEmpty(prefix)) {
+  boolean shouldTest=!StringUtils.isEmpty(prefix) && (!isComponentPrefix || prefix.split(".").length > 1);
+  if (shouldTest) {
     Field testField=getFieldManager().getField(targetClass,propertyName);
     if (testField == null) {
       Class<?>[] entities;
