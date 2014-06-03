@@ -14,11 +14,14 @@
     clone.setSiteResolutionType(getSiteResolutionType());
     clone.setSiteIdentifierValue(getSiteIdentifierValue());
     ((Status)clone).setArchived(getArchived());
-    for (    Catalog catalog : getCatalogs()) {
+    for (    SiteCatalogXref xref : getCatalogXrefs()) {
       Catalog cloneCatalog=new CatalogImpl();
-      cloneCatalog.setId(catalog.getId());
-      cloneCatalog.setName(catalog.getName());
-      clone.getCatalogs().add(cloneCatalog);
+      cloneCatalog.setId(xref.getCatalog().getId());
+      cloneCatalog.setName(xref.getCatalog().getName());
+      SiteCatalogXref cloneXref=new SiteCatalogXrefImpl();
+      cloneXref.setSite(this);
+      cloneXref.setCatalog(cloneCatalog);
+      clone.getCatalogXrefs().add(cloneXref);
     }
   }
  catch (  Exception e) {

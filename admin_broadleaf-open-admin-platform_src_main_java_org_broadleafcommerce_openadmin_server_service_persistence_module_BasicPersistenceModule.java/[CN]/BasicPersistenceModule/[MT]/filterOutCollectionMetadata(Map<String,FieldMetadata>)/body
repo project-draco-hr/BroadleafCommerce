@@ -4,8 +4,13 @@
   }
   Map<String,FieldMetadata> newMap=new HashMap<String,FieldMetadata>();
   for (  Map.Entry<String,FieldMetadata> entry : metadata.entrySet()) {
+    String fieldName=entry.getKey();
+    FieldMetadata md=entry.getValue();
     if (entry.getValue() instanceof BasicFieldMetadata) {
-      newMap.put(entry.getKey(),entry.getValue());
+      newMap.put(fieldName,md);
+    }
+ else     if (md.getAdditionalMetadata().containsKey(AdvancedCollectionFieldMetadataProvider.FOREIGN_KEY_ADDITIONAL_METADATA_KEY)) {
+      newMap.put(fieldName,(BasicFieldMetadata)md.getAdditionalMetadata().get(AdvancedCollectionFieldMetadataProvider.FOREIGN_KEY_ADDITIONAL_METADATA_KEY));
     }
   }
   return newMap;

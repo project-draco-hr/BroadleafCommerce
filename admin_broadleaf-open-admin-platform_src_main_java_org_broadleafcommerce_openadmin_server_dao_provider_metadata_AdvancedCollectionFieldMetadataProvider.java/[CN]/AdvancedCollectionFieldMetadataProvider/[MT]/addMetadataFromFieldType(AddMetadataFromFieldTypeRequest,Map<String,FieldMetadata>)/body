@@ -16,6 +16,20 @@
       fieldMetadata.setAvailableToTypes(new String[]{addMetadataFromFieldTypeRequest.getTargetClass().getName()});
     }
   }
+  if (addMetadataFromFieldTypeRequest.getForeignField() != null && addMetadataFromFieldTypeRequest.isPropertyForeignKey()) {
+    FieldInfo info=buildFieldInfo(addMetadataFromFieldTypeRequest.getRequestedField());
+    BasicFieldMetadata basicMetadata=new BasicFieldMetadata();
+    basicMetadata.setName(info.getName());
+    basicMetadata.setExcluded(false);
+    basicMetadata.setVisibility(VisibilityEnum.HIDDEN_ALL);
+    basicMetadata.setRequired(false);
+    setClassOwnership(addMetadataFromFieldTypeRequest.getReturnedClass(),addMetadataFromFieldTypeRequest.getTargetClass(),metadata,info);
+    Map<String,FieldMetadata> fakedMd=new HashMap<String,FieldMetadata>();
+    fakedMd.put(addMetadataFromFieldTypeRequest.getRequestedField().getName(),basicMetadata);
+    AddMetadataFromFieldTypeRequest fakedRequest=new AddMetadataFromFieldTypeRequest(addMetadataFromFieldTypeRequest.getRequestedField(),addMetadataFromFieldTypeRequest.getTargetClass(),addMetadataFromFieldTypeRequest.getForeignField(),addMetadataFromFieldTypeRequest.getAdditionalForeignFields(),addMetadataFromFieldTypeRequest.getMergedPropertyType(),addMetadataFromFieldTypeRequest.getComponentProperties(),addMetadataFromFieldTypeRequest.getIdProperty(),addMetadataFromFieldTypeRequest.getPrefix(),addMetadataFromFieldTypeRequest.getRequestedPropertyName(),addMetadataFromFieldTypeRequest.getType(),addMetadataFromFieldTypeRequest.isPropertyForeignKey(),addMetadataFromFieldTypeRequest.getAdditionalForeignKeyIndexPosition(),fakedMd,basicMetadata,addMetadataFromFieldTypeRequest.getExplicitType(),addMetadataFromFieldTypeRequest.getReturnedClass(),addMetadataFromFieldTypeRequest.getDynamicEntityDao());
+    defaultMetadataProvider.addMetadataFromFieldType(fakedRequest,fakedMd);
+    fieldMetadata.getAdditionalMetadata().put(FOREIGN_KEY_ADDITIONAL_METADATA_KEY,basicMetadata);
+  }
   metadata.put(addMetadataFromFieldTypeRequest.getRequestedPropertyName(),fieldMetadata);
   return FieldProviderResponse.HANDLED;
 }
