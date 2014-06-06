@@ -29,6 +29,9 @@
       LOG.trace("Locale set to default locale " + locale);
     }
   }
+  request.setAttribute(LOCALE_VAR,locale,WebRequest.SCOPE_REQUEST);
+  java.util.Locale javaLocale=BroadleafRequestContext.convertLocaleToJavaLocale(locale);
+  request.setAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME,javaLocale,WebRequest.SCOPE_REQUEST);
   if (BLCRequestUtils.isOKtoUseSession(request)) {
     request.setAttribute(LOCALE_VAR,locale,WebRequest.SCOPE_GLOBAL_SESSION);
   }
