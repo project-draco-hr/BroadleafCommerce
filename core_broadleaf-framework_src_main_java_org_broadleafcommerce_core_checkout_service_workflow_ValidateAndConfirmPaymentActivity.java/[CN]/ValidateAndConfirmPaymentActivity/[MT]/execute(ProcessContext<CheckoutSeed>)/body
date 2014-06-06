@@ -39,6 +39,9 @@
           if (LOG.isTraceEnabled()) {
             LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
           }
+          if (responseDTO.getAmount() == null || responseDTO.getPaymentTransactionType() == null) {
+            LOG.error("The ResponseDTO returned from the Gateway does not contain either an Amount or Payment Transaction Type. " + "Please check your implementation");
+          }
           PaymentTransaction transaction=orderPaymentService.createTransaction();
           transaction.setAmount(responseDTO.getAmount());
           transaction.setRawResponse(responseDTO.getRawResponse());
