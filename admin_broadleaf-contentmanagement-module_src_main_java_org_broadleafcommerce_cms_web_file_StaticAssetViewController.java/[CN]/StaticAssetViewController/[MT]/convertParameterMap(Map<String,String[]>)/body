@@ -1,7 +1,17 @@
 {
   Map<String,String> convertedMap=new LinkedHashMap<String,String>(parameterMap.size());
   for (  Map.Entry<String,String[]> entry : parameterMap.entrySet()) {
-    convertedMap.put(entry.getKey(),StringUtils.join(entry.getValue(),','));
+    if (isAllowedUrlParameter(entry.getKey())) {
+      convertedMap.put(entry.getKey(),StringUtils.join(entry.getValue(),','));
+    }
+ else {
+      if (allowUnnamedImageManipulation) {
+        convertedMap.put(entry.getKey(),StringUtils.join(entry.getValue(),','));
+      }
+ else {
+        LOG.debug("Stripping URL image manipulation parameter " + entry.getKey() + " as it is not a known named"+ " operation.");
+      }
+    }
   }
   return convertedMap;
 }
