@@ -18,7 +18,10 @@
     }
     shippingAddress.setState(state);
     shippingAddress.setPostalCode(shipToDTO.getAddressPostalCode());
-    Country country=countryService.findCountryByAbbreviation(shipToDTO.getAddressCountryCode());
+    Country country=null;
+    if (shipToDTO.getAddressCountryCode() != null) {
+      country=countryService.findCountryByAbbreviation(shipToDTO.getAddressCountryCode());
+    }
     if (country == null) {
       LOG.warn("The given country from the response: " + shipToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
     }

@@ -2,6 +2,7 @@
   Order order=context.getSeedData().getOrder();
   Map<String,Object> rollbackState=new HashMap<String,Object>();
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
+  List<PaymentResponseDTO> failedTransactions=new ArrayList<PaymentResponseDTO>();
   List<PaymentTransaction> confirmedTransactions=new ArrayList<PaymentTransaction>();
   for (  OrderPayment payment : order.getPayments()) {
     if (payment.isActive()) {
@@ -16,26 +17,47 @@
             throw new CheckoutException(msg,context.getSeedData());
           }
           PaymentGatewayConfigurationService cfg=paymentConfigurationServiceProvider.getGatewayConfigurationService(tx.getOrderPayment().getGatewayType());
-          PaymentResponseDTO responseDTO=cfg.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+          PaymentResponseDTO responseDTO=null;
+          if (PaymentType.CREDIT_CARD.equals(payment.getType())) {
+            PaymentRequestDTO s2sRequest=orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx);
+            populateCreditCardOnRequest(s2sRequest,payment);
+            populateBillingAddressOnRequest(s2sRequest,payment);
+            populateCustomerOnRequest(s2sRequest,payment);
+            if (cfg.getConfiguration().isPerformAuthorizeAndCapture()) {
+              responseDTO=cfg.getTransactionService().authorizeAndCapture(s2sRequest);
+            }
+ else {
+              responseDTO=cfg.getTransactionService().authorize(s2sRequest);
+            }
+          }
+ else {
+            responseDTO=cfg.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+          }
+          if (responseDTO == null) {
+            String msg="Unable to Confirm/Authorize the UNCONFIRMED Transaction with id: " + tx.getId() + ". "+ "The ResponseDTO returned from the Gateway was null. Please check your implementation";
+            LOG.error(msg);
+            throw new CheckoutException(msg,context.getSeedData());
+          }
           if (LOG.isTraceEnabled()) {
             LOG.trace("Transaction Confirmation Raw Response: " + responseDTO.getRawResponse());
           }
+          if (responseDTO.getAmount() == null || responseDTO.getPaymentTransactionType() == null) {
+            LOG.error("The ResponseDTO returned from the Gateway does not contain either an Amount or Payment Transaction Type. " + "Please check your implementation");
+          }
+          PaymentTransaction transaction=orderPaymentService.createTransaction();
+          transaction.setAmount(responseDTO.getAmount());
+          transaction.setRawResponse(responseDTO.getRawResponse());
+          transaction.setSuccess(responseDTO.isSuccessful());
+          transaction.setType(responseDTO.getPaymentTransactionType());
+          transaction.setParentTransaction(tx);
+          transaction.setOrderPayment(payment);
+          transaction.setAdditionalFields(responseDTO.getResponseMap());
+          additionalTransactions.put(payment,transaction);
           if (responseDTO.isSuccessful()) {
-            PaymentTransaction transaction=orderPaymentService.createTransaction();
-            transaction.setAmount(responseDTO.getAmount());
-            transaction.setRawResponse(responseDTO.getRawResponse());
-            transaction.setSuccess(responseDTO.isSuccessful());
-            transaction.setType(responseDTO.getPaymentTransactionType());
-            transaction.setParentTransaction(tx);
-            transaction.setOrderPayment(payment);
-            transaction.setAdditionalFields(responseDTO.getResponseMap());
             confirmedTransactions.add(transaction);
-            additionalTransactions.put(payment,transaction);
           }
  else {
-            String msg="Transaction confirmation attempt with id: " + tx.getId() + " was unsuccessful";
-            LOG.error(msg);
-            throw new CheckoutException(msg,context.getSeedData());
+            failedTransactions.add(responseDTO);
           }
         }
  else         if (PaymentTransactionType.AUTHORIZE.equals(tx.getType()) || PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType())) {
@@ -49,7 +71,11 @@
   for (  OrderPayment payment : order.getPayments()) {
     if (additionalTransactions.containsKey(payment)) {
       payment.addTransaction(additionalTransactions.get(payment));
+      orderPaymentService.save(payment);
     }
+  }
+  if (!failedTransactions.isEmpty()) {
+    handleUnsuccessfulTransactions(failedTransactions,context);
   }
   Money paymentSum=new Money(BigDecimal.ZERO);
   for (  OrderPayment payment : order.getPayments()) {
