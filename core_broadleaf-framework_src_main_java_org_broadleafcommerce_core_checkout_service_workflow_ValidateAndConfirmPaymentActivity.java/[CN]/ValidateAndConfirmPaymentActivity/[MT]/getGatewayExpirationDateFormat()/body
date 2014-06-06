@@ -1,0 +1,10 @@
+{
+  String format=BLCSystemProperty.resolveSystemProperty("gateway.config.global.expDateFormat");
+  if (StringUtils.isBlank(format)) {
+    if (LOG.isWarnEnabled()) {
+      LOG.warn("The System Property 'gateway.config.global.expDateFormat' is not set. " + "Defaulting to the format 'MM/YY' for the configured gateway.");
+    }
+    format="MM/YY";
+  }
+  return format;
+}
