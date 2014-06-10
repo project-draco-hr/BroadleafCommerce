@@ -1,6 +1,9 @@
 {
   if (order != null) {
-    PaymentRequestDTO requestDTO=new PaymentRequestDTO().orderId(order.getId().toString()).orderCurrencyCode(order.getCurrency().getCurrencyCode());
+    PaymentRequestDTO requestDTO=new PaymentRequestDTO().orderId(order.getId().toString());
+    if (order.getCurrency() != null) {
+      requestDTO.orderCurrencyCode(order.getCurrency().getCurrencyCode());
+    }
     populateCustomerInfo(order,requestDTO);
     populateShipTo(order,requestDTO);
     populateBillTo(order,requestDTO);
