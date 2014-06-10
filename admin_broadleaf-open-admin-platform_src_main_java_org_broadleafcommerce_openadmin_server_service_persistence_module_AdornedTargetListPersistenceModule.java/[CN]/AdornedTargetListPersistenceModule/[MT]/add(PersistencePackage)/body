@@ -49,10 +49,27 @@
         FilterAndSortCriteria filterCriteria=cto.get(adornedTargetList.getCollectionFieldName());
         filterCriteria.setFilterValue(entity.findProperty(adornedTargetList.getInverse() ? targetPath : linkedPath).getValue());
         FilterAndSortCriteria sortCriteria=cto.get(adornedTargetList.getSortField());
-        sortCriteria.setSortAscending(adornedTargetList.getSortAscending());
+        sortCriteria.setSortAscending(!adornedTargetList.getSortAscending());
         List<FilterMapping> filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
-        int totalRecords=getTotalRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings);
-        fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),Long.valueOf(totalRecords + 1));
+        List<Serializable> joinList=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,0,1);
+        Object adornedLastOrdering=null;
+        if (CollectionUtils.isNotEmpty(joinList)) {
+          adornedLastOrdering=fieldManager.getFieldValue(joinList.get(0),adornedTargetList.getSortField());
+        }
+        Field sortFieldDef=fieldManager.getField(instance.getClass(),adornedTargetList.getSortField());
+        int add=(adornedLastOrdering == null) ? 0 : 1;
+        if (sortFieldDef.getType().isAssignableFrom(Long.class)) {
+          adornedLastOrdering=(adornedLastOrdering == null) ? new Long(0) : adornedLastOrdering;
+          fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),new Long(((Long)adornedLastOrdering).longValue() + add));
+        }
+ else         if (sortFieldDef.getType().isAssignableFrom(Integer.class)) {
+          adornedLastOrdering=(adornedLastOrdering == null) ? new Integer(0) : adornedLastOrdering;
+          fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),new Integer(((Integer)adornedLastOrdering).intValue() + add));
+        }
+ else         if (sortFieldDef.getType().isAssignableFrom(BigDecimal.class)) {
+          adornedLastOrdering=(adornedLastOrdering == null) ? BigDecimal.ZERO : adornedLastOrdering;
+          fieldManager.setFieldValue(instance,adornedTargetList.getSortField(),((BigDecimal)adornedLastOrdering).add(new BigDecimal(add)));
+        }
       }
       instance=persistenceManager.getDynamicEntityDao().merge(instance);
       persistenceManager.getDynamicEntityDao().clear();
