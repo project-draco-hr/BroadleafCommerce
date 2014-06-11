@@ -1,0 +1,10 @@
+{
+  String key=messageSource.getName();
+  if (messageSource.getLocale() != null) {
+    key=key + messageSource.getLocale().getLocaleCode();
+  }
+  if (messageSource instanceof SiteDiscriminator && ((SiteDiscriminator)messageSource).getSiteDiscriminator() != null) {
+    key=((SiteDiscriminator)messageSource).getSiteDiscriminator() + "-" + key;
+  }
+  return key;
+}

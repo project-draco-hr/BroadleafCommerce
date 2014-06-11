@@ -1,0 +1,18 @@
+{
+  String result;
+  if (BroadleafRequestContext.getBroadleafRequestContext().getSandBox() == null) {
+    result=getMessageFromCache(name,locale);
+  }
+ else {
+    result=null;
+  }
+  if (result != null) {
+    return result;
+  }
+  MessageSource messageSource=messageSourceDao.readMessageSourceByNameAndLocale(name,locale);
+  if (messageSource != null) {
+    result=messageSource.getValue();
+    addMessageToCache(name,result,messageSource.getLocale());
+  }
+  return result;
+}

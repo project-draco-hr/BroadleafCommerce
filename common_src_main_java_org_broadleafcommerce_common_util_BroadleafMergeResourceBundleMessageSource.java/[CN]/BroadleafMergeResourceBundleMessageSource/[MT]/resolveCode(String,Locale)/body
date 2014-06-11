@@ -1,0 +1,10 @@
+{
+  org.broadleafcommerce.common.locale.domain.Locale blcLocale=localeService.findLocaleByCode(locale.toString());
+  if (blcLocale != null) {
+    String message=messageSourceService.resolveMessageSource(code,blcLocale);
+    if (StringUtils.isNotBlank(message)) {
+      return createMessageFormat(message,locale);
+    }
+  }
+  return super.resolveCode(code,locale);
+}

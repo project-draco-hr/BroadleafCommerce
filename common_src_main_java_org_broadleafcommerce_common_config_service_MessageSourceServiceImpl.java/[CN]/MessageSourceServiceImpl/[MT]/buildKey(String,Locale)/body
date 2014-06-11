@@ -1,0 +1,13 @@
+{
+  String key=propertyName;
+  if (locale != null) {
+    key=key + locale.getLocaleCode();
+  }
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc != null) {
+    if (brc.getSite() != null) {
+      key=brc.getSite().getId() + "-" + key;
+    }
+  }
+  return key;
+}
