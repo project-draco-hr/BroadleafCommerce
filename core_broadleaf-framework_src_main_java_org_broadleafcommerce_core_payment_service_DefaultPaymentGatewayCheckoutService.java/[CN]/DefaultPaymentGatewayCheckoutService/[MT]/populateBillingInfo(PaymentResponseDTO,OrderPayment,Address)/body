@@ -17,7 +17,10 @@
     }
     billingAddress.setState(state);
     billingAddress.setPostalCode(billToDTO.getAddressPostalCode());
-    Country country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
+    Country country=null;
+    if (billToDTO.getAddressCountryCode() != null) {
+      country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
+    }
     if (country == null) {
       LOG.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
     }

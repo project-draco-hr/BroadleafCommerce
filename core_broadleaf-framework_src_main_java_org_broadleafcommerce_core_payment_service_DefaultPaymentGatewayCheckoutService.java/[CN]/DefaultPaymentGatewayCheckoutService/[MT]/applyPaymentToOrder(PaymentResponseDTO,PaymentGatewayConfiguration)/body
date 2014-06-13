@@ -28,27 +28,27 @@
     order.setEmailAddress(gatewayCustomer.getEmail());
   }
   populateShippingInfo(responseDTO,order);
-  List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
-  Address tempBillingAddress=null;
-  if (!config.handlesMultiplePayments()) {
-    PaymentGatewayType gateway=config.getGatewayType();
-    for (    OrderPayment payment : order.getPayments()) {
-      if (PaymentGatewayType.TEMPORARY.equals(payment.getGatewayType()) || (payment.getGatewayType() != null && payment.getGatewayType().equals(gateway))) {
-        paymentsToInvalidate.add(payment);
-        if (PaymentType.CREDIT_CARD.equals(payment.getType()) && PaymentGatewayType.TEMPORARY.equals(payment.getGatewayType())) {
-          tempBillingAddress=payment.getBillingAddress();
-        }
-      }
-    }
-  }
-  for (  OrderPayment payment : paymentsToInvalidate) {
-    order.getPayments().remove(payment);
-    markPaymentAsInvalid(payment.getId());
-  }
   OrderPayment payment=orderPaymentService.create();
   payment.setType(responseDTO.getPaymentType());
   payment.setPaymentGatewayType(responseDTO.getPaymentGatewayType());
   payment.setAmount(responseDTO.getAmount());
+  List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
+  Address tempBillingAddress=null;
+  if (!config.handlesMultiplePayments()) {
+    PaymentGatewayType gateway=config.getGatewayType();
+    for (    OrderPayment p : order.getPayments()) {
+      if (PaymentGatewayType.TEMPORARY.equals(p.getGatewayType()) || (p.isFinalPayment() && payment.isFinalPayment()) || (p.getGatewayType() != null && p.getGatewayType().equals(gateway))) {
+        paymentsToInvalidate.add(p);
+        if (PaymentType.CREDIT_CARD.equals(p.getType()) && PaymentGatewayType.TEMPORARY.equals(p.getGatewayType())) {
+          tempBillingAddress=p.getBillingAddress();
+        }
+      }
+    }
+  }
+  for (  OrderPayment invalid : paymentsToInvalidate) {
+    order.getPayments().remove(invalid);
+    markPaymentAsInvalid(invalid.getId());
+  }
   populateBillingInfo(responseDTO,payment,tempBillingAddress);
   PaymentTransaction transaction=orderPaymentService.createTransaction();
   transaction.setAmount(responseDTO.getAmount());

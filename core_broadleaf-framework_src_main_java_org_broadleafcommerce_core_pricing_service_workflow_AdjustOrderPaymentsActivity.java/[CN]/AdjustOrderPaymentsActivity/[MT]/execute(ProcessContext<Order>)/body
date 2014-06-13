@@ -1,21 +1,20 @@
 {
   Order order=context.getSeedData();
-  OrderPayment unconfirmedThirdParty=null;
-  Money appliedPaymentsWithoutThirdParty=Money.ZERO;
+  OrderPayment unconfirmedThirdPartyOrCreditCard=null;
+  Money appliedPaymentsWithoutThirdPartyOrCC=Money.ZERO;
   for (  OrderPayment payment : order.getPayments()) {
     if (payment.isActive()) {
-      PaymentTransaction initialTransaction=payment.getInitialTransaction();
-      if (initialTransaction != null && PaymentTransactionType.UNCONFIRMED.equals(initialTransaction.getType()) && PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
-        unconfirmedThirdParty=payment;
+      if (!payment.isConfirmed() && payment.isFinalPayment()) {
+        unconfirmedThirdPartyOrCreditCard=payment;
       }
  else       if (payment.getAmount() != null) {
-        appliedPaymentsWithoutThirdParty=appliedPaymentsWithoutThirdParty.add(payment.getAmount());
+        appliedPaymentsWithoutThirdPartyOrCC=appliedPaymentsWithoutThirdPartyOrCC.add(payment.getAmount());
       }
     }
   }
-  if (unconfirmedThirdParty != null) {
-    Money difference=order.getTotal().subtract(appliedPaymentsWithoutThirdParty);
-    unconfirmedThirdParty.setAmount(difference);
+  if (unconfirmedThirdPartyOrCreditCard != null) {
+    Money difference=order.getTotal().subtract(appliedPaymentsWithoutThirdPartyOrCC);
+    unconfirmedThirdPartyOrCreditCard.setAmount(difference);
   }
   context.setSeedData(order);
   return context;

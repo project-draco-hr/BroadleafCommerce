@@ -1,0 +1,13 @@
+{
+  java.util.Locale defaultLocale=getDefaultLocale();
+  if (defaultLocale == null) {
+    Locale defaultBroadleafLocale=localeService.findDefaultLocale();
+    if (defaultBroadleafLocale == null) {
+      return super.determineDefaultLocale(request);
+    }
+ else {
+      return BroadleafRequestContext.convertLocaleToJavaLocale(defaultBroadleafLocale);
+    }
+  }
+  return defaultLocale;
+}
