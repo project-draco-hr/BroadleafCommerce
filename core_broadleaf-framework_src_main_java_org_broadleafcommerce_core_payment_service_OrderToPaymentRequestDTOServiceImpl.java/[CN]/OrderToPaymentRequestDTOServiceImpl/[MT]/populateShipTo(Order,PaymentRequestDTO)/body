@@ -7,10 +7,16 @@
       String stateAbbr=null;
       String countryAbbr=null;
       String phone=null;
-      if (fgAddress.getState() != null) {
+      if (StringUtils.isNotBlank(fgAddress.getStateProvinceRegion())) {
+        stateAbbr=fgAddress.getStateProvinceRegion();
+      }
+ else       if (fgAddress.getState() != null) {
         stateAbbr=fgAddress.getState().getAbbreviation();
       }
-      if (fgAddress.getCountry() != null) {
+      if (fgAddress.getIsoCountryAlpha2() != null) {
+        countryAbbr=fgAddress.getIsoCountryAlpha2().getAlpha2();
+      }
+ else       if (fgAddress.getCountry() != null) {
         countryAbbr=fgAddress.getCountry().getAbbreviation();
       }
       if (fgAddress.getPhonePrimary() != null) {

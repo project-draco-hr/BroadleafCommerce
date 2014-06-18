@@ -15,11 +15,25 @@
       sb.append(",'" + order.getTotalTax() + "'");
       sb.append(",'" + order.getTotalShipping() + "'");
       sb.append(",'" + paymentAddress.getCity() + "'");
-      if (paymentAddress.getState() != null) {
-        sb.append(",'" + paymentAddress.getState().getName() + "'");
+      String state=null;
+      if (StringUtils.isNotBlank(paymentAddress.getStateProvinceRegion())) {
+        state=paymentAddress.getStateProvinceRegion();
       }
-      if (paymentAddress.getCountry() != null) {
-        sb.append(",'" + paymentAddress.getCountry().getName() + "'");
+ else       if (paymentAddress.getState() != null) {
+        state=paymentAddress.getState().getName();
+      }
+      String country=null;
+      if (paymentAddress.getIsoCountryAlpha2() != null) {
+        country=paymentAddress.getIsoCountryAlpha2().getName();
+      }
+ else       if (paymentAddress.getCountry() != null) {
+        country=paymentAddress.getCountry().getName();
+      }
+      if (state != null) {
+        sb.append(",'" + state + "'");
+      }
+      if (country != null) {
+        sb.append(",'" + country + "'");
       }
       sb.append("]);");
     }

@@ -10,6 +10,8 @@
   this.companyName=model.getCompanyName();
   this.isBusiness=model.isBusiness();
   this.isDefault=model.isDefault();
+  this.isoCountrySubdivision=model.getIsoCountrySubdivision();
+  this.stateProvinceRegion=model.getStateProvinceRegion();
   if (model.getState() != null) {
     StateWrapper stateWrapper=(StateWrapper)context.getBean(StateWrapper.class.getName());
     stateWrapper.wrapDetails(model.getState(),request);
@@ -19,6 +21,11 @@
     CountryWrapper countryWrapper=(CountryWrapper)context.getBean(CountryWrapper.class.getName());
     countryWrapper.wrapDetails(model.getCountry(),request);
     this.country=countryWrapper;
+  }
+  if (model.getIsoCountryAlpha2() != null) {
+    ISOCountryWrapper isoCountryWrapper=(ISOCountryWrapper)context.getBean(ISOCountryWrapper.class.getName());
+    isoCountryWrapper.wrapDetails(model.getIsoCountryAlpha2(),request);
+    this.isoCountryAlpha2=isoCountryWrapper;
   }
   if (model.getPhonePrimary() != null) {
     PhoneWrapper primaryWrapper=(PhoneWrapper)context.getBean(PhoneWrapper.class.getName());
