@@ -1,7 +1,7 @@
 {
   StringBuffer sb=new StringBuffer();
-  sb.append("ga('" + tracker + ".require', 'ecommerce', 'ecommerce.js');");
-  sb.append("ga('" + tracker + ".ecommerce:addTransaction', {");
+  sb.append("ga('" + trackerPrefix + "require', 'ecommerce', 'ecommerce.js');");
+  sb.append("ga('" + trackerPrefix + "ecommerce:addTransaction', {");
   sb.append("'id': '" + order.getOrderNumber() + "'");
   if (StringUtils.isNotBlank(getAffiliation())) {
     sb.append(",'affiliation': '" + getAffiliation() + "'");
@@ -13,7 +13,7 @@
     sb.append(",'currency': '" + order.getCurrency().getCurrencyCode() + "'");
   }
   sb.append("});");
-  getItemJs(order,tracker);
-  sb.append("ga('" + tracker + ".ecommerce:send');");
+  getItemJs(order,trackerPrefix);
+  sb.append("ga('" + trackerPrefix + "ecommerce:send');");
   return sb.toString();
 }
