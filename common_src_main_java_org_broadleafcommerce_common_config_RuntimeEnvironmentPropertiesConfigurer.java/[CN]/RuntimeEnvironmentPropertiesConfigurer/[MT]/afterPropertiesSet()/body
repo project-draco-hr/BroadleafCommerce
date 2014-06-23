@@ -6,7 +6,6 @@
   if (!CollectionUtils.isEmpty(overridableProperyLocations)) {
     combinedLocations.addAll(overridableProperyLocations);
   }
-  combinedLocations.addAll(defaultPropertyLocations);
   if (!CollectionUtils.isEmpty(propertyLocations)) {
     combinedLocations.addAll(propertyLocations);
   }
@@ -19,29 +18,34 @@
   }
   String environment=determineEnvironment();
   ArrayList<Resource> allLocations=new ArrayList<Resource>();
+  Set<Set<Resource>> testLocations=new LinkedHashSet<Set<Resource>>();
+  testLocations.add(propertyLocations);
+  testLocations.add(defaultPropertyLocations);
   for (  Resource resource : createBroadleafResource()) {
     if (resource.exists()) {
       allLocations.add(resource);
     }
   }
-  for (  Resource resource : createSharedCommonResource()) {
-    if (resource.exists()) {
-      allLocations.add(resource);
+  for (  Set<Resource> locations : testLocations) {
+    for (    Resource resource : createSharedCommonResource(locations)) {
+      if (resource.exists()) {
+        allLocations.add(resource);
+      }
     }
-  }
-  for (  Resource resource : createSharedPropertiesResource(environment)) {
-    if (resource.exists()) {
-      allLocations.add(resource);
+    for (    Resource resource : createSharedPropertiesResource(environment,locations)) {
+      if (resource.exists()) {
+        allLocations.add(resource);
+      }
     }
-  }
-  for (  Resource resource : createCommonResource()) {
-    if (resource.exists()) {
-      allLocations.add(resource);
+    for (    Resource resource : createCommonResource(locations)) {
+      if (resource.exists()) {
+        allLocations.add(resource);
+      }
     }
-  }
-  for (  Resource resource : createPropertiesResource(environment)) {
-    if (resource.exists()) {
-      allLocations.add(resource);
+    for (    Resource resource : createPropertiesResource(environment,locations)) {
+      if (resource.exists()) {
+        allLocations.add(resource);
+      }
     }
   }
   Resource sharedPropertyOverride=createSharedOverrideResource();
