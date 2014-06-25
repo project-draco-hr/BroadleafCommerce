@@ -5,8 +5,8 @@
   MutablePersistenceUnitInfo temp;
   PersistenceUnitInfo pui=getMergedUnit(persistenceUnitName,newPU);
   if (pui != null && Proxy.isProxyClass(pui.getClass())) {
-    Jpa2PersistenceUnitInfoDecorator dec=(Jpa2PersistenceUnitInfoDecorator)Proxy.getInvocationHandler(pui);
-    temp=(MutablePersistenceUnitInfo)dec.getTarget();
+    InvocationHandler dec=Proxy.getInvocationHandler(pui);
+    temp=(MutablePersistenceUnitInfo)this.getDeclaredFieldValue(dec,"target");
   }
  else {
     temp=(MutablePersistenceUnitInfo)pui;
