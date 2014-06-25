@@ -34,6 +34,15 @@
         sb.append("'cookieDomain': 'none'");
       }
       sb.append("});");
+      HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+      if (request != null) {
+        Map<String,String> setValuesMap=(Map<String,String>)request.getAttribute("blGAValuesMap");
+        if (setValuesMap != null) {
+          for (          Map.Entry<String,String> entry : setValuesMap.entrySet()) {
+            sb.append("ga('" + trackerPrefix + "set',").append(entry.getKey()).append(",").append(entry.getValue()).append(");");
+          }
+        }
+      }
       sb.append("ga('" + trackerPrefix + "send', 'pageview');");
       if (isIncludeLinkAttribution()) {
         sb.append(getLinkAttributionJs(trackerPrefix));
