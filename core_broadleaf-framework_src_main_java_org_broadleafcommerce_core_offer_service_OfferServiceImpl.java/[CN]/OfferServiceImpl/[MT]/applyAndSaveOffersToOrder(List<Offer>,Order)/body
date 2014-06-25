@@ -18,9 +18,14 @@
       }
     }
     orderOfferProcessor.synchronizeAdjustmentsAndPrices(promotableOrder);
+    verifyAdjustments(order,true);
     order.setSubTotal(order.calculateSubTotal());
     order.finalizeItemPrices();
-    return orderService.save(order,false);
+    order=orderService.save(order,false);
+    boolean madeChange=verifyAdjustments(order,false);
+    if (madeChange) {
+      order=orderService.save(order,false);
+    }
   }
   return order;
 }
