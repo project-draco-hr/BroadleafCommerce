@@ -56,17 +56,7 @@
       persistenceUnitInfoNames.add(name);
       PersistenceUnitInfo puiToStore=mPui;
       if (jpa2ApiPresent) {
-        InvocationHandler jpa2PersistenceUnitInfoDecorator=null;
-        Class<?>[] classes=getClass().getSuperclass().getDeclaredClasses();
-        for (        Class<?> clz : classes) {
-          if ("org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager$Jpa2PersistenceUnitInfoDecorator".equals(clz.getName())) {
-            Constructor<?> constructor=clz.getConstructor(Class.forName("org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo"));
-            constructor.setAccessible(true);
-            jpa2PersistenceUnitInfoDecorator=(InvocationHandler)constructor.newInstance(mPui);
-            break;
-          }
-        }
-        puiToStore=(PersistenceUnitInfo)Proxy.newProxyInstance(SmartPersistenceUnitInfo.class.getClassLoader(),new Class[]{SmartPersistenceUnitInfo.class},jpa2PersistenceUnitInfoDecorator);
+        puiToStore=this.createPersistenceUnit(mPui);
       }
       persistenceUnitInfos.put(name,puiToStore);
     }
