@@ -1,22 +1,11 @@
 {
-  Object idValue=null;
+  String idField=null;
   if (instance != null) {
-    String idField=(String)((BasicPersistenceModule)recordHelper.getCompatibleModule(OperationType.BASIC)).getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name");
-    try {
-      idValue=recordHelper.getFieldManager().getFieldValue(instance,idField);
-    }
- catch (    IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
-catch (    FieldNotAvailableException e) {
-      throw new RuntimeException(e);
-    }
+    idField=(String)((BasicPersistenceModule)recordHelper.getCompatibleModule(OperationType.BASIC)).getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name");
   }
   Entity entity;
-  boolean isUpdateRequest;
-  if (idValue == null) {
+  if (idField != null && submittedEntity.getPMap().get(idField) != null) {
     entity=submittedEntity;
-    isUpdateRequest=false;
   }
  else {
     entity=recordHelper.getRecord(propertiesMetadata,instance,null,null);
@@ -31,12 +20,11 @@ catch (    FieldNotAvailableException e) {
         entity.findProperty(entry.getKey()).setIsDirty(submittedEntity.findProperty(entry.getKey()).getIsDirty());
       }
     }
-    isUpdateRequest=true;
   }
   List<String> types=getTypeHierarchy(entity);
   for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
     FieldMetadata metadata=metadataEntry.getValue();
-    if (types.contains(metadata.getInheritedFromType()) || instance.getClass().getName().equals(metadata.getInheritedFromType())) {
+    if (types.contains(metadata.getInheritedFromType()) || (instance != null && instance.getClass().getName().equals(metadata.getInheritedFromType()))) {
       Property property=entity.getPMap().get(metadataEntry.getKey());
       if (!validateUnsubmittedProperties && property == null) {
         continue;
