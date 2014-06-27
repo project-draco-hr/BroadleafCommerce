@@ -2,7 +2,7 @@
   List<String> types=getTypeHierarchy(entity);
   for (  Entry<String,FieldMetadata> metadataEntry : propertiesMetadata.entrySet()) {
     FieldMetadata metadata=metadataEntry.getValue();
-    if (types.contains(metadata.getInheritedFromType()) || instance.getClass().getName().equals(metadata.getInheritedFromType())) {
+    if (types.contains(metadata.getInheritedFromType()) || (instance != null && instance.getClass().getName().equals(metadata.getInheritedFromType()))) {
       Property property=entity.getPMap().get(metadataEntry.getKey());
       if (!validateUnsubmittedProperties && property == null) {
         continue;
