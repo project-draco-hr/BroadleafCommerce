@@ -1,6 +1,18 @@
 {
-  if (request instanceof HttpServletRequest) {
-    return ((HttpServletRequest)request).getMethod().equalsIgnoreCase("post");
+  if (!(req instanceof HttpServletRequest)) {
+    return false;
   }
-  return false;
+  HttpServletRequest request=(HttpServletRequest)req;
+  if (!((HttpServletRequest)request).getMethod().equalsIgnoreCase("post")) {
+    return false;
+  }
+  if (excludedOrderLockRequestPatterns != null && excludedOrderLockRequestPatterns.size() > 0) {
+    for (    String pattern : excludedOrderLockRequestPatterns) {
+      RequestMatcher matcher=new AntPathRequestMatcher(pattern);
+      if (matcher.matches(request)) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
