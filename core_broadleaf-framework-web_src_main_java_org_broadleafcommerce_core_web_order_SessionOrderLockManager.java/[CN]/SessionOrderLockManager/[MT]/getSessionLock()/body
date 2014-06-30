@@ -1,0 +1,22 @@
+{
+  HttpSession session=getRequest().getSession();
+  ReentrantLock result=(ReentrantLock)session.getAttribute(LOCK_SESSION_ATTR_NAME);
+  if (result == null) {
+synchronized (LOCK) {
+      result=(ReentrantLock)session.getAttribute(LOCK_SESSION_ATTR_NAME);
+      if (result == null) {
+        result=new ReentrantLock();
+        session.setAttribute(LOCK_SESSION_ATTR_NAME,result);
+      }
+    }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Created new lock object: " + result.toString());
+    }
+  }
+ else {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Returning previously created lock object: " + result.toString());
+    }
+  }
+  return result;
+}

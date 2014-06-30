@@ -1,4 +1,25 @@
 {
   cartStateProcessor.process(new ServletWebRequest((HttpServletRequest)request,(HttpServletResponse)response));
-  chain.doFilter(request,response);
+  if (!requestRequiresLock(request)) {
+    chain.doFilter(request,response);
+    return;
+  }
+  Order order=CartState.getCart();
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Thread[" + Thread.currentThread().getId() + "] attempting to lock order["+ order.getId()+ "]");
+  }
+  Object lockObject=orderLockManager.acquireLock(order);
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Thread[" + Thread.currentThread().getId() + "] grabbed lock for order["+ order.getId()+ "]");
+  }
+  try {
+    CartState.setCart(orderService.reloadOrder(order));
+    chain.doFilter(request,response);
+  }
+  finally {
+    orderLockManager.releaseLock(lockObject);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Thread[" + Thread.currentThread().getId() + "] released lock for order["+ order.getId()+ "]");
+    }
+  }
 }
