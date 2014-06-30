@@ -1,22 +1,22 @@
 {
   HttpSession session=getRequest().getSession();
-  ReentrantLock result=(ReentrantLock)session.getAttribute(LOCK_SESSION_ATTR_NAME);
-  if (result == null) {
+  ReentrantLock lock=SESSION_LOCKS.get(session.getId());
+  if (lock == null) {
 synchronized (LOCK) {
-      result=(ReentrantLock)session.getAttribute(LOCK_SESSION_ATTR_NAME);
-      if (result == null) {
-        result=new ReentrantLock();
-        session.setAttribute(LOCK_SESSION_ATTR_NAME,result);
+      lock=SESSION_LOCKS.get(session.getId());
+      if (lock == null) {
+        lock=new ReentrantLock();
+        SESSION_LOCKS.put(session.getId(),lock);
       }
     }
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Created new lock object: " + result.toString());
+      LOG.debug("Created new lock object: " + lock.toString());
     }
   }
  else {
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Returning previously created lock object: " + result.toString());
+      LOG.debug("Returning previously created lock object: " + lock.toString());
     }
   }
-  return result;
+  return lock;
 }

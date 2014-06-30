@@ -8,11 +8,12 @@
   if (LOG.isTraceEnabled()) {
     LOG.trace("Thread[" + Thread.currentThread().getId() + "] attempting to lock order["+ order.getId()+ "]");
   }
-  Object lockObject=orderLockManager.acquireLock(order);
-  if (LOG.isTraceEnabled()) {
-    LOG.trace("Thread[" + Thread.currentThread().getId() + "] grabbed lock for order["+ order.getId()+ "]");
-  }
+  Object lockObject=null;
   try {
+    lockObject=orderLockManager.acquireLock(order);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("Thread[" + Thread.currentThread().getId() + "] grabbed lock for order["+ order.getId()+ "]");
+    }
     CartState.setCart(orderService.reloadOrder(order));
     chain.doFilter(request,response);
   }
