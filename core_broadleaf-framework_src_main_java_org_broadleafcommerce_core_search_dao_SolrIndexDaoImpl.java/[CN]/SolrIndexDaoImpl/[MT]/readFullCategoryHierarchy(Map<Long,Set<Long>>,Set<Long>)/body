@@ -13,7 +13,7 @@
     query.setParameter("categoryIds",sandBoxHelper.mergeCloneIds(em,CategoryImpl.class,temp));
     List<ParentCategoryByCategory> results=query.getResultList();
     for (    ParentCategoryByCategory item : results) {
-      Long childSandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getChild());
+      Long childSandBoxVal=sandBoxHelper.getCombinedSandBoxVersionId(em,CategoryImpl.class,item.getChild());
       if (childSandBoxVal == null) {
         childSandBoxVal=item.getChild();
       }
@@ -26,7 +26,7 @@
       }
       Set<Long> hierarchy=categoryHierarchy.get(childSandBoxVal);
       if (item.getParent() != null) {
-        Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getParent());
+        Long sandBoxVal=sandBoxHelper.getCombinedSandBoxVersionId(em,CategoryImpl.class,item.getParent());
         if (sandBoxVal == null) {
           sandBoxVal=item.getParent();
         }
@@ -36,7 +36,7 @@
         }
       }
       if (item.getDefaultParent() != null) {
-        Long sandBoxVal=sandBoxHelper.getSandBoxVersionId(em,CategoryImpl.class,item.getDefaultParent());
+        Long sandBoxVal=sandBoxHelper.getCombinedSandBoxVersionId(em,CategoryImpl.class,item.getDefaultParent());
         if (sandBoxVal == null) {
           sandBoxVal=item.getDefaultParent();
         }
