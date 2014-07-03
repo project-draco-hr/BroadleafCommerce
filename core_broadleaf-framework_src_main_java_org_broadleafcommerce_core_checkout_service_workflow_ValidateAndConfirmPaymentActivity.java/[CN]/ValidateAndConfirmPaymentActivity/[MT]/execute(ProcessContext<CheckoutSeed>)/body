@@ -4,7 +4,7 @@
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
   List<PaymentResponseDTO> failedTransactions=new ArrayList<PaymentResponseDTO>();
   List<PaymentTransaction> confirmedTransactions=new ArrayList<PaymentTransaction>();
-  Map<OrderPayment,PaymentTransactionType> confirmedRollback=new HashMap<OrderPayment,PaymentTransactionType>();
+  Map<OrderPayment,PaymentTransactionType> additionalConfirmedTransactions=new HashMap<OrderPayment,PaymentTransactionType>();
   for (  OrderPayment payment : order.getPayments()) {
     if (payment.isActive()) {
       for (      PaymentTransaction tx : payment.getTransactions()) {
@@ -55,14 +55,14 @@
           transaction.setAdditionalFields(responseDTO.getResponseMap());
           additionalTransactions.put(payment,transaction);
           if (responseDTO.isSuccessful()) {
-            confirmedRollback.put(payment,transaction.getType());
+            additionalConfirmedTransactions.put(payment,transaction.getType());
           }
  else {
             failedTransactions.add(responseDTO);
           }
         }
  else         if (PaymentTransactionType.AUTHORIZE.equals(tx.getType()) || PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType())) {
-          confirmedRollback.put(payment,tx.getType());
+          confirmedTransactions.add(tx);
         }
       }
     }
@@ -70,8 +70,8 @@
   for (  OrderPayment payment : order.getPayments()) {
     if (additionalTransactions.containsKey(payment)) {
       PaymentTransactionType confirmedType=null;
-      if (confirmedRollback.containsKey(payment)) {
-        confirmedType=confirmedRollback.get(payment);
+      if (additionalConfirmedTransactions.containsKey(payment)) {
+        confirmedType=additionalConfirmedTransactions.get(payment);
       }
       payment.addTransaction(additionalTransactions.get(payment));
       payment=orderPaymentService.save(payment);
