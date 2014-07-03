@@ -4,6 +4,7 @@
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
   List<PaymentResponseDTO> failedTransactions=new ArrayList<PaymentResponseDTO>();
   List<PaymentTransaction> confirmedTransactions=new ArrayList<PaymentTransaction>();
+  Map<OrderPayment,PaymentTransactionType> additionalConfirmedTransactions=new HashMap<OrderPayment,PaymentTransactionType>();
   for (  OrderPayment payment : order.getPayments()) {
     if (payment.isActive()) {
       for (      PaymentTransaction tx : payment.getTransactions()) {
@@ -54,7 +55,7 @@
           transaction.setAdditionalFields(responseDTO.getResponseMap());
           additionalTransactions.put(payment,transaction);
           if (responseDTO.isSuccessful()) {
-            confirmedTransactions.add(transaction);
+            additionalConfirmedTransactions.put(payment,transaction.getType());
           }
  else {
             failedTransactions.add(responseDTO);
@@ -66,14 +67,27 @@
       }
     }
   }
-  rollbackState.put(CONFIRMED_TRANSACTIONS,confirmedTransactions);
-  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
   for (  OrderPayment payment : order.getPayments()) {
     if (additionalTransactions.containsKey(payment)) {
+      PaymentTransactionType confirmedType=null;
+      if (additionalConfirmedTransactions.containsKey(payment)) {
+        confirmedType=additionalConfirmedTransactions.get(payment);
+      }
       payment.addTransaction(additionalTransactions.get(payment));
-      orderPaymentService.save(payment);
+      payment=orderPaymentService.save(payment);
+      if (confirmedType != null) {
+        List<PaymentTransaction> types=payment.getTransactionsForType(confirmedType);
+        if (types.size() == 1) {
+          confirmedTransactions.add(types.get(0));
+        }
+ else {
+          throw new IllegalArgumentException("There should only be one AUTHORIZE or AUTHORIZE_AND_CAPTURE transaction." + "There are more than one confirmed payment transactions for Order Payment:" + payment.getId());
+        }
+      }
     }
   }
+  rollbackState.put(CONFIRMED_TRANSACTIONS,confirmedTransactions);
+  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
   if (!failedTransactions.isEmpty()) {
     handleUnsuccessfulTransactions(failedTransactions,context);
   }
