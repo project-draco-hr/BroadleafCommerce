@@ -1,5 +1,7 @@
 {
-  JdbcTemplate template=new JdbcTemplate(dataSource);
-  int rowsAffected=template.update("UPDATE BLC_ORDER_LOCK SET LOCKED = ? WHERE ORDER_ID = ?","N",order.getId());
+  Query q=em.createNamedQuery("BC_ORDER_LOCK_RELEASE");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  int rowsAffected=q.executeUpdate();
   return rowsAffected == 1;
 }

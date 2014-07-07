@@ -1,18 +1,29 @@
 {
-  JdbcTemplate template=new JdbcTemplate(dataSource);
-  boolean lockExists=template.queryForObject("SELECT COUNT(ORDER_ID) FROM BLC_ORDER_LOCK WHERE ORDER_ID = ?",new Object[]{order.getId()},Integer.class) == 1;
-  if (!lockExists) {
-    int rowsAffected;
+  Query q=em.createNamedQuery("BC_ORDER_LOCK_READ");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  OrderLock ol;
+  try {
+    ol=(OrderLock)q.getSingleResult();
+  }
+ catch (  NoResultException e) {
+    ol=null;
+  }
+  if (ol == null) {
     try {
-      rowsAffected=template.update("INSERT INTO BLC_ORDER_LOCK(ORDER_ID, LOCKED) VALUES (?, ?)",order.getId(),"Y");
-    }
- catch (    ConstraintViolationException e) {
-      rowsAffected=0;
-    }
-    if (rowsAffected == 1) {
+      ol=(OrderLock)entityConfiguration.createEntityInstance(OrderLock.class.getName());
+      ol.setOrderId(order.getId());
+      ol.setLocked(true);
+      em.persist(ol);
       return true;
     }
+ catch (    EntityExistsException e) {
+      return false;
+    }
   }
-  int rowsAffected=template.update("UPDATE BLC_ORDER_LOCK SET LOCKED = ? WHERE ORDER_ID = ? AND LOCKED = ?","Y",order.getId(),"N");
+  q=em.createNamedQuery("BC_ORDER_LOCK_ACQUIRE");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  int rowsAffected=q.executeUpdate();
   return rowsAffected == 1;
 }
