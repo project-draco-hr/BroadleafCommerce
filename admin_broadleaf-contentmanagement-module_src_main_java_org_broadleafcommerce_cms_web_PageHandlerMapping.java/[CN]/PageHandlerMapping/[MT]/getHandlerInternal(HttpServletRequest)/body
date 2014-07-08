@@ -1,7 +1,8 @@
 {
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
   if (context != null && context.getRequestURIWithoutContext() != null) {
-    PageDTO page=pageService.findPageByURI(context.getSandbox(),context.getLocale(),context.getRequestURIWithoutContext(),buildMvelParameters(request),context.isSecure());
+    String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
+    PageDTO page=pageService.findPageByURI(context.getSandbox(),context.getLocale(),requestUri,buildMvelParameters(request),context.isSecure());
     if (page != null && !(page instanceof NullPageDTO)) {
       context.getRequest().setAttribute(PAGE_ATTRIBUTE_NAME,page);
       return controllerName;
