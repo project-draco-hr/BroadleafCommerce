@@ -6,6 +6,9 @@
   Class<?>[] entities=persistenceManager.getPolymorphicEntities(adornedTargetList.getAdornedTargetEntityClassname());
   mergedProperties=persistenceManager.getDynamicEntityDao().getMergedProperties(adornedTargetList.getAdornedTargetEntityClassname(),entities,null,new String[]{},new ForeignKey[]{},MergedPropertyType.ADORNEDTARGETLIST,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
   filterMappings=getAdornedTargetFilterMappings(persistencePerspective,cto,mergedProperties,adornedTargetList);
+  if (CollectionUtils.isNotEmpty(cto.getAdditionalFilterMappings())) {
+    filterMappings.addAll(cto.getAdditionalFilterMappings());
+  }
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   Class<?>[] entities2=persistenceManager.getPolymorphicEntities(ceilingEntityFullyQualifiedClassname);
   Map<String,FieldMetadata> mergedPropertiesTarget=persistenceManager.getDynamicEntityDao().getMergedProperties(ceilingEntityFullyQualifiedClassname,entities2,null,persistencePerspective.getAdditionalNonPersistentProperties(),persistencePerspective.getAdditionalForeignKeys(),MergedPropertyType.PRIMARY,persistencePerspective.getPopulateToOneFields(),persistencePerspective.getIncludeFields(),persistencePerspective.getExcludeFields(),persistencePerspective.getConfigurationKey(),"");
