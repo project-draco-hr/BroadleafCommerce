@@ -8,12 +8,10 @@
       SecurityContextHolder.setContext(ctx);
     }
     BroadleafRequestContext newBrc=new BroadleafRequestContext();
-    if (!isGlobalAdmin(req)) {
-      ServletWebRequest swr=new ServletWebRequest(req);
-      newBrc.setSite(siteResolver.resolveSite(swr,true));
-      newBrc.setSandBox(sbResolver.resolveSandBox(swr,newBrc.getSite()));
-      BroadleafRequestContext.setBroadleafRequestContext(newBrc);
-      newBrc.setTheme(themeResolver.resolveTheme(swr));
-    }
+    ServletWebRequest swr=new ServletWebRequest(req);
+    newBrc.setSite(siteResolver.resolveSite(swr,true));
+    newBrc.setSandBox(sbResolver.resolveSandBox(swr,newBrc.getSite()));
+    BroadleafRequestContext.setBroadleafRequestContext(newBrc);
+    newBrc.setTheme(themeResolver.resolveTheme(swr));
   }
 }
