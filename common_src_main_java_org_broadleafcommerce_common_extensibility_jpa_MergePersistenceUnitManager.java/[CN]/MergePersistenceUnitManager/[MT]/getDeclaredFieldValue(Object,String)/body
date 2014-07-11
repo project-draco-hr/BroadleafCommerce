@@ -1,0 +1,12 @@
+{
+  Field declaredField;
+  try {
+    declaredField=source.getClass().getDeclaredField(name);
+    declaredField.setAccessible(true);
+    Object value=declaredField.get(source);
+    return value;
+  }
+ catch (  Exception e) {
+    throw new IllegalArgumentException(e);
+  }
+}

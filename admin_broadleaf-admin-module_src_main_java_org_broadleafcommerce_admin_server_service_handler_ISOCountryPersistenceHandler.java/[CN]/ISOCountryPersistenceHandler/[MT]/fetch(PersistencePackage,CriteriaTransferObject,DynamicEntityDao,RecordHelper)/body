@@ -1,0 +1,11 @@
+{
+  FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("name")).withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<Character> explicitPath,    List<Character> directValues){
+      return builder.isNotNull(explicitPath);
+    }
+  }
+));
+  cto.getAdditionalFilterMappings().add(filterMapping);
+  PersistenceModule myModule=helper.getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
+  return myModule.fetch(persistencePackage,cto);
+}
