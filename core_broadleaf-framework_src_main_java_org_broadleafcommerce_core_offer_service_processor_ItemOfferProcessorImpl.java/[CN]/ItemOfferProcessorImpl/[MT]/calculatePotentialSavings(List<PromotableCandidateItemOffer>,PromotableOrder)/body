@@ -4,7 +4,8 @@
       Money potentialSavings=new Money(order.getOrderCurrency());
       if (itemOffer.isLegacyOffer()) {
         for (        PromotableOrderItem item : itemOffer.getLegacyCandidateTargets()) {
-          potentialSavings=potentialSavings.add(itemOffer.calculateSavingsForOrderItem(item,item.getQuantity()));
+          Money savings=itemOffer.calculateSavingsForOrderItem(item,item.getQuantity());
+          potentialSavings=potentialSavings.add(savings);
         }
       }
  else {
@@ -20,6 +21,12 @@
         }
       }
       itemOffer.setPotentialSavings(potentialSavings);
+      if (itemOffer.getUses() == 0) {
+        itemOffer.setPotentialSavingsQtyOne(potentialSavings);
+      }
+ else {
+        itemOffer.setPotentialSavingsQtyOne(potentialSavings.divide(itemOffer.getUses()));
+      }
     }
   }
 }
