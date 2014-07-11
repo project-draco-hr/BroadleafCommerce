@@ -1,3 +1,8 @@
 {
+  if (OfferType.ORDER_ITEM.equals(getType()) && CollectionUtils.isEmpty(targetItemCriteria)) {
+    OfferItemCriteria oic=new OfferItemCriteriaImpl();
+    oic.setQuantity(1);
+    return Collections.unmodifiableSet(Collections.singleton(oic));
+  }
   return targetItemCriteria;
 }
