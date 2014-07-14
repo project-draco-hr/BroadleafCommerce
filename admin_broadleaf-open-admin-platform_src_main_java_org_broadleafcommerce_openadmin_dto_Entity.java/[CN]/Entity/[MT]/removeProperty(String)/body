@@ -1,0 +1,20 @@
+{
+  boolean exists=findProperty(name) != null;
+  Property response=null;
+  if (exists) {
+    Property[] allProps=getProperties();
+    Property[] newProps=new Property[allProps.length - 1];
+    int count=0;
+    for (int j=0; j < allProps.length; j++) {
+      if (!allProps[j].getName().equals(name)) {
+        newProps[count]=allProps[j];
+        count++;
+      }
+ else {
+        response=allProps[j];
+      }
+    }
+    setProperties(newProps);
+  }
+  return response;
+}
