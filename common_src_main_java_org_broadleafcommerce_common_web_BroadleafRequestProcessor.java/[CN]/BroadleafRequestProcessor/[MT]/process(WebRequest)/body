@@ -8,8 +8,11 @@
     brc.setIgnoreSite(true);
   }
   brc.setAdmin(false);
-  if (enforceSiteProductionWorkflowUpdate) {
-    brc.getAdditionalProperties().put(SITE_ENFORCE_PRODUCTION_WORKFLOW_KEY,enforceSiteProductionWorkflowUpdate);
+  if (siteStrictValidateProductionChanges) {
+    brc.setValidateProductionChangesState(ValidateProductionChangesState.SITE);
+  }
+ else {
+    brc.setValidateProductionChangesState(ValidateProductionChangesState.UNDEFINED);
   }
   BroadleafRequestContext.setBroadleafRequestContext(brc);
   Locale locale=localeResolver.resolveLocale(request);

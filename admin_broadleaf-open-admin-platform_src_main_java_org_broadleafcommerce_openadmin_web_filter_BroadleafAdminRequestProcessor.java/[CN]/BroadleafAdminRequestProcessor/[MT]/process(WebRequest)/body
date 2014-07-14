@@ -12,7 +12,12 @@
   brc.setWebRequest(request);
   brc.setIgnoreSite(brc.getSite() == null);
   brc.setAdmin(true);
-  brc.getAdditionalProperties().put(ADMIN_ENFORCE_PRODUCTION_WORKFLOW_KEY,enforceProductionWorkflowUpdate);
+  if (adminStrictValidateProductionChanges) {
+    brc.setValidateProductionChangesState(ValidateProductionChangesState.ADMIN);
+  }
+ else {
+    brc.setValidateProductionChangesState(ValidateProductionChangesState.UNDEFINED);
+  }
   Locale locale=localeResolver.resolveLocale(request);
   brc.setLocale(locale);
   brc.setMessageSource(messageSource);
