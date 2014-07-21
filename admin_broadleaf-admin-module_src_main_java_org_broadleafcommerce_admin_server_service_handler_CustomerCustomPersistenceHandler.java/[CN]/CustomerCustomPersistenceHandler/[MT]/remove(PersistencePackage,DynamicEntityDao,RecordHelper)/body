@@ -1,0 +1,11 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    roleDao.removeCustomerRolesByCustomerId(Long.parseLong(entity.findProperty("id").getValue()));
+    helper.getCompatibleModule(OperationType.BASIC).remove(persistencePackage);
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to execute persistence activity",e);
+    throw new ServiceException("Unable to remove entity for " + entity.getType()[0],e);
+  }
+}

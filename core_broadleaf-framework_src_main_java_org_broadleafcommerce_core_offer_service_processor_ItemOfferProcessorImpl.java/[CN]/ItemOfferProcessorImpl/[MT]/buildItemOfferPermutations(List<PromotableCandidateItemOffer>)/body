@@ -1,6 +1,16 @@
 {
   List<List<PromotableCandidateItemOffer>> listOfOfferLists=new ArrayList<List<PromotableCandidateItemOffer>>();
   listOfOfferLists.add(offers);
+  if (offers.size() > 1) {
+    List<PromotableCandidateItemOffer> qtyOneOffers=new ArrayList<PromotableCandidateItemOffer>(offers);
+    Collections.sort(qtyOneOffers,ItemOfferQtyOneComparator.INSTANCE);
+    for (int i=0; i < qtyOneOffers.size(); i++) {
+      if (qtyOneOffers.get(i) != offers.get(i)) {
+        listOfOfferLists.add(qtyOneOffers);
+        break;
+      }
+    }
+  }
   if (offerListStartsWithNonCombinable(offers)) {
     List<PromotableCandidateItemOffer> listWithoutTotalitarianOrNonCombinables=new ArrayList<PromotableCandidateItemOffer>(offers);
     Iterator<PromotableCandidateItemOffer> offerIterator=listWithoutTotalitarianOrNonCombinables.iterator();

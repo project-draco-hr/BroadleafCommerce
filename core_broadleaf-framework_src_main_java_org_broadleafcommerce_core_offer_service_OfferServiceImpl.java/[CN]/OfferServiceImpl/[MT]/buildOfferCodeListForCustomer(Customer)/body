@@ -1,0 +1,15 @@
+{
+  ArrayList<OfferCode> offerCodes=new ArrayList<OfferCode>();
+  if (extensionManager != null) {
+    extensionManager.getProxy().buildOfferCodeListForCustomer(customer,offerCodes);
+  }
+  if (!offerCodes.isEmpty()) {
+    Iterator<OfferCode> itr=offerCodes.iterator();
+    while (itr.hasNext()) {
+      if (!verifyMaxCustomerUsageThreshold(customer,itr.next())) {
+        itr.remove();
+      }
+    }
+  }
+  return offerCodes;
+}

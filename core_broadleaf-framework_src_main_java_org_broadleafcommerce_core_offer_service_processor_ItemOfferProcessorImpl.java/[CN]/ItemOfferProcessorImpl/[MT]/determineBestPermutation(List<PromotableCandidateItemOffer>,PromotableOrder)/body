@@ -4,6 +4,9 @@
   Money lowestSubtotal=null;
   if (permutations.size() > 1) {
     for (    List<PromotableCandidateItemOffer> offerList : permutations) {
+      for (      PromotableCandidateItemOffer offer : offerList) {
+        offer.resetUses();
+      }
       applyAllItemOffers(offerList,order);
       chooseSaleOrRetailAdjustments(order);
       Money testSubtotal=order.calculateSubtotalWithAdjustments();
@@ -18,6 +21,9 @@
   }
  else {
     bestOfferList=permutations.get(0);
+  }
+  for (  PromotableCandidateItemOffer offer : bestOfferList) {
+    offer.resetUses();
   }
   applyAllItemOffers(bestOfferList,order);
 }

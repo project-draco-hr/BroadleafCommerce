@@ -1,0 +1,16 @@
+{
+  preValidateCartOperation(order);
+  Set<Offer> addedOffers=offerService.getUniqueOffersFromOrder(order);
+  if (offerCodes != null && !offerCodes.isEmpty()) {
+    for (    OfferCode offerCode : offerCodes) {
+      if (!order.getAddedOfferCodes().contains(offerCode) && !addedOffers.contains(offerCode.getOffer())) {
+        if (!offerService.verifyMaxCustomerUsageThreshold(order.getCustomer(),offerCode)) {
+          throw new OfferMaxUseExceededException("The customer has used this offer code more than the maximum allowed number of times.");
+        }
+        order.getAddedOfferCodes().add(offerCode);
+      }
+    }
+    order=save(order,priceOrder);
+  }
+  return order;
+}
