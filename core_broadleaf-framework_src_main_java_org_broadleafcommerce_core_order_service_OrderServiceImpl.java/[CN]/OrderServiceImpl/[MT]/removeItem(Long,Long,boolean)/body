@@ -2,6 +2,9 @@
   preValidateCartOperation(findOrderById(orderId));
   try {
     OrderItem oi=orderItemService.readOrderItemById(orderItemId);
+    if (oi == null) {
+      throw new WorkflowException(new ItemNotFoundException());
+    }
     if (CollectionUtils.isNotEmpty(oi.getChildOrderItems())) {
       List<Long> childrenToRemove=new ArrayList<Long>();
       for (      OrderItem childOrderItem : oi.getChildOrderItems()) {
