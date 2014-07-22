@@ -39,7 +39,7 @@
   Order order=dataProvider.createBasicOrder();
   myOrder.set(order);
   List<Offer> offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>126",OfferDiscountType.PERCENT_OFF);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   int adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 1);
   assertTrue(order.getSubTotal().subtract(order.getOrderAdjustmentsValue()).equals(new Money(116.95D)));
@@ -48,7 +48,7 @@
   offers=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>126",OfferDiscountType.PERCENT_OFF);
   List<Offer> offers2=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
   offers.addAll(offers2);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   int qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
@@ -60,7 +60,7 @@
   OfferRule orderRule=new OfferRuleImpl();
   orderRule.setMatchRule("order.subTotal.getAmount()>100");
   offers.get(0).getOfferMatchRules().put(OfferRuleType.ORDER.getType(),orderRule);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
@@ -73,13 +73,13 @@
   myOrder.set(order);
   List<Offer> offers3=dataProvider.createOrderBasedOffer("order.subTotal.getAmount()>20",OfferDiscountType.AMOUNT_OFF);
   offers.addAll(offers3);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=order.getOrderAdjustments().size();
   assertTrue(adjustmentCount == 2);
   order=dataProvider.createBasicPromotableOrder().getOrder();
   myOrder.set(order);
   offers.get(0).setCombinableWithOtherOffers(false);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 2);
@@ -91,7 +91,7 @@
   order=dataProvider.createBasicPromotableOrder().getOrder();
   myOrder.set(order);
   offers.get(0).setTotalitarianOffer(true);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   qualifierCount=countItemQualifiers(order);
   assertTrue(adjustmentCount == 0);
@@ -105,7 +105,7 @@
   offers.get(0).setValue(new BigDecimal(".05"));
   offers.get(2).setValue(new BigDecimal(".01"));
   offers.get(2).setDiscountType(OfferDiscountType.PERCENT_OFF);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   assertTrue(adjustmentCount == 2);
   adjustmentCount=order.getOrderAdjustments().size();
