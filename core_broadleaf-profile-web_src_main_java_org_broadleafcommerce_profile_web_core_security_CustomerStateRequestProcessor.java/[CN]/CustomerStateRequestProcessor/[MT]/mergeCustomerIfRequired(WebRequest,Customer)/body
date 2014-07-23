@@ -1,8 +1,8 @@
 {
   if (request.getAttribute(getAnonymousCustomerMergedSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION) == null) {
+    request.setAttribute(getAnonymousCustomerMergedSessionAttributeName(),Boolean.TRUE,WebRequest.SCOPE_GLOBAL_SESSION);
     Customer anonymousCustomer=getAnonymousCustomer(request);
     customer=copyAnonymousCustomerInfoToCustomer(request,anonymousCustomer,customer);
-    request.setAttribute(getAnonymousCustomerMergedSessionAttributeName(),Boolean.TRUE,WebRequest.SCOPE_GLOBAL_SESSION);
   }
   return customer;
 }
