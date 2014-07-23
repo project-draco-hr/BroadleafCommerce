@@ -56,6 +56,9 @@
   if (customer == null) {
     customer=resolveAnonymousCustomer(request);
   }
+ else {
+    customer=mergeCustomerIfRequired(request,customer);
+  }
   CustomerState.setCustomer(customer);
   Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
   if (ruleMap == null) {
