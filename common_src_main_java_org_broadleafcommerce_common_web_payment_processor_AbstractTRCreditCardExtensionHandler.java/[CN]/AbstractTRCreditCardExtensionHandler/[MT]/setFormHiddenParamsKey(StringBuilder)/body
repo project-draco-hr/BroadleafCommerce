@@ -1,5 +1,8 @@
 {
-  key.delete(0,key.length());
-  key.append(getHiddenParamsKey());
-  return ExtensionResultStatusType.HANDLED;
+  if (paymentGatewayResolver.isHandlerCompatible(getHandlerType())) {
+    key.delete(0,key.length());
+    key.append(getHiddenParamsKey());
+    return ExtensionResultStatusType.HANDLED;
+  }
+  return ExtensionResultStatusType.NOT_HANDLED;
 }
