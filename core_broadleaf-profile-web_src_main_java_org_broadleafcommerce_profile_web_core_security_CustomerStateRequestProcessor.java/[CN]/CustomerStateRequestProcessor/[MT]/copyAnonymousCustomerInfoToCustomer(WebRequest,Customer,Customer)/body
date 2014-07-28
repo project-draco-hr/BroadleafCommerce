@@ -1,0 +1,17 @@
+{
+  if (customerMergeExtensionManager != null) {
+    ExtensionResultHolder<Customer> resultHolder=new ExtensionResultHolder<Customer>();
+    resultHolder.setResult(customer);
+    customerMergeExtensionManager.getProxy().merge(resultHolder,request,anonymous);
+    if (resultHolder.getThrowable() != null) {
+      if (resultHolder.getThrowable() instanceof RuntimeException) {
+        throw ((RuntimeException)resultHolder.getThrowable());
+      }
+ else {
+        throw new RuntimeException("An unexpected error occured merging the anonymous customer",resultHolder.getThrowable());
+      }
+    }
+    return customerService.saveCustomer(resultHolder.getResult());
+  }
+  return customer;
+}
