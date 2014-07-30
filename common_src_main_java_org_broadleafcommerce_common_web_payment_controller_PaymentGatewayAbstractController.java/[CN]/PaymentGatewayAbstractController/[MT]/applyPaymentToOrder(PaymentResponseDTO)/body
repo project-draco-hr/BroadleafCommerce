@@ -1,4 +1,9 @@
 {
+  if (LOG.isErrorEnabled()) {
+    if (paymentGatewayCheckoutService == null) {
+      LOG.trace("applyPaymentToOrder: PaymentCheckoutService is null. Please check your configuration.");
+    }
+  }
   if (paymentGatewayCheckoutService != null) {
     return paymentGatewayCheckoutService.applyPaymentToOrder(responseDTO,getConfiguration());
   }

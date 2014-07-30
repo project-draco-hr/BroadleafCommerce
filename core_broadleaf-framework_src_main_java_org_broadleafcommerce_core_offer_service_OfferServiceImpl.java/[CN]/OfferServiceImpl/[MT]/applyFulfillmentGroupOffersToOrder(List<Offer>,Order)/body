@@ -1,24 +1,3 @@
 {
-  OfferContext offerContext=OfferContext.getOfferContext();
-  if (offerContext == null || offerContext.executePromotionCalculation) {
-    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order,true);
-    List<Offer> possibleFGOffers=new ArrayList<Offer>();
-    for (    Offer offer : offers) {
-      if (offer.getType().getType().equals(OfferType.FULFILLMENT_GROUP.getType())) {
-        possibleFGOffers.add(offer);
-      }
-    }
-    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(possibleFGOffers,order.getCustomer());
-    List<PromotableCandidateFulfillmentGroupOffer> qualifiedFGOffers=new ArrayList<PromotableCandidateFulfillmentGroupOffer>();
-    for (    Offer offer : filteredOffers) {
-      fulfillmentGroupOfferProcessor.filterFulfillmentGroupLevelOffer(promotableOrder,qualifiedFGOffers,offer);
-    }
-    if (!qualifiedFGOffers.isEmpty()) {
-      fulfillmentGroupOfferProcessor.applyAllFulfillmentGroupOffers(qualifiedFGOffers,promotableOrder);
-      fulfillmentGroupOfferProcessor.calculateFulfillmentGroupTotal(promotableOrder);
-      orderOfferProcessor.synchronizeAdjustmentsAndPrices(promotableOrder);
-    }
-    return orderService.save(order,false);
-  }
-  return order;
+  applyAndSaveFulfillmentGroupOffersToOrder(offers,order);
 }

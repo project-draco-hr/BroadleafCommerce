@@ -1,6 +1,17 @@
 {
-  if (paymentGatewayCheckoutService != null && orderId != null) {
-    return paymentGatewayCheckoutService.initiateCheckout(orderId);
+  String orderNumber=null;
+  if (LOG.isErrorEnabled()) {
+    if (paymentGatewayCheckoutService == null) {
+      LOG.trace("initiateCheckout: PaymentCheckoutService is null. Please check your configuration.");
+    }
   }
-  return null;
+  if (paymentGatewayCheckoutService != null && orderId != null) {
+    orderNumber=paymentGatewayCheckoutService.initiateCheckout(orderId);
+  }
+  if (orderNumber == null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("The result from calling initiateCheckout with paymentCheckoutService and orderId: " + orderId + " is null");
+    }
+  }
+  return orderNumber;
 }

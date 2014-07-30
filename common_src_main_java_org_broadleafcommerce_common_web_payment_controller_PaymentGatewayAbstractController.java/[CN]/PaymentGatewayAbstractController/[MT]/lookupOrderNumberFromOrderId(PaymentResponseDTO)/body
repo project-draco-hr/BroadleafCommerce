@@ -1,6 +1,17 @@
 {
-  if (paymentGatewayCheckoutService != null) {
-    return paymentGatewayCheckoutService.lookupOrderNumberFromOrderId(responseDTO);
+  String orderNumber=null;
+  if (LOG.isErrorEnabled()) {
+    if (paymentGatewayCheckoutService == null) {
+      LOG.trace("lookupOrderNumberFromOrderId: PaymentCheckoutService is null. Please check your configuration.");
+    }
   }
-  return null;
+  if (paymentGatewayCheckoutService != null) {
+    orderNumber=paymentGatewayCheckoutService.lookupOrderNumberFromOrderId(responseDTO);
+  }
+  if (orderNumber == null) {
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("The result from calling lookupOrderNumberFromOrderId is null");
+    }
+  }
+  return orderNumber;
 }
