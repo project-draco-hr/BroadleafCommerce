@@ -3,7 +3,9 @@
   customer=getAnonymousCustomer(request);
   if (customer == null) {
     customer=customerService.createNewCustomer();
-    request.setAttribute(getAnonymousCustomerSessionAttributeName(),customer,WebRequest.SCOPE_GLOBAL_SESSION);
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      request.setAttribute(getAnonymousCustomerSessionAttributeName(),customer,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
   }
   customer.setAnonymous(true);
   return customer;

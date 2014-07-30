@@ -1,0 +1,14 @@
+{
+  if (getRequest() == null) {
+    return false;
+  }
+  if (BroadleafRequestContext.getBroadleafRequestContext() != null && BroadleafRequestContext.getBroadleafRequestContext().getWebRequest() != null) {
+    if (!BLCRequestUtils.isOKtoUseSession(BroadleafRequestContext.getBroadleafRequestContext().getWebRequest())) {
+      return false;
+    }
+  }
+ else   if (!BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(getRequest()))) {
+    return false;
+  }
+  return true;
+}

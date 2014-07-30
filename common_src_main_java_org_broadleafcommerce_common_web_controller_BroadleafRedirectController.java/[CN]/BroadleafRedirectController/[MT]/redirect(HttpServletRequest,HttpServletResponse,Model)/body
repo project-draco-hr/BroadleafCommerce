@@ -1,5 +1,8 @@
 {
-  String path=(String)request.getSession().getAttribute("BLC_REDIRECT_URL");
+  String path=null;
+  if (BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(request))) {
+    path=(String)request.getSession().getAttribute("BLC_REDIRECT_URL");
+  }
   if (path == null) {
     path=request.getContextPath();
   }

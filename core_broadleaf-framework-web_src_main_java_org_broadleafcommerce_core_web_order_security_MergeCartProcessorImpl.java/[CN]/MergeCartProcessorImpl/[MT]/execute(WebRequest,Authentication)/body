@@ -15,5 +15,7 @@
 catch (  RemoveFromCartException e) {
     throw new RuntimeException(e);
   }
-  request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
+    request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
 }
