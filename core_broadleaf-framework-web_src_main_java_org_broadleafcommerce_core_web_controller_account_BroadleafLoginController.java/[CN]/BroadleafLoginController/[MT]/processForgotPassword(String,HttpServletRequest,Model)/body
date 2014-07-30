@@ -6,7 +6,9 @@
     return getForgotPasswordView();
   }
  else {
-    request.getSession(true).setAttribute("forgot_password_username",username);
+    if (BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(request))) {
+      request.getSession(true).setAttribute("forgot_password_username",username);
+    }
     return getForgotPasswordSuccessView();
   }
 }

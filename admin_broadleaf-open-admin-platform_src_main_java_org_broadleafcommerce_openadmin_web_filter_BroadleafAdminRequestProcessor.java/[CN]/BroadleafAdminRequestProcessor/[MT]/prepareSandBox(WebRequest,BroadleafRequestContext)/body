@@ -1,7 +1,9 @@
 {
   AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
   if (adminUser == null) {
-    request.removeAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      request.removeAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
   }
  else {
     SandBox sandBox=null;
@@ -19,7 +21,10 @@
       }
     }
     if (sandBox == null) {
-      Long previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      Long previouslySetSandBoxId=null;
+      if (BLCRequestUtils.isOKtoUseSession(request)) {
+        previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+      }
       if (previouslySetSandBoxId != null) {
         sandBox=sandBoxService.retrieveSandBoxById(previouslySetSandBoxId);
       }
@@ -41,12 +46,17 @@
         sandBox=sandBoxService.createUserSandBox(adminUser.getId(),defaultSandBox);
       }
     }
-    Long previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    Long previouslySetSandBoxId=null;
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      previouslySetSandBoxId=(Long)request.getAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
     if (previouslySetSandBoxId != null && !sandBox.getId().equals(previouslySetSandBoxId)) {
       adminUser.setLastUsedSandBoxId(sandBox.getId());
       adminUser=adminSecurityService.saveAdminUser(adminUser);
     }
-    request.setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,sandBox.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      request.setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,sandBox.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+    }
     brc.setSandBox(sandBox);
     brc.getAdditionalProperties().put("adminUser",adminUser);
   }

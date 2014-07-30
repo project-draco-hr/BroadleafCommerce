@@ -1,6 +1,8 @@
 {
   if (BroadleafControllerUtility.isAjaxRequest(request)) {
-    request.getSession().setAttribute("BLC_REDIRECT_URL",url);
+    if (BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(request))) {
+      request.getSession().setAttribute("BLC_REDIRECT_URL",url);
+    }
     url=getRedirectPath();
   }
   redirectStrategy.sendRedirect(request,response,url);

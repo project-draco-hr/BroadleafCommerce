@@ -1,6 +1,8 @@
 {
   SecurityContextHolder.clearContext();
   cookieUtils.invalidateCookie(response,SessionFixationProtectionCookie.COOKIE_NAME);
-  request.getSession().invalidate();
+  if (BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(request))) {
+    request.getSession().invalidate();
+  }
   response.sendRedirect("/");
 }
