@@ -21,9 +21,11 @@
       }
       String key=populateValueRequest.getProperty().getName().substring(populateValueRequest.getProperty().getName().indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),populateValueRequest.getProperty().getName().length());
       boolean persistValue=false;
+      boolean setOnParent=false;
       if (assignableValue == null) {
         assignableValue=(ValueAssignable)valueType.newInstance();
         persistValue=true;
+        setOnParent=true;
       }
       assignableValue.setName(key);
       assignableValue.setValue(populateValueRequest.getProperty().getValue());
@@ -48,12 +50,17 @@
           middleInstance=populateValueRequest.getFieldManager().getFieldValue(instance,propertyName);
         }
         populateValueRequest.getFieldManager().setFieldValue(assignableValue,manyToField,middleInstance);
+        if (!populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().contains(middleInstance)) {
+          persistValue=false;
+        }
       }
       if (Searchable.class.isAssignableFrom(valueType)) {
         ((Searchable)assignableValue).setSearchable(populateValueRequest.getMetadata().getSearchable());
       }
       if (persistValue) {
         populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(assignableValue);
+      }
+      if (setOnParent) {
         populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),assignableValue);
       }
     }
