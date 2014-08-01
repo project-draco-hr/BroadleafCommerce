@@ -1,6 +1,8 @@
 {
   String targetUrl=request.getParameter(getTargetUrlParameter());
-  request.getSession().removeAttribute(SESSION_ATTR);
+  if (BLCRequestUtils.isOKtoUseSession(new ServletWebRequest(request))) {
+    request.getSession().removeAttribute(SESSION_ATTR);
+  }
   if (StringUtils.isNotBlank(targetUrl) && targetUrl.contains(":")) {
     getRedirectStrategy().sendRedirect(request,response,getDefaultTargetUrl());
   }

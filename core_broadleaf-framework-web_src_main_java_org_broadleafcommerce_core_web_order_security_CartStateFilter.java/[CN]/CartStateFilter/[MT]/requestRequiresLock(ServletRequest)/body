@@ -2,8 +2,11 @@
   if (!(req instanceof HttpServletRequest)) {
     return false;
   }
+  if (!orderLockManager.isActive()) {
+    return false;
+  }
   HttpServletRequest request=(HttpServletRequest)req;
-  if (!((HttpServletRequest)request).getMethod().equalsIgnoreCase("post")) {
+  if (!request.getMethod().equalsIgnoreCase("post")) {
     return false;
   }
   if (excludedOrderLockRequestPatterns != null && excludedOrderLockRequestPatterns.size() > 0) {

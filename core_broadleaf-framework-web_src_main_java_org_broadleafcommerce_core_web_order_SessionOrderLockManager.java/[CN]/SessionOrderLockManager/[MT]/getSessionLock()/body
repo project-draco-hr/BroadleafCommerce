@@ -1,4 +1,7 @@
 {
+  if (!isActive()) {
+    throw new IllegalStateException("This is currently a sessionless environment and session cannot be used " + "to obtain a lock. Consider using a different implementation of OrderLockManager.");
+  }
   HttpSession session=getRequest().getSession();
   ReentrantLock lock=SESSION_LOCKS.get(session.getId());
   if (lock == null) {
