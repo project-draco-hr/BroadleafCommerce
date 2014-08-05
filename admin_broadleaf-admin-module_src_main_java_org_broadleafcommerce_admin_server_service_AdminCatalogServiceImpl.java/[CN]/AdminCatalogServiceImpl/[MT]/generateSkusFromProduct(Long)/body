@@ -28,17 +28,12 @@
     }
   }
   int numPermutationsCreated=0;
-  for (  List<ProductOptionValue> permutation : permutationsToGenerate) {
-    if (permutation.isEmpty())     continue;
-    Sku permutatedSku=catalogService.createSku();
-    permutatedSku.setProduct(product);
-    permutatedSku.setProductOptionValues(permutation);
-    permutatedSku=catalogService.saveSku(permutatedSku);
-    product.getAdditionalSkus().add(permutatedSku);
-    numPermutationsCreated++;
-  }
-  if (numPermutationsCreated != 0) {
-    catalogService.saveProduct(product);
+  if (extensionManager != null) {
+    ExtensionResultHolder<Integer> result=new ExtensionResultHolder<Integer>();
+    ExtensionResultStatusType resultStatusType=extensionManager.getProxy().persistSkuPermutation(product,permutationsToGenerate,result);
+    if (ExtensionResultStatusType.HANDLED == resultStatusType) {
+      numPermutationsCreated=result.getResult();
+    }
   }
   return numPermutationsCreated;
 }
