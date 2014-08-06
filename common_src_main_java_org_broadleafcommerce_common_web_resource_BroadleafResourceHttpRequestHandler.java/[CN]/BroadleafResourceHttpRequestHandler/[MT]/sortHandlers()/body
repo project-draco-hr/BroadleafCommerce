@@ -1,9 +1,10 @@
 {
-  sortedHandlers=new ArrayList<AbstractGeneratedResourceHandler>(handlers);
-  Collections.sort(sortedHandlers,new Comparator<AbstractGeneratedResourceHandler>(){
+  List<AbstractGeneratedResourceHandler> temp=new ArrayList<AbstractGeneratedResourceHandler>(handlers);
+  Collections.sort(temp,new Comparator<AbstractGeneratedResourceHandler>(){
     @Override public int compare(    AbstractGeneratedResourceHandler o1,    AbstractGeneratedResourceHandler o2){
       return new Integer(o1.getOrder()).compareTo(o2.getOrder());
     }
   }
 );
+  sortedHandlers=temp;
 }
