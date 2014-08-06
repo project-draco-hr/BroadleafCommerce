@@ -25,6 +25,11 @@
     if (StringUtils.isNotBlank(erh.getResult())) {
       dto.setTemplatePath(erh.getResult());
     }
+    ExtensionResultHolder<PageDTO> newDTO=new ExtensionResultHolder<PageDTO>();
+    extensionManager.getProxy().overridePageDto(newDTO,dto,page);
+    if (newDTO.getResult() != null) {
+      dto=newDTO.getResult();
+    }
   }
   return dto;
 }
