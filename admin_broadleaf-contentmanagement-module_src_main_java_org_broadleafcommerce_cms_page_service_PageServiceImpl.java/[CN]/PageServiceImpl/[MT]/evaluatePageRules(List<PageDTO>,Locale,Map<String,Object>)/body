@@ -6,7 +6,7 @@
     if (locale != null && locale.getLocaleCode() != null) {
       if (locale.getLocaleCode().equals(page.getLocaleCode())) {
         if (passesPageRules(page,ruleDTOs)) {
-          hydrateForeignLookups(page);
+          pageServiceUtility.hydrateForeignLookups(page);
           return page;
         }
       }
@@ -14,7 +14,7 @@
   }
   for (  PageDTO page : pageDTOList) {
     if (passesPageRules(page,ruleDTOs)) {
-      hydrateForeignLookups(page);
+      pageServiceUtility.hydrateForeignLookups(page);
       return page;
     }
   }
