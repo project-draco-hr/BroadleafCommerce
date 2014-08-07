@@ -1,0 +1,11 @@
+{
+  if (owningClass == null || id == null) {
+    return null;
+  }
+  Class<?> clazz=genericEntityDao.getImplClass(owningClass);
+  Object foreignEntity=genericEntityDao.readGenericEntity(clazz,id);
+  if (foreignEntity instanceof AdminMainEntity) {
+    return ((AdminMainEntity)foreignEntity).getMainEntityName();
+  }
+  return null;
+}

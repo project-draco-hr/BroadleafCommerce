@@ -20,6 +20,11 @@
   PageDTO dto=evaluatePageRules(returnList,locale,ruleDTOs);
   if (dto.getId() != null) {
     Page page=findPageById(dto.getId());
+    ExtensionResultHolder<PageDTO> newDTO=new ExtensionResultHolder<PageDTO>();
+    extensionManager.getProxy().overridePageDto(newDTO,dto,page);
+    if (newDTO.getResult() != null) {
+      dto=newDTO.getResult();
+    }
     ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
     templateOverrideManager.getProxy().getOverrideTemplate(erh,page);
     if (StringUtils.isNotBlank(erh.getResult())) {

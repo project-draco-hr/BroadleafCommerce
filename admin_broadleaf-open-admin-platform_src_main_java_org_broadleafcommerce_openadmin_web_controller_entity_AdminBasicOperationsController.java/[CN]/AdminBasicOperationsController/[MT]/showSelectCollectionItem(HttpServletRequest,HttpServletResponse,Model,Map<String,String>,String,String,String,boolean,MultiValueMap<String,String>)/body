@@ -4,7 +4,7 @@
   ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=null;
   FieldMetadata md=null;
-  if (!collectionField.contains("|")) {
+  if (!collectionField.contains("|") && !dynamicField) {
     collectionProperty=mainMetadata.getPMap().get(collectionField);
     md=collectionProperty.getMetadata();
     ppr=PersistencePackageRequest.fromMetadata(md,sectionCrumbs);
@@ -19,7 +19,7 @@
   modifyFetchPersistencePackageRequest(ppr,pathVars);
   DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
   ListGrid listGrid=null;
-  if (collectionField.contains("|")) {
+  if (collectionField.contains("|") || dynamicField) {
     listGrid=formService.buildMainListGrid(drs,mainMetadata,"/" + owningClass,sectionCrumbs);
     listGrid.setListGridType(ListGrid.Type.TO_ONE);
     listGrid.setSubCollectionFieldName(collectionField);
