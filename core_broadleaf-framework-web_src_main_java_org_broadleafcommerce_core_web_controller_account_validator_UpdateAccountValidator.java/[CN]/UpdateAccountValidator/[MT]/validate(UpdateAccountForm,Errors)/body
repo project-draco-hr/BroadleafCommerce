@@ -7,7 +7,7 @@
       errors.rejectValue("emailAddress","emailAddress.invalid");
     }
     Customer customerMatchingNewEmail=customerService.readCustomerByEmail(form.getEmailAddress());
-    if (customerMatchingNewEmail != null && CustomerState.getCustomer().getId() != customerMatchingNewEmail.getId()) {
+    if (customerMatchingNewEmail != null && !CustomerState.getCustomer().getId().equals(customerMatchingNewEmail.getId())) {
       errors.rejectValue("emailAddress","emailAddress.used");
     }
   }
