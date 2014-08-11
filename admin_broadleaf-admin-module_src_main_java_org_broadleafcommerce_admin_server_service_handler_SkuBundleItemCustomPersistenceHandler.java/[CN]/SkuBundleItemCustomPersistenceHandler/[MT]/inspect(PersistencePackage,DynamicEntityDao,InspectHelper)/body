@@ -1,0 +1,20 @@
+{
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
+    Map<String,FieldMetadata> properties=helper.getSimpleMergedProperties(SkuBundleItem.class.getName(),persistencePerspective);
+    FieldMetadata options=SkuCustomPersistenceHandler.createConsolidatedOptionField(SkuBundleItemImpl.class);
+    options.setOrder(3);
+    properties.put(SkuCustomPersistenceHandler.CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME,options);
+    allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
+    Class<?>[] entityClasses=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(SkuBundleItem.class);
+    ClassMetadata mergedMetadata=helper.getMergedClassMetadata(entityClasses,allMergedProperties);
+    return new DynamicResultSet(mergedMetadata,null,null);
+  }
+ catch (  Exception e) {
+    String className=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+    ServiceException ex=new ServiceException("Unable to retrieve inspection results for " + className,e);
+    LOG.error("Unable to retrieve inspection results for " + className,ex);
+    throw ex;
+  }
+}

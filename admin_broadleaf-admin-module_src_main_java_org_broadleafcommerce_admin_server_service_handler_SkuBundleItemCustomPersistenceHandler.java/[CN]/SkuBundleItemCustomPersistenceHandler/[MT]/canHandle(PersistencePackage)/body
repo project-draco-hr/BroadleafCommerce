@@ -1,0 +1,10 @@
+{
+  String className=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    return SkuBundleItem.class.isAssignableFrom(Class.forName(className));
+  }
+ catch (  ClassNotFoundException e) {
+    LOG.warn("Could not find the class " + className + ", skipping the inventory custom persistence handler");
+    return false;
+  }
+}
