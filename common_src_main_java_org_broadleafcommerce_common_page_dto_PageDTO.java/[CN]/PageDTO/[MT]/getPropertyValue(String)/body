@@ -1,0 +1,16 @@
+{
+  if (getPageFields().containsKey(propertyName)) {
+    return getPageFields().get(propertyName);
+  }
+ else   if (getPageAttributes().containsKey(propertyName)) {
+    return getPageAttributes().get(propertyName);
+  }
+ else {
+    try {
+      return BeanUtils.getProperty(this,propertyName);
+    }
+ catch (    Exception e) {
+      return null;
+    }
+  }
+}
