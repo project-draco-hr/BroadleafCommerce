@@ -2,7 +2,8 @@
   List<StructuredContentDTO> contentDTOList=null;
   Locale languageOnlyLocale=findLanguageOnlyLocale(locale);
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  String cacheKey=buildNameKey(context.getSandBox(),languageOnlyLocale,"any",contentName);
+  Long site=context.getSite() == null ? null : context.getSite().getId();
+  String cacheKey=buildNameKey(context.getSandBox(),site,languageOnlyLocale,"any",contentName);
   cacheKey=cacheKey + "-" + secure;
   if (context.isProductionSandBox()) {
     contentDTOList=getStructuredContentListFromCache(cacheKey);
