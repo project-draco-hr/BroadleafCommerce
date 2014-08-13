@@ -1,3 +1,5 @@
 {
-  return buildKey(sandBox,findLanguageOnlyLocale(page.getPageTemplate().getLocale()),page.getFullUrl());
+  Long sandBoxId=sandBox == null ? null : sandBox.getId();
+  Long siteId=(page instanceof SiteDiscriminator) ? ((SiteDiscriminator)page).getSiteDiscriminator() : null;
+  return buildKey(sandBoxId,siteId,findLanguageOnlyLocale(page.getPageTemplate().getLocale()),page.getFullUrl());
 }

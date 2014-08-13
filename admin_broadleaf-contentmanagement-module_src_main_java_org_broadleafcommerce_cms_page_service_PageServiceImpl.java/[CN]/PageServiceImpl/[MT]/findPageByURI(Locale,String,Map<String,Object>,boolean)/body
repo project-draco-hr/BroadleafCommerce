@@ -3,7 +3,9 @@
   if (uri != null) {
     Locale languageOnlyLocale=findLanguageOnlyLocale(locale);
     BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-    String key=buildKey(context.getSandBox(),languageOnlyLocale,uri);
+    Long sandBox=context.getSandBox() == null ? null : context.getSandBox().getId();
+    Long site=context.getSite() == null ? null : context.getSite().getId();
+    String key=buildKey(sandBox,site,languageOnlyLocale,uri);
     key=key + "-" + secure;
     if (context.isProductionSandBox()) {
       returnList=getPageListFromCache(key);
