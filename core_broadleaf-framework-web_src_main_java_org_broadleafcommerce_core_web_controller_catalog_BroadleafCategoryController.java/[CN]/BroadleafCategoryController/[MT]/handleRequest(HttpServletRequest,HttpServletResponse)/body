@@ -46,24 +46,16 @@
     }
     addDeepLink(model,deepLinkService,category);
     String templatePath=null;
+    if (StringUtils.isNotBlank(category.getDisplayTemplate())) {
+      templatePath=category.getDisplayTemplate();
+    }
+ else {
+      templatePath=getDefaultCategoryView();
+    }
     ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
     ExtensionResultStatusType extResult=templateOverrideManager.getProxy().getOverrideTemplate(erh,category);
     if (extResult != ExtensionResultStatusType.NOT_HANDLED) {
       templatePath=erh.getResult();
-    }
-    if (templatePath == null) {
-      if (StringUtils.isNotBlank(category.getDisplayTemplate())) {
-        templatePath=category.getDisplayTemplate();
-      }
-    }
-    if (templatePath == null) {
-      extResult=catalogExtensionManager.getProxy().getCategoryTemplate(erh,category);
-      if (extResult != ExtensionResultStatusType.NOT_HANDLED) {
-        templatePath=erh.getResult();
-      }
-    }
-    if (templatePath == null) {
-      templatePath=getDefaultCategoryView();
     }
     model.setViewName(templatePath);
   }

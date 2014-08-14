@@ -1,3 +1,10 @@
 {
-  return viewName + "_" + locale+ "_"+ isAjaxRequest();
+  String cacheKey=viewName + "_" + locale+ "_"+ isAjaxRequest();
+  ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
+  extensionManager.getProxy().appendCacheKey(erh,viewName,isAjaxRequest());
+  String addlCacheKey=(String)erh.getResult();
+  if (addlCacheKey != null) {
+    cacheKey=cacheKey + "_" + addlCacheKey;
+  }
+  return cacheKey;
 }

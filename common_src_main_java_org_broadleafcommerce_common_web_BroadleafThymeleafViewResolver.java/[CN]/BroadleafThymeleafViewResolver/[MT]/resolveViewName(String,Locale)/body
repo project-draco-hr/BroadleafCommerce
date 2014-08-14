@@ -1,0 +1,9 @@
+{
+  ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
+  extensionManager.getProxy().overrideView(erh,viewName,isAjaxRequest());
+  String viewOverride=(String)erh.getResult();
+  if (viewOverride != null) {
+    viewName=viewOverride;
+  }
+  return super.resolveViewName(viewName,locale);
+}
