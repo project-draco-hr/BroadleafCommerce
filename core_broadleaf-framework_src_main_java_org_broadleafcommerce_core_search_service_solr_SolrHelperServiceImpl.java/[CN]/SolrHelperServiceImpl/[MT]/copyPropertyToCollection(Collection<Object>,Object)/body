@@ -1,0 +1,22 @@
+{
+  if (o == null) {
+    return;
+  }
+  if (Collection.class.isAssignableFrom(o.getClass())) {
+    collection.addAll((Collection<?>)o);
+  }
+ else   if (Map.class.isAssignableFrom(o.getClass())) {
+    collection.addAll(((Map<?,?>)o).values());
+  }
+ else   if (o.getClass().isArray()) {
+    Object[] array=(Object[])o;
+    if (array.length > 0) {
+      for (      Object obj : array) {
+        collection.add(obj);
+      }
+    }
+  }
+ else {
+    collection.add(o);
+  }
+}
