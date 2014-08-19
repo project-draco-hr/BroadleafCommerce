@@ -1,4 +1,9 @@
 {
   PersistencePackage pkg=persistencePackageFactory.create(request);
-  return service.remove(pkg);
+  try {
+    return service.remove(pkg);
+  }
+ catch (  ValidationException e) {
+    return new PersistenceResponse().withEntity(e.getEntity());
+  }
 }
