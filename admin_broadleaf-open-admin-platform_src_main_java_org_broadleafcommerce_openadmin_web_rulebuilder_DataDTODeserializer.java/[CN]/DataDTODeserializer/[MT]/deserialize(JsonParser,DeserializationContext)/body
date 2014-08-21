@@ -1,7 +1,7 @@
 {
   ObjectMapper mapper=(ObjectMapper)jp.getCodec();
   ObjectNode root=(ObjectNode)mapper.readTree(jp);
-  Iterator<Map.Entry<String,JsonNode>> elementsIterator=root.getFields();
+  Iterator<Map.Entry<String,JsonNode>> elementsIterator=root.fields();
   DataDTO dataDTO=new DataDTO();
   ExpressionDTO expressionDTO=new ExpressionDTO();
   boolean isExpression=false;
@@ -9,27 +9,27 @@
     Map.Entry<String,JsonNode> element=elementsIterator.next();
     String name=element.getKey();
     if ("name".equals(name)) {
-      expressionDTO.setName(element.getValue().asText());
+      expressionDTO.setName(getNullAwareText(element.getValue()));
       isExpression=true;
     }
     if ("operator".equals(name)) {
-      expressionDTO.setOperator(element.getValue().asText());
+      expressionDTO.setOperator(getNullAwareText(element.getValue()));
       isExpression=true;
     }
     if ("value".equals(name)) {
-      expressionDTO.setValue(element.getValue().asText());
+      expressionDTO.setValue(getNullAwareText(element.getValue()));
       isExpression=true;
     }
     if ("start".equals(name)) {
-      expressionDTO.setStart(element.getValue().asText());
+      expressionDTO.setStart(getNullAwareText(element.getValue()));
       isExpression=true;
     }
     if ("end".equals(name)) {
-      expressionDTO.setEnd(element.getValue().asText());
+      expressionDTO.setEnd(getNullAwareText(element.getValue()));
       isExpression=true;
     }
     if ("id".equals(name)) {
-      if ("null".equals(element.getValue().asText())) {
+      if (getNullAwareText(element.getValue()) == null) {
         dataDTO.setId(null);
       }
  else {
@@ -37,7 +37,7 @@
       }
     }
     if ("quantity".equals(name)) {
-      if ("null".equals(element.getValue().asText())) {
+      if (getNullAwareText(element.getValue()) == null) {
         dataDTO.setQuantity(null);
       }
  else {
@@ -45,12 +45,11 @@
       }
     }
     if ("groupOperator".equals(name)) {
-      dataDTO.setGroupOperator(element.getValue().asText());
+      dataDTO.setGroupOperator(getNullAwareText(element.getValue()));
     }
     if ("groups".equals(name)) {
-      dataDTO.setGroups((ArrayList<DataDTO>)mapper.readValue(element.getValue(),new TypeReference<ArrayList<DataDTO>>(){
-      }
-));
+      CollectionType dtoCollectionType=mapper.getTypeFactory().constructCollectionType(ArrayList.class,DataDTO.class);
+      dataDTO.setGroups((ArrayList<DataDTO>)mapper.readValue(element.getValue().traverse(jp.getCodec()),dtoCollectionType));
     }
   }
   if (isExpression) {

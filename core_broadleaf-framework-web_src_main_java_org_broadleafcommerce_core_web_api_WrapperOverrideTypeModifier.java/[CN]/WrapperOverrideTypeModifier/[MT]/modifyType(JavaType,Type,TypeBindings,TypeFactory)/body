@@ -1,0 +1,12 @@
+{
+  try {
+    if (type.getClass().isAssignableFrom(SimpleType.class)) {
+      Object overriddenBean=applicationContext.getBean(type.getRawClass().getName());
+      return SimpleType.construct(overriddenBean.getClass());
+    }
+  }
+ catch (  NoSuchBeanDefinitionException e) {
+    LOG.debug("No configured bean for " + type.getClass().getName() + " returning original type");
+  }
+  return type;
+}
