@@ -11,7 +11,7 @@
   if (md instanceof BasicCollectionMetadata) {
     BasicCollectionMetadata fmd=(BasicCollectionMetadata)md;
     ppr.getEntity().setType(new String[]{entityForm.getEntityType()});
-    if (fmd.getAddMethodType().equals(AddMethodType.LOOKUP)) {
+    if (fmd.getAddMethodType().equals(AddMethodType.LOOKUP) || fmd.getAddMethodType().equals(AddMethodType.LOOKUP_FOR_UPDATE)) {
       List<String> fieldsToRemove=new ArrayList<String>();
       String idProp=getIdProperty(mainMetadata);
       for (      String key : entityForm.getFields().keySet()) {
@@ -28,6 +28,9 @@
         }
       }
       ppr.setValidateUnsubmittedProperties(false);
+    }
+    if (fmd.getAddMethodType().equals(AddMethodType.LOOKUP_FOR_UPDATE)) {
+      ppr.setUpdateLookupType(true);
     }
     Property fp=new Property();
     fp.setName(ppr.getForeignKey().getManyToField());

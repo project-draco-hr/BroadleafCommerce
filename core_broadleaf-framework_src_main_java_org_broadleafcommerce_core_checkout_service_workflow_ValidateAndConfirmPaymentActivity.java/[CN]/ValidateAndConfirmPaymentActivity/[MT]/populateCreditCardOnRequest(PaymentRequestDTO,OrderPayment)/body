@@ -1,0 +1,8 @@
+{
+  if (payment.getReferenceNumber() != null) {
+    CreditCardPayment creditCardPayment=(CreditCardPayment)secureOrderPaymentService.findSecurePaymentInfo(payment.getReferenceNumber(),PaymentType.CREDIT_CARD);
+    if (creditCardPayment != null) {
+      requestDTO.creditCard().creditCardHolderName(creditCardPayment.getNameOnCard()).creditCardNum(creditCardPayment.getPan()).creditCardExpDate(constructExpirationDate(creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear())).creditCardExpMonth(creditCardPayment.getExpirationMonth() + "").creditCardExpYear(creditCardPayment.getExpirationYear() + "").done();
+    }
+  }
+}

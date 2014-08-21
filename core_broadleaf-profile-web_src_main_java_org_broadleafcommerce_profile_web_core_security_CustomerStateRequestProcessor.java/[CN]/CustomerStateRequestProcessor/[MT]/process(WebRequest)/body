@@ -1,6 +1,9 @@
 {
   Customer customer=null;
-  Long overrideId=(Long)request.getAttribute(OVERRIDE_CUSTOMER_SESSION_ATTR_NAME,WebRequest.SCOPE_GLOBAL_SESSION);
+  Long overrideId=null;
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
+    overrideId=(Long)request.getAttribute(OVERRIDE_CUSTOMER_SESSION_ATTR_NAME,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
   if (overrideId != null) {
     customer=customerService.readCustomerById(overrideId);
   }
@@ -56,8 +59,11 @@
   if (customer == null) {
     customer=resolveAnonymousCustomer(request);
   }
+ else {
+    customer=mergeCustomerIfRequired(request,customer);
+  }
   CustomerState.setCustomer(customer);
-  Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
+  @SuppressWarnings("unchecked") Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
   if (ruleMap == null) {
     ruleMap=new HashMap<String,Object>();
   }

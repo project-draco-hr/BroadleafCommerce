@@ -36,13 +36,13 @@
   Order order=dataProvider.createBasicPromotableOrder().getOrder();
   myOrder.set(order);
   List<Offer> offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   int adjustmentCount=countItemAdjustments(order);
   assertTrue(adjustmentCount == 2);
   order=dataProvider.createBasicPromotableOrder().getOrder();
   myOrder.set(order);
   offers=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test5\"), MVEL.eval(\"toUpperCase()\",\"test6\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))");
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   assertTrue(adjustmentCount == 0);
   verify();

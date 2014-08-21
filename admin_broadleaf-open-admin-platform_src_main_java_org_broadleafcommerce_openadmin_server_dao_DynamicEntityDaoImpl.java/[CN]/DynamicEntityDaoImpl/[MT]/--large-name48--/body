@@ -1,0 +1,45 @@
+{
+  int j=0;
+  Comparator<String> propertyComparator=new Comparator<String>(){
+    @Override public int compare(    String o1,    String o2){
+      if (o1.equals(o2) || o1.startsWith(o2 + FieldManager.MAPFIELDSEPARATOR) || o2.startsWith(o1 + FieldManager.MAPFIELDSEPARATOR)) {
+        return 0;
+      }
+      return o1.compareTo(o2);
+    }
+  }
+;
+  List<String> presentationKeyList=new ArrayList<String>(presentationAttributes.keySet());
+  Collections.sort(presentationKeyList);
+  for (  String propertyName : propertyNames) {
+    final Type type=propertyTypes.get(j);
+    boolean isPropertyForeignKey=testForeignProperty(foreignField,prefix,propertyName);
+    int additionalForeignKeyIndexPosition=findAdditionalForeignKeyIndex(additionalForeignFields,prefix,propertyName);
+    j++;
+    Field myField=getFieldManager().getField(targetClass,propertyName);
+    if (myField == null) {
+      myField=getFieldManager().getField(targetClass,prefix + propertyName);
+    }
+    if (!type.isAnyType() && !type.isCollectionType() || isPropertyForeignKey || additionalForeignKeyIndexPosition >= 0 || Collections.binarySearch(presentationKeyList,propertyName,propertyComparator) >= 0) {
+      if (myField != null) {
+        boolean handled=false;
+        for (        FieldMetadataProvider provider : fieldMetadataProviders) {
+          FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
+          if (presentationAttribute != null) {
+            setExcludedBasedOnShowIfProperty(presentationAttribute);
+          }
+          FieldProviderResponse response=provider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(myField,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,idProperty,prefix,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,null,type.getReturnedClass(),this),fields);
+          if (FieldProviderResponse.NOT_HANDLED != response) {
+            handled=true;
+          }
+          if (FieldProviderResponse.HANDLED_BREAK == response) {
+            break;
+          }
+        }
+        if (!handled) {
+          buildBasicProperty(myField,targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,presentationAttributes,componentProperties,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,parentClasses,prefix,isParentExcluded,propertyName,type,isPropertyForeignKey,additionalForeignKeyIndexPosition,isComponentPrefix);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  if (order instanceof NullOrderImpl) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Attempted to grab a lock for a NullOrderImpl. Not blocking");
+    }
+    return order;
+  }
+  boolean lockAcquired=orderService.acquireLock(order);
+  return lockAcquired ? order : null;
+}

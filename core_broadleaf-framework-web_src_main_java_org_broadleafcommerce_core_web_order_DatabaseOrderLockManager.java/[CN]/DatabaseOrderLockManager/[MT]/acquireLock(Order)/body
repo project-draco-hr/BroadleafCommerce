@@ -1,0 +1,32 @@
+{
+  if (order instanceof NullOrderImpl) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Thread[" + Thread.currentThread().getId() + "] Attempted to grab a lock for a NullOrderImpl. ");
+    }
+    return order;
+  }
+  boolean lockAcquired=false;
+  while (!lockAcquired) {
+    try {
+      lockAcquired=orderService.acquireLock(order);
+    }
+ catch (    Exception e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Couldn't acquire lock - that's ok, we'll retry shortly",e);
+      }
+    }
+    if (!lockAcquired) {
+      try {
+        int msToSleep=getDatabaseLockPollingIntervalMs();
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Thread[" + Thread.currentThread().getId() + "] Could not acquire order lock for order["+ order.getId()+ "] - sleeping for "+ msToSleep+ " ms");
+        }
+        Thread.sleep(msToSleep);
+      }
+ catch (      InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  return order;
+}

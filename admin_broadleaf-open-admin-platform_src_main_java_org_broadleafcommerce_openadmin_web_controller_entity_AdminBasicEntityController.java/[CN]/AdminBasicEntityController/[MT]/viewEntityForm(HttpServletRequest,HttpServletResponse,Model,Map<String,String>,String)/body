@@ -7,6 +7,7 @@
   Entity entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,crumbs);
   EntityForm entityForm=formService.createEntityForm(cmd,entity,subRecordsMap,crumbs);
+  modifyEntityForm(entityForm,pathVars);
   model.addAttribute("entity",entity);
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("currentUrl",request.getRequestURL().toString());

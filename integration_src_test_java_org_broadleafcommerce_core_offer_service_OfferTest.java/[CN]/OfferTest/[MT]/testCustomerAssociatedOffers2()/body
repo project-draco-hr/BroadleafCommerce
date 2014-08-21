@@ -18,6 +18,6 @@
   customerOffer2.setOffer(offer2);
   customerOfferDao.save(customerOffer2);
   List<Offer> offers=offerService.buildOfferListForOrder(order);
-  offerService.applyOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
   assert(order.getSubTotal().equals(new Money(33D)));
 }

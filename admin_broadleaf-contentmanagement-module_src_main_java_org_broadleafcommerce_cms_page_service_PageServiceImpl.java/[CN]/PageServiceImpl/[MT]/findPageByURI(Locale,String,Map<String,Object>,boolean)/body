@@ -3,7 +3,9 @@
   if (uri != null) {
     Locale languageOnlyLocale=findLanguageOnlyLocale(locale);
     BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-    String key=buildKey(context.getSandBox(),languageOnlyLocale,uri);
+    Long sandBox=context.getSandBox() == null ? null : context.getSandBox().getId();
+    Long site=context.getSite() == null ? null : context.getSite().getId();
+    String key=buildKey(sandBox,site,languageOnlyLocale,uri);
     key=key + "-" + secure;
     if (context.isProductionSandBox()) {
       returnList=getPageListFromCache(key);
@@ -20,10 +22,10 @@
   PageDTO dto=evaluatePageRules(returnList,locale,ruleDTOs);
   if (dto.getId() != null) {
     Page page=findPageById(dto.getId());
-    ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
-    templateOverrideManager.getProxy().getOverrideTemplate(erh,page);
-    if (StringUtils.isNotBlank(erh.getResult())) {
-      dto.setTemplatePath(erh.getResult());
+    ExtensionResultHolder<PageDTO> newDTO=new ExtensionResultHolder<PageDTO>();
+    extensionManager.getProxy().overridePageDto(newDTO,dto,page);
+    if (newDTO.getResult() != null) {
+      dto=newDTO.getResult();
     }
   }
   return dto;

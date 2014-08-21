@@ -1,0 +1,12 @@
+{
+  boolean parameterWithinNamedOperations=false;
+  for (  NamedOperationComponent component : namedOperationManager.getNamedOperationComponents()) {
+    if (component.getClass().isAssignableFrom(StaticMapNamedOperationComponent.class)) {
+      parameterWithinNamedOperations=((StaticMapNamedOperationComponent)component).getNamedOperations().containsKey(parameter);
+    }
+    if (parameterWithinNamedOperations) {
+      break;
+    }
+  }
+  return parameterWithinNamedOperations;
+}

@@ -1,0 +1,8 @@
+{
+  ExtensionResultHolder<String> messageHolder=new ExtensionResultHolder<String>();
+  extensionManager.getProxy().resolveMessageSource(code,locale,messageHolder);
+  if (StringUtils.isNotBlank(messageHolder.getResult())) {
+    return messageHolder.getResult();
+  }
+  return super.resolveCodeWithoutArguments(code,locale);
+}

@@ -2,6 +2,9 @@
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
     String pageId=persistencePackage.getCustomCriteria()[1];
+    if (StringUtils.isBlank(pageId)) {
+      return persistencePackage.getEntity();
+    }
     Page page=pageService.findPageById(Long.valueOf(pageId));
     Property[] properties=dynamicFieldUtil.buildDynamicPropertyList(getFieldGroups(page,null),PageTemplate.class);
     Map<String,FieldMetadata> md=new HashMap<String,FieldMetadata>();

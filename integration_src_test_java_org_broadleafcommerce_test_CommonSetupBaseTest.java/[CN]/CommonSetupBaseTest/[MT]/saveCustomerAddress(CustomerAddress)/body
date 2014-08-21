@@ -3,5 +3,8 @@
   customerAddress.getAddress().setState(state);
   Country country=countryService.findCountryByAbbreviation("US");
   customerAddress.getAddress().setCountry(country);
+  customerAddress.getAddress().setIsoCountrySubdivision("US-KY");
+  ISOCountry isoCountry=isoService.findISOCountryByAlpha2Code("US");
+  customerAddress.getAddress().setIsoCountryAlpha2(isoCountry);
   return customerAddressService.saveCustomerAddress(customerAddress);
 }

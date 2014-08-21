@@ -4,7 +4,8 @@
   }
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
   if (context != null && context.getRequestURIWithoutContext() != null) {
-    Product product=catalogService.findProductByURI(context.getRequestURIWithoutContext());
+    String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
+    Product product=catalogService.findProductByURI(requestUri);
     if (product != null) {
       context.getRequest().setAttribute(CURRENT_PRODUCT_ATTRIBUTE_NAME,product);
       return controllerName;

@@ -19,7 +19,7 @@
                 Map<String,FieldMetadata> temp=new HashMap<String,FieldMetadata>(1);
                 temp.put(field.getName(),serverMetadata);
                 FieldInfo info=buildFieldInfo(field);
-                buildCollectionMetadata(parentClass,targetClass,temp,info,localMetadata);
+                buildCollectionMetadata(parentClass,targetClass,temp,info,localMetadata,overrideViaXmlRequest.getPrefix());
                 serverMetadata=(BasicCollectionMetadata)temp.get(field.getName());
                 metadata.put(key,serverMetadata);
                 if (overrideViaXmlRequest.getParentExcluded()) {

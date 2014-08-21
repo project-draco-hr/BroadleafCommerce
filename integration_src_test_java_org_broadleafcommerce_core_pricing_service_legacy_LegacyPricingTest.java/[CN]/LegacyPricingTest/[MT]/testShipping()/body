@@ -9,6 +9,10 @@
   country.setAbbreviation("US");
   country.setName("United States");
   country=countryService.save(country);
+  ISOCountry isoCountry=new ISOCountryImpl();
+  isoCountry.setAlpha2("US");
+  isoCountry.setName("UNITED STATES");
+  isoCountry=isoService.save(isoCountry);
   State state=new StateImpl();
   state.setAbbreviation("TX");
   state.setName("Texas");
@@ -23,6 +27,8 @@
   address.setPrimaryPhone("972-978-9067");
   address.setState(state);
   address.setCountry(country);
+  address.setIsoCountrySubdivision("US-TX");
+  address.setIsoCountryAlpha2(isoCountry);
   group1.setAddress(address);
   group1.setOrder(order);
   group2.setMethod("truck");

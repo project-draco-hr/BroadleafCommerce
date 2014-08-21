@@ -1,0 +1,47 @@
+{
+  if (object == null) {
+    return null;
+  }
+  Object propertyObject=PropertyUtils.getProperty(object,components[currentPosition]);
+  if (propertyObject != null) {
+    if (currentPosition < components.length - 1) {
+      if (Collection.class.isAssignableFrom(propertyObject.getClass())) {
+        Collection<?> collection=(Collection<?>)propertyObject;
+        HashSet<Object> newCollection=new HashSet<Object>();
+        for (        Object item : collection) {
+          Object result=getPropertyValueInternal(item,components,currentPosition + 1);
+          if (result != null) {
+            copyPropertyToCollection(newCollection,result);
+          }
+        }
+        propertyObject=newCollection;
+      }
+ else       if (Map.class.isAssignableFrom(propertyObject.getClass())) {
+        Map<?,?> map=(Map<?,?>)propertyObject;
+        HashSet<Object> newCollection=new HashSet<Object>();
+        for (        Object item : map.values()) {
+          Object result=getPropertyValueInternal(item,components,currentPosition + 1);
+          if (result != null) {
+            copyPropertyToCollection(newCollection,result);
+          }
+        }
+        propertyObject=newCollection;
+      }
+ else       if (propertyObject.getClass().isArray()) {
+        Object[] array=(Object[])propertyObject;
+        HashSet<Object> newCollection=new HashSet<Object>();
+        for (        Object item : array) {
+          Object result=getPropertyValueInternal(item,components,currentPosition + 1);
+          if (result != null) {
+            copyPropertyToCollection(newCollection,result);
+          }
+        }
+        propertyObject=newCollection;
+      }
+ else {
+        propertyObject=getPropertyValueInternal(propertyObject,components,currentPosition + 1);
+      }
+    }
+  }
+  return propertyObject;
+}

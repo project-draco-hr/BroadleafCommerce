@@ -15,10 +15,10 @@
   if (response.getFacetQuery() != null) {
     for (    Entry<String,Integer> entry : response.getFacetQuery().entrySet()) {
       String key=entry.getKey();
-      String facetFieldName=key.substring(key.indexOf("}") + 1,key.indexOf(':'));
+      String facetFieldName=key.substring(0,key.indexOf("["));
       SearchFacetDTO facetDTO=namedFacetMap.get(facetFieldName);
-      String minValue=key.substring(key.indexOf("[") + 1,key.indexOf(" TO"));
-      String maxValue=key.substring(key.indexOf(" TO ") + 4,key.indexOf("]"));
+      String minValue=key.substring(key.indexOf("[") + 1,key.indexOf(":"));
+      String maxValue=key.substring(key.indexOf(":") + 1,key.indexOf("]"));
       if (maxValue.equals("*")) {
         maxValue=null;
       }

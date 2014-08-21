@@ -1,0 +1,14 @@
+{
+  Order order=(Order)lockObject;
+  if (order instanceof NullOrderImpl) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Thread[" + Thread.currentThread().getId() + "] Attempted to release a lock for a NullOrderImpl");
+    }
+  }
+ else {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Thread[" + Thread.currentThread().getId() + "] releasing lock for order["+ order.getId()+ "]");
+    }
+    orderService.releaseLock(order);
+  }
+}

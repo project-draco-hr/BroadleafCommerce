@@ -9,14 +9,14 @@
         propertyValue=PropertyUtils.getMappedProperty(product,PRODUCT_ATTR_MAP,propertyName.substring(PRODUCT_ATTR_MAP.length() + 1));
         if (propertyValue != null) {
           try {
-            propertyValue=PropertyUtils.getProperty(propertyValue,"value");
+            propertyValue=shs.getPropertyValue(propertyValue,"value");
           }
  catch (          NoSuchMethodException e) {
           }
         }
       }
  else {
-        propertyValue=PropertyUtils.getProperty(product,propertyName);
+        propertyValue=shs.getPropertyValue(product,propertyName);
       }
       values.put("",propertyValue);
     }

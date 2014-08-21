@@ -1,29 +1,3 @@
 {
-  for (  File srcFile : files) {
-    if (!srcFile.getAbsolutePath().startsWith(area.getFilePathLocation())) {
-      throw new FileServiceException("Attempt to update file " + srcFile.getAbsolutePath() + " that is not in the passed in WorkArea "+ area.getFilePathLocation());
-    }
-    String fileName=srcFile.getAbsolutePath().substring(area.getFilePathLocation().length());
-    String url=FilenameUtils.separatorsToUnix(fileName);
-    String resourceName=buildResourceName(url);
-    String destinationFilePath=FilenameUtils.normalize(getBaseDirectory() + File.separator + resourceName);
-    File destFile=new File(destinationFilePath);
-    if (!destFile.getParentFile().exists()) {
-      destFile.getParentFile().mkdirs();
-    }
-    try {
-      if (removeResourcesFromWorkArea) {
-        if (destFile.exists()) {
-          FileUtils.deleteQuietly(destFile);
-        }
-        FileUtils.moveFile(srcFile,destFile);
-      }
- else {
-        FileUtils.copyFile(srcFile,destFile);
-      }
-    }
- catch (    IOException ioe) {
-      throw new FileServiceException("Error copying resource named " + fileName + " from workArea "+ area.getFilePathLocation()+ " to "+ resourceName,ioe);
-    }
-  }
+  addOrUpdateResourcesForPaths(workArea,files,removeFilesFromWorkArea);
 }

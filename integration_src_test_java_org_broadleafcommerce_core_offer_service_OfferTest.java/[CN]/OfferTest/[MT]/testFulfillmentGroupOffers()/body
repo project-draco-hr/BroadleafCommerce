@@ -10,7 +10,7 @@
   order.addOfferCode(createOfferUtility.createOfferCode("20 Percent Off Item Offer",OfferType.FULFILLMENT_GROUP,OfferDiscountType.PERCENT_OFF,20,null,null,true,true,10));
   order.addOfferCode(createOfferUtility.createOfferCode("3 Dollars Off Item Offer",OfferType.FULFILLMENT_GROUP,OfferDiscountType.AMOUNT_OFF,3,null,null,true,true,10));
   List<Offer> offers=offerService.buildOfferListForOrder(order);
-  offerService.applyOffersToOrder(offers,order);
-  offerService.applyFulfillmentGroupOffersToOrder(offers,order);
+  offerService.applyAndSaveOffersToOrder(offers,order);
+  offerService.applyAndSaveFulfillmentGroupOffersToOrder(offers,order);
   assert(order.getFulfillmentGroups().get(0).getShippingPrice().equals(new Money(1.6D)));
 }

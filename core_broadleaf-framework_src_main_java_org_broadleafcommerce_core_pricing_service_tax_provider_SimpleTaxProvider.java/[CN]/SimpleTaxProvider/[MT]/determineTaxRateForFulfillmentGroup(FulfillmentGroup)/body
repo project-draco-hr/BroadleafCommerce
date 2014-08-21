@@ -14,11 +14,23 @@
       if (cityCodeRate != null) {
         return BigDecimal.valueOf(cityCodeRate);
       }
-      Double stateCodeRate=lookupStateRate(fulfillmentGroupStateTaxRateMap,address.getState());
+      Double stateCodeRate;
+      if (StringUtils.isNotBlank(address.getStateProvinceRegion())) {
+        stateCodeRate=lookupStateRate(fulfillmentGroupStateTaxRateMap,address.getStateProvinceRegion());
+      }
+ else {
+        stateCodeRate=lookupStateRate(fulfillmentGroupStateTaxRateMap,address.getState());
+      }
       if (stateCodeRate != null) {
         return BigDecimal.valueOf(stateCodeRate);
       }
-      Double countryCodeRate=lookupCountryRate(fulfillmentGroupCountryTaxRateMap,address.getCountry());
+      Double countryCodeRate;
+      if (address.getIsoCountryAlpha2() != null) {
+        countryCodeRate=lookupCountryRate(fulfillmentGroupCountryTaxRateMap,address.getIsoCountryAlpha2());
+      }
+ else {
+        countryCodeRate=lookupCountryRate(fulfillmentGroupCountryTaxRateMap,address.getCountry());
+      }
       if (countryCodeRate != null) {
         return BigDecimal.valueOf(countryCodeRate);
       }

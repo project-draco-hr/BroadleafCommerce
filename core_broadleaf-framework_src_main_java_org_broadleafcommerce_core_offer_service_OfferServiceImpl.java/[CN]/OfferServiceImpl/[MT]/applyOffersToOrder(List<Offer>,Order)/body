@@ -1,25 +1,3 @@
 {
-  OfferContext offerContext=OfferContext.getOfferContext();
-  if (offerContext == null || offerContext.executePromotionCalculation) {
-    order.updatePrices();
-    PromotableOrder promotableOrder=promotableItemFactory.createPromotableOrder(order,false);
-    List<Offer> filteredOffers=orderOfferProcessor.filterOffers(offers,order.getCustomer());
-    if ((filteredOffers == null) || (filteredOffers.isEmpty())) {
-      if (LOG.isTraceEnabled()) {
-        LOG.trace("No offers applicable to this order.");
-      }
-    }
- else {
-      List<PromotableCandidateOrderOffer> qualifiedOrderOffers=new ArrayList<PromotableCandidateOrderOffer>();
-      List<PromotableCandidateItemOffer> qualifiedItemOffers=new ArrayList<PromotableCandidateItemOffer>();
-      itemOfferProcessor.filterOffers(promotableOrder,filteredOffers,qualifiedOrderOffers,qualifiedItemOffers);
-      if (!(qualifiedItemOffers.isEmpty() && qualifiedOrderOffers.isEmpty())) {
-        itemOfferProcessor.applyAndCompareOrderAndItemOffers(promotableOrder,qualifiedOrderOffers,qualifiedItemOffers);
-      }
-    }
-    orderOfferProcessor.synchronizeAdjustmentsAndPrices(promotableOrder);
-    order.setSubTotal(order.calculateSubTotal());
-    order.finalizeItemPrices();
-    orderService.save(order,false);
-  }
+  applyAndSaveOffersToOrder(offers,order);
 }

@@ -11,7 +11,13 @@
     return;
   }
   Address address=fulfillmentGroup.getAddress();
-  String state=(address != null && address.getState() != null) ? address.getState().getAbbreviation() : null;
+  String state=null;
+  if (StringUtils.isNotBlank(address.getStateProvinceRegion())) {
+    state=address.getStateProvinceRegion();
+  }
+ else   if (address.getState() != null) {
+    state=address.getState().getAbbreviation();
+  }
   BigDecimal retailTotal=new BigDecimal(0);
   String feeType=feeTypeMapping.get(fulfillmentGroup.getMethod());
   String feeSubType=((feeSubTypeMapping.get(state) == null) ? feeSubTypeMapping.get("ALL") : feeSubTypeMapping.get(state));

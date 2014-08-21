@@ -1,0 +1,22 @@
+{
+  String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(SkuBundleItem.class.getName(),persistencePerspective);
+    List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
+    SkuCustomPersistenceHandler.applyProductOptionValueCriteria(filterMappings,cto,persistencePackage,"sku");
+    List<Serializable> records=helper.getPersistentRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
+    Entity[] payload=helper.getRecords(originalProps,records);
+    int totalRecords=helper.getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
+    for (int i=0; i < payload.length; i++) {
+      Entity entity=payload[i];
+      SkuBundleItem bundleItem=(SkuBundleItem)records.get(i);
+      Property optionsProperty=SkuCustomPersistenceHandler.getConsolidatedOptionProperty(bundleItem.getSku().getProductOptionValuesCollection());
+      entity.addProperty(optionsProperty);
+    }
+    return new DynamicResultSet(null,payload,totalRecords);
+  }
+ catch (  Exception e) {
+    throw new ServiceException("There was a problem fetching inventory. See server logs for more details",e);
+  }
+}

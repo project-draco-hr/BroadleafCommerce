@@ -45,17 +45,19 @@
       model.addObject(ALL_SKUS_ATTRIBUTE_NAME,new HashSet<Sku>(result.getSkus()));
     }
     addDeepLink(model,deepLinkService,category);
-    ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
-    templateOverrideManager.getProxy().getOverrideTemplate(erh,category);
-    if (StringUtils.isNotBlank(erh.getResult())) {
-      model.setViewName(erh.getResult());
-    }
- else     if (StringUtils.isNotEmpty(category.getDisplayTemplate())) {
-      model.setViewName(category.getDisplayTemplate());
+    String templatePath=null;
+    if (StringUtils.isNotBlank(category.getDisplayTemplate())) {
+      templatePath=category.getDisplayTemplate();
     }
  else {
-      model.setViewName(getDefaultCategoryView());
+      templatePath=getDefaultCategoryView();
     }
+    ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
+    ExtensionResultStatusType extResult=templateOverrideManager.getProxy().getOverrideTemplate(erh,category);
+    if (extResult != ExtensionResultStatusType.NOT_HANDLED) {
+      templatePath=erh.getResult();
+    }
+    model.setViewName(templatePath);
   }
   return model;
 }

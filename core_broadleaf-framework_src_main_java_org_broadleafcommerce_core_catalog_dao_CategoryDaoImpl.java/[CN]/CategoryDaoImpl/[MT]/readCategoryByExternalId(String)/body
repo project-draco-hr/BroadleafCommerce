@@ -1,0 +1,9 @@
+{
+  TypedQuery<Category> query=new TypedQueryBuilder<Category>(Category.class,"cat").addRestriction("cat.externalId","=",externalId).toQuery(em);
+  try {
+    return query.getSingleResult();
+  }
+ catch (  NoResultException e) {
+    return null;
+  }
+}

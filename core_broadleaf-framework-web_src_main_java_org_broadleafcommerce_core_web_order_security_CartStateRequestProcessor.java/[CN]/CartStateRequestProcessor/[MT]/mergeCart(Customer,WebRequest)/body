@@ -11,8 +11,10 @@
 catch (  RemoveFromCartException e) {
     throw new RuntimeException(e);
   }
-  request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
-  request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerIdSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
-  request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
+  if (BLCRequestUtils.isOKtoUseSession(request)) {
+    request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+    request.removeAttribute(CustomerStateRequestProcessor.getAnonymousCustomerIdSessionAttributeName(),WebRequest.SCOPE_GLOBAL_SESSION);
+    request.setAttribute(mergeCartResponseKey,mergeCartResponse,WebRequest.SCOPE_GLOBAL_SESSION);
+  }
   return mergeCartResponse.getOrder();
 }

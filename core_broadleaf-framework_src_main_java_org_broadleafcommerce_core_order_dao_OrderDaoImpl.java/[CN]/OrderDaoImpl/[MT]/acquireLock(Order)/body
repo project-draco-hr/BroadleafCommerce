@@ -1,0 +1,29 @@
+{
+  Query q=em.createNamedQuery("BC_ORDER_LOCK_READ");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  OrderLock ol;
+  try {
+    ol=(OrderLock)q.getSingleResult();
+  }
+ catch (  NoResultException e) {
+    ol=null;
+  }
+  if (ol == null) {
+    try {
+      ol=(OrderLock)entityConfiguration.createEntityInstance(OrderLock.class.getName());
+      ol.setOrderId(order.getId());
+      ol.setLocked(true);
+      em.persist(ol);
+      return true;
+    }
+ catch (    EntityExistsException e) {
+      return false;
+    }
+  }
+  q=em.createNamedQuery("BC_ORDER_LOCK_ACQUIRE");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  int rowsAffected=q.executeUpdate();
+  return rowsAffected == 1;
+}

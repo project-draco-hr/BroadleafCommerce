@@ -1,0 +1,23 @@
+{
+  FieldMetadata presentationAttribute=presentationAttributes.get(propertyName);
+  Boolean amIExcluded=isParentExcluded || !testPropertyInclusion(presentationAttribute);
+  Boolean includeField=testPropertyRecursion(prefix,parentClasses,propertyName,targetClass,ceilingEntityFullyQualifiedClassname,isComponentPrefix);
+  SupportedFieldType explicitType=null;
+  if (presentationAttribute != null && presentationAttribute instanceof BasicFieldMetadata) {
+    explicitType=((BasicFieldMetadata)presentationAttribute).getExplicitFieldType();
+  }
+  Class<?> returnedClass=type.getReturnedClass();
+  checkProp: {
+    if (type.isComponentType() && includeField) {
+      buildComponentProperties(targetClass,foreignField,additionalForeignFields,additionalNonPersistentProperties,mergedPropertyType,fields,idProperty,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,type,returnedClass,parentClasses,amIExcluded,prefix);
+      break checkProp;
+    }
+    if (type.isEntityType() && !returnedClass.isAssignableFrom(targetClass) && populateManyToOneFields&& includeField) {
+      buildEntityProperties(fields,foreignField,additionalForeignFields,additionalNonPersistentProperties,populateManyToOneFields,includeFields,excludeFields,configurationKey,ceilingEntityFullyQualifiedClassname,propertyName,returnedClass,targetClass,parentClasses,prefix,amIExcluded);
+      break checkProp;
+    }
+  }
+  if (includeField || propertyForeignKey || additionalForeignKeyIndexPosition >= 0) {
+    defaultFieldMetadataProvider.addMetadataFromFieldType(new AddMetadataFromFieldTypeRequest(field,targetClass,foreignField,additionalForeignFields,mergedPropertyType,componentProperties,idProperty,prefix,propertyName,type,propertyForeignKey,additionalForeignKeyIndexPosition,presentationAttributes,presentationAttribute,explicitType,returnedClass,this),fields);
+  }
+}

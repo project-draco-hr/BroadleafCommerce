@@ -1,0 +1,19 @@
+{
+  if (productOptionMap == null) {
+    productOptionMap=new HashMap<String,Set<String>>();
+    List<ProductOptionXref> xrefs=getProductOptionXrefs();
+    if (xrefs != null) {
+      for (      ProductOptionXref xref : xrefs) {
+        List<ProductOptionValue> productOptionValues=xref.getProductOption().getAllowedValues();
+        if (productOptionValues != null && !productOptionValues.isEmpty()) {
+          HashSet<String> values=new HashSet<String>();
+          for (          ProductOptionValue value : productOptionValues) {
+            values.add(value.getAttributeValue());
+          }
+          productOptionMap.put(xref.getProductOption().getAttributeName(),values);
+        }
+      }
+    }
+  }
+  return productOptionMap;
+}

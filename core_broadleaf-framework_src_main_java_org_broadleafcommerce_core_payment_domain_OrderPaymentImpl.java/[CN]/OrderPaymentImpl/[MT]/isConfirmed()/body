@@ -1,0 +1,8 @@
+{
+  for (  PaymentTransaction tx : getTransactions()) {
+    if ((PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType()) || PaymentTransactionType.AUTHORIZE.equals(tx.getType())) && tx.getSuccess()) {
+      return true;
+    }
+  }
+  return false;
+}

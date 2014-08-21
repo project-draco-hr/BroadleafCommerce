@@ -1,0 +1,7 @@
+{
+  Query q=em.createNamedQuery("BC_ORDER_LOCK_RELEASE");
+  q.setParameter("orderId",order.getId());
+  q.setHint(QueryHints.HINT_CACHEABLE,false);
+  int rowsAffected=q.executeUpdate();
+  return rowsAffected == 1;
+}

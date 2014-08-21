@@ -4,7 +4,9 @@
   Root<StructuredContentImpl> sc=criteria.from(StructuredContentImpl.class);
   criteria.select(sc);
   try {
-    return em.createQuery(criteria).getResultList();
+    TypedQuery<StructuredContent> query=em.createQuery(criteria);
+    query.setHint(QueryHints.HINT_CACHEABLE,true);
+    return query.getResultList();
   }
  catch (  NoResultException e) {
     return new ArrayList<StructuredContent>();

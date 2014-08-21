@@ -60,7 +60,7 @@
   offers.addAll(dataProvider.createFGBasedOfferWithItemCriteria("order.subTotal.getAmount()>20","fulfillmentGroup.address.postalCode==75244",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
   offers.get(1).setName("secondOffer");
   offers.addAll(dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))"));
-  offerService.applyOffersToOrder(offers,promotableOrder.getOrder());
+  offerService.applyAndSaveOffersToOrder(offers,promotableOrder.getOrder());
   offers.get(0).setTotalitarianOffer(true);
   offerService.applyFulfillmentGroupOffersToOrder(offers,promotableOrder.getOrder());
   int fgAdjustmentCount=0;
@@ -71,7 +71,7 @@
   promotableOrder=dataProvider.createBasicPromotableOrder();
   myOrder.set(promotableOrder.getOrder());
   offers.get(2).setValue(new BigDecimal("1"));
-  offerService.applyOffersToOrder(offers,promotableOrder.getOrder());
+  offerService.applyAndSaveOffersToOrder(offers,promotableOrder.getOrder());
   offerService.applyFulfillmentGroupOffersToOrder(offers,promotableOrder.getOrder());
   fgAdjustmentCount=0;
   order=promotableOrder.getOrder();

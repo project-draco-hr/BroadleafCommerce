@@ -13,15 +13,21 @@
     showShippingInfoSection=false;
   }
   boolean orderContainsThirdPartyPayment=false;
+  boolean orderContainsUnconfirmedCreditCard=false;
+  OrderPayment unconfirmedCC=null;
   if (CartState.getCart().getPayments() != null) {
     for (    OrderPayment payment : CartState.getCart().getPayments()) {
-      if (PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType()) && payment.isActive()) {
+      if (payment.isActive() && PaymentType.THIRD_PARTY_ACCOUNT.equals(payment.getType())) {
         orderContainsThirdPartyPayment=true;
+      }
+      if (payment.isActive() && (PaymentType.CREDIT_CARD.equals(payment.getType()) && !PaymentGatewayType.TEMPORARY.equals(payment.getGatewayType()))) {
+        orderContainsUnconfirmedCreditCard=true;
+        unconfirmedCC=payment;
       }
     }
   }
   Money orderTotalAfterAppliedPayments=CartState.getCart().getTotalAfterAppliedPayments();
-  if (orderContainsThirdPartyPayment) {
+  if (orderContainsThirdPartyPayment || orderContainsUnconfirmedCreditCard) {
     showBillingInfoSection=false;
     showAllPaymentMethods=false;
   }
@@ -31,6 +37,8 @@
   localVars.put("showBillingInfoSection",showBillingInfoSection);
   localVars.put("showAllPaymentMethods",showAllPaymentMethods);
   localVars.put("orderContainsThirdPartyPayment",orderContainsThirdPartyPayment);
+  localVars.put("orderContainsUnconfirmedCreditCard",orderContainsUnconfirmedCreditCard);
+  localVars.put("unconfirmedCC",unconfirmedCC);
   List<CheckoutSectionDTO> drawnSections=new LinkedList<CheckoutSectionDTO>();
   CheckoutSectionDTO orderInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.ORDER_INFO,orderInfoPopulated);
   CheckoutSectionDTO billingInfoSection=new CheckoutSectionDTO(CheckoutSectionViewType.BILLING_INFO,billingPopulated);

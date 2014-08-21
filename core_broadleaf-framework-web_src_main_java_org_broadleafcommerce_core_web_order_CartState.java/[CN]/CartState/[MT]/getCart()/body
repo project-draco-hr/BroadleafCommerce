@@ -1,4 +1,7 @@
 {
+  if (BroadleafRequestContext.getBroadleafRequestContext() == null || BroadleafRequestContext.getBroadleafRequestContext().getWebRequest() == null) {
+    return null;
+  }
   WebRequest request=BroadleafRequestContext.getBroadleafRequestContext().getWebRequest();
   return (Order)request.getAttribute(CartStateRequestProcessor.getCartRequestAttributeName(),WebRequest.SCOPE_REQUEST);
 }

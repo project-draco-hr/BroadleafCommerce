@@ -17,6 +17,10 @@
   country.setAbbreviation("US");
   country.setName("United States");
   countryService.save(country);
+  ISOCountry isoCountry=new ISOCountryImpl();
+  isoCountry.setAlpha2("US");
+  isoCountry.setName("UNITED STATES");
+  isoService.save(isoCountry);
   State state=new StateImpl();
   state.setAbbreviation("TX");
   state.setName("Texas");
@@ -24,6 +28,8 @@
   stateService.save(state);
   address.setState(state);
   address.setCountry(country);
+  address.setIsoCountrySubdivision("US-TX");
+  address.setIsoCountryAlpha2(isoCountry);
   for (  OrderItem orderItem : order.getOrderItems()) {
     FulfillmentGroupItem fgItem=new FulfillmentGroupItemImpl();
     fgItem.setFulfillmentGroup(group);

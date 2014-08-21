@@ -20,21 +20,40 @@
     }
     for (    Entry<String,String> tracker : trackers.entrySet()) {
       String trackerName=tracker.getKey();
+      String trackerPrefix="";
       String id=tracker.getValue();
-      sb.append("ga('create', '" + id + "', 'auto', {'name': '"+ trackerName+ "'");
+      sb.append("ga('create', '" + id + "', 'auto', {");
+      if (!"webProperty".equals(trackerName)) {
+        trackerPrefix=trackerName + ".";
+        sb.append("'name': '" + trackerName + "'");
+        if (testLocal) {
+          sb.append(",");
+        }
+      }
       if (testLocal) {
-        sb.append(",'cookieDomain': 'none'");
+        sb.append("'cookieDomain': 'none'");
       }
       sb.append("});");
-      sb.append("ga('" + trackerName + ".send', 'pageview');");
+      if ("webProperty".equals(trackerName)) {
+        HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+        if (request != null) {
+          Map<String,String> setValuesMap=(Map<String,String>)request.getAttribute("blGAValuesMap");
+          if (setValuesMap != null) {
+            for (            Map.Entry<String,String> entry : setValuesMap.entrySet()) {
+              sb.append("ga('" + trackerPrefix + "set',").append(entry.getKey()).append(",").append(entry.getValue()).append(");");
+            }
+          }
+        }
+      }
+      sb.append("ga('" + trackerPrefix + "send', 'pageview');");
       if (isIncludeLinkAttribution()) {
-        sb.append(getLinkAttributionJs(trackerName));
+        sb.append(getLinkAttributionJs(trackerPrefix));
       }
       if (isIncludeDisplayAdvertising()) {
-        sb.append(getDisplayAdvertisingJs(trackerName));
+        sb.append(getDisplayAdvertisingJs(trackerPrefix));
       }
       if (order != null) {
-        sb.append(getTransactionJs(order,trackerName));
+        sb.append(getTransactionJs(order,trackerPrefix));
       }
     }
     sb.append("</script>");

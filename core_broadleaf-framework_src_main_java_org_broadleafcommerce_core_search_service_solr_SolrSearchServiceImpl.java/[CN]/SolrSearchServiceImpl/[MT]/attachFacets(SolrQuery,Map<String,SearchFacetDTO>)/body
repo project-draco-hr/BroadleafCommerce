@@ -2,18 +2,17 @@
   query.setFacet(true);
   for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
     SearchFacetDTO dto=entry.getValue();
-    String facetTagField=entry.getValue().isActive() ? shs.getGlobalFacetTagField() : entry.getKey();
     List<SearchFacetRange> facetRanges=new ArrayList<SearchFacetRange>(dto.getFacet().getSearchFacetRanges());
     if (extensionManager != null) {
       extensionManager.getProxy().filterSearchFacetRanges(dto,facetRanges);
     }
     if (facetRanges != null && facetRanges.size() > 0) {
       for (      SearchFacetRange range : facetRanges) {
-        query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),facetTagField,"ex",range));
+        query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),"key",range));
       }
     }
  else {
-      query.addFacetField(getSolrTaggedFieldString(entry.getKey(),facetTagField,"ex",null));
+      query.addFacetField(getSolrTaggedFieldString(entry.getKey(),"key",null));
     }
   }
 }

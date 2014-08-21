@@ -1,0 +1,10 @@
+{
+  String pageId=pp.getCustomCriteria()[1];
+  String pageTemplateId=pp.getCustomCriteria().length > 3 ? pp.getCustomCriteria()[3] : null;
+  Page page=pageService.findPageById(Long.valueOf(pageId));
+  PageTemplate template=null;
+  if (pageTemplateId != null) {
+    template=pageService.findPageTemplateById(Long.valueOf(pageTemplateId));
+  }
+  return getFieldGroups(page,template);
+}

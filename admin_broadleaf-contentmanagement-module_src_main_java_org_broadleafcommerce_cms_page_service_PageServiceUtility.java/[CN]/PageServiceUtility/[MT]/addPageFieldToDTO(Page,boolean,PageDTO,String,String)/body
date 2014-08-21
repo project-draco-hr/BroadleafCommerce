@@ -1,0 +1,18 @@
+{
+  String cmsPrefix=staticAssetPathService.getStaticAssetUrlPrefix();
+  PageField pf=page.getPageFields().get(fieldKey);
+  if (originalValue == null) {
+    originalValue=pf.getValue();
+  }
+  FieldDefinition fd=getFieldDefinition(page,fieldKey);
+  if (fd != null && fd.getFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+    pageDTO.getPageFields().put(fieldKey,FOREIGN_LOOKUP + '|' + fd.getAdditionalForeignKeyClass()+ '|'+ originalValue);
+  }
+ else   if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
+    String fldValue=staticAssetPathService.convertAllAssetPathsInContent(originalValue,secure);
+    pageDTO.getPageFields().put(fieldKey,fldValue);
+  }
+ else {
+    pageDTO.getPageFields().put(fieldKey,originalValue);
+  }
+}

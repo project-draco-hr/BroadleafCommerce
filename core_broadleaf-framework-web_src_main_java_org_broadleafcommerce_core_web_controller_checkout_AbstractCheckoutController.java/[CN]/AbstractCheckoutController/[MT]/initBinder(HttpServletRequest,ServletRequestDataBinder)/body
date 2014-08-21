@@ -13,8 +13,25 @@
 );
   binder.registerCustomEditor(Country.class,"address.country",new PropertyEditorSupport(){
     @Override public void setAsText(    String text){
-      Country country=countryService.findCountryByAbbreviation(text);
-      setValue(country);
+      if (StringUtils.isNotEmpty(text)) {
+        Country country=countryService.findCountryByAbbreviation(text);
+        setValue(country);
+      }
+ else {
+        setValue(null);
+      }
+    }
+  }
+);
+  binder.registerCustomEditor(ISOCountry.class,"address.isoCountryAlpha2",new PropertyEditorSupport(){
+    @Override public void setAsText(    String text){
+      if (StringUtils.isNotEmpty(text)) {
+        ISOCountry isoCountry=isoService.findISOCountryByAlpha2Code(text);
+        setValue(isoCountry);
+      }
+ else {
+        setValue(null);
+      }
     }
   }
 );
