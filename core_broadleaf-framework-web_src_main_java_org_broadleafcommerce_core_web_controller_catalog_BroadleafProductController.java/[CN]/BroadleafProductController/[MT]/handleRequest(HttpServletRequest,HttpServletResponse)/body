@@ -9,24 +9,16 @@
   model.addObject("BLC_PAGE_TYPE","product");
   addDeepLink(model,deepLinkService,product);
   String templatePath=null;
+  if (StringUtils.isNotBlank(product.getDisplayTemplate())) {
+    templatePath=product.getDisplayTemplate();
+  }
+ else {
+    templatePath=getDefaultProductView();
+  }
   ExtensionResultHolder<String> erh=new ExtensionResultHolder<String>();
   ExtensionResultStatusType extResult=templateOverrideManager.getProxy().getOverrideTemplate(erh,product);
   if (extResult != ExtensionResultStatusType.NOT_HANDLED) {
     templatePath=erh.getResult();
-  }
-  if (templatePath == null) {
-    if (StringUtils.isNotBlank(product.getDisplayTemplate())) {
-      templatePath=product.getDisplayTemplate();
-    }
-  }
-  if (templatePath == null) {
-    extResult=catalogExtensionManager.getProxy().getProductTemplate(erh,product);
-    if (extResult != ExtensionResultStatusType.NOT_HANDLED) {
-      templatePath=erh.getResult();
-    }
-  }
-  if (templatePath == null) {
-    templatePath=getDefaultProductView();
   }
   model.setViewName(templatePath);
   return model;
