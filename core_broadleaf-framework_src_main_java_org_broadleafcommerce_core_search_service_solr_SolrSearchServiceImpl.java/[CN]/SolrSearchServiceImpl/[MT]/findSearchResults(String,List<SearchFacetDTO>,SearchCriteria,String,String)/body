@@ -30,7 +30,7 @@
   List<SolrDocument> responseDocuments;
   int numResults=0;
   try {
-    response=SolrContext.getServer().query(solrQuery);
+    response=SolrContext.getServer().query(solrQuery,getSolrQueryMethod());
     responseDocuments=getResponseDocuments(response);
     numResults=(int)response.getResults().getNumFound();
     if (LOG.isTraceEnabled()) {
