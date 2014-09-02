@@ -1,5 +1,15 @@
 {
-  File cacheFile=broadleafFileService.getSharedLocalResource(cachedFileName);
+  File cacheFile=null;
+  if (extensionManager != null) {
+    ExtensionResultHolder holder=new ExtensionResultHolder();
+    ExtensionResultStatusType result=extensionManager.getProxy().fileExists(cachedFileName,holder);
+    if (ExtensionResultStatusType.HANDLED.equals(result)) {
+      cacheFile=(File)holder.getResult();
+    }
+  }
+  if (cacheFile == null) {
+    cacheFile=broadleafFileService.getSharedLocalResource(cachedFileName);
+  }
   if (cacheFile.exists()) {
     return cacheFile;
   }
