@@ -1,0 +1,14 @@
+{
+  Map<String,String> attrs=new HashMap<String,String>();
+  String elementName=element.getNormalizedName();
+  String useCDN=element.getAttributeValue("useCDN");
+  if (LINK.equals(elementName) || (useCDN != null && "true".equals(useCDN))) {
+    attrs=super.getModifiedAttributeValues(arguments,element,attributeName);
+    String srcAttr=attrs.remove("src");
+    attrs.put(HREF,srcAttr);
+  }
+ else {
+    attrs.put(HREF,element.getAttributeValue(attributeName));
+  }
+  return attrs;
+}
