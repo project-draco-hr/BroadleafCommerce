@@ -1,13 +1,4 @@
 {
-  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getAdditionalProperties().containsKey("blCategoryEntityExtensionManager")) {
-    CategoryEntityExtensionManager extensionManager=(CategoryEntityExtensionManager)context.getAdditionalProperties().get("blCategoryEntityExtensionManager");
-    ExtensionResultHolder holder=new ExtensionResultHolder();
-    ExtensionResultStatusType result=extensionManager.getProxy().getChildCategoryIds(this,holder);
-    if (ExtensionResultStatusType.HANDLED.equals(result)) {
-      return (List<Long>)holder.getResult();
-    }
-  }
   if (childCategoryIds == null) {
     HydratedSetup.populateFromCache(this,"childCategoryIds");
   }

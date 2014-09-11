@@ -1,12 +1,3 @@
 {
-  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getAdditionalProperties().containsKey("blCategoryEntityExtensionManager")) {
-    CategoryEntityExtensionManager extensionManager=(CategoryEntityExtensionManager)context.getAdditionalProperties().get("blCategoryEntityExtensionManager");
-    ExtensionResultHolder holder=new ExtensionResultHolder();
-    ExtensionResultStatusType result=extensionManager.getProxy().hasAllChildCategories(this,holder);
-    if (ExtensionResultStatusType.HANDLED.equals(result)) {
-      return (Boolean)holder.getResult();
-    }
-  }
   return !allChildCategoryXrefs.isEmpty();
 }
