@@ -7,6 +7,7 @@
  else {
     requestURIWithoutContext=request.getRequestURI();
   }
+  requestURIWithoutContext=URLDecoder.decode(requestURIWithoutContext,charEncoding);
   URLHandler handler=urlHandlerService.findURLHandlerByURI(requestURIWithoutContext);
   if (handler != null) {
     if (URLRedirectType.FORWARD == handler.getUrlRedirectType()) {

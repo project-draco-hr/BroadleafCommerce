@@ -1,4 +1,23 @@
 {
-  super(name);
   this.moduleName=moduleName;
+  String fqcn=getSupportLoggerAdapterFQCN();
+  if (StringUtils.isNotBlank(fqcn)) {
+    try {
+      adapter=(SupportLoggerAdapter)Class.forName(fqcn).newInstance();
+      adapter.setName(name);
+    }
+ catch (    InstantiationException e) {
+      LOG.error("Unable to create instance of SupportLogger [" + fqcn + "] Creating default logger.",e);
+    }
+catch (    IllegalAccessException e) {
+      LOG.error("Unable to create instance of SupportLogger [" + fqcn + "] Creating default logger.",e);
+    }
+catch (    ClassNotFoundException e) {
+      LOG.error("Unable to create instance of SupportLogger [" + fqcn + "] Creating default logger.",e);
+    }
+  }
+  if (adapter == null) {
+    adapter=new SystemSupportLoggerAdapter();
+    adapter.setName(name);
+  }
 }
