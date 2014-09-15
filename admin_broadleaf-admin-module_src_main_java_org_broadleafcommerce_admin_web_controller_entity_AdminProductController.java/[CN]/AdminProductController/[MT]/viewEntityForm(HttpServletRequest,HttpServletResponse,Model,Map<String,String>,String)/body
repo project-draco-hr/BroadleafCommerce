@@ -2,13 +2,13 @@
   String view=super.viewEntityForm(request,response,model,pathVars,id);
   EntityForm form=(EntityForm)model.asMap().get("entityForm");
   ListGridAction generateSkusAction=new ListGridAction(ListGridAction.GEN_SKUS).withDisplayText("Generate_Skus").withIconClass("icon-fighter-jet").withButtonClass("generate-skus").withUrlPostfix("/generate-skus");
-  ListGrid skusGrid=form.findListGrid("additionalSkus");
+  ListGrid skusGrid=form.findListGrid("additionalSkuXrefs");
   if (skusGrid != null) {
     skusGrid.addToolbarAction(generateSkusAction);
     skusGrid.setCanFilterAndSort(false);
   }
   if (ProductBundle.class.isAssignableFrom(Class.forName(form.getEntityType()))) {
-    form.removeListGrid("additionalSkus");
+    form.removeListGrid("additionalSkuXrefs");
     form.removeListGrid("productOptions");
   }
   form.removeListGrid("defaultSku.skuAttributes");

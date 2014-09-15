@@ -1,3 +1,8 @@
 {
-  return additionalSkus;
+  if (additionalSkus.size() == 0) {
+    for (    ProductSkuXref sku : additionalSkusXrefs) {
+      additionalSkus.add(sku.getSku());
+    }
+  }
+  return Collections.unmodifiableList(additionalSkus);
 }
