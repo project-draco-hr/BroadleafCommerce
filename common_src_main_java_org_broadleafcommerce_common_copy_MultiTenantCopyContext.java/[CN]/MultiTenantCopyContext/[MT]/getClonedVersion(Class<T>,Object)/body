@@ -1,0 +1,9 @@
+{
+  return IdentityExecutionUtils.runOperationByIdentifier(new IdentityOperation<T,ServiceException>(){
+    @Override @SuppressWarnings("unchecked") public T execute() throws ServiceException {
+      Object cloneId=getEquivalentId(clazz.getName(),originalId);
+      return (T)genericEntityService.readGenericEntity(clazz.getName(),cloneId);
+    }
+  }
+,getToSite(),getToCatalog());
+}

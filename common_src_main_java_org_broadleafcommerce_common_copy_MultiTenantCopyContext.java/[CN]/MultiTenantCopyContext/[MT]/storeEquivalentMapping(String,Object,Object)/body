@@ -1,0 +1,11 @@
+{
+  Map<Object,Object> keys=equivalentsMap.get(className);
+  if (keys == null) {
+    keys=new HashMap<Object,Object>();
+    equivalentsMap.put(className,keys);
+  }
+  if (keys.containsKey(fromId)) {
+    throw new IllegalArgumentException("Object [" + className + ":"+ fromId+ "] has already been cloned.");
+  }
+  keys.put(fromId,toId);
+}
