@@ -1,0 +1,8 @@
+{
+  Map<Object,Object> resourceMap=TransactionSynchronizationManager.getResourceMap();
+  for (  Map.Entry<Object,Object> entry : resourceMap.entrySet()) {
+    if (entry.getKey() instanceof EntityManagerFactory && entry.getValue() instanceof EntityManagerHolder) {
+      ((HibernateEntityManager)((EntityManagerHolder)entry.getValue()).getEntityManager()).getSession();
+    }
+  }
+}

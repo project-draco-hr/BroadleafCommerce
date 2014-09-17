@@ -1,0 +1,8 @@
+{
+  TransactionUtils.finalizeTransaction(container.status,transactionManager,error);
+  for (  Map.Entry<Object,Object> entry : container.usedResources.entrySet()) {
+    if (!TransactionSynchronizationManager.hasResource(entry.getKey())) {
+      TransactionSynchronizationManager.bindResource(entry.getKey(),entry.getValue());
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  boolean isNew=initRequestContext(null,null);
+  activateSession();
+  try {
+    return operation.execute();
+  }
+ catch (  RuntimeException e) {
+    throw e;
+  }
+ finally {
+    if (isNew) {
+      BroadleafRequestContext.setBroadleafRequestContext(null);
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  boolean isNew=initRequestContext(null,null);
+  activateSession();
+  TransactionContainer container=establishTransaction(transactionManager);
+  boolean isError=false;
+  try {
+    return operation.execute();
+  }
+ catch (  RuntimeException e) {
+    isError=true;
+    throw e;
+  }
+ finally {
+    try {
+      finalizeTransaction(transactionManager,container,isError);
+      if (isNew) {
+        BroadleafRequestContext.setBroadleafRequestContext(null);
+      }
+    }
+ catch (    Throwable e) {
+      e.printStackTrace();
+    }
+  }
+}

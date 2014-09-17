@@ -1,0 +1,20 @@
+{
+  IdentityUtilContext anyIdentityUtilContext=IDENTITYUTILCONTEXT.get();
+  if (anyIdentityUtilContext != null) {
+    if (identityUtilContext == null) {
+      anyIdentityUtilContext.pop();
+      return;
+    }
+ else {
+      anyIdentityUtilContext.push(identityUtilContext);
+      return;
+    }
+  }
+  if (identityUtilContext == null) {
+    ThreadLocalManager.remove(IDENTITYUTILCONTEXT);
+  }
+ else {
+    identityUtilContext.push(identityUtilContext);
+    IDENTITYUTILCONTEXT.set(identityUtilContext);
+  }
+}

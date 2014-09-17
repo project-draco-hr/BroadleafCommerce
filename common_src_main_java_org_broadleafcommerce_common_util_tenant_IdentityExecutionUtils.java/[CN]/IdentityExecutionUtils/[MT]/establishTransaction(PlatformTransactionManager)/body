@@ -1,0 +1,20 @@
+{
+  Map<Object,Object> usedResources=new HashMap<Object,Object>();
+  Map<Object,Object> resources=TransactionSynchronizationManager.getResourceMap();
+  for (  Map.Entry<Object,Object> entry : resources.entrySet()) {
+    if ((entry.getKey() instanceof EntityManagerFactory || entry.getKey() instanceof DataSource) && TransactionSynchronizationManager.hasResource(entry.getKey())) {
+      usedResources.put(entry.getKey(),entry.getValue());
+    }
+  }
+  for (  Map.Entry<Object,Object> entry : usedResources.entrySet()) {
+    TransactionSynchronizationManager.unbindResource(entry.getKey());
+  }
+  TransactionStatus status;
+  try {
+    status=TransactionUtils.createTransaction(TransactionDefinition.PROPAGATION_REQUIRES_NEW,transactionManager,false);
+  }
+ catch (  RuntimeException e) {
+    throw e;
+  }
+  return new TransactionContainer(status,usedResources);
+}

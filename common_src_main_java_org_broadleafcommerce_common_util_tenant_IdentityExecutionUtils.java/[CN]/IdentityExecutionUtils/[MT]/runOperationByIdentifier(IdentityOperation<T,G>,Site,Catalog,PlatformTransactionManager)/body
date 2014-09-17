@@ -1,0 +1,28 @@
+{
+  IdentityUtilContext context=new IdentityUtilContext();
+  context.setIdentifier(site);
+  IdentityUtilContext.setUtilContext(context);
+  boolean isNew=initRequestContext(site,catalog);
+  activateSession();
+  TransactionContainer container=establishTransaction(transactionManager);
+  boolean isError=false;
+  try {
+    return operation.execute();
+  }
+ catch (  RuntimeException e) {
+    isError=true;
+    throw e;
+  }
+ finally {
+    try {
+      finalizeTransaction(transactionManager,container,isError);
+      IdentityUtilContext.setUtilContext(null);
+      if (isNew) {
+        BroadleafRequestContext.setBroadleafRequestContext(null);
+      }
+    }
+ catch (    Exception e) {
+      e.printStackTrace();
+    }
+  }
+}

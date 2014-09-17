@@ -1,0 +1,24 @@
+{
+  boolean isNew=false;
+  BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  if (requestContext == null) {
+    requestContext=new BroadleafRequestContext();
+    BroadleafRequestContext.setBroadleafRequestContext(requestContext);
+    isNew=true;
+  }
+  if (site == null) {
+    requestContext.setSite(null);
+    requestContext.setIgnoreSite(true);
+  }
+ else {
+    requestContext.setSite(site);
+    requestContext.setIgnoreSite(false);
+  }
+  if (catalog == null) {
+    requestContext.setCurrentCatalog(null);
+  }
+ else {
+    requestContext.setCurrentCatalog(catalog);
+  }
+  return isNew;
+}
