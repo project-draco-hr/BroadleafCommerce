@@ -1,3 +1,7 @@
 {
-  this.skuMedia=skuMedia;
+  this.skuMedia.clear();
+  this.skuMediaXref.clear();
+  for (  Map.Entry<String,Media> entry : skuMedia.entrySet()) {
+    this.skuMediaXref.put(entry.getKey(),new SkuMediaXrefImpl(this,entry.getValue(),entry.getKey()));
+  }
 }

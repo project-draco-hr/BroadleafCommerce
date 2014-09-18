@@ -1,8 +1,8 @@
 {
-  if (skuMedia == null || skuMedia.isEmpty()) {
-    if (hasDefaultSku()) {
-      return lookupDefaultSku().getSkuMedia();
+  if (skuMedia.size() == 0) {
+    for (    Map.Entry<String,SkuMediaXref> entry : getSkuMediaXref().entrySet()) {
+      skuMedia.put(entry.getKey(),entry.getValue().getMedia());
     }
   }
-  return skuMedia;
+  return Collections.unmodifiableMap(skuMedia);
 }

@@ -10,7 +10,7 @@
   Root<ProductImpl> product=criteria.from(ProductImpl.class);
   FetchParent fetchParent=product.fetch("defaultSku",JoinType.LEFT);
   if (!dialectHelper.isOracle() && !dialectHelper.isSqlServer()) {
-    fetchParent.fetch("skuMedia",JoinType.LEFT);
+    fetchParent.fetch("skuMediaXref",JoinType.LEFT);
   }
   criteria.select(product);
   criteria.where(product.get("id").as(Long.class).in(sandBoxHelper.mergeCloneIds(em,ProductImpl.class,productIds.toArray(new Long[productIds.size()]))));
