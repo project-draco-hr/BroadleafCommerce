@@ -1,6 +1,9 @@
 {
   List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,null,null);
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(owningClass,requestParams,sectionCrumbs,pathVars);
+  ppr.addCustomCriteria("requestingEntityId=" + requestingEntityId);
+  ppr.addCustomCriteria("owningClass=" + owningClass);
+  ppr.addCustomCriteria("requestingField=" + collectionField);
   ClassMetadata mainMetadata=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=null;
   FieldMetadata md=null;

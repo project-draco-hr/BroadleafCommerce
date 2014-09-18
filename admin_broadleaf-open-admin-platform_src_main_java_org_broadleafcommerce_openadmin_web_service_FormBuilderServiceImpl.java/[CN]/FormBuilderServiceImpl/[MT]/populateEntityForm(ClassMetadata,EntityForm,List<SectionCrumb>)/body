@@ -1,6 +1,7 @@
 {
   ef.setCeilingEntityClassname(cmd.getCeilingType());
-  AdminSection section=navigationService.findAdminSectionByClass(cmd.getCeilingType());
+  String sectionIdentifier=extractSectionIdentifierFromCrumb(sectionCrumbs);
+  AdminSection section=navigationService.findAdminSectionByClassAndSectionId(cmd.getCeilingType(),sectionIdentifier);
   if (section != null) {
     ef.setSectionKey(section.getUrl());
   }

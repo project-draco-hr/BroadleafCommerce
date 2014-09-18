@@ -1,6 +1,9 @@
 {
   FieldMetadata fmd=field.getMetadata();
   PersistencePackageRequest ppr=PersistencePackageRequest.fromMetadata(fmd,sectionCrumbs);
+  if (field != null) {
+    ppr.setSectionEntityField(field.getName());
+  }
   ClassMetadata cmd=adminEntityService.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   List<Field> headerFields=new ArrayList<Field>();
   ListGrid.Type type=null;

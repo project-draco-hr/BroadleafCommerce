@@ -1,0 +1,26 @@
+{
+  String className=clazz.getName();
+  List<AdminSection> sections=readAdminSectionForClassName(className);
+  if (CollectionUtils.isEmpty(sections)) {
+    if (className.endsWith("Impl")) {
+      className=className.substring(0,className.length() - 4);
+      sections=readAdminSectionForClassName(className);
+    }
+  }
+  if (!CollectionUtils.isEmpty(sections)) {
+    AdminSection returnSection=sections.get(0);
+    if (sectionId != null) {
+      if (!sectionId.startsWith("/")) {
+        sectionId="/" + sectionId;
+      }
+      for (      AdminSection section : sections) {
+        if (sectionId.equals(section.getUrl())) {
+          returnSection=section;
+          break;
+        }
+      }
+    }
+    return returnSection;
+  }
+  return null;
+}

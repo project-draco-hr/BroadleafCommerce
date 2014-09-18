@@ -10,7 +10,8 @@
   listGrid.setStartIndex(drs.getStartIndex());
   listGrid.setTotalRecords(drs.getTotalRecords());
   listGrid.setPageSize(drs.getPageSize());
-  AdminSection section=navigationService.findAdminSectionByClass(className);
+  String sectionIdentifier=extractSectionIdentifierFromCrumb(sectionCrumbs);
+  AdminSection section=navigationService.findAdminSectionByClassAndSectionId(className,sectionIdentifier);
   if (section != null) {
     listGrid.setExternalEntitySectionKey(section.getUrl());
   }

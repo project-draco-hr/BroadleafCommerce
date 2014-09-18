@@ -5,7 +5,7 @@
   ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars)).getDynamicResultSet().getClassMetaData();
   Property collectionProperty=mainMetadata.getPMap().get(collectionField);
   BasicFieldMetadata md=(BasicFieldMetadata)collectionProperty.getMetadata();
-  AdminSection section=adminNavigationService.findAdminSectionByClass(md.getForeignKeyClass());
+  AdminSection section=adminNavigationService.findAdminSectionByClassAndSectionId(md.getForeignKeyClass(),sectionKey);
   String sectionUrlKey=(section.getUrl().startsWith("/")) ? section.getUrl().substring(1) : section.getUrl();
   Map<String,String> varsForField=new HashMap<String,String>();
   varsForField.put("sectionKey",sectionUrlKey);
