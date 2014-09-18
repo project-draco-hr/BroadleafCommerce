@@ -1,0 +1,10 @@
+{
+  Object parentsParent=instance;
+  String parentsParentName=populateValueRequest.getProperty().getName();
+  if (parentsParentName.contains(".")) {
+    parentsParent=populateValueRequest.getFieldManager().getFieldValue(instance,parentsParentName.substring(0,parentsParentName.lastIndexOf(".")));
+  }
+  populateValueRequest.getFieldManager().setFieldValue(parent,populateValueRequest.getMetadata().getToOneParentProperty(),parentsParent);
+  populateValueRequest.getFieldManager().setFieldValue(parent,populateValueRequest.getMetadata().getMapKeyValueProperty(),parentsParentName.substring(parentsParentName.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),parentsParentName.length()));
+  populateValueRequest.getFieldManager().setFieldValue(parent,populateValueRequest.getMetadata().getToOneTargetProperty(),valueType.newInstance());
+}
