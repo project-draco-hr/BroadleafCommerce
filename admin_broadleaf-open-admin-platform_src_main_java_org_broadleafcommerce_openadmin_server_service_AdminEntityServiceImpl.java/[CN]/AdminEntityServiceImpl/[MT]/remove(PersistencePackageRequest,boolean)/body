@@ -1,0 +1,14 @@
+{
+  PersistencePackage pkg=persistencePackageFactory.create(request);
+  try {
+    if (transactional) {
+      return service.remove(pkg);
+    }
+ else {
+      return service.nonTransactionalRemove(pkg);
+    }
+  }
+ catch (  ValidationException e) {
+    return new PersistenceResponse().withEntity(e.getEntity());
+  }
+}
