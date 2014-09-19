@@ -1,0 +1,11 @@
+{
+  if (extractValueRequest.getRequestedValue() != null) {
+    if (extractValueRequest.getRequestedValue() instanceof Collection) {
+      Property jsonProperty=convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
+      extractValueRequest.getProps().add(jsonProperty);
+    }
+ else {
+      throw new UnsupportedOperationException("RULE_WITH_QUANTITY type is currently only supported" + "on collection fields. A single field with this type is not currently supported.");
+    }
+  }
+}

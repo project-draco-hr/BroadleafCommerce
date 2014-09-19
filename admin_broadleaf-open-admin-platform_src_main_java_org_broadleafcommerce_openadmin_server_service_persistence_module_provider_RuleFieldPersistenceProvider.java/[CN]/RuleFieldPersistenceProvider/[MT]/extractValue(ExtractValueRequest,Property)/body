@@ -2,52 +2,13 @@
   if (!canHandleExtraction(extractValueRequest,property)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
-  String val=null;
   ObjectMapper mapper=new ObjectMapper();
   MVELToDataWrapperTranslator translator=new MVELToDataWrapperTranslator();
   if (extractValueRequest.getMetadata().getFieldType() == SupportedFieldType.RULE_SIMPLE) {
-    if (extractValueRequest.getRequestedValue() != null) {
-      if (extractValueRequest.getRequestedValue() instanceof String) {
-        val=(String)extractValueRequest.getRequestedValue();
-        property.setValue(val);
-        property.setDisplayValue(extractValueRequest.getDisplayVal());
-      }
-      Object simpleRule=extractValueRequest.getRequestedValue();
-      if (!StringUtils.isEmpty(extractValueRequest.getMetadata().getToOneTargetProperty())) {
-        try {
-          simpleRule=extractValueRequest.getFieldManager().getFieldValue(simpleRule,extractValueRequest.getMetadata().getToOneTargetProperty());
-        }
- catch (        IllegalAccessException e) {
-          throw ExceptionHelper.refineException(e);
-        }
-catch (        FieldNotAvailableException e) {
-          throw ExceptionHelper.refineException(e);
-        }
-      }
-      if (simpleRule != null) {
-        if (simpleRule instanceof SimpleRule) {
-          val=((SimpleRule)simpleRule).getMatchRule();
-          property.setValue(val);
-          property.setDisplayValue(extractValueRequest.getDisplayVal());
-        }
- else {
-          throw new UnsupportedOperationException("RULE_SIMPLE type is currently only supported on fields of type SimpleRule");
-        }
-      }
-    }
-    Property jsonProperty=convertSimpleRuleToJson(translator,mapper,val,property.getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
-    extractValueRequest.getProps().add(jsonProperty);
+    extractSimpleRule(extractValueRequest,property,mapper,translator);
   }
   if (extractValueRequest.getMetadata().getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
-    if (extractValueRequest.getRequestedValue() != null) {
-      if (extractValueRequest.getRequestedValue() instanceof Collection) {
-        Property jsonProperty=convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
-        extractValueRequest.getProps().add(jsonProperty);
-      }
- else {
-        throw new UnsupportedOperationException("RULE_WITH_QUANTITY type is currently only supported" + "on collection fields. A single field with this type is not currently supported.");
-      }
-    }
+    extractQuantityRule(extractValueRequest,mapper,translator);
   }
   return FieldProviderResponse.HANDLED_BREAK;
 }

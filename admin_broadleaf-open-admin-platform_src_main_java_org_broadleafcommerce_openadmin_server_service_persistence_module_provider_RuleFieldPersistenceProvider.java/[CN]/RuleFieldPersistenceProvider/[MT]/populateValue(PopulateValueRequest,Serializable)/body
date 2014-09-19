@@ -8,24 +8,12 @@
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case RULE_WITH_QUANTITY:
 {
-        Class<?> valueType=getListFieldType(instance,populateValueRequest.getFieldManager(),populateValueRequest.getProperty(),populateValueRequest.getPersistenceManager());
-        if (valueType == null) {
-          throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
-        }
-        DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-        Collection<QuantityBasedRule> rules;
-        try {
-          rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
-        }
- catch (        FieldNotAvailableException e) {
-          throw new IllegalArgumentException(e);
-        }
-        dirty=populateQuantityBaseRuleCollection(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType);
+        dirty=populateQuantityRule(populateValueRequest,instance);
         break;
       }
 case RULE_SIMPLE:
 {
-      dirty=processSimpleRule(populateValueRequest,instance,dirty);
+      dirty=populateSimpleRule(populateValueRequest,instance);
       break;
     }
 }
