@@ -1,0 +1,63 @@
+{
+  String prop=populateValueRequest.getProperty().getName();
+  if (prop.contains(FieldManager.MAPFIELDSEPARATOR)) {
+    Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
+    if (field.getAnnotation(OneToMany.class) == null) {
+      throw new UnsupportedOperationException("RuleFieldPersistenceProvider is currently only compatible with map fields when modelled using @OneToMany");
+    }
+  }
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
+  if (dw == null || StringUtils.isEmpty(dw.getError())) {
+    String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
+    Class<?> startingValueType=getStartingValueType(populateValueRequest);
+    Class<?> valueType=getValueType(populateValueRequest,startingValueType);
+    if (String.class.isAssignableFrom(valueType)) {
+      if (instance != null && mvel == null) {
+        Object value=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        dirty=value != null;
+      }
+ else {
+        dirty=checkDirtyState(populateValueRequest,instance,mvel);
+      }
+      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),mvel);
+    }
+    if (SimpleRule.class.isAssignableFrom(valueType)) {
+      boolean persist=false;
+      Object parent;
+      SimpleRule rule;
+      try {
+        parent=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        if (parent == null) {
+          parent=startingValueType.newInstance();
+          if (!startingValueType.equals(valueType)) {
+            setupJoinEntityParent(populateValueRequest,instance,valueType,parent);
+          }
+          persist=true;
+        }
+        rule=establishSimpleRule(populateValueRequest,parent);
+      }
+ catch (      FieldNotAvailableException e) {
+        throw new IllegalArgumentException(e);
+      }
+      if (mvel == null) {
+        dirty=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName()) != null;
+        if (dirty) {
+          if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
+          }
+ else {
+            populateValueRequest.getPersistenceManager().getDynamicEntityDao().remove((Serializable)parent);
+          }
+        }
+      }
+ else       if (rule != null) {
+        dirty=!mvel.equals(rule.getMatchRule());
+        if (dirty) {
+          updateSimpleRule(populateValueRequest,mvel,persist,parent,rule);
+        }
+      }
+    }
+  }
+  return dirty;
+}

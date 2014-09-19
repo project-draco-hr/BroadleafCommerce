@@ -2,6 +2,13 @@
   if (!canHandlePersistence(populateValueRequest,instance)) {
     return FieldProviderResponse.NOT_HANDLED;
   }
+  String prop=populateValueRequest.getProperty().getName();
+  if (prop.contains(FieldManager.MAPFIELDSEPARATOR)) {
+    Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
+    if (field.getAnnotation(OneToMany.class) == null) {
+      throw new UnsupportedOperationException("MediaFieldPersistenceProvider is currently only compatible with map fields when modelled using @OneToMany");
+    }
+  }
   FieldProviderResponse response=FieldProviderResponse.HANDLED;
   boolean dirty;
   try {
@@ -20,7 +27,6 @@
           if (!startingValueType.equals(valueType)) {
             setupJoinEntityParent(populateValueRequest,instance,valueType,parent);
           }
-          populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),parent);
           persist=true;
         }
         media=establishMedia(populateValueRequest,parent);

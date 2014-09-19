@@ -25,61 +25,7 @@ case RULE_WITH_QUANTITY:
       }
 case RULE_SIMPLE:
 {
-      DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-      DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
-      if (dw == null || StringUtils.isEmpty(dw.getError())) {
-        String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
-        Class<?> valueType=null;
-        if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
-          valueType=populateValueRequest.getReturnType();
-        }
- else {
-          String valueClassName=populateValueRequest.getMetadata().getMapFieldValueClass();
-          if (valueClassName != null) {
-            valueType=Class.forName(valueClassName);
-          }
-          if (valueType == null) {
-            valueType=populateValueRequest.getReturnType();
-          }
-        }
-        if (valueType == null) {
-          throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
-        }
-        if (String.class.isAssignableFrom(valueType)) {
-          if (instance != null && mvel == null) {
-            Object value=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
-            dirty=value != null;
-          }
- else {
-            dirty=checkDirtyState(populateValueRequest,instance,mvel);
-          }
-          populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),mvel);
-        }
-        if (SimpleRule.class.isAssignableFrom(valueType)) {
-          SimpleRule rule;
-          try {
-            rule=(SimpleRule)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
-          }
- catch (          FieldNotAvailableException e) {
-            throw new IllegalArgumentException(e);
-          }
-          if (mvel == null) {
-            dirty=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName()) != null;
-            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
-          }
- else           if (rule != null) {
-            dirty=!rule.getMatchRule().equals(mvel);
-            rule.setMatchRule(mvel);
-          }
- else {
-            dirty=true;
-            rule=(SimpleRule)valueType.newInstance();
-            rule.setMatchRule(mvel);
-            populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(rule);
-            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),rule);
-          }
-        }
-      }
+      dirty=processSimpleRule(populateValueRequest,instance,dirty);
       break;
     }
 }

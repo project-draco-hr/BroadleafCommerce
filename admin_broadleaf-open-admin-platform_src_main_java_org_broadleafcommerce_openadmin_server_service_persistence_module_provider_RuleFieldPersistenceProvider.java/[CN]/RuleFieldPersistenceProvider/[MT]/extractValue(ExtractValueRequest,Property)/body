@@ -12,12 +12,26 @@
         property.setValue(val);
         property.setDisplayValue(extractValueRequest.getDisplayVal());
       }
-      if (extractValueRequest.getRequestedValue() instanceof SimpleRule) {
-        SimpleRule simpleRule=(SimpleRule)extractValueRequest.getRequestedValue();
-        if (simpleRule != null) {
-          val=simpleRule.getMatchRule();
+      Object simpleRule=extractValueRequest.getRequestedValue();
+      if (!StringUtils.isEmpty(extractValueRequest.getMetadata().getToOneTargetProperty())) {
+        try {
+          simpleRule=extractValueRequest.getFieldManager().getFieldValue(simpleRule,extractValueRequest.getMetadata().getToOneTargetProperty());
+        }
+ catch (        IllegalAccessException e) {
+          throw ExceptionHelper.refineException(e);
+        }
+catch (        FieldNotAvailableException e) {
+          throw ExceptionHelper.refineException(e);
+        }
+      }
+      if (simpleRule != null) {
+        if (simpleRule instanceof SimpleRule) {
+          val=((SimpleRule)simpleRule).getMatchRule();
           property.setValue(val);
           property.setDisplayValue(extractValueRequest.getDisplayVal());
+        }
+ else {
+          throw new UnsupportedOperationException("RULE_SIMPLE type is currently only supported on fields of type SimpleRule");
         }
       }
     }
@@ -35,5 +49,5 @@
       }
     }
   }
-  return FieldProviderResponse.HANDLED;
+  return FieldProviderResponse.HANDLED_BREAK;
 }
