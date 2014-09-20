@@ -12,12 +12,8 @@
   }
   DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
   Collection<QuantityBasedRule> rules;
-  try {
-    rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
-  }
- catch (  FieldNotAvailableException e) {
-    throw new IllegalArgumentException(e);
-  }
-  dirty=updateQuantityRule(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType,instance,oneToMany.mappedBy());
+  rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+  Object parent=extractParent(populateValueRequest,instance);
+  dirty=updateQuantityRule(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType,parent,oneToMany.mappedBy());
   return dirty;
 }

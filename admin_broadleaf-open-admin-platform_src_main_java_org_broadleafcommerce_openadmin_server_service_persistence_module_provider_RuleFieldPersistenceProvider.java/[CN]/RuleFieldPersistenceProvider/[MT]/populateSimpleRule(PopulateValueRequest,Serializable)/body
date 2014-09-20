@@ -32,7 +32,8 @@
             rule=(SimpleRule)valueType.newInstance();
             Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
             OneToMany oneToMany=field.getAnnotation(OneToMany.class);
-            populateValueRequest.getFieldManager().setFieldValue(rule,oneToMany.mappedBy(),instance);
+            Object parent=extractParent(populateValueRequest,instance);
+            populateValueRequest.getFieldManager().setFieldValue(rule,oneToMany.mappedBy(),parent);
             populateValueRequest.getFieldManager().setFieldValue(rule,populateValueRequest.getMetadata().getMapKeyValueProperty(),prop.substring(prop.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),prop.length()));
           }
  catch (          Exception e) {

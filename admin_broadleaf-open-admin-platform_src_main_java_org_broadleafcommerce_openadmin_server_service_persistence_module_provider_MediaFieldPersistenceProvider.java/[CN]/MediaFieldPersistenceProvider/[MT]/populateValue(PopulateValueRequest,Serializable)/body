@@ -13,23 +13,20 @@
   boolean dirty;
   try {
     setNonDisplayableValues(populateValueRequest);
-    Class<?> startingValueType=getStartingValueType(populateValueRequest);
-    Class<?> valueType=getValueType(populateValueRequest,startingValueType);
+    Class<?> valueType=getStartingValueType(populateValueRequest);
     if (Media.class.isAssignableFrom(valueType)) {
-      Media newMedia=convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue());
+      Media newMedia=convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue(),valueType);
       boolean persist=false;
-      Object parent;
       Media media;
       try {
-        parent=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
-        if (parent == null) {
-          parent=startingValueType.newInstance();
-          if (!startingValueType.equals(valueType)) {
-            setupJoinEntityParent(populateValueRequest,instance,valueType,parent);
-          }
+        media=(Media)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        if (media == null) {
+          media=(Media)valueType.newInstance();
+          Object parent=extractParent(populateValueRequest,instance);
+          populateValueRequest.getFieldManager().setFieldValue(media,populateValueRequest.getMetadata().getToOneParentProperty(),parent);
+          populateValueRequest.getFieldManager().setFieldValue(media,populateValueRequest.getMetadata().getMapKeyValueProperty(),prop.substring(prop.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),prop.length()));
           persist=true;
         }
-        media=establishMedia(populateValueRequest,parent);
       }
  catch (      FieldNotAvailableException e) {
         throw new IllegalArgumentException(e);
@@ -37,7 +34,7 @@
       populateValueRequest.getProperty().setOriginalValue(convertMediaToJson(media));
       dirty=establishDirtyState(newMedia,media);
       if (dirty) {
-        updateMedia(populateValueRequest,newMedia,persist,parent,media);
+        updateMedia(populateValueRequest,newMedia,persist,media);
         response=FieldProviderResponse.HANDLED_BREAK;
       }
     }
