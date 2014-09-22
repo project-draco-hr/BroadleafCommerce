@@ -1,0 +1,22 @@
+{
+  ApplicationContext parent=context.getParent();
+  if (parent == null || (!(parent instanceof WebApplicationContext))) {
+    String resourceBasePath=webMergedConfig.getResourceBasePath();
+    ResourceLoader resourceLoader=resourceBasePath.startsWith(ResourceLoader.CLASSPATH_URL_PREFIX) ? new DefaultResourceLoader() : new FileSystemResourceLoader();
+    ServletContext servletContext=new MockServletContext(resourceBasePath,resourceLoader);
+    servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,context);
+    context.setServletContext(servletContext);
+  }
+ else {
+    ServletContext servletContext=null;
+    while (parent != null) {
+      if (parent instanceof WebApplicationContext && !(parent.getParent() instanceof WebApplicationContext)) {
+        servletContext=((WebApplicationContext)parent).getServletContext();
+        break;
+      }
+      parent=parent.getParent();
+    }
+    Assert.state(servletContext != null,"Failed to find Root MergeXmlWebApplicationContext in the context hierarchy");
+    context.setServletContext(servletContext);
+  }
+}
