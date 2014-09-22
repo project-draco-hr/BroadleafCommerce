@@ -1,0 +1,46 @@
+{
+  StringBuffer buf=new StringBuffer(32);
+  if (getLevelInBrackets()) {
+    buf.append('[');
+  }
+switch (level) {
+case LOG_LEVEL_TRACE:
+    buf.append(TRACE);
+  break;
+case LOG_LEVEL_DEBUG:
+buf.append(DEBUG);
+break;
+case LOG_LEVEL_INFO:
+buf.append(INFO);
+break;
+case LOG_LEVEL_WARN:
+buf.append(WARN);
+break;
+case LOG_LEVEL_ERROR:
+buf.append(ERROR);
+break;
+case LOG_LEVEL_FATAL:
+buf.append(FATAL);
+break;
+default :
+buf.append(SUPPORT);
+}
+if (getLevelInBrackets()) {
+buf.append(']');
+buf.append(' ');
+}
+if (getShowDateTime() && getDateFormatter() != null) {
+buf.append(getFormattedDate());
+buf.append(' ');
+}
+if (getShowThreadName()) {
+buf.append('[');
+buf.append(Thread.currentThread().getName());
+buf.append("] ");
+}
+if (getShowLogName()) {
+buf.append(String.valueOf(name)).append(" - ");
+}
+buf.append(message);
+write(buf,t);
+}

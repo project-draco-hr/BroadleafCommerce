@@ -1,0 +1,19 @@
+{
+  if (!(mergedConfig instanceof WebMergedContextConfiguration)) {
+    throw new IllegalArgumentException(String.format("Cannot load WebApplicationContext from non-web merged context configuration %s. " + "Consider annotating your test class with @WebAppConfiguration.",mergedConfig));
+  }
+  WebMergedContextConfiguration webMergedConfig=(WebMergedContextConfiguration)mergedConfig;
+  validateMergedContextConfiguration(webMergedConfig);
+  MergeXmlWebApplicationContext context=new MergeXmlWebApplicationContext();
+  ApplicationContext parent=mergedConfig.getParentApplicationContext();
+  if (parent != null) {
+    context.setParent(parent);
+  }
+  context.setPatchLocation(StringUtils.join(mergedConfig.getLocations(),";"));
+  context.setStandardLocationTypes(StandardConfigLocations.TESTCONTEXTTYPE);
+  configureWebResources(context,webMergedConfig);
+  prepareContext(context,webMergedConfig);
+  context.refresh();
+  context.registerShutdownHook();
+  return context;
+}

@@ -1,0 +1,30 @@
+{
+  PersistencePackage pkg=persistencePackageFactory.create(request);
+  try {
+    if (request.isUpdateLookupType()) {
+      if (pkg.getSectionCrumbs() != null && pkg.getSectionCrumbs().length > 0) {
+        SectionCrumb sc=pkg.getSectionCrumbs()[0];
+        if (StringUtils.isNotBlank(sc.getSectionIdentifier())) {
+          pkg.setSecurityCeilingEntityFullyQualifiedClassname(sc.getSectionIdentifier());
+        }
+      }
+      if (transactional) {
+        return service.update(pkg);
+      }
+ else {
+        return service.nonTransactionalUpdate(pkg);
+      }
+    }
+ else {
+      if (transactional) {
+        return service.add(pkg);
+      }
+ else {
+        return service.nonTransactionalAdd(pkg);
+      }
+    }
+  }
+ catch (  ValidationException e) {
+    return new PersistenceResponse().withEntity(e.getEntity());
+  }
+}

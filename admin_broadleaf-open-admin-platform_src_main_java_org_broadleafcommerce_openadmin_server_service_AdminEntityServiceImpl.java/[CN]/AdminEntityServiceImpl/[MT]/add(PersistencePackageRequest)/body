@@ -1,20 +1,3 @@
 {
-  PersistencePackage pkg=persistencePackageFactory.create(request);
-  try {
-    if (request.isUpdateLookupType()) {
-      if (pkg.getSectionCrumbs() != null && pkg.getSectionCrumbs().length > 0) {
-        SectionCrumb sc=pkg.getSectionCrumbs()[0];
-        if (StringUtils.isNotBlank(sc.getSectionIdentifier())) {
-          pkg.setSecurityCeilingEntityFullyQualifiedClassname(sc.getSectionIdentifier());
-        }
-      }
-      return service.update(pkg);
-    }
- else {
-      return service.add(pkg);
-    }
-  }
- catch (  ValidationException e) {
-    return new PersistenceResponse().withEntity(e.getEntity());
-  }
+  return add(request,true);
 }

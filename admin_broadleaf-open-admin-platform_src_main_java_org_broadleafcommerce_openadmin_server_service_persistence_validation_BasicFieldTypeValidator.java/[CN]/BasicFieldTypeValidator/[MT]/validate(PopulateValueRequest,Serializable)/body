@@ -1,4 +1,8 @@
 {
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Locale locale=brc.getJavaLocale();
+  DecimalFormat format=populateValueRequest.getDataFormatProvider().getDecimalFormatter();
+  ParsePosition pp;
 switch (populateValueRequest.getMetadata().getFieldType()) {
 case INTEGER:
     try {
@@ -20,28 +24,30 @@ case INTEGER:
     }
   break;
 case DECIMAL:
-try {
-  if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-    new BigDecimal(populateValueRequest.getRequestedValue());
-  }
- else {
-    Double.parseDouble(populateValueRequest.getRequestedValue());
-  }
+pp=new ParsePosition(0);
+if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+format.setParseBigDecimal(true);
+format.parse(populateValueRequest.getRequestedValue(),pp);
+format.setParseBigDecimal(false);
 }
- catch (NumberFormatException e) {
-  return new PropertyValidationResult(false,"Field must be a valid decimal");
+ else {
+format.parse(populateValueRequest.getRequestedValue(),pp);
+}
+if (pp.getIndex() != populateValueRequest.getRequestedValue().length()) {
+return new PropertyValidationResult(false,"Field must be a valid decimal");
 }
 break;
 case MONEY:
-try {
+pp=new ParsePosition(0);
 if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType()) || Money.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-new BigDecimal(populateValueRequest.getRequestedValue());
+format.setParseBigDecimal(true);
+format.parse(populateValueRequest.getRequestedValue(),pp);
+format.setParseBigDecimal(false);
 }
  else if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-Double.parseDouble(populateValueRequest.getRequestedValue());
+format.parse(populateValueRequest.getRequestedValue(),pp);
 }
-}
- catch (NumberFormatException e) {
+if (pp.getIndex() != populateValueRequest.getRequestedValue().length()) {
 return new PropertyValidationResult(false,"Field must be a valid number");
 }
 break;

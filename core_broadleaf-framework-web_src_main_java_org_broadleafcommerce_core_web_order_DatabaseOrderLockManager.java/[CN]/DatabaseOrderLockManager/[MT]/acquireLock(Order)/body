@@ -1,11 +1,12 @@
 {
-  if (order instanceof NullOrderImpl) {
+  if (order == null || order instanceof NullOrderImpl) {
     if (LOG.isDebugEnabled()) {
       LOG.debug("Thread[" + Thread.currentThread().getId() + "] Attempted to grab a lock for a NullOrderImpl. ");
     }
     return order;
   }
   boolean lockAcquired=false;
+  int count=0;
   while (!lockAcquired) {
     try {
       lockAcquired=orderService.acquireLock(order);
@@ -16,6 +17,10 @@
       }
     }
     if (!lockAcquired) {
+      count++;
+      if (count >= getDatabaseLockAcquisitionNumRetries()) {
+        throw new RuntimeException("Exceeded max retries to attempt to acquire a lock on current Order");
+      }
       try {
         int msToSleep=getDatabaseLockPollingIntervalMs();
         if (LOG.isDebugEnabled()) {

@@ -1,0 +1,14 @@
+{
+  String node1Values=getSanitizedValue(node1.getNodeValue());
+  String node2Values=getSanitizedValue(node2.getNodeValue());
+  Set<String> finalItems=new LinkedHashSet<String>();
+  for (  String node1Value : node1Values.split(getRegEx())) {
+    finalItems.add(node1Value.trim());
+  }
+  for (  String node2Value : node2Values.split(getRegEx())) {
+    if (!finalItems.contains(node2Value.trim())) {
+      finalItems.add(node2Value.trim());
+    }
+  }
+  return finalItems;
+}

@@ -1,10 +1,19 @@
 {
   Map<String,String> attrs=new HashMap<String,String>();
   HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
-  boolean secureRequest=isRequestSecure(request);
-  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  boolean secureRequest=true;
+  String contextPath="";
+  if (request != null) {
+    secureRequest=isRequestSecure(request);
+    contextPath=request.getContextPath();
+  }
+  String elementValue=element.getAttributeValue(attributeName);
+  if (elementValue.startsWith("/")) {
+    elementValue="@{ " + elementValue + " }";
+  }
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,elementValue);
   String assetPath=(String)expression.execute(arguments.getConfiguration(),arguments);
-  assetPath=staticAssetPathService.convertAssetPath(assetPath,request.getContextPath(),secureRequest);
+  assetPath=staticAssetPathService.convertAssetPath(assetPath,contextPath,secureRequest);
   attrs.put("src",assetPath);
   return attrs;
 }

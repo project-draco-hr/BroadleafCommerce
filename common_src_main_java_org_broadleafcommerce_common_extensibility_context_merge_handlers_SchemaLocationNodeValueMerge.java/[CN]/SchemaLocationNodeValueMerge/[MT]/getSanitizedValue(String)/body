@@ -1,0 +1,10 @@
+{
+  Pattern springVersionPattern=Pattern.compile("(spring-\\w*-[0-9]\\.[0-9]\\.xsd)");
+  Matcher versionMatcher=springVersionPattern.matcher(attributeValue);
+  while (versionMatcher.find()) {
+    String match=versionMatcher.group();
+    String replacement=match.replaceAll("-[0-9]\\.[0-9]","");
+    attributeValue=attributeValue.replaceAll(match,replacement);
+  }
+  return attributeValue;
+}
