@@ -1,12 +1,3 @@
 {
-  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getAdditionalProperties().containsKey("blOfferEntityExtensionManager")) {
-    OfferEntityExtensionManager extensionManager=(OfferEntityExtensionManager)context.getAdditionalProperties().get("blOfferEntityExtensionManager");
-    ExtensionResultHolder holder=new ExtensionResultHolder();
-    ExtensionResultStatusType result=extensionManager.getProxy().getOfferCodes(this,holder);
-    if (ExtensionResultStatusType.HANDLED.equals(result)) {
-      return (List<OfferCode>)holder.getResult();
-    }
-  }
   return offerCodes;
 }
