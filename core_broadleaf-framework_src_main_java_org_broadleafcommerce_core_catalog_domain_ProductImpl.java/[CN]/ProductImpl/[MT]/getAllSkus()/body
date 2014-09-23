@@ -1,10 +1,10 @@
 {
   List<Sku> allSkus=new ArrayList<Sku>();
   allSkus.add(getDefaultSku());
-  for (  Sku additionalSku : additionalSkus) {
-    if (!additionalSku.getId().equals(getDefaultSku().getId())) {
-      allSkus.add(additionalSku);
+  for (  ProductSkuXref additionalSku : additionalSkus) {
+    if (!additionalSku.getSku().getId().equals(getDefaultSku().getId())) {
+      allSkus.add(additionalSku.getSku());
     }
   }
-  return allSkus;
+  return Collections.unmodifiableList(allSkus);
 }

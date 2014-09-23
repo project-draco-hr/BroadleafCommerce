@@ -1,11 +1,29 @@
 {
-  if (extractValueRequest.getRequestedValue() != null && extractValueRequest.getRequestedValue() instanceof ValueAssignable) {
-    ValueAssignable assignableValue=(ValueAssignable)extractValueRequest.getRequestedValue();
-    String val=(String)assignableValue.getValue();
-    property.setValue(val);
-    property.setDisplayValue(extractValueRequest.getDisplayVal());
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
   }
- else {
+  checkValue: {
+    if (extractValueRequest.getRequestedValue() != null) {
+      Object requestedValue=extractValueRequest.getRequestedValue();
+      if (!StringUtils.isEmpty(extractValueRequest.getMetadata().getToOneTargetProperty())) {
+        try {
+          requestedValue=extractValueRequest.getFieldManager().getFieldValue(requestedValue,extractValueRequest.getMetadata().getToOneTargetProperty());
+        }
+ catch (        IllegalAccessException e) {
+          throw ExceptionHelper.refineException(e);
+        }
+catch (        FieldNotAvailableException e) {
+          throw ExceptionHelper.refineException(e);
+        }
+      }
+      if (requestedValue instanceof ValueAssignable) {
+        ValueAssignable assignableValue=(ValueAssignable)requestedValue;
+        String val=(String)assignableValue.getValue();
+        property.setValue(val);
+        property.setDisplayValue(extractValueRequest.getDisplayVal());
+        break checkValue;
+      }
+    }
     if (FieldProviderResponse.NOT_HANDLED == super.extractValue(extractValueRequest,property)) {
       return FieldProviderResponse.NOT_HANDLED;
     }

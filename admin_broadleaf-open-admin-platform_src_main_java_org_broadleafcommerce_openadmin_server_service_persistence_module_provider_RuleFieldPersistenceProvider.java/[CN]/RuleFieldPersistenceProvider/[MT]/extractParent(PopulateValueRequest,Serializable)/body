@@ -1,0 +1,11 @@
+{
+  Object parent=instance;
+  String parentName=populateValueRequest.getProperty().getName();
+  if (parentName.contains(".")) {
+    parent=populateValueRequest.getFieldManager().getFieldValue(instance,parentName.substring(0,parentName.lastIndexOf(".")));
+  }
+  if (!populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().contains(parent)) {
+    populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(parent);
+  }
+  return parent;
+}

@@ -1,0 +1,9 @@
+{
+  if (!persist) {
+    rule=populateValueRequest.getPersistenceManager().getDynamicEntityDao().merge(rule);
+  }
+  rule.setMatchRule(mvel);
+  if (persist) {
+    populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(rule);
+  }
+}

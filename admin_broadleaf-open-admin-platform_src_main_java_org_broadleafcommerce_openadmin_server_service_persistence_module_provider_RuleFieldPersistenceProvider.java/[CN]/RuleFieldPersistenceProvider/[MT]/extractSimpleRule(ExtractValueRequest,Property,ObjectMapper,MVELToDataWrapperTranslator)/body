@@ -1,0 +1,23 @@
+{
+  String val=null;
+  if (extractValueRequest.getRequestedValue() != null) {
+    if (extractValueRequest.getRequestedValue() instanceof String) {
+      val=(String)extractValueRequest.getRequestedValue();
+      property.setValue(val);
+      property.setDisplayValue(extractValueRequest.getDisplayVal());
+    }
+    Object simpleRule=extractValueRequest.getRequestedValue();
+    if (simpleRule != null) {
+      if (simpleRule instanceof SimpleRule) {
+        val=((SimpleRule)simpleRule).getMatchRule();
+        property.setValue(val);
+        property.setDisplayValue(extractValueRequest.getDisplayVal());
+      }
+ else {
+        throw new UnsupportedOperationException("RULE_SIMPLE type is currently only supported on fields of type SimpleRule");
+      }
+    }
+  }
+  Property jsonProperty=convertSimpleRuleToJson(translator,mapper,val,property.getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
+  extractValueRequest.getProps().add(jsonProperty);
+}

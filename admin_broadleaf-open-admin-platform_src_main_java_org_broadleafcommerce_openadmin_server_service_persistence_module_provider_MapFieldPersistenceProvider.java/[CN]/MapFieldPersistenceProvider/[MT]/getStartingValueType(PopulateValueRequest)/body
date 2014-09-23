@@ -1,0 +1,14 @@
+{
+  Class<?> startingValueType=null;
+  String valueClassName=populateValueRequest.getMetadata().getMapFieldValueClass();
+  if (valueClassName != null) {
+    startingValueType=Class.forName(valueClassName);
+  }
+  if (startingValueType == null) {
+    startingValueType=populateValueRequest.getReturnType();
+  }
+  if (startingValueType == null) {
+    throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
+  }
+  return startingValueType;
+}

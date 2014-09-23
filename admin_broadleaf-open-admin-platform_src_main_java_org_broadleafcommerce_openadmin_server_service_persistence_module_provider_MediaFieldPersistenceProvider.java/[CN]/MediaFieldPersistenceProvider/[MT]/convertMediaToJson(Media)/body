@@ -1,8 +1,11 @@
 {
-  String json;
   try {
     ObjectMapper om=new ObjectMapper();
-    return om.writeValueAsString(media);
+    Media unwrapped=media;
+    if (media.isUnwrappableAs(Media.class)) {
+      unwrapped=media.unwrap(Media.class);
+    }
+    return om.writeValueAsString(unwrapped);
   }
  catch (  Exception e) {
     throw new RuntimeException(e);

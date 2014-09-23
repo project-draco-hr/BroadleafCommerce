@@ -1,12 +1,3 @@
 {
-  BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getAdditionalProperties().containsKey("blProductEntityExtensionManager")) {
-    ProductEntityExtensionManager extensionManager=(ProductEntityExtensionManager)context.getAdditionalProperties().get("blProductEntityExtensionManager");
-    ExtensionResultHolder holder=new ExtensionResultHolder();
-    ExtensionResultStatusType result=extensionManager.getProxy().getUpSaleProducts(this,holder);
-    if (ExtensionResultStatusType.HANDLED.equals(result)) {
-      return (List<RelatedProduct>)holder.getResult();
-    }
-  }
   return upSaleProducts;
 }

@@ -1,0 +1,19 @@
+{
+  String prop=populateValueRequest.getProperty().getName();
+  Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop);
+  OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+  if (oneToMany == null) {
+    throw new UnsupportedOperationException("RuleFieldPersistenceProvider is currently only compatible with collection fields when modelled using @OneToMany");
+  }
+  boolean dirty;
+  Class<?> valueType=getListFieldType(instance,populateValueRequest.getFieldManager(),populateValueRequest.getProperty(),populateValueRequest.getPersistenceManager());
+  if (valueType == null) {
+    throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
+  }
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  Collection<QuantityBasedRule> rules;
+  rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+  Object parent=extractParent(populateValueRequest,instance);
+  dirty=updateQuantityRule(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType,parent,oneToMany.mappedBy());
+  return dirty;
+}

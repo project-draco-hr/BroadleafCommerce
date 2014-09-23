@@ -1,0 +1,68 @@
+{
+  boolean dirty=false;
+  String prop=populateValueRequest.getProperty().getName();
+  if (prop.contains(FieldManager.MAPFIELDSEPARATOR)) {
+    Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
+    if (field.getAnnotation(OneToMany.class) == null) {
+      throw new UnsupportedOperationException("RuleFieldPersistenceProvider is currently only compatible with map fields when modelled using @OneToMany");
+    }
+  }
+  DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
+  DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
+  if (dw == null || StringUtils.isEmpty(dw.getError())) {
+    String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
+    Class<?> valueType=getStartingValueType(populateValueRequest);
+    if (String.class.isAssignableFrom(valueType)) {
+      if (instance != null && mvel == null) {
+        Object value=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        dirty=value != null;
+      }
+ else {
+        dirty=checkDirtyState(populateValueRequest,instance,mvel);
+      }
+      populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),mvel);
+    }
+    if (SimpleRule.class.isAssignableFrom(valueType)) {
+      boolean persist=false;
+      SimpleRule rule;
+      try {
+        rule=(SimpleRule)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
+        if (rule == null) {
+          try {
+            rule=(SimpleRule)valueType.newInstance();
+            Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
+            OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+            Object parent=extractParent(populateValueRequest,instance);
+            populateValueRequest.getFieldManager().setFieldValue(rule,oneToMany.mappedBy(),parent);
+            populateValueRequest.getFieldManager().setFieldValue(rule,populateValueRequest.getMetadata().getMapKeyValueProperty(),prop.substring(prop.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),prop.length()));
+          }
+ catch (          Exception e) {
+            throw new RuntimeException(e);
+          }
+          persist=true;
+        }
+      }
+ catch (      FieldNotAvailableException e) {
+        throw new IllegalArgumentException(e);
+      }
+      if (mvel == null) {
+        dirty=populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName()) != null;
+        if (dirty) {
+          if (!populateValueRequest.getProperty().getName().contains(FieldManager.MAPFIELDSEPARATOR)) {
+            populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
+          }
+ else {
+            populateValueRequest.getPersistenceManager().getDynamicEntityDao().remove((Serializable)rule);
+          }
+        }
+      }
+ else       if (rule != null) {
+        dirty=!mvel.equals(rule.getMatchRule());
+        if (dirty) {
+          updateSimpleRule(populateValueRequest,mvel,persist,rule);
+        }
+      }
+    }
+  }
+  return dirty;
+}

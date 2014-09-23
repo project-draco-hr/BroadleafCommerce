@@ -90,7 +90,28 @@
       for (      Property p : cmd.getProperties()) {
         if (p.getMetadata() instanceof BasicFieldMetadata) {
           BasicFieldMetadata md=(BasicFieldMetadata)p.getMetadata();
-          if (md.getTargetClass().equals(mmd.getValueClassName())) {
+          String valueClassName=mmd.getValueClassName();
+          if (!StringUtils.isEmpty(mmd.getToOneTargetProperty())) {
+            Class<?> clazz;
+            try {
+              clazz=Class.forName(mmd.getValueClassName());
+            }
+ catch (            ClassNotFoundException e) {
+              throw ExceptionHelper.refineException(e);
+            }
+            java.lang.reflect.Field nestedField=FieldManager.getSingleField(clazz,mmd.getToOneTargetProperty());
+            ManyToOne manyToOne=nestedField.getAnnotation(ManyToOne.class);
+            if (manyToOne != null && !manyToOne.targetEntity().getName().equals(void.class.getName())) {
+              valueClassName=manyToOne.targetEntity().getName();
+            }
+ else {
+              OneToOne oneToOne=nestedField.getAnnotation(OneToOne.class);
+              if (oneToOne != null && !oneToOne.targetEntity().getName().equals(void.class.getName())) {
+                valueClassName=oneToOne.targetEntity().getName();
+              }
+            }
+          }
+          if (md.getTargetClass().equals(valueClassName)) {
             if (md.isProminent() != null && md.isProminent() && !ArrayUtils.contains(getGridHiddenVisibilities(),md.getVisibility())) {
               hf=createHeaderField(p,md);
               headerFields.add(hf);

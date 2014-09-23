@@ -1,6 +1,8 @@
 {
-  if (offerMatchRules == null) {
-    offerMatchRules=new HashMap<String,OfferRule>();
+  if (legacyOfferMatchRules.size() == 0) {
+    for (    Map.Entry<String,OfferOfferRuleXref> entry : getOfferMatchRulesXref().entrySet()) {
+      legacyOfferMatchRules.put(entry.getKey(),entry.getValue().getOfferRule());
+    }
   }
-  return offerMatchRules;
+  return Collections.unmodifiableMap(legacyOfferMatchRules);
 }
