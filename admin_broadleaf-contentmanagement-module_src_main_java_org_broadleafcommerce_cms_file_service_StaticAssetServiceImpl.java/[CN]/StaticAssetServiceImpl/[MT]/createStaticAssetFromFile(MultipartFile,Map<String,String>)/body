@@ -1,39 +1,8 @@
 {
-  if (properties == null) {
-    properties=new HashMap<String,String>();
-  }
-  String fullUrl=buildAssetURL(properties,file.getOriginalFilename());
-  StaticAsset newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl);
-  int count=0;
-  while (newAsset != null) {
-    count++;
-    newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false));
-    if (newAsset == null) {
-      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true));
-    }
-  }
-  if (count > 0) {
-    fullUrl=getCountUrl(fullUrl,count,false);
-  }
   try {
-    ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(file.getInputStream());
-    newAsset=new ImageStaticAssetImpl();
-    ((ImageStaticAsset)newAsset).setWidth(metadata.getWidth());
-    ((ImageStaticAsset)newAsset).setHeight(metadata.getHeight());
+    return createStaticAsset(file.getInputStream(),file.getOriginalFilename(),file.getSize(),properties);
   }
- catch (  Exception e) {
-    newAsset=new StaticAssetImpl();
+ catch (  IOException e) {
+    throw new RuntimeException(e);
   }
-  if (storeAssetsOnFileSystem) {
-    newAsset.setStorageType(StorageType.FILESYSTEM);
-  }
- else {
-    newAsset.setStorageType(StorageType.DATABASE);
-  }
-  newAsset.setName(file.getOriginalFilename());
-  getMimeType(file,newAsset);
-  newAsset.setFileExtension(getFileExtension(file.getOriginalFilename()));
-  newAsset.setFileSize(file.getSize());
-  newAsset.setFullUrl(fullUrl);
-  return staticAssetDao.addOrUpdateStaticAsset(newAsset,false);
 }

@@ -1,16 +1,11 @@
 {
-  Collection mimeTypes=MimeUtil.getMimeTypes(file.getOriginalFilename());
+  Collection mimeTypes=MimeUtil.getMimeTypes(fileName);
   if (!mimeTypes.isEmpty()) {
     MimeType mimeType=(MimeType)mimeTypes.iterator().next();
     newAsset.setMimeType(mimeType.toString());
   }
  else {
-    try {
-      mimeTypes=MimeUtil.getMimeTypes(file.getInputStream());
-    }
- catch (    IOException ioe) {
-      throw new RuntimeException(ioe);
-    }
+    mimeTypes=MimeUtil.getMimeTypes(inputStream);
     if (!mimeTypes.isEmpty()) {
       MimeType mimeType=(MimeType)mimeTypes.iterator().next();
       newAsset.setMimeType(mimeType.toString());
