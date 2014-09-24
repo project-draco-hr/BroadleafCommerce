@@ -5,11 +5,14 @@
   WebMergedContextConfiguration webMergedConfig=(WebMergedContextConfiguration)mergedConfig;
   validateMergedContextConfiguration(webMergedConfig);
   MergeXmlWebApplicationContext context=new MergeXmlWebApplicationContext();
+  context.setPatchLocation("");
   ApplicationContext parent=mergedConfig.getParentApplicationContext();
   if (parent != null) {
     context.setParent(parent);
+    context.setPatchLocation(StringUtils.removeEnd(((MergeXmlWebApplicationContext)parent).getPatchLocation(),"classpath:/bl-applicationContext-test.xml"));
+    System.out.println(context.getPatchLocation());
   }
-  context.setPatchLocation(StringUtils.join(mergedConfig.getLocations(),";"));
+  context.setPatchLocation(context.getPatchLocation() + StringUtils.join(mergedConfig.getLocations(),";") + ";classpath:/bl-applicationContext-test.xml");
   context.setStandardLocationTypes(StandardConfigLocations.TESTCONTEXTTYPE);
   configureWebResources(context,webMergedConfig);
   prepareContext(context,webMergedConfig);
