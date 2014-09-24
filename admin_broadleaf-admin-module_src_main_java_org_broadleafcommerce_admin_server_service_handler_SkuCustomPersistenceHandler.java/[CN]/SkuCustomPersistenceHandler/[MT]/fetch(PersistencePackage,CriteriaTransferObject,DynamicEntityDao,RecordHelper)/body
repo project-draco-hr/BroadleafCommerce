@@ -2,7 +2,7 @@
   String ceilingEntityFullyQualifiedClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(ProductSkuXref.class.getName(),persistencePerspective);
+    Map<String,FieldMetadata> originalProps=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
     List<FilterMapping> filterMappings=helper.getFilterMappings(persistencePerspective,cto,ceilingEntityFullyQualifiedClassname,originalProps);
     applyProductOptionValueCriteria(filterMappings,cto,persistencePackage,null);
     applyAdditionalFetchCriteria(filterMappings,cto,persistencePackage);
@@ -10,7 +10,7 @@
     Entity[] payload=helper.getRecords(originalProps,records);
     int totalRecords=helper.getTotalRecords(persistencePackage.getCeilingEntityFullyQualifiedClassname(),filterMappings);
     for (int i=0; i < records.size(); i++) {
-      Sku sku=((ProductSkuXref)records.get(i)).getSku();
+      Sku sku=(Sku)records.get(i);
       Entity entity=payload[i];
       List<ProductOptionValue> optionValues=sku.getProductOptionValues();
       for (      ProductOptionValue value : optionValues) {

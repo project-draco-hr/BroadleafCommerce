@@ -2,17 +2,17 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    ProductSkuXref adminInstance=(ProductSkuXref)Class.forName(entity.getType()[0]).newInstance();
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(ProductSkuXref.class.getName(),persistencePerspective);
+    Sku adminInstance=(Sku)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Sku.class.getName(),persistencePerspective);
     filterOutProductMetadata(adminProperties);
-    adminInstance=(ProductSkuXref)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance=(Sku)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     Entity errorEntity=validateUniqueProductOptionValueCombination(adminInstance.getProduct(),getProductOptionProperties(entity),null);
     if (errorEntity != null) {
       entity.setPropertyValidationErrors(errorEntity.getPropertyValidationErrors());
       return entity;
     }
     adminInstance=dynamicEntityDao.persist(adminInstance);
-    associateProductOptionValuesToSku(entity,adminInstance.getSku(),dynamicEntityDao);
+    associateProductOptionValuesToSku(entity,adminInstance,dynamicEntityDao);
     adminInstance=dynamicEntityDao.merge(adminInstance);
     Entity result=helper.getRecord(adminProperties,adminInstance,null,null);
     for (    Property property : getProductOptionProperties(entity)) {
