@@ -161,6 +161,7 @@
     adornedTargetList.setTargetObjectPath(targetObjectProperty);
     adornedTargetList.setTargetIdProperty(targetObjectIdProperty);
     adornedTargetList.setJoinEntityClass(joinEntityClass);
+    adornedTargetList.setIdProperty((String)dynamicEntityDao.getIdMetadata(collectionTarget).get("name"));
     adornedTargetList.setAdornedTargetEntityClassname(collectionTarget.getName());
     adornedTargetList.setSortField(sortProperty);
     adornedTargetList.setSortAscending(isAscending);
@@ -169,6 +170,7 @@
  else {
     AdornedTargetList adornedTargetList=new AdornedTargetList(field.getName(),parentObjectProperty,parentObjectIdProperty,targetObjectProperty,targetObjectIdProperty,collectionTarget.getName(),sortProperty,isAscending);
     adornedTargetList.setJoinEntityClass(joinEntityClass);
+    adornedTargetList.setIdProperty((String)dynamicEntityDao.getIdMetadata(collectionTarget).get("name"));
     adornedTargetList.setMutable(metadata.isMutable());
     persistencePerspective.addPersistencePerspectiveItem(PersistencePerspectiveItemType.ADORNEDTARGETLIST,adornedTargetList);
   }
