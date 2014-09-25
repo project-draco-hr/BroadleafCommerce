@@ -1,5 +1,7 @@
 {
   boolean isNew=initRequestContext(null,null);
+  boolean isIgnoringSite=BroadleafRequestContext.getBroadleafRequestContext().getIgnoreSite();
+  BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(true);
   activateSession();
   TransactionContainer container=establishTransaction(transactionManager);
   boolean isError=false;
@@ -16,6 +18,7 @@
       if (isNew) {
         BroadleafRequestContext.setBroadleafRequestContext(null);
       }
+      BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(isIgnoringSite);
     }
  catch (    Throwable e) {
       e.printStackTrace();

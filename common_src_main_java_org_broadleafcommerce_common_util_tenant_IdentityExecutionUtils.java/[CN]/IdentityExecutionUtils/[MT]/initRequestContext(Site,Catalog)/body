@@ -6,19 +6,10 @@
     BroadleafRequestContext.setBroadleafRequestContext(requestContext);
     isNew=true;
   }
-  if (site == null) {
-    requestContext.setSite(null);
-    requestContext.setIgnoreSite(true);
-  }
- else {
-    requestContext.setSite(site);
+  requestContext.setSite(site);
+  requestContext.setCurrentCatalog(catalog);
+  if (site != null) {
     requestContext.setIgnoreSite(false);
-  }
-  if (catalog == null) {
-    requestContext.setCurrentCatalog(null);
-  }
- else {
-    requestContext.setCurrentCatalog(catalog);
   }
   return isNew;
 }

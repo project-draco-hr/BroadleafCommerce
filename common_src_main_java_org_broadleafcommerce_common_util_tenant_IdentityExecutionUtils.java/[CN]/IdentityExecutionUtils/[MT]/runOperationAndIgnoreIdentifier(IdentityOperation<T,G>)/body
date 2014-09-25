@@ -1,5 +1,7 @@
 {
   boolean isNew=initRequestContext(null,null);
+  boolean isIgnoringSite=BroadleafRequestContext.getBroadleafRequestContext().getIgnoreSite();
+  BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(true);
   activateSession();
   try {
     return operation.execute();
@@ -11,5 +13,6 @@
     if (isNew) {
       BroadleafRequestContext.setBroadleafRequestContext(null);
     }
+    BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(isIgnoringSite);
   }
 }
