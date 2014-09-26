@@ -1,0 +1,9 @@
+{
+  if (OfferType.ORDER_ITEM.equals(getType()) && CollectionUtils.isEmpty(qualifyingItemCriteria)) {
+    OfferItemCriteria oic=new OfferItemCriteriaImpl();
+    oic.setQuantity(1);
+    OfferQualifyingCriteriaXref xref=new OfferQualifyingCriteriaXrefImpl(this,oic);
+    return Collections.unmodifiableSet(Collections.singleton(xref));
+  }
+  return qualifyingItemCriteria;
+}

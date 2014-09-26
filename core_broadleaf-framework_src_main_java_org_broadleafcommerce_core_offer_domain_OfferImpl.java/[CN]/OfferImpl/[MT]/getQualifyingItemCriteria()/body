@@ -1,3 +1,8 @@
 {
-  return qualifyingItemCriteria;
+  if (legacyQualifyingItemCriteria.size() == 0) {
+    for (    OfferQualifyingCriteriaXref xref : getQualifyingItemCriteriaXref()) {
+      legacyQualifyingItemCriteria.add(xref.getOfferItemCriteria());
+    }
+  }
+  return Collections.unmodifiableSet(legacyQualifyingItemCriteria);
 }
