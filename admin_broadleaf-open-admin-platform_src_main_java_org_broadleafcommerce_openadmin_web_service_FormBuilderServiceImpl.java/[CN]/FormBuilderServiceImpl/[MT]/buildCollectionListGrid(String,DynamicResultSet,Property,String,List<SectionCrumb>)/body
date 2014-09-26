@@ -13,6 +13,7 @@
   boolean hideIdColumn=false;
   boolean canFilterAndSort=true;
   String idProperty="id";
+  String altIdProperty=null;
   for (  Property property : cmd.getProperties()) {
     if (property.getMetadata() instanceof BasicFieldMetadata && SupportedFieldType.ID == ((BasicFieldMetadata)property.getMetadata()).getFieldType() && !property.getName().contains(".")) {
       idProperty=property.getName();
@@ -68,6 +69,8 @@
     }
     AdornedTargetList adornedList=(AdornedTargetList)atcmd.getPersistencePerspective().getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
     sortable=StringUtils.isNotBlank(adornedList.getSortField());
+    idProperty=adornedList.getIdProperty();
+    altIdProperty=BasicPersistenceModule.ALTERNATE_ID_PROPERTY;
   }
  else   if (fmd instanceof MapMetadata) {
     readOnly=!((MapMetadata)fmd).isMutable();
@@ -141,7 +144,7 @@
     }
     LOG.error(message);
   }
-  ListGrid listGrid=createListGrid(ceilingType,headerFields,type,drs,sectionKey,fmd.getOrder(),idProperty,sectionCrumbs);
+  ListGrid listGrid=createListGrid(ceilingType,headerFields,type,drs,sectionKey,fmd.getOrder(),idProperty,altIdProperty,sectionCrumbs);
   listGrid.setSubCollectionFieldName(field.getName());
   listGrid.setFriendlyName(field.getMetadata().getFriendlyName());
   if (StringUtils.isEmpty(listGrid.getFriendlyName())) {
