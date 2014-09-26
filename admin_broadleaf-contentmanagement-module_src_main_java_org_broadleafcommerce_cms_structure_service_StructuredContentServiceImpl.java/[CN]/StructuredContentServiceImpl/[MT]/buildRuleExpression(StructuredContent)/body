@@ -1,15 +1,15 @@
 {
   StringBuffer ruleExpression=null;
-  Map<String,StructuredContentRule> ruleMap=sc.getStructuredContentMatchRules();
+  Map<String,StructuredContentStructuredContentRuleXref> ruleMap=sc.getStructuredContentMatchRuleXref();
   if (ruleMap != null) {
     for (    String ruleKey : ruleMap.keySet()) {
-      if (ruleMap.get(ruleKey).getMatchRule() == null)       continue;
+      if (ruleMap.get(ruleKey).getStructuredContentRule().getMatchRule() == null)       continue;
       if (ruleExpression == null) {
-        ruleExpression=new StringBuffer(ruleMap.get(ruleKey).getMatchRule());
+        ruleExpression=new StringBuffer(ruleMap.get(ruleKey).getStructuredContentRule().getMatchRule());
       }
  else {
         ruleExpression.append(AND);
-        ruleExpression.append(ruleMap.get(ruleKey).getMatchRule());
+        ruleExpression.append(ruleMap.get(ruleKey).getStructuredContentRule().getMatchRule());
       }
     }
   }

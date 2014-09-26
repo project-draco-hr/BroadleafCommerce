@@ -1,3 +1,7 @@
 {
-  this.structuredContentMatchRules=structuredContentMatchRules;
+  this.structuredContentMatchRules.clear();
+  this.legacyStructuredContentMatchRules.clear();
+  for (  Map.Entry<String,StructuredContentRule> entry : structuredContentMatchRules.entrySet()) {
+    this.structuredContentMatchRules.put(entry.getKey(),new StructuredContentStructuredContentRuleXrefImpl(this,entry.getValue(),entry.getKey()));
+  }
 }

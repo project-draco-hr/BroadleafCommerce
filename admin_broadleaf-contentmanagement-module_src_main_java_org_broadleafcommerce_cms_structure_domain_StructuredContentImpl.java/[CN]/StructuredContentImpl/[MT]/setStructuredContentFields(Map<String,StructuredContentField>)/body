@@ -1,3 +1,7 @@
 {
-  this.structuredContentFields=structuredContentFields;
+  this.structuredContentFields.clear();
+  this.legacyStructuredContentFields.clear();
+  for (  Map.Entry<String,StructuredContentField> entry : structuredContentFields.entrySet()) {
+    this.structuredContentFields.put(entry.getKey(),new StructuredContentStructuredContentFieldXrefImpl(this,entry.getValue(),entry.getKey()));
+  }
 }

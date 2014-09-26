@@ -1,17 +1,17 @@
 {
   StructuredContent structuredContent=(StructuredContent)root;
-  Map<String,StructuredContentField> structuredContentFieldMap=structuredContent.getStructuredContentFields();
+  Map<String,StructuredContentStructuredContentFieldXref> structuredContentFieldMap=structuredContent.getStructuredContentFieldXrefs();
   Entity entity=new Entity();
   entity.setType(new String[]{StructuredContentType.class.getName()});
   List<Property> propertiesList=new ArrayList<Property>();
   for (  FieldGroup fieldGroup : structuredContent.getStructuredContentType().getStructuredContentFieldTemplate().getFieldGroups()) {
-    for (    FieldDefinition definition : fieldGroup.getFieldDefinitions()) {
+    for (    FieldDefinition def : fieldGroup.getFieldDefinitions()) {
       Property property=new Property();
       propertiesList.add(property);
-      property.setName(definition.getName());
+      property.setName(def.getName());
       String value=null;
       if (!MapUtils.isEmpty(structuredContentFieldMap)) {
-        StructuredContentField structuredContentField=structuredContentFieldMap.get(definition.getName());
+        StructuredContentField structuredContentField=structuredContentFieldMap.get(def.getName()).getStructuredContentField();
         if (structuredContentField != null) {
           value=structuredContentField.getValue();
         }

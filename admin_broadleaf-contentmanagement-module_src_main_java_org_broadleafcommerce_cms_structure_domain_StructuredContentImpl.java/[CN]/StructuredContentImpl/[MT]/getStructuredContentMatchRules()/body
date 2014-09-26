@@ -1,3 +1,8 @@
 {
-  return structuredContentMatchRules;
+  if (legacyStructuredContentMatchRules.size() == 0) {
+    for (    Map.Entry<String,StructuredContentStructuredContentRuleXref> entry : getStructuredContentMatchRuleXref().entrySet()) {
+      legacyStructuredContentMatchRules.put(entry.getKey(),entry.getValue().getStructuredContentRule());
+    }
+  }
+  return Collections.unmodifiableMap(legacyStructuredContentMatchRules);
 }

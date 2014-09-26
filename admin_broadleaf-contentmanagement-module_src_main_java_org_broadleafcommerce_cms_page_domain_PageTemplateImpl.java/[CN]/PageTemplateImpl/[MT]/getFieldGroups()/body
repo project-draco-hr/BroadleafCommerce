@@ -1,3 +1,8 @@
 {
-  return fieldGroups;
+  if (legacyFieldGroups.isEmpty()) {
+    for (    PageTemplateFieldGroupXref xref : getFieldGroupXrefs()) {
+      legacyFieldGroups.add(xref.getFieldGroup());
+    }
+  }
+  return Collections.unmodifiableList(legacyFieldGroups);
 }

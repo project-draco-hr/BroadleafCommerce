@@ -1,8 +1,8 @@
 {
   String cmsPrefix=staticAssetPathService.getStaticAssetUrlPrefix();
   scDTO.getValues().put("id",sc.getId());
-  for (  String fieldKey : sc.getStructuredContentFields().keySet()) {
-    StructuredContentField scf=sc.getStructuredContentFields().get(fieldKey);
+  for (  String fieldKey : sc.getStructuredContentFieldXrefs().keySet()) {
+    StructuredContentField scf=sc.getStructuredContentFieldXrefs().get(fieldKey).getStructuredContentField();
     String originalValue=scf.getValue();
     if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
       String fldValue=staticAssetPathService.convertAllAssetPathsInContent(originalValue,secure);
@@ -55,7 +55,7 @@ break;
 scDTO.getValues().put(fieldKey,value);
 }
  else {
-scDTO.getValues().put(fieldKey,sc.getStructuredContentFields().get(fieldKey).getValue());
+scDTO.getValues().put(fieldKey,sc.getStructuredContentFieldXrefs().get(fieldKey).getStructuredContentField().getValue());
 }
 }
 }
