@@ -1,0 +1,19 @@
+{
+  String sectionKey=getSectionKey(pathVars);
+  String mainClassName=getClassNameForSection(sectionKey);
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  ClassMetadata mainMetadata=service.getClassMetadata(getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars)).getDynamicResultSet().getClassMetaData();
+  Property collectionProperty=mainMetadata.getPMap().get(collectionField);
+  PersistencePackageRequest ppr=getSectionPersistencePackageRequest(mainClassName,sectionCrumbs,pathVars);
+  Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
+  PersistenceResponse persistenceResponse=service.updateSubCollectionEntity(entityForm,mainMetadata,collectionProperty,entity,collectionItemId,alternateId,sectionCrumbs);
+  Entity savedEntity=persistenceResponse.getEntity();
+  entityFormValidator.validate(entityForm,savedEntity,result);
+  if (result.hasErrors()) {
+    return showViewUpdateCollection(request,model,pathVars,id,collectionField,collectionItemId,alternateId,"updateCollectionItem",entityForm,savedEntity);
+  }
+  ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse,sectionCrumbs);
+  model.addAttribute("listGrid",listGrid);
+  setModelAttributes(model,sectionKey);
+  return "views/standaloneListGrid";
+}

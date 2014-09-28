@@ -11,6 +11,11 @@
     fasc=new FilterAndSortCriteria(ppr.getAdornedList().getCollectionFieldName() + "Target");
     fasc.setFilterValue(collectionItemId);
     ppr.addFilterAndSortCriteria(fasc);
+    if (!StringUtils.isEmpty(alternateId)) {
+      fasc=new FilterAndSortCriteria(ppr.getAdornedList().getIdProperty());
+      fasc.setFilterValue(alternateId);
+      ppr.addFilterAndSortCriteria(fasc);
+    }
     response=fetch(ppr);
     Entity[] entities=response.getDynamicResultSet().getRecords();
     Assert.isTrue(entities != null && entities.length == 1,"Entity not found");
