@@ -18,6 +18,22 @@ catch (      FieldNotAvailableException e) {
     if (requestedValue instanceof Media) {
       Media media=(Media)requestedValue;
       String jsonString=convertMediaToJson(media);
+      if (extensionManager != null) {
+        ExtensionResultHolder<Long> resultHolder=new ExtensionResultHolder<Long>();
+        ExtensionResultStatusType result=extensionManager.getProxy().transformId(media,resultHolder);
+        if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+          Class<?> type;
+          if (media.isUnwrappableAs(Media.class)) {
+            type=media.unwrap(Media.class).getClass();
+          }
+ else {
+            type=media.getClass();
+          }
+          Media converted=convertJsonToMedia(jsonString,type);
+          converted.setId(resultHolder.getResult());
+          jsonString=convertMediaToJson(converted);
+        }
+      }
       property.setValue(jsonString);
       property.setUnHtmlEncodedValue(jsonString);
       property.setDisplayValue(extractValueRequest.getDisplayVal());

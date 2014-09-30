@@ -40,6 +40,13 @@
  else       if (extractValueRequest.getMetadata().getForeignKeyClass() != null) {
         try {
           val=extractValueRequest.getFieldManager().getFieldValue(extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getForeignKeyProperty()).toString();
+          if (extensionManager != null) {
+            ExtensionResultHolder<Serializable> resultHolder=new ExtensionResultHolder<Serializable>();
+            ExtensionResultStatusType result=extensionManager.getProxy().transformForeignKey(extractValueRequest,property,resultHolder);
+            if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+              val=String.valueOf(resultHolder.getResult());
+            }
+          }
           String entityName=null;
           if (extractValueRequest.getRequestedValue() instanceof AdminMainEntity) {
             entityName=((AdminMainEntity)extractValueRequest.getRequestedValue()).getMainEntityName();
@@ -69,6 +76,16 @@
         }
  catch (        FieldNotAvailableException e) {
           throw new IllegalArgumentException(e);
+        }
+      }
+ else       if (SupportedFieldType.ID == extractValueRequest.getMetadata().getFieldType()) {
+        val=extractValueRequest.getRequestedValue().toString();
+        if (extensionManager != null) {
+          ExtensionResultHolder<Serializable> resultHolder=new ExtensionResultHolder<Serializable>();
+          ExtensionResultStatusType result=extensionManager.getProxy().transformId(extractValueRequest,property,resultHolder);
+          if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+            val=String.valueOf(resultHolder.getResult());
+          }
         }
       }
  else {

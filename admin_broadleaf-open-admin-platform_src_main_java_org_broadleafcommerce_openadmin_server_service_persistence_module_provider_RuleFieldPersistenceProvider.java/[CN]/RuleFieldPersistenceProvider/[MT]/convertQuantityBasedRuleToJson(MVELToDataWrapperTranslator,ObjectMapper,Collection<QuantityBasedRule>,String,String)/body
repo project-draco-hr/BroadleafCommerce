@@ -11,7 +11,15 @@
     quantityProperty.setValue(quantityBasedRule.getQuantity().toString());
     Property idProperty=new Property();
     idProperty.setName("id");
-    idProperty.setValue(String.valueOf(quantityBasedRule.getId()));
+    Long id=quantityBasedRule.getId();
+    if (extensionManager != null) {
+      ExtensionResultHolder<Long> resultHolder=new ExtensionResultHolder<Long>();
+      ExtensionResultStatusType result=extensionManager.getProxy().transformId(quantityBasedRule,resultHolder);
+      if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+        id=resultHolder.getResult();
+      }
+    }
+    idProperty.setValue(String.valueOf(id));
     properties[0]=mvelProperty;
     properties[1]=quantityProperty;
     properties[2]=idProperty;
