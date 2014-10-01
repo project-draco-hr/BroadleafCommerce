@@ -14,6 +14,6 @@
   Collection<QuantityBasedRule> rules;
   rules=(Collection<QuantityBasedRule>)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
   Object parent=extractParent(populateValueRequest,instance);
-  dirty=updateQuantityRule(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType,parent,oneToMany.mappedBy());
+  dirty=updateQuantityRule(populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager(),translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),populateValueRequest.getProperty().getUnHtmlEncodedValue(),rules,valueType,parent,oneToMany.mappedBy(),populateValueRequest.getProperty());
   return dirty;
 }

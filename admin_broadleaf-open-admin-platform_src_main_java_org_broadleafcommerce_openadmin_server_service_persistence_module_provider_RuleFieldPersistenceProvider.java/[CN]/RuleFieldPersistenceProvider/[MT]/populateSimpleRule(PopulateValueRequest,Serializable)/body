@@ -52,12 +52,19 @@
             populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),null);
           }
  else {
-            populateValueRequest.getPersistenceManager().getDynamicEntityDao().remove((Serializable)rule);
+            populateValueRequest.getPersistenceManager().getDynamicEntityDao().remove(rule);
           }
         }
       }
  else       if (rule != null) {
         dirty=!mvel.equals(rule.getMatchRule());
+        if (!dirty && extensionManager != null) {
+          ExtensionResultHolder<Boolean> resultHolder=new ExtensionResultHolder<Boolean>();
+          ExtensionResultStatusType result=extensionManager.getProxy().establishDirtyState(rule,resultHolder);
+          if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+            dirty=resultHolder.getResult();
+          }
+        }
         if (dirty) {
           updateSimpleRule(populateValueRequest,mvel,persist,rule);
         }

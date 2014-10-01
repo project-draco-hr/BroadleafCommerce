@@ -8,8 +8,8 @@
         if (dto.getId() != null && !CollectionUtils.isEmpty(criteriaList)) {
           checkId: {
             for (            QuantityBasedRule quantityBasedRule : criteriaList) {
-              Long id=sandBoxHelper.getOriginalId(em,quantityBasedRule);
-              boolean isMatch=dto.getId().equals(id) || dto.getId().equals(quantityBasedRule.getId());
+              Long id=quantityBasedRule.getId();
+              boolean isMatch=dto.getId().equals(id);
               if (isMatch) {
                 String mvel;
                 if (!quantityBasedRule.getQuantity().equals(dto.getQuantity())) {
@@ -24,12 +24,20 @@
  catch (                MVELTranslationException e) {
                   throw new RuntimeException(e);
                 }
-                if (dirty) {
-                  if (id == null) {
-                    quantityBasedRule=em.merge(quantityBasedRule);
+                if (!dirty && extensionManager != null) {
+                  ExtensionResultHolder<Boolean> resultHolder=new ExtensionResultHolder<Boolean>();
+                  ExtensionResultStatusType result=extensionManager.getProxy().establishDirtyState(quantityBasedRule,resultHolder);
+                  if (ExtensionResultStatusType.NOT_HANDLED != result && resultHolder.getResult() != null) {
+                    dirty=resultHolder.getResult();
                   }
+                }
+                if (dirty) {
+                  quantityBasedRule=em.merge(quantityBasedRule);
                   quantityBasedRule.setQuantity(dto.getQuantity());
                   quantityBasedRule.setMatchRule(mvel);
+                  if (extensionManager != null) {
+                    extensionManager.getProxy().postUpdate(quantityBasedRule);
+                  }
                 }
                 updatedRules.add(quantityBasedRule);
                 break checkId;
@@ -53,6 +61,14 @@
             throw new RuntimeException(e);
           }
           em.persist(quantityBasedRule);
+          dto.setId(quantityBasedRule.getId());
+          if (extensionManager != null) {
+            ExtensionResultHolder resultHolder=new ExtensionResultHolder();
+            extensionManager.getProxy().postAdd(quantityBasedRule,resultHolder);
+            if (resultHolder.getResult() != null) {
+              quantityBasedRule=(QuantityBasedRule)resultHolder.getResult();
+            }
+          }
           updatedRules.add(quantityBasedRule);
           dirty=true;
         }
@@ -72,6 +88,15 @@
           dirty=true;
         }
       }
+      ObjectMapper mapper=new ObjectMapper();
+      String json;
+      try {
+        json=mapper.writeValueAsString(dw);
+      }
+ catch (      Exception e) {
+        throw new RuntimeException(e);
+      }
+      property.setValue(json);
     }
   }
   return dirty;

@@ -1,9 +1,16 @@
 {
   if (!persist) {
     rule=populateValueRequest.getPersistenceManager().getDynamicEntityDao().merge(rule);
+    if (extensionManager != null) {
+      extensionManager.getProxy().postUpdate(rule);
+    }
   }
   rule.setMatchRule(mvel);
   if (persist) {
     populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(rule);
+    if (extensionManager != null) {
+      ExtensionResultHolder resultHolder=new ExtensionResultHolder();
+      extensionManager.getProxy().postAdd(rule,resultHolder);
+    }
   }
 }
