@@ -2,12 +2,14 @@
   List<Offer> offers=createOrderBasedOffer(orderRule,discountType);
   offers.get(0).setType(OfferType.ORDER_ITEM);
   if (targetRule != null) {
-    Set<OfferItemCriteria> targetSet=new HashSet<OfferItemCriteria>();
+    Offer offer=offers.get(0);
     OfferItemCriteria targetCriteria=new OfferItemCriteriaImpl();
     targetCriteria.setQuantity(1);
     targetCriteria.setMatchRule(targetRule);
-    targetSet.add(targetCriteria);
-    offers.get(0).setTargetItemCriteria(targetSet);
+    OfferTargetCriteriaXref targetXref=new OfferTargetCriteriaXrefImpl();
+    targetXref.setOffer(offer);
+    targetXref.setOfferItemCriteria(targetCriteria);
+    offer.setTargetItemCriteriaXref(Collections.singleton(targetXref));
   }
   return offers;
 }

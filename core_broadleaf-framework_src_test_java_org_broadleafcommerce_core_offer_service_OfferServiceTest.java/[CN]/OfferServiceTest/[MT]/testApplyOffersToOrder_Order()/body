@@ -59,7 +59,9 @@
   myOrder.set(order);
   OfferRule orderRule=new OfferRuleImpl();
   orderRule.setMatchRule("order.subTotal.getAmount()>100");
-  offers.get(0).getOfferMatchRules().put(OfferRuleType.ORDER.getType(),orderRule);
+  Offer offer=offers.get(0);
+  OfferOfferRuleXref ruleXref=new OfferOfferRuleXrefImpl(offer,orderRule,OfferRuleType.ORDER.getType());
+  offer.getOfferMatchRulesXref().put(OfferRuleType.ORDER.getType(),ruleXref);
   offerService.applyAndSaveOffersToOrder(offers,order);
   adjustmentCount=countItemAdjustments(order);
   qualifierCount=countItemQualifiers(order);

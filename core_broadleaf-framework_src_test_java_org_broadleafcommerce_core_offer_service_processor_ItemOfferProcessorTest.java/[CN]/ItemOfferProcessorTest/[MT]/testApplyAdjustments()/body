@@ -3,7 +3,8 @@
   Order order=dataProvider.createBasicOrder();
   Offer offer1=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
   offer1.setId(1L);
-  offer1.getQualifyingItemCriteria().iterator().next().setQuantity(2);
+  OfferQualifyingCriteriaXref xref=offer1.getQualifyingItemCriteriaXref().iterator().next();
+  xref.getOfferItemCriteria().setQuantity(2);
   offer1.setCombinableWithOtherOffers(false);
   Offer offer2=dataProvider.createItemBasedOfferWithItemCriteria("order.subTotal.getAmount()>20",OfferDiscountType.PERCENT_OFF,"([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))","([MVEL.eval(\"toUpperCase()\",\"test1\"), MVEL.eval(\"toUpperCase()\",\"test2\")] contains MVEL.eval(\"toUpperCase()\", discreteOrderItem.category.name))").get(0);
   offer2.setId(2L);
@@ -43,8 +44,10 @@
   assertTrue(checkOrderItemOfferAppliedQuantity(order,offer2) == 2);
   assertTrue(checkOrderItemOfferAppliedQuantity(order,offer1) == 0);
   order=dataProvider.createBasicOrder();
-  offer1.getQualifyingItemCriteria().iterator().next().setQuantity(1);
-  offer1.getTargetItemCriteria().iterator().next().setQuantity(2);
+  xref=offer1.getQualifyingItemCriteriaXref().iterator().next();
+  xref.getOfferItemCriteria().setQuantity(1);
+  OfferTargetCriteriaXref targetXref=offer1.getTargetItemCriteriaXref().iterator().next();
+  targetXref.getOfferItemCriteria().setQuantity(2);
   offerService.applyAndSaveOffersToOrder(offerListWithOneOffer,order);
   assertTrue(checkOrderItemOfferAppliedQuantity(order,offer1) == 2);
   offer1.setCombinableWithOtherOffers(true);

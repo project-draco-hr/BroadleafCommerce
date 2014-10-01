@@ -1,6 +1,10 @@
 {
   boolean appliesToItem=false;
-  OfferRule rule=offer.getOfferMatchRules().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+  OfferRule rule=null;
+  OfferOfferRuleXref ruleXref=offer.getOfferMatchRulesXref().get(OfferRuleType.FULFILLMENT_GROUP.getType());
+  if (ruleXref != null && ruleXref.getOfferRule() != null) {
+    rule=ruleXref.getOfferRule();
+  }
   if (rule != null && rule.getMatchRule() != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();
     fulfillmentGroup.updateRuleVariables(vars);

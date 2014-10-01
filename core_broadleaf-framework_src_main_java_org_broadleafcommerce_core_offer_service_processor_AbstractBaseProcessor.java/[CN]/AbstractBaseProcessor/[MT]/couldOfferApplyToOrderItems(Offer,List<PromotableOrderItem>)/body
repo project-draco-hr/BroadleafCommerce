@@ -1,19 +1,21 @@
 {
   CandidatePromotionItems candidates=new CandidatePromotionItems();
-  if (offer.getQualifyingItemCriteria() == null || offer.getQualifyingItemCriteria().size() == 0) {
+  if (offer.getQualifyingItemCriteriaXref() == null || offer.getQualifyingItemCriteriaXref().size() == 0) {
     candidates.setMatchedQualifier(true);
   }
  else {
-    for (    OfferItemCriteria criteria : offer.getQualifyingItemCriteria()) {
-      checkForItemRequirements(offer,candidates,criteria,promotableOrderItems,true);
-      if (!candidates.isMatchedQualifier()) {
-        break;
+    for (    OfferQualifyingCriteriaXref criteriaXref : offer.getQualifyingItemCriteriaXref()) {
+      if (criteriaXref.getOfferItemCriteria() != null) {
+        checkForItemRequirements(offer,candidates,criteriaXref.getOfferItemCriteria(),promotableOrderItems,true);
+        if (!candidates.isMatchedQualifier()) {
+          break;
+        }
       }
     }
   }
-  if (offer.getType().equals(OfferType.ORDER_ITEM) && offer.getTargetItemCriteria() != null) {
-    for (    OfferItemCriteria criteria : offer.getTargetItemCriteria()) {
-      checkForItemRequirements(offer,candidates,criteria,promotableOrderItems,false);
+  if (offer.getType().equals(OfferType.ORDER_ITEM) && offer.getTargetItemCriteriaXref() != null) {
+    for (    OfferTargetCriteriaXref xref : offer.getTargetItemCriteriaXref()) {
+      checkForItemRequirements(offer,candidates,xref.getOfferItemCriteria(),promotableOrderItems,false);
       if (!candidates.isMatchedTarget()) {
         break;
       }

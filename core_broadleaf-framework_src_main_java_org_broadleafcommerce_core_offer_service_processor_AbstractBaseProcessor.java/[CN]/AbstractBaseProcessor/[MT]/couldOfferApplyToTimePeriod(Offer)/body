@@ -1,9 +1,9 @@
 {
   boolean appliesToTimePeriod=false;
   String rule=null;
-  OfferRule timeRule=offer.getOfferMatchRules().get(OfferRuleType.TIME.getType());
-  if (timeRule != null) {
-    rule=timeRule.getMatchRule();
+  OfferOfferRuleXref ruleXref=offer.getOfferMatchRulesXref().get(OfferRuleType.TIME.getType());
+  if (ruleXref != null && ruleXref.getOfferRule() != null) {
+    rule=ruleXref.getOfferRule().getMatchRule();
   }
   if (rule != null) {
     TimeZone timeZone=getOfferTimeZoneProcessor().getTimeZone(offer);

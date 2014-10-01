@@ -19,7 +19,10 @@
   OfferItemCriteria oic=new OfferItemCriteriaImpl();
   oic.setQuantity(1);
   oic.setMatchRule(orderRule);
-  offer.setTargetItemCriteria(Collections.singleton(oic));
+  OfferTargetCriteriaXref targetXref=new OfferTargetCriteriaXrefImpl();
+  targetXref.setOffer(offer);
+  targetXref.setOfferItemCriteria(oic);
+  offer.setTargetItemCriteriaXref(Collections.singleton(targetXref));
   offer.setAppliesToCustomerRules(customerRule);
   offer.setCombinableWithOtherOffers(combinable);
   offer.setPriority(priority);

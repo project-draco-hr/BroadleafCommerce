@@ -1,9 +1,9 @@
 {
   boolean appliesToRequestRule=false;
   String rule=null;
-  OfferRule customerRule=offer.getOfferMatchRules().get(OfferRuleType.REQUEST.getType());
-  if (customerRule != null) {
-    rule=customerRule.getMatchRule();
+  OfferOfferRuleXref ruleXref=offer.getOfferMatchRulesXref().get(OfferRuleType.REQUEST.getType());
+  if (ruleXref != null && ruleXref.getOfferRule() != null) {
+    rule=ruleXref.getOfferRule().getMatchRule();
   }
   if (rule != null) {
     HashMap<String,Object> vars=new HashMap<String,Object>();

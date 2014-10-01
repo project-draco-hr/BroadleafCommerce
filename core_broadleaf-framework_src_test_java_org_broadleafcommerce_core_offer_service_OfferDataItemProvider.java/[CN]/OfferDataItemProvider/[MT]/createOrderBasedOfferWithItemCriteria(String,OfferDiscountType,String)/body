@@ -1,10 +1,14 @@
 {
   List<Offer> offers=createOrderBasedOffer(orderRule,discountType);
+  Offer firstOffer=offers.get(0);
   OfferItemCriteria qualCriteria=new OfferItemCriteriaImpl();
   qualCriteria.setQuantity(1);
   qualCriteria.setMatchRule(orderItemMatchRule);
-  Set<OfferItemCriteria> criterias=new HashSet<OfferItemCriteria>();
-  criterias.add(qualCriteria);
-  offers.get(0).setQualifyingItemCriteria(criterias);
+  Set<OfferQualifyingCriteriaXref> criterias=new HashSet<OfferQualifyingCriteriaXref>();
+  OfferQualifyingCriteriaXref xref=new OfferQualifyingCriteriaXrefImpl();
+  xref.setOffer(firstOffer);
+  xref.setOfferItemCriteria(qualCriteria);
+  criterias.add(xref);
+  firstOffer.setQualifyingItemCriteriaXref(criterias);
   return offers;
 }

@@ -5,9 +5,9 @@
     rule=offer.getAppliesToOrderRules();
   }
  else {
-    OfferRule orderRule=offer.getOfferMatchRules().get(OfferRuleType.ORDER.getType());
-    if (orderRule != null) {
-      rule=orderRule.getMatchRule();
+    OfferOfferRuleXref orderRule=offer.getOfferMatchRulesXref().get(OfferRuleType.ORDER.getType());
+    if (orderRule != null && orderRule.getOfferRule() != null) {
+      rule=orderRule.getOfferRule().getMatchRule();
     }
   }
   if (rule != null) {
