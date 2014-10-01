@@ -1,9 +1,15 @@
 {
   if (!persist) {
     media=populateValueRequest.getPersistenceManager().getDynamicEntityDao().merge(media);
+    if (extensionManager != null) {
+      extensionManager.getProxy().postUpdate(media);
+    }
   }
   updateMediaFields(media,newMedia);
   if (persist) {
     populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(media);
+    if (extensionManager != null) {
+      extensionManager.getProxy().postAdd(media);
+    }
   }
 }
