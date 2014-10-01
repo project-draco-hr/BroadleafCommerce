@@ -1,9 +1,16 @@
 {
+  List<PageTemplateFieldGroupXref> fieldGroupXrefs=null;
+  List<FieldGroup> fieldGroups=new ArrayList<FieldGroup>();
   if (template != null) {
-    return template.getFieldGroups();
+    fieldGroupXrefs=template.getFieldGroupXrefs();
   }
   if (page.getPageTemplate() != null) {
-    return page.getPageTemplate().getFieldGroups();
+    fieldGroupXrefs=page.getPageTemplate().getFieldGroupXrefs();
   }
-  return new ArrayList<FieldGroup>(0);
+  if (fieldGroupXrefs != null) {
+    for (    PageTemplateFieldGroupXref xref : fieldGroupXrefs) {
+      fieldGroups.add(xref.getFieldGroup());
+    }
+  }
+  return fieldGroups;
 }
