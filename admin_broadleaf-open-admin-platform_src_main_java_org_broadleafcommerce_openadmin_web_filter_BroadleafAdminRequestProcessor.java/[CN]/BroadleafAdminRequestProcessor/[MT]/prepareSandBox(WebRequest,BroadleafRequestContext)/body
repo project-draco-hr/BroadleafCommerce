@@ -58,7 +58,7 @@
       request.setAttribute(BroadleafSandBoxResolver.SANDBOX_ID_VAR,sandBox.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
     }
     brc.setSandBox(sandBox);
-    brc.setDeployBehavior(isProductionSandBoxMode ? DeployBehavior.CLONE_PARENT : DeployBehavior.OVERWRITE_PARENT);
+    brc.setDeployBehavior(deployBehaviorUtil.isProductionSandBoxMode() ? DeployBehavior.CLONE_PARENT : DeployBehavior.OVERWRITE_PARENT);
     brc.getAdditionalProperties().put("adminUser",adminUser);
   }
 }
