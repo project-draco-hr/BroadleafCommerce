@@ -1,0 +1,11 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<PageField> criteria=builder.createQuery(PageField.class);
+  Root<PageFieldImpl> pageField=criteria.from(PageFieldImpl.class);
+  criteria.select(pageField);
+  Path<Object> path=pageField.get("page").get("id");
+  criteria.where(builder.equal(pageField.get("page").get("id"),pageId));
+  TypedQuery<PageField> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  return query.getResultList();
+}
