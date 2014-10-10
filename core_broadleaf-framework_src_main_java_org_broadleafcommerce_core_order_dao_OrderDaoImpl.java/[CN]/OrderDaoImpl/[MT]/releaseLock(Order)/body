@@ -1,7 +1,23 @@
 {
-  Query q=em.createNamedQuery("BC_ORDER_LOCK_RELEASE");
-  q.setParameter("orderId",order.getId());
-  q.setHint(QueryHints.HINT_CACHEABLE,false);
-  int rowsAffected=q.executeUpdate();
-  return rowsAffected == 1;
+  final boolean[] response={false};
+  try {
+    transUtil.runTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+      @Override public void execute() throws Throwable {
+        Query q=em.createNamedQuery("BC_ORDER_LOCK_RELEASE");
+        q.setParameter("orderId",order.getId());
+        q.setParameter("key",getOrderLockKey());
+        q.setHint(QueryHints.HINT_CACHEABLE,false);
+        int rowsAffected=q.executeUpdate();
+        response[0]=rowsAffected == 1;
+      }
+      @Override public boolean shouldRetryOnTransactionLockAcquisitionFailure(){
+        return true;
+      }
+    }
+,RuntimeException.class);
+  }
+ catch (  RuntimeException e) {
+    LOG.error(String.format("Could not release order lock (%s)",order.getId()),e);
+  }
+  return response[0];
 }
