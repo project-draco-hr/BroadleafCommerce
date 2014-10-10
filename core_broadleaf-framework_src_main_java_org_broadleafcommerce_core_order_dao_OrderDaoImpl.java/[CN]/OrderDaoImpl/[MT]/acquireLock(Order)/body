@@ -1,19 +1,16 @@
 {
   Query q=em.createNamedQuery("BC_ORDER_LOCK_READ");
   q.setParameter("orderId",order.getId());
+  q.setParameter("key",orderLockKey);
   q.setHint(QueryHints.HINT_CACHEABLE,false);
-  OrderLock ol;
-  try {
-    ol=(OrderLock)q.getSingleResult();
-  }
- catch (  NoResultException e) {
-    ol=null;
-  }
-  if (ol == null) {
+  Long count=(Long)q.getSingleResult();
+  if (count == 0L) {
     try {
-      ol=(OrderLock)entityConfiguration.createEntityInstance(OrderLock.class.getName());
+      OrderLock ol=(OrderLock)entityConfiguration.createEntityInstance(OrderLock.class.getName());
       ol.setOrderId(order.getId());
       ol.setLocked(true);
+      ol.setKey(orderLockKey);
+      ol.setLastUpdated(System.currentTimeMillis());
       em.persist(ol);
       return true;
     }
@@ -23,6 +20,9 @@
   }
   q=em.createNamedQuery("BC_ORDER_LOCK_ACQUIRE");
   q.setParameter("orderId",order.getId());
+  q.setParameter("currentTime",System.currentTimeMillis());
+  q.setParameter("key",orderLockKey);
+  q.setParameter("timeout",orderLockTimeToLive == -1L ? orderLockTimeToLive : System.currentTimeMillis() - orderLockTimeToLive);
   q.setHint(QueryHints.HINT_CACHEABLE,false);
   int rowsAffected=q.executeUpdate();
   return rowsAffected == 1;
