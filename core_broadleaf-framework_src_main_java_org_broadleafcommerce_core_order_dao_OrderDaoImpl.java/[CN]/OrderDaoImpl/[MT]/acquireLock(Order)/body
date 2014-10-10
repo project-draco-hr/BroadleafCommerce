@@ -1,4 +1,5 @@
 {
+  String orderLockKey=getOrderLockKey();
   Query q=em.createNamedQuery("BC_ORDER_LOCK_READ");
   q.setParameter("orderId",order.getId());
   q.setParameter("key",orderLockKey);
@@ -22,6 +23,7 @@
   q.setParameter("orderId",order.getId());
   q.setParameter("currentTime",System.currentTimeMillis());
   q.setParameter("key",orderLockKey);
+  Long orderLockTimeToLive=getDatabaseOrderLockTimeToLive();
   q.setParameter("timeout",orderLockTimeToLive == -1L ? orderLockTimeToLive : System.currentTimeMillis() - orderLockTimeToLive);
   q.setHint(QueryHints.HINT_CACHEABLE,false);
   int rowsAffected=q.executeUpdate();

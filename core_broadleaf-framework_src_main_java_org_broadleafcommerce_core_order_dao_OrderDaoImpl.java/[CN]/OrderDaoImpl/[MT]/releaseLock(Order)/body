@@ -5,7 +5,7 @@
       @Override public void execute() throws Throwable {
         Query q=em.createNamedQuery("BC_ORDER_LOCK_RELEASE");
         q.setParameter("orderId",order.getId());
-        q.setParameter("key",orderLockKey);
+        q.setParameter("key",getOrderLockKey());
         q.setHint(QueryHints.HINT_CACHEABLE,false);
         int rowsAffected=q.executeUpdate();
         response[0]=rowsAffected == 1;
