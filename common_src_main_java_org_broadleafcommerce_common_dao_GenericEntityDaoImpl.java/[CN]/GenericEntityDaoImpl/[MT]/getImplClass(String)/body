@@ -1,5 +1,10 @@
 {
-  Class<?> clazz=entityConfiguration.lookupEntityClass(className);
+  Class<?> clazz=null;
+  try {
+    clazz=entityConfiguration.lookupEntityClass(className);
+  }
+ catch (  NoSuchBeanDefinitionException e) {
+  }
   if (clazz == null) {
     try {
       clazz=Class.forName(className);

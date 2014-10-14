@@ -1,8 +1,9 @@
 {
-  Map<Object,Object> keys=equivalentsMap.get(className);
+  String ceilingImpl=genericEntityService.getCeilingImplClass(className).getName();
+  Map<Object,Object> keys=equivalentsMap.get(ceilingImpl);
   if (keys == null) {
     keys=new HashMap<Object,Object>();
-    equivalentsMap.put(className,keys);
+    equivalentsMap.put(ceilingImpl,keys);
   }
   if (keys.containsKey(fromId)) {
     throw new IllegalArgumentException("Object [" + className + ":"+ fromId+ "] has already been cloned.");

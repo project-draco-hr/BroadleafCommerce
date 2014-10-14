@@ -1,0 +1,26 @@
+{
+  Method cloneMethod;
+  try {
+    cloneMethod=cloned.getClass().getMethod("createOrRetrieveCopyInstance",new Class[]{MultiTenantCopyContext.class});
+  }
+ catch (  NoSuchMethodException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+  boolean cloneMethodLocal=false;
+  for (  String prefix : BROADLEAF_PACKAGE_PREFIXES) {
+    if (cloneMethod.getDeclaringClass().getName().startsWith(prefix)) {
+      cloneMethodLocal=true;
+      break;
+    }
+  }
+  boolean cloneClassLocal=false;
+  for (  String prefix : BROADLEAF_PACKAGE_PREFIXES) {
+    if (cloned.getClass().getName().startsWith(prefix)) {
+      cloneClassLocal=true;
+      break;
+    }
+  }
+  if (cloneMethodLocal && !cloneClassLocal) {
+    throw new CloneNotSupportedException("The system is attempting to clone " + cloned.getClass().getName() + " and has determined the custom extension does not implement clone. This class should implement "+ "clone, and inside first call super.clone() to get back an instance of your class ("+ cloned.getClass().getName()+ "), and then finish populating this instance with your custom fields before passing back the finished object.");
+  }
+}
