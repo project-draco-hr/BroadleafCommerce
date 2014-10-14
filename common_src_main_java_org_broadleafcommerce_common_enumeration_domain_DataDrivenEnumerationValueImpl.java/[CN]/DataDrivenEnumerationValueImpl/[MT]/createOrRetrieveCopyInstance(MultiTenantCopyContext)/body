@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  DataDrivenEnumerationValue cloned=createResponse.getClone();
+  cloned.setKey(key);
+  cloned.setDisplay(display);
+  cloned.setHidden(hidden);
+  cloned.setType(type);
+  return createResponse;
+}

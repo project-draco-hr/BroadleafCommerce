@@ -1,0 +1,26 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  FieldDefinition cloned=createResponse.getClone();
+  cloned.setName(name);
+  cloned.setFriendlyName(friendlyName);
+  cloned.setFieldType(getFieldType());
+  cloned.setSecurityLevel(securityLevel);
+  cloned.setHiddenFlag(hiddenFlag);
+  cloned.setValidationRegEx(validationRegEx);
+  cloned.setValidationErrorMesageKey(validationErrorMesageKey);
+  cloned.setMaxLength(maxLength);
+  cloned.setColumnWidth(columnWidth);
+  cloned.setTextAreaFlag(textAreaFlag);
+  cloned.setRequiredFlag(requiredFlag);
+  cloned.setDataDrivenEnumeration(dataDrivenEnumeration.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setAllowMultiples(allowMultiples);
+  cloned.setFieldGroup(fieldGroup);
+  cloned.setFieldOrder(fieldOrder);
+  cloned.setTooltip(tooltip);
+  cloned.setHelpText(helpText);
+  cloned.setHint(hint);
+  return createResponse;
+}

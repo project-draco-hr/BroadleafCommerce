@@ -1,0 +1,18 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageTemplate cloned=createResponse.getClone();
+  cloned.setTemplateName(templateName);
+  cloned.setTemplateDescription(templateDescription);
+  cloned.setTemplatePath(templatePath);
+  cloned.setLocale(locale);
+  for (  PageTemplateFieldGroupXref fieldGroup : fieldGroups) {
+    CreateResponse<PageTemplateFieldGroupXref> clonedGroupResponse=fieldGroup.createOrRetrieveCopyInstance(context);
+    PageTemplateFieldGroupXref clonedGroup=clonedGroupResponse.getClone();
+    clonedGroup.setPageTemplate(cloned);
+    cloned.getFieldGroupXrefs().add(clonedGroup);
+  }
+  return createResponse;
+}

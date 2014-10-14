@@ -1,0 +1,15 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  DataDrivenEnumeration cloned=createResponse.getClone();
+  cloned.setKey(key);
+  cloned.setModifiable(modifiable);
+  for (  DataDrivenEnumerationValue value : enumValues) {
+    DataDrivenEnumerationValue clonedValue=value.createOrRetrieveCopyInstance(context).getClone();
+    clonedValue.setType(cloned);
+    cloned.getEnumValues().add(clonedValue);
+  }
+  return createResponse;
+}

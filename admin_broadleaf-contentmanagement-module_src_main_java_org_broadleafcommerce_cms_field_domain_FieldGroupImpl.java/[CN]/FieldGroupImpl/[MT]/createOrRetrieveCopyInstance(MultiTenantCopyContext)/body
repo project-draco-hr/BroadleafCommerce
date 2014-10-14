@@ -1,0 +1,15 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  FieldGroup cloned=createResponse.getClone();
+  cloned.setInitCollapsedFlag(initCollapsedFlag);
+  cloned.setName(name);
+  for (  FieldDefinition fieldDefinition : fieldDefinitions) {
+    FieldDefinition clonedDef=fieldDefinition.createOrRetrieveCopyInstance(context).getClone();
+    clonedDef.setFieldGroup(cloned);
+    cloned.getFieldDefinitions().add(clonedDef);
+  }
+  return createResponse;
+}

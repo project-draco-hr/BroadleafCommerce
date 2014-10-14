@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageTemplateFieldGroupXref cloned=createResponse.getClone();
+  cloned.setPageTemplate(pageTemplate);
+  cloned.setFieldGroup(fieldGroup.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setGroupOrder(groupOrder);
+  return createResponse;
+}
