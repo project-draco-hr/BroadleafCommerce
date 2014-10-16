@@ -1,3 +1,8 @@
 {
-  return productOptionValues;
+  if (legacyProductOptionValues.size() == 0) {
+    for (    SkuProductOptionValueXref xref : productOptionValueXrefs) {
+      legacyProductOptionValues.add(xref.getProductOptionValue());
+    }
+  }
+  return Collections.unmodifiableSet(legacyProductOptionValues);
 }

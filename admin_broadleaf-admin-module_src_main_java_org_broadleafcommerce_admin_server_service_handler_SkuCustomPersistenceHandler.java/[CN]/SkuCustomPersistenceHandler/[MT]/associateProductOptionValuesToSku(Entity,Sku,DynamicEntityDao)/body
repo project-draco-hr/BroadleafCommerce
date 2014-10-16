@@ -10,6 +10,9 @@
     dynamicEntityDao.merge(adminInstance);
   }
   for (  Long id : productOptionValueIds) {
-    adminInstance.getProductOptionValues().add((ProductOptionValue)dynamicEntityDao.find(ProductOptionValueImpl.class,id));
+    ProductOptionValue pov=(ProductOptionValue)dynamicEntityDao.find(ProductOptionValueImpl.class,id);
+    SkuProductOptionValueXref xref=new SkuProductOptionValueXrefImpl(adminInstance,pov);
+    xref=dynamicEntityDao.merge(xref);
+    adminInstance.getProductOptionValueXrefs().add(xref);
   }
 }

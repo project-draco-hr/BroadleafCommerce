@@ -12,7 +12,7 @@
     productOptionValueFilterValues.addAll(Arrays.asList(StringUtils.split(consolidatedCriteria.getFilterValues().get(0),CONSOLIDATED_PRODUCT_OPTIONS_DELIMETER)));
   }
   if (productOptionValueFilterIDs.size() > 0) {
-    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + ".productOptionValues.id")).withDirectFilterValues(productOptionValueFilterIDs).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + ".productOptionValueXrefs.productOptionValue.id")).withDirectFilterValues(productOptionValueFilterIDs).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
       @Override public Predicate buildPredicate(      CriteriaBuilder builder,      FieldPathBuilder fieldPathBuilder,      From root,      String ceilingEntity,      String fullPropertyName,      Path explicitPath,      List directValues){
         return explicitPath.as(Long.class).in(directValues);
       }
@@ -21,7 +21,7 @@
     filterMappings.add(filterMapping);
   }
   if (productOptionValueFilterValues.size() > 0) {
-    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + ".productOptionValues.attributeValue")).withDirectFilterValues(productOptionValueFilterValues).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+    FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(StringUtils.isEmpty(skuPropertyPrefix) ? "" : skuPropertyPrefix + ".productOptionValueXrefs.productOptionValue.attributeValue")).withDirectFilterValues(productOptionValueFilterValues).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
       @Override public Predicate buildPredicate(      CriteriaBuilder builder,      FieldPathBuilder fieldPathBuilder,      From root,      String ceilingEntity,      String fullPropertyName,      Path explicitPath,      List directValues){
         return explicitPath.as(String.class).in(directValues);
       }
