@@ -1,0 +1,47 @@
+{
+  AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
+  if (adminUser == null) {
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      request.removeAttribute(CATALOG_REQ_PARAM,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
+  }
+ else {
+    Catalog catalog=null;
+    if (StringUtils.isNotBlank(request.getParameter(CATALOG_REQ_PARAM))) {
+      Long catalogId=Long.parseLong(request.getParameter(CATALOG_REQ_PARAM));
+      catalog=siteService.findCatalogById(catalogId);
+      if (catalog == null) {
+        throw new IllegalArgumentException(String.format("Unable to find the requested catalog: %s",catalogId));
+      }
+    }
+    if (catalog == null) {
+      Long previouslySetCatalogId=null;
+      if (BLCRequestUtils.isOKtoUseSession(request)) {
+        previouslySetCatalogId=(Long)request.getAttribute(CATALOG_REQ_PARAM,WebRequest.SCOPE_GLOBAL_SESSION);
+      }
+      if (previouslySetCatalogId != null) {
+        catalog=siteService.findCatalogById(previouslySetCatalogId);
+      }
+    }
+    if (catalog == null) {
+      List<Catalog> catalogs=new ArrayList<Catalog>();
+      if (brc.getNonPersistentSite() != null) {
+        Site currentSite=siteService.retrievePersistentSiteById(brc.getNonPersistentSite().getId());
+        if (extensionManager != null) {
+          ExtensionResultHolder<Set<Catalog>> catalogResult=new ExtensionResultHolder<Set<Catalog>>();
+          extensionManager.getProxy().retrieveCatalogs(currentSite,catalogResult);
+          if (!CollectionUtils.isEmpty(catalogResult.getResult())) {
+            catalogs.addAll(catalogResult.getResult());
+          }
+        }
+      }
+      if (catalogs.size() == 1) {
+        catalog=catalogs.get(0);
+      }
+    }
+    if (BLCRequestUtils.isOKtoUseSession(request) && catalog != null) {
+      request.setAttribute(CATALOG_REQ_PARAM,catalog.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+      brc.setCurrentCatalog(catalog);
+    }
+  }
+}

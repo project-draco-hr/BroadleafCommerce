@@ -1,0 +1,47 @@
+{
+  AdminUser adminUser=adminRemoteSecurityService.getPersistentAdminUser();
+  if (adminUser == null) {
+    if (BLCRequestUtils.isOKtoUseSession(request)) {
+      request.removeAttribute(PROFILE_REQ_PARAM,WebRequest.SCOPE_GLOBAL_SESSION);
+    }
+  }
+ else {
+    Site profile=null;
+    if (StringUtils.isNotBlank(request.getParameter(PROFILE_REQ_PARAM))) {
+      Long profileId=Long.parseLong(request.getParameter(PROFILE_REQ_PARAM));
+      profile=siteService.retrievePersistentSiteById(profileId);
+      if (profile == null) {
+        throw new IllegalArgumentException(String.format("Unable to find the requested profile: %s",profileId));
+      }
+    }
+    if (profile == null) {
+      Long previouslySetProfileId=null;
+      if (BLCRequestUtils.isOKtoUseSession(request)) {
+        previouslySetProfileId=(Long)request.getAttribute(PROFILE_REQ_PARAM,WebRequest.SCOPE_GLOBAL_SESSION);
+      }
+      if (previouslySetProfileId != null) {
+        profile=siteService.retrievePersistentSiteById(previouslySetProfileId);
+      }
+    }
+    if (profile == null) {
+      List<Site> profiles=new ArrayList<Site>();
+      if (brc.getNonPersistentSite() != null) {
+        Site currentSite=siteService.retrievePersistentSiteById(brc.getNonPersistentSite().getId());
+        if (extensionManager != null) {
+          ExtensionResultHolder<Set<Site>> profilesResult=new ExtensionResultHolder<Set<Site>>();
+          extensionManager.getProxy().retrieveProfiles(currentSite,profilesResult);
+          if (!CollectionUtils.isEmpty(profilesResult.getResult())) {
+            profiles.addAll(profilesResult.getResult());
+          }
+        }
+      }
+      if (profiles.size() == 1) {
+        profile=profiles.get(0);
+      }
+    }
+    if (BLCRequestUtils.isOKtoUseSession(request) && profile != null) {
+      request.setAttribute(PROFILE_REQ_PARAM,profile.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+      brc.setCurrentProfile(profile);
+    }
+  }
+}
