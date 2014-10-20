@@ -1,0 +1,19 @@
+{
+  Class<?> response;
+  try {
+    response=entityConfiguration.lookupEntityClass(field.getType().getName());
+  }
+ catch (  Exception e) {
+    PersistenceManager persistenceManager=getPersistenceManager();
+    Class<?>[] entities=persistenceManager.getUpDownInheritance(field.getType());
+    if (!ArrayUtils.isEmpty(entities)) {
+      response=entities[entities.length - 1];
+      LOG.info("Unable to find a reference to (" + field.getType().getName() + ") in the EntityConfigurationManager. "+ "Using the most extended form of this class identified as ("+ entities[0].getName()+ ")");
+    }
+ else {
+      response=field.getType();
+      LOG.info("Unable to find a reference to (" + field.getType().getName() + ") in the EntityConfigurationManager. "+ "Using the type of this class.");
+    }
+  }
+  return response;
+}
