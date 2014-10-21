@@ -2,6 +2,9 @@
   if (value == null) {
     return new PropertyValidationResult(succeedForNullValues);
   }
+  if (value.contains(" ")) {
+    return new PropertyValidationResult(false,ERROR_KEY_CANNOT_CONTAIN_SPACES);
+  }
   if (isFullUrl(value) && getIgnoreFullUrls()) {
     return new PropertyValidationResult(true);
   }
