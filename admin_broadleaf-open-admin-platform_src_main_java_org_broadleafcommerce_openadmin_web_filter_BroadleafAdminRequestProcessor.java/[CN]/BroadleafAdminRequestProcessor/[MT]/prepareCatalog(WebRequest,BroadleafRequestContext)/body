@@ -39,8 +39,10 @@
         catalog=catalogs.get(0);
       }
     }
-    if (BLCRequestUtils.isOKtoUseSession(request) && catalog != null) {
-      request.setAttribute(CATALOG_REQ_PARAM,catalog.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+    if (catalog != null) {
+      if (BLCRequestUtils.isOKtoUseSession(request)) {
+        request.setAttribute(CATALOG_REQ_PARAM,catalog.getId(),WebRequest.SCOPE_GLOBAL_SESSION);
+      }
       brc.setCurrentCatalog(catalog);
     }
   }
