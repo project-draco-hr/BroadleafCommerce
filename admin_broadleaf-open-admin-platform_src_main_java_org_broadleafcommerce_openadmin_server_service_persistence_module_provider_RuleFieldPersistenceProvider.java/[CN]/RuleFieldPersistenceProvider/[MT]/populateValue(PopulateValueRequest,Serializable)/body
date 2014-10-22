@@ -19,7 +19,7 @@ case RULE_SIMPLE:
 }
 }
  catch (Exception e) {
-throw new PersistenceException(e);
+throw ExceptionHelper.refineException(PersistenceException.class,PersistenceException.class,e);
 }
 populateValueRequest.getProperty().setIsDirty(dirty);
 return FieldProviderResponse.HANDLED_BREAK;

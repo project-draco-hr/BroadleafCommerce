@@ -1,0 +1,16 @@
+{
+  if (getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().contains(instance)) {
+    getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().detach(instance);
+  }
+  Field idField;
+  try {
+    idField=instance.getClass().getDeclaredField((String)getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name"));
+  }
+ catch (  NoSuchFieldException e1) {
+    throw ExceptionHelper.refineException(e1);
+  }
+  idField.setAccessible(true);
+  if (idField.get(instance) != null) {
+    idField.set(instance,null);
+  }
+}

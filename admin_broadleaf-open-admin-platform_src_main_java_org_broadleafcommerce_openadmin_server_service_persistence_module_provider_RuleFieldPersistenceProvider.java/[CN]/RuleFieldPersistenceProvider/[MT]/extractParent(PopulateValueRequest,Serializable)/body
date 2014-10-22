@@ -5,7 +5,12 @@
     parent=populateValueRequest.getFieldManager().getFieldValue(instance,parentName.substring(0,parentName.lastIndexOf(".")));
   }
   if (!populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().contains(parent)) {
-    populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(parent);
+    try {
+      populateValueRequest.getPersistenceManager().getDynamicEntityDao().persist(parent);
+    }
+ catch (    Exception e) {
+      throw new ParentEntityPersistenceException("Unable to Persist the parent entity during rule builder field population",e);
+    }
   }
   return parent;
 }

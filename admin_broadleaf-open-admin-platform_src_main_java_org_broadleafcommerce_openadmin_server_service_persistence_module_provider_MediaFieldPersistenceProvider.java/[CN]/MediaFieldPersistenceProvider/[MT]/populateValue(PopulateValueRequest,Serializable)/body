@@ -43,7 +43,7 @@
     }
   }
  catch (  Exception e) {
-    throw new PersistenceException(e);
+    throw ExceptionHelper.refineException(PersistenceException.class,PersistenceException.class,e);
   }
   populateValueRequest.getProperty().setIsDirty(dirty);
   return response;

@@ -28,17 +28,12 @@
       try {
         rule=(SimpleRule)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());
         if (rule == null) {
-          try {
-            rule=(SimpleRule)valueType.newInstance();
-            Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
-            OneToMany oneToMany=field.getAnnotation(OneToMany.class);
-            Object parent=extractParent(populateValueRequest,instance);
-            populateValueRequest.getFieldManager().setFieldValue(rule,oneToMany.mappedBy(),parent);
-            populateValueRequest.getFieldManager().setFieldValue(rule,populateValueRequest.getMetadata().getMapKeyValueProperty(),prop.substring(prop.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),prop.length()));
-          }
- catch (          Exception e) {
-            throw new RuntimeException(e);
-          }
+          rule=(SimpleRule)valueType.newInstance();
+          Field field=populateValueRequest.getFieldManager().getField(instance.getClass(),prop.substring(0,prop.indexOf(FieldManager.MAPFIELDSEPARATOR)));
+          OneToMany oneToMany=field.getAnnotation(OneToMany.class);
+          Object parent=extractParent(populateValueRequest,instance);
+          populateValueRequest.getFieldManager().setFieldValue(rule,oneToMany.mappedBy(),parent);
+          populateValueRequest.getFieldManager().setFieldValue(rule,populateValueRequest.getMetadata().getMapKeyValueProperty(),prop.substring(prop.indexOf(FieldManager.MAPFIELDSEPARATOR) + FieldManager.MAPFIELDSEPARATOR.length(),prop.length()));
           persist=true;
         }
       }
