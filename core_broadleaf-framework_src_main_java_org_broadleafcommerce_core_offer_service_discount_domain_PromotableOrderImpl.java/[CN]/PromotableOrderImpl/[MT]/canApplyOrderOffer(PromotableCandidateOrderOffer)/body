@@ -2,11 +2,6 @@
   if (isNotCombinableOrderOfferApplied()) {
     return false;
   }
-  Money currentOrderAdjustmentTotal=calculateOrderAdjustmentTotal();
-  Money orderAdjustmentTotalWithOffer=currentOrderAdjustmentTotal.add(offer.getPotentialSavings());
-  if (orderAdjustmentTotalWithOffer.greaterThan(getOrder().getSubTotal())) {
-    return false;
-  }
   if (!offer.isCombinable() || offer.isTotalitarian()) {
     return candidateOrderOfferAdjustments.size() == 0;
   }

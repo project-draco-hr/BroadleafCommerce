@@ -1,6 +1,7 @@
 {
   adjustmentValue=new Money(promotableOrder.getOrderCurrency());
   Money currentOrderValue=promotableOrder.calculateSubtotalWithAdjustments();
+  currentOrderValue=currentOrderValue.subtract(promotableOrder.calculateOrderAdjustmentTotal());
   if (offer.getDiscountType().equals(OfferDiscountType.AMOUNT_OFF)) {
     adjustmentValue=new Money(offer.getValue(),promotableOrder.getOrderCurrency());
   }
