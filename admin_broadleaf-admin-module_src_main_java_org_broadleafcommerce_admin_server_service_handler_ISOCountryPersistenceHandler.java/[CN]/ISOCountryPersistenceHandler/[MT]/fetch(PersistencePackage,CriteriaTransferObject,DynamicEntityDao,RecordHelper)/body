@@ -6,6 +6,16 @@
   }
 ));
   cto.getAdditionalFilterMappings().add(filterMapping);
+  FilterMapping countryRestrictionMapping=new FilterMapping().withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path<Character> explicitPath,    List<Character> directValues){
+      CriteriaQuery<Serializable> criteria=fieldPathBuilder.getCriteria();
+      Root<CountryImpl> blcCountry=criteria.from(CountryImpl.class);
+      Predicate join=builder.equal(root.get("alpha2").as(String.class),blcCountry.get("abbreviation").as(String.class));
+      return join;
+    }
+  }
+));
+  cto.getAdditionalFilterMappings().add(countryRestrictionMapping);
   PersistenceModule myModule=helper.getCompatibleModule(persistencePackage.getPersistencePerspective().getOperationTypes().getFetchType());
   return myModule.fetch(persistencePackage,cto);
 }
