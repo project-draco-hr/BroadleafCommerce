@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageAttribute cloned=createResponse.getClone();
+  CreateResponse<Page> pageCloneRsp=page.createOrRetrieveCopyInstance(context);
+  cloned.setPage(pageCloneRsp.getClone());
+  cloned.setName(name);
+  cloned.setValue(value);
+  return createResponse;
+}

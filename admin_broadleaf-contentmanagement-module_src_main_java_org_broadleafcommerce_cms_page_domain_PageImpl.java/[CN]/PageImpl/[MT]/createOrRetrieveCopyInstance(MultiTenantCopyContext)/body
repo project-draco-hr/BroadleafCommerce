@@ -1,0 +1,30 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  Page cloned=createResponse.getClone();
+  cloned.setPriority(priority);
+  cloned.setActiveEndDate(activeEndDate);
+  cloned.setActiveStartDate(activeStartDate);
+  cloned.setDescription(description);
+  cloned.setExcludeFromSiteMap(excludeFromSiteMap);
+  cloned.setFullUrl(fullUrl);
+  cloned.setMetaDescription(metaDescription);
+  cloned.setOfflineFlag(offlineFlag);
+  cloned.setMetaTitle(metaTitle);
+  for (  Map.Entry<String,PageField> entry : pageFields.entrySet()) {
+    CreateResponse<PageField> clonedPageField=entry.getValue().createOrRetrieveCopyInstance(context);
+    PageField pageField=clonedPageField.getClone();
+    pageField.setPage(cloned);
+    cloned.getPageFields().put(entry.getKey(),pageField);
+  }
+  for (  Map.Entry<String,PageRule> entry : pageMatchRules.entrySet()) {
+    CreateResponse<PageRule> clonedRsp=entry.getValue().createOrRetrieveCopyInstance(context);
+    PageRule clonedRule=clonedRsp.getClone();
+    cloned.getPageMatchRules().put(entry.getKey(),clonedRule);
+  }
+  CreateResponse<PageTemplate> clonedTemplateRsp=context.createOrRetrieveCopyInstance(context);
+  cloned.setPageTemplate(clonedTemplateRsp.getClone());
+  return createResponse;
+}

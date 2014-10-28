@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageItemCriteria cloned=createResponse.getClone();
+  cloned.setPage(page);
+  cloned.setMatchRule(orderItemMatchRule);
+  cloned.setQuantity(quantity);
+  return createResponse;
+}

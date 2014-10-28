@@ -1,0 +1,9 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageRule cloned=createResponse.getClone();
+  cloned.setMatchRule(matchRule);
+  return createResponse;
+}

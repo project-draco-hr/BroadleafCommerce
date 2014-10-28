@@ -1,0 +1,14 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  StructuredContentFieldTemplate cloned=createResponse.getClone();
+  cloned.setName(name);
+  for (  FieldGroup entry : fieldGroups) {
+    CreateResponse<FieldGroup> clonedGroupRsp=entry.createOrRetrieveCopyInstance(context);
+    FieldGroup clonedGroup=clonedGroupRsp.getClone();
+    cloned.getFieldGroups().add(clonedGroup);
+  }
+  return createResponse;
+}

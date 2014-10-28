@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  StructuredContentType cloned=createResponse.getClone();
+  cloned.setDescription(description);
+  cloned.setName(name);
+  CreateResponse<StructuredContentFieldTemplate> clonedTemplate=structuredContentFieldTemplate.createOrRetrieveCopyInstance(context);
+  return createResponse;
+}
