@@ -1,0 +1,37 @@
+{
+  Class<?> clazz;
+  List<Class<?>> matchedClasses=new ArrayList<Class<?>>();
+  for (  Class<?> entity : entities) {
+    Field peekAheadField=null;
+    try {
+      peekAheadField=entity.getDeclaredField(token);
+    }
+ catch (    NoSuchFieldException nsf) {
+    }
+    if (peekAheadField != null) {
+      matchedClasses.add(entity);
+    }
+  }
+  if (matchedClasses.size() > 1) {
+    LOG.warn("Found the property (" + token + ") in more than one class of an inheritance hierarchy. "+ "This may lead to unwanted behavior, as the system does not know which class was intended. Do not "+ "use the same property name in different levels of the inheritance hierarchy. Defaulting to the "+ "first class found ("+ matchedClasses.get(0).getName()+ ")");
+  }
+  if (matchedClasses.isEmpty()) {
+    return null;
+  }
+  Class<?> myClass=field != null ? field.getType() : entities[0];
+  if (getSingleField(matchedClasses.get(0),token) != null) {
+    clazz=matchedClasses.get(0);
+    Class<?>[] entities2=persistenceManager.getUpDownInheritance(clazz);
+    if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
+      try {
+        clazz=entityConfiguration.lookupEntityClass(myClass.getName());
+      }
+ catch (      Exception e) {
+      }
+    }
+  }
+ else {
+    clazz=myClass;
+  }
+  return clazz;
+}
