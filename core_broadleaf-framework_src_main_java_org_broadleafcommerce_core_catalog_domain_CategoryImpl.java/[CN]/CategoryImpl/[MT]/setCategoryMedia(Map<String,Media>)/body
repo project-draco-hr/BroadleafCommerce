@@ -1,6 +1,7 @@
 {
   this.categoryMedia.clear();
-  for (  Map.Entry<String,Media> me : categoryMedia.entrySet()) {
-    this.categoryMedia.put(me.getKey(),me.getValue());
+  this.legacyCategoryMedia.clear();
+  for (  Map.Entry<String,Media> entry : categoryMedia.entrySet()) {
+    this.categoryMedia.put(entry.getKey(),new CategoryMediaXrefImpl(this,entry.getValue(),entry.getKey()));
   }
 }

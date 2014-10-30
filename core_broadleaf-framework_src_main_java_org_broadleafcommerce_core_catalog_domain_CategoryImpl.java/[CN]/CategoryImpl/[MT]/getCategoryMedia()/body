@@ -1,3 +1,8 @@
 {
-  return categoryMedia;
+  if (legacyCategoryMedia.size() == 0) {
+    for (    Map.Entry<String,CategoryMediaXref> entry : getCategoryMediaXref().entrySet()) {
+      legacyCategoryMedia.put(entry.getKey(),entry.getValue().getMedia());
+    }
+  }
+  return Collections.unmodifiableMap(legacyCategoryMedia);
 }
