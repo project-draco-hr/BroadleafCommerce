@@ -1,0 +1,15 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OrderItemPriceDetailAdjustment cloned=createResponse.getClone();
+  cloned.setOfferName(offerName);
+  cloned.setAppliedToSalePrice(appliedToSalePrice);
+  cloned.setOrderItemPriceDetail(orderItemPriceDetail);
+  cloned.setSalesPriceValue(getSalesPriceValue());
+  cloned.setRetailPriceValue(getRetailPriceValue());
+  cloned.setReason(reason);
+  cloned.setValue(getValue());
+  return createResponse;
+}

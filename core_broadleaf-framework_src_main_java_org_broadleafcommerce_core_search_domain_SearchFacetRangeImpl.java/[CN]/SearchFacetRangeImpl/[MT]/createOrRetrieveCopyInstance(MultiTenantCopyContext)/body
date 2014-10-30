@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  SearchFacetRange cloned=createResponse.getClone();
+  cloned.setMaxValue(maxValue);
+  cloned.setMinValue(minValue);
+  cloned.setSearchFacet(searchFacet);
+  return createResponse;
+}

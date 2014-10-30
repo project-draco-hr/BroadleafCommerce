@@ -1,0 +1,10 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  RequiredFacet cloned=createResponse.getClone();
+  cloned.setRequiredFacet(requiredFacet.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setSearchFacet(searchFacet);
+  return createResponse;
+}

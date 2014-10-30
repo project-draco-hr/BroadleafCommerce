@@ -1,0 +1,16 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OrderItemPriceDetail cloned=createResponse.getClone();
+  cloned.setQuantity(quantity);
+  cloned.setUseSalePrice(useSalePrice);
+  cloned.setOrderItem(orderItem);
+  for (  OrderItemPriceDetailAdjustment entry : orderItemPriceDetailAdjustments) {
+    OrderItemPriceDetailAdjustment clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOrderItemPriceDetail(cloned);
+    cloned.getOrderItemPriceDetailAdjustments().add(clonedEntry);
+  }
+  return createResponse;
+}

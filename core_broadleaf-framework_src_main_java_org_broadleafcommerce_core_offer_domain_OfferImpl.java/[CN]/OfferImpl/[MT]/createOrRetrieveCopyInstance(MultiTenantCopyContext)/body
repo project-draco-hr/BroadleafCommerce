@@ -1,0 +1,47 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  Offer cloned=createResponse.getClone();
+  cloned.setApplyDiscountToSalePrice(applyToSalePrice);
+  cloned.setAutomaticallyAdded(automaticallyAdded);
+  cloned.setDescription(description);
+  cloned.setDiscountType(getDiscountType());
+  cloned.setEndDate(endDate);
+  cloned.setMaxUsesPerCustomer(maxUsesPerCustomer);
+  cloned.setMarketingMessage(marketingMessage);
+  cloned.setName(name);
+  cloned.setValue(value);
+  cloned.setPriority(priority);
+  cloned.setStackable(stackable);
+  cloned.setDeliveryType(getDeliveryType());
+  cloned.setMaxUses(getMaxUses());
+  cloned.setArchived(getArchived());
+  cloned.setOfferItemQualifierRuleType(getOfferItemQualifierRuleType());
+  cloned.setCombinableWithOtherOffers(isCombinableWithOtherOffers());
+  cloned.setQualifyingItemSubTotal(getQualifyingItemSubTotal());
+  cloned.setStartDate(startDate);
+  cloned.setUses(uses);
+  cloned.setTargetSystem(targetSystem);
+  cloned.setRequiresRelatedTargetAndQualifiers(requiresRelatedTargetAndQualifiers);
+  cloned.setTreatAsNewFormat(treatAsNewFormat);
+  cloned.setTotalitarianOffer(totalitarianOffer);
+  cloned.setType(getType());
+  for (  OfferCode entry : offerCodes) {
+    OfferCode clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOffer(cloned);
+    cloned.getOfferCodes().add(clonedEntry);
+  }
+  for (  OfferQualifyingCriteriaXref entry : qualifyingItemCriteria) {
+    OfferQualifyingCriteriaXref clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOffer(cloned);
+    cloned.getQualifyingItemCriteriaXref().add(clonedEntry);
+  }
+  for (  Map.Entry<String,OfferOfferRuleXref> entry : offerMatchRules.entrySet()) {
+    OfferOfferRuleXref clonedEntry=entry.getValue().createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOffer(cloned);
+    cloned.getOfferMatchRulesXref().put(entry.getKey(),clonedEntry);
+  }
+  return createResponse;
+}

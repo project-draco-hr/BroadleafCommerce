@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CandidateItemOffer cloned=createResponse.getClone();
+  cloned.setDiscountedPrice(getDiscountedPrice());
+  cloned.setOrderItem(orderItem);
+  cloned.setOffer(offer.createOrRetrieveCopyInstance(context).getClone());
+  return createResponse;
+}

@@ -1,0 +1,10 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  SkuProductOptionValueXref cloned=createResponse.getClone();
+  cloned.setSku(sku);
+  cloned.setProductOptionValue(productOptionValue.createOrRetrieveCopyInstance(context).getClone());
+  return createResponse;
+}

@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  SkuAttribute cloned=createResponse.getClone();
+  cloned.setName(name);
+  cloned.setSku(sku);
+  cloned.setSearchable(getSearchable());
+  cloned.setValue(value);
+  return createResponse;
+}

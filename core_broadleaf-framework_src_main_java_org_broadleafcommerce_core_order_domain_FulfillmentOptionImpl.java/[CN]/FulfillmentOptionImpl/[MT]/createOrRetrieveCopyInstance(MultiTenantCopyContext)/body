@@ -1,0 +1,14 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  FulfillmentOption cloned=createResponse.getClone();
+  cloned.setFulfillmentType(getFulfillmentType());
+  cloned.setName(name);
+  cloned.setTaxCode(taxCode);
+  cloned.setUseFlatRates(useFlatRates);
+  cloned.setTaxable(taxable);
+  cloned.setLongDescription(longDescription);
+  return createResponse;
+}

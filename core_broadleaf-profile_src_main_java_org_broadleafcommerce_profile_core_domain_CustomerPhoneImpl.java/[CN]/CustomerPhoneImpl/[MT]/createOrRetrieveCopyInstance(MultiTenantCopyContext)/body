@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CustomerPhone cloned=createResponse.getClone();
+  cloned.setCustomer(customer);
+  cloned.setPhoneName(phoneName);
+  cloned.setPhone(phone);
+  return createResponse;
+}

@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OrderAttribute cloned=createResponse.getClone();
+  cloned.setName(name);
+  cloned.setValue(value);
+  cloned.setOrder(order);
+  return createResponse;
+}

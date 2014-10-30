@@ -1,0 +1,19 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  StaticAsset cloned=createResponse.getClone();
+  cloned.setAltText(altText);
+  cloned.setFileExtension(fileExtension);
+  cloned.setFileSize(fileSize);
+  cloned.setFullUrl(fullUrl);
+  cloned.setMimeType(mimeType);
+  cloned.setTitle(title);
+  cloned.setStorageType(getStorageType());
+  for (  Map.Entry<String,StaticAssetDescription> entry : contentMessageValues.entrySet()) {
+    CreateResponse<StaticAssetDescription> clonedDescRsp=entry.getValue().createOrRetrieveCopyInstance(context);
+    cloned.getContentMessageValues().put(entry.getKey(),clonedDescRsp.getClone());
+  }
+  return createResponse;
+}

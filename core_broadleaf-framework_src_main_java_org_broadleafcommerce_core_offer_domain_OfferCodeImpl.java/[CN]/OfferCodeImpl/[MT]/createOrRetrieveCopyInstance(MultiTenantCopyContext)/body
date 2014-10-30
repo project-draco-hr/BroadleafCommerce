@@ -1,0 +1,16 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OfferCode cloned=createResponse.getClone();
+  cloned.setEndDate(offerCodeEndDate);
+  cloned.setMaxUses(maxUses);
+  cloned.setOffer(offer);
+  cloned.setOrders(orders);
+  cloned.setStartDate(offerCodeStartDate);
+  cloned.setArchived(getArchived());
+  cloned.setOfferCode(offerCode);
+  cloned.setUses(uses);
+  return createResponse;
+}
