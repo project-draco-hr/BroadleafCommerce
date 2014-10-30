@@ -27,7 +27,7 @@
   List<Order> sorts=new ArrayList<Order>();
   addRestrictions(ceilingEntity,filterMappings,criteriaBuilder,original,restrictions,sorts,criteria);
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
-  if (!isCount) {
+  if (!isCount && !isMax) {
     criteria.orderBy(sorts.toArray(new Order[sorts.size()]));
     if (firstResult != null && sorts.isEmpty()) {
       Map<String,Object> idMetaData=dynamicEntityDao.getIdMetadata(ceilingClass);
@@ -41,7 +41,7 @@
     }
   }
   TypedQuery<Serializable> response=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
-  if (!isCount) {
+  if (!isCount && !isMax) {
     addPaging(response,firstResult,maxResults);
   }
   return response;
