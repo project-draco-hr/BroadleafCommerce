@@ -1,0 +1,16 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  SkuMediaXrefImpl cloned=createResponse.getClone();
+  Media clonedMedia=((MediaImpl)media).createOrRetrieveCopyInstance(context).getClone();
+  cloned.setMedia(clonedMedia);
+  cloned.setAltText(getAltText());
+  cloned.setKey(key);
+  cloned.setSku(sku);
+  cloned.setTags(getTags());
+  cloned.setUrl(getUrl());
+  cloned.setTitle(getTitle());
+  return createResponse;
+}

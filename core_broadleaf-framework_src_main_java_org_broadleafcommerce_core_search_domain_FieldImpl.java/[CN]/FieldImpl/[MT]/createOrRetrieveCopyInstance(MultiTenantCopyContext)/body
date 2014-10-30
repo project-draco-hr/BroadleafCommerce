@@ -1,0 +1,18 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  Field cloned=createResponse.getClone();
+  cloned.setAbbreviation(abbreviation);
+  cloned.setFacetFieldType(getFacetFieldType());
+  cloned.setFriendlyName(friendlyName);
+  cloned.setPropertyName(propertyName);
+  cloned.setSearchable(searchable);
+  cloned.setTranslatable(translatable);
+  for (  FieldType entry : getSearchableFieldTypes()) {
+    cloned.getSearchableFieldTypes().add(entry);
+  }
+  cloned.setEntityType(getEntityType());
+  return createResponse;
+}

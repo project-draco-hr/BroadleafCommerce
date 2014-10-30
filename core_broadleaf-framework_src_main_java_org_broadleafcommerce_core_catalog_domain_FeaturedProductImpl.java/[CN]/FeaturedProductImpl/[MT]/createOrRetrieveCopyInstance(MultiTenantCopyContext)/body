@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  FeaturedProduct cloned=createResponse.getClone();
+  cloned.setCategory(category);
+  cloned.setProduct(product.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setPromotionMessage(promotionMessage);
+  cloned.setSequence(sequence);
+  return createResponse;
+}

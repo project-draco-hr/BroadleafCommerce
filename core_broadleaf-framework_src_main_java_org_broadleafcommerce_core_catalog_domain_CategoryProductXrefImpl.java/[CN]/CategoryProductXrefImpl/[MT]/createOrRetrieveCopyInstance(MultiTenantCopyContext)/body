@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CategoryProductXref cloned=createResponse.getClone();
+  cloned.setDisplayOrder(displayOrder);
+  cloned.setProduct(product);
+  cloned.setCategory(category);
+  return createResponse;
+}

@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  URLHandler cloned=createResponse.getClone();
+  cloned.setIncomingURL(incomingURL);
+  cloned.setNewURL(newURL);
+  cloned.setUrlRedirectType(URLRedirectType.getInstance(urlRedirectType));
+  return createResponse;
+}

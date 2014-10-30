@@ -1,0 +1,13 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CategoryXref cloned=createResponse.getClone();
+  cloned.setCategory(category);
+  Category clonedSub=subCategory.createOrRetrieveCopyInstance(context).getClone();
+  clonedSub.getAllParentCategoryXrefs().add(cloned);
+  cloned.setSubCategory(clonedSub);
+  cloned.setDisplayOrder(displayOrder);
+  return createResponse;
+}

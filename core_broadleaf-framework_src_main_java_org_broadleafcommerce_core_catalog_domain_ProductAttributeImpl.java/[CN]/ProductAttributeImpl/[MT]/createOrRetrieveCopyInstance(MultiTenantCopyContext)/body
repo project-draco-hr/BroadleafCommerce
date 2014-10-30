@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  ProductAttribute cloned=createResponse.getClone();
+  cloned.setProduct(product);
+  cloned.setName(name);
+  cloned.setSearchable(searchable);
+  cloned.setValue(value);
+  return createResponse;
+}

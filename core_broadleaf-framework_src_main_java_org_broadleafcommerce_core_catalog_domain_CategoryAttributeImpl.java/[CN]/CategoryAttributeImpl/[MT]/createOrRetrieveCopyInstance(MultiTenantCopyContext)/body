@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CategoryAttribute cloned=createResponse.getClone();
+  cloned.setCategory(category);
+  cloned.setName(name);
+  cloned.setValue(value);
+  cloned.setSearchable(searchable);
+  return createResponse;
+}

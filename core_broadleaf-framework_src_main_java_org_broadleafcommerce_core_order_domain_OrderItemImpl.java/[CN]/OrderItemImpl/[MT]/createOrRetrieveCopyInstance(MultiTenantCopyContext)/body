@@ -1,0 +1,41 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OrderItem cloned=createResponse.getClone();
+  cloned.setCategory(category.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setName(name);
+  cloned.setOrderItemType(getOrderItemType());
+  cloned.setDiscountingAllowed(discountsAllowed);
+  cloned.setTaxable(isTaxable());
+  cloned.setSalePriceOverride(salePriceOverride);
+  cloned.setSalePrice(getSalePrice());
+  cloned.setRetailPrice(getRetailPrice());
+  cloned.setRetailPriceOverride(retailPriceOverride);
+  cloned.setQuantity(quantity);
+  cloned.setPersonalMessage(personalMessage);
+  cloned.setParentOrderItem(parentOrderItem);
+  for (  OrderItem entry : childOrderItems) {
+    OrderItem clonedEntry=((OrderItemImpl)entry).createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setParentOrderItem(clonedEntry);
+    cloned.getChildOrderItems().add(clonedEntry);
+  }
+  for (  CandidateItemOffer entry : candidateItemOffers) {
+    CandidateItemOffer clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOrderItem(cloned);
+    cloned.getCandidateItemOffers().add(clonedEntry);
+  }
+  for (  Map.Entry<String,OrderItemAttribute> entry : orderItemAttributeMap.entrySet()) {
+    OrderItemAttribute clonedEntry=entry.getValue().createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOrderItem(cloned);
+    cloned.getOrderItemAttributes().put(entry.getKey(),clonedEntry);
+  }
+  cloned.setGiftWrapOrderItem(giftWrapOrderItem);
+  for (  OrderItemPriceDetail entry : orderItemPriceDetails) {
+    OrderItemPriceDetail clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setOrderItem(cloned);
+    cloned.getOrderItemPriceDetails().add(clonedEntry);
+  }
+  return createResponse;
+}

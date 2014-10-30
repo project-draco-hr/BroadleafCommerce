@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CategoryExcludedSearchFacet cloned=createResponse.getClone();
+  cloned.setSearchFacet(searchFacet.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setSequence(sequence);
+  cloned.setCategory(getCategory());
+  return createResponse;
+}

@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  SkuBundleItem cloned=createResponse.getClone();
+  cloned.setQuantity(quantity);
+  cloned.setSalePrice(getSalePrice());
+  cloned.setSku(sku.createOrRetrieveCopyInstance(context).getClone());
+  cloned.setBundle(bundle);
+  return createResponse;
+}

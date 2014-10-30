@@ -1,0 +1,13 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CrossSaleProductImpl cloned=createResponse.getClone();
+  cloned.setProduct(product);
+  cloned.setCategory(category);
+  cloned.setPromotionMessage(promotionMessage);
+  cloned.setSequence(sequence);
+  cloned.setRelatedProduct(relatedSaleProduct.createOrRetrieveCopyInstance(context).getClone());
+  return createResponse;
+}

@@ -1,0 +1,45 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  Customer cloned=createResponse.getClone();
+  cloned.setAnonymous(anonymous);
+  cloned.setChallengeAnswer(challengeAnswer);
+  cloned.setChallengeQuestion(challengeQuestion);
+  cloned.setCookied(cookied);
+  for (  CustomerAddress entry : customerAddresses) {
+    CustomerAddress clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setCustomer(cloned);
+    cloned.getCustomerAddresses().add(clonedEntry);
+  }
+  for (  Map.Entry<String,CustomerAttribute> entry : customerAttributes.entrySet()) {
+    CustomerAttribute clonedEntry=entry.getValue().createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setCustomer(cloned);
+    cloned.getCustomerAttributes().put(entry.getKey(),clonedEntry);
+  }
+  cloned.setLoggedIn(loggedIn);
+  cloned.setUsername(username);
+  cloned.setUnencodedPassword(unencodedPassword);
+  cloned.setTaxExemptionCode(taxExemptionCode);
+  cloned.setUnencodedChallengeAnswer(unencodedChallengeAnswer);
+  cloned.setRegistered(registered);
+  cloned.setReceiveEmail(receiveEmail);
+  cloned.setPasswordChangeRequired(passwordChangeRequired);
+  cloned.setPassword(password);
+  cloned.setLastName(lastName);
+  cloned.setFirstName(firstName);
+  cloned.setEmailAddress(emailAddress);
+  cloned.setDeactivated(deactivated);
+  for (  CustomerPayment entry : customerPayments) {
+    CustomerPayment clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setCustomer(cloned);
+    cloned.getCustomerPayments().add(clonedEntry);
+  }
+  for (  CustomerPhone entry : customerPhones) {
+    CustomerPhone clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setCustomer(cloned);
+    cloned.getCustomerPhones().add(clonedEntry);
+  }
+  return createResponse;
+}

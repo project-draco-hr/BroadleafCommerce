@@ -1,0 +1,29 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  ProductOption cloned=createResponse.getClone();
+  cloned.setAttributeName(attributeName);
+  cloned.setDisplayOrder(displayOrder);
+  cloned.setErrorMessage(errorMessage);
+  cloned.setErrorCode(errorCode);
+  cloned.setLabel(label);
+  cloned.setRequired(getRequired());
+  cloned.setUseInSkuGeneration(getUseInSkuGeneration());
+  cloned.setValidationString(validationString);
+  cloned.setType(getType());
+  cloned.setProductOptionValidationStrategyType(getProductOptionValidationStrategyType());
+  cloned.setProductOptionValidationType(getProductOptionValidationType());
+  for (  ProductOptionValue entry : allowedValues) {
+    ProductOptionValue clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setProductOption(cloned);
+    cloned.getAllowedValues().add(clonedEntry);
+  }
+  for (  ProductOptionXref entry : products) {
+    ProductOptionXref clonedEntry=entry.createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setProductOption(cloned);
+    cloned.getProductXrefs().add(clonedEntry);
+  }
+  return createResponse;
+}

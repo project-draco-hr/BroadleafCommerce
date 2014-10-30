@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  OfferInfo cloned=createResponse.getClone();
+  for (  Map.Entry<String,String> entry : fieldValues.entrySet()) {
+    cloned.getFieldValues().put(entry.getKey(),entry.getValue());
+  }
+  return createResponse;
+}

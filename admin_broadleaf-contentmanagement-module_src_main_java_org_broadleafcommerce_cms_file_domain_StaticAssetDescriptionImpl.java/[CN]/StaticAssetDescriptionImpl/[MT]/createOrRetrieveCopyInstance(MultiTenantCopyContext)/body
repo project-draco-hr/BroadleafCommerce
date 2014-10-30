@@ -1,0 +1,10 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  StaticAssetDescription cloned=createResponse.getClone();
+  cloned.setDescription(description);
+  cloned.setLongDescription(longDescription);
+  return createResponse;
+}

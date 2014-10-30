@@ -1,0 +1,12 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  MediaImpl cloned=createResponse.getClone();
+  cloned.setAltText(altText);
+  cloned.setTags(tags);
+  cloned.setTitle(title);
+  cloned.setUrl(url);
+  return createResponse;
+}

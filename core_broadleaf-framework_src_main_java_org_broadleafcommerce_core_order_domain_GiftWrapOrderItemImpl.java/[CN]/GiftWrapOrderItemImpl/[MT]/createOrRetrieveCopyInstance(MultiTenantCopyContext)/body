@@ -1,0 +1,13 @@
+{
+  CreateResponse<DiscreteOrderItemImpl> createResponse=super.createOrRetrieveCopyInstance(context);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  GiftWrapOrderItem cloned=(GiftWrapOrderItem)createResponse.getClone();
+  for (  OrderItem entry : wrappedItems) {
+    OrderItem clonedEntry=((OrderItemImpl)entry).createOrRetrieveCopyInstance(context).getClone();
+    clonedEntry.setGiftWrapOrderItem(cloned);
+    cloned.getWrappedItems().add(clonedEntry);
+  }
+  return createResponse;
+}

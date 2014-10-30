@@ -1,0 +1,34 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  StructuredContent cloned=createResponse.getClone();
+  cloned.setContentName(contentName);
+  cloned.setLocale(locale);
+  cloned.setOfflineFlag(offlineFlag);
+  cloned.setPriority(priority);
+  for (  Entry<String,String> entry : fieldValuesMap.entrySet()) {
+    cloned.getFieldValues().put(entry.getKey(),entry.getValue());
+  }
+  CreateResponse<StructuredContentType> clonedType=structuredContentType.createOrRetrieveCopyInstance(context);
+  cloned.setStructuredContentType(clonedType.getClone());
+  for (  StructuredContentItemCriteria itemCriteria : qualifyingItemCriteria) {
+    CreateResponse<StructuredContentItemCriteria> clonedItem=itemCriteria.createOrRetrieveCopyInstance(context);
+    StructuredContentItemCriteria clonedCritera=clonedItem.getClone();
+    clonedCritera.setStructuredContent(cloned);
+    cloned.getQualifyingItemCriteria().add(clonedCritera);
+  }
+  for (  Entry<String,StructuredContentRule> entry : structuredContentMatchRules.entrySet()) {
+    CreateResponse<StructuredContentRule> clonedItem=entry.getValue().createOrRetrieveCopyInstance(context);
+    StructuredContentRule clonedRule=clonedItem.getClone();
+    cloned.getStructuredContentMatchRules().put(entry.getKey(),clonedRule);
+  }
+  for (  Entry<String,StructuredContentFieldXref> entry : structuredContentFields.entrySet()) {
+    CreateResponse<StructuredContentFieldXref> clonedItem=entry.getValue().createOrRetrieveCopyInstance(context);
+    StructuredContentFieldXref clonedContentFieldXref=clonedItem.getClone();
+    clonedContentFieldXref.setStructuredContent(cloned);
+    cloned.getStructuredContentFieldXrefs().put(entry.getKey(),clonedContentFieldXref);
+  }
+  return createResponse;
+}

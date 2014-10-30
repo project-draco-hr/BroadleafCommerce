@@ -1,0 +1,11 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  PageField cloned=createResponse.getClone();
+  cloned.setPage(page);
+  cloned.setFieldKey(fieldKey);
+  cloned.setValue(getValue());
+  return createResponse;
+}
