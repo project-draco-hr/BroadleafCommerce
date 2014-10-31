@@ -3,5 +3,8 @@
   if (payment == null) {
     throw new IllegalArgumentException("Could not find payment with id " + orderPaymentId);
   }
-  orderPaymentService.delete(payment);
+  payment.setArchived('Y');
+  for (  PaymentTransaction transaction : payment.getTransactions()) {
+    transaction.setArchived('Y');
+  }
 }
