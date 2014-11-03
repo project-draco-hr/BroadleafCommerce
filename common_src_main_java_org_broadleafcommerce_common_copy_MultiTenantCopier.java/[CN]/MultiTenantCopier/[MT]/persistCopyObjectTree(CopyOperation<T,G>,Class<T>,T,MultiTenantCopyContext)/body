@@ -1,15 +1,12 @@
 {
   try {
-    if (context.getEquivalentId(clazz.getName(),id) != null) {
+    if (context.getEquivalentId(clazz.getName(),genericEntityService.getIdentifier(original)) != null) {
       return;
     }
     context.clearOriginalIdentifiers();
-    genericEntityService.flush();
-    genericEntityService.clear();
     genericEntityService.clearAutoFlushMode();
-    Object copy=copyOperation.execute(genericEntityService.readGenericEntity(clazz,id));
+    Object copy=copyOperation.execute(original);
     persistCopyObjectTreeInternal(copy,new HashSet<Integer>(),context);
-    genericEntityService.flush();
   }
  catch (  Exception e) {
     LOG.error("Unable to persist the copy object tree",e);
@@ -17,7 +14,6 @@
   }
  finally {
     context.clearOriginalIdentifiers();
-    genericEntityService.clear();
     genericEntityService.enableAutoFlushMode();
   }
 }
