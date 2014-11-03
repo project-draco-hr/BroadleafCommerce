@@ -1,3 +1,5 @@
 {
-  return getChangePasswordView();
+  SecurityContext c=SecurityContextHolder.getContext();
+  model.addAttribute("username",((AdminUserDetails)c.getAuthentication().getPrincipal()).getUsername());
+  return "login/changePasswordPopup";
 }

@@ -1,10 +1,10 @@
 {
   GenericResponse errorResponse=adminSecurityService.changePassword(resetPasswordForm.getUsername(),resetPasswordForm.getOldPassword(),resetPasswordForm.getPassword(),resetPasswordForm.getConfirmPassword());
   if (errorResponse.getHasErrors()) {
-    setErrors(errorResponse,request);
-    return getChangePasswordView();
+    String errorCode=errorResponse.getErrorCodesList().get(0);
+    return new JsonResponse(response).with("status","error").with("errorText",BLCMessageUtils.getMessage("password." + errorCode)).done();
   }
  else {
-    return redirectToLoginWithMessage("passwordReset");
+    return new JsonResponse(response).with("data.status","ok").with("successMessage",BLCMessageUtils.getMessage("PasswordChange_success")).done();
   }
 }
