@@ -21,34 +21,34 @@
       if (newTarget != null) {
         if (field.getAnnotation(ManyToOne.class) != null || field.getAnnotation(OneToOne.class) != null) {
           if (library.contains(System.identityHashCode(newTarget))) {
-            persistPart(newTarget,context);
+            persistNode(newTarget,context);
             continue;
           }
-          persistCopyObjectTree(newTarget,library,context);
+          persistCopyObjectTreeInternal(newTarget,library,context);
         }
  else         if (field.getAnnotation(ManyToMany.class) != null || field.getAnnotation(OneToMany.class) != null) {
           collections.add(new Object[]{field,newTarget});
         }
  else         if (field.getType().getAnnotation(Embeddable.class) != null && MultiTenantCloneable.class.isAssignableFrom(field.getType())) {
-          persistCopyObjectTree(newTarget,library,context);
+          persistCopyObjectTreeInternal(newTarget,library,context);
         }
       }
     }
   }
   if (copy.getClass().getAnnotation(Embeddable.class) == null) {
-    persistPart(copy,context);
+    persistNode(copy,context);
   }
   for (  Object[] collectionItem : collections) {
     if (collectionItem[1] instanceof Collection) {
       Collection newCollection=(Collection)collectionItem[1];
       for (      Object member : newCollection) {
-        persistCopyObjectTree(member,library,context);
+        persistCopyObjectTreeInternal(member,library,context);
       }
     }
  else     if (collectionItem[1] instanceof Map) {
       Map newMap=(Map)collectionItem[1];
       for (      Object key : newMap.keySet()) {
-        persistCopyObjectTree(newMap.get(key),library,context);
+        persistCopyObjectTreeInternal(newMap.get(key),library,context);
       }
     }
  else {

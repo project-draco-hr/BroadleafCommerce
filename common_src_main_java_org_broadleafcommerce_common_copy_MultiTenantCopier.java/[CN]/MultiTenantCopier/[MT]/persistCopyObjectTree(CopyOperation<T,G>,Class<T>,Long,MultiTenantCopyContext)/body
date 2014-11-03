@@ -6,9 +6,9 @@
     context.clearOriginalIdentifiers();
     genericEntityService.flush();
     genericEntityService.clear();
-    context.clearAutoFlushMode();
+    genericEntityService.clearAutoFlushMode();
     Object copy=copyOperation.execute(genericEntityService.readGenericEntity(clazz,id));
-    persistCopyObjectTree(copy,new HashSet<Integer>(),context);
+    persistCopyObjectTreeInternal(copy,new HashSet<Integer>(),context);
     genericEntityService.flush();
   }
  catch (  Exception e) {
@@ -18,6 +18,6 @@
  finally {
     context.clearOriginalIdentifiers();
     genericEntityService.clear();
-    context.enableAutoFlushMode();
+    genericEntityService.enableAutoFlushMode();
   }
 }
