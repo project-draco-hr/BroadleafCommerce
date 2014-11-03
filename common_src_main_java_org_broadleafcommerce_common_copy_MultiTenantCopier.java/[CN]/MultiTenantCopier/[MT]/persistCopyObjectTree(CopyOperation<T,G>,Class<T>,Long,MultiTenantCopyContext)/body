@@ -1,0 +1,23 @@
+{
+  try {
+    if (context.getEquivalentId(clazz.getName(),id) != null) {
+      return;
+    }
+    context.clearOriginalIdentifiers();
+    genericEntityService.flush();
+    genericEntityService.clear();
+    context.clearAutoFlushMode();
+    Object copy=copyOperation.execute(genericEntityService.readGenericEntity(clazz,id));
+    persistCopyObjectTree(copy,new HashSet<Integer>(),context);
+    genericEntityService.flush();
+  }
+ catch (  Exception e) {
+    LOG.error("Unable to persist the copy object tree",e);
+    throw ExceptionHelper.refineException(e);
+  }
+ finally {
+    context.clearOriginalIdentifiers();
+    genericEntityService.clear();
+    context.enableAutoFlushMode();
+  }
+}

@@ -6,8 +6,9 @@
   OfferCode cloned=createResponse.getClone();
   cloned.setEndDate(offerCodeEndDate);
   cloned.setMaxUses(maxUses);
-  cloned.setOffer(offer);
-  cloned.setOrders(orders);
+  if (offer != null) {
+    cloned.setOffer(offer.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setStartDate(offerCodeStartDate);
   cloned.setArchived(getArchived());
   cloned.setOfferCode(offerCode);

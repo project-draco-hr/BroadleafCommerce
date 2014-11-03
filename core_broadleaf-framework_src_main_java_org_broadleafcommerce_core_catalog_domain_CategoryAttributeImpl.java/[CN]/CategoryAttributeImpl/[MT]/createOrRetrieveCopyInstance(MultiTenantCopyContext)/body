@@ -4,7 +4,9 @@
     return createResponse;
   }
   CategoryAttribute cloned=createResponse.getClone();
-  cloned.setCategory(category);
+  if (category != null) {
+    cloned.setCategory(category.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setName(name);
   cloned.setValue(value);
   cloned.setSearchable(searchable);

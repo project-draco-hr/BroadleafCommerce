@@ -8,15 +8,13 @@
   cloned.setLocale(locale);
   cloned.setOfflineFlag(offlineFlag);
   cloned.setPriority(priority);
-  for (  Entry<String,String> entry : fieldValuesMap.entrySet()) {
-    cloned.getFieldValues().put(entry.getKey(),entry.getValue());
+  if (structuredContentType != null) {
+    CreateResponse<StructuredContentType> clonedType=structuredContentType.createOrRetrieveCopyInstance(context);
+    cloned.setStructuredContentType(clonedType.getClone());
   }
-  CreateResponse<StructuredContentType> clonedType=structuredContentType.createOrRetrieveCopyInstance(context);
-  cloned.setStructuredContentType(clonedType.getClone());
   for (  StructuredContentItemCriteria itemCriteria : qualifyingItemCriteria) {
     CreateResponse<StructuredContentItemCriteria> clonedItem=itemCriteria.createOrRetrieveCopyInstance(context);
     StructuredContentItemCriteria clonedCritera=clonedItem.getClone();
-    clonedCritera.setStructuredContent(cloned);
     cloned.getQualifyingItemCriteria().add(clonedCritera);
   }
   for (  Entry<String,StructuredContentRule> entry : structuredContentMatchRules.entrySet()) {
@@ -27,7 +25,6 @@
   for (  Entry<String,StructuredContentFieldXref> entry : structuredContentFields.entrySet()) {
     CreateResponse<StructuredContentFieldXref> clonedItem=entry.getValue().createOrRetrieveCopyInstance(context);
     StructuredContentFieldXref clonedContentFieldXref=clonedItem.getClone();
-    clonedContentFieldXref.setStructuredContent(cloned);
     cloned.getStructuredContentFieldXrefs().put(entry.getKey(),clonedContentFieldXref);
   }
   return createResponse;

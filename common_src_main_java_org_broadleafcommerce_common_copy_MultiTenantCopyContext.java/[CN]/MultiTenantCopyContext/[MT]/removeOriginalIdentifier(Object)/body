@@ -1,3 +1,8 @@
 {
-  return currentEquivalentMap.remove(copy);
+  if (currentEquivalentMap.containsKey(System.identityHashCode(copy))) {
+    currentCloneMap.remove(System.identityHashCode(copy));
+    String valKey=currentEquivalentMap.remove(System.identityHashCode(copy));
+    return Long.parseLong(valKey.substring(valKey.indexOf("_") + 1,valKey.length()));
+  }
+  return null;
 }

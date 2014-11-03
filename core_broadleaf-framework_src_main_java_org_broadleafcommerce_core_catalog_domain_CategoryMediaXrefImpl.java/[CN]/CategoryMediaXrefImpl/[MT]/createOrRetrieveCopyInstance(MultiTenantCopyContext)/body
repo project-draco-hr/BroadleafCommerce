@@ -1,0 +1,19 @@
+{
+  CreateResponse<G> createResponse=context.createOrRetrieveCopyInstance(this);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  CategoryMediaXrefImpl cloned=createResponse.getClone();
+  if (media != null) {
+    cloned.setMedia(((MediaImpl)media).createOrRetrieveCopyInstance(context).getClone());
+  }
+  cloned.setAltText(getAltText());
+  cloned.setKey(key);
+  if (category != null) {
+    cloned.setCategory(category.createOrRetrieveCopyInstance(context).getClone());
+  }
+  cloned.setTags(getTags());
+  cloned.setUrl(getUrl());
+  cloned.setTitle(getTitle());
+  return createResponse;
+}

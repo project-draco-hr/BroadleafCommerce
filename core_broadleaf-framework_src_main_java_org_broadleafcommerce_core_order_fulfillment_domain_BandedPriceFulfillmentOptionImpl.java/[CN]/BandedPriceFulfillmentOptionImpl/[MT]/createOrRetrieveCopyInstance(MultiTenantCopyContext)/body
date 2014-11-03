@@ -1,0 +1,11 @@
+{
+  CreateResponse<BandedPriceFulfillmentOption> createResponse=super.createOrRetrieveCopyInstance(context);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  BandedPriceFulfillmentOption myClone=createResponse.getClone();
+  for (  FulfillmentPriceBand band : bands) {
+    myClone.getBands().add(band);
+  }
+  return createResponse;
+}

@@ -1,0 +1,8 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Long> criteria=builder.createQuery(Long.class);
+  Root root=criteria.from(clazz);
+  criteria.select(root.get(getIdField(clazz).getName()).as(Long.class));
+  criteria.orderBy(builder.asc(root.get(getIdField(clazz).getName())));
+  return em.createQuery(criteria).getResultList();
+}

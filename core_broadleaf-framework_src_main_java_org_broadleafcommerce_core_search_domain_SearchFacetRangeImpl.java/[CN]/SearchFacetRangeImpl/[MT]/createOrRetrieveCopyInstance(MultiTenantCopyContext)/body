@@ -6,6 +6,8 @@
   SearchFacetRange cloned=createResponse.getClone();
   cloned.setMaxValue(maxValue);
   cloned.setMinValue(minValue);
-  cloned.setSearchFacet(searchFacet);
+  if (searchFacet != null) {
+    cloned.setSearchFacet(searchFacet.createOrRetrieveCopyInstance(context).getClone());
+  }
   return createResponse;
 }

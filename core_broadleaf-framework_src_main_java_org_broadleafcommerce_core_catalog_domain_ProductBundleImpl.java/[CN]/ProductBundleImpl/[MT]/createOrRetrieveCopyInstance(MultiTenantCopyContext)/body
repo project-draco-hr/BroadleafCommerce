@@ -1,0 +1,16 @@
+{
+  CreateResponse<ProductBundle> createResponse=super.createOrRetrieveCopyInstance(context);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  ProductBundle cloned=createResponse.getClone();
+  cloned.setAutoBundle(autoBundle);
+  cloned.setBundlePromotable(bundlePromotable);
+  cloned.setItemsPromotable(itemsPromotable);
+  cloned.setPriority(priority);
+  cloned.setPricingModel(getPricingModel());
+  for (  SkuBundleItem item : skuBundleItems) {
+    cloned.getSkuBundleItems().add(item.createOrRetrieveCopyInstance(context).getClone());
+  }
+  return createResponse;
+}

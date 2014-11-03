@@ -4,8 +4,12 @@
     return createResponse;
   }
   FeaturedProduct cloned=createResponse.getClone();
-  cloned.setCategory(category);
-  cloned.setProduct(product.createOrRetrieveCopyInstance(context).getClone());
+  if (category != null) {
+    cloned.setCategory(category.createOrRetrieveCopyInstance(context).getClone());
+  }
+  if (product != null) {
+    cloned.setProduct(product.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setPromotionMessage(promotionMessage);
   cloned.setSequence(sequence);
   return createResponse;

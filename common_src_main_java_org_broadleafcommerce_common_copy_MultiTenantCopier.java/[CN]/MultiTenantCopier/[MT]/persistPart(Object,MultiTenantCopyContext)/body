@@ -1,0 +1,15 @@
+{
+  if (!genericEntityService.sessionContains(copy) && !genericEntityService.idAssigned(copy)) {
+    Object original=genericEntityService.readGenericEntity(copy.getClass().getName(),context.removeOriginalIdentifier(copy));
+    extensionManager.getProxy().transformCopy(context,original,copy);
+    extensionManager.getProxy().prepareForSave(context,original,copy);
+    IdentityExecutionUtils.runOperationByIdentifier(new IdentityOperation<Void,RuntimeException>(){
+      @Override public Void execute(){
+        genericEntityService.persist(copy);
+        return null;
+      }
+    }
+,context.getToSite(),context.getToSite(),context.getToCatalog());
+    context.storeEquivalentMapping(original.getClass().getName(),context.getIdentifier(original),context.getIdentifier(copy));
+  }
+}

@@ -3,8 +3,27 @@
     throw new CloneNotSupportedException("Attempting to clone an archived instance");
   }
   Class<?> instanceClass=instance.getClass();
-  Object originalId=getIdentifier(instance);
-  Object previousClone=getClonedVersion(instanceClass,originalId);
+  if (instanceClass.getAnnotation(Embeddable.class) != null) {
+    G response;
+    try {
+      response=(G)instanceClass.newInstance();
+    }
+ catch (    InstantiationException e) {
+      throw ExceptionHelper.refineException(e);
+    }
+catch (    IllegalAccessException e) {
+      throw ExceptionHelper.refineException(e);
+    }
+    return new CreateResponse<G>(response,false);
+  }
+  Long originalId=getIdentifier(instance);
+  Object previousClone;
+  if (currentEquivalentMap.inverse().containsKey(instanceClass.getName() + "_" + originalId)) {
+    previousClone=currentCloneMap.get(currentEquivalentMap.inverse().get(instanceClass.getName() + "_" + originalId));
+  }
+ else {
+    previousClone=getClonedVersion(instanceClass,originalId);
+  }
   G response;
   boolean alreadyPopulate;
   if (previousClone != null) {
@@ -23,7 +42,21 @@ catch (    IllegalAccessException e) {
     }
     checkCloneable(response);
     alreadyPopulate=false;
-    currentEquivalentMap.put(response,getIdentifier(instance));
+    currentEquivalentMap.put(System.identityHashCode(response),instanceClass.getName() + "_" + originalId);
+    currentCloneMap.put(System.identityHashCode(response),response);
+    try {
+      for (      Field field : getAllFields(instanceClass)) {
+        if (field.getType().getAnnotation(Embeddable.class) != null && MultiTenantCloneable.class.isAssignableFrom(field.getType())) {
+          Object embeddable=field.get(instance);
+          if (embeddable != null) {
+            field.set(response,((MultiTenantCloneable)embeddable).createOrRetrieveCopyInstance(this).getClone());
+          }
+        }
+      }
+    }
+ catch (    IllegalAccessException e) {
+      throw ExceptionHelper.refineException(e);
+    }
   }
   return new CreateResponse<G>(response,alreadyPopulate);
 }

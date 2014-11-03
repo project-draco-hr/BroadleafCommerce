@@ -4,7 +4,9 @@
     return createResponse;
   }
   StructuredContentItemCriteria cloned=createResponse.getClone();
-  cloned.setStructuredContent(structuredContent);
+  if (structuredContent != null) {
+    cloned.setStructuredContent(structuredContent.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setMatchRule(orderItemMatchRule);
   cloned.setQuantity(quantity);
   return createResponse;

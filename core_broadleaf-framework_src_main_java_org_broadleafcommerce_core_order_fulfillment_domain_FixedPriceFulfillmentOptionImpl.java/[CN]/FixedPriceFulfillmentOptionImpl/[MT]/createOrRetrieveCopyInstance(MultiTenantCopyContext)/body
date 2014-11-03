@@ -1,0 +1,10 @@
+{
+  CreateResponse<FixedPriceFulfillmentOption> createResponse=super.createOrRetrieveCopyInstance(context);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  FixedPriceFulfillmentOption myClone=createResponse.getClone();
+  myClone.setPrice(getPrice());
+  myClone.setCurrency(currency);
+  return createResponse;
+}

@@ -5,7 +5,9 @@
   }
   SkuAttribute cloned=createResponse.getClone();
   cloned.setName(name);
-  cloned.setSku(sku);
+  if (sku != null) {
+    cloned.setSku(sku.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setSearchable(getSearchable());
   cloned.setValue(value);
   return createResponse;

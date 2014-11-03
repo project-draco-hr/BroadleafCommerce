@@ -5,7 +5,11 @@
   }
   CategoryProductXref cloned=createResponse.getClone();
   cloned.setDisplayOrder(displayOrder);
-  cloned.setProduct(product);
-  cloned.setCategory(category);
+  if (product != null) {
+    cloned.setProduct(product.createOrRetrieveCopyInstance(context).getClone());
+  }
+  if (category != null) {
+    cloned.setCategory(category.createOrRetrieveCopyInstance(context).getClone());
+  }
   return createResponse;
 }

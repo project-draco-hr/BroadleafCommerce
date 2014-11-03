@@ -4,7 +4,9 @@
     return createResponse;
   }
   ProductAttribute cloned=createResponse.getClone();
-  cloned.setProduct(product);
+  if (product != null) {
+    cloned.setProduct(product.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setName(name);
   cloned.setSearchable(searchable);
   cloned.setValue(value);

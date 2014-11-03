@@ -1,0 +1,11 @@
+{
+  CreateResponse<BandedWeightFulfillmentOption> createResponse=super.createOrRetrieveCopyInstance(context);
+  if (createResponse.isAlreadyPopulated()) {
+    return createResponse;
+  }
+  BandedWeightFulfillmentOption myClone=createResponse.getClone();
+  for (  FulfillmentWeightBand band : bands) {
+    myClone.getBands().add(band);
+  }
+  return createResponse;
+}

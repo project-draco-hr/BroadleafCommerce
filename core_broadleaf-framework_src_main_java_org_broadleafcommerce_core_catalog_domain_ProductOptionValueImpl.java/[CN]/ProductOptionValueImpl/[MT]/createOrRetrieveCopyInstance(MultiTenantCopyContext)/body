@@ -7,6 +7,8 @@
   cloned.setAttributeValue(attributeValue);
   cloned.setDisplayOrder(displayOrder);
   cloned.setPriceAdjustment(getPriceAdjustment());
-  cloned.setProductOption(productOption);
+  if (productOption != null) {
+    cloned.setProductOption(productOption.createOrRetrieveCopyInstance(context).getClone());
+  }
   return createResponse;
 }

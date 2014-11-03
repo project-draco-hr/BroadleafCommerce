@@ -7,6 +7,8 @@
   cloned.setKey(key);
   cloned.setDisplay(display);
   cloned.setHidden(hidden);
-  cloned.setType(type);
+  if (type != null) {
+    cloned.setType(type.createOrRetrieveCopyInstance(context).getClone());
+  }
   return createResponse;
 }

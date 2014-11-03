@@ -4,8 +4,12 @@
     return createResponse;
   }
   PageTemplateFieldGroupXref cloned=createResponse.getClone();
-  cloned.setPageTemplate(pageTemplate);
-  cloned.setFieldGroup(fieldGroup.createOrRetrieveCopyInstance(context).getClone());
+  if (pageTemplate != null) {
+    cloned.setPageTemplate(pageTemplate.createOrRetrieveCopyInstance(context).getClone());
+  }
+  if (fieldGroup != null) {
+    cloned.setFieldGroup(fieldGroup.createOrRetrieveCopyInstance(context).getClone());
+  }
   cloned.setGroupOrder(groupOrder);
   return createResponse;
 }
