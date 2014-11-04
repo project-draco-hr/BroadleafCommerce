@@ -1,6 +1,3 @@
 {
-  ClassMetadata metadata=em.unwrap(Session.class).getSessionFactory().getClassMetadata(clazz);
-  Field idField=ReflectionUtils.findField(clazz,metadata.getIdentifierPropertyName());
-  idField.setAccessible(true);
-  return idField;
+  return daoHelper.getIdField(clazz,em);
 }
