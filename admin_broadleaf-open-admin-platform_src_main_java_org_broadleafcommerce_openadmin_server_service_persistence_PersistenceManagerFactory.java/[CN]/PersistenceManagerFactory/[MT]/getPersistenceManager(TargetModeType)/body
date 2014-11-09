@@ -1,5 +1,10 @@
 {
-  PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
-  persistenceManager.setTargetMode(targetModeType);
-  return persistenceManager;
+synchronized (persistenceManagers) {
+    if (!persistenceManagers.containsKey(targetModeType)) {
+      PersistenceManager persistenceManager=(PersistenceManager)applicationContext.getBean(persistenceManagerRef);
+      persistenceManager.setTargetMode(targetModeType);
+      persistenceManagers.put(targetModeType,persistenceManager);
+    }
+    return persistenceManagers.get(targetModeType);
+  }
 }
