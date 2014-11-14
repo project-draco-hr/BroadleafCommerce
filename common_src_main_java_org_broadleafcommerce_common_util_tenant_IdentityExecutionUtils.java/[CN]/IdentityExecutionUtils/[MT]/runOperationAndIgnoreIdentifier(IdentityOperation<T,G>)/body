@@ -1,4 +1,8 @@
 {
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Site previousSite=brc.getSite();
+  Catalog previousCatalog=brc.getCurrentCatalog();
+  Site previousProfile=brc.getCurrentProfile();
   boolean isNew=initRequestContext(null,null,null);
   boolean isIgnoringSite=BroadleafRequestContext.getBroadleafRequestContext().getIgnoreSite();
   BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(true);
@@ -14,5 +18,8 @@
       BroadleafRequestContext.setBroadleafRequestContext(null);
     }
     BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(isIgnoringSite);
+    BroadleafRequestContext.getBroadleafRequestContext().setSite(previousSite);
+    BroadleafRequestContext.getBroadleafRequestContext().setCurrentCatalog(previousCatalog);
+    BroadleafRequestContext.getBroadleafRequestContext().setCurrentProfile(previousProfile);
   }
 }
