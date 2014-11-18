@@ -23,7 +23,7 @@
         throw new RuntimeException("Exceeded max retries to attempt to acquire a lock on current Order");
       }
       try {
-        int msToSleep=getDatabaseLockPollingIntervalMs();
+        long msToSleep=getDatabaseLockPollingIntervalMs();
         if (LOG.isDebugEnabled()) {
           LOG.debug("Thread[" + Thread.currentThread().getId() + "] Could not acquire order lock for order["+ order.getId()+ "] - sleeping for "+ msToSleep+ " ms");
         }
