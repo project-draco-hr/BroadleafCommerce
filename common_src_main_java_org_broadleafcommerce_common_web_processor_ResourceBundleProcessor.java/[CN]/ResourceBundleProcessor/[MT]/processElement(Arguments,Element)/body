@@ -1,6 +1,8 @@
 {
   String name=element.getAttributeValue("name");
   String mappingPrefix=element.getAttributeValue("mapping-prefix");
+  boolean async=element.hasAttribute("async");
+  boolean defer=element.hasAttribute("defer");
   NestableNode parent=element.getParent();
   List<String> files=new ArrayList<String>();
   for (  String file : element.getAttributeValue("files").split(",")) {
@@ -18,7 +20,7 @@
       }
     }
     String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + versionedBundle+ "'}");
-    Element e=getElement(value);
+    Element e=getElement(value,async,defer);
     parent.insertAfter(element,e);
   }
  else {
@@ -29,7 +31,7 @@
     for (    String file : files) {
       file=file.trim();
       String value=(String)StandardExpressionProcessor.processExpression(arguments,"@{'" + mappingPrefix + file+ "'}");
-      Element e=getElement(value);
+      Element e=getElement(value,async,defer);
       parent.insertBefore(element,e);
     }
   }
