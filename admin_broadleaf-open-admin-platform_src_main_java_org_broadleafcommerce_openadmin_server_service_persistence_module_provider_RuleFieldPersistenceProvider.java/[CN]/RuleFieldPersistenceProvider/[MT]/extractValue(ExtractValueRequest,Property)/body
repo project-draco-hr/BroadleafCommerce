@@ -21,13 +21,13 @@
         }
       }
     }
-    Property jsonProperty=convertSimpleRuleToJson(translator,mapper,val,property.getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
+    Property jsonProperty=ruleFieldExtractionUtility.convertSimpleRuleToJson(translator,mapper,val,property.getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
     extractValueRequest.getProps().add(jsonProperty);
   }
   if (extractValueRequest.getMetadata().getFieldType() == SupportedFieldType.RULE_WITH_QUANTITY) {
     if (extractValueRequest.getRequestedValue() != null) {
       if (extractValueRequest.getRequestedValue() instanceof Collection) {
-        Property jsonProperty=convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
+        Property jsonProperty=ruleFieldExtractionUtility.convertQuantityBasedRuleToJson(translator,mapper,(Collection<QuantityBasedRule>)extractValueRequest.getRequestedValue(),extractValueRequest.getMetadata().getName() + "Json",extractValueRequest.getMetadata().getRuleIdentifier());
         extractValueRequest.getProps().add(jsonProperty);
       }
  else {
