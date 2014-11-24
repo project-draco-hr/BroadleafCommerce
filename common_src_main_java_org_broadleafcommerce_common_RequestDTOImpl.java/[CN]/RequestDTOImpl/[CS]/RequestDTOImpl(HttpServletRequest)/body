@@ -1,5 +1,8 @@
 {
   requestURI=request.getRequestURI();
   fullUrlWithQueryString=request.getRequestURL().toString();
+  if (StringUtils.isNotEmpty(request.getQueryString())) {
+    fullUrlWithQueryString+="?" + request.getQueryString();
+  }
   secure=("HTTPS".equalsIgnoreCase(request.getScheme()) || request.isSecure());
 }

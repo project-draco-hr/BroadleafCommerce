@@ -4,5 +4,7 @@
   for (  Category category : categoryHierarchy) {
     returnProductsSet.addAll(category.getFeaturedProducts());
   }
-  return new ArrayList<FeaturedProduct>(returnProductsSet);
+  ArrayList<FeaturedProduct> result=new ArrayList<FeaturedProduct>(returnProductsSet);
+  Collections.sort(result,sequenceComparator);
+  return result;
 }

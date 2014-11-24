@@ -1,0 +1,14 @@
+{
+  Collection mimeTypes=MimeUtil.getMimeTypes(fileName);
+  if (!mimeTypes.isEmpty()) {
+    MimeType mimeType=(MimeType)mimeTypes.iterator().next();
+    newAsset.setMimeType(mimeType.toString());
+  }
+ else {
+    mimeTypes=MimeUtil.getMimeTypes(inputStream);
+    if (!mimeTypes.isEmpty()) {
+      MimeType mimeType=(MimeType)mimeTypes.iterator().next();
+      newAsset.setMimeType(mimeType.toString());
+    }
+  }
+}

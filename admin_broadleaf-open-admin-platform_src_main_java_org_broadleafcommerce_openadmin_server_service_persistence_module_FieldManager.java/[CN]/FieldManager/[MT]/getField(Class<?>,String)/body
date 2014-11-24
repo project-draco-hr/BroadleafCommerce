@@ -4,42 +4,25 @@
   Field field=null;
   for (int j=0; j < tokens.length; j++) {
     String propertyName=tokens[j];
-    field=getSingleField(clazz,propertyName);
-    if (field != null && j < tokens.length - 1) {
-      Class<?>[] entities=persistenceManager.getUpDownInheritance(field.getType());
-      if (!ArrayUtils.isEmpty(entities)) {
-        String peekAheadToken=tokens[j + 1];
-        List<Class<?>> matchedClasses=new ArrayList<Class<?>>();
-        for (        Class<?> entity : entities) {
-          Field peekAheadField=null;
-          try {
-            peekAheadField=entity.getDeclaredField(peekAheadToken);
-          }
- catch (          NoSuchFieldException nsf) {
-          }
-          if (peekAheadField != null) {
-            matchedClasses.add(entity);
-          }
-        }
-        if (matchedClasses.size() > 1) {
-          LOG.warn("Found the property (" + peekAheadToken + ") in more than one class of an inheritance hierarchy. "+ "This may lead to unwanted behavior, as the system does not know which class was intended. Do not "+ "use the same property name in different levels of the inheritance hierarchy. Defaulting to the "+ "first class found ("+ matchedClasses.get(0).getName()+ ")");
-        }
-        if (matchedClasses.isEmpty()) {
-          return null;
-        }
-        if (getSingleField(matchedClasses.get(0),peekAheadToken) != null) {
-          clazz=matchedClasses.get(0);
-          Class<?>[] entities2=persistenceManager.getUpDownInheritance(clazz);
-          if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
-            try {
-              clazz=entityConfiguration.lookupEntityClass(field.getType().getName());
-            }
- catch (            Exception e) {
-            }
-          }
-        }
+    Class<?>[] myEntities=persistenceManager.getUpDownInheritance(clazz);
+    Class<?> myClass;
+    if (ArrayUtils.isEmpty(myEntities)) {
+      myClass=clazz;
+    }
  else {
-          clazz=field.getType();
+      myClass=getClassForField(persistenceManager,propertyName,null,myEntities);
+    }
+    if (myClass == null) {
+      LOG.debug(String.format("Unable to find the field (%s) anywhere in the inheritance hierarchy for (%s)",propertyName,clazz.getName()));
+      return null;
+    }
+    field=getSingleField(myClass,propertyName);
+    if (field != null && j < tokens.length - 1) {
+      Class<?>[] fieldEntities=persistenceManager.getUpDownInheritance(field.getType());
+      if (!ArrayUtils.isEmpty(fieldEntities)) {
+        clazz=getClassForField(persistenceManager,tokens[j + 1],field,fieldEntities);
+        if (clazz == null) {
+          return null;
         }
       }
  else {
