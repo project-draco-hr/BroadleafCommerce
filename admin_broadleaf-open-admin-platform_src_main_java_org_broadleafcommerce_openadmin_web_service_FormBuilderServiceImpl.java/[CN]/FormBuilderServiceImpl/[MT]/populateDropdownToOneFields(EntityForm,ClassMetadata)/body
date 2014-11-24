@@ -21,11 +21,17 @@
         String displayProp=fmd.getLookupDisplayProperty();
         Map<String,String> options=new HashMap<String,String>();
         for (        Entity row : rows) {
-          String displayValue=row.findProperty(displayProp).getDisplayValue();
-          if (StringUtils.isBlank(displayValue)) {
-            displayValue=row.findProperty(displayProp).getValue();
+          Property prop=row.findProperty(displayProp);
+          if (prop == null) {
+            LOG.warn("Could not find displayProp [" + displayProp + "] on entity ["+ ef.getCeilingEntityClassname()+ "]");
           }
-          options.put(row.findProperty(idProp).getValue(),displayValue);
+ else {
+            String displayValue=prop.getDisplayValue();
+            if (StringUtils.isBlank(displayValue)) {
+              displayValue=prop.getValue();
+            }
+            options.put(row.findProperty(idProp).getValue(),displayValue);
+          }
         }
         ComboField cf=(ComboField)ef.findField(p.getName());
         cf.setOptions(options);

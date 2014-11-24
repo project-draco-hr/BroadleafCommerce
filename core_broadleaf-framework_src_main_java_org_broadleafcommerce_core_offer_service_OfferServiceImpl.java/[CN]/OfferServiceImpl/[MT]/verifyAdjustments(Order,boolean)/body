@@ -1,0 +1,35 @@
+{
+  boolean madeChange=false;
+  if (order.getOrderItems() == null) {
+    return madeChange;
+  }
+  for (  OrderItem oi : order.getOrderItems()) {
+    if (oi.getOrderItemPriceDetails() == null) {
+      continue;
+    }
+    for (    OrderItemPriceDetail pd : oi.getOrderItemPriceDetails()) {
+      if (pd.getOrderItemPriceDetailAdjustments() == null) {
+        continue;
+      }
+      Map<Long,OrderItemPriceDetailAdjustment> adjs=new HashMap<Long,OrderItemPriceDetailAdjustment>();
+      List<OrderItemPriceDetailAdjustment> adjustmentsToRemove=new ArrayList<OrderItemPriceDetailAdjustment>();
+      for (      OrderItemPriceDetailAdjustment adj : pd.getOrderItemPriceDetailAdjustments()) {
+        if (adjs.containsKey(adj.getOffer().getId())) {
+          adjustmentsToRemove.add(adj);
+          if (LOG.isDebugEnabled()) {
+            StringBuilder sb=new StringBuilder("Detected collisions ").append(beforeSave ? "before saving" : "after saving").append(" with ids ").append(adjs.get(adj.getOffer().getId()).getId()).append(" and ").append(adj.getId());
+            LOG.debug(sb.toString());
+          }
+        }
+ else {
+          adjs.put(adj.getOffer().getId(),adj);
+        }
+      }
+      for (      OrderItemPriceDetailAdjustment adj : adjustmentsToRemove) {
+        pd.getOrderItemPriceDetailAdjustments().remove(adj);
+        madeChange=true;
+      }
+    }
+  }
+  return madeChange;
+}
