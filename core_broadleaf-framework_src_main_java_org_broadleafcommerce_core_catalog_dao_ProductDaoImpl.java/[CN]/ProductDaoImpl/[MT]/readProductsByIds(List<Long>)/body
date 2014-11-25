@@ -13,7 +13,7 @@
     fetchParent.fetch("skuMedia",JoinType.LEFT);
   }
   criteria.select(product);
-  criteria.where(product.get("id").as(Long.class).in(sandBoxHelper.mergeCloneIds(em,ProductImpl.class,productIds.toArray(new Long[productIds.size()]))));
+  criteria.where(product.get("id").as(Long.class).in(sandBoxHelper.mergeCloneIds(ProductImpl.class,productIds.toArray(new Long[productIds.size()]))));
   if (!dialectHelper.isOracle() && !dialectHelper.isSqlServer()) {
     criteria.distinct(true);
   }
