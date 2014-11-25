@@ -11,12 +11,12 @@
   rightSide.setValue("merchandise");
   leftSide.setGroups(new ArrayList<DataDTO>(Arrays.asList((DataDTO)rightSide)));
   expected.setData(new ArrayList<DataDTO>(Arrays.asList(leftSide)));
-  RuleFieldPersistenceProvider provider=new RuleFieldPersistenceProvider();
-  DataWrapper wrapper=provider.convertJsonToDataWrapper(json);
+  RuleFieldExtractionUtility extractor=new RuleFieldExtractionUtility();
+  DataWrapper wrapper=extractor.convertJsonToDataWrapper(json);
   assertEquals(expected,wrapper);
   String expectedJson="{\"data\":[{\"id\":1,\"quantity\":1,\"groupOperator\":\"AND\",\"groups\":[{\"id\":null,\"quantity\":null,\"groupOperator\":null,\"groups\":[],\"name\":\"category.name\",\"operator\":\"IEQUALS\",\"value\":\"merchandise\",\"start\":null,\"end\":null}]}],\"error\":null,\"rawMvel\":null}";
   String serializedWrapperJson=wrapper.serialize();
   assertEquals(expectedJson,serializedWrapperJson);
-  DataWrapper serializedWrapper=provider.convertJsonToDataWrapper(serializedWrapperJson);
+  DataWrapper serializedWrapper=extractor.convertJsonToDataWrapper(serializedWrapperJson);
   assertEquals(expected,serializedWrapper);
 }

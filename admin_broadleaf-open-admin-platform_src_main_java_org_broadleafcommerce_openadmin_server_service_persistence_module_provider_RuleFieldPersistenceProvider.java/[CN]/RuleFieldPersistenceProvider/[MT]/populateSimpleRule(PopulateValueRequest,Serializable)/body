@@ -8,9 +8,9 @@
     }
   }
   DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
-  DataWrapper dw=convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
+  DataWrapper dw=ruleFieldExtractionUtility.convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
   if (dw == null || StringUtils.isEmpty(dw.getError())) {
-    String mvel=convertMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
+    String mvel=ruleFieldExtractionUtility.convertSimpleMatchRuleJsonToMvel(translator,RuleIdentifier.ENTITY_KEY_MAP.get(populateValueRequest.getMetadata().getRuleIdentifier()),populateValueRequest.getMetadata().getRuleIdentifier(),dw);
     Class<?> valueType=getStartingValueType(populateValueRequest);
     if (String.class.isAssignableFrom(valueType)) {
       if (instance != null && mvel == null) {

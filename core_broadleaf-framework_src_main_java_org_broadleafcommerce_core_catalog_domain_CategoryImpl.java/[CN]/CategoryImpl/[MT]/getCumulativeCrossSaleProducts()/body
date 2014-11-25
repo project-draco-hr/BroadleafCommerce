@@ -4,5 +4,7 @@
   for (  Category category : categoryHierarchy) {
     returnProductsSet.addAll(category.getCrossSaleProducts());
   }
-  return new ArrayList<RelatedProduct>(returnProductsSet);
+  ArrayList<RelatedProduct> result=new ArrayList<RelatedProduct>(returnProductsSet);
+  Collections.sort(result,sequenceComparator);
+  return result;
 }

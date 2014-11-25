@@ -2,7 +2,7 @@
   boolean dirty=false;
   if (!StringUtils.isEmpty(jsonPropertyValue)) {
     criteriaList.size();
-    DataWrapper dw=convertJsonToDataWrapper(jsonPropertyValue);
+    DataWrapper dw=ruleFieldExtractionUtility.convertJsonToDataWrapper(jsonPropertyValue);
     if (dw != null && StringUtils.isEmpty(dw.getError())) {
       List<QuantityBasedRule> updatedRules=new ArrayList<QuantityBasedRule>();
       for (      DataDTO dto : dw.getData()) {
@@ -17,7 +17,7 @@
                   dirty=true;
                 }
                 try {
-                  mvel=translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService));
+                  mvel=ruleFieldExtractionUtility.convertDTOToMvelString(translator,entityKey,dto,fieldService);
                   if (!quantityBasedRule.getMatchRule().equals(mvel)) {
                     dirty=true;
                   }
@@ -49,7 +49,7 @@
           try {
             quantityBasedRule=(QuantityBasedRule)memberType.newInstance();
             quantityBasedRule.setQuantity(dto.getQuantity());
-            quantityBasedRule.setMatchRule(translator.createMVEL(entityKey,dto,ruleBuilderFieldServiceFactory.createInstance(fieldService)));
+            quantityBasedRule.setMatchRule(ruleFieldExtractionUtility.convertDTOToMvelString(translator,entityKey,dto,fieldService));
             if (StringUtils.isEmpty(quantityBasedRule.getMatchRule()) && !StringUtils.isEmpty(dw.getRawMvel())) {
               quantityBasedRule.setMatchRule(dw.getRawMvel());
             }

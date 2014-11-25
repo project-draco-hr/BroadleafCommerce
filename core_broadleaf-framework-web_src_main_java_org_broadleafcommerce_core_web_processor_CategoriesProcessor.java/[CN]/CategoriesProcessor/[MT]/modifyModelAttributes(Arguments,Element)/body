@@ -13,17 +13,18 @@
   List<Category> categories=catalogService.findCategoriesByName(parentCategory);
   if (categories != null && categories.size() > 0) {
     List<CategoryXref> subcategories=categories.get(0).getChildCategoryXrefs();
+    List<Category> results=Collections.emptyList();
     if (subcategories != null && !subcategories.isEmpty()) {
+      results=new ArrayList<Category>(subcategories.size());
       if (StringUtils.isNotEmpty(unparsedMaxResults)) {
         int maxResults=Integer.parseInt(unparsedMaxResults);
         if (subcategories.size() > maxResults) {
           subcategories=subcategories.subList(0,maxResults);
         }
       }
-    }
-    List<Category> results=new ArrayList<Category>(subcategories.size());
-    for (    CategoryXref xref : subcategories) {
-      results.add(xref.getSubCategory());
+      for (      CategoryXref xref : subcategories) {
+        results.add(xref.getSubCategory());
+      }
     }
     addToModel(arguments,resultVar,results);
   }

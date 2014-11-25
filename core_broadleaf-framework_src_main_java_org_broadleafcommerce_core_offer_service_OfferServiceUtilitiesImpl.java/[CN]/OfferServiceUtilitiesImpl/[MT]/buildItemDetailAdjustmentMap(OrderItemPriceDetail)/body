@@ -1,7 +1,20 @@
 {
   Map<Long,OrderItemPriceDetailAdjustment> itemAdjustmentMap=new HashMap<Long,OrderItemPriceDetailAdjustment>();
+  List<OrderItemPriceDetailAdjustment> adjustmentsToRemove=new ArrayList<OrderItemPriceDetailAdjustment>();
   for (  OrderItemPriceDetailAdjustment adjustment : itemDetail.getOrderItemPriceDetailAdjustments()) {
-    itemAdjustmentMap.put(adjustment.getOffer().getId(),adjustment);
+    if (itemAdjustmentMap.containsKey(adjustment.getOffer().getId())) {
+      if (LOG.isDebugEnabled()) {
+        StringBuilder sb=new StringBuilder("Detected collisions for item adjustments with ids ").append(itemAdjustmentMap.get(adjustment.getOffer().getId()).getId()).append(" and ").append(adjustment.getId());
+        LOG.debug(sb.toString());
+      }
+      adjustmentsToRemove.add(adjustment);
+    }
+ else {
+      itemAdjustmentMap.put(adjustment.getOffer().getId(),adjustment);
+    }
+  }
+  for (  OrderItemPriceDetailAdjustment adjustment : adjustmentsToRemove) {
+    itemDetail.getOrderItemPriceDetailAdjustments().remove(adjustment);
   }
   return itemAdjustmentMap;
 }

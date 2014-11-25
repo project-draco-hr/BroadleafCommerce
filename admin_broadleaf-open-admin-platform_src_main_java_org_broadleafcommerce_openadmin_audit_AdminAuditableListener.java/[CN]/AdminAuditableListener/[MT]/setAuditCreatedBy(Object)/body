@@ -1,6 +1,6 @@
 {
   if (entity.getClass().isAnnotationPresent(Entity.class)) {
-    Field field=getSingleField(entity.getClass(),"auditable");
+    Field field=getSingleField(entity.getClass(),getAuditableFieldName());
     field.setAccessible(true);
     if (field.isAnnotationPresent(Embedded.class)) {
       Object auditable=field.get(entity);
