@@ -9,5 +9,10 @@
   if (!dirty) {
     dirty=!checkEquality(newMedia.getUrl(),media.getUrl());
   }
+  if (!dirty && extensionManager != null) {
+    ExtensionResultHolder<Boolean> resultHolder=new ExtensionResultHolder<Boolean>();
+    extensionManager.getProxy().checkDirtyState(media,newMedia,resultHolder);
+    dirty=resultHolder.getResult() != null && resultHolder.getResult();
+  }
   return dirty;
 }
