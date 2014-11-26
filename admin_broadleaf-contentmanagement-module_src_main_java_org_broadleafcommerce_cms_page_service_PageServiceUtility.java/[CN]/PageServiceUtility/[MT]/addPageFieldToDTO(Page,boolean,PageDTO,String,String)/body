@@ -6,6 +6,17 @@
   }
   FieldDefinition fd=getFieldDefinition(page,fieldKey);
   if (fd != null && fd.getFieldType() == SupportedFieldType.ADDITIONAL_FOREIGN_KEY) {
+    Class<?> fkClass;
+    try {
+      fkClass=Class.forName(fd.getAdditionalForeignKeyClass());
+    }
+ catch (    ClassNotFoundException e) {
+      throw ExceptionHelper.refineException(e);
+    }
+    Long altId=sandBoxHelper.getSandBoxVersionId(fkClass,Long.parseLong(originalValue));
+    if (altId != null) {
+      originalValue=String.valueOf(altId);
+    }
     pageDTO.getPageFields().put(fieldKey,FOREIGN_LOOKUP + '|' + fd.getAdditionalForeignKeyClass()+ '|'+ originalValue);
   }
  else   if (StringUtils.isNotBlank(originalValue) && StringUtils.isNotBlank(cmsPrefix) && originalValue.contains(cmsPrefix)) {
