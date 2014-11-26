@@ -11,12 +11,11 @@
       while (itr.hasNext()) {
         Object object=itr.next();
         if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
-          for (          Annotation annotation : ((AnnotationsAttribute)object).getAnnotations()) {
-            if (annotation.getTypeName().equals(Entity.class.getName())) {
-              LOG.trace("Marking " + convertedClassName + " as transformed");
-              transformedClassNames.add(convertedClassName);
-              break check;
-            }
+          boolean containsTypeLevelAnnotation=containsTypeLevelPersistenceAnnotation(((AnnotationsAttribute)object).getAnnotations());
+          if (containsTypeLevelAnnotation) {
+            LOG.debug("Marking " + convertedClassName + " as transformed");
+            transformedClassNames.add(convertedClassName);
+            break check;
           }
         }
       }
