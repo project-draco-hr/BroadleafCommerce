@@ -7,16 +7,17 @@
     ClassFile classFile=new ClassFile(new DataInputStream(new ByteArrayInputStream(classfileBuffer)));
     List<?> attributes=classFile.getAttributes();
     Iterator<?> itr=attributes.iterator();
-    check: {
-      while (itr.hasNext()) {
-        Object object=itr.next();
-        if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
-          boolean containsTypeLevelAnnotation=containsTypeLevelPersistenceAnnotation(((AnnotationsAttribute)object).getAnnotations());
-          if (containsTypeLevelAnnotation) {
-            LOG.debug("Marking " + convertedClassName + " as transformed");
-            transformedClassNames.add(convertedClassName);
-            break check;
-          }
+    while (itr.hasNext()) {
+      Object object=itr.next();
+      if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
+        boolean containsTypeLevelAnnotation=containsTypeLevelPersistenceAnnotation(((AnnotationsAttribute)object).getAnnotations());
+        if (containsTypeLevelAnnotation) {
+          LOG.debug("Marking " + convertedClassName + " as transformed");
+          transformedEntityClassNames.add(convertedClassName);
+        }
+ else {
+          LOG.debug("Marking " + convertedClassName + " as picked up by the transformer but not detected as an entity");
+          transformedNonEntityClassNames.add(convertedClassName);
         }
       }
     }

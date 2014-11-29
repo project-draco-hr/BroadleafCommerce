@@ -91,12 +91,21 @@
           }
         }
       }
+      List<String> nonTransformedClasses=new ArrayList<String>();
       for (      PersistenceUnitInfo pui : mergedPus.values()) {
         for (        String managedClassName : pui.getManagedClassNames()) {
-          if (!entityMarkerClassTransformer.getTransformedClassNames().contains(managedClassName)) {
-            LOG.warn("The class " + managedClassName + " is a managed clas within the MergePersistenceUnitManager"+ "but was not detected as being transformed by the EntityMarkerClassTransformer. This "+ "might simply be because "+ managedClassName+ " is not annotated with @Entity, @MappedSuperclass or @Embeddable"+ ", but is still referenced in a persistence.xml and is being transformed by"+ " PersistenceUnit ClassTransformers. This class should likely be removed from your persistence.xml");
+          if (entityMarkerClassTransformer.getTransformedNonEntityClassNames().contains(managedClassName)) {
+            LOG.warn("The class " + managedClassName + " is marked as a managed class within the MergePersistenceUnitManager"+ " but is not annotated with @Entity, @MappedSuperclass or @Embeddable."+ " This class is still referenced in a persistence.xml and is being transformed by"+ " PersistenceUnit ClassTransformers which may result in problems downstream"+ " and represents a potential misconfiguration. This class should be removed from"+ " your persistence.xml");
+          }
+ else           if (!entityMarkerClassTransformer.getTransformedEntityClassNames().contains(managedClassName)) {
+            nonTransformedClasses.add(managedClassName);
           }
         }
+      }
+      if (CollectionUtils.isNotEmpty(nonTransformedClasses)) {
+        String message="The classes\n" + Arrays.toString(nonTransformedClasses.toArray()) + "\nare managed classes within the MergePersistenceUnitManager"+ "\nbut were not detected as being transformed by the EntityMarkerClassTransformer. These"+ "\nclasses are likely loaded earlier in the application startup lifecyle by the servlet"+ "\ncontainer. Verify that an empty <absolute-ordering /> element is contained in your"+ "\nweb.xml to disable scanning for ServletContainerInitializer classes by your servlet"+ "\ncontainer which can trigger early class loading. If the problem persists, ensure that"+ "\nthere are no bean references to your entity class anywhere else in your Spring applicationContext"+ "\nand consult the documentation for your servlet container to determine if classes are loaded"+ "\nprior to the Spring context initialization.";
+        LOG.error(message);
+        throw new IllegalStateException(message);
       }
     }
   }
