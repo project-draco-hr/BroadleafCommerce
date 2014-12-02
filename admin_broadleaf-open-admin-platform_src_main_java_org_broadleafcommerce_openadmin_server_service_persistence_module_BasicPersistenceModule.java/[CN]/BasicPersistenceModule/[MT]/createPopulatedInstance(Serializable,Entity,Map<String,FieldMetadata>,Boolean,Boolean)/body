@@ -14,7 +14,10 @@
   if (!handled) {
     defaultFieldPersistenceProvider.filterProperties(new AddFilterPropertiesRequest(entity),unfilteredProperties);
   }
+  Session session=getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().unwrap(Session.class);
+  FlushMode originalFlushMode=session.getFlushMode();
   try {
+    session.setFlushMode(FlushMode.MANUAL);
     for (    Property property : entity.getProperties()) {
       BasicFieldMetadata metadata=(BasicFieldMetadata)mergedProperties.get(property.getName());
       Class<?> returnType;
@@ -124,6 +127,9 @@
   }
 catch (  InstantiationException e) {
     throw new PersistenceException(e);
+  }
+ finally {
+    session.setFlushMode(originalFlushMode);
   }
   return instance;
 }
