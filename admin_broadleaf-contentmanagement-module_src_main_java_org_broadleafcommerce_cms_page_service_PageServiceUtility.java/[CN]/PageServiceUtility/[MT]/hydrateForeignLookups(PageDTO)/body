@@ -1,13 +1,18 @@
 {
   for (  Entry<String,Object> entry : page.getPageFields().entrySet()) {
     if (entry.getValue() instanceof String && ((String)entry.getValue()).startsWith(FOREIGN_LOOKUP)) {
-      String clazz=((String)entry.getValue()).split("\\|")[1];
-      String id=((String)entry.getValue()).split("\\|")[2];
-      Object newValue=null;
-      if (StringUtils.isNotBlank(clazz) && StringUtils.isNotBlank(id) && !"null".equals(id)) {
-        newValue=genericDao.readGenericEntity(genericDao.getImplClass(clazz),id);
-      }
-      entry.setValue(newValue);
+      page.getForeignPageFields().put(entry.getKey(),entry.getValue());
+    }
+  }
+  for (  Entry<String,Object> entry : page.getForeignPageFields().entrySet()) {
+    String clazz=((String)entry.getValue()).split("\\|")[1];
+    String id=((String)entry.getValue()).split("\\|")[2];
+    Object newValue=null;
+    if (StringUtils.isNotBlank(clazz) && StringUtils.isNotBlank(id) && !"null".equals(id)) {
+      newValue=genericDao.readGenericEntity(genericDao.getImplClass(clazz),id);
+    }
+    if (newValue != null) {
+      page.getPageFields().put(entry.getKey(),newValue);
     }
   }
 }
