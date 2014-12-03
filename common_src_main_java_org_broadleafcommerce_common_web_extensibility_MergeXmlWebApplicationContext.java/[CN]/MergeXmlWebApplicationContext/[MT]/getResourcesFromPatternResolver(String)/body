@@ -1,0 +1,17 @@
+{
+  ResourceInputStream resolverPatch;
+  PathMatchingResourcePatternResolver resolver=new PathMatchingResourcePatternResolver();
+  Resource[] resources=resolver.getResources(patchLocation);
+  List<ResourceInputStream> resolverList=new ArrayList<ResourceInputStream>();
+  if (resources == null || resources.length == 0) {
+    throw new IOException("Unable to open an input stream on specified application context resource: " + patchLocation);
+  }
+  for (  Resource resource : Arrays.asList(resources)) {
+    resolverPatch=new ResourceInputStream(resource.getInputStream(),patchLocation);
+    if (resolverPatch == null || resolverPatch.available() <= 0) {
+      throw new IOException("Unable to open an input stream on specified application context resource: " + patchLocation);
+    }
+    resolverList.add(resolverPatch);
+  }
+  return resolverList;
+}
