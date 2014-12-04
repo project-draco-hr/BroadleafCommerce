@@ -14,14 +14,16 @@
     document.addField(shs.getIdFieldName(),shs.getSolrDocumentId(document,product));
     document.addField(shs.getProductIdFieldName(),shs.getProductId(product.getId()));
     extensionManager.getProxy().attachAdditionalBasicFields(product,document,shs);
-    if (cache.getParentCategoriesByProduct().containsKey(product.getId())) {
-      for (      Long categoryId : cache.getParentCategoriesByProduct().get(product.getId())) {
+    Long originalId=sandBoxHelper.getOriginalId(product);
+    originalId=(originalId == null) ? product.getId() : originalId;
+    if (cache.getParentCategoriesByProduct().containsKey(originalId)) {
+      for (      Long categoryId : cache.getParentCategoriesByProduct().get(originalId)) {
         document.addField(shs.getExplicitCategoryFieldName(),shs.getCategoryId(categoryId));
         String categorySortFieldName=shs.getCategorySortFieldName(shs.getCategoryId(categoryId));
-        String displayOrderKey=categoryId + "-" + shs.getProductId(product.getId());
+        String displayOrderKey=categoryId + "-" + shs.getProductId(originalId);
         BigDecimal displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         if (displayOrder == null) {
-          displayOrderKey=categoryId + "-" + product.getId();
+          displayOrderKey=categoryId + "-" + originalId;
           displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         }
         if (document.getField(categorySortFieldName) == null) {
