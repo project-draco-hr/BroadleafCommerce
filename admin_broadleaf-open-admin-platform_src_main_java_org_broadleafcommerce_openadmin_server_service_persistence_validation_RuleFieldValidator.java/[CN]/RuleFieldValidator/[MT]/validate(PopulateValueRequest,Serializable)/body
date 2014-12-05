@@ -4,7 +4,7 @@
     EntityManager em=populateValueRequest.getPersistenceManager().getDynamicEntityDao().getStandardEntityManager();
     if (SupportedFieldType.RULE_SIMPLE.equals(populateValueRequest.getMetadata().getFieldType())) {
       DataWrapper dw=ruleFieldExtractionUtility.convertJsonToDataWrapper(populateValueRequest.getProperty().getUnHtmlEncodedValue());
-      if (StringUtils.isNotEmpty(dw.getError())) {
+      if (dw != null && StringUtils.isNotEmpty(dw.getError())) {
         return new PropertyValidationResult(false,"Could not serialize JSON from rule builder: " + dw.getError());
       }
       if (dw == null || StringUtils.isEmpty(dw.getError())) {
@@ -32,7 +32,7 @@ catch (      IllegalAccessException e) {
       String fieldService=populateValueRequest.getMetadata().getRuleIdentifier();
       if (!StringUtils.isEmpty(jsonPropertyValue)) {
         DataWrapper dw=ruleFieldExtractionUtility.convertJsonToDataWrapper(jsonPropertyValue);
-        if (StringUtils.isNotEmpty(dw.getError())) {
+        if (dw != null && StringUtils.isNotEmpty(dw.getError())) {
           return new PropertyValidationResult(false,"Could not serialize JSON from rule builder: " + dw.getError());
         }
         if (dw != null && StringUtils.isEmpty(dw.getError())) {

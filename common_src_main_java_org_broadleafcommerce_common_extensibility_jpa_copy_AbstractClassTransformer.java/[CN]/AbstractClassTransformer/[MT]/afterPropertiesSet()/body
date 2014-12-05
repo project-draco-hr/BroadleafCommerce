@@ -1,0 +1,17 @@
+{
+  if (preLoadClassNamePatterns != null && !preLoadClassNamePatterns.isEmpty()) {
+synchronized (alreadyLoadedClasses) {
+      for (      String className : preLoadClassNamePatterns) {
+        try {
+          if (!alreadyLoadedClasses.contains(className)) {
+            Class.forName(className);
+            alreadyLoadedClasses.add(className);
+          }
+        }
+ catch (        ClassNotFoundException e) {
+          throw new RuntimeException("Unable to force load class with name " + className + " in the DirectCopyClassTransformer",e);
+        }
+      }
+    }
+  }
+}
