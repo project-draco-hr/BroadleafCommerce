@@ -9,7 +9,12 @@
       }
     }
     if (isArchivable && !persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
-      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("archiveStatus.archived")).withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
+      String targetPropertyName="archiveStatus.archived";
+      if (persistencePackage.getPersistencePerspectiveItems().containsKey(PersistencePerspectiveItemType.ADORNEDTARGETLIST)) {
+        AdornedTargetList atl=(AdornedTargetList)persistencePackage.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
+        targetPropertyName=atl.getTargetObjectPath() + "." + targetPropertyName;
+      }
+      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty(targetPropertyName)).withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider<Character,Character>(){
         @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path<Character> explicitPath,        List<Character> directValues){
           return builder.or(builder.equal(explicitPath,'N'),builder.isNull(explicitPath));
         }
