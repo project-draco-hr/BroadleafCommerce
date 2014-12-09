@@ -17,25 +17,5 @@
   for (  Entry<String,FieldMetadata> entry : mergedPropertiesTarget.entrySet()) {
     convertedMergedPropertiesTarget.put(prefix + "." + entry.getKey(),entry.getValue());
   }
-  Map<String,FilterAndSortCriteria> convertedCto=new HashMap<String,FilterAndSortCriteria>();
-  for (  Entry<String,FilterAndSortCriteria> entry : cto.getCriteriaMap().entrySet()) {
-    if (adornedTargetList.getSortField() != null && entry.getKey().equals(adornedTargetList.getSortField())) {
-      convertedCto.put(entry.getKey(),entry.getValue());
-    }
- else {
-      convertedCto.put(prefix + "." + entry.getKey(),entry.getValue());
-    }
-  }
-  cto.setCriteriaMap(convertedCto);
-  for (  Entry<String,FilterAndSortCriteria> entry : convertedCto.entrySet()) {
-    if (convertedMergedPropertiesTarget.containsKey(entry.getKey())) {
-      convertedMergedPropertiesTarget.get(entry.getKey()).setInheritedFromType(entities[0].getName());
-    }
-  }
-  List<FilterMapping> filterMappings2=getBasicFilterMappings(persistencePerspective,cto,convertedMergedPropertiesTarget,ceilingEntityFullyQualifiedClassname);
-  for (  FilterMapping fm : filterMappings2) {
-    fm.setInheritedFromClass(entities[0]);
-  }
-  filterMappings.addAll(filterMappings2);
   records=getPersistentRecords(adornedTargetList.getAdornedTargetEntityClassname(),filterMappings,cto.getFirstResult(),cto.getMaxResults());
 }
