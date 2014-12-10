@@ -44,6 +44,11 @@
           required=fmd.getRequired();
         }
         f.withName(property.getName()).withFieldType(fieldType).withOrder(fmd.getOrder()).withFriendlyName(fmd.getFriendlyName()).withForeignKeyDisplayValueProperty(fmd.getForeignKeyDisplayValueProperty()).withForeignKeyClass(fmd.getForeignKeyClass()).withOwningEntityClass(fmd.getOwningClass() != null ? fmd.getOwningClass() : fmd.getInheritedFromType()).withRequired(required).withReadOnly(fmd.getReadOnly()).withTranslatable(fmd.getTranslatable()).withAlternateOrdering((Boolean)fmd.getAdditionalMetadata().get(Field.ALTERNATE_ORDERING)).withLargeEntry(fmd.isLargeEntry()).withHint(fmd.getHint()).withTooltip(fmd.getTooltip()).withHelp(fmd.getHelpText()).withTypeaheadEnabled(fmd.getEnableTypeaheadLookup());
+        String defaultValue=fmd.getDefaultValue();
+        if (StringUtils.isNotEmpty(defaultValue)) {
+          defaultValue=extractDefaultValueFromFieldData(fieldType,fmd);
+          f.withValue(defaultValue);
+        }
         if (StringUtils.isBlank(f.getFriendlyName())) {
           f.setFriendlyName(f.getName());
         }
