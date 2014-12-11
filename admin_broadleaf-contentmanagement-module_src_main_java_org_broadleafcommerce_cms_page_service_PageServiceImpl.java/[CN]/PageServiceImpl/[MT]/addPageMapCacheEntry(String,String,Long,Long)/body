@@ -1,0 +1,12 @@
+{
+  String key=getPageMapCacheKey(uri,sandBox,site);
+  Element e=getPageMapCache().get(key);
+  if (e == null || e.getObjectValue() == null) {
+    List<String> keys=new ArrayList<String>();
+    keys.add(keyToStore);
+    getPageMapCache().put(new Element(key,keys));
+  }
+ else {
+    ((List<String>)e.getObjectValue()).add(keyToStore);
+  }
+}

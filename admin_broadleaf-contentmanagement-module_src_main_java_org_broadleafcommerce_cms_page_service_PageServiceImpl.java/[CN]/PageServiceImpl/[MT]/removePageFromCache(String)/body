@@ -1,4 +1,9 @@
 {
-  getPageCache().remove(baseKey + "-" + true);
-  getPageCache().remove(baseKey + "-" + false);
+  Element e=getPageMapCache().get(key);
+  if (e != null && e.getObjectValue() != null) {
+    List<String> keys=(List<String>)e.getObjectValue();
+    for (    String k : keys) {
+      getPageCache().remove(k);
+    }
+  }
 }
