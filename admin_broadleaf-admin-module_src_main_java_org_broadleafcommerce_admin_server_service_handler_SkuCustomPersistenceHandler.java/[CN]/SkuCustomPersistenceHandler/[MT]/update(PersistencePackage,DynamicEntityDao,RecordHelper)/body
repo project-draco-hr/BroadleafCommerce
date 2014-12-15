@@ -14,6 +14,7 @@
     }
     associateProductOptionValuesToSku(entity,adminInstance,dynamicEntityDao);
     adminInstance=dynamicEntityDao.merge(adminInstance);
+    extensionManager.getProxy().skuUpdated(adminInstance);
     Entity result=helper.getRecord(adminProperties,adminInstance,null,null);
     for (    Property property : getProductOptionProperties(entity)) {
       result.addProperty(property);
