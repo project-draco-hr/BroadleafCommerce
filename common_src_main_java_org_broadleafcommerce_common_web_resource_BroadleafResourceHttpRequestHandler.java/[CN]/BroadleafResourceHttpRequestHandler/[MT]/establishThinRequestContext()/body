@@ -13,5 +13,6 @@
     newBrc.setSandBox(sbResolver.resolveSandBox(swr,newBrc.getSite()));
     BroadleafRequestContext.setBroadleafRequestContext(newBrc);
     newBrc.setTheme(themeResolver.resolveTheme(swr));
+    newBrc.setDeployBehavior(deployBehaviorUtil.isProductionSandBoxMode() ? DeployBehavior.CLONE_PARENT : DeployBehavior.OVERWRITE_PARENT);
   }
 }
