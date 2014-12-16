@@ -22,9 +22,7 @@
         adminInstance.setPassword(passwordBefore);
       }
     }
-    if (!adminRemoteSecurityService.getPersistentAdminUser().getId().equals(adminInstance.getId())) {
-      adminRemoteSecurityService.securityCheck(persistencePackage,EntityOperationType.UPDATE);
-    }
+    validateUserUpdateSecurity(persistencePackage,adminInstance);
     adminInstance=adminSecurityService.saveAdminUser(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
