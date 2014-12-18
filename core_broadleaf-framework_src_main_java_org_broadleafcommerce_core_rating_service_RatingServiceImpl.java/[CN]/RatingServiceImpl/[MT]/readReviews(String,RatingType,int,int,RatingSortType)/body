@@ -1,21 +1,26 @@
 {
   RatingSummary summary=this.readRatingSummary(itemId,type);
-  List<ReviewDetail> reviews=summary.getReviews();
-  List<ReviewDetail> reviewsToReturn=new ArrayList<ReviewDetail>();
-  int i=0;
-  for (  ReviewDetail review : reviews) {
-    if (i > finish) {
-      break;
+  if (summary != null) {
+    List<ReviewDetail> reviews=summary.getReviews();
+    List<ReviewDetail> reviewsToReturn=new ArrayList<ReviewDetail>();
+    int i=0;
+    for (    ReviewDetail review : reviews) {
+      if (i > finish) {
+        break;
+      }
+      if (i >= start) {
+        reviewsToReturn.add(review);
+      }
+      i++;
     }
-    if (i >= start) {
-      reviewsToReturn.add(review);
+    String sortByBeanProperty="reviewSubmittedDate";
+    if (sortBy == RatingSortType.MOST_HELPFUL) {
+      sortByBeanProperty="helpfulCount";
     }
-    i++;
+    Collections.sort(reviewsToReturn,new BeanComparator(sortByBeanProperty));
+    return reviewsToReturn;
   }
-  String sortByBeanProperty="reviewSubmittedDate";
-  if (sortBy == RatingSortType.MOST_HELPFUL) {
-    sortByBeanProperty="helpfulCount";
+ else {
+    return new ArrayList<ReviewDetail>();
   }
-  Collections.sort(reviewsToReturn,new BeanComparator(sortByBeanProperty));
-  return reviewsToReturn;
 }
