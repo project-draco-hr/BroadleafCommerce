@@ -39,8 +39,13 @@
         }
         if (!catalogStructure.getProductsByCategory().containsKey(categoryId)) {
           List<ProductsByCategoryWithOrder> categoryChildren=readProductIdsByCategory(categoryId);
+          BigDecimal displayOrder=new BigDecimal("1.00000");
           for (          ProductsByCategoryWithOrder child : categoryChildren) {
-            catalogStructure.getDisplayOrdersByCategoryProduct().put(categoryId + "-" + child.getProductId(),child.getDisplayOrder());
+            catalogStructure.getDisplayOrdersByCategoryProduct().put(categoryId + "-" + child.getProductId(),child.getDisplayOrder() == null ? displayOrder : child.getDisplayOrder());
+            if (child.getDisplayOrder() != null) {
+              displayOrder=child.displayOrder;
+            }
+            displayOrder=displayOrder.add(new BigDecimal("1.00000"));
           }
           for (          Map.Entry<Long,Long> sandBoxProduct : sandBoxProductToOriginalMap.entrySet()) {
             for (            ProductsByCategoryWithOrder child : categoryChildren) {
