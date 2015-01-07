@@ -1,0 +1,16 @@
+{
+  Set<AdminRole> roleSet=adminUser.getAllRoles();
+  if (roleSet != null) {
+    roleSet.clear();
+  }
+ else {
+    roleSet=new HashSet<AdminRole>();
+    adminUser.setAllRoles(roleSet);
+  }
+  if (adminRoles != null) {
+    for (    AdminRole role : adminRoles) {
+      roleSet.add(role);
+    }
+  }
+  return securityService.saveAdminUser(adminUser);
+}

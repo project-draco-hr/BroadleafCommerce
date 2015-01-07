@@ -1,0 +1,74 @@
+{
+  HashSet<String> newRoles=new HashSet<String>();
+  if (roleNameSubstitutions != null && !roleNameSubstitutions.isEmpty()) {
+    for (    GrantedAuthority authority : authorities) {
+      if (roleNameSubstitutions.containsKey(authority.getAuthority())) {
+        String[] roles=roleNameSubstitutions.get(authority.getAuthority());
+        for (        String role : roles) {
+          newRoles.add(role.trim());
+        }
+      }
+ else {
+        newRoles.add(authority.getAuthority());
+      }
+    }
+  }
+ else {
+    for (    GrantedAuthority authority : authorities) {
+      newRoles.add(authority.getAuthority());
+    }
+  }
+  Collection<GrantedAuthority> newAuthorities=new HashSet<GrantedAuthority>();
+  for (  String perm : AdminSecurityService.DEFAULT_PERMISSIONS) {
+    newAuthorities.add(new SimpleGrantedAuthority(perm));
+  }
+  HashSet<AdminRole> grantedRoles=new HashSet<AdminRole>();
+  List<AdminRole> adminRoles=securityService.readAllAdminRoles();
+  if (adminRoles != null) {
+    for (    AdminRole role : adminRoles) {
+      if (newRoles.contains(role.getName())) {
+        grantedRoles.add(role);
+        Set<AdminPermission> permissions=role.getAllPermissions();
+        if (permissions != null && !permissions.isEmpty()) {
+          for (          AdminPermission permission : permissions) {
+            if (permission.isFriendly()) {
+              for (              AdminPermission childPermission : permission.getAllChildPermissions()) {
+                newAuthorities.add(new SimpleGrantedAuthority(childPermission.getName()));
+              }
+            }
+ else {
+              newAuthorities.add(new SimpleGrantedAuthority(permission.getName()));
+            }
+          }
+        }
+      }
+    }
+  }
+  String email=(String)ctx.getObjectAttribute("mail");
+  String firstName=(String)ctx.getObjectAttribute("givenName");
+  String lastName=(String)ctx.getObjectAttribute("sn");
+  AdminUser adminUser=securityService.readAdminUserByUserName(username);
+  if (adminUser == null) {
+    adminUser=new AdminUserImpl();
+    adminUser.setLogin(username);
+  }
+  if (StringUtils.isNotBlank(email)) {
+    adminUser.setEmail(email);
+  }
+  StringBuilder name=new StringBuilder();
+  if (StringUtils.isNotBlank(firstName)) {
+    name.append(firstName).append(" ");
+  }
+  if (StringUtils.isNotBlank(lastName)) {
+    name.append(lastName);
+  }
+  String fullName=name.toString();
+  if (StringUtils.isNotBlank(fullName)) {
+    adminUser.setName(fullName);
+  }
+ else {
+    adminUser.setName(username);
+  }
+  adminUser=saveAdminUserAndSecurityData(adminUser,grantedRoles);
+  return new AdminUserDetails(adminUser.getId(),username,"",true,true,true,true,newAuthorities);
+}
