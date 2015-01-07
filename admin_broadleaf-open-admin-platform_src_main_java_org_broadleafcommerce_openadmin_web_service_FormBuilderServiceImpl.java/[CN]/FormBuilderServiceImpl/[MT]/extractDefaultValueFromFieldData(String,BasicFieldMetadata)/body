@@ -1,0 +1,51 @@
+{
+  String defaultValue=fmd.getDefaultValue();
+  if (fieldType.equals(SupportedFieldType.RULE_SIMPLE.toString()) || fieldType.equals(SupportedFieldType.RULE_WITH_QUANTITY.toString())) {
+    return null;
+  }
+ else   if (fieldType.equals(SupportedFieldType.INTEGER.toString())) {
+    try {
+      Integer.parseInt(defaultValue);
+    }
+ catch (    NumberFormatException e) {
+      String msg=buildMsgForDefValException(SupportedFieldType.INTEGER.toString(),fmd,defaultValue);
+      LOG.warn(msg);
+      return null;
+    }
+  }
+ else   if (fieldType.equals(SupportedFieldType.DECIMAL.toString())) {
+    try {
+      BigDecimal val=new BigDecimal(defaultValue);
+    }
+ catch (    NumberFormatException e) {
+      String msg=buildMsgForDefValException(SupportedFieldType.DECIMAL.toString(),fmd,defaultValue);
+      LOG.warn(msg);
+      return null;
+    }
+  }
+ else   if (fieldType.equals(SupportedFieldType.BOOLEAN.toString())) {
+    if (!defaultValue.toLowerCase().equals("true") && !defaultValue.toLowerCase().equals("false")) {
+      String msg=buildMsgForDefValException(SupportedFieldType.BOOLEAN.toString(),fmd,defaultValue);
+      LOG.warn(msg);
+      return null;
+    }
+  }
+ else   if (fieldType.equals(SupportedFieldType.DATE.toString())) {
+    DateFormat format=FormatUtil.getDateFormat();
+    if (defaultValue.toLowerCase().contains("today")) {
+      defaultValue=format.format(new Date());
+    }
+ else {
+      try {
+        Date date=format.parse(defaultValue);
+        defaultValue=format.format(date);
+      }
+ catch (      ParseException e) {
+        String msg=buildMsgForDefValException(SupportedFieldType.DATE.toString(),fmd,defaultValue);
+        LOG.warn(msg);
+        return null;
+      }
+    }
+  }
+  return defaultValue;
+}
