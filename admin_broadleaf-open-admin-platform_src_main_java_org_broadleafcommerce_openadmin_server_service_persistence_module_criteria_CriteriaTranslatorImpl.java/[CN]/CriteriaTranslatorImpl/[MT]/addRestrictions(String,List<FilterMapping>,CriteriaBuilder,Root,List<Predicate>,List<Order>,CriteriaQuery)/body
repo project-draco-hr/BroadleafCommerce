@@ -16,7 +16,9 @@
       }
       if (directValues != null) {
         Predicate predicate=filterMapping.getRestriction().buildRestriction(criteriaBuilder,original,ceilingEntity,filterMapping.getFullPropertyName(),explicitPath,directValues,shouldConvert,criteria,restrictions);
-        restrictions.add(predicate);
+        if (predicate != null) {
+          restrictions.add(predicate);
+        }
       }
     }
     if (filterMapping.getSortDirection() != null) {
