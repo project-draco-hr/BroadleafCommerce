@@ -1,0 +1,12 @@
+{
+  BroadleafCurrency returnCurrency=null;
+  if (getBroadleafRequestContext() != null) {
+    returnCurrency=getBroadleafRequestContext().getBroadleafCurrency();
+  }
+  if (returnCurrency == null) {
+    if (LOG.isWarnEnabled()) {
+      LOG.warn("BroadleafRequestContext.getCurrency() called but returned null");
+    }
+  }
+  return returnCurrency;
+}

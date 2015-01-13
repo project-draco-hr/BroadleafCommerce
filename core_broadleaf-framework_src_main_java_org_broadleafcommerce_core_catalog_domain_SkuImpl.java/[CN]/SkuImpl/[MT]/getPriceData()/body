@@ -1,0 +1,27 @@
+{
+  if (SkuPricingConsiderationContext.hasDynamicPricing()) {
+    if (dynamicPrices == null) {
+      DefaultDynamicSkuPricingInvocationHandler handler=new DefaultDynamicSkuPricingInvocationHandler(this);
+      Sku proxy=(Sku)Proxy.newProxyInstance(getClass().getClassLoader(),ClassUtils.getAllInterfacesForClass(getClass()),handler);
+      dynamicPrices=SkuPricingConsiderationContext.getSkuPricingService().getSkuPrices(proxy,SkuPricingConsiderationContext.getSkuPricingConsiderationContext());
+    }
+    return dynamicPrices;
+  }
+ else {
+    DynamicSkuPrices dsp=new DynamicSkuPrices();
+    BroadleafCurrency tmpCurrency;
+    if (currency != null) {
+      tmpCurrency=currency;
+    }
+ else {
+      tmpCurrency=BroadleafRequestContext.getCurrency();
+    }
+    if (retailPrice != null) {
+      dsp.setRetailPrice(new Money(retailPrice,tmpCurrency));
+    }
+    if (salePrice != null) {
+      dsp.setSalePrice(new Money(salePrice,tmpCurrency));
+    }
+    return dsp;
+  }
+}

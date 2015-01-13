@@ -1,27 +1,36 @@
 {
-  BroadleafCurrency currency=null;
-  currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_REQUEST);
-  if (currency == null && BLCRequestUtils.getURLorHeaderParameter(request,CURRENCY_CODE_PARAM) != null) {
+  BroadleafCurrency desiredCurrency=null;
+  desiredCurrency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_REQUEST);
+  if (desiredCurrency == null && BLCRequestUtils.getURLorHeaderParameter(request,CURRENCY_CODE_PARAM) != null) {
     String currencyCode=BLCRequestUtils.getURLorHeaderParameter(request,CURRENCY_CODE_PARAM);
-    currency=broadleafCurrencyService.findCurrencyByCode(currencyCode);
+    desiredCurrency=broadleafCurrencyService.findCurrencyByCode(currencyCode);
     if (LOG.isTraceEnabled()) {
-      LOG.trace("Attempt to find currency by param " + currencyCode + " resulted in "+ currency);
+      LOG.trace("Attempt to find currency by param " + currencyCode + " resulted in "+ desiredCurrency);
     }
   }
-  if (currency == null && BLCRequestUtils.isOKtoUseSession(request)) {
-    currency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
+  if (desiredCurrency == null && BLCRequestUtils.isOKtoUseSession(request)) {
+    desiredCurrency=(BroadleafCurrency)request.getAttribute(CURRENCY_VAR,WebRequest.SCOPE_GLOBAL_SESSION);
   }
-  if (currency == null) {
+  if (desiredCurrency == null) {
     Locale locale=(Locale)request.getAttribute(BroadleafLocaleResolverImpl.LOCALE_VAR,WebRequest.SCOPE_REQUEST);
     if (locale != null) {
-      currency=locale.getDefaultCurrency();
+      desiredCurrency=locale.getDefaultCurrency();
     }
   }
-  if (currency == null) {
-    currency=broadleafCurrencyService.findDefaultBroadleafCurrency();
+  BroadleafCurrency defaultCurrency=broadleafCurrencyService.findDefaultBroadleafCurrency();
+  if (desiredCurrency == null) {
+    desiredCurrency=defaultCurrency;
+  }
+  BroadleafCurrency currencyToUse=defaultCurrency;
+  if (extensionManager != null) {
+    ExtensionResultHolder<BroadleafCurrency> resultHolder=new ExtensionResultHolder<BroadleafCurrency>();
+    extensionManager.getProxy().overrideCurrency(desiredCurrency,defaultCurrency,resultHolder);
+    if (resultHolder != null && resultHolder.getResult() != null) {
+      currencyToUse=resultHolder.getResult();
+    }
   }
   if (BLCRequestUtils.isOKtoUseSession(request)) {
-    request.setAttribute(CURRENCY_VAR,currency,WebRequest.SCOPE_GLOBAL_SESSION);
+    request.setAttribute(CURRENCY_VAR,currencyToUse,WebRequest.SCOPE_GLOBAL_SESSION);
   }
-  return currency;
+  return currencyToUse;
 }
