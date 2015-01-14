@@ -1,11 +1,11 @@
 {
   Order cart=CartState.getCart();
   if (cart == null || cart instanceof NullOrderImpl) {
-    throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+    throw BroadleafWebServicesException.build(HttpStatus.NOT_FOUND.value()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
   }
   OfferCode offerCode=offerService.lookupOfferCodeByCode(promoCode);
   if (offerCode == null) {
-    throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.PROMO_CODE_INVALID,promoCode);
+    throw BroadleafWebServicesException.build(HttpStatus.NOT_FOUND.value()).addMessage(BroadleafWebServicesException.PROMO_CODE_INVALID,promoCode);
   }
   try {
     cart=orderService.removeOfferCode(cart,offerCode,priceOrder);
@@ -14,6 +14,6 @@
     return wrapper;
   }
  catch (  PricingException e) {
-    throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
+    throw BroadleafWebServicesException.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,null,e).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
   }
 }

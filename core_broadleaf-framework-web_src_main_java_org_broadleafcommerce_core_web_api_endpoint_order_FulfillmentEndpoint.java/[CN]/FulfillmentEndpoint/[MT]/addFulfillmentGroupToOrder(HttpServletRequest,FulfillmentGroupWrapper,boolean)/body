@@ -11,9 +11,9 @@
         return fulfillmentGroupWrapper;
       }
  catch (      PricingException e) {
-        throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),null,null,e).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
+        throw BroadleafWebServicesException.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,null,e).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
       }
     }
   }
-  throw BroadleafWebServicesException.build(Response.Status.NOT_FOUND.getStatusCode()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+  throw BroadleafWebServicesException.build(HttpStatus.NOT_FOUND.value()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
 }

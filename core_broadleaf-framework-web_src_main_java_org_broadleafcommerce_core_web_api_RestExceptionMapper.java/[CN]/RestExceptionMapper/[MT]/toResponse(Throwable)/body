@@ -1,5 +1,4 @@
 {
-  MediaType mediaType=resolveResponseMediaType(t);
   ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
   Locale locale=null;
   BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
@@ -34,13 +33,6 @@
       errorWrapper.getMessages().add(errorMessageWrapper);
     }
   }
- else   if (t instanceof WebApplicationException) {
-    if (t.getCause() != null) {
-      LOG.error("An error occured invoking a REST service.",t.getCause());
-    }
-    WebApplicationException webAppException=(WebApplicationException)t;
-    return webAppException.getResponse();
-  }
  else {
     LOG.error("An error occured invoking a REST service",t);
     if (locale == null) {
@@ -52,5 +44,5 @@
     errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
     errorWrapper.getMessages().add(errorMessageWrapper);
   }
-  return Response.status(resolveResponseStatusCode(t,errorWrapper)).type(mediaType).entity(errorWrapper).build();
+  return null;
 }
