@@ -21,6 +21,8 @@
   }
   List<SearchFacetDTO> availableFacets=getSearchService().getSearchFacets();
   SearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
+  searchCriteria.setPageSize(pageSize);
+  searchCriteria.setPage(page);
   try {
     SearchResult result=null;
     result=getSearchService().findSearchResultsByCategoryAndQuery(category,q,searchCriteria);
