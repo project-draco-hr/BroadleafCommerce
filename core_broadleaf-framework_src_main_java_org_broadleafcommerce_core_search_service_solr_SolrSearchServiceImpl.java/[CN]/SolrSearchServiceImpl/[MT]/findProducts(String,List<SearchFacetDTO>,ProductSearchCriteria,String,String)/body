@@ -1,6 +1,7 @@
 {
   Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
-  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(shs.getProductIdFieldName()).setRows(searchCriteria.getPageSize()).setStart((searchCriteria.getPage() - 1) * searchCriteria.getPageSize());
+  int start=(searchCriteria.getPage() <= 0) ? 0 : (searchCriteria.getPage() - 1);
+  SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setFields(shs.getProductIdFieldName()).setRows(searchCriteria.getPageSize()).setStart((start) * searchCriteria.getPageSize());
   if (filterQueries != null) {
     solrQuery.setFilterQueries(filterQueries);
   }
