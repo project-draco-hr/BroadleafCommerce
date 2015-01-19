@@ -1,0 +1,11 @@
+{
+  String email=(String)ctx.getObjectAttribute("mail");
+  String firstName=(String)ctx.getObjectAttribute("givenName");
+  String lastName=(String)ctx.getObjectAttribute("sn");
+  BroadleafExternalAuthenticationUserDetails details=new BroadleafExternalAuthenticationUserDetails(username,"",authorities);
+  details.setEmail(email);
+  details.setFirstName(firstName);
+  details.setLastName(lastName);
+  details.setSite(determineSite(ctx,username,authorities));
+  return provisioningService.provisionAdminUser(details);
+}
