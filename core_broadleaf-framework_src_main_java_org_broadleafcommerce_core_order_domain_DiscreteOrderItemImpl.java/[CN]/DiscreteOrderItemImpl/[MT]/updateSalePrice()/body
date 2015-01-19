@@ -2,7 +2,14 @@
   if (isSalePriceOverride()) {
     return false;
   }
-  Money skuSalePrice=(getSku().getSalePrice() == null ? null : getSku().getSalePrice());
+  Money skuSalePrice=null;
+  DynamicSkuPrices priceData=getSku().getPriceData();
+  if (priceData != null) {
+    skuSalePrice=priceData.getPriceForQuantity(quantity);
+  }
+ else {
+    skuSalePrice=getSku().getSalePrice();
+  }
   if (skuBundleItem != null) {
     if (skuBundleItem.getSalePrice() != null) {
       skuSalePrice=skuBundleItem.getSalePrice();
