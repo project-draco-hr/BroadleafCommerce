@@ -9,11 +9,11 @@
   if (locale == null) {
     locale=Locale.getDefault();
   }
-  errorWrapper.setHttpStatusCode(500);
+  errorWrapper.setHttpStatusCode(404);
   response.setStatus(resolveResponseStatusCode(ex,errorWrapper));
   ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
-  errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.UNKNOWN_ERROR));
-  errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
+  errorMessageWrapper.setMessageKey("404 Not Found");
+  errorMessageWrapper.setMessage("URL does not exist for this API");
   errorWrapper.getMessages().add(errorMessageWrapper);
   return errorWrapper;
 }

@@ -1,5 +1,5 @@
 {
-  ErrorWrapper errorWrapper=new ErrorWrapper();
+  ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
   BroadleafWebServicesException blcException=(BroadleafWebServicesException)ex;
   Locale locale=null;
   BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
@@ -20,14 +20,14 @@
   if (blcException.getMessages() != null && !blcException.getMessages().isEmpty()) {
     Set<String> keys=blcException.getMessages().keySet();
     for (    String key : keys) {
-      ErrorMessageWrapper errorMessageWrapper=new ErrorMessageWrapper();
+      ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
       errorMessageWrapper.setMessageKey(resolveClientMessageKey(key));
       errorMessageWrapper.setMessage(messageSource.getMessage(key,blcException.getMessages().get(key),key,locale));
       errorWrapper.getMessages().add(errorMessageWrapper);
     }
   }
  else {
-    ErrorMessageWrapper errorMessageWrapper=new ErrorMessageWrapper();
+    ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
     errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.UNKNOWN_ERROR));
     errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
     errorWrapper.getMessages().add(errorMessageWrapper);
