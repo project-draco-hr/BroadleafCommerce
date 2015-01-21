@@ -1,0 +1,19 @@
+{
+  ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
+  Locale locale=null;
+  BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  if (requestContext != null) {
+    locale=requestContext.getJavaLocale();
+  }
+  LOG.error("An error occured invoking a REST service",ex);
+  if (locale == null) {
+    locale=Locale.getDefault();
+  }
+  errorWrapper.setHttpStatusCode(415);
+  response.setStatus(resolveResponseStatusCode(ex,errorWrapper));
+  ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+  errorMessageWrapper.setMessageKey("Content-Type Not Supported");
+  errorMessageWrapper.setMessage("The Content-Type header '" + request.getContentType() + "' is not supported. Please switch the Content-Type of your request to one of the following: 'application/json' or 'application/xml'");
+  errorWrapper.getMessages().add(errorMessageWrapper);
+  return errorWrapper;
+}
