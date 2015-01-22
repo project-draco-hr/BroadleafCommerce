@@ -16,9 +16,8 @@ synchronized (LOCK_OBJECT) {
   try {
     LOG.info("Rebuilding the solr index...");
     StopWatch s=new StopWatch();
-    if (SolrContext.isSingleCoreMode()) {
-      SolrIndexServiceImpl.this.deleteAllDocuments();
-    }
+    LOG.info("Deleting the reindex core prior to rebuilding the index");
+    deleteAllReindexCoreDocuments();
     Object[] pack=saveState();
     try {
       final Long numProducts=productDao.readCountAllActiveProducts();
@@ -41,9 +40,6 @@ synchronized (LOCK_OBJECT) {
       restoreState(pack);
     }
     shs.swapActiveCores();
-    if (!SolrContext.isSingleCoreMode()) {
-      deleteAllDocuments();
-    }
     LOG.info(String.format("Finished building index in %s",s.toLapString()));
   }
   finally {
