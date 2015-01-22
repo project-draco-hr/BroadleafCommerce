@@ -1,7 +1,13 @@
 {
   for (  final ApplicationListener<?> listener : getApplicationListeners(event)) {
     Executor executor=getTaskExecutor();
-    if (executor != null && (BroadleafApplicationEvent.class.isAssignableFrom(event.getClass())) && ((BroadleafApplicationEvent)event).isAsynchronous()) {
+    boolean isAsynchronous=false;
+    if (executor != null) {
+      if (((BroadleafApplicationEvent.class.isAssignableFrom(event.getClass())) && ((BroadleafApplicationEvent)event).isAsynchronous()) || (BroadleafApplicationListener.class.isAssignableFrom(listener.getClass()) && ((BroadleafApplicationListener<? extends ApplicationEvent>)listener).isAsynchronous())) {
+        isAsynchronous=true;
+      }
+    }
+    if (isAsynchronous) {
       final boolean openEm=isOpenEntityManagerForExecutor((BroadleafApplicationEvent)event);
       executor.execute(new Runnable(){
         public void run(){
