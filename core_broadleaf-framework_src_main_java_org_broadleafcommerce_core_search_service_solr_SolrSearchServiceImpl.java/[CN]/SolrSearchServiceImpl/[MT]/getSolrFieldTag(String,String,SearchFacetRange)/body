@@ -4,8 +4,12 @@
     sb.append("{!").append(tag).append("=").append(tagField);
     if (range != null) {
       sb.append("[").append(range.getMinValue().toPlainString()).append(":");
-      if (range.getMaxValue() != null)       sb.append(range.getMaxValue().toPlainString());
- else       sb.append("*");
+      if (range.getMaxValue() != null) {
+        sb.append(range.getMaxValue().toPlainString());
+      }
+ else {
+        sb.append("*");
+      }
       sb.append("]");
       sb.append(" " + getSolrRangeFunctionString(range.getMinValue(),range.getMaxValue()));
     }
