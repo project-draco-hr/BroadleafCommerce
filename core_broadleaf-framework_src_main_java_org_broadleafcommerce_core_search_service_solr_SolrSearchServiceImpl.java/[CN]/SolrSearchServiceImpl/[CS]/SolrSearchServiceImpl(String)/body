@@ -9,6 +9,12 @@
       tempDir.mkdirs();
     }
     solrServer=tempDir.getAbsolutePath();
+    String libDir=FilenameUtils.concat(solrServer,"lib");
+    LOG.debug("Creating Solr home lib directory: " + libDir);
+    new File(libDir).mkdir();
+    String placeholder=FilenameUtils.concat(libDir,"solrlib_placeholder.deleteme");
+    LOG.debug("Creating Solr lib placeholder file: " + placeholder);
+    new File(placeholder).createNewFile();
   }
   File solrXml=new File(new File(solrServer),"solr.xml");
   if (!solrXml.exists()) {
