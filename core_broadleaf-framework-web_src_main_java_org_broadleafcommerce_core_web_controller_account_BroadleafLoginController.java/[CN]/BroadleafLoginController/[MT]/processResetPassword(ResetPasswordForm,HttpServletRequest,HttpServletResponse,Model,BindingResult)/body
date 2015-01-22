@@ -1,10 +1,9 @@
 {
-  GenericResponse errorResponse=new GenericResponse();
   resetPasswordValidator.validate(resetPasswordForm.getUsername(),resetPasswordForm.getPassword(),resetPasswordForm.getPasswordConfirm(),errors);
-  if (errorResponse.getHasErrors()) {
+  if (errors.hasErrors()) {
     return getResetPasswordView();
   }
-  errorResponse=customerService.resetPasswordUsingToken(resetPasswordForm.getUsername(),resetPasswordForm.getToken(),resetPasswordForm.getPassword(),resetPasswordForm.getPasswordConfirm());
+  GenericResponse errorResponse=customerService.resetPasswordUsingToken(resetPasswordForm.getUsername(),resetPasswordForm.getToken(),resetPasswordForm.getPassword(),resetPasswordForm.getPasswordConfirm());
   if (errorResponse.getHasErrors()) {
     String errorCode=errorResponse.getErrorCodesList().get(0);
     request.setAttribute("errorCode",errorCode);

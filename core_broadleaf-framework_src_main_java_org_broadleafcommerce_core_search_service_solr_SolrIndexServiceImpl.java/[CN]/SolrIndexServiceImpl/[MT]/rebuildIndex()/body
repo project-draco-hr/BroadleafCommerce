@@ -1,39 +1,56 @@
 {
-  LOG.info("Rebuilding the solr index...");
-  StopWatch s=new StopWatch();
-  if (SolrContext.isSingleCoreMode()) {
-    SolrIndexServiceImpl.this.deleteAllDocuments();
-  }
-  Object[] pack=saveState();
-  try {
-    final Long numItemsToIndex;
-    if (useSku) {
-      numItemsToIndex=skuDao.readCountAllActiveSkus();
-    }
+synchronized (LOCK_OBJECT) {
+    if (IS_LOCKED) {
+      if (errorOnConcurrentReIndex) {
+        throw new IllegalStateException("More than one thread attempting to concurrently reindex Solr.");
+      }
  else {
-      numItemsToIndex=productDao.readCountAllActiveProducts();
-    }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("There are at most " + numItemsToIndex + " items to index");
-    }
-    performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
-      @Override public void execute() throws ServiceException {
-        int page=0;
-        while ((page * pageSize) < numItemsToIndex) {
-          buildIncrementalIndex(page,pageSize);
-          page++;
-        }
+        LOG.warn("There is more than one thread attempting to concurrently " + "reindex Solr. Failing additional threads gracefully. Check your configuration.");
+        return;
       }
     }
+ else {
+      IS_LOCKED=true;
+    }
+  }
+  try {
+    LOG.info("Rebuilding the solr index...");
+    StopWatch s=new StopWatch();
+    LOG.info("Deleting the reindex core prior to rebuilding the index");
+    deleteAllDocuments();
+    Object[] pack=saveState();
+    try {
+      final Long numItemsToIndex;
+      if (useSku) {
+        numItemsToIndex=skuDao.readCountAllActiveSkus();
+      }
+ else {
+        numItemsToIndex=productDao.readCountAllActiveProducts();
+      }
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("There are at most " + numItemsToIndex + " items to index");
+      }
+      performCachedOperation(new SolrIndexCachedOperation.CacheOperation(){
+        @Override public void execute() throws ServiceException {
+          int page=0;
+          while ((page * pageSize) < numItemsToIndex) {
+            buildIncrementalIndex(page,pageSize);
+            page++;
+          }
+        }
+      }
 );
-    optimizeIndex(SolrContext.getReindexServer());
+      optimizeIndex(SolrContext.getReindexServer());
+    }
+  finally {
+      restoreState(pack);
+    }
+    shs.swapActiveCores();
+    LOG.info(String.format("Finished building index in %s",s.toLapString()));
   }
   finally {
-    restoreState(pack);
+synchronized (LOCK_OBJECT) {
+      IS_LOCKED=false;
+    }
   }
-  shs.swapActiveCores();
-  if (!SolrContext.isSingleCoreMode()) {
-    deleteAllDocuments();
-  }
-  LOG.info(String.format("Finished building index in %s",s.toLapString()));
 }
