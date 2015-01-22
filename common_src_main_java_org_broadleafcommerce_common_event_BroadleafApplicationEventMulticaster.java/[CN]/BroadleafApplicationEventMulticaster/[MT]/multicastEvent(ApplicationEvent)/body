@@ -1,0 +1,40 @@
+{
+  for (  final ApplicationListener<?> listener : getApplicationListeners(event)) {
+    Executor executor=getTaskExecutor();
+    if (executor != null && (BroadleafApplicationEvent.class.isAssignableFrom(event.getClass())) && ((BroadleafApplicationEvent)event).isAsynchronous()) {
+      final boolean openEm=isOpenEntityManagerForExecutor((BroadleafApplicationEvent)event);
+      executor.execute(new Runnable(){
+        public void run(){
+          EntityManagerHolder emHolder=null;
+          EntityManagerFactory emf=null;
+          if (openEm) {
+            emf=EntityManagerFactoryUtils.findEntityManagerFactory(ctx,"entityManagerFactory");
+            if (!TransactionSynchronizationManager.hasResource(emf)) {
+              EntityManager em=emf.createEntityManager();
+              emHolder=new EntityManagerHolder(em);
+              TransactionSynchronizationManager.bindResource(emf,emHolder);
+            }
+          }
+          try {
+            invokeListener(listener,event);
+          }
+  finally {
+            if (openEm) {
+              try {
+                emHolder=(EntityManagerHolder)TransactionSynchronizationManager.unbindResource(emf);
+                EntityManagerFactoryUtils.closeEntityManager(emHolder.getEntityManager());
+              }
+ catch (              Exception e) {
+                LOG.error("An error occured trying to unbind the EntityManager for an Executor",e);
+              }
+            }
+          }
+        }
+      }
+);
+    }
+ else {
+      invokeListener(listener,event);
+    }
+  }
+}
