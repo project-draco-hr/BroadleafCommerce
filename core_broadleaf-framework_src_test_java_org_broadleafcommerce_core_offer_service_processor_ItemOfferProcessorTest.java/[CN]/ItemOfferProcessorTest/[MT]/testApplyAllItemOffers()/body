@@ -6,13 +6,15 @@
   List<Offer> offers=new ArrayList<Offer>();
   offers.add(offer1);
   List<PromotableCandidateItemOffer> qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
+  order.updatePrices();
   offerService.applyAndSaveOffersToOrder(offers,order);
   assertTrue(order.getTotalAdjustmentsValue().getAmount().doubleValue() > 0);
   order=dataProvider.createBasicOrder();
   qualifiedOffers=new ArrayList<PromotableCandidateItemOffer>();
   offer1.setApplyDiscountToSalePrice(false);
-  order.getOrderItems().get(0).setSalePrice(new Money(1D));
-  order.getOrderItems().get(1).setSalePrice(new Money(1D));
+  ((DiscreteOrderItem)order.getOrderItems().get(0)).getSku().setSalePrice(new Money(1D));
+  ((DiscreteOrderItem)order.getOrderItems().get(1)).getSku().setSalePrice(new Money(1D));
+  order.updatePrices();
   offerService.applyAndSaveOffersToOrder(offers,order);
   assertTrue(order.getTotalAdjustmentsValue().getAmount().doubleValue() == 0);
   verify();

@@ -21,10 +21,17 @@
     salePrice=skuSalePrice.getAmount();
     updated=true;
   }
+  if (skuSalePrice == null && salePrice != null) {
+    baseSalePrice=null;
+    salePrice=null;
+    updated=true;
+  }
   if (getDiscreteOrderItemFeePrices() != null) {
     for (    DiscreteOrderItemFeePrice fee : getDiscreteOrderItemFeePrices()) {
       Money returnPrice=convertToMoney(salePrice);
-      salePrice=returnPrice.add(fee.getAmount()).getAmount();
+      if (returnPrice != null) {
+        salePrice=returnPrice.add(fee.getAmount()).getAmount();
+      }
     }
   }
   return updated;
