@@ -1,0 +1,16 @@
+{
+  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(entity.getType()[0]).withFilterAndSortCriteria(new FilterAndSortCriteria[]{new FilterAndSortCriteria(propertyName,value)});
+  try {
+    PersistenceResponse response=adminEntityService.getRecords(ppr);
+    if (response.getDynamicResultSet().getTotalRecords() == 0) {
+      return new PropertyValidationResult(true);
+    }
+ else {
+      return new PropertyValidationResult(false,entity.getType()[0] + " with this value for attribute " + propertyName+ " already exists. This attribute's value must be unique.");
+    }
+  }
+ catch (  ServiceException e) {
+    e.printStackTrace();
+    return new PropertyValidationResult(false,e.getMessage());
+  }
+}

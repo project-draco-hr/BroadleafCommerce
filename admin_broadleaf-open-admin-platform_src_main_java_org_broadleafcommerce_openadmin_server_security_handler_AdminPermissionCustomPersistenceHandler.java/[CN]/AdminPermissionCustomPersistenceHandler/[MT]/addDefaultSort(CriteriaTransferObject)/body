@@ -7,8 +7,11 @@
     }
   }
   if (!userSort) {
-    FilterAndSortCriteria sortFasc=new FilterAndSortCriteria("description");
-    sortFasc.setSortAscending(true);
-    cto.add(sortFasc);
+    FilterAndSortCriteria descriptionSort=cto.getCriteriaMap().get("description");
+    if (descriptionSort == null) {
+      descriptionSort=new FilterAndSortCriteria("description");
+      cto.add(descriptionSort);
+    }
+    descriptionSort.setSortAscending(true);
   }
 }

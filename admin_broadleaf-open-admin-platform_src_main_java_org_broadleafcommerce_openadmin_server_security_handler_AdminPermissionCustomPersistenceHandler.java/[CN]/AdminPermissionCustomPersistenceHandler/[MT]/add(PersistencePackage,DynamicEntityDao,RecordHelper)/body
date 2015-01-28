@@ -8,7 +8,7 @@
     AdminPermission adminInstance=(AdminPermission)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(AdminPermission.class.getName(),persistencePerspective);
     adminInstance=(AdminPermission)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    adminInstance=(AdminPermission)dynamicEntityDao.merge(adminInstance);
+    adminInstance=dynamicEntityDao.merge(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
   }
