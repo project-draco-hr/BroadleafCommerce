@@ -6,7 +6,7 @@
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     AdminPermission adminInstance=(AdminPermission)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     adminInstance=(AdminPermission)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    adminInstance=(AdminPermission)dynamicEntityDao.merge(adminInstance);
+    adminInstance=dynamicEntityDao.merge(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
   }
