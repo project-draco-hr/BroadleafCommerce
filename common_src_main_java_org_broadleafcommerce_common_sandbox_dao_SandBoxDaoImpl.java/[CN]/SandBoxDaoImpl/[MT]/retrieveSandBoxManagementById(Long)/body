@@ -3,11 +3,7 @@
   CriteriaQuery<SandBox> criteria=builder.createQuery(SandBox.class);
   Root<SandBoxManagementImpl> sandbox=criteria.from(SandBoxManagementImpl.class);
   criteria.select(sandbox.get("sandBox").as(SandBox.class));
-  List<Predicate> restrictions=new ArrayList<Predicate>();
-  restrictions.add(builder.equal(sandbox.get("sandBox").get("sandboxType"),SandBoxType.USER.getType()));
-  restrictions.add(builder.equal(sandbox.get("sandBox").get("author"),authorId));
-  restrictions.add(builder.equal(sandbox.get("sandBox").get("parentSandBox").get("id"),parentSandBoxId));
-  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  criteria.where(builder.equal(sandbox.get("sandBox").get("id"),sandBoxId));
   TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   List<SandBox> results=query.getResultList();
   if (results == null || results.size() == 0) {
