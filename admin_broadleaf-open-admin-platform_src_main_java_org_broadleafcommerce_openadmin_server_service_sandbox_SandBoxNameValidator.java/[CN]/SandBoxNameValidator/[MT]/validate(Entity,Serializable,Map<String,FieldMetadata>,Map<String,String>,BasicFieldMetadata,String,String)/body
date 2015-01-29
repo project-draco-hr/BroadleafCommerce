@@ -1,0 +1,9 @@
+{
+  if (value == null) {
+    return new PropertyValidationResult(succeedForNullValues);
+  }
+  if (!sandboxService.checkForExistingApprovalSandboxWithName(value)) {
+    return new PropertyValidationResult(false,ERROR_DUPLICATE_SANDBOX_NAME);
+  }
+  return new PropertyValidationResult(true);
+}
