@@ -2,8 +2,11 @@
   if (value == null) {
     return new PropertyValidationResult(succeedForNullValues);
   }
-  if (!sandboxService.checkForExistingApprovalSandboxWithName(value)) {
-    return new PropertyValidationResult(false,ERROR_DUPLICATE_SANDBOX_NAME);
+  Property theProp=entity.getPMap().get(propertyName);
+  if (theProp != null && theProp.getIsDirty()) {
+    if (!sandboxService.checkForExistingApprovalSandboxWithName(value)) {
+      return new PropertyValidationResult(false,ERROR_DUPLICATE_SANDBOX_NAME);
+    }
   }
   return new PropertyValidationResult(true);
 }
