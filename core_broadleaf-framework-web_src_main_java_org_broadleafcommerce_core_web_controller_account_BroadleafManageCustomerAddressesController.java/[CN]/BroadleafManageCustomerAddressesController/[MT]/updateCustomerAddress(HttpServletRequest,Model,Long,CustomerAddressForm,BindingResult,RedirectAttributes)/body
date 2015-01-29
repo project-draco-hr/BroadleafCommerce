@@ -3,6 +3,15 @@
   if (result.hasErrors()) {
     return getCustomerAddressesView();
   }
+  if ((form.getAddress().getPhonePrimary() != null) && (StringUtils.isEmpty(form.getAddress().getPhonePrimary().getPhoneNumber()))) {
+    form.getAddress().getPhonePrimary().setPhoneNumber("");
+  }
+  if ((form.getAddress().getPhoneSecondary() != null) && (StringUtils.isEmpty(form.getAddress().getPhoneSecondary().getPhoneNumber()))) {
+    form.getAddress().getPhoneSecondary().setPhoneNumber("");
+  }
+  if ((form.getAddress().getPhoneFax() != null) && (StringUtils.isEmpty(form.getAddress().getPhoneFax().getPhoneNumber()))) {
+    form.getAddress().getPhoneFax().setPhoneNumber("");
+  }
   CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
   if (customerAddress == null) {
     throw new IllegalArgumentException("Customer Address not found with the specified customerAddressId");

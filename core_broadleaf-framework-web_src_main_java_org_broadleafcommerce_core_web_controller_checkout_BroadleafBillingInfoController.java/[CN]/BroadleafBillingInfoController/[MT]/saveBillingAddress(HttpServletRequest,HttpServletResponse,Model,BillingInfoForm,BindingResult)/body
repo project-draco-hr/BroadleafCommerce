@@ -8,7 +8,13 @@
     return getCheckoutView();
   }
   if ((billingForm.getAddress().getPhonePrimary() != null) && (StringUtils.isEmpty(billingForm.getAddress().getPhonePrimary().getPhoneNumber()))) {
-    billingForm.getAddress().setPhonePrimary(null);
+    billingForm.getAddress().getPhonePrimary().setPhoneNumber("");
+  }
+  if ((billingForm.getAddress().getPhoneSecondary() != null) && (StringUtils.isEmpty(billingForm.getAddress().getPhoneSecondary().getPhoneNumber()))) {
+    billingForm.getAddress().getPhoneSecondary().setPhoneNumber("");
+  }
+  if ((billingForm.getAddress().getPhoneFax() != null) && (StringUtils.isEmpty(billingForm.getAddress().getPhoneFax().getPhoneNumber()))) {
+    billingForm.getAddress().getPhoneFax().setPhoneNumber("");
   }
   boolean found=false;
   for (  OrderPayment p : cart.getPayments()) {

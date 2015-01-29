@@ -8,7 +8,13 @@
     return getCheckoutView();
   }
   if ((shippingForm.getAddress().getPhonePrimary() != null) && (StringUtils.isEmpty(shippingForm.getAddress().getPhonePrimary().getPhoneNumber()))) {
-    shippingForm.getAddress().setPhonePrimary(null);
+    shippingForm.getAddress().getPhonePrimary().setPhoneNumber("");
+  }
+  if ((shippingForm.getAddress().getPhoneSecondary() != null) && (StringUtils.isEmpty(shippingForm.getAddress().getPhoneSecondary().getPhoneNumber()))) {
+    shippingForm.getAddress().getPhoneSecondary().setPhoneNumber("");
+  }
+  if ((shippingForm.getAddress().getPhoneFax() != null) && (StringUtils.isEmpty(shippingForm.getAddress().getPhoneFax().getPhoneNumber()))) {
+    shippingForm.getAddress().getPhoneFax().setPhoneNumber("");
   }
   FulfillmentGroup shippableFulfillmentGroup=fulfillmentGroupService.getFirstShippableFulfillmentGroup(cart);
   if (shippableFulfillmentGroup != null) {
