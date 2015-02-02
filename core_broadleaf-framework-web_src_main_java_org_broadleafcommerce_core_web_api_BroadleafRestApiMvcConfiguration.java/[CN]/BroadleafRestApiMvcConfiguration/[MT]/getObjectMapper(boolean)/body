@@ -1,0 +1,10 @@
+{
+  Jackson2ObjectMapperBuilder builder=getObjectMapperBuilder();
+  TypeFactory factory=TypeFactory.defaultInstance().withModifier(typeModifier);
+  if (useXml) {
+    return builder.createXmlMapper(true).build().setTypeFactory(factory);
+  }
+ else {
+    return builder.build().setTypeFactory(factory);
+  }
+}

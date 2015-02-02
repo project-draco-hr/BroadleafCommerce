@@ -5,19 +5,19 @@
       q=exploitProtectionService.cleanString(q);
     }
  else {
-      throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_EMPTY);
+      throw BroadleafWebServicesException.build(HttpStatus.BAD_REQUEST.value()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_EMPTY);
     }
   }
  catch (  ServiceException e) {
-    throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_MALFORMED,q);
+    throw BroadleafWebServicesException.build(HttpStatus.BAD_REQUEST.value()).addMessage(BroadleafWebServicesException.SEARCH_QUERY_MALFORMED,q);
   }
   if (categoryId == null) {
-    throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.INVALID_CATEGORY_ID,categoryId);
+    throw BroadleafWebServicesException.build(HttpStatus.BAD_REQUEST.value()).addMessage(BroadleafWebServicesException.INVALID_CATEGORY_ID,categoryId);
   }
   Category category=null;
   category=catalogService.findCategoryById(categoryId);
   if (category == null) {
-    throw BroadleafWebServicesException.build(Response.Status.BAD_REQUEST.getStatusCode()).addMessage(BroadleafWebServicesException.INVALID_CATEGORY_ID,categoryId);
+    throw BroadleafWebServicesException.build(HttpStatus.BAD_REQUEST.value()).addMessage(BroadleafWebServicesException.INVALID_CATEGORY_ID,categoryId);
   }
   List<SearchFacetDTO> availableFacets=getSearchService().getSearchFacets();
   SearchCriteria searchCriteria=facetService.buildSearchCriteria(request,availableFacets);
@@ -32,6 +32,6 @@
     return wrapper;
   }
  catch (  ServiceException e) {
-    throw BroadleafWebServicesException.build(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    throw BroadleafWebServicesException.build(HttpStatus.INTERNAL_SERVER_ERROR.value());
   }
 }

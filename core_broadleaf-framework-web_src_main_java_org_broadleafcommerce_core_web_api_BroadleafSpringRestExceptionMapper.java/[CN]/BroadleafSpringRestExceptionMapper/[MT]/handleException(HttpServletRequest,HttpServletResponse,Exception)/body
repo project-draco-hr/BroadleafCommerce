@@ -1,0 +1,19 @@
+{
+  ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
+  Locale locale=null;
+  BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  if (requestContext != null) {
+    locale=requestContext.getJavaLocale();
+  }
+  LOG.error("An error occured invoking a REST service",ex);
+  if (locale == null) {
+    locale=Locale.getDefault();
+  }
+  errorWrapper.setHttpStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+  response.setStatus(resolveResponseStatusCode(ex,errorWrapper));
+  ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+  errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.UNKNOWN_ERROR));
+  errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.UNKNOWN_ERROR,null,BroadleafWebServicesException.UNKNOWN_ERROR,locale));
+  errorWrapper.getMessages().add(errorMessageWrapper);
+  return errorWrapper;
+}

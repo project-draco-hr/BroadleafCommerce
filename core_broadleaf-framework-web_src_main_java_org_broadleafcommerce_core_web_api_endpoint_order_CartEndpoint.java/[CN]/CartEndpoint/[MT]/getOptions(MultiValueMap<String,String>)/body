@@ -1,0 +1,12 @@
+{
+  HashMap<String,String> productOptions=new HashMap<String,String>();
+  Set<String> keySet=requestParams.keySet();
+  for (  String key : keySet) {
+    if (requestParams.getFirst(key) != null) {
+      if (key.startsWith("productOption.")) {
+        productOptions.put(StringUtils.removeStart(key,"productOption."),requestParams.getFirst(key));
+      }
+    }
+  }
+  return productOptions;
+}

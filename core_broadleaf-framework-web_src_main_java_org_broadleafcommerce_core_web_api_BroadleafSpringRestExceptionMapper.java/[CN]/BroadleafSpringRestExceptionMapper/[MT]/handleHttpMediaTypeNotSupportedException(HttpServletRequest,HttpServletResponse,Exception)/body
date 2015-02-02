@@ -1,0 +1,19 @@
+{
+  ErrorWrapper errorWrapper=(ErrorWrapper)context.getBean(ErrorWrapper.class.getName());
+  Locale locale=null;
+  BroadleafRequestContext requestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  if (requestContext != null) {
+    locale=requestContext.getJavaLocale();
+  }
+  LOG.error("An error occured invoking a REST service",ex);
+  if (locale == null) {
+    locale=Locale.getDefault();
+  }
+  errorWrapper.setHttpStatusCode(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+  response.setStatus(resolveResponseStatusCode(ex,errorWrapper));
+  ErrorMessageWrapper errorMessageWrapper=(ErrorMessageWrapper)context.getBean(ErrorMessageWrapper.class.getName());
+  errorMessageWrapper.setMessageKey(resolveClientMessageKey(BroadleafWebServicesException.CONTENT_TYPE_NOT_SUPPORTED));
+  errorMessageWrapper.setMessage(messageSource.getMessage(BroadleafWebServicesException.CONTENT_TYPE_NOT_SUPPORTED,new String[]{request.getContentType()},BroadleafWebServicesException.CONTENT_TYPE_NOT_SUPPORTED,locale));
+  errorWrapper.getMessages().add(errorMessageWrapper);
+  return errorWrapper;
+}

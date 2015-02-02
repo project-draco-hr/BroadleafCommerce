@@ -1,0 +1,28 @@
+{
+  Order cart=CartState.getCart();
+  if (cart != null) {
+    try {
+      OrderItemRequestDTO orderItemRequestDTO=new OrderItemRequestDTO();
+      HashMap<String,String> productOptions=getOptions(requestParams);
+      orderItemRequestDTO.setOrderItemId(itemId);
+      if (productOptions.size() > 0) {
+        orderItemRequestDTO.setItemAttributes(productOptions);
+      }
+      Order order=orderService.updateProductOptionsForItem(cart.getId(),orderItemRequestDTO,priceOrder);
+      order=orderService.save(order,priceOrder);
+      return wrapCart(request,cart);
+    }
+ catch (    UpdateCartException e) {
+      if (e.getCause() instanceof ItemNotFoundException) {
+        throw BroadleafWebServicesException.build(HttpStatus.NOT_FOUND.value(),null,null,e.getCause()).addMessage(BroadleafWebServicesException.CART_ITEM_NOT_FOUND,itemId);
+      }
+ else {
+        throw BroadleafWebServicesException.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,null,e).addMessage(BroadleafWebServicesException.UPDATE_CART_ERROR);
+      }
+    }
+catch (    PricingException pe) {
+      throw BroadleafWebServicesException.build(HttpStatus.INTERNAL_SERVER_ERROR.value(),null,null,pe).addMessage(BroadleafWebServicesException.CART_PRICING_ERROR);
+    }
+  }
+  throw BroadleafWebServicesException.build(HttpStatus.NOT_FOUND.value()).addMessage(BroadleafWebServicesException.CART_NOT_FOUND);
+}
