@@ -1,5 +1,26 @@
 {
-  if (SolrContext.getServer() instanceof EmbeddedSolrServer) {
-    ((EmbeddedSolrServer)SolrContext.getServer()).shutdown();
+  try {
+    if (SolrContext.getServer() != null) {
+      SolrContext.getServer().shutdown();
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Error shutting down primary SolrServer (client).",e);
+  }
+  try {
+    if (SolrContext.getReindexServer() != null && SolrContext.getReindexServer() != SolrContext.getServer()) {
+      SolrContext.getReindexServer().shutdown();
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Error shutting down reindex SolrServer (client).",e);
+  }
+  try {
+    if (SolrContext.getAdminServer() != null && SolrContext.getAdminServer() != SolrContext.getServer() && SolrContext.getAdminServer() != SolrContext.getReindexServer()) {
+      SolrContext.getAdminServer().shutdown();
+    }
+  }
+ catch (  Exception e) {
+    LOG.error("Error shutting down admin SolrServer (client).",e);
   }
 }

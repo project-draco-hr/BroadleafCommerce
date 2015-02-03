@@ -1,3 +1,19 @@
 {
+  if (server != null && CloudSolrServer.class.isAssignableFrom(server.getClass())) {
+    CloudSolrServer cs=(CloudSolrServer)server;
+    if (StringUtils.isBlank(cs.getDefaultCollection())) {
+      cs.setDefaultCollection(REINDEX);
+    }
+    if (primaryServer != null) {
+      if (server == primaryServer) {
+        throw new IllegalArgumentException("The primary and reindex CloudSolrServers are the same instances. " + "They must be different instances. Each instance must have a different defaultCollection or " + "the defaultCollection must be unspecified and Broadleaf will set it.");
+      }
+      if (CloudSolrServer.class.isAssignableFrom(primaryServer.getClass())) {
+        if (cs.getDefaultCollection().equals(((CloudSolrServer)primaryServer).getDefaultCollection())) {
+          throw new IllegalStateException("Primary and Reindex servers cannot have the same defaultCollection: " + cs.getDefaultCollection());
+        }
+      }
+    }
+  }
   reindexServer=server;
 }

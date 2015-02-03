@@ -2,6 +2,7 @@
   Map<String,SearchFacetDTO> namedFacetMap=getNamedFacetMap(facets,searchCriteria);
   int start=(searchCriteria.getPage() <= 0) ? 0 : (searchCriteria.getPage() - 1);
   SolrQuery solrQuery=new SolrQuery().setQuery(qualifiedSolrQuery).setRows(searchCriteria.getPageSize()).setStart((start) * searchCriteria.getPageSize());
+  solrQuery.setParam("collection",SolrContext.PRIMARY);
   if (useSku) {
     solrQuery.setFields(shs.getSkuIdFieldName());
   }

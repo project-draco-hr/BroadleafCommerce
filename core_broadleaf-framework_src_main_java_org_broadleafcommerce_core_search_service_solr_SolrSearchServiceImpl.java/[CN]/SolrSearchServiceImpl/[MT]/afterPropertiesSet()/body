@@ -1,0 +1,58 @@
+{
+  if (SolrContext.isSolrCloudMode()) {
+    CloudSolrServer primary=(CloudSolrServer)SolrContext.getServer();
+    CloudSolrServer reindex=(CloudSolrServer)SolrContext.getReindexServer();
+    if (primary == null || reindex == null) {
+      throw new IllegalStateException("The primary and reindex CloudSolrServers must not be null. Check " + "your configuration and ensure that you are passing a different instance for each to the " + "constructor of " + this.getClass().getName() + " and ensure that each has a null (empty)"+ " defaultCollection property, or ensure that defaultCollection is unique between"+ " the two instances. All other things, like Zookeeper addresses should be the same.");
+    }
+    if (primary == reindex) {
+      throw new IllegalStateException("The primary and reindex CloudSolrServers must be different instances " + "and their defaultCollection property must be unique or null.  All other things like the " + "Zookeeper addresses should be the same.");
+    }
+    if (StringUtils.isEmpty(primary.getDefaultCollection())) {
+      primary.setDefaultCollection(SolrContext.PRIMARY);
+    }
+    if (StringUtils.isEmpty(reindex.getDefaultCollection())) {
+      reindex.setDefaultCollection(SolrContext.REINDEX);
+    }
+    if (primary.getDefaultCollection().equals(reindex.getDefaultCollection())) {
+      throw new IllegalStateException("The primary and reindex CloudSolrServers must have a null (empty) or " + "unique defaultCollection property.  All other things like the " + "Zookeeper addresses should be the same.");
+    }
+    primary.connect();
+    Set<String> collectionNames=primary.getZkStateReader().getAllCollections();
+    if (collectionNames == null) {
+      collectionNames=new HashSet<String>();
+    }
+    Aliases aliases=primary.getZkStateReader().getAliases();
+    Map<String,String> aliasCollectionMap=aliases.getCollectionAliasMap();
+    if (aliasCollectionMap == null || !aliasCollectionMap.containsKey(primary.getDefaultCollection())) {
+      String collectionName=null;
+      for (int i=0; i < 1000; i++) {
+        collectionName="blcCollection" + i;
+        if (collectionNames.contains(collectionName)) {
+          collectionName=null;
+        }
+ else {
+          break;
+        }
+      }
+      CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
+      CollectionAdminRequest.createAlias(primary.getDefaultCollection(),collectionName,primary);
+      aliases=primary.getZkStateReader().getAliases();
+      aliasCollectionMap=aliases.getCollectionAliasMap();
+    }
+    if (aliasCollectionMap == null || !aliasCollectionMap.containsKey(reindex.getDefaultCollection())) {
+      String collectionName=null;
+      for (int i=0; i < 1000; i++) {
+        collectionName="blcCollection" + i;
+        if (collectionNames.contains(collectionName)) {
+          collectionName=null;
+        }
+ else {
+          break;
+        }
+      }
+      CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
+      CollectionAdminRequest.createAlias(reindex.getDefaultCollection(),collectionName,primary);
+    }
+  }
+}

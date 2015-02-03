@@ -1,19 +1,43 @@
 {
-  if (SolrContext.isSingleCoreMode()) {
-    LOG.debug("In single core mode. There are no cores to swap.");
-  }
- else {
-    LOG.debug("Swapping active cores");
-    CoreAdminRequest car=new CoreAdminRequest();
-    car.setCoreName(SolrContext.PRIMARY);
-    car.setOtherCoreName(SolrContext.REINDEX);
-    car.setAction(CoreAdminAction.SWAP);
+  if (SolrContext.isSolrCloudMode()) {
+    CloudSolrServer primary=(CloudSolrServer)SolrContext.getServer();
+    CloudSolrServer reindex=(CloudSolrServer)SolrContext.getReindexServer();
     try {
-      SolrContext.getAdminServer().request(car);
+      primary.connect();
+      Aliases aliases=primary.getZkStateReader().getAliases();
+      Map<String,String> aliasCollectionMap=aliases.getCollectionAliasMap();
+      if (aliasCollectionMap == null || !aliasCollectionMap.containsKey(primary.getDefaultCollection()) || !aliasCollectionMap.containsKey(reindex.getDefaultCollection())) {
+        throw new IllegalStateException("Could not determine the PRIMARY or REINDEX " + "collection or collections from the Solr aliases.");
+      }
+      String primaryCollectionName=aliasCollectionMap.get(primary.getDefaultCollection());
+      primaryCollectionName=primaryCollectionName.split(",")[0];
+      String reindexCollectionName=aliasCollectionMap.get(reindex.getDefaultCollection());
+      reindexCollectionName=reindexCollectionName.split(",")[0];
+      CollectionAdminRequest.createAlias(primary.getDefaultCollection(),reindexCollectionName,primary);
+      CollectionAdminRequest.createAlias(reindex.getDefaultCollection(),primaryCollectionName,primary);
     }
  catch (    Exception e) {
-      LOG.error(e);
-      throw new ServiceException("Unable to swap cores",e);
+      LOG.error("An exception occured swapping cores.",e);
+      throw new ServiceException("Unable to swap SolrCloud collections after a full reindex.",e);
+    }
+  }
+ else {
+    if (SolrContext.isSingleCoreMode()) {
+      LOG.debug("In single core mode. There are no cores to swap.");
+    }
+ else {
+      LOG.debug("Swapping active cores");
+      CoreAdminRequest car=new CoreAdminRequest();
+      car.setCoreName(SolrContext.PRIMARY);
+      car.setOtherCoreName(SolrContext.REINDEX);
+      car.setAction(CoreAdminAction.SWAP);
+      try {
+        SolrContext.getAdminServer().request(car);
+      }
+ catch (      Exception e) {
+        LOG.error(e);
+        throw new ServiceException("Unable to swap cores",e);
+      }
     }
   }
 }
