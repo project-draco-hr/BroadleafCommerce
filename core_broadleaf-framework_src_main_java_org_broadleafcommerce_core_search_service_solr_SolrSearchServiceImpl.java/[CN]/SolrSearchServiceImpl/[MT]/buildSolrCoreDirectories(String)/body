@@ -1,0 +1,38 @@
+{
+  File cores=new File(new File(solrServer),"cores");
+  if (!cores.exists() || !cores.isDirectory()) {
+    cores.mkdirs();
+  }
+  File primaryCoreDir=new File(cores,"primary");
+  if (!primaryCoreDir.exists() || !primaryCoreDir.isDirectory()) {
+    primaryCoreDir.mkdirs();
+  }
+  File primaryCoreFile=new File(primaryCoreDir,"core.properties");
+  if (!primaryCoreFile.exists()) {
+    FileOutputStream os=new FileOutputStream(primaryCoreFile);
+    Properties prop=new Properties();
+    prop.put("name",SolrContext.PRIMARY);
+    prop.store(os,"Generated Solr core properties file");
+    IOUtils.closeQuietly(os);
+  }
+  File primaryConfDir=new File(primaryCoreDir,"conf");
+  if (!primaryConfDir.exists() || !primaryConfDir.isDirectory()) {
+    primaryConfDir.mkdirs();
+  }
+  File reindexCoreDir=new File(cores,"reindex");
+  if (!reindexCoreDir.exists() || !reindexCoreDir.isDirectory()) {
+    reindexCoreDir.mkdirs();
+  }
+  File reindexCoreFile=new File(reindexCoreDir,"core.properties");
+  if (!reindexCoreFile.exists()) {
+    FileOutputStream os=new FileOutputStream(reindexCoreFile);
+    Properties prop=new Properties();
+    prop.put("name",SolrContext.REINDEX);
+    prop.store(os,"Generated Solr core properties file");
+    IOUtils.closeQuietly(os);
+  }
+  File reindexConfDir=new File(reindexCoreDir,"conf");
+  if (!reindexConfDir.exists() || !reindexConfDir.isDirectory()) {
+    reindexConfDir.mkdirs();
+  }
+}
