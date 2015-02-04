@@ -18,7 +18,7 @@
       throw new IllegalStateException("The primary and reindex CloudSolrServers must have a null (empty) or " + "unique defaultCollection property.  All other things like the " + "Zookeeper addresses should be the same.");
     }
     primary.connect();
-    Set<String> collectionNames=primary.getZkStateReader().getAllCollections();
+    Set<String> collectionNames=primary.getZkStateReader().getClusterState().getCollections();
     if (collectionNames == null) {
       collectionNames=new HashSet<String>();
     }
@@ -37,9 +37,20 @@
       }
       CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
       CollectionAdminRequest.createAlias(primary.getDefaultCollection(),collectionName,primary);
-      aliases=primary.getZkStateReader().getAliases();
-      aliasCollectionMap=aliases.getCollectionAliasMap();
     }
+ else {
+      String collectionName=aliasCollectionMap.get(primary.getDefaultCollection());
+      collectionName=collectionName.split(",")[0];
+      if (!collectionNames.contains(collectionName)) {
+        CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
+      }
+    }
+    collectionNames=primary.getZkStateReader().getClusterState().getCollections();
+    if (collectionNames == null) {
+      collectionNames=new HashSet<String>();
+    }
+    aliases=primary.getZkStateReader().getAliases();
+    aliasCollectionMap=aliases.getCollectionAliasMap();
     if (aliasCollectionMap == null || !aliasCollectionMap.containsKey(reindex.getDefaultCollection())) {
       String collectionName=null;
       for (int i=0; i < 1000; i++) {
@@ -53,6 +64,13 @@
       }
       CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
       CollectionAdminRequest.createAlias(reindex.getDefaultCollection(),collectionName,primary);
+    }
+ else {
+      String collectionName=aliasCollectionMap.get(reindex.getDefaultCollection());
+      collectionName=collectionName.split(",")[0];
+      if (!collectionNames.contains(collectionName)) {
+        CollectionAdminRequest.createCollection(collectionName,solrCloudNumShards,solrCloudConfigName,primary);
+      }
     }
   }
 }
