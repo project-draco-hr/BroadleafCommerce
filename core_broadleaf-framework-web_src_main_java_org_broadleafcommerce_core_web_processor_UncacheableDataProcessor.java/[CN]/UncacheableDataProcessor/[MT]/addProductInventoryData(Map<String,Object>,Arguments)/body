@@ -1,9 +1,19 @@
 {
   List<Long> outOfStockProducts=new ArrayList<Long>();
   List<Long> outOfStockSkus=new ArrayList<Long>();
+  Set<Product> allProducts=new HashSet<Product>();
+  Set<Sku> allSkus=new HashSet<Sku>();
   Set<Product> products=(Set<Product>)((Map<String,Object>)arguments.getExpressionEvaluationRoot()).get("blcAllDisplayedProducts");
-  if (products != null) {
-    for (    Product product : products) {
+  Set<Sku> skus=(Set<Sku>)((Map<String,Object>)arguments.getExpressionEvaluationRoot()).get("blcAllDisplayedSkus");
+  if (!CollectionUtils.isEmpty(products)) {
+    allProducts.addAll(products);
+  }
+  if (!CollectionUtils.isEmpty(skus)) {
+    allSkus.addAll(skus);
+  }
+  extensionManager.getProxy().modifyProductListForInventoryCheck(arguments,allProducts,allSkus);
+  if (!allProducts.isEmpty()) {
+    for (    Product product : allProducts) {
       if (product.getDefaultSku() != null) {
         Boolean qtyAvailable=inventoryService.isAvailable(product.getDefaultSku(),1);
         if (qtyAvailable != null && !qtyAvailable) {
@@ -13,9 +23,8 @@
     }
   }
  else {
-    Set<Sku> skus=(Set<Sku>)((Map<String,Object>)arguments.getExpressionEvaluationRoot()).get("blcAllDisplayedSkus");
-    if (skus != null) {
-      Map<Sku,Integer> inventoryAvailable=inventoryService.retrieveQuantitiesAvailable(skus);
+    if (!allSkus.isEmpty()) {
+      Map<Sku,Integer> inventoryAvailable=inventoryService.retrieveQuantitiesAvailable(allSkus);
       for (      Map.Entry<Sku,Integer> entry : inventoryAvailable.entrySet()) {
         if (entry.getValue() == null || entry.getValue() < 1) {
           outOfStockSkus.add(entry.getKey().getId());
