@@ -1,5 +1,5 @@
 {
-  String returnPath=saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
+  saveEntity(request,response,model,pathVars,id,entityForm,result,ra);
   Map<String,Object> jsonResponse=new HashMap<String,Object>();
   if (result.hasErrors()) {
     List<Map<String,Object>> errorArray=new ArrayList<Map<String,Object>>();
@@ -8,7 +8,14 @@
       errorMap.put("errorType","fieldError");
       String fieldName=e.getField().substring(e.getField().indexOf("[") + 1,e.getField().indexOf("]")).replace("_","-");
       errorMap.put("field",fieldName);
-      errorMap.put("message",e.getDefaultMessage());
+      BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+      if (context != null && context.getMessageSource() != null) {
+        errorMap.put("message",context.getMessageSource().getMessage(e.getCode(),null,e.getCode(),context.getJavaLocale()));
+      }
+ else {
+        LOG.warn("Could not find the MessageSource on the current request, not translating the message key");
+        errorMap.put("message",e.getCode());
+      }
       String tabFieldName=fieldName.replaceAll("_+",".");
       for (      Tab t : entityForm.getTabs()) {
         for (        Field f : t.getFields()) {
