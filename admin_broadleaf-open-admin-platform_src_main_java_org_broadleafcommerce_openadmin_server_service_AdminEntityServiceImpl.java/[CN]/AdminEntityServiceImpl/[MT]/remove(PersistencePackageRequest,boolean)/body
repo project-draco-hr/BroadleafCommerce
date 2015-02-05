@@ -1,9 +1,17 @@
 {
   PersistencePackage pkg=persistencePackageFactory.create(request);
-  if (transactional) {
-    return service.remove(pkg);
-  }
+  try {
+    if (transactional) {
+      return service.remove(pkg);
+    }
  else {
-    return service.nonTransactionalRemove(pkg);
+      return service.nonTransactionalRemove(pkg);
+    }
+  }
+ catch (  ValidationException e) {
+    if (e.containsCause(ConstraintViolationException.class)) {
+      e.getEntity().addGlobalValidationError("Could not remove because other objects relate");
+    }
+    return new PersistenceResponse().withEntity(e.getEntity());
   }
 }
