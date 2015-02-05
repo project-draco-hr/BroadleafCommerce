@@ -1,14 +1,18 @@
 {
   try {
     Class<?>[] entityClasses=persistenceManager.getDynamicEntityDao().getAllPolymorphicEntitiesFromCeiling(Class.forName(persistencePackage.getCeilingEntityFullyQualifiedClassname()));
-    boolean isArchivable=false;
+    AtomicBoolean isArchivable=new AtomicBoolean(true);
     for (    Class<?> entity : entityClasses) {
-      if (Status.class.isAssignableFrom(entity)) {
-        isArchivable=true;
+      extensionManager.getProxy().isArchivable(entity,isArchivable);
+      if (!isArchivable.get()) {
+        break;
+      }
+      if (!Status.class.isAssignableFrom(entity)) {
+        isArchivable.set(false);
         break;
       }
     }
-    if (isArchivable && !persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
+    if (isArchivable.get() && !persistencePackage.getPersistencePerspective().getShowArchivedFields()) {
       String targetPropertyName="archiveStatus.archived";
       if (persistencePackage.getPersistencePerspectiveItems().containsKey(PersistencePerspectiveItemType.ADORNEDTARGETLIST)) {
         AdornedTargetList atl=(AdornedTargetList)persistencePackage.getPersistencePerspectiveItems().get(PersistencePerspectiveItemType.ADORNEDTARGETLIST);
