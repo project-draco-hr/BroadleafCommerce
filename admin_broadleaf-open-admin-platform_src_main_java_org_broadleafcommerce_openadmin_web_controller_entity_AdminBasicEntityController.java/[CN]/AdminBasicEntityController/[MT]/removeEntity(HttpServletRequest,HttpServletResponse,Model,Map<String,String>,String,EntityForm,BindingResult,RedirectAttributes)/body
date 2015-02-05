@@ -1,0 +1,31 @@
+{
+  String sectionKey=getSectionKey(pathVars);
+  List<SectionCrumb> sectionCrumbs=getSectionCrumbs(request,sectionKey,id);
+  Entity entity=service.removeEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
+  if (entity != null) {
+    entityFormValidator.validate(entityForm,entity,result);
+    if (result.hasErrors()) {
+      FlashMap fm=new FlashMap();
+      fm.put("headerFlash","delete.unsuccessful");
+      fm.put("headerFlashAlert",true);
+      request.setAttribute(DispatcherServlet.OUTPUT_FLASH_MAP_ATTRIBUTE,fm);
+      String sectionClassName=getClassNameForSection(sectionKey);
+      PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,sectionCrumbs,pathVars);
+      ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+      entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
+      Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,sectionCrumbs);
+      entityForm.clearFieldsMap();
+      formService.populateEntityForm(cmd,entity,subRecordsMap,entityForm,sectionCrumbs);
+      modifyEntityForm(entityForm,pathVars);
+      return populateJsonValidationErrors(entityForm,result,new JsonResponse(response)).done();
+    }
+  }
+  ra.addFlashAttribute("headerFlash","delete.successful");
+  ra.addFlashAttribute("headerFlashAlert",true);
+  if (isAjaxRequest(request)) {
+    return "ajaxredirect:" + getContextPath(request) + sectionKey+ "?headerFlash=delete.successful";
+  }
+ else {
+    return "redirect:/" + sectionKey;
+  }
+}

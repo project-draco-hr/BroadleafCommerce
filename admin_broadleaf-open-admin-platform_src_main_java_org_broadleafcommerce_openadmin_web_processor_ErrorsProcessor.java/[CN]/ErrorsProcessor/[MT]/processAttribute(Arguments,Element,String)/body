@@ -38,11 +38,16 @@
         }
       }
     }
+    String translatedGeneralTab=GENERAL_ERRORS_TAB_KEY;
+    BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
+    if (context != null && context.getMessageSource() != null) {
+      translatedGeneralTab=context.getMessageSource().getMessage(translatedGeneralTab,null,translatedGeneralTab,context.getJavaLocale());
+    }
     for (    ObjectError err : bindStatus.getErrors().getGlobalErrors()) {
       Map<String,List<String>> tabErrors=result.get(GENERAL_ERRORS_TAB_KEY);
       if (tabErrors == null) {
         tabErrors=new HashMap<String,List<String>>();
-        result.put(GENERAL_ERRORS_TAB_KEY,tabErrors);
+        result.put(translatedGeneralTab,tabErrors);
       }
       addFieldError(GENERAL_ERROR_FIELD_KEY,err.getCode(),tabErrors);
     }
