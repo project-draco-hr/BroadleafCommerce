@@ -9,9 +9,7 @@
     }
   }
  catch (  ValidationException e) {
-    if (e.containsCause(ConstraintViolationException.class)) {
-      e.getEntity().addGlobalValidationError("Could not remove because other objects relate");
-    }
+    ensureEntityMarkedAsValidationFailure(e,request);
     return new PersistenceResponse().withEntity(e.getEntity());
   }
 }

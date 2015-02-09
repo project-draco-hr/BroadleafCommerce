@@ -1,0 +1,9 @@
+{
+  if (e.containsCause(ConstraintViolationException.class)) {
+    e.getEntity().addGlobalValidationError("constraintViolationError");
+  }
+ else   if (!e.getEntity().isValidationFailure()) {
+    e.getEntity().setValidationFailure(true);
+    e.getEntity().addGlobalValidationError(e.getMessage());
+  }
+}
