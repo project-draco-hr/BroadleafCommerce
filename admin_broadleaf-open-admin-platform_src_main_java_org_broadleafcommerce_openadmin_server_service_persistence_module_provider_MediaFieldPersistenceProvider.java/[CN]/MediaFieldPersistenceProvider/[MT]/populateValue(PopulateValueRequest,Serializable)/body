@@ -15,7 +15,7 @@
     setNonDisplayableValues(populateValueRequest);
     Class<?> valueType=getStartingValueType(populateValueRequest);
     if (Media.class.isAssignableFrom(valueType)) {
-      Media newMedia=convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue(),valueType);
+      Media newMedia=mediaBuilderService.convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue(),valueType);
       boolean persist=false;
       Media media;
       try {
