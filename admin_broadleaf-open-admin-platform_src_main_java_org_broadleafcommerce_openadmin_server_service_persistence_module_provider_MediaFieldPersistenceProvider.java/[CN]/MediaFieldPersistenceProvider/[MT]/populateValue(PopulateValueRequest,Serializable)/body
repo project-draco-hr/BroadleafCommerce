@@ -23,7 +23,7 @@
       throw new IllegalAccessException("Unable to determine the valueType for the rule field (" + populateValueRequest.getProperty().getName() + ")");
     }
     if (Media.class.isAssignableFrom(valueType)) {
-      Media newMedia=convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue());
+      Media newMedia=mediaBuilderService.convertJsonToMedia(populateValueRequest.getProperty().getUnHtmlEncodedValue(),valueType);
       Media media;
       try {
         media=(Media)populateValueRequest.getFieldManager().getFieldValue(instance,populateValueRequest.getProperty().getName());

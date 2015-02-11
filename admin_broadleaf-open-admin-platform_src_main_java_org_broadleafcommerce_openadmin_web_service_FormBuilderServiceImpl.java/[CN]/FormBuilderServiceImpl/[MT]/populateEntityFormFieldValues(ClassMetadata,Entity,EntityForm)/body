@@ -37,7 +37,8 @@
             field.setValue(entityProp.getValue());
             field.setDisplayValue(entityProp.getDisplayValue());
             MediaField mf=(MediaField)field;
-            mf.setMedia(convertJsonToMedia(entityProp.getUnHtmlEncodedValue()));
+            Class<MediaDto> type=entityConfiguration.lookupEntityClass(MediaDto.class.getName(),MediaDto.class);
+            mf.setMedia(mediaBuilderService.convertJsonToMedia(entityProp.getUnHtmlEncodedValue(),type));
           }
  else           if (!SupportedFieldType.PASSWORD_CONFIRM.equals(basicFM.getExplicitFieldType())) {
             field.setValue(entityProp.getValue());
