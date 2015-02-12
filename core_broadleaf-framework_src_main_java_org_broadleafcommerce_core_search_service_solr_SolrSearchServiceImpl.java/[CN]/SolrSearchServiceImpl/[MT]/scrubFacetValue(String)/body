@@ -1,0 +1,8 @@
+{
+  String scrubbedFacetValue=facetValue;
+  String[] specialCharacters=new String[]{"\\\\","\\+","-","&&","\\|\\|","\\!","\\(","\\)","\\{","\\}","\\[","\\]","\\^","\"","~","\\*","\\?",":"};
+  for (  String character : specialCharacters) {
+    scrubbedFacetValue=scrubbedFacetValue.replaceAll(character,"\\\\" + character);
+  }
+  return scrubbedFacetValue;
+}

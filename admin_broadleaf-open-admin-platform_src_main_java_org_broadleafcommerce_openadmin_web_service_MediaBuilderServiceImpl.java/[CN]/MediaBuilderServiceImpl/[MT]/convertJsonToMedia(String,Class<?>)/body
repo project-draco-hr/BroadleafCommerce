@@ -3,7 +3,7 @@
     try {
       ObjectMapper om=new ObjectMapper();
       om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-      return om.readValue(json,entityConfiguration.lookupEntityClass(MediaDto.class.getName(),MediaDto.class));
+      return (Media)om.readValue(json,type);
     }
  catch (    Exception e) {
       LOG.warn("Error parsing json to media " + json,e);
