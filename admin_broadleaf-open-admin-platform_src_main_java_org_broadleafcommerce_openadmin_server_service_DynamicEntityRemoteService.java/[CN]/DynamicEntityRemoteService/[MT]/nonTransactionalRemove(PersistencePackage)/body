@@ -1,3 +1,22 @@
 {
-  return remove(persistencePackage);
+  return persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<PersistenceResponse,ServiceException>(){
+    @Override public PersistenceResponse execute() throws ServiceException {
+      try {
+        PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
+        return persistenceManager.remove(persistencePackage);
+      }
+ catch (      ServiceException e) {
+        if (e instanceof ValidationException) {
+          throw e;
+        }
+ else         if (e.getCause() instanceof ValidationException) {
+          throw (ValidationException)e.getCause();
+        }
+        LOG.error("Problem removing " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
+        String message=exploitProtectionService.cleanString(e.getMessage());
+        throw recreateSpecificServiceException(e,message,e.getCause());
+      }
+    }
+  }
+);
 }

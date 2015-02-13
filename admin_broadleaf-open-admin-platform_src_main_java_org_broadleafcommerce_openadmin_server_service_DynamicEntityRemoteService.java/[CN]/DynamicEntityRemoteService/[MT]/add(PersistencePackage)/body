@@ -1,26 +1,21 @@
 {
-  return persistenceThreadManager.operation(TargetModeType.SANDBOX,new Persistable<PersistenceResponse,ServiceException>(){
-    @Override public PersistenceResponse execute() throws ServiceException {
-      cleanEntity(persistencePackage.getEntity());
-      if (persistencePackage.getEntity().isValidationFailure()) {
-        return new PersistenceResponse().withEntity(persistencePackage.getEntity());
+  final PersistenceResponse[] response=new PersistenceResponse[1];
+  try {
+    transUtil.runTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
+      @Override public void execute() throws Throwable {
+        response[0]=nonTransactionalAdd(persistencePackage);
       }
-      try {
-        PersistenceManager persistenceManager=PersistenceManagerFactory.getPersistenceManager();
-        return persistenceManager.add(persistencePackage);
-      }
- catch (      ServiceException e) {
-        if (e instanceof ValidationException) {
-          throw e;
-        }
- else         if (e.getCause() instanceof ValidationException) {
-          throw (ValidationException)e.getCause();
-        }
-        String message=exploitProtectionService.cleanString(e.getMessage());
-        LOG.error("Problem adding new " + persistencePackage.getCeilingEntityFullyQualifiedClassname(),e);
-        throw recreateSpecificServiceException(e,message,e.getCause());
+      @Override public boolean shouldRetryOnTransactionLockAcquisitionFailure(){
+        return super.shouldRetryOnTransactionLockAcquisitionFailure();
       }
     }
+,RuntimeException.class);
   }
-);
+ catch (  RuntimeException e) {
+    if (e.getCause() instanceof ServiceException) {
+      throw (ServiceException)e.getCause();
+    }
+    throw e;
+  }
+  return response[0];
 }
