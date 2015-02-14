@@ -1,0 +1,16 @@
+{
+  Class<?> response=candidate;
+  if (ProxyFactory.isProxyClass(candidate)) {
+    if (!candidate.getName().contains(JAVASSIST_PROXY_KEY_PHRASE)) {
+      throw new ProxyDetectionException(String.format("Cannot determine the original implementation class for " + "the javassist proxy. Expected to find the keyphrase (%s) in the proxy classname (%s).",JAVASSIST_PROXY_KEY_PHRASE,candidate.getName()));
+    }
+    String implName=candidate.getName().substring(0,candidate.getName().lastIndexOf(JAVASSIST_PROXY_KEY_PHRASE));
+    try {
+      response=Class.forName(implName);
+    }
+ catch (    ClassNotFoundException e) {
+      throw ExceptionHelper.refineException(e);
+    }
+  }
+  return response;
+}

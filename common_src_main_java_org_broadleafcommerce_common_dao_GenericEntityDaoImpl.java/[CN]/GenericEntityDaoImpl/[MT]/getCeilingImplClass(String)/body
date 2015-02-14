@@ -7,6 +7,13 @@
     throw new RuntimeException(e);
   }
   Class<?>[] entitiesFromCeiling=daoHelper.getAllPolymorphicEntitiesFromCeiling(clazz,em.unwrap(Session.class).getSessionFactory(),true,true);
+  if (entitiesFromCeiling == null || entitiesFromCeiling.length < 1) {
+    clazz=DynamicDaoHelperImpl.getNonProxyImplementationClassIfNecessary(clazz);
+    entitiesFromCeiling=daoHelper.getAllPolymorphicEntitiesFromCeiling(clazz,em.unwrap(Session.class).getSessionFactory(),true,true);
+  }
+  if (entitiesFromCeiling == null || entitiesFromCeiling.length < 1) {
+    throw new IllegalArgumentException(String.format("Unable to find ceiling implementation for the requested class name (%s)",className));
+  }
   clazz=entitiesFromCeiling[entitiesFromCeiling.length - 1];
   return clazz;
 }

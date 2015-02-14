@@ -1,4 +1,5 @@
 {
+  clazz=getNonProxyImplementationClassIfNecessary(clazz);
   ClassMetadata metadata=em.unwrap(Session.class).getSessionFactory().getClassMetadata(clazz);
   Field idField=ReflectionUtils.findField(clazz,metadata.getIdentifierPropertyName());
   idField.setAccessible(true);

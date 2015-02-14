@@ -1,6 +1,7 @@
 {
-  if (entity.getClass().getAnnotation(Entity.class) != null) {
-    Field idField=getIdField(entity.getClass(),em);
+  Class<?> entityClass=getNonProxyImplementationClassIfNecessary(entity.getClass());
+  if (entityClass.getAnnotation(Entity.class) != null) {
+    Field idField=getIdField(entityClass,em);
     try {
       return (Serializable)idField.get(entity);
     }
