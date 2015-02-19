@@ -1,6 +1,17 @@
 {
-  String baseDirectory=getBaseDirectory(skipSite);
-  String systemResourcePath=FilenameUtils.separatorsToSystem(resourceName);
-  String filePath=FilenameUtils.normalize(baseDirectory + File.separator + systemResourcePath);
-  return new File(filePath);
+  if (skipSite) {
+    String baseDirectory=getBaseDirectory(skipSite);
+    String systemResourcePath=FilenameUtils.separatorsToSystem(resourceName);
+    String filePath=FilenameUtils.normalize(baseDirectory + File.separator + systemResourcePath);
+    return new File(filePath);
+  }
+ else {
+    String baseDirectory=getBaseDirectory(true);
+    ExtensionResultHolder<String> holder=new ExtensionResultHolder<String>();
+    ExtensionResultStatusType result=extensionManager.getProxy().processPathForSite(baseDirectory,resourceName,holder);
+    if (!ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
+      return new File(holder.getResult());
+    }
+    throw new IllegalArgumentException("No extension handler was found that could handle resource processing with site information");
+  }
 }
