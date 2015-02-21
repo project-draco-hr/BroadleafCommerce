@@ -1,0 +1,61 @@
+{
+  TransactionStatus status=TransactionUtils.createTransaction("executeIncrementalSkuIndex",TransactionDefinition.PROPAGATION_REQUIRED,transactionManager,true);
+  if (SolrIndexCachedOperation.getCache() == null) {
+    LOG.warn("Consider using SolrIndexService.performCachedOperation() in combination with " + "SolrIndexService.buildIncrementalIndex() for better caching performance during solr indexing");
+  }
+  StopWatch s=new StopWatch();
+  boolean cacheOperationManaged=false;
+  try {
+    Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
+    List<Locale> locales=getAllLocales();
+    CatalogStructure cache=SolrIndexCachedOperation.getCache();
+    if (cache != null) {
+      cacheOperationManaged=true;
+    }
+ else {
+      cache=new CatalogStructure();
+      SolrIndexCachedOperation.setCache(cache);
+    }
+    List<Field> fields=fieldDao.readAllSkuFields();
+    List<Long> productIds=BLCCollectionUtils.collectList(skus,new TypedTransformer<Long>(){
+      @Override public Long transform(      Object input){
+        return shs.getSkuId(((Sku)input).getId());
+      }
+    }
+);
+    solrIndexDao.populateProductCatalogStructure(productIds,SolrIndexCachedOperation.getCache());
+    for (    Sku sku : skus) {
+      SolrInputDocument doc=buildDocument(sku,fields,locales);
+      if (doc != null) {
+        documents.add(doc);
+      }
+    }
+    logDocuments(documents);
+    if (!CollectionUtils.isEmpty(documents)) {
+      SolrServer server=useReindexServer ? SolrContext.getReindexServer() : SolrContext.getServer();
+      server.add(documents);
+      server.commit();
+    }
+    TransactionUtils.finalizeTransaction(status,transactionManager,false);
+  }
+ catch (  SolrServerException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new ServiceException("Could not rebuild index",e);
+  }
+catch (  IOException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw new ServiceException("Could not rebuild index",e);
+  }
+catch (  RuntimeException e) {
+    TransactionUtils.finalizeTransaction(status,transactionManager,true);
+    throw e;
+  }
+ finally {
+    if (!cacheOperationManaged) {
+      SolrIndexCachedOperation.clearCache();
+    }
+  }
+  if (LOG.isDebugEnabled()) {
+    LOG.debug(String.format("Built incremental sku index - pageSize: [%s] in [%s]",skus.size(),s.toLapString()));
+  }
+}

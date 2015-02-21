@@ -20,7 +20,7 @@
       for (      Long categoryId : cache.getParentCategoriesByProduct().get(originalId)) {
         document.addField(shs.getExplicitCategoryFieldName(),shs.getCategoryId(categoryId));
         String categorySortFieldName=shs.getCategorySortFieldName(shs.getCategoryId(categoryId));
-        String displayOrderKey=categoryId + "-" + shs.getProductId(originalId);
+        String displayOrderKey=categoryId + "-" + originalId;
         BigDecimal displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         if (displayOrder == null) {
           displayOrderKey=categoryId + "-" + originalId;

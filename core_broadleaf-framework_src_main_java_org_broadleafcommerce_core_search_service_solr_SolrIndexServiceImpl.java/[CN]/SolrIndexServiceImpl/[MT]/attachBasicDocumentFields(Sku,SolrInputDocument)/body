@@ -15,14 +15,14 @@
     document.addField(shs.getIdFieldName(),shs.getSolrDocumentId(document,sku));
     document.addField(shs.getSkuIdFieldName(),shs.getSkuId(sku.getId()));
     extensionManager.getProxy().attachAdditionalBasicFields(sku,document,shs);
-    if (cache.getParentCategoriesByProduct().containsKey(product.getId())) {
-      for (      Long categoryId : cache.getParentCategoriesByProduct().get(product.getId())) {
+    if (cache.getParentCategoriesByProduct().containsKey(shs.getProductId(product.getId()))) {
+      for (      Long categoryId : cache.getParentCategoriesByProduct().get(shs.getProductId(product.getId()))) {
         document.addField(shs.getExplicitCategoryFieldName(),shs.getCategoryId(categoryId));
         String categorySortFieldName=shs.getCategorySortFieldName(shs.getCategoryId(categoryId));
         String displayOrderKey=categoryId + "-" + shs.getProductId(product.getId());
         BigDecimal displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         if (displayOrder == null) {
-          displayOrderKey=categoryId + "-" + product.getId();
+          displayOrderKey=categoryId + "-" + shs.getProductId(product.getId());
           displayOrder=cache.getDisplayOrdersByCategoryProduct().get(displayOrderKey);
         }
         if (document.getField(categorySortFieldName) == null) {
