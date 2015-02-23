@@ -9,7 +9,13 @@
   Entity entity=service.getRecord(ppr,id,mainMetadata,false).getDynamicResultSet().getRecords()[0];
   PersistenceResponse persistenceResponse=service.removeSubCollectionEntity(mainMetadata,collectionProperty,entity,collectionItemId,alternateId,priorKey,sectionCrumbs);
   if (persistenceResponse.getEntity() != null && persistenceResponse.getEntity().isValidationFailure()) {
-    String error=persistenceResponse.getEntity().getPropertyValidationErrors().values().iterator().next().get(0);
+    String error="There was an error removing the whatever";
+    if (MapUtils.isNotEmpty(persistenceResponse.getEntity().getPropertyValidationErrors())) {
+      error=persistenceResponse.getEntity().getPropertyValidationErrors().values().iterator().next().get(0);
+    }
+ else     if (CollectionUtils.isNotEmpty(persistenceResponse.getEntity().getGlobalValidationErrors())) {
+      error=persistenceResponse.getEntity().getGlobalValidationErrors().get(0);
+    }
     return new JsonResponse(response).with("status","error").with("message",BLCMessageUtils.getMessage(error)).done();
   }
   ListGrid listGrid=getCollectionListGrid(mainMetadata,entity,collectionProperty,null,sectionKey,persistenceResponse,sectionCrumbs);
