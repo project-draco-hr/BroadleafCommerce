@@ -8,11 +8,12 @@
   ListGrid listGrid=formService.buildMainListGrid(drs,cmd,sectionKey,crumbs);
   List<EntityFormAction> mainActions=new ArrayList<EntityFormAction>();
   addAddActionIfAllowed(sectionClassName,cmd,mainActions);
+  extensionManager.getProxy().addAdditionalMainActions(sectionClassName,mainActions);
+  extensionManager.getProxy().modifyMainActions(cmd,mainActions);
   Field firstField=listGrid.getHeaderFields().iterator().next();
   if (requestParams.containsKey(firstField.getName())) {
     model.addAttribute("mainSearchTerm",requestParams.get(firstField.getName()).get(0));
   }
-  extensionManager.getProxy().addAdditionalMainActions(sectionClassName,mainActions);
   if (requestParams.containsKey("headerFlash")) {
     model.addAttribute("headerFlash",requestParams.get("headerFlash").get(0));
   }
