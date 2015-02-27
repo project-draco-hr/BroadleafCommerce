@@ -5,7 +5,7 @@
   if (!(idType instanceof LongType || idType instanceof StringType)) {
     throw new UnsupportedOperationException("Only ID types of String and Long are currently supported");
   }
-  Object idValue=null;
+  Object idValue;
   try {
     idValue=PropertyUtils.getProperty(entity,idProperty);
   }
@@ -16,6 +16,10 @@
     return (String)idValue;
   }
  else   if (idType instanceof LongType) {
+    SandBoxHelper.OriginalIdResponse response=sandBoxHelper.getProductionOriginalId(dao.getEntityImpl(entityType),(Long)idValue);
+    if (response.isRecordFound()) {
+      idValue=response.getOriginalId();
+    }
     return String.valueOf(idValue);
   }
   throw new IllegalArgumentException(String.format("Could not retrieve value for id property. Object: [%s], " + "ID Property: [%s], ID Type: [%s]",entity,idProperty,idType));
