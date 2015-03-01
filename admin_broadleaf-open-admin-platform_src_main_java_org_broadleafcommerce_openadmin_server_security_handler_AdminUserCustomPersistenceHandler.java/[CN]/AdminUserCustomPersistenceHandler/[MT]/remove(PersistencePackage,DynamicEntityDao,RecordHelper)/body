@@ -1,0 +1,12 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  String userLoginToRemove=entity.findProperty("login").getValue();
+  AdminUser persistentAdminUser=adminRemoteSecurityService.getPersistentAdminUser();
+  if (persistentAdminUser != null && persistentAdminUser.getLogin() != null) {
+    if (persistentAdminUser.getLogin().equals(userLoginToRemove)) {
+      throw new ValidationException(entity,"admin.cantDeleteCurrentUserError");
+    }
+  }
+  OperationType removeType=persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType();
+  helper.getCompatibleModule(removeType).remove(persistencePackage);
+}
