@@ -12,13 +12,19 @@
   }
   Entity entity=service.getRecord(ppr,collectionItemId,collectionMetadata,true).getDynamicResultSet().getRecords()[0];
   Map<String,DynamicResultSet> subRecordsMap=service.getRecordsForAllSubCollections(ppr,entity,sectionCrumbs);
-  EntityForm entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap,sectionCrumbs);
+  if (entityForm == null) {
+    entityForm=formService.createEntityForm(collectionMetadata,entity,subRecordsMap,sectionCrumbs);
+  }
+ else {
+    entityForm.clearFieldsMap();
+    formService.populateEntityForm(collectionMetadata,entity,subRecordsMap,entityForm,sectionCrumbs);
+    entityForm.removeAllActions();
+  }
   entityForm.removeAction(DefaultEntityFormActions.DELETE);
   for (  ListGrid lg : entityForm.getAllListGrids()) {
     lg.setSectionKey("org.broadleafcommerce.core.catalog.domain.Sku");
     lg.setSectionCrumbs(sectionCrumbs);
   }
-  removeRequiredValidation(entityForm);
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("viewType","modal/simpleEditEntity");
   model.addAttribute("currentUrl",request.getRequestURL().toString());
