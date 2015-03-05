@@ -58,7 +58,7 @@
   for (  Entry<String,String> entry : responseDTO.getResponseMap().entrySet()) {
     transaction.getAdditionalFields().put(entry.getKey(),entry.getValue());
   }
-  if (PaymentType.CREDIT_CARD.equals(responseDTO.getPaymentType()) && responseDTO.getCreditCard().creditCardPopulated()) {
+  if (PaymentType.CREDIT_CARD.equals(responseDTO.getPaymentType()) && responseDTO.getCreditCard() != null && responseDTO.getCreditCard().creditCardPopulated()) {
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.NAME_ON_CARD.getType(),responseDTO.getCreditCard().getCreditCardHolderName());
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.CARD_TYPE.getType(),responseDTO.getCreditCard().getCreditCardType());
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.EXP_DATE.getType(),responseDTO.getCreditCard().getCreditCardExpDate());
