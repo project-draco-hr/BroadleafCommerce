@@ -1,0 +1,13 @@
+{
+  if (model.getAdditionalFields() != null && !model.getAdditionalFields().isEmpty()) {
+    List<MapElementWrapper> mapElementWrappers=new ArrayList<MapElementWrapper>();
+    for (    String key : model.getAdditionalFields().keySet()) {
+      MapElementWrapper mapElementWrapper=new MapElementWrapper();
+      mapElementWrapper.setKey(key);
+      mapElementWrapper.setValue(model.getAdditionalFields().get(key));
+      mapElementWrappers.add(mapElementWrapper);
+    }
+    return mapElementWrappers;
+  }
+  return null;
+}

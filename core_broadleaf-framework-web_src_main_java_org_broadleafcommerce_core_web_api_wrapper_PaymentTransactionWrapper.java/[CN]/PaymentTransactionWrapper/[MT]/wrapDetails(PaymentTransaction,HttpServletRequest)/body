@@ -16,14 +16,5 @@
     this.amount=model.getAmount().getAmount();
     this.currency=model.getAmount().getCurrency();
   }
-  if (model.getAdditionalFields() != null && !model.getAdditionalFields().isEmpty()) {
-    List<MapElementWrapper> mapElementWrappers=new ArrayList<MapElementWrapper>();
-    for (    String key : model.getAdditionalFields().keySet()) {
-      MapElementWrapper mapElementWrapper=new MapElementWrapper();
-      mapElementWrapper.setKey(key);
-      mapElementWrapper.setValue(model.getAdditionalFields().get(key));
-      mapElementWrappers.add(mapElementWrapper);
-    }
-    this.additionalFields=mapElementWrappers;
-  }
+  this.additionalFields=super.createElementWrappers(model);
 }
