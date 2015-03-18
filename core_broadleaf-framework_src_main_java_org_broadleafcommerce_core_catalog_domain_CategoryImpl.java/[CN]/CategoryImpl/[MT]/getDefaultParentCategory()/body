@@ -1,18 +1,7 @@
 {
-  Category response=null;
-  if (defaultParentCategory != null) {
-    response=defaultParentCategory;
+  if (isDefaultCategoryLegacyMode() || defaultParentCategory != null) {
+    return defaultParentCategory;
   }
- else {
-    List<CategoryXref> xrefs=getAllParentCategoryXrefs();
-    if (!CollectionUtils.isEmpty(xrefs)) {
-      for (      CategoryXref xref : xrefs) {
-        if (xref.getCategory().isActive()) {
-          response=xref.getCategory();
-          break;
-        }
-      }
-    }
-  }
+  Category response=getParentCategory();
   return response;
 }

@@ -1,0 +1,9 @@
+{
+  Map<String,FieldMetadata> md=getMetadata(persistencePackage,helper);
+  if (!isDefaultCategoryLegacyMode()) {
+    md.remove("allParentCategoryXrefs");
+    BasicFieldMetadata defaultCategory=((BasicFieldMetadata)md.get("defaultParentCategory"));
+    defaultCategory.setFriendlyName("CategoryImpl_ParentCategory");
+  }
+  return getResultSet(persistencePackage,helper,md);
+}

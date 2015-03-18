@@ -1,0 +1,15 @@
+{
+  Category parentCategory;
+  try {
+    Field defaultCategory=CategoryImpl.class.getDeclaredField("defaultParentCategory");
+    defaultCategory.setAccessible(true);
+    parentCategory=(Category)defaultCategory.get(category);
+  }
+ catch (  NoSuchFieldException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  IllegalAccessException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+  return parentCategory;
+}

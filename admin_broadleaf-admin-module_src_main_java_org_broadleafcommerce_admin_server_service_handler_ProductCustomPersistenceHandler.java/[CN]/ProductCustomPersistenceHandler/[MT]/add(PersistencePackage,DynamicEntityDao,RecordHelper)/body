@@ -8,18 +8,21 @@
       removeBundleFieldRestrictions((ProductBundle)adminInstance,adminProperties,entity);
     }
     adminInstance=(Product)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
-    CategoryProductXref categoryXref=new CategoryProductXrefImpl();
-    categoryXref.setCategory(adminInstance.getDefaultCategory());
-    categoryXref.setProduct(adminInstance);
-    if (adminInstance.getDefaultCategory() != null && !adminInstance.getAllParentCategoryXrefs().contains(categoryXref)) {
-      categoryXref=(CategoryProductXref)dynamicEntityDao.merge(categoryXref);
-      adminInstance.getAllParentCategoryXrefs().add(categoryXref);
+    adminInstance=dynamicEntityDao.merge(adminInstance);
+    boolean handled=false;
+    if (extensionManager != null) {
+      ExtensionResultStatusType result=extensionManager.getProxy().manageParentCategoryForAdd(persistencePackage,adminInstance);
+      handled=ExtensionResultStatusType.NOT_HANDLED != result;
+    }
+    if (!handled) {
+      Category existingDefaultCategory=getExistingDefaultCategory(adminInstance);
+      setupXref(adminInstance,existingDefaultCategory);
     }
     if (adminInstance.getDefaultSku() == null) {
       Sku newSku=catalogService.createSku();
+      dynamicEntityDao.persist(newSku);
       adminInstance.setDefaultSku(newSku);
-      adminInstance=(Product)dynamicEntityDao.merge(adminInstance);
+      adminInstance=dynamicEntityDao.merge(adminInstance);
     }
     adminInstance.getDefaultSku().setDefaultProduct(adminInstance);
     dynamicEntityDao.merge(adminInstance.getDefaultSku());

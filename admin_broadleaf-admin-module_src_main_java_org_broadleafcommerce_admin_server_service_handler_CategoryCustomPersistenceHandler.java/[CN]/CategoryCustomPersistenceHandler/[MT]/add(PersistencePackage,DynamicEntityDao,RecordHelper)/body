@@ -5,13 +5,17 @@
     Category adminInstance=(Category)Class.forName(entity.getType()[0]).newInstance();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Category.class.getName(),persistencePerspective);
     adminInstance=(Category)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
-    CategoryXref categoryXref=new CategoryXrefImpl();
-    categoryXref.setCategory(adminInstance.getDefaultParentCategory());
-    categoryXref.setSubCategory(adminInstance);
-    if (adminInstance.getDefaultParentCategory() != null && !adminInstance.getAllParentCategoryXrefs().contains(categoryXref)) {
-      adminInstance.getAllParentCategoryXrefs().add(categoryXref);
+    adminInstance=dynamicEntityDao.merge(adminInstance);
+    boolean handled=false;
+    if (extensionManager != null) {
+      ExtensionResultStatusType result=extensionManager.getProxy().manageParentCategoryForAdd(persistencePackage,adminInstance);
+      handled=ExtensionResultStatusType.NOT_HANDLED != result;
     }
-    adminInstance=(Category)dynamicEntityDao.merge(adminInstance);
+    if (!handled) {
+      Category existingDefaultParentCategory=getExistingDefaultParentCategory(adminInstance);
+      setupXref(adminInstance,existingDefaultParentCategory);
+    }
+    adminInstance=dynamicEntityDao.merge(adminInstance);
     return helper.getRecord(adminProperties,adminInstance,null,null);
   }
  catch (  Exception e) {

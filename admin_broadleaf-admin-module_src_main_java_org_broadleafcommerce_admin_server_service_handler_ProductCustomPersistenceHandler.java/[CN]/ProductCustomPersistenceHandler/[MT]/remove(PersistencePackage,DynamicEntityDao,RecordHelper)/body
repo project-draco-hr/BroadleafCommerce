@@ -1,13 +1,3 @@
 {
-  Entity entity=persistencePackage.getEntity();
-  try {
-    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Product.class.getName(),persistencePerspective);
-    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
-    Product adminInstance=(Product)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
-    productDao.delete(adminInstance);
-  }
- catch (  Exception e) {
-    throw new ServiceException("Unable to delete  entity for " + entity.getType()[0],e);
-  }
+  helper.getCompatibleModule(OperationType.BASIC).remove(persistencePackage);
 }
