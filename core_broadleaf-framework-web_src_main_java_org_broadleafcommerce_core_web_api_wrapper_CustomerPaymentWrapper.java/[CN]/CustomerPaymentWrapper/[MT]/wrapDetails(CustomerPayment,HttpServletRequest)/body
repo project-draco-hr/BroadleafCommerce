@@ -1,0 +1,16 @@
+{
+  this.id=model.getId();
+  this.isDefault=model.isDefault();
+  if (model.getPaymentToken() != null) {
+    this.paymentToken=model.getPaymentToken();
+  }
+  if (model.getBillingAddress() != null) {
+    AddressWrapper addressWrapper=(AddressWrapper)context.getBean(AddressWrapper.class.getName());
+    addressWrapper.wrapDetails(model.getBillingAddress(),request);
+    this.billingAddress=addressWrapper;
+  }
+  CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
+  customerWrapper.wrapDetails(model.getCustomer(),request);
+  this.customer=customerWrapper;
+  this.additionalFields=super.createElementWrappers(model);
+}
