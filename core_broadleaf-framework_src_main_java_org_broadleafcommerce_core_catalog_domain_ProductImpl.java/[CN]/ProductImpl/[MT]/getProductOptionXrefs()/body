@@ -1,7 +1,8 @@
 {
-  Collections.sort(productOptions,new Comparator<ProductOptionXref>(){
+  List<ProductOptionXref> sorted=new ArrayList<ProductOptionXref>(productOptions);
+  Collections.sort(sorted,new Comparator<ProductOptionXref>(){
     @Override public int compare(    ProductOptionXref o1,    ProductOptionXref o2){
-      return o1.getProductOption().getDisplayOrder() - o2.getProductOption().getDisplayOrder();
+      return ObjectUtils.compare(o1.getProductOption().getDisplayOrder(),o2.getProductOption().getDisplayOrder());
     }
   }
 );
