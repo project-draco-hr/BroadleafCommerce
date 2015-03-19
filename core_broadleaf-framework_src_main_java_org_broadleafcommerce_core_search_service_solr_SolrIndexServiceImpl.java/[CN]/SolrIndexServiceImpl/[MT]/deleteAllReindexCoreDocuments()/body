@@ -3,9 +3,12 @@
     String deleteQuery=shs.getNamespaceFieldName() + ":(\"" + shs.getCurrentNamespace()+ "\")";
     LOG.debug("Deleting by query: " + deleteQuery);
     SolrContext.getReindexServer().deleteByQuery(deleteQuery);
-    SolrContext.getReindexServer().commit();
+    internalBulkCommit(SolrContext.getReindexServer());
   }
  catch (  Exception e) {
+    if (ServiceException.class.isAssignableFrom(e.getClass())) {
+      throw (ServiceException)e;
+    }
     throw new ServiceException("Could not delete documents",e);
   }
 }

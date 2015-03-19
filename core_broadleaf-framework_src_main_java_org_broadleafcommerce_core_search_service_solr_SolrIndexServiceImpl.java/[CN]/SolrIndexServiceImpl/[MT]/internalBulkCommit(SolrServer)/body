@@ -1,0 +1,13 @@
+{
+  try {
+    if (this.commit) {
+      server.commit();
+    }
+ else     if (LOG.isDebugEnabled()) {
+      LOG.debug("The flag / property \"solr.index.commit\" is false. Not committing! Ensure autoCommit is configured.");
+    }
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not commit",e);
+  }
+}

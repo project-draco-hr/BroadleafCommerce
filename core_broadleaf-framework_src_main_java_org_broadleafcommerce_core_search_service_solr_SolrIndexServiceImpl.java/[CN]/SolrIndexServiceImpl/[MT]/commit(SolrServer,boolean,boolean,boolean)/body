@@ -1,0 +1,14 @@
+{
+  try {
+    if (!this.commit) {
+      LOG.warn("The flag / property \"solr.index.commit\" is set to false but a commit is being forced via the API.");
+    }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Committing changes to Solr index: softCommit: " + softCommit + ", waitSearcher: "+ waitSearcher+ ", waitFlush: "+ waitFlush);
+    }
+    server.commit(waitFlush,waitSearcher,softCommit);
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not commit changes to Solr index",e);
+  }
+}
