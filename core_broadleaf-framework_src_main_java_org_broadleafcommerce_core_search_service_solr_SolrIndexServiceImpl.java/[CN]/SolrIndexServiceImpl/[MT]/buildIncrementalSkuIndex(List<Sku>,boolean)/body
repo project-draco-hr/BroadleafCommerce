@@ -32,7 +32,7 @@
     if (!CollectionUtils.isEmpty(documents)) {
       SolrServer server=useReindexServer ? SolrContext.getReindexServer() : SolrContext.getServer();
       server.add(documents);
-      internalBulkCommit(server);
+      commit(server);
     }
     TransactionUtils.finalizeTransaction(status,transactionManager,false);
   }

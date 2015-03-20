@@ -3,7 +3,7 @@
     String deleteQuery=shs.getNamespaceFieldName() + ":(\"" + shs.getCurrentNamespace()+ "\")";
     LOG.debug("Deleting by query: " + deleteQuery);
     SolrContext.getReindexServer().deleteByQuery(deleteQuery);
-    internalBulkCommit(SolrContext.getReindexServer());
+    SolrContext.getReindexServer().commit();
   }
  catch (  Exception e) {
     if (ServiceException.class.isAssignableFrom(e.getClass())) {
