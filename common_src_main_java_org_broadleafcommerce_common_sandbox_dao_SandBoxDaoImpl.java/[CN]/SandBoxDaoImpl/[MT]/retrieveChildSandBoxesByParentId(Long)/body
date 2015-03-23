@@ -3,7 +3,7 @@
   CriteriaQuery<SandBox> criteria=builder.createQuery(SandBox.class);
   Root<SandBoxManagementImpl> sandbox=criteria.from(SandBoxManagementImpl.class);
   criteria.select(sandbox.get("sandBox").as(SandBox.class));
-  criteria.where(builder.and(builder.equal(sandbox.get("sandBox").get("author"),authorId),builder.or(builder.isNull(sandbox.get("sandBox").get("archiveStatus").get("archived").as(String.class)),builder.notEqual(sandbox.get("sandBox").get("archiveStatus").get("archived").as(Character.class),'Y'))));
+  criteria.where(builder.and(sandbox.get("sandBox").get("parentSandBox").in(parentSandBoxId),builder.or(builder.isNull(sandbox.get("sandBox").get("archiveStatus").get("archived").as(String.class)),builder.notEqual(sandbox.get("sandBox").get("archiveStatus").get("archived").as(Character.class),'Y'))));
   TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   return query.getResultList();
 }

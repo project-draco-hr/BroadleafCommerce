@@ -6,6 +6,7 @@
   List<Predicate> restrictions=new ArrayList<Predicate>();
   restrictions.add(builder.equal(sandbox.get("sandBox").get("sandboxType"),sandboxType.getType()));
   restrictions.add(builder.equal(sandbox.get("sandBox").get("name"),sandboxName));
+  restrictions.add(builder.or(builder.isNull(sandbox.get("sandBox").get("archiveStatus").get("archived").as(String.class)),builder.notEqual(sandbox.get("sandBox").get("archiveStatus").get("archived").as(Character.class),'Y')));
   criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
   TypedQuery<SandBox> query=sandBoxEntityManager.createQuery(criteria);
   if (query.getResultList() != null && query.getResultList().size() == 1) {

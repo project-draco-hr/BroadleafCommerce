@@ -1,4 +1,4 @@
 {
-  TypedQuery<SandBox> query=new TypedQueryBuilder<SandBox>(SandBox.class,"sb").addRestriction("sb.author","=",authorId).addRestriction("sb.sandboxType","=",SandBoxType.USER.getType()).toQuery(sandBoxEntityManager);
+  TypedQuery<SandBox> query=new TypedQueryBuilder<SandBox>(SandBox.class,"sb").addRestriction("sb.author","=",authorId).addRestriction("sb.sandboxType","=",SandBoxType.USER.getType()).addRestriction("sb.archiveStatus.archived","==",null).addRestriction("sb.archiveStatus.archived","!=","Y").toQuery(sandBoxEntityManager);
   return query.getResultList();
 }
