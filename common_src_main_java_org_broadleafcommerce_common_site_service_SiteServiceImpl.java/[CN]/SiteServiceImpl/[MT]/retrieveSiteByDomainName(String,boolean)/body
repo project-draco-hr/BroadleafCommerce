@@ -3,16 +3,20 @@
   transUtil.runOptionalTransactionalOperation(new StreamCapableTransactionalOperationAdapter(){
     @Override public void execute() throws Throwable {
       String domainPrefix=null;
+      String domain=domainName;
       if (domainName != null) {
         int pos=domainName.indexOf('.');
         if (pos >= 0) {
           domainPrefix=domainName.substring(0,pos);
+          if (stripSubdomain(domainPrefix)) {
+            domain=domainName.substring(domainPrefix.length() + 1);
+          }
         }
  else {
           domainPrefix=domainName;
         }
       }
-      Site site=siteDao.retrieveSiteByDomainOrDomainPrefix(domainName,domainPrefix);
+      Site site=siteDao.retrieveSiteByDomainOrDomainPrefix(domain,domainPrefix);
       if (persistentResult) {
         response[0]=site;
       }

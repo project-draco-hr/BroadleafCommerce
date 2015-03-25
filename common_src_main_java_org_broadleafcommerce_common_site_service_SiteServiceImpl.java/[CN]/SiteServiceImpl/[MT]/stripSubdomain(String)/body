@@ -1,0 +1,14 @@
+{
+  if (subDomain != null) {
+    String propStripPrefixes=BLCSystemProperty.resolveSystemProperty("site.domain.resolver.strip.subdomains");
+    if (propStripPrefixes != null) {
+      String[] prefixes=propStripPrefixes.split(",");
+      for (      String prefix : prefixes) {
+        if (subDomain.equals(prefix)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
