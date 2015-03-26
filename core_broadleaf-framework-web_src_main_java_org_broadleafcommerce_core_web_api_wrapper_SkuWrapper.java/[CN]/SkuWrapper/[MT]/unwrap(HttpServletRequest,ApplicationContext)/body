@@ -1,0 +1,14 @@
+{
+  CatalogService catalogService=(CatalogService)context.getBean("blCatalogService");
+  Sku sku=catalogService.createSku();
+  sku.setId(this.id);
+  sku.setName(this.name);
+  sku.setActiveEndDate(this.activeEndDate);
+  sku.setActiveStartDate(this.activeStartDate);
+  sku.setInventoryType(InventoryType.getInstance(this.inventoryType));
+  sku.setRetailPrice(this.retailPrice);
+  sku.setSalePrice(this.salePrice);
+  sku.setDimension(this.getDimension().unwrap(request,context));
+  sku.setWeight(this.getWeight().unwrap(request,context));
+  return sku;
+}
