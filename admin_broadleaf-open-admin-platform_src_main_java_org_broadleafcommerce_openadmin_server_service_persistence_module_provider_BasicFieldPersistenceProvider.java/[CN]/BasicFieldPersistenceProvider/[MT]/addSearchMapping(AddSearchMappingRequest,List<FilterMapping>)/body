@@ -29,18 +29,22 @@
     }
   }
  else {
+    if (fasc.getRestrictionType() != null) {
+      filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(fasc.getRestrictionType().getType(),addSearchMappingRequest.getPropertyName()));
+    }
+ else {
 switch (metadata.getFieldType()) {
 case BOOLEAN:
-      if (targetType == null || targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
-        filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.BOOLEAN.getType(),addSearchMappingRequest.getPropertyName()));
-      }
+        if (targetType == null || targetType.equals(Boolean.class) || targetType.equals(boolean.class)) {
+          filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.BOOLEAN.getType(),addSearchMappingRequest.getPropertyName()));
+        }
  else {
-        filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.CHARACTER.getType(),addSearchMappingRequest.getPropertyName()));
-      }
-    break;
+          filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.CHARACTER.getType(),addSearchMappingRequest.getPropertyName()));
+        }
+      break;
 case DATE:
-  filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.DATE.getType(),addSearchMappingRequest.getPropertyName()));
-break;
+    filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.DATE.getType(),addSearchMappingRequest.getPropertyName()));
+  break;
 case DECIMAL:
 case MONEY:
 filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().getRestriction(RestrictionType.DECIMAL.getType(),addSearchMappingRequest.getPropertyName()));
@@ -123,6 +127,7 @@ filterMapping.setRestriction(addSearchMappingRequest.getRestrictionFactory().get
 break;
 }
 break;
+}
 }
 }
 return FieldProviderResponse.HANDLED;
