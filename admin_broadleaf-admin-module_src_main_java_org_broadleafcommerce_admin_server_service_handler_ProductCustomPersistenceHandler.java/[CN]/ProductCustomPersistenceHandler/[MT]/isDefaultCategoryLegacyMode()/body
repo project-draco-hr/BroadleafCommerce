@@ -1,3 +1,7 @@
 {
-  return (Boolean)BroadleafRequestContext.getBroadleafRequestContext().getAdditionalProperties().get(BroadleafAdminRequestProcessor.USE_LEGACY_DEFAULT_CATEGORY_MODE);
+  ParentCategoryLegacyModeService legacyModeService=ParentCategoryLegacyModeServiceImpl.getLegacyModeService();
+  if (legacyModeService != null) {
+    return legacyModeService.isLegacyMode();
+  }
+  return false;
 }
