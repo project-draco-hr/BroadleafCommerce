@@ -25,6 +25,13 @@
       if (PaymentType.CREDIT_CARD.equals(payment.getType())) {
         if (payment.getBillingAddress() != null) {
           billingForm.setAddress(payment.getBillingAddress());
+          Boolean useCustomerPayment=payment.getCustomerPayment() != null;
+          if (useCustomerPayment) {
+            billingForm.setUseCustomerPayment(useCustomerPayment);
+            billingForm.setCustomerPayment(payment.getCustomerPayment());
+            billingForm.setCustomerPaymentId(payment.getCustomerPayment().getId());
+          }
+          billingForm.setSaveNewPayment(payment.isSavePayment());
         }
       }
     }
