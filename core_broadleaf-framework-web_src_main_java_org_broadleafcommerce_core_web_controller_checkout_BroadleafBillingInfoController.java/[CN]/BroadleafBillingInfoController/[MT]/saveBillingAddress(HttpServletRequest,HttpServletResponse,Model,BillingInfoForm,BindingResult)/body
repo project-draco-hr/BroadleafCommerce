@@ -4,7 +4,7 @@
   if (billingForm.isUseShippingAddress()) {
     copyShippingAddressToBillingAddress(cart,billingForm);
   }
-  if (billingForm.getUseCustomerPayment()) {
+  if (billingForm.getUseCustomerPayment() && billingForm.getCustomerPaymentId() != null) {
     customerPayment=customerPaymentService.readCustomerPaymentById(billingForm.getCustomerPaymentId());
     if (customerPayment != null) {
       Address address=customerPayment.getBillingAddress();
