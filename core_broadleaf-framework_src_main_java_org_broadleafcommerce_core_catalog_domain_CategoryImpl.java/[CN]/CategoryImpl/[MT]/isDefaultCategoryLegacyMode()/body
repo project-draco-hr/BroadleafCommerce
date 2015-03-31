@@ -3,5 +3,11 @@
   if (legacyModeService != null) {
     return legacyModeService.isLegacyMode();
   }
+  if (legacyCategoryMode != null) {
+    return legacyCategoryMode;
+  }
+ else {
+    LOG.warn("Detected a call to utilize deprecated get/setDefaultParentCategory() without a Spring context. If utilizing these methods" + "in a unit test, make sure to utilize the constructor for CategoryImpl that accepts the legacy mode boolean, or use the" + "mutators for legacyCategoryMode.");
+  }
   return false;
 }
