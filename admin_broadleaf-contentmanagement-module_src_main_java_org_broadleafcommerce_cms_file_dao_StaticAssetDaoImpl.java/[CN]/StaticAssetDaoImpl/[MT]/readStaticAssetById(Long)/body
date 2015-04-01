@@ -1,3 +1,20 @@
 {
-  return em.find(StaticAssetImpl.class,id);
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<StaticAsset> criteria=builder.createQuery(StaticAsset.class);
+  Root<StaticAssetImpl> handler=criteria.from(StaticAssetImpl.class);
+  criteria.select(handler);
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(handler.get("id"),id));
+  if (queryExtensionManager != null) {
+    queryExtensionManager.getProxy().setup(StaticAssetImpl.class,null);
+    queryExtensionManager.getProxy().refineRetrieve(StaticAssetImpl.class,null,builder,criteria,handler,restrictions);
+  }
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  TypedQuery<StaticAsset> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  List<StaticAsset> response=query.getResultList();
+  if (response.size() > 0) {
+    return response.get(0);
+  }
+  return null;
 }
