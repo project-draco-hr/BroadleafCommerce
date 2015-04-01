@@ -1,8 +1,8 @@
 {
   CheckoutSeed seed=context.getSeedData();
   seed.getOrder().setStatus(getCompletedStatus());
-  seed.getOrder().setOrderNumber(new SimpleDateFormat("yyyyMMddHHmmssS").format(SystemTime.asDate()) + seed.getOrder().getId());
-  seed.getOrder().setSubmitDate(Calendar.getInstance().getTime());
+  seed.getOrder().setOrderNumber(determineOrderNumber(seed.getOrder()));
+  seed.getOrder().setSubmitDate(determineSubmitDate(seed.getOrder()));
   OrderSubmittedEvent event=new OrderSubmittedEvent(seed.getOrder().getId(),seed.getOrder().getOrderNumber());
   applicationContext.publishEvent(event);
   return context;
