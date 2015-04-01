@@ -23,8 +23,11 @@
   brc.setMessageSource(messageSource);
   TimeZone timeZone=broadleafTimeZoneResolver.resolveTimeZone(request);
   brc.setTimeZone(timeZone);
-  BroadleafCurrency currency=currencyResolver.resolveCurrency(request);
-  brc.setBroadleafCurrency(currency);
+  BroadleafRequestedCurrencyDto dto=currencyResolver.resolveCurrency(request);
+  if (dto != null) {
+    brc.setBroadleafCurrency(dto.getCurrencyToUse());
+    brc.setRequestedBroadleafCurrency(dto.getRequestedCurrency());
+  }
   prepareSandBox(request,brc);
   prepareProfile(request,brc);
   prepareCatalog(request,brc);
