@@ -1,3 +1,8 @@
 {
-  return passwordEncoder.encodePassword(clearText,getSalt(customer,clearText));
+  if (passwordEncoder != null) {
+    return passwordEncoder.encodePassword(clearText,getSalt(customer,clearText));
+  }
+ else {
+    return encodePassword(clearText);
+  }
 }

@@ -1,3 +1,8 @@
 {
-  return passwordEncoder.isPasswordValid(encodedPassword,rawPassword,getSalt(customer,rawPassword));
+  if (passwordEncoder != null) {
+    return passwordEncoder.isPasswordValid(encodedPassword,rawPassword,getSalt(customer,rawPassword));
+  }
+ else {
+    return isPasswordValid(rawPassword,encodedPassword);
+  }
 }

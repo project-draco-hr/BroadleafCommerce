@@ -10,7 +10,7 @@
     token=token.toLowerCase();
     ForgotPasswordSecurityToken fpst=new ForgotPasswordSecurityTokenImpl();
     fpst.setAdminUserId(user.getId());
-    fpst.setToken(passwordEncoder.encodePassword(token,null));
+    fpst.setToken(encodePassword(token,null));
     fpst.setCreateDate(SystemTime.asDate());
     forgotPasswordSecurityTokenDao.saveToken(fpst);
     HashMap<String,Object> vars=new HashMap<String,Object>();

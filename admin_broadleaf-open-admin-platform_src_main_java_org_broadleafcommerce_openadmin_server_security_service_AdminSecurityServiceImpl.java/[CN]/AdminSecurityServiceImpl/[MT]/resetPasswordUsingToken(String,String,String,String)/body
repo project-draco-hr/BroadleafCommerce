@@ -6,13 +6,23 @@
   }
   checkUser(user,response);
   checkPassword(password,confirmPassword,response);
-  if (token == null || "".equals(token)) {
+  if (StringUtils.isBlank(token)) {
     response.addErrorCode("invalidToken");
   }
   ForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
     token=token.toLowerCase();
-    fpst=forgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(token,null));
+    if (passwordEncoder != null) {
+      fpst=forgotPasswordSecurityTokenDao.readToken(encodePassword(token,null));
+    }
+ else {
+      List<ForgotPasswordSecurityToken> fpstoks=forgotPasswordSecurityTokenDao.readUnusedTokensByAdminUserId(user.getId());
+      for (      ForgotPasswordSecurityToken fpstok : fpstoks) {
+        if (passwordEncoderNew.matches(token,fpstok.getToken())) {
+          fpst=fpstok;
+        }
+      }
+    }
     if (fpst == null) {
       response.addErrorCode("invalidToken");
     }
@@ -34,8 +44,7 @@
   if (!response.getHasErrors()) {
     user.setUnencodedPassword(password);
     saveAdminUser(user);
-    fpst.setTokenUsedFlag(true);
-    forgotPasswordSecurityTokenDao.saveToken(fpst);
+    invalidateAllTokensForAdminUser(user);
   }
   return response;
 }

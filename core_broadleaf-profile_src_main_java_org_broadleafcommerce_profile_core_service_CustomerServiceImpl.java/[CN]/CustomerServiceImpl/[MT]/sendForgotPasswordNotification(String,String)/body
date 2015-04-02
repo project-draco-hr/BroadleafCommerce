@@ -1,6 +1,7 @@
 {
   GenericResponse response=new GenericResponse();
   Customer customer=null;
+  boolean usingOldPasswordEncoder=passwordEncoder != null;
   if (username != null) {
     customer=customerDao.readCustomerByUsername(username);
   }
@@ -15,10 +16,15 @@
     }
     CustomerForgotPasswordSecurityToken fpst=new CustomerForgotPasswordSecurityTokenImpl();
     fpst.setCustomerId(customer.getId());
-    fpst.setToken(passwordEncoder.encodePassword(token,saltString));
+    if (usingOldPasswordEncoder) {
+      fpst.setToken(passwordEncoder.encodePassword(token,saltString));
+    }
+ else {
+      fpst.setToken(passwordEncoderNew.encode(token));
+    }
     fpst.setCreateDate(SystemTime.asDate());
     customerForgotPasswordSecurityTokenDao.saveToken(fpst);
-    if (saltString != null) {
+    if (usingOldPasswordEncoder && saltString != null) {
       token=token + '-' + saltString;
     }
     HashMap<String,Object> vars=new HashMap<String,Object>();
