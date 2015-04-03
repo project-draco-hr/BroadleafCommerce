@@ -2,10 +2,9 @@
   if (StringUtils.isBlank(token)) {
     response.addErrorCode("invalidToken");
   }
-  boolean usingOldPasswordEncoder=passwordEncoder != null;
-  String rawToken=null;
+  String rawToken=token.toLowerCase();
   String salt=null;
-  if (usingOldPasswordEncoder) {
+  if (usingDeprecatedPasswordEncoder()) {
     String[] tokens=token.split("-");
     if (tokens.length > 2) {
       response.addErrorCode("invalidToken");
@@ -19,16 +18,11 @@
   }
   CustomerForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
-    if (usingOldPasswordEncoder) {
-      fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(rawToken,salt));
-    }
- else {
-      List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
-      for (      CustomerForgotPasswordSecurityToken fpstok : fpstoks) {
-        if (passwordEncoderNew.matches(token,fpstok.getToken())) {
-          fpst=fpstok;
-          break;
-        }
+    List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
+    for (    CustomerForgotPasswordSecurityToken fpstok : fpstoks) {
+      if (isPassValid(rawToken,fpstok.getToken(),salt)) {
+        fpst=fpstok;
+        break;
       }
     }
     if (fpst == null) {

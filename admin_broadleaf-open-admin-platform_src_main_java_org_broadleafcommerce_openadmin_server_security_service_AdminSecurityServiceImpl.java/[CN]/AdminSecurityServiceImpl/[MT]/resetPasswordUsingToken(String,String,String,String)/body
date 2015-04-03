@@ -12,15 +12,11 @@
   ForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
     token=token.toLowerCase();
-    if (passwordEncoder != null) {
-      fpst=forgotPasswordSecurityTokenDao.readToken(encodePassword(token,null));
-    }
- else {
-      List<ForgotPasswordSecurityToken> fpstoks=forgotPasswordSecurityTokenDao.readUnusedTokensByAdminUserId(user.getId());
-      for (      ForgotPasswordSecurityToken fpstok : fpstoks) {
-        if (passwordEncoderNew.matches(token,fpstok.getToken())) {
-          fpst=fpstok;
-        }
+    List<ForgotPasswordSecurityToken> fpstoks=forgotPasswordSecurityTokenDao.readUnusedTokensByAdminUserId(user.getId());
+    for (    ForgotPasswordSecurityToken fpstok : fpstoks) {
+      if (isPasswordValid(fpstok.getToken(),token,null)) {
+        fpst=fpstok;
+        break;
       }
     }
     if (fpst == null) {
