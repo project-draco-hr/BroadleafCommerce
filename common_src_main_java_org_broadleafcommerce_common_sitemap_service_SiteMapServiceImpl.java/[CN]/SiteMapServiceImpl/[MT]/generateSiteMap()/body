@@ -35,6 +35,14 @@
   siteMapBuilder.persistSiteMap();
   if (getGzipSiteMapFiles()) {
     gzipAndDeleteFiles(fileWorkArea,siteMapBuilder.getIndexedFileNames());
+    List<String> indexFileNames=new ArrayList<String>();
+    for (    String fileName : siteMapBuilder.getIndexedFileNames()) {
+      indexFileNames.add(fileName + ENCODING_EXTENSION);
+    }
+    smgr.setSiteMapFilePaths(indexFileNames);
+  }
+ else {
+    smgr.setSiteMapFilePaths(siteMapBuilder.getIndexedFileNames());
   }
   broadleafFileService.addOrUpdateResources(fileWorkArea,true);
   broadleafFileService.closeWorkArea(fileWorkArea);

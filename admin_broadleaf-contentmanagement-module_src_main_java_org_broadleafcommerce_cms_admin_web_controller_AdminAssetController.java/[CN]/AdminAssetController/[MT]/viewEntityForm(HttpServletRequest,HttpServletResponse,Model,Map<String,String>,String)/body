@@ -1,4 +1,7 @@
 {
+  Site currentSite=BroadleafRequestContext.getBroadleafRequestContext().getNonPersistentSite();
   model.addAttribute("cmsUrlPrefix",staticAssetService.getStaticAssetUrlPrefix());
-  return super.viewEntityForm(request,response,model,pathVars,id);
+  String returnPath=super.viewEntityForm(request,response,model,pathVars,id);
+  staticAssetExtensionManager.getProxy().removeShareOptionsForMTStandardSite(model,currentSite);
+  return returnPath;
 }

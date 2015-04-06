@@ -22,15 +22,9 @@
     desiredCurrency=defaultCurrency;
   }
   BroadleafCurrency currencyToUse=defaultCurrency;
-  if (extensionManager != null) {
-    ExtensionResultHolder<BroadleafCurrency> resultHolder=new ExtensionResultHolder<BroadleafCurrency>();
-    extensionManager.getProxy().overrideCurrency(desiredCurrency,defaultCurrency,resultHolder);
-    if (resultHolder != null && resultHolder.getResult() != null) {
-      currencyToUse=resultHolder.getResult();
-    }
-  }
   if (BLCRequestUtils.isOKtoUseSession(request)) {
     request.setAttribute(CURRENCY_VAR,currencyToUse,WebRequest.SCOPE_GLOBAL_SESSION);
   }
-  return currencyToUse;
+  BroadleafRequestedCurrencyDto dto=new BroadleafRequestedCurrencyDto(currencyToUse,desiredCurrency);
+  return dto;
 }
