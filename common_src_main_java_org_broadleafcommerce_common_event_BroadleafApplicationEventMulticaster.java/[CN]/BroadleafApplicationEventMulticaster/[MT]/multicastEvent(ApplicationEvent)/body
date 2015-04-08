@@ -1,0 +1,22 @@
+{
+  Executor executor=getTaskExecutor();
+  for (  final ApplicationListener<?> listener : getApplicationListeners(event)) {
+    boolean isAsynchronous=false;
+    if (executor != null) {
+      if ((BroadleafApplicationListener.class.isAssignableFrom(listener.getClass()) && ((BroadleafApplicationListener<? extends ApplicationEvent>)listener).isAsynchronous())) {
+        isAsynchronous=true;
+      }
+    }
+    if (isAsynchronous) {
+      executor.execute(new Runnable(){
+        public void run(){
+          invokeListener(listener,event);
+        }
+      }
+);
+    }
+ else {
+      invokeListener(listener,event);
+    }
+  }
+}
