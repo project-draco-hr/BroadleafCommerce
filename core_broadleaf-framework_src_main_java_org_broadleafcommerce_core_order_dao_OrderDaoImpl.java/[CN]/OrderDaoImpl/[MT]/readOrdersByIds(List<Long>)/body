@@ -1,0 +1,17 @@
+{
+  if (orderIds == null || orderIds.size() == 0) {
+    return null;
+  }
+  if (orderIds.size() > 100) {
+    LOG.warn("Not recommended to use the readOrdersByIds method for long lists of orderIds, since " + "Hibernate is required to transform the distinct results. The list of requested" + "order ids was (" + orderIds.size() + ") in length.");
+  }
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Order> criteria=builder.createQuery(Order.class);
+  Root<OrderImpl> order=criteria.from(OrderImpl.class);
+  criteria.select(order);
+  criteria.where(order.get("id").as(Long.class).in(orderIds));
+  TypedQuery<Order> query=em.createQuery(criteria);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Order");
+  return query.getResultList();
+}

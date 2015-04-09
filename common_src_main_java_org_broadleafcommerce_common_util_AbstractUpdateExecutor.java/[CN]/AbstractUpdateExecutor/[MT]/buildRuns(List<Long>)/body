@@ -1,0 +1,23 @@
+{
+  List<Long[]> runs=new ArrayList<Long[]>();
+  Long[] all=ids.toArray(new Long[ids.size()]);
+  int test=all.length;
+  int pos=0;
+  boolean eof=false;
+  while (!eof) {
+    int arraySize;
+    if (test < 800) {
+      arraySize=test;
+      eof=true;
+    }
+ else {
+      arraySize=800;
+      test-=arraySize;
+      pos+=arraySize;
+    }
+    Long[] temp=new Long[arraySize];
+    System.arraycopy(all,pos,temp,0,arraySize);
+    runs.add(temp);
+  }
+  return runs;
+}
