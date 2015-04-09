@@ -1,8 +1,19 @@
 {
-  CategoryXref categoryXref=new CategoryXrefImpl();
-  categoryXref.setCategory(existingDefaultParentCategory);
-  categoryXref.setSubCategory(adminInstance);
-  if (existingDefaultParentCategory != null && !adminInstance.getAllParentCategoryXrefs().contains(categoryXref)) {
-    adminInstance.getAllParentCategoryXrefs().add(categoryXref);
+  Iterator<CategoryXref> itr=adminInstance.getAllParentCategoryXrefs().iterator();
+  while (itr.hasNext()) {
+    CategoryXref xref=itr.next();
+    if (!isDefaultCategoryLegacyMode() && xref.getDefaultReference() != null && xref.getDefaultReference()) {
+      itr.remove();
+    }
+    xref.setDefaultReference(false);
+  }
+  if (existingDefaultCategory != null) {
+    CategoryXref categoryXref=new CategoryXrefImpl();
+    categoryXref.setCategory(existingDefaultCategory);
+    categoryXref.setSubCategory(adminInstance);
+    if (!adminInstance.getAllParentCategoryXrefs().contains(categoryXref)) {
+      adminInstance.getAllParentCategoryXrefs().add(categoryXref);
+    }
+    adminInstance.getAllParentCategoryXrefs().get(adminInstance.getAllParentCategoryXrefs().indexOf(categoryXref)).setDefaultReference(!isDefaultCategoryLegacyMode());
   }
 }

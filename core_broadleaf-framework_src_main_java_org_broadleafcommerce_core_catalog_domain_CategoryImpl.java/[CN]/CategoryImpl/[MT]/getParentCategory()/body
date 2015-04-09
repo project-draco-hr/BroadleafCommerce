@@ -1,6 +1,22 @@
 {
-  if (!CollectionUtils.isEmpty(allParentCategoryXrefs)) {
-    return allParentCategoryXrefs.get(0).getCategory();
+  Category response=null;
+  List<CategoryXref> xrefs=getAllParentCategoryXrefs();
+  if (!CollectionUtils.isEmpty(xrefs)) {
+    for (    CategoryXref xref : xrefs) {
+      if (xref.getCategory().isActive() && xref.getDefaultReference() != null && xref.getDefaultReference()) {
+        response=xref.getCategory();
+      }
+    }
   }
-  return null;
+  if (response == null) {
+    if (!CollectionUtils.isEmpty(xrefs)) {
+      for (      CategoryXref xref : xrefs) {
+        if (xref.getCategory().isActive()) {
+          response=xref.getCategory();
+          break;
+        }
+      }
+    }
+  }
+  return response;
 }

@@ -14,12 +14,7 @@
     }
     if (!handled) {
       Category existingDefaultParentCategory=getExistingDefaultParentCategory(adminInstance);
-      if (isDefaultCategoryLegacyMode() || adminInstance.getAllParentCategoryXrefs().isEmpty()) {
-        setupXref(adminInstance,existingDefaultParentCategory);
-      }
- else {
-        adminInstance.getAllParentCategoryXrefs().get(0).setCategory(existingDefaultParentCategory);
-      }
+      setupXref(adminInstance,existingDefaultParentCategory);
     }
     return helper.getRecord(adminProperties,adminInstance,null,null);
   }
