@@ -83,13 +83,16 @@
             }
             if (attemptToPopulate) {
               try {
+                boolean isBreakDetected=false;
                 for (                FieldPersistenceProvider fieldPersistenceProvider : fieldPersistenceProviders) {
-                  FieldProviderResponse response=fieldPersistenceProvider.populateValue(request,instance);
-                  if (FieldProviderResponse.NOT_HANDLED != response) {
-                    handled=true;
-                  }
-                  if (FieldProviderResponse.HANDLED_BREAK == response) {
-                    break;
+                  if (!isBreakDetected || fieldPersistenceProvider.alwaysRun()) {
+                    FieldProviderResponse response=fieldPersistenceProvider.populateValue(request,instance);
+                    if (FieldProviderResponse.NOT_HANDLED != response) {
+                      handled=true;
+                    }
+                    if (FieldProviderResponse.HANDLED_BREAK == response) {
+                      isBreakDetected=true;
+                    }
                   }
                 }
                 if (!handled) {
