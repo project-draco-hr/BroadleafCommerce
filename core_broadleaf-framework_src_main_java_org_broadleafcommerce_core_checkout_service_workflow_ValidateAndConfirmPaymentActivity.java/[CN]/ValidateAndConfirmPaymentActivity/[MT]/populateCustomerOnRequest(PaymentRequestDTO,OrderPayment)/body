@@ -1,6 +1,5 @@
 {
   if (payment != null && payment.getOrder() != null && payment.getOrder().getCustomer() != null) {
-    Customer customer=payment.getOrder().getCustomer();
-    requestDTO.customer().firstName(customer.getFirstName()).lastName(customer.getLastName()).email(customer.getEmailAddress()).customerId(customer.getId() + "").done();
+    orderToPaymentRequestService.populateCustomerInfo(payment.getOrder(),requestDTO);
   }
 }
