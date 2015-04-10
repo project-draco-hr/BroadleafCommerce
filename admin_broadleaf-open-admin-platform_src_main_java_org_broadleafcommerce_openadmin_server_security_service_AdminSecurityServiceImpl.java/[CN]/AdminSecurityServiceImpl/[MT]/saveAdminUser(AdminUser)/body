@@ -10,7 +10,7 @@
   }
   AdminUser returnUser=adminUserDao.saveAdminUser(user);
   if (encodePasswordNeeded) {
-    returnUser.setPassword(passwordEncoder.encodePassword(unencodedPassword,getSalt(returnUser,unencodedPassword)));
+    returnUser.setPassword(encodePassword(unencodedPassword,getSalt(returnUser,unencodedPassword)));
   }
   return adminUserDao.saveAdminUser(returnUser);
 }

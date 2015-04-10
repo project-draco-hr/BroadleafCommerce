@@ -1,0 +1,39 @@
+{
+  if (StringUtils.isBlank(token)) {
+    response.addErrorCode("invalidToken");
+  }
+  String rawToken=token.toLowerCase();
+  String salt=null;
+  if (usingDeprecatedPasswordEncoder()) {
+    String[] tokens=token.split("-");
+    if (tokens.length > 2) {
+      response.addErrorCode("invalidToken");
+    }
+ else {
+      rawToken=tokens[0].toLowerCase();
+      if (tokens.length == 2) {
+        salt=tokens[1];
+      }
+    }
+  }
+  CustomerForgotPasswordSecurityToken fpst=null;
+  if (!response.getHasErrors()) {
+    List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
+    for (    CustomerForgotPasswordSecurityToken fpstok : fpstoks) {
+      if (isPassValid(rawToken,fpstok.getToken(),salt)) {
+        fpst=fpstok;
+        break;
+      }
+    }
+    if (fpst == null) {
+      response.addErrorCode("invalidToken");
+    }
+ else     if (fpst.isTokenUsedFlag()) {
+      response.addErrorCode("tokenUsed");
+    }
+ else     if (isTokenExpired(fpst)) {
+      response.addErrorCode("tokenExpired");
+    }
+  }
+  return fpst;
+}

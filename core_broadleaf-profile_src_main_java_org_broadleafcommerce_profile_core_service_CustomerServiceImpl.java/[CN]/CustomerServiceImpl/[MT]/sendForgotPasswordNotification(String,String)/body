@@ -15,10 +15,10 @@
     }
     CustomerForgotPasswordSecurityToken fpst=new CustomerForgotPasswordSecurityTokenImpl();
     fpst.setCustomerId(customer.getId());
-    fpst.setToken(passwordEncoder.encodePassword(token,saltString));
+    fpst.setToken(encodePass(token,saltString));
     fpst.setCreateDate(SystemTime.asDate());
     customerForgotPasswordSecurityTokenDao.saveToken(fpst);
-    if (saltString != null) {
+    if (usingDeprecatedPasswordEncoder() && saltString != null) {
       token=token + '-' + saltString;
     }
     HashMap<String,Object> vars=new HashMap<String,Object>();

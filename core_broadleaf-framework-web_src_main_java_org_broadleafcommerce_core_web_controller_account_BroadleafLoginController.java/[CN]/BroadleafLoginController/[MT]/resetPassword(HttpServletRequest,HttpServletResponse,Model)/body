@@ -1,13 +1,5 @@
 {
   ResetPasswordForm resetPasswordForm=initResetPasswordForm(request);
   model.addAttribute("resetPasswordForm",resetPasswordForm);
-  GenericResponse errorResponse=customerService.checkPasswordResetToken(resetPasswordForm.getToken());
-  if (errorResponse.getHasErrors()) {
-    String errorCode=errorResponse.getErrorCodesList().get(0);
-    request.setAttribute("errorCode",errorCode);
-    return getResetPasswordErrorView();
-  }
- else {
-    return getResetPasswordView();
-  }
+  return getResetPasswordView();
 }
