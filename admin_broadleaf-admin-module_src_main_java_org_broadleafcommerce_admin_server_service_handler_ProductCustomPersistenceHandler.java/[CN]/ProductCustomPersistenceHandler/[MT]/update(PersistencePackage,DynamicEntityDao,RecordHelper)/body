@@ -3,11 +3,17 @@
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Product.class.getName(),persistencePerspective);
+    BasicFieldMetadata defaultCategory=((BasicFieldMetadata)adminProperties.get("defaultCategory"));
+    defaultCategory.setFriendlyName("ProductImpl_Parent_Category");
+    if (entity.findProperty("defaultCategory") != null && !StringUtils.isEmpty(entity.findProperty("defaultCategory").getValue())) {
+      defaultCategory.setInheritedFromType(String.class.getName());
+    }
     Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
     Product adminInstance=(Product)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
     if (adminInstance instanceof ProductBundle) {
       removeBundleFieldRestrictions((ProductBundle)adminInstance,adminProperties,entity);
     }
+    CategoryProductXref oldDefault=getCurrentDefaultXref(adminInstance);
     adminInstance=(Product)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
     adminInstance=dynamicEntityDao.merge(adminInstance);
     boolean handled=false;
@@ -16,8 +22,8 @@
       handled=ExtensionResultStatusType.NOT_HANDLED != result;
     }
     if (!handled) {
-      Category existingDefaultCategory=getExistingDefaultCategory(adminInstance);
-      setupXref(adminInstance,existingDefaultCategory);
+      setupXref(adminInstance);
+      removeOldDefault(adminInstance,oldDefault,entity);
     }
     return helper.getRecord(adminProperties,adminInstance,null,null);
   }

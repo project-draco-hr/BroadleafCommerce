@@ -1,0 +1,27 @@
+{
+  if (!canHandlePersistence(populateValueRequest,instance)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  boolean handled=false;
+  if (extensionManager != null) {
+    ExtensionResultStatusType result=extensionManager.getProxy().manageParentCategory(populateValueRequest.getProperty(),(Category)instance);
+    handled=ExtensionResultStatusType.NOT_HANDLED != result;
+  }
+  if (!handled) {
+    Long requestedValue=null;
+    if (!StringUtils.isEmpty(populateValueRequest.getRequestedValue())) {
+      requestedValue=Long.parseLong(populateValueRequest.getRequestedValue());
+    }
+    boolean dirty=checkDirtyState((Category)instance,requestedValue);
+    if (dirty) {
+      populateValueRequest.getProperty().setIsDirty(true);
+      if (requestedValue != null) {
+        ((Category)instance).setParentCategory((Category)populateValueRequest.getPersistenceManager().getDynamicEntityDao().find(CategoryImpl.class,requestedValue));
+      }
+ else {
+        ((Category)instance).setParentCategory(null);
+      }
+    }
+  }
+  return FieldProviderResponse.HANDLED_BREAK;
+}

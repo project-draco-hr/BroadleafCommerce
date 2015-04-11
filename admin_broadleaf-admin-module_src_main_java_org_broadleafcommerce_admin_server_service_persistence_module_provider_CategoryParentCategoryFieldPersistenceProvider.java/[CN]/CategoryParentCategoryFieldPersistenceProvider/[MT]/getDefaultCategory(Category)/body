@@ -1,21 +1,11 @@
 {
   Category response=null;
-  List<CategoryXref> xrefs=getAllParentCategoryXrefs();
+  List<CategoryXref> xrefs=category.getAllParentCategoryXrefs();
   if (!CollectionUtils.isEmpty(xrefs)) {
     for (    CategoryXref xref : xrefs) {
       if (xref.getCategory().isActive() && xref.getDefaultReference() != null && xref.getDefaultReference()) {
         response=xref.getCategory();
         break;
-      }
-    }
-  }
-  if (response == null) {
-    if (!CollectionUtils.isEmpty(xrefs)) {
-      for (      CategoryXref xref : xrefs) {
-        if (xref.getCategory().isActive()) {
-          response=xref.getCategory();
-          break;
-        }
       }
     }
   }
