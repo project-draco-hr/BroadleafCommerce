@@ -2,10 +2,10 @@
   if (user == null) {
     response.addErrorCode("invalidUser");
   }
- else   if (user.getEmail() == null || "".equals(user.getEmail())) {
+ else   if (StringUtils.isBlank(user.getEmail())) {
     response.addErrorCode("emailNotFound");
   }
- else   if (user.getActiveStatusFlag() == null || !user.getActiveStatusFlag()) {
+ else   if (BooleanUtils.isNotTrue(user.getActiveStatusFlag())) {
     response.addErrorCode("inactiveUser");
   }
 }

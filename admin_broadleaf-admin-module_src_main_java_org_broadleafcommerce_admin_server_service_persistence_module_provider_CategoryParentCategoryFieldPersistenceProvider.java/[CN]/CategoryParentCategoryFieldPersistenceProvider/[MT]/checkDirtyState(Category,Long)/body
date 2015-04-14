@@ -1,0 +1,12 @@
+{
+  boolean dirty=!(instance == null && checkValue == null) && (instance == null || checkValue == null);
+  if (!dirty) {
+    Long value=null;
+    Category category=getDefaultCategory(instance);
+    if (category != null) {
+      value=category.getId();
+    }
+    dirty=value == null || !value.equals(checkValue);
+  }
+  return dirty;
+}

@@ -1,0 +1,10 @@
+{
+  if (isDefaultCategoryLegacyMode()) {
+    CategoryProductXref categoryXref=new CategoryProductXrefImpl();
+    categoryXref.setCategory(getExistingDefaultCategory(adminInstance));
+    categoryXref.setProduct(adminInstance);
+    if (!adminInstance.getAllParentCategoryXrefs().contains(categoryXref) && categoryXref.getCategory() != null) {
+      adminInstance.getAllParentCategoryXrefs().add(categoryXref);
+    }
+  }
+}

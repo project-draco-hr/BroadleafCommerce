@@ -1,11 +1,20 @@
 {
-  if (!CollectionUtils.isEmpty(allParentCategoryXrefs)) {
-    allParentCategoryXrefs.get(0).setCategory(category);
+  List<CategoryProductXref> xrefs=getAllParentCategoryXrefs();
+  boolean found=false;
+  for (  CategoryProductXref xref : xrefs) {
+    if (xref.getCategory().equals(category)) {
+      xref.setDefaultReference(true);
+      found=true;
+    }
+ else     if (xref.getDefaultReference() != null && xref.getDefaultReference()) {
+      xref.setDefaultReference(null);
+    }
   }
- else {
+  if (!found && category != null) {
     CategoryProductXref xref=new CategoryProductXrefImpl();
     xref.setProduct(this);
     xref.setCategory(category);
+    xref.setDefaultReference(true);
     allParentCategoryXrefs.add(xref);
   }
 }

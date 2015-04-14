@@ -1,0 +1,13 @@
+{
+  CategoryXref currentDefault=null;
+  List<CategoryXref> xrefs=category.getAllParentCategoryXrefs();
+  if (!CollectionUtils.isEmpty(xrefs)) {
+    for (    CategoryXref xref : xrefs) {
+      if (xref.getCategory().isActive() && xref.getDefaultReference() != null && xref.getDefaultReference()) {
+        currentDefault=xref;
+        break;
+      }
+    }
+  }
+  return currentDefault;
+}

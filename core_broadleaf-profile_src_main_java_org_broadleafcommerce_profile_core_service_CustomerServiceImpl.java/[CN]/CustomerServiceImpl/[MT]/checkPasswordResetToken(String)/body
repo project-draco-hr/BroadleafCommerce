@@ -1,5 +1,6 @@
 {
-  GenericResponse response=new GenericResponse();
-  checkPasswordResetToken(token,response);
-  return response;
+  if (passwordEncoder == null) {
+    throw new NoSuchBeanDefinitionException("This method requires the deprecated PasswordEncoder bean");
+  }
+  return checkPasswordResetToken(token,null);
 }

@@ -1,0 +1,13 @@
+{
+  passwordEncoderNew=null;
+  passwordEncoder=null;
+  if (passwordEncoderBean instanceof PasswordEncoder) {
+    passwordEncoderNew=(PasswordEncoder)passwordEncoderBean;
+  }
+ else   if (passwordEncoderBean instanceof org.springframework.security.authentication.encoding.PasswordEncoder) {
+    passwordEncoder=(org.springframework.security.authentication.encoding.PasswordEncoder)passwordEncoderBean;
+  }
+ else {
+    throw new NoSuchBeanDefinitionException("No PasswordEncoder bean is defined");
+  }
+}

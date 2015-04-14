@@ -4,7 +4,7 @@
   if (emailAddress != null) {
     users=adminUserDao.readAdminUserByEmail(emailAddress);
   }
-  if (users == null || users.isEmpty()) {
+  if (CollectionUtils.isEmpty(users)) {
     response.addErrorCode("notFound");
   }
  else {

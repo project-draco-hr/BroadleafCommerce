@@ -2,7 +2,7 @@
   if (customer == null) {
     response.addErrorCode("invalidCustomer");
   }
- else   if (customer.getEmailAddress() == null || "".equals(customer.getEmailAddress())) {
+ else   if (StringUtils.isBlank(customer.getEmailAddress())) {
     response.addErrorCode("emailNotFound");
   }
  else   if (customer.isDeactivated()) {

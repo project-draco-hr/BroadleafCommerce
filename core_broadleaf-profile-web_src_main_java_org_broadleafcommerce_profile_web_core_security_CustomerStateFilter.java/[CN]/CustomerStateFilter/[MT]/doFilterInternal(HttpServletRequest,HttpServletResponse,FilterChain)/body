@@ -1,0 +1,10 @@
+{
+  ServletWebRequest request=new ServletWebRequest(baseRequest,baseResponse);
+  try {
+    customerStateProcessor.process(request);
+    chain.doFilter(baseRequest,baseResponse);
+  }
+  finally {
+    customerStateProcessor.postProcess(request);
+  }
+}

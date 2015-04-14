@@ -1,18 +1,3 @@
 {
-  List<SolrDocument> docs;
-  if (response.getGroupResponse() == null) {
-    docs=response.getResults();
-  }
- else {
-    docs=new ArrayList<SolrDocument>();
-    GroupResponse gr=response.getGroupResponse();
-    for (    GroupCommand gc : gr.getValues()) {
-      for (      Group g : gc.getValues()) {
-        for (        SolrDocument d : g.getResult()) {
-          docs.add(d);
-        }
-      }
-    }
-  }
-  return docs;
+  return shs.getResponseDocuments(response);
 }

@@ -1,0 +1,11 @@
+{
+  if (!isDefaultCategoryLegacyMode()) {
+    if (entity.findProperty("defaultParentCategory") != null && StringUtils.isEmpty(entity.findProperty("defaultParentCategory").getValue())) {
+      adminInstance.setParentCategory(null);
+    }
+    CategoryXref newDefault=getCurrentDefaultXref(adminInstance);
+    if (oldDefault != null && !oldDefault.equals(newDefault)) {
+      adminInstance.getAllParentCategoryXrefs().remove(oldDefault);
+    }
+  }
+}

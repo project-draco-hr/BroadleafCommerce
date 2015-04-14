@@ -1,0 +1,7 @@
+{
+  List<CustomerForgotPasswordSecurityToken> tokens=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
+  for (  CustomerForgotPasswordSecurityToken token : tokens) {
+    token.setTokenUsedFlag(true);
+    customerForgotPasswordSecurityTokenDao.saveToken(token);
+  }
+}

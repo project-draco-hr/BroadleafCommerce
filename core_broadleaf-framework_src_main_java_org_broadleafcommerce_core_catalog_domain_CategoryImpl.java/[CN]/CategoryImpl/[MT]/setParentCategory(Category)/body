@@ -1,11 +1,20 @@
 {
-  if (!CollectionUtils.isEmpty(allParentCategoryXrefs)) {
-    allParentCategoryXrefs.get(0).setCategory(category);
+  List<CategoryXref> xrefs=getAllParentCategoryXrefs();
+  boolean found=false;
+  for (  CategoryXref xref : xrefs) {
+    if (xref.getCategory().equals(category)) {
+      xref.setDefaultReference(true);
+      found=true;
+    }
+ else     if (xref.getDefaultReference() != null && xref.getDefaultReference()) {
+      xref.setDefaultReference(null);
+    }
   }
- else {
+  if (!found && category != null) {
     CategoryXref xref=new CategoryXrefImpl();
     xref.setSubCategory(this);
     xref.setCategory(category);
+    xref.setDefaultReference(true);
     allParentCategoryXrefs.add(xref);
   }
 }

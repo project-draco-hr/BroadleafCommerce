@@ -1,0 +1,18 @@
+{
+  query.setFacet(true);
+  for (  Entry<String,SearchFacetDTO> entry : namedFacetMap.entrySet()) {
+    SearchFacetDTO dto=entry.getValue();
+    List<SearchFacetRange> facetRanges=new ArrayList<SearchFacetRange>(dto.getFacet().getSearchFacetRanges());
+    if (extensionManager != null) {
+      extensionManager.getProxy().filterSearchFacetRanges(dto,facetRanges);
+    }
+    if (facetRanges != null && facetRanges.size() > 0) {
+      for (      SearchFacetRange range : facetRanges) {
+        query.addFacetQuery(getSolrTaggedFieldString(entry.getKey(),"key",range));
+      }
+    }
+ else {
+      query.addFacetField(getSolrTaggedFieldString(entry.getKey(),"key",null));
+    }
+  }
+}

@@ -10,14 +10,16 @@
   }
   Object lockObject=null;
   try {
-    if (getErrorInsteadOfQueue()) {
-      lockObject=orderLockManager.acquireLockIfAvailable(order);
-      if (lockObject == null) {
-        throw new OrderLockAcquisitionFailureException("Thread[" + Thread.currentThread().getId() + "] could not acquire lock for order["+ order.getId()+ "]");
+    if (lockObject == null) {
+      if (getErrorInsteadOfQueue()) {
+        lockObject=orderLockManager.acquireLockIfAvailable(order);
+        if (lockObject == null) {
+          throw new OrderLockAcquisitionFailureException("Thread[" + Thread.currentThread().getId() + "] could not acquire lock for order["+ order.getId()+ "]");
+        }
       }
-    }
  else {
-      lockObject=orderLockManager.acquireLock(order);
+        lockObject=orderLockManager.acquireLock(order);
+      }
     }
     if (LOG.isTraceEnabled()) {
       LOG.trace("Thread[" + Thread.currentThread().getId() + "] grabbed lock for order["+ order.getId()+ "]");

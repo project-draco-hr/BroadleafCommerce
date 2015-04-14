@@ -1,0 +1,11 @@
+{
+  if (!canHandleExtraction(extractValueRequest,property)) {
+    return FieldProviderResponse.NOT_HANDLED;
+  }
+  Category category=getDefaultCategory((Category)extractValueRequest.getEntity());
+  if (category != null) {
+    property.setValue(String.valueOf(category.getId()));
+    property.setDisplayValue(category.getName());
+  }
+  return FieldProviderResponse.HANDLED_BREAK;
+}

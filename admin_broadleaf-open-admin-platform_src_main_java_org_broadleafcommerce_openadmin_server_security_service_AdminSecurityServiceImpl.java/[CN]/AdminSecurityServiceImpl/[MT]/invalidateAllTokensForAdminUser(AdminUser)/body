@@ -1,0 +1,7 @@
+{
+  List<ForgotPasswordSecurityToken> tokens=forgotPasswordSecurityTokenDao.readUnusedTokensByAdminUserId(user.getId());
+  for (  ForgotPasswordSecurityToken token : tokens) {
+    token.setTokenUsedFlag(true);
+    forgotPasswordSecurityTokenDao.saveToken(token);
+  }
+}

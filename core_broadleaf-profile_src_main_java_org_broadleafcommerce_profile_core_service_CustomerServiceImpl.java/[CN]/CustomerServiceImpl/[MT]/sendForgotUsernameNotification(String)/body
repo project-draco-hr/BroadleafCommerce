@@ -4,7 +4,7 @@
   if (emailAddress != null) {
     customers=customerDao.readCustomersByEmail(emailAddress);
   }
-  if (customers == null || customers.isEmpty()) {
+  if (CollectionUtils.isEmpty(customers)) {
     response.addErrorCode("notFound");
   }
  else {

@@ -1,18 +1,10 @@
 {
-  Category response=null;
+  Category response;
   if (defaultParentCategory != null) {
     response=defaultParentCategory;
   }
  else {
-    List<CategoryXref> xrefs=getAllParentCategoryXrefs();
-    if (!CollectionUtils.isEmpty(xrefs)) {
-      for (      CategoryXref xref : xrefs) {
-        if (xref.getCategory().isActive()) {
-          response=xref.getCategory();
-          break;
-        }
-      }
-    }
+    response=getParentCategory();
   }
   return response;
 }

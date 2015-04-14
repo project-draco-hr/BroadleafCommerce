@@ -1,0 +1,19 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Order> criteria=builder.createQuery(Order.class);
+  Root<OrderImpl> order=criteria.from(OrderImpl.class);
+  criteria.select(order);
+  if (CollectionUtils.isNotEmpty(statuses)) {
+    ArrayList<String> statusStrings=new ArrayList<String>();
+    for (    OrderStatus status : statuses) {
+      statusStrings.add(status.getType());
+    }
+    criteria.where(order.get("status").as(String.class).in(statusStrings));
+  }
+  TypedQuery<Order> query=em.createQuery(criteria);
+  query.setFirstResult(start);
+  query.setMaxResults(pageSize);
+  query.setHint(QueryHints.HINT_CACHEABLE,true);
+  query.setHint(QueryHints.HINT_CACHE_REGION,"query.Order");
+  return query.getResultList();
+}
