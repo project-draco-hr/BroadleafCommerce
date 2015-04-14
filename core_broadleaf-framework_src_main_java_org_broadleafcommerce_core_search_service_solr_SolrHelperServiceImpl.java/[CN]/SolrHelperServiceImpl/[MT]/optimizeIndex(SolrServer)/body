@@ -1,0 +1,11 @@
+{
+  try {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Optimizing the index...");
+    }
+    server.optimize();
+  }
+ catch (  SolrServerException e) {
+    throw new ServiceException("Could not optimize index",e);
+  }
+}
