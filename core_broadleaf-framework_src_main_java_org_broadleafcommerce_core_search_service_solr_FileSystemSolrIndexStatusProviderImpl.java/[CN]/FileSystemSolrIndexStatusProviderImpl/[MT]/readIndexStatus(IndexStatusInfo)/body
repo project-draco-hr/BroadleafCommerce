@@ -1,0 +1,41 @@
+{
+  try {
+    if (searchService instanceof SolrSearchServiceImpl) {
+      String solrHome=((SolrSearchServiceImpl)searchService).getSolrHomePath();
+      File statusFile=new File(new File(solrHome),"solr_status.xml");
+      boolean exists=statusFile.exists();
+      if (exists) {
+        DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        if (builder == null) {
+          builder=dbf.newDocumentBuilder();
+        }
+        Document document=builder.parse(statusFile);
+        NodeList temp1=(NodeList)xPath.evaluate("/status/index",document,XPathConstants.NODESET);
+        Element indexElement=(Element)temp1.item(0);
+        status.setLastIndexDate(format.parse(indexElement.getAttribute("dateProcessed")));
+        NodeList infos=(NodeList)xPath.evaluate("info",indexElement,XPathConstants.NODESET);
+        for (int j=0; j < infos.getLength(); j++) {
+          Element info=(Element)infos.item(j);
+          status.getAdditionalInfo().put(info.getAttribute("key"),info.getAttribute("val"));
+        }
+      }
+    }
+  }
+ catch (  ParserConfigurationException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  SAXException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  IOException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  XPathExpressionException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+catch (  ParseException e) {
+    throw ExceptionHelper.refineException(e);
+  }
+  return status;
+}
