@@ -21,24 +21,8 @@
         if (billAddress.getPhonePrimary() != null) {
           phone=billAddress.getPhonePrimary().getPhoneNumber();
         }
-        String firstName;
-        String lastName;
-        if (BLCSystemProperty.resolveBooleanSystemProperty("validator.address.fullNameOnly")) {
-          String fullName=billAddress.getFullName();
-          if ((fullName.indexOf(' ') != -1) && (fullName.length() > fullName.indexOf(' ') + 1)) {
-            firstName=fullName.substring(0,fullName.indexOf('_'));
-            lastName=fullName.substring(fullName.lastIndexOf(' ') + 1,fullName.length());
-          }
- else {
-            firstName=fullName;
-            lastName="";
-          }
-        }
- else {
-          firstName=billAddress.getFirstName();
-          lastName=billAddress.getLastName();
-        }
-        requestDTO.billTo().addressFirstName(firstName).addressLastName(lastName).addressCompanyName(billAddress.getCompanyName()).addressLine1(billAddress.getAddressLine1()).addressLine2(billAddress.getAddressLine2()).addressCityLocality(billAddress.getCity()).addressStateRegion(stateAbbr).addressPostalCode(billAddress.getPostalCode()).addressCountryCode(countryAbbr).addressPhone(phone).addressEmail(billAddress.getEmailAddress());
+        NameResponse name=getName(billAddress);
+        requestDTO.billTo().addressFirstName(name.firstName).addressLastName(name.lastName).addressCompanyName(billAddress.getCompanyName()).addressLine1(billAddress.getAddressLine1()).addressLine2(billAddress.getAddressLine2()).addressCityLocality(billAddress.getCity()).addressStateRegion(stateAbbr).addressPostalCode(billAddress.getPostalCode()).addressCountryCode(countryAbbr).addressPhone(phone).addressEmail(billAddress.getEmailAddress());
       }
     }
   }

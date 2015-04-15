@@ -1,0 +1,20 @@
+{
+  NameResponse response=new NameResponse();
+  if (BLCSystemProperty.resolveBooleanSystemProperty("validator.address.fullNameOnly")) {
+    String fullName=address.getFullName();
+    int spaceCharacterIndex=fullName.indexOf(' ');
+    if (spaceCharacterIndex != -1 && (fullName.length() > spaceCharacterIndex + 1)) {
+      response.firstName=fullName.substring(0,spaceCharacterIndex);
+      response.lastName=fullName.substring(spaceCharacterIndex + 1,fullName.length());
+    }
+ else {
+      response.firstName=fullName;
+      response.lastName="";
+    }
+  }
+ else {
+    response.firstName=address.getFirstName();
+    response.lastName=address.getLastName();
+  }
+  return response;
+}
