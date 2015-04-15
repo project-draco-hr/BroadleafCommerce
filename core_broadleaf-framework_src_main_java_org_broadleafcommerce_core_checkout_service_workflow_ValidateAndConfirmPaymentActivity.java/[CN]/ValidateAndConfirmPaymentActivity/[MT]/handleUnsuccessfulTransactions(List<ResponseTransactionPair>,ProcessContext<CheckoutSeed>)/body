@@ -4,8 +4,8 @@
     LOG.error(msg);
   }
   if (LOG.isTraceEnabled()) {
-    for (    PaymentResponseDTO responseDTO : responseDTOs) {
-      LOG.trace(responseDTO.getRawResponse());
+    for (    ResponseTransactionPair responseTransactionPair : responseDTOs) {
+      LOG.trace(responseTransactionPair.getResponseDTO().getRawResponse());
     }
   }
   throw new CheckoutException(msg,context.getSeedData());

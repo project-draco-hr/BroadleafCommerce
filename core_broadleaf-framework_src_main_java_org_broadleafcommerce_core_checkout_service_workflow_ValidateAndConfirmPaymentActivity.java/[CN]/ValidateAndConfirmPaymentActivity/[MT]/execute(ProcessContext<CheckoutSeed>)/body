@@ -2,7 +2,7 @@
   Order order=context.getSeedData().getOrder();
   Map<String,Object> rollbackState=new HashMap<String,Object>();
   Map<OrderPayment,PaymentTransaction> additionalTransactions=new HashMap<OrderPayment,PaymentTransaction>();
-  List<PaymentResponseDTO> failedTransactions=new ArrayList<PaymentResponseDTO>();
+  List<ResponseTransactionPair> failedTransactions=new ArrayList<ResponseTransactionPair>();
   List<PaymentTransaction> confirmedTransactions=new ArrayList<PaymentTransaction>();
   Map<OrderPayment,PaymentTransactionType> additionalConfirmedTransactions=new HashMap<OrderPayment,PaymentTransactionType>();
   for (  OrderPayment payment : order.getPayments()) {
@@ -54,12 +54,13 @@
           transaction.setParentTransaction(tx);
           transaction.setOrderPayment(payment);
           transaction.setAdditionalFields(responseDTO.getResponseMap());
+          transaction=orderPaymentService.save(transaction);
           additionalTransactions.put(payment,transaction);
           if (responseDTO.isSuccessful()) {
             additionalConfirmedTransactions.put(payment,transaction.getType());
           }
  else {
-            failedTransactions.add(responseDTO);
+            failedTransactions.add(new ResponseTransactionPair(responseDTO,transaction.getId()));
           }
         }
  else         if (PaymentTransactionType.AUTHORIZE.equals(tx.getType()) || PaymentTransactionType.AUTHORIZE_AND_CAPTURE.equals(tx.getType())) {
