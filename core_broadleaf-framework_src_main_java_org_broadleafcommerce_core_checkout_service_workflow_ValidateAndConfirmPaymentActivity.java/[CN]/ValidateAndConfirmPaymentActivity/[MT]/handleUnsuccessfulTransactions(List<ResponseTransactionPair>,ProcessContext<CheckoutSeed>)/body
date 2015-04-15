@@ -1,5 +1,10 @@
 {
   String msg="Attempting to confirm/authorize an UNCONFIRMED transaction on the order was unsuccessful.";
+  Order order=context.getSeedData().getOrder();
+  for (  ResponseTransactionPair responseTransactionPair : responseDTOs) {
+    order.getPayments().remove(orderPaymentService.readTransactionById(responseTransactionPair.getTransactionId()));
+    paymentGatewayCheckoutService.markPaymentAsInvalid(responseTransactionPair.getTransactionId());
+  }
   if (LOG.isErrorEnabled()) {
     LOG.error(msg);
   }
