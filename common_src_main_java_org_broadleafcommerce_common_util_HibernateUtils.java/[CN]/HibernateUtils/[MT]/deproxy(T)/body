@@ -1,0 +1,8 @@
+{
+  if (t instanceof HibernateProxy) {
+    HibernateProxy proxy=(HibernateProxy)t;
+    LazyInitializer lazyInitializer=proxy.getHibernateLazyInitializer();
+    return (T)lazyInitializer.getImplementation();
+  }
+  return t;
+}
