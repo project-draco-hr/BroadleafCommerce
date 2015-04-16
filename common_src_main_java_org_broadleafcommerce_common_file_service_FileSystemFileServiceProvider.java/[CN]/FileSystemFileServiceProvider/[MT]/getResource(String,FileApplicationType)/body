@@ -1,5 +1,11 @@
 {
   String fileName=buildResourceName(url);
-  String filePath=FilenameUtils.normalize(getBaseDirectory() + File.separator + fileName);
+  String baseDirectory=getBaseDirectory(true);
+  ExtensionResultHolder<String> holder=new ExtensionResultHolder<String>();
+  ExtensionResultStatusType result=extensionManager.getProxy().processPathForSite(baseDirectory,fileName,holder);
+  if (!ExtensionResultStatusType.NOT_HANDLED.equals(result)) {
+    return new File(holder.getResult());
+  }
+  String filePath=FilenameUtils.normalize(getBaseDirectory(false) + File.separator + fileName);
   return new File(filePath);
 }
