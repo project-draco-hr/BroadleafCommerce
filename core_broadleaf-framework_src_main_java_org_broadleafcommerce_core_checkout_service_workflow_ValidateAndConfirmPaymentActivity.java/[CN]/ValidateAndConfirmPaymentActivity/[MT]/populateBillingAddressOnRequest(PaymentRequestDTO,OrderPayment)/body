@@ -1,25 +1,5 @@
 {
   if (payment != null && payment.getBillingAddress() != null) {
-    Address address=payment.getBillingAddress();
-    String addressLine2=address.getAddressLine2();
-    if (StringUtils.isNotBlank(address.getAddressLine3())) {
-      addressLine2=addressLine2 + " " + address.getAddressLine3();
-    }
-    String state=null;
-    if (StringUtils.isNotBlank(address.getStateProvinceRegion())) {
-      state=address.getStateProvinceRegion();
-    }
- else     if (address.getState() != null) {
-      state=address.getState().getAbbreviation();
-    }
-    String country=null;
-    if (address.getIsoCountryAlpha2() != null) {
-      country=address.getIsoCountryAlpha2().getAlpha2();
-    }
- else     if (address.getCountry() != null) {
-      country=address.getCountry().getAbbreviation();
-    }
-    String phone=address.getPhonePrimary() != null ? address.getPhonePrimary().getPhoneNumber() : null;
-    requestDTO.billTo().addressFirstName(address.getFirstName()).addressLastName(address.getLastName()).addressLine1(address.getAddressLine1()).addressLine2(addressLine2).addressCityLocality(address.getCity()).addressStateRegion(state).addressPostalCode(address.getPostalCode()).addressCountryCode(country).addressEmail(address.getEmailAddress()).addressPhone(phone).addressCompanyName(address.getCompanyName()).done();
+    orderToPaymentRequestService.populateBillTo(payment.getOrder(),requestDTO);
   }
 }
