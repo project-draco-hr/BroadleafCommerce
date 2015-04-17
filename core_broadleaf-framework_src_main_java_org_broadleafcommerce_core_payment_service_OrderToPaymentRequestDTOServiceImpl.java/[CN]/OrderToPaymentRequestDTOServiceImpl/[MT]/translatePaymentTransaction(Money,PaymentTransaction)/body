@@ -1,4 +1,9 @@
 {
+  LOG.info("*** transactionAmount = " + transactionAmount + " paymentTransaction="+ paymentTransaction);
+  LOG.info("*** ta.amount=" + transactionAmount.getAmount());
+  LOG.info("*** pt.orderPayment=" + paymentTransaction.getOrderPayment());
+  LOG.info("*** pt.orderPayment.currency=" + paymentTransaction.getOrderPayment().getCurrency());
+  LOG.info("*** pt.orderPayment.order=" + paymentTransaction.getOrderPayment().getOrder());
   PaymentRequestDTO requestDTO=new PaymentRequestDTO().transactionTotal(transactionAmount.getAmount().toPlainString()).orderSubtotal(transactionAmount.getAmount().toPlainString()).shippingTotal(ZERO_TOTAL).taxTotal(ZERO_TOTAL).orderCurrencyCode(paymentTransaction.getOrderPayment().getCurrency().getCurrencyCode()).orderId(paymentTransaction.getOrderPayment().getOrder().getId().toString());
   Map<String,String> additionalFields=paymentTransaction.getAdditionalFields();
   for (  String key : additionalFields.keySet()) {
