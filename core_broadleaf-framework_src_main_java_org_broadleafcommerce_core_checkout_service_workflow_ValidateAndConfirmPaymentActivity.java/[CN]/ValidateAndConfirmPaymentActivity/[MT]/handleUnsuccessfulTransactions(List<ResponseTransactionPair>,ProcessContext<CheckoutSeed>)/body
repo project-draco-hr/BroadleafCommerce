@@ -1,14 +1,21 @@
 {
   String msg="Attempting to confirm/authorize an UNCONFIRMED transaction on the order was unsuccessful.";
-  Order order=context.getSeedData().getOrder();
   List<OrderPayment> invalidatedPayments=new ArrayList<OrderPayment>();
+  List<PaymentTransaction> failedTransactionsToRollBack=new ArrayList<PaymentTransaction>();
   for (  ResponseTransactionPair responseTransactionPair : failedTransactions) {
     PaymentTransaction tx=orderPaymentService.readTransactionById(responseTransactionPair.getTransactionId());
-    if (!invalidatedPayments.contains(tx.getOrderPayment())) {
+    if (shouldRollbackFailedTransaction(responseTransactionPair)) {
+      failedTransactionsToRollBack.add(tx);
+    }
+ else     if (!invalidatedPayments.contains(tx.getOrderPayment())) {
       paymentGatewayCheckoutService.markPaymentAsInvalid(tx.getOrderPayment().getId());
-      invalidatedPayments.add(tx.getOrderPayment());
+      OrderPayment payment=orderPaymentService.save(tx.getOrderPayment());
+      invalidatedPayments.add(payment);
     }
   }
+  Map<String,Object> rollbackState=new HashMap<String,Object>();
+  rollbackState.put(ROLLBACK_TRANSACTIONS,failedTransactionsToRollBack);
+  ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
   if (LOG.isErrorEnabled()) {
     LOG.error(msg);
   }
