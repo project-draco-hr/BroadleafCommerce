@@ -38,9 +38,9 @@
       }
     }
   }
-  String version=getBundleVersion(foundResources);
-  String versionedName=getBundleName(bundleName,version);
+  String resourcesHashedValue=getBundleVersion(foundResources);
+  String versionedName=getBundleName(bundleName,resourcesHashedValue);
   bundles.put(versionedName,foundResources.values());
-  getBundleVersionsCache().put(new Element(getCacheKey(bundleName),versionedName));
+  getBundleVersionsCache().put(new Element(getCacheKey(bundleName,files),versionedName));
   return versionedName;
 }

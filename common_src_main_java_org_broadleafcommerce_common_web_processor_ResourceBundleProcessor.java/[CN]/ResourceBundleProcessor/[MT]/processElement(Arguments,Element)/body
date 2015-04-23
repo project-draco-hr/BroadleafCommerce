@@ -8,34 +8,12 @@
   for (  String file : element.getAttributeValue("files").split(",")) {
     files.add(file.trim());
   }
-  if (getBundleEnabled()) {
-    String versionedBundle=bundlingService.getVersionedBundleName(name);
-    if (StringUtils.isBlank(versionedBundle)) {
-      BroadleafResourceHttpRequestHandler reqHandler=getRequestHandler(name,arguments);
-      try {
-        versionedBundle=bundlingService.registerBundle(name,files,reqHandler);
-      }
- catch (      IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + versionedBundle+ "'}");
+  for (  String file : files) {
+    file=file.trim();
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
     String value=(String)expression.execute(arguments.getConfiguration(),arguments);
     Element e=getElement(value,async,defer);
-    parent.insertAfter(element,e);
-  }
- else {
-    List<String> additionalBundleFiles=bundlingService.getAdditionalBundleFiles(name);
-    if (additionalBundleFiles != null) {
-      files.addAll(additionalBundleFiles);
-    }
-    for (    String file : files) {
-      file=file.trim();
-      Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
-      String value=(String)expression.execute(arguments.getConfiguration(),arguments);
-      Element e=getElement(value,async,defer);
-      parent.insertBefore(element,e);
-    }
+    parent.insertBefore(element,e);
   }
   parent.removeChild(element);
   return ProcessorResult.OK;
