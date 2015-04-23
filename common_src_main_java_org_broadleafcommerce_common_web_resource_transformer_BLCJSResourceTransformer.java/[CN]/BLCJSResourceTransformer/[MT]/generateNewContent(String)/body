@@ -1,0 +1,12 @@
+{
+  String newContent=content;
+  if (org.apache.commons.lang3.StringUtils.isNotBlank(content)) {
+    HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    newContent=newContent.replace("//BLC-SERVLET-CONTEXT",request.getContextPath());
+    String siteBaseUrl=propMgr.getProperty("site.baseurl");
+    if (org.apache.commons.lang3.StringUtils.isNotBlank(siteBaseUrl)) {
+      newContent=newContent.replace("//BLC-SITE-BASEURL",siteBaseUrl);
+    }
+  }
+  return newContent;
+}

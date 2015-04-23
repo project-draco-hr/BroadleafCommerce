@@ -1,0 +1,18 @@
+{
+  String newContents=content;
+  if (StringUtils.isNotBlank(content)) {
+    String regexKey="\\\"BLC_PROP:(.*)\\\"";
+    Pattern p=Pattern.compile(regexKey);
+    Matcher m=p.matcher(content);
+    while (m.find()) {
+      String matchedPlaceholder=m.group(0);
+      String propertyName=m.group(1);
+      String propVal=BLCSystemProperty.resolveSystemProperty(propertyName);
+      if (StringUtils.isBlank(propVal)) {
+        propVal="";
+      }
+      newContents=newContents.replaceAll(matchedPlaceholder,'"' + propVal + '"');
+    }
+  }
+  return newContents;
+}
