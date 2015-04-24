@@ -1,8 +1,7 @@
 {
-  resource=resourceTransformerChain.transform(httpServletRequest,resource);
   String filename=resource.getFilename();
   if (!getResourceFileName().equalsIgnoreCase(filename)) {
-    return resource;
+    return resourceTransformerChain.transform(httpServletRequest,resource);
   }
   byte[] bytes=FileCopyUtils.copyToByteArray(resource.getInputStream());
   String content=new String(bytes,DEFAULT_CHARSET);
