@@ -1,0 +1,21 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  if (brc.getRequest() == null) {
+    HttpServletRequest req=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    HttpSession session=req.getSession(false);
+    SecurityContext ctx=readSecurityContextFromSession(session);
+    if (ctx != null) {
+      SecurityContextHolder.setContext(ctx);
+    }
+    brc.setRequest(req);
+  }
+  WebRequest wr=brc.getWebRequest();
+  if (brc.getNonPersistentSite() == null) {
+    brc.setNonPersistentSite(siteResolver.resolveSite(wr,true));
+    brc.setSandBox(sbResolver.resolveSandBox(wr,brc.getNonPersistentSite()));
+    brc.setDeployBehavior(deployBehaviorUtil.isProductionSandBoxMode() ? DeployBehavior.CLONE_PARENT : DeployBehavior.OVERWRITE_PARENT);
+  }
+  if (brc.getTheme() == null) {
+    brc.setTheme(themeResolver.resolveTheme(wr));
+  }
+}
