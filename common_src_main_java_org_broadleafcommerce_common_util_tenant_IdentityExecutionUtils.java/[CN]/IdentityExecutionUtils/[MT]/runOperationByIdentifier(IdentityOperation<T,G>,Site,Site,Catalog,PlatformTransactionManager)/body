@@ -1,11 +1,12 @@
 {
+  IdentityUtilContext context=new IdentityUtilContext();
+  context.setIdentifier(site);
+  IdentityUtilContext.setUtilContext(context);
   BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
   Site previousSite=brc.getSite();
   Catalog previousCatalog=brc.getCurrentCatalog();
   Site previousProfile=brc.getCurrentProfile();
-  boolean isNew=initRequestContext(null,null,null);
-  boolean isIgnoringSite=BroadleafRequestContext.getBroadleafRequestContext().getIgnoreSite();
-  BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(true);
+  boolean isNew=initRequestContext(site,profile,catalog);
   activateSession();
   TransactionContainer container=null;
   if (transactionManager != null) {
@@ -23,10 +24,10 @@
     if (container != null) {
       finalizeTransaction(transactionManager,container,isError);
     }
+    IdentityUtilContext.setUtilContext(null);
     if (isNew) {
       BroadleafRequestContext.setBroadleafRequestContext(null);
     }
-    BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(isIgnoringSite);
     BroadleafRequestContext.getBroadleafRequestContext().setSite(previousSite);
     BroadleafRequestContext.getBroadleafRequestContext().setCurrentCatalog(previousCatalog);
     BroadleafRequestContext.getBroadleafRequestContext().setCurrentProfile(previousProfile);

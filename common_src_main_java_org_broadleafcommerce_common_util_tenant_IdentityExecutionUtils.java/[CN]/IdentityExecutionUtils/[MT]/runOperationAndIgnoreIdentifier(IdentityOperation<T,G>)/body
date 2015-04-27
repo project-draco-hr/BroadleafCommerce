@@ -1,25 +1,3 @@
 {
-  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
-  Site previousSite=brc.getSite();
-  Catalog previousCatalog=brc.getCurrentCatalog();
-  Site previousProfile=brc.getCurrentProfile();
-  boolean isNew=initRequestContext(null,null,null);
-  boolean isIgnoringSite=BroadleafRequestContext.getBroadleafRequestContext().getIgnoreSite();
-  BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(true);
-  activateSession();
-  try {
-    return operation.execute();
-  }
- catch (  RuntimeException e) {
-    throw e;
-  }
- finally {
-    if (isNew) {
-      BroadleafRequestContext.setBroadleafRequestContext(null);
-    }
-    BroadleafRequestContext.getBroadleafRequestContext().setIgnoreSite(isIgnoringSite);
-    BroadleafRequestContext.getBroadleafRequestContext().setSite(previousSite);
-    BroadleafRequestContext.getBroadleafRequestContext().setCurrentCatalog(previousCatalog);
-    BroadleafRequestContext.getBroadleafRequestContext().setCurrentProfile(previousProfile);
-  }
+  return runOperationAndIgnoreIdentifier(operation,null);
 }
