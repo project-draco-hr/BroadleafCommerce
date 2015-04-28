@@ -15,7 +15,9 @@
     brc.setSandBox(sbResolver.resolveSandBox(wr,brc.getNonPersistentSite()));
     brc.setDeployBehavior(deployBehaviorUtil.isProductionSandBoxMode() ? DeployBehavior.CLONE_PARENT : DeployBehavior.OVERWRITE_PARENT);
   }
-  if (brc.getTheme() == null) {
-    brc.setTheme(themeResolver.resolveTheme(wr));
+  if (includeTheme) {
+    if (brc.getTheme() == null) {
+      brc.setTheme(themeResolver.resolveTheme(wr));
+    }
   }
 }
