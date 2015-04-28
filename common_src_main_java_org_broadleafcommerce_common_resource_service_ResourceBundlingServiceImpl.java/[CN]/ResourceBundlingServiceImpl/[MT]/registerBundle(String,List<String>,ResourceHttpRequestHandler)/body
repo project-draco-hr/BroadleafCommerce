@@ -5,15 +5,6 @@
   }
   for (  String file : files) {
     boolean match=false;
-    if (handler.getHandlers() != null) {
-      for (      AbstractGeneratedResourceHandler h : handler.getHandlers()) {
-        if (h.canHandle(file)) {
-          foundResources.put(file,h.getResource(file,handler.getLocations()));
-          match=true;
-          break;
-        }
-      }
-    }
     if (!match) {
       ExtensionResultHolder erh=new ExtensionResultHolder();
       extensionManager.getProxy().getOverrideResource(file,erh);
