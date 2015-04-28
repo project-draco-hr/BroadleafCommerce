@@ -8,6 +8,10 @@
   for (  String file : element.getAttributeValue("files").split(",")) {
     files.add(file.trim());
   }
+  List<String> additionalBundleFiles=bundlingService.getAdditionalBundleFiles(name);
+  if (additionalBundleFiles != null) {
+    files.addAll(additionalBundleFiles);
+  }
   for (  String file : files) {
     file=file.trim();
     Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
