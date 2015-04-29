@@ -7,20 +7,7 @@
   expressionDTO.setOperator(BLCOperator.GREATER_OR_EQUAL.name());
   expressionDTO.setValue("100");
   dataDTO.getGroups().add(expressionDTO);
-  DataDTO d1=new DataDTO();
-  d1.setGroupOperator(BLCOperator.OR.name());
-  ExpressionDTO e1=new ExpressionDTO();
-  e1.setName("currency.defaultFlag");
-  e1.setOperator(BLCOperator.EQUALS.name());
-  e1.setValue("true");
-  ExpressionDTO e2=new ExpressionDTO();
-  e2.setName("locale.localeCode");
-  e2.setOperator(BLCOperator.EQUALS.name());
-  e2.setValue("my");
-  d1.getGroups().add(e1);
-  d1.getGroups().add(e2);
-  dataDTO.getGroups().add(d1);
   String translated=translator.createMVEL("order",dataDTO,orderFieldService);
-  String mvel="order.?subTotal.getAmount()>=100&&(order.?currency.?defaultFlag==true||order.?locale.?localeCode==\"my\")";
+  String mvel="order.?subTotal.getAmount()>=100";
   assert(mvel.equals(translated));
 }

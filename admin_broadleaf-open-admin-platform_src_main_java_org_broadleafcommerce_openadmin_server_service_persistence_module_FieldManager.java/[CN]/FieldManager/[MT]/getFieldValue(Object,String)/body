@@ -2,7 +2,7 @@
   StringTokenizer tokens=new StringTokenizer(fieldName,".");
   Class<?> componentClass=bean.getClass();
   Field field;
-  Object value=bean;
+  Object value=HibernateUtils.deproxy(bean);
   while (tokens.hasMoreTokens()) {
     String fieldNamePart=tokens.nextToken();
     String mapKey=null;

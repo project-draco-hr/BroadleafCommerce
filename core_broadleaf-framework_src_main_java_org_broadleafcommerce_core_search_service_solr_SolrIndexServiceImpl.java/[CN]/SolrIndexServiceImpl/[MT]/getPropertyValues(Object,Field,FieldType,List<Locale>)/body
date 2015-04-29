@@ -1,0 +1,36 @@
+{
+  String propertyName=field.getPropertyName();
+  Map<String,Object> values=new HashMap<String,Object>();
+  ExtensionResultStatusType extensionResult=ExtensionResultStatusType.NOT_HANDLED;
+  if (extensionManager != null) {
+    if (Product.class.isAssignableFrom(indexedItem.getClass())) {
+      extensionResult=extensionManager.getProxy().addPropertyValues((Product)indexedItem,field,fieldType,values,propertyName,locales);
+    }
+ else     if (Sku.class.isAssignableFrom(indexedItem.getClass())) {
+      extensionResult=extensionManager.getProxy().addPropertyValues((Sku)indexedItem,field,fieldType,values,propertyName,locales);
+    }
+  }
+  if (ExtensionResultStatusType.NOT_HANDLED.equals(extensionResult)) {
+    Object propertyValue;
+    if (propertyName.contains(PRODUCT_ATTR_MAP) || propertyName.contains(SKU_ATTR_MAP)) {
+      if (propertyName.contains(PRODUCT_ATTR_MAP)) {
+        propertyValue=PropertyUtils.getMappedProperty(indexedItem,PRODUCT_ATTR_MAP,propertyName.substring(PRODUCT_ATTR_MAP.length() + 1));
+      }
+ else {
+        propertyValue=PropertyUtils.getMappedProperty(indexedItem,SKU_ATTR_MAP,propertyName.substring(SKU_ATTR_MAP.length() + 1));
+      }
+      if (propertyValue != null) {
+        try {
+          propertyValue=shs.getPropertyValue(propertyValue,"value");
+        }
+ catch (        NoSuchMethodException e) {
+        }
+      }
+    }
+ else {
+      propertyValue=shs.getPropertyValue(indexedItem,propertyName);
+    }
+    values.put("",propertyValue);
+  }
+  return values;
+}

@@ -1,8 +1,7 @@
 {
   try {
     if (searchService instanceof SolrSearchServiceImpl) {
-      String solrHome=((SolrSearchServiceImpl)searchService).getSolrHomePath();
-      File statusFile=new File(new File(solrHome),"solr_status.xml");
+      File statusFile=getStatusFile((SolrSearchServiceImpl)searchService);
       boolean exists=statusFile.exists();
       DocumentBuilderFactory dbf=DocumentBuilderFactory.newInstance();
       dbf.setIgnoringElementContentWhitespace(true);

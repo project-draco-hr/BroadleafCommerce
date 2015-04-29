@@ -26,20 +26,29 @@
           context=activity.execute(context);
         }
  catch (        Throwable th) {
-          th.printStackTrace();
-          if (getAutoRollbackOnError()) {
-            LOG.info("Automatically rolling back state for any previously registered RollbackHandlers. RollbackHandlers may be registered for workflow activities in appContext.");
-            ActivityStateManagerImpl.getStateManager().rollbackAllState();
-          }
-          ErrorHandler errorHandler=activity.getErrorHandler();
-          if (errorHandler == null) {
-            LOG.info("no error handler for this action, run default error" + "handler and abort processing ");
-            getDefaultErrorHandler().handleError(context,th);
-            break;
-          }
+          try {
+            if (getAutoRollbackOnError()) {
+              LOG.info("Automatically rolling back state for any previously registered " + "RollbackHandlers. RollbackHandlers may be registered for workflow activities" + " in appContext.");
+              ActivityStateManagerImpl.getStateManager().rollbackAllState();
+            }
+            ErrorHandler errorHandler=activity.getErrorHandler();
+            if (errorHandler == null) {
+              LOG.info("no error handler for this action, run default error" + "handler and abort " + "processing ");
+              getDefaultErrorHandler().handleError(context,th);
+              break;
+            }
  else {
-            LOG.info("run error handler and continue");
-            errorHandler.handleError(context,th);
+              LOG.info("run error handler and continue");
+              errorHandler.handleError(context,th);
+            }
+          }
+ catch (          RuntimeException e) {
+            LOG.error("An exception was caught while attempting to handle an activity generated exception",th);
+            throw e;
+          }
+catch (          WorkflowException e) {
+            LOG.error("An exception was caught while attempting to handle an activity generated exception",th);
+            throw e;
           }
         }
         if (processShouldStop(context,activity)) {

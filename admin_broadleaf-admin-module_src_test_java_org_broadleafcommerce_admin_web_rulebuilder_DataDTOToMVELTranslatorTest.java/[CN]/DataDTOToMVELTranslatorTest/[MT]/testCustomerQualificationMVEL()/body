@@ -2,12 +2,4 @@
   DataDTOToMVELTranslator translator=new DataDTOToMVELTranslator();
   DataDTO dataDTO=new DataDTO();
   dataDTO.setGroupOperator(BLCOperator.AND.name());
-  ExpressionDTO e2=new ExpressionDTO();
-  e2.setName("deactivated");
-  e2.setOperator(BLCOperator.EQUALS.name());
-  e2.setValue("true");
-  dataDTO.getGroups().add(e2);
-  String translated=translator.createMVEL("customer",dataDTO,customerFieldService);
-  String mvel="customer.?deactivated==true";
-  assert(mvel.equals(translated));
 }

@@ -18,7 +18,7 @@
   Property[] p2=new Property[3];
   Property m2=new Property();
   m2.setName("orderItemMatchRule");
-  m2.setValue("!(discreteOrderItem.product.manufacturer==\"test manufacturer\"&&discreteOrderItem.product.model==\"test model\")");
+  m2.setValue("!(discreteOrderItem.product.manufacturer==\"test manufacturer\")");
   Property q2=new Property();
   q2.setName("quantity");
   q2.setValue("2");
@@ -45,15 +45,9 @@
   assert(exp1.getValue().equals("test category"));
   assert(dataWrapper.getData().get(1).getQuantity() == 2);
   assert(dataWrapper.getData().get(1).getGroupOperator().equals(BLCOperator.NOT.name()));
-  assert(dataWrapper.getData().get(1).getGroups().size() == 2);
   assert(dataWrapper.getData().get(1).getGroups().get(0) instanceof ExpressionDTO);
   ExpressionDTO expd1e1=(ExpressionDTO)dataWrapper.getData().get(1).getGroups().get(0);
   assert(expd1e1.getName().equals("product.manufacturer"));
   assert(expd1e1.getOperator().equals(BLCOperator.EQUALS.name()));
   assert(expd1e1.getValue().equals("test manufacturer"));
-  assert(dataWrapper.getData().get(1).getGroups().get(1) instanceof ExpressionDTO);
-  ExpressionDTO expd1e2=(ExpressionDTO)dataWrapper.getData().get(1).getGroups().get(1);
-  assert(expd1e2.getName().equals("product.model"));
-  assert(expd1e2.getOperator().equals(BLCOperator.EQUALS.name()));
-  assert(expd1e2.getValue().equals("test model"));
 }
