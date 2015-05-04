@@ -1,3 +1,15 @@
 {
-  CACHE.set(cache);
+  BroadleafRequestContext ctx=BroadleafRequestContext.getBroadleafRequestContext();
+  Catalog currentCatalog=ctx == null ? null : ctx.getCurrentCatalog();
+  Map<Long,CatalogStructure> catalogCaches=CACHE.get();
+  if (catalogCaches == null) {
+    catalogCaches=new HashMap<Long,CatalogStructure>();
+    CACHE.set(catalogCaches);
+  }
+  if (currentCatalog != null) {
+    catalogCaches.put(currentCatalog.getId(),cache);
+  }
+ else {
+    catalogCaches.put(DEFAULT_CATALOG_CACHE_KEY,cache);
+  }
 }
