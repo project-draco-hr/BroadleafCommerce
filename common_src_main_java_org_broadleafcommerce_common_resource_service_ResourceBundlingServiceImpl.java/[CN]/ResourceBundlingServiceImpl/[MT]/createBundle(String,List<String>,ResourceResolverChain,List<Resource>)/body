@@ -1,0 +1,44 @@
+{
+  HttpServletRequest req=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  ByteArrayOutputStream baos=new ByteArrayOutputStream();
+  byte[] bytes=null;
+  try {
+    for (    String fileName : filePaths) {
+      Resource r=resolverChain.resolveResource(req,fileName,locations);
+      InputStream is=null;
+      try {
+        is=r.getInputStream();
+        StreamUtils.copy(is,baos);
+      }
+ catch (      IOException e) {
+        throw new RuntimeException(e);
+      }
+ finally {
+        try {
+          is.close();
+        }
+ catch (        IOException e2) {
+          throw new RuntimeException(e2);
+        }
+      }
+      if (versionedBundleName.endsWith(".js")) {
+        baos.write(";".getBytes());
+      }
+      baos.write(System.getProperty("line.separator").getBytes());
+    }
+    bytes=baos.toByteArray();
+  }
+ catch (  IOException e) {
+    throw new RuntimeException(e);
+  }
+ finally {
+    try {
+      baos.close();
+    }
+ catch (    IOException e2) {
+      throw new RuntimeException(e2);
+    }
+  }
+  GeneratedResource r=new GeneratedResource(bytes,versionedBundleName);
+  return r;
+}

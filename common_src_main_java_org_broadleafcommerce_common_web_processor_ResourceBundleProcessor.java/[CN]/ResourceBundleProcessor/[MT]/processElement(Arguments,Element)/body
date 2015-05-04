@@ -8,16 +8,26 @@
   for (  String file : element.getAttributeValue("files").split(",")) {
     files.add(file.trim());
   }
-  List<String> additionalBundleFiles=bundlingService.getAdditionalBundleFiles(name);
-  if (additionalBundleFiles != null) {
-    files.addAll(additionalBundleFiles);
-  }
-  for (  String file : files) {
-    file=file.trim();
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
+  if (getBundleEnabled()) {
+    String bundleResourceName=bundlingService.resolveBundleResourceName(name,mappingPrefix,files);
+    Configuration thymeleafCfg=arguments.getConfiguration();
+    Expression expression=(Expression)StandardExpressions.getExpressionParser(thymeleafCfg).parseExpression(thymeleafCfg,arguments,"@{'" + bundleResourceName + "'}");
     String value=(String)expression.execute(arguments.getConfiguration(),arguments);
     Element e=getElement(value,async,defer);
-    parent.insertBefore(element,e);
+    parent.insertAfter(element,e);
+  }
+ else {
+    List<String> additionalBundleFiles=bundlingService.getAdditionalBundleFiles(name);
+    if (additionalBundleFiles != null) {
+      files.addAll(additionalBundleFiles);
+    }
+    for (    String file : files) {
+      file=file.trim();
+      Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,"@{'" + mappingPrefix + file+ "'}");
+      String value=(String)expression.execute(arguments.getConfiguration(),arguments);
+      Element e=getElement(value,async,defer);
+      parent.insertBefore(element,e);
+    }
   }
   parent.removeChild(element);
   return ProcessorResult.OK;

@@ -1,0 +1,12 @@
+{
+  ResourceResolver resolver=getNext();
+  if (resolver == null) {
+    return null;
+  }
+  try {
+    return resolver.resolveUrlPath(resourcePath,locations,this);
+  }
+  finally {
+    this.index--;
+  }
+}
