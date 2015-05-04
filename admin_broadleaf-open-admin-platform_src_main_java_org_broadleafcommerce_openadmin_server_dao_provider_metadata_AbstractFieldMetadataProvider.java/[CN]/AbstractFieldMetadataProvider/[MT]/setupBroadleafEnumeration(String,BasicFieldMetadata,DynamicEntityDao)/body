@@ -1,46 +1,11 @@
 {
   try {
-    Map<String,String> enumVals;
-    Class<?> broadleafEnumeration=Class.forName(broadleafEnumerationClass);
-    Method typeMethod=broadleafEnumeration.getMethod("getType");
-    Method friendlyTypeMethod=broadleafEnumeration.getMethod("getFriendlyType");
-    Field types=dynamicEntityDao.getFieldManager().getField(broadleafEnumeration,"TYPES");
-    if (Comparable.class.isAssignableFrom(broadleafEnumeration)) {
-      enumVals=new LinkedHashMap<String,String>();
-      Set<BroadleafEnumerationType> blcEnumSet=new TreeSet<BroadleafEnumerationType>();
-      if (types != null) {
-        Map typesMap=(Map)types.get(null);
-        for (        Object value : typesMap.values()) {
-          blcEnumSet.add((BroadleafEnumerationType)value);
-        }
-        for (        Object value : typesMap.values()) {
-          enumVals.put((String)friendlyTypeMethod.invoke(value),(String)typeMethod.invoke(value));
-        }
-      }
-    }
- else {
-      enumVals=new TreeMap<String,String>();
-      if (types != null) {
-        Map typesMap=(Map)types.get(null);
-        for (        Object value : typesMap.values()) {
-          enumVals.put((String)friendlyTypeMethod.invoke(value),(String)typeMethod.invoke(value));
-        }
-      }
- else {
-        Field[] fields=dynamicEntityDao.getAllFields(broadleafEnumeration);
-        for (        Field field : fields) {
-          boolean isStatic=Modifier.isStatic(field.getModifiers());
-          if (isStatic && field.getType().isAssignableFrom(broadleafEnumeration)) {
-            enumVals.put((String)friendlyTypeMethod.invoke(field.get(null)),(String)typeMethod.invoke(field.get(null)));
-          }
-        }
-      }
-    }
+    List<Tuple<String,String>> enumVals=enumerationUtility.getEnumerationValues(broadleafEnumerationClass,dynamicEntityDao);
     String[][] enumerationValues=new String[enumVals.size()][2];
     int j=0;
-    for (    String key : enumVals.keySet()) {
-      enumerationValues[j][0]=enumVals.get(key);
-      enumerationValues[j][1]=key;
+    for (    Tuple<String,String> t : enumVals) {
+      enumerationValues[j][0]=t.getFirst();
+      enumerationValues[j][1]=t.getSecond();
       j++;
     }
     fieldMetadata.setEnumerationValues(enumerationValues);

@@ -106,7 +106,7 @@
       }
     }
     if (xformVals != null && xformVals.length > 0) {
-      logger.lifecycle(LifeCycleEvent.START,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
+      logger.debug(String.format("[%s] - Transform - Copying into [%s] from [%s]",LifeCycleEvent.END,xformKey,StringUtils.join(xformVals,",")));
       clazz.defrost();
       int index=0;
       for (      String xformVal : xformVals) {
@@ -220,7 +220,7 @@
       if (xformTemplates.isEmpty()) {
         annotationTransformedClasses.add(convertedClassName);
       }
-      logger.lifecycle(LifeCycleEvent.END,String.format("Transform - Copying into [%s] from [%s]",xformKey,StringUtils.join(xformVals,",")));
+      logger.debug(String.format("[%s] - Transform - Copying into [%s] from [%s]",LifeCycleEvent.END,xformKey,StringUtils.join(xformVals,",")));
       return clazz.toBytecode();
     }
   }
