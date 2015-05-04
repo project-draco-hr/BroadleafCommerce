@@ -1,12 +1,13 @@
 {
   ResourceResolver resolver=getNext();
   if (resolver == null) {
-    System.out.println("No more resolvers ");
     return null;
   }
   try {
     String returnPath=resolver.resolveUrlPath(resourcePath,locations,this);
-    System.out.println("The return path for " + resourcePath + " from resolver "+ resolver+ " is "+ returnPath);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("The return path for " + resourcePath + " from resolver "+ resolver+ " is "+ returnPath);
+    }
     return returnPath;
   }
   finally {
