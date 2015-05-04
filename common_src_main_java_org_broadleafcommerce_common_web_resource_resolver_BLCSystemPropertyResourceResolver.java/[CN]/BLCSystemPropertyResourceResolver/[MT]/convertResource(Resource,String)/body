@@ -1,0 +1,21 @@
+{
+  blcContextUtil.establishThinRequestContextWithoutThemeOrSandbox();
+  byte[] bytes=FileCopyUtils.copyToByteArray(origResource.getInputStream());
+  String content=new String(bytes,DEFAULT_CHARSET);
+  String newContent=content;
+  if (!StringUtils.isEmpty(content)) {
+    String regexKey="\\\"BLC_PROP:(.*)\\\"";
+    Pattern p=Pattern.compile(regexKey);
+    Matcher m=p.matcher(content);
+    while (m.find()) {
+      String matchedPlaceholder=m.group(0);
+      String propertyName=m.group(1);
+      String propVal=BLCSystemProperty.resolveSystemProperty(propertyName);
+      if (!StringUtils.isEmpty(propVal)) {
+        propVal="";
+      }
+      newContent=newContent.replaceAll(matchedPlaceholder,'"' + propVal + '"');
+    }
+  }
+  return new GeneratedResource(newContent.getBytes(),resourceFileName);
+}

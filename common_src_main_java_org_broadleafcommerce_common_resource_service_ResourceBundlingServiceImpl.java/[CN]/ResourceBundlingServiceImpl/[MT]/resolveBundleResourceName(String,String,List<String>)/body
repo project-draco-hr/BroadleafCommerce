@@ -10,11 +10,14 @@
     List<String> filePaths=new ArrayList<String>();
     for (    String file : files) {
       String resourcePath=resolverChain.resolveUrlPath(mappingPrefix + file,locations);
+      if (resourcePath == null) {
+        resourcePath=resolverChain.resolveUrlPath(file,locations);
+      }
       filePaths.add(resourcePath);
       combinedPathString.append(resourcePath);
     }
-    int version=combinedPathString.toString().hashCode();
-    String versionedBundleName=mappingPrefix + addVersion(requestedBundleName,String.valueOf(version));
+    int version=Math.abs(combinedPathString.toString().hashCode());
+    String versionedBundleName=mappingPrefix + addVersion(requestedBundleName,"-BDLg" + String.valueOf(version));
     createBundleIfNeeded(versionedBundleName,filePaths,resolverChain,locations);
     return versionedBundleName;
   }

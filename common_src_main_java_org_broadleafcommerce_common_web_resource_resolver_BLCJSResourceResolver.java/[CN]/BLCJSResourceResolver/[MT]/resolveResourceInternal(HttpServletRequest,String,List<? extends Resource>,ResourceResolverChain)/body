@@ -1,0 +1,21 @@
+{
+  if (requestPath != null && requestPath.contains("BLC")) {
+    Matcher matcher=pattern.matcher(requestPath);
+    if (matcher.find()) {
+      requestPath=matcher.group(1) + "BLC.js";
+      Resource resource=chain.resolveResource(request,"BLC.js",locations);
+      if (resource == null) {
+        requestPath=matcher.group(1) + "BLC.js";
+        resource=chain.resolveResource(request,requestPath,locations);
+      }
+      try {
+        resource=convertResource(resource,requestPath);
+      }
+ catch (      IOException ioe) {
+        LOG.error("Exception modifying " + BLC_JS_NAME,ioe);
+      }
+      return resource;
+    }
+  }
+  return chain.resolveResource(request,requestPath,locations);
+}

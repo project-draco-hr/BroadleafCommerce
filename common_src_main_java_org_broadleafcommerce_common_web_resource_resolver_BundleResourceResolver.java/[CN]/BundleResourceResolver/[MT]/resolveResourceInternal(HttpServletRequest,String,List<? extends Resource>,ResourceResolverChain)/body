@@ -1,9 +1,17 @@
 {
-  Resource bundle=bundlingService.resolveBundleResource(requestPath);
-  if (bundle != null) {
-    return bundle;
+  if (requestPath != null && requestPath.contains("BDL")) {
+    blcContextUtil.establishThinRequestContext();
+    String bundleRequestPath=requestPath;
+    if (requestPath.contains(".css")) {
+      bundleRequestPath="/css/" + requestPath;
+    }
+ else     if (requestPath.contains(".js")) {
+      bundleRequestPath="/js/" + requestPath;
+    }
+    Resource bundle=bundlingService.resolveBundleResource(bundleRequestPath);
+    if (bundle != null && bundle.exists()) {
+      return bundle;
+    }
   }
- else {
-    return chain.resolveResource(request,requestPath,locations);
-  }
+  return chain.resolveResource(request,requestPath,locations);
 }
