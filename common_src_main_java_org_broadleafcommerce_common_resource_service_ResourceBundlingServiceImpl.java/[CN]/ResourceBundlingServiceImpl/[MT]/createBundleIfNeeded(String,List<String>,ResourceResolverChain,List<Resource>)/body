@@ -1,5 +1,5 @@
 {
-  if (createdBundles.getIfPresent(versionedBundleName) == null) {
+  if (!createdBundles.containsKey(versionedBundleName)) {
     keyLockManager.executeLocked(versionedBundleName,new LockCallback(){
       public void doInLock(){
         Resource bundle=readBundle(versionedBundleName);
@@ -9,6 +9,7 @@
             saveBundle(bundleResource);
           }
         }
+        createdBundles.put(versionedBundleName,versionedBundleName);
       }
     }
 );

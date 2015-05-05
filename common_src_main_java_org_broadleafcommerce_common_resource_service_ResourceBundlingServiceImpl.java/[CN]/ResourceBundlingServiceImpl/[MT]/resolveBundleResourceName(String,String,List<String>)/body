@@ -1,7 +1,4 @@
 {
-  if (mappingPrefix == null) {
-    mappingPrefix="";
-  }
   ResourceHttpRequestHandler resourceRequestHandler=findResourceHttpRequestHandler(requestedBundleName);
   if (resourceRequestHandler != null && CollectionUtils.isNotEmpty(files)) {
     ResourceResolverChain resolverChain=new BroadleafDefaultResourceResolverChain(resourceRequestHandler.getResourceResolvers());
@@ -17,7 +14,7 @@
       combinedPathString.append(resourcePath);
     }
     int version=Math.abs(combinedPathString.toString().hashCode());
-    String versionedBundleName=mappingPrefix + addVersion(requestedBundleName,"-BDLg" + String.valueOf(version));
+    String versionedBundleName=mappingPrefix + addVersion(requestedBundleName,"-" + String.valueOf(version));
     createBundleIfNeeded(versionedBundleName,filePaths,resolverChain,locations);
     return versionedBundleName;
   }

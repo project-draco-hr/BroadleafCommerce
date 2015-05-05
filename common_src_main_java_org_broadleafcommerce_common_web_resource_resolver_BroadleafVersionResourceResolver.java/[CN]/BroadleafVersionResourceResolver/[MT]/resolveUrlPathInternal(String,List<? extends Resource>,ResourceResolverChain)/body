@@ -1,0 +1,14 @@
+{
+  if (resourceVersioningEnabled && !bundlingService.checkForRegisteredBundleFile(resourceUrlPath)) {
+    String result=super.resolveUrlPathInternal(resourceUrlPath,locations,chain);
+    if (result == null) {
+      return chain.resolveUrlPath(resourceUrlPath,locations);
+    }
+ else {
+      return result;
+    }
+  }
+ else {
+    return chain.resolveUrlPath(resourceUrlPath,locations);
+  }
+}
