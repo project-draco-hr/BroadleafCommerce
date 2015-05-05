@@ -2,7 +2,7 @@
   Query query=em.createNamedQuery("BC_READ_CURRENCY_BY_CODE");
   query.setParameter("currencyCode",currencyCode);
   query.setHint(org.hibernate.ejb.QueryHints.HINT_CACHEABLE,true);
-  List<BroadleafCurrency> currencyList=(List<BroadleafCurrency>)query.getResultList();
+  List<BroadleafCurrency> currencyList=query.getResultList();
   if (currencyList.size() >= 1) {
     return currencyList.get(0);
   }
