@@ -1,6 +1,7 @@
 {
   FileWorkArea tempWorkArea=fileService.initializeWorkArea();
-  String tempFilename=FilenameUtils.concat(tempWorkArea.getFilePathLocation(),FilenameUtils.separatorsToSystem(getResourcePath(resource.getDescription())));
+  String fileToSave=FilenameUtils.separatorsToSystem(getResourcePath(resource.getDescription()));
+  String tempFilename=FilenameUtils.concat(tempWorkArea.getFilePathLocation(),fileToSave);
   File tempFile=new File(tempFilename);
   if (!tempFile.getParentFile().exists()) {
     if (!tempFile.getParentFile().mkdirs()) {
@@ -17,7 +18,7 @@
     StreamUtils.copy(ris,out);
     ris.close();
     out.close();
-    fileService.addOrUpdateResource(tempWorkArea,tempFile,true);
+    fileService.addOrUpdateResourceForPath(tempWorkArea,tempFile,true);
   }
  catch (  IOException e) {
     throw new RuntimeException(e);

@@ -1,0 +1,16 @@
+{
+  ResourceResolver resolver=getNext();
+  if (resolver == null) {
+    return null;
+  }
+  try {
+    String returnPath=resolver.resolveUrlPath(resourcePath,locations,this);
+    if (LOG.isTraceEnabled()) {
+      LOG.trace("The return path for " + resourcePath + " from resolver "+ resolver+ " is "+ returnPath);
+    }
+    return returnPath;
+  }
+  finally {
+    this.index--;
+  }
+}
