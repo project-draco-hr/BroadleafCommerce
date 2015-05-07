@@ -1,0 +1,10 @@
+{
+  if (!requestPath.equalsIgnoreCase(RULE_BUILDER_OPTIONS_JS_PATH)) {
+    return chain.resolveResource(request,requestPath,locations);
+  }
+  StringBuilder sb=new StringBuilder();
+  for (  RuleBuilderEnumOptionsExtensionListener listener : listeners) {
+    sb.append(listener.getOptionValues()).append("\r\n");
+  }
+  return new GeneratedResource(sb.toString().getBytes(),requestPath);
+}

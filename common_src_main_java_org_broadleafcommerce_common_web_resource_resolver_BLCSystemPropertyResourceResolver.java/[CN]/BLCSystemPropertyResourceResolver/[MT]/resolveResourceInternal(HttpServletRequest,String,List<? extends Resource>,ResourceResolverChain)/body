@@ -1,0 +1,12 @@
+{
+  Resource resource=chain.resolveResource(request,requestPath,locations);
+  if (requestPath.equalsIgnoreCase(BLC_SYSTEM_PROPERTY_FILE)) {
+    try {
+      resource=convertResource(resource,requestPath);
+    }
+ catch (    IOException ioe) {
+      LOG.error("Exception modifying " + BLC_SYSTEM_PROPERTY_FILE,ioe);
+    }
+  }
+  return resource;
+}

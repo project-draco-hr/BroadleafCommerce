@@ -1,0 +1,17 @@
+{
+  if (!createdBundles.containsKey(versionedBundleName)) {
+    keyLockManager.executeLocked(versionedBundleName,new LockCallback(){
+      public void doInLock(){
+        Resource bundle=readBundle(versionedBundleName);
+        if (bundle == null || !bundle.exists()) {
+          Resource bundleResource=createBundle(versionedBundleName,filePaths,resolverChain,locations);
+          if (bundleResource != null) {
+            saveBundle(bundleResource);
+          }
+        }
+        createdBundles.put(versionedBundleName,versionedBundleName);
+      }
+    }
+);
+  }
+}

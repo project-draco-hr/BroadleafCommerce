@@ -1,0 +1,15 @@
+{
+  blcContextUtil.establishThinRequestContextWithoutThemeOrSandbox();
+  byte[] bytes=FileCopyUtils.copyToByteArray(origResource.getInputStream());
+  String content=new String(bytes,DEFAULT_CHARSET);
+  String newContent=content;
+  if (!StringUtils.isEmpty(content)) {
+    HttpServletRequest request=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+    newContent=newContent.replace("//BLC-SERVLET-CONTEXT",request.getContextPath());
+    String siteBaseUrl=urlResolver.getSiteBaseUrl();
+    if (!StringUtils.isEmpty(siteBaseUrl)) {
+      newContent=newContent.replace("//BLC-SITE-BASEURL",siteBaseUrl);
+    }
+  }
+  return new GeneratedResource(newContent.getBytes(),resourceFileName);
+}
