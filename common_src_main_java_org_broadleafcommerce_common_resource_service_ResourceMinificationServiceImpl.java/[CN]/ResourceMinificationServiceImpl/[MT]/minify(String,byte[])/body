@@ -1,4 +1,8 @@
 {
+  if (!getEnabled()) {
+    LOG.trace("Minification is disabled, returning original resource");
+    return bytes;
+  }
   Resource modifiedResource=minify(new ByteArrayResource(bytes),filename);
   if (modifiedResource instanceof GeneratedResource) {
     return ((GeneratedResource)modifiedResource).getBytes();
