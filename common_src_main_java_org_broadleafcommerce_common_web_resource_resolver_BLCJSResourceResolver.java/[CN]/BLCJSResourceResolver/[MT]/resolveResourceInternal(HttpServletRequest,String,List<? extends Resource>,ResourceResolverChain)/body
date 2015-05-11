@@ -9,10 +9,14 @@
         resource=chain.resolveResource(request,requestPath,locations);
       }
       try {
+        blcContextUtil.establishThinRequestContextWithoutThemeOrSandbox();
         resource=convertResource(resource,requestPath);
       }
  catch (      IOException ioe) {
         LOG.error("Exception modifying " + BLC_JS_NAME,ioe);
+      }
+ finally {
+        blcContextUtil.clearThinRequestContext();
       }
       return resource;
     }
