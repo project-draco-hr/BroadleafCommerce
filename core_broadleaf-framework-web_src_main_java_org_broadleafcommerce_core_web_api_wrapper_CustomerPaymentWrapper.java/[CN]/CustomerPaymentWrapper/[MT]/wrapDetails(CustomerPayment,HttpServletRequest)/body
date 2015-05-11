@@ -9,6 +9,21 @@
     addressWrapper.wrapDetails(model.getBillingAddress(),request);
     this.billingAddress=addressWrapper;
   }
+  if (model.getExpirationDate() != null) {
+    this.setExpirationDate(model.getExpirationDate());
+  }
+  if (model.getName() != null) {
+    this.setCardName(model.getName());
+  }
+  if (model.getLastFour() != null) {
+    this.setLastFour(model.getLastFour());
+  }
+  if (model.getCardType() != null) {
+    this.setCardType(model.getCardType());
+  }
+  if (model.getPaymentGatewayType() != null) {
+    this.setPaymentGatewayType(model.getPaymentGatewayType().getType());
+  }
   CustomerWrapper customerWrapper=(CustomerWrapper)context.getBean(CustomerWrapper.class.getName());
   customerWrapper.wrapDetails(model.getCustomer(),request);
   this.customer=customerWrapper;
