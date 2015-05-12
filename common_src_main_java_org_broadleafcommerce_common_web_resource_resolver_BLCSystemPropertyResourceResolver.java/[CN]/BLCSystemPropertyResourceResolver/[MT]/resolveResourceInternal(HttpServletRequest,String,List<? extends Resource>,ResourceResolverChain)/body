@@ -2,14 +2,10 @@
   Resource resource=chain.resolveResource(request,requestPath,locations);
   if (requestPath.equalsIgnoreCase(BLC_SYSTEM_PROPERTY_FILE)) {
     try {
-      blcContextUtil.establishThinRequestContextWithoutThemeOrSandbox();
       resource=convertResource(resource,requestPath);
     }
  catch (    IOException ioe) {
       LOG.error("Exception modifying " + BLC_SYSTEM_PROPERTY_FILE,ioe);
-    }
- finally {
-      blcContextUtil.clearThinRequestContext();
     }
   }
   return resource;
