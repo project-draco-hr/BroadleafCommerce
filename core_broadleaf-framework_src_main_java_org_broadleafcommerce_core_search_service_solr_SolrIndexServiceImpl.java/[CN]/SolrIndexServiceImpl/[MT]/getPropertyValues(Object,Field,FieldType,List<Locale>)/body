@@ -14,7 +14,12 @@
     Object propertyValue;
     if (propertyName.contains(PRODUCT_ATTR_MAP) || propertyName.contains(SKU_ATTR_MAP)) {
       if (propertyName.contains(PRODUCT_ATTR_MAP)) {
-        propertyValue=PropertyUtils.getMappedProperty(indexedItem,PRODUCT_ATTR_MAP,propertyName.substring(PRODUCT_ATTR_MAP.length() + 1));
+        if (useSku) {
+          if (indexedItem instanceof SkuImpl && propertyName.contains("defaultProduct")) {
+            indexedItem=((Sku)indexedItem).getDefaultProduct();
+          }
+        }
+        propertyValue=PropertyUtils.getMappedProperty(indexedItem,PRODUCT_ATTR_MAP,propertyName.substring(propertyName.lastIndexOf(".") + 1));
       }
  else {
         propertyValue=PropertyUtils.getMappedProperty(indexedItem,SKU_ATTR_MAP,propertyName.substring(SKU_ATTR_MAP.length() + 1));
