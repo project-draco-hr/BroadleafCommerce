@@ -1,8 +1,0 @@
-{
-  LOG.info("*** Null Payment Hosted Gateway - Confirming Transaction with amount: " + paymentRequestDTO.getTransactionTotal());
-  PaymentTransactionType type=PaymentTransactionType.AUTHORIZE_AND_CAPTURE;
-  if (!configuration.isPerformAuthorizeAndCapture()) {
-    type=PaymentTransactionType.AUTHORIZE;
-  }
-  return new PaymentResponseDTO(PaymentType.THIRD_PARTY_ACCOUNT,NullPaymentGatewayType.NULL_HOSTED_GATEWAY).rawResponse("confirmation - successful").successful(true).paymentTransactionType(type).amount(new Money(paymentRequestDTO.getTransactionTotal()));
-}

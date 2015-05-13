@@ -1,0 +1,28 @@
+{
+  if (LOG.isTraceEnabled()) {
+    LOG.trace("Null Payment Hosted Gateway - Confirming Transaction with amount: " + paymentRequestDTO.getTransactionTotal());
+  }
+  PaymentTransactionType type=PaymentTransactionType.AUTHORIZE_AND_CAPTURE;
+  if (!configuration.isPerformAuthorizeAndCapture()) {
+    type=PaymentTransactionType.AUTHORIZE;
+  }
+  Money transactionTotal=new Money(paymentRequestDTO.getTransactionTotal());
+  PaymentResponseDTO responseDTO=new PaymentResponseDTO(PaymentType.THIRD_PARTY_ACCOUNT,NullPaymentGatewayType.NULL_GATEWAY);
+  responseDTO.paymentTransactionType(type);
+  responseDTO.amount(new Money(paymentRequestDTO.getTransactionTotal()));
+  if (transactionTotal.lessThan(oneHundred)) {
+    responseDTO.rawResponse("confirmation - failure - hard decline");
+    responseDTO.successful(false);
+    responseDTO.responseMap(PaymentAdditionalFieldType.DECLINE_TYPE.getType(),PaymentDeclineType.HARD.getType());
+  }
+ else   if (transactionTotal.lessThanOrEqual(twoHundred)) {
+    responseDTO.rawResponse("confirmation - failure - soft decline");
+    responseDTO.successful(false);
+    responseDTO.responseMap(PaymentAdditionalFieldType.DECLINE_TYPE.getType(),PaymentDeclineType.SOFT.getType());
+  }
+ else {
+    responseDTO.rawResponse("confirmation - success");
+    responseDTO.successful(true);
+  }
+  return responseDTO;
+}
