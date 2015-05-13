@@ -5,13 +5,11 @@
  else {
     Serializable exp=(Serializable)expressionCache.get(rule);
     if (exp == null) {
-synchronized (expressionCache) {
-        ParserContext context=new ParserContext();
-        context.addImport("MVEL",MVEL.class);
-        context.addImport("MvelHelper",MvelHelper.class);
-        exp=MVEL.compileExpression(rule,context);
-        expressionCache.put(rule,exp);
-      }
+      ParserContext context=new ParserContext();
+      context.addImport("MVEL",MVEL.class);
+      context.addImport("MvelHelper",MvelHelper.class);
+      exp=MVEL.compileExpression(rule,context);
+      expressionCache.put(rule,exp);
     }
     Map<String,Object> mvelParameters=new HashMap<String,Object>();
     if (ruleParameters != null) {
