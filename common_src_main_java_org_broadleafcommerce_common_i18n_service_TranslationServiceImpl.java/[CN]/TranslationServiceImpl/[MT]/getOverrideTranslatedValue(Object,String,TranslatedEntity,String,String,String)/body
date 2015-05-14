@@ -6,9 +6,9 @@
   String response=null;
   if (cacheResult == null) {
     statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
-    if (dao.countTranslationEntries(entityType,entityId,entity,ResultType.STANDARD) < getThresholdForFullCache()) {
+    if (dao.countTranslationEntries(entityType,entityId,ResultType.STANDARD) < getThresholdForFullCache()) {
       Map<String,Translation> propertyTranslationMap=new HashMap<String,Translation>();
-      List<Translation> translationList=dao.readAllTranslationEntries(entityType,entityId,entity,ResultType.STANDARD);
+      List<Translation> translationList=dao.readAllTranslationEntries(entityType,entityId,ResultType.STANDARD);
       if (!CollectionUtils.isEmpty(translationList)) {
         for (        Translation translation : translationList) {
           String key=translation.getFieldName() + "_" + translation.getLocaleCode();
@@ -25,7 +25,7 @@
       }
     }
  else {
-      Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,entity,ResultType.IGNORE);
+      Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,ResultType.IGNORE);
       if (translation != null) {
         response=translation.getTranslatedValue();
       }
