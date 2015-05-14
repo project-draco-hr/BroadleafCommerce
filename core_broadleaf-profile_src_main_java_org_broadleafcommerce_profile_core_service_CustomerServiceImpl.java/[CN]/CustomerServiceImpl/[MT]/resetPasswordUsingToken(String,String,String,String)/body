@@ -6,7 +6,10 @@
   }
   checkCustomer(customer,response);
   checkPassword(password,confirmPassword,response);
-  CustomerForgotPasswordSecurityToken fpst=checkPasswordResetToken(token,customer,response);
+  CustomerForgotPasswordSecurityToken fpst=null;
+  if (!response.getHasErrors()) {
+    fpst=checkPasswordResetToken(token,customer,response);
+  }
   if (!response.getHasErrors()) {
     if (!customer.getId().equals(fpst.getCustomerId())) {
       if (LOG.isWarnEnabled()) {

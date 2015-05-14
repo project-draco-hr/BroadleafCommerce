@@ -2,7 +2,7 @@
   if (StringUtils.isBlank(token)) {
     response.addErrorCode("invalidToken");
   }
-  String rawToken=token.toLowerCase();
+  String rawToken=token;
   String salt=null;
   if (usingDeprecatedPasswordEncoder()) {
     String[] tokens=token.split("-");
@@ -18,11 +18,16 @@
   }
   CustomerForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
-    List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
-    for (    CustomerForgotPasswordSecurityToken fpstok : fpstoks) {
-      if (isPassValid(rawToken,fpstok.getToken(),salt)) {
-        fpst=fpstok;
-        break;
+    if (customer == null) {
+      fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(rawToken,salt));
+    }
+ else {
+      List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
+      for (      CustomerForgotPasswordSecurityToken fpstok : fpstoks) {
+        if (isPassValid(rawToken,fpstok.getToken(),salt)) {
+          fpst=fpstok;
+          break;
+        }
       }
     }
     if (fpst == null) {
