@@ -2,12 +2,10 @@
   if (getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().contains(instance)) {
     getPersistenceManager().getDynamicEntityDao().getStandardEntityManager().detach(instance);
   }
-  Field idField;
-  try {
-    idField=instance.getClass().getDeclaredField((String)getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name"));
-  }
- catch (  NoSuchFieldException e1) {
-    throw ExceptionHelper.refineException(e1);
+  String idFieldName=(String)getPersistenceManager().getDynamicEntityDao().getIdMetadata(instance.getClass()).get("name");
+  Field idField=FieldUtils.getField(instance.getClass(),idFieldName,true);
+  if (idField == null) {
+    throw ExceptionHelper.refineException(new NoSuchFieldException("Entity " + instance.getClass().getName() + " does not contain id field "+ idFieldName));
   }
   idField.setAccessible(true);
   if (idField.get(instance) != null) {

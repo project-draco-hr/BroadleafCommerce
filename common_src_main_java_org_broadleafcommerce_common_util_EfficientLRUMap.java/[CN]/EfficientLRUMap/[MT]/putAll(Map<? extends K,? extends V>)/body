@@ -1,0 +1,11 @@
+{
+  if (usingLRUMap) {
+    lruMap.putAll(m);
+  }
+ else {
+    concurrentMap.putAll(m);
+    if (switchToLRUMap()) {
+      lruMap.putAll(m);
+    }
+  }
+}

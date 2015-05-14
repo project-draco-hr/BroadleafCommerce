@@ -6,27 +6,25 @@
     for (    String fileName : filePaths) {
       Resource r=resolverChain.resolveResource(req,fileName,locations);
       InputStream is=null;
-      try {
-        is=r.getInputStream();
-        StreamUtils.copy(is,baos);
+      if (r == null) {
+        LOG.warn(new StringBuilder().append("Could not resolve resource specified in bundle as [").append(fileName).append("]. Turn on trace logging to determine resolution failure. Skipping file.").toString());
       }
- catch (      IOException e) {
-        throw new RuntimeException(e);
-      }
- finally {
+ else {
         try {
-          if (is != null) {
-            is.close();
-          }
+          is=r.getInputStream();
+          StreamUtils.copy(is,baos);
         }
- catch (        IOException e2) {
-          throw new RuntimeException(e2);
+ catch (        IOException e) {
+          throw new RuntimeException(e);
         }
+ finally {
+          IOUtils.closeQuietly(is);
+        }
+        if (versionedBundleName.endsWith(".js")) {
+          baos.write(";".getBytes());
+        }
+        baos.write(System.getProperty("line.separator").getBytes());
       }
-      if (versionedBundleName.endsWith(".js")) {
-        baos.write(";".getBytes());
-      }
-      baos.write(System.getProperty("line.separator").getBytes());
     }
     bytes=baos.toByteArray();
   }
@@ -34,12 +32,7 @@
     throw new RuntimeException(e);
   }
  finally {
-    try {
-      baos.close();
-    }
- catch (    IOException e2) {
-      throw new RuntimeException(e2);
-    }
+    IOUtils.closeQuietly(baos);
   }
   GeneratedResource r=new GeneratedResource(bytes,versionedBundleName);
   return r;

@@ -10,8 +10,19 @@
         promoAdded=true;
         cart=orderService.save(cart,true);
       }
- catch (      OfferMaxUseExceededException e) {
-        exception="Use Limit Exceeded";
+ catch (      OfferException e) {
+        if (e instanceof OfferMaxUseExceededException) {
+          exception="Use Limit Exceeded";
+        }
+ else         if (e instanceof OfferExpiredException) {
+          exception="Offer Has Expired";
+        }
+ else         if (e instanceof OfferAlreadyAddedException) {
+          exception="Offer Has Already Been Added";
+        }
+ else {
+          exception="An Unknown Offer Error Has Occured";
+        }
       }
     }
  else {
@@ -19,7 +30,7 @@
     }
   }
  else {
-    exception="Invalid cart";
+    exception="Invalid Cart";
   }
   if (isAjaxRequest(request)) {
     Map<String,Object> extraData=new HashMap<String,Object>();

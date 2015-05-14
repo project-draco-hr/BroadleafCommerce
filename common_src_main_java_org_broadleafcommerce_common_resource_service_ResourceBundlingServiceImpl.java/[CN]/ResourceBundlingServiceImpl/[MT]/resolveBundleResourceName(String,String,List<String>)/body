@@ -6,12 +6,17 @@
     StringBuilder combinedPathString=new StringBuilder();
     List<String> filePaths=new ArrayList<String>();
     for (    String file : files) {
-      String resourcePath=resolverChain.resolveUrlPath(mappingPrefix + file,locations);
+      String resourcePath=resolverChain.resolveUrlPath(file,locations);
       if (resourcePath == null) {
-        resourcePath=resolverChain.resolveUrlPath(file,locations);
+        resourcePath=resolverChain.resolveUrlPath(mappingPrefix + file,locations);
       }
-      filePaths.add(resourcePath);
-      combinedPathString.append(resourcePath);
+      if (resourcePath != null) {
+        filePaths.add(resourcePath);
+        combinedPathString.append(resourcePath);
+      }
+ else {
+        LOG.warn(new StringBuilder().append("Could not resolve resource path specified in bundle as [").append(file).append("] or as [").append(mappingPrefix + file).append("]. Skipping file.").toString());
+      }
     }
     int version=Math.abs(combinedPathString.toString().hashCode());
     String versionedBundleName=mappingPrefix + addVersion(requestedBundleName,"-" + String.valueOf(version));

@@ -1,0 +1,11 @@
+{
+  if (!usingLRUMap) {
+    if (size() > maxEntries) {
+      lruMap=Collections.synchronizedMap(new LRUMap<K,V>(maxEntries));
+      lruMap.putAll(concurrentMap);
+      usingLRUMap=true;
+      concurrentMap.clear();
+    }
+  }
+  return usingLRUMap;
+}

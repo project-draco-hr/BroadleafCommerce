@@ -1,24 +1,16 @@
 {
-  String type=null;
-  if (filename.contains(".js")) {
-    type="js";
+  if (!getEnabled()) {
+    LOG.trace("Minification is disabled, returning original resource");
+    return originalResource;
   }
- else   if (filename.contains(".css")) {
-    type="css";
-  }
- else {
+  String type=getFileType(originalResource,filename);
+  if (type == null) {
+    LOG.info("Unsupported minification resource: " + filename);
     return originalResource;
   }
   byte[] minifiedBytes=null;
   try (BufferedReader in=new BufferedReader(new InputStreamReader(originalResource.getInputStream(),"utf-8"));ByteArrayOutputStream baos=new ByteArrayOutputStream();BufferedWriter out=new BufferedWriter(new OutputStreamWriter(baos,"utf-8"))){
-    if ("js".equals(type)) {
-      JavaScriptCompressor jsc=new JavaScriptCompressor(in,getLogBasedErrorReporter());
-      jsc.compress(out,linebreak,munge,verbose,preserveAllSemiColons,disableOptimizations);
-    }
- else     if ("css".equals(type)) {
-      CssCompressor cssc=new CssCompressor(in);
-      cssc.compress(out,100);
-    }
+    minify(in,out,filename,type);
     out.flush();
     minifiedBytes=baos.toByteArray();
   }

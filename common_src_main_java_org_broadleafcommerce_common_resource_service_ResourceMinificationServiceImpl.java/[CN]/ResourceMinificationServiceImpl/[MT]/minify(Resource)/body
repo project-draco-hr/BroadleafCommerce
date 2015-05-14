@@ -1,4 +1,8 @@
 {
+  if (!getEnabled()) {
+    LOG.trace("Minification is disabled, returning original resource");
+    return originalResource;
+  }
   if (originalResource.getFilename() == null) {
     LOG.warn("Attempted to modify resource without a filename, returning non-minified resource");
     return originalResource;
