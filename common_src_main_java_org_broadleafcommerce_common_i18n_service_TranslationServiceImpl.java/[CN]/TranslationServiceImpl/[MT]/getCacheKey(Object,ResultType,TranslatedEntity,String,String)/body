@@ -1,0 +1,11 @@
+{
+  String cacheKey=StringUtils.join(new String[]{entityType.getFriendlyType(),entityId,localeCode},"|");
+  if (extensionManager != null) {
+    ExtensionResultHolder<String> result=new ExtensionResultHolder<String>();
+    extensionManager.getProxy().getCacheKey(entity,cacheKey,resultType,result);
+    if (result.getResult() != null) {
+      cacheKey=result.getResult();
+    }
+  }
+  return cacheKey;
+}

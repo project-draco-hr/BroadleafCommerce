@@ -1,0 +1,24 @@
+{
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Long> criteria=builder.createQuery(Long.class);
+  Root<TranslationImpl> root=criteria.from(TranslationImpl.class);
+  criteria.select(builder.count(root));
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(root.get("entityType"),entityType.getFriendlyType()));
+  restrictions.add(builder.equal(root.get("entityId"),entityId));
+  try {
+    if (extensionManager != null) {
+      extensionManager.getProxy().setup(TranslationImpl.class,stage);
+      extensionManager.getProxy().refineRetrieve(TranslationImpl.class,stage,builder,criteria,root,restrictions);
+    }
+    criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+    TypedQuery<Long> query=em.createQuery(criteria);
+    query.setHint(QueryHints.HINT_CACHEABLE,true);
+    return query.getSingleResult();
+  }
+  finally {
+    if (extensionManager != null) {
+      extensionManager.getProxy().breakdown(TranslationImpl.class,stage);
+    }
+  }
+}

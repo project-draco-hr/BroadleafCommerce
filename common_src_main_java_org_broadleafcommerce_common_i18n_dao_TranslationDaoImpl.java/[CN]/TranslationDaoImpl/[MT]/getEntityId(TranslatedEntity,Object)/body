@@ -1,5 +1,5 @@
 {
-  Map<String,Object> idMetadata=dao.getIdPropertyMetadata(entityType);
+  Map<String,Object> idMetadata=getIdPropertyMetadata(entityType);
   String idProperty=(String)idMetadata.get("name");
   Type idType=(Type)idMetadata.get("type");
   if (!(idType instanceof LongType || idType instanceof StringType)) {
@@ -16,15 +16,7 @@
     return (String)idValue;
   }
  else   if (idType instanceof LongType) {
-    SandBoxHelper.OriginalIdResponse originalIdResponse=sandBoxHelper.getOriginalId(dao.getEntityImpl(entityType),(Long)idValue);
-    if (originalIdResponse.isRecordFound() && originalIdResponse.getOriginalId() != null) {
-      idValue=originalIdResponse.getOriginalId();
-      originalIdResponse=sandBoxHelper.getProductionOriginalId(dao.getEntityImpl(entityType),(Long)idValue);
-      if (originalIdResponse.isRecordFound() && !originalIdResponse.getOriginalId().equals(idValue)) {
-        idValue=originalIdResponse.getOriginalId();
-      }
-    }
-    return String.valueOf(idValue);
+    return getUpdatedEntityId(entityType,(Long)idValue);
   }
   throw new IllegalArgumentException(String.format("Could not retrieve value for id property. Object: [%s], " + "ID Property: [%s], ID Type: [%s]",entity,idProperty,idType));
 }
