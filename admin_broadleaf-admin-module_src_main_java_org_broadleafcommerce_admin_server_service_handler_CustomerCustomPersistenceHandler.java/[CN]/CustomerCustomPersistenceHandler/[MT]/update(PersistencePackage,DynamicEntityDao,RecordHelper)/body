@@ -2,24 +2,21 @@
   Entity entity=persistencePackage.getEntity();
   try {
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
-    Customer adminInstance=(Customer)Class.forName(entity.getType()[0]).newInstance();
-    adminInstance.setId(customerService.findNextCustomerId());
     Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Customer.class.getName(),persistencePerspective);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    Customer adminInstance=(Customer)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    String passwordBefore=adminInstance.getPassword();
+    adminInstance.setPassword(null);
     adminInstance=(Customer)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    adminInstance.setPassword(passwordBefore);
     if (useEmailForLogin) {
       adminInstance.setUsername(adminInstance.getEmailAddress());
     }
-    Entity errorEntity=validateUniqueUsername(entity,adminInstance);
-    if (errorEntity != null) {
-      return errorEntity;
-    }
-    adminInstance=dynamicEntityDao.merge(adminInstance);
-    customerService.createRegisteredCustomerRoles(adminInstance);
+    adminInstance=customerService.saveCustomer(adminInstance);
     Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
     return adminEntity;
   }
  catch (  Exception e) {
-    LOG.error("Unable to execute persistence activity",e);
-    throw new ServiceException("Unable to add entity for " + entity.getType()[0],e);
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
   }
 }
