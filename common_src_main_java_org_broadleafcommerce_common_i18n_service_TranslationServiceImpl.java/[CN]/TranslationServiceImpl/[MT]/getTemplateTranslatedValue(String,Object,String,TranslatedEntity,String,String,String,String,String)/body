@@ -1,0 +1,48 @@
+{
+  String cacheKey=getCacheKey(entity,ResultType.TEMPLATE,entityType,entityId,localeCode);
+  if (standardCacheKey.equals(cacheKey)) {
+    return null;
+  }
+  Element cacheResult=getCache().get(cacheKey);
+  if (cacheResult == null) {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
+    if (dao.countTranslationEntries(entityType,entityId,ResultType.TEMPLATE) < getThresholdForFullCache()) {
+      Map<String,Translation> propertyTranslationMap=new HashMap<String,Translation>();
+      List<Translation> translationList=dao.readAllTranslationEntries(entityType,entityId,ResultType.TEMPLATE);
+      if (!CollectionUtils.isEmpty(translationList)) {
+        for (        Translation translation : translationList) {
+          String key=translation.getFieldName() + "_" + translation.getLocaleCode();
+          propertyTranslationMap.put(key,translation);
+        }
+      }
+      getCache().put(new Element(cacheKey,propertyTranslationMap));
+      Translation translation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+      if (translation != null) {
+        return translation.getTranslatedValue();
+      }
+ else {
+        return null;
+      }
+    }
+ else {
+      Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,ResultType.TEMPLATE);
+      if (translation != null) {
+        return translation.getTranslatedValue();
+      }
+ else {
+        return null;
+      }
+    }
+  }
+ else {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
+    Map<String,Translation> propertyTranslationMap=(Map<String,Translation>)cacheResult.getObjectValue();
+    Translation bestTranslation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+    if (bestTranslation != null) {
+      return bestTranslation.getTranslatedValue();
+    }
+ else {
+      return null;
+    }
+  }
+}

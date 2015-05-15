@@ -1,0 +1,11 @@
+{
+  SandBoxHelper.OriginalIdResponse originalIdResponse=sandBoxHelper.getOriginalId(getEntityImpl(entityType),idValue);
+  if (originalIdResponse.isRecordFound() && originalIdResponse.getOriginalId() != null) {
+    idValue=originalIdResponse.getOriginalId();
+    originalIdResponse=sandBoxHelper.getProductionOriginalId(getEntityImpl(entityType),idValue);
+    if (originalIdResponse.isRecordFound() && !originalIdResponse.getOriginalId().equals(idValue)) {
+      idValue=originalIdResponse.getOriginalId();
+    }
+  }
+  return String.valueOf(idValue);
+}

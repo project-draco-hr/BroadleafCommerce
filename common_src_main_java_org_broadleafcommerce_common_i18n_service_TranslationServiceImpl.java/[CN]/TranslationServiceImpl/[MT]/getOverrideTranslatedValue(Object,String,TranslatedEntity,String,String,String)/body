@@ -1,0 +1,49 @@
+{
+  String specificPropertyKey=property + "_" + localeCountryCode;
+  String generalPropertyKey=property + "_" + localeCode;
+  String cacheKey=getCacheKey(entity,ResultType.STANDARD,entityType,entityId,localeCode);
+  Element cacheResult=getCache().get(cacheKey);
+  String response=null;
+  if (cacheResult == null) {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
+    if (dao.countTranslationEntries(entityType,entityId,ResultType.STANDARD) < getThresholdForFullCache()) {
+      Map<String,Translation> propertyTranslationMap=new HashMap<String,Translation>();
+      List<Translation> translationList=dao.readAllTranslationEntries(entityType,entityId,ResultType.STANDARD);
+      if (!CollectionUtils.isEmpty(translationList)) {
+        for (        Translation translation : translationList) {
+          String key=translation.getFieldName() + "_" + translation.getLocaleCode();
+          propertyTranslationMap.put(key,translation);
+        }
+      }
+      getCache().put(new Element(cacheKey,propertyTranslationMap));
+      Translation bestTranslation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+      if (bestTranslation != null) {
+        response=bestTranslation.getTranslatedValue();
+      }
+ else {
+        response=getTemplateTranslatedValue(cacheKey,entity,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
+      }
+    }
+ else {
+      Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,ResultType.IGNORE);
+      if (translation != null) {
+        response=translation.getTranslatedValue();
+      }
+    }
+  }
+ else {
+    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
+    Map<String,Translation> propertyTranslationMap=(Map<String,Translation>)cacheResult.getObjectValue();
+    Translation bestTranslation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+    if (bestTranslation != null) {
+      response=bestTranslation.getTranslatedValue();
+    }
+ else {
+      response=getTemplateTranslatedValue(cacheKey,entity,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
+    }
+  }
+  if (!StringUtils.isEmpty(response)) {
+    return response;
+  }
+  return null;
+}

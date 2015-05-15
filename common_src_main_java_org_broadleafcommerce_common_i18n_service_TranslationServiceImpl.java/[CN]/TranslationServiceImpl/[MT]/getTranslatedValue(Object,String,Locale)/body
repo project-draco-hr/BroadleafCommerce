@@ -1,44 +1,19 @@
 {
   TranslatedEntity entityType=getEntityType(entity);
-  String entityId=getEntityId(entity,entityType);
+  String entityId=dao.getEntityId(entityType,entity);
   String localeCode=locale.getLanguage();
   String localeCountryCode=localeCode;
   if (StringUtils.isNotBlank(locale.getCountry())) {
     localeCountryCode+="_" + locale.getCountry();
   }
-  Translation translation;
-  String countryCacheKey=getCacheKey(entityType,entityId,property,localeCountryCode);
-  Element countryValue=getCache().get(countryCacheKey);
-  if (countryValue != null) {
-    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
-    translation=(Translation)countryValue.getObjectValue();
-  }
- else {
-    statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
-    translation=getTranslation(entityType,entityId,property,localeCountryCode);
-    if (translation == null) {
-      translation=new TranslationImpl();
-    }
-    getCache().put(new Element(countryCacheKey,translation));
-  }
-  if (translation.getTranslatedValue() == null) {
-    String nonCountryCacheKey=getCacheKey(entityType,entityId,property,localeCode);
-    Element nonCountryValue=getCache().get(nonCountryCacheKey);
-    if (nonCountryValue != null) {
-      statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
-      translation=(Translation)nonCountryValue.getObjectValue();
+  if (!BroadleafRequestContext.getBroadleafRequestContext().isProductionSandBox()) {
+    Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,ResultType.IGNORE);
+    if (translation != null) {
+      return translation.getTranslatedValue();
     }
  else {
-      statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
-      translation=getTranslation(entityType,entityId,property,localeCode);
-      if (translation == null) {
-        translation=new TranslationImpl();
-      }
-      getCache().put(new Element(nonCountryCacheKey,translation));
+      return null;
     }
   }
-  if (StringUtils.isNotBlank(translation.getTranslatedValue())) {
-    return translation.getTranslatedValue();
-  }
-  return null;
+  return getOverrideTranslatedValue(entity,property,entityType,entityId,localeCode,localeCountryCode);
 }
