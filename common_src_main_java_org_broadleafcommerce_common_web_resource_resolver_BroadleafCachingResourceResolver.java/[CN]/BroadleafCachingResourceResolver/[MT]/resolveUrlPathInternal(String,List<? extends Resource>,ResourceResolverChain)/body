@@ -1,6 +1,23 @@
 {
   if (resourceCachingEnabled) {
-    return super.resolveUrlPathInternal(resourceUrlPath,locations,chain);
+    String key=RESOLVED_URL_PATH_CACHE_KEY_PREFIX_NULL + resourceUrlPath;
+    Object nullResource=getCache().get(key,Object.class);
+    if (nullResource != null) {
+      if (logger.isTraceEnabled()) {
+        logger.trace(String.format("Found null reference url path match for '%s'",resourceUrlPath));
+      }
+      return null;
+    }
+ else {
+      String response=super.resolveUrlPathInternal(resourceUrlPath,locations,chain);
+      if (response == null) {
+        if (logger.isTraceEnabled()) {
+          logger.trace(String.format("Putting resolved null reference url path in cache for '%s'",resourceUrlPath));
+        }
+        getCache().put(key,NULL_REFERENCE);
+      }
+      return response;
+    }
   }
  else {
     return chain.resolveUrlPath(resourceUrlPath,locations);
