@@ -19,7 +19,12 @@
   CustomerForgotPasswordSecurityToken fpst=null;
   if (!response.getHasErrors()) {
     if (customer == null) {
-      fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(rawToken,salt));
+      if (!usingDeprecatedPasswordEncoder()) {
+        response.addErrorCode("invalidCustomer");
+      }
+ else {
+        fpst=customerForgotPasswordSecurityTokenDao.readToken(passwordEncoder.encodePassword(rawToken,salt));
+      }
     }
  else {
       List<CustomerForgotPasswordSecurityToken> fpstoks=customerForgotPasswordSecurityTokenDao.readUnusedTokensByCustomerId(customer.getId());
