@@ -27,6 +27,15 @@
   customerPayment.setCardType(cardType);
   customerPayment.setLastFour(lastFour);
   customerPayment.setPaymentToken(token);
-  orderPayment.setCustomerPayment(customerPayment);
-  return this.save(orderPayment).getCustomerPayment();
+  String paymentName=orderPayment.getPaymentName();
+  if (paymentName == null || paymentName.isEmpty()) {
+    if (customerPayment.getCardType() != null && customerPayment.getLastFour() != null) {
+      paymentName=customerPayment.getCardType() + " ending in " + customerPayment.getLastFour();
+    }
+ else {
+      paymentName="Payment #" + customer.getCustomerPayments().size();
+    }
+  }
+  customerPayment.setPaymentName(paymentName);
+  return customerPayment;
 }

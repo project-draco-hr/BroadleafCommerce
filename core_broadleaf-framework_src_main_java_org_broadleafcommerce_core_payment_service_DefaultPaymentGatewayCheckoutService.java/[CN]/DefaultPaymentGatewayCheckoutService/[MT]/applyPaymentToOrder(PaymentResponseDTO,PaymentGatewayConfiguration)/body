@@ -35,6 +35,7 @@
   List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
   Address tempBillingAddress=null;
   Boolean savePayment=false;
+  String paymentName=null;
   if (!config.handlesMultiplePayments()) {
     PaymentGatewayType gateway=config.getGatewayType();
     for (    OrderPayment p : order.getPayments()) {
@@ -43,6 +44,7 @@
         if (PaymentType.CREDIT_CARD.equals(p.getType()) && PaymentGatewayType.TEMPORARY.equals(p.getGatewayType())) {
           tempBillingAddress=p.getBillingAddress();
           savePayment=p.isSavePayment();
+          paymentName=p.getPaymentName();
         }
       }
     }
@@ -70,6 +72,7 @@
   payment.addTransaction(transaction);
   try {
     if (savePayment) {
+      payment.setPaymentName(paymentName);
       payment.setCustomerPayment(orderPaymentService.saveOrderPaymentAsCustomerPayment(order.getCustomer(),payment));
     }
   }

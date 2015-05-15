@@ -4,11 +4,12 @@
   if (billingForm.isUseShippingAddress()) {
     copyShippingAddressToBillingAddress(cart,billingForm);
   }
-  if (billingForm.getUseCustomerPayment() && billingForm.getCustomerPaymentId() != null) {
+  Boolean useCustomerPayment=billingForm.getUseCustomerPayment();
+  if (useCustomerPayment && billingForm.getCustomerPaymentId() != null) {
     customerPayment=customerPaymentService.readCustomerPaymentById(billingForm.getCustomerPaymentId());
     if (customerPayment != null) {
       Address address=customerPayment.getBillingAddress();
-      if (address != null) {
+      if (address == null) {
         copyAddressToBillingAddress(billingForm,address);
       }
     }
@@ -27,11 +28,21 @@
     billingForm.getAddress().setPhoneFax(null);
   }
   boolean found=false;
+  String paymentName=billingForm.getPaymentName();
+  Boolean saveNewPayment=billingForm.getSaveNewPayment();
   for (  OrderPayment p : cart.getPayments()) {
     if (PaymentType.CREDIT_CARD.equals(p.getType()) && p.isActive()) {
-      p.setBillingAddress(billingForm.getAddress());
+      if (p.getBillingAddress() == null) {
+        p.setBillingAddress(billingForm.getAddress());
+      }
+ else {
+        Address updatedAddress=updateAddress(billingForm.getAddress(),p.getBillingAddress());
+        p.setBillingAddress(updatedAddress);
+      }
       p.setCustomerPayment(customerPayment);
-      p.setSavePayment(billingForm.isSaveNewPayment());
+      p.setSavePayment(saveNewPayment);
+      p.setPaymentName(paymentName);
+      p.setUseExisting(useCustomerPayment);
       found=true;
     }
   }
@@ -42,7 +53,9 @@
     tempOrderPayment.setBillingAddress(billingForm.getAddress());
     tempOrderPayment.setOrder(cart);
     tempOrderPayment.setCustomerPayment(customerPayment);
-    tempOrderPayment.setSavePayment(billingForm.isSaveNewPayment());
+    tempOrderPayment.setSavePayment(saveNewPayment);
+    tempOrderPayment.setPaymentName(paymentName);
+    tempOrderPayment.setUseExisting(useCustomerPayment);
     cart.getPayments().add(tempOrderPayment);
   }
   orderService.save(cart,true);
