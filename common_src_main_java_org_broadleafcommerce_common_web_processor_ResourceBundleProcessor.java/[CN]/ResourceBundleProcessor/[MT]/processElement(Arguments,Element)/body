@@ -14,10 +14,8 @@
   }
   if (getBundleEnabled()) {
     String bundleResourceName=bundlingService.resolveBundleResourceName(name,mappingPrefix,files);
-    Configuration thymeleafCfg=arguments.getConfiguration();
-    Expression expression=(Expression)StandardExpressions.getExpressionParser(thymeleafCfg).parseExpression(thymeleafCfg,arguments,"@{'" + bundleResourceName + "'}");
-    String value=(String)expression.execute(arguments.getConfiguration(),arguments);
-    Element e=getElement(value,async,defer);
+    String bundleUrl=getBundleUrl(arguments,bundleResourceName);
+    Element e=getElement(bundleUrl,async,defer);
     parent.insertAfter(element,e);
   }
  else {

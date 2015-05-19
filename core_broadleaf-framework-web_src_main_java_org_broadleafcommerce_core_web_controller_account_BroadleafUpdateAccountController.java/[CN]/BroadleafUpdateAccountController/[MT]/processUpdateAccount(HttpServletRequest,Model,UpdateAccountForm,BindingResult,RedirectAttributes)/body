@@ -7,6 +7,9 @@
   customer.setEmailAddress(form.getEmailAddress());
   customer.setFirstName(form.getFirstName());
   customer.setLastName(form.getLastName());
+  if (useEmailForLogin) {
+    customer.setUsername(form.getEmailAddress());
+  }
   customerService.saveCustomer(customer);
   redirectAttributes.addFlashAttribute("successMessage",getAccountUpdatedMessage());
   return getAccountRedirectView();
