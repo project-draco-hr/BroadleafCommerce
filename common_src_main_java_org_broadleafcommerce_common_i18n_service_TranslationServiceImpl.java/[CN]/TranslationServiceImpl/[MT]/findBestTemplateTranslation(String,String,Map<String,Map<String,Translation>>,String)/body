@@ -1,0 +1,12 @@
+{
+  Translation translation=null;
+  if (propertyTranslationMap.containsKey(specificPropertyKey)) {
+    Map<String,Translation> byEntity=propertyTranslationMap.get(specificPropertyKey);
+    translation=byEntity.get(entityId);
+  }
+  if (translation == null && propertyTranslationMap.containsKey(generalPropertyKey)) {
+    Map<String,Translation> byEntity=propertyTranslationMap.get(generalPropertyKey);
+    translation=byEntity.get(entityId);
+  }
+  return translation;
+}

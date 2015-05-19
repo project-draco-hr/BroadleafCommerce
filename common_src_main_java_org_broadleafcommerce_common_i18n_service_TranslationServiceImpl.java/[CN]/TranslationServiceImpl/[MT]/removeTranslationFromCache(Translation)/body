@@ -1,13 +1,13 @@
 {
   if (BroadleafRequestContext.getBroadleafRequestContext().isProductionSandBox()) {
     Object entity=genericEntityDao.readGenericEntity(dao.getEntityImpl(translation.getEntityType()),Long.parseLong(translation.getEntityId()));
-    String generalCode=translation.getLocaleCode();
-    if (generalCode.contains("_")) {
-      generalCode=generalCode.substring(0,generalCode.indexOf("_"));
+    ResultType resultType=ResultType.STANDARD;
+    if (extensionManager != null) {
+      ExtensionResultHolder<ResultType> response=new ExtensionResultHolder<ResultType>();
+      extensionManager.getProxy().getResultType(translation,response);
+      resultType=response.getResult();
     }
-    String key=getCacheKey(entity,ResultType.TEMPLATE,translation.getEntityType(),translation.getEntityId(),generalCode);
-    getCache().remove(key);
-    key=getCacheKey(entity,ResultType.STANDARD,translation.getEntityType(),translation.getEntityId(),generalCode);
+    String key=getCacheKey(entity,resultType,translation.getEntityType());
     getCache().remove(key);
   }
 }
