@@ -1,0 +1,13 @@
+{
+  String bundleUrl=bundleName;
+  if (!StringUtils.startsWith(bundleUrl,"/")) {
+    bundleUrl="/" + bundleUrl;
+  }
+  IWebContext context=(IWebContext)arguments.getContext();
+  HttpServletRequest request=context.getHttpServletRequest();
+  String contextPath=request.getContextPath();
+  if (StringUtils.isNotEmpty(contextPath)) {
+    bundleUrl=contextPath + bundleUrl;
+  }
+  return bundleUrl;
+}
