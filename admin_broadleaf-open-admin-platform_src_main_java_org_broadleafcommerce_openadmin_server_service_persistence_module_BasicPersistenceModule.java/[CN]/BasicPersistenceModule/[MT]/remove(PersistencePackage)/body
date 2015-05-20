@@ -30,6 +30,7 @@ if (manyToFieldMetadata instanceof BasicFieldMetadata) {
 if (BooleanUtils.isTrue(((BasicFieldMetadata)manyToFieldMetadata).getRequired())) {
 throw new ServiceException("Could not remove from the collection as the ManyToOne side is a" + " non-optional relationship. Consider changing 'optional=true' in the @ManyToOne annotation" + " or nullable=true within the @JoinColumn annotation");
 }
+instance=persistenceManager.getDynamicEntityDao().merge(instance);
 Field manyToField=fieldManager.getField(instance.getClass(),foreignKey.getManyToField());
 Object manyToObject=manyToField.get(instance);
 if (manyToObject != null && !(manyToObject instanceof Collection) && !(manyToObject instanceof Map)) {
