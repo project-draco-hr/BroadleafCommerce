@@ -1,22 +1,25 @@
 {
-  String cacheKey=getCacheKey(entity,ResultType.TEMPLATE,entityType,entityId,localeCode);
+  String cacheKey=getCacheKey(entity,ResultType.TEMPLATE,entityType);
   if (standardCacheKey.equals(cacheKey)) {
     return null;
   }
   Element cacheResult=getCache().get(cacheKey);
   if (cacheResult == null) {
     statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
-    if (dao.countTranslationEntries(entityType,entityId,ResultType.TEMPLATE) < getThresholdForFullCache()) {
-      Map<String,Translation> propertyTranslationMap=new HashMap<String,Translation>();
-      List<Translation> translationList=dao.readAllTranslationEntries(entityType,entityId,ResultType.TEMPLATE);
+    if (dao.countTranslationEntries(entityType,ResultType.TEMPLATE_CACHE) < getThresholdForFullCache()) {
+      Map<String,Map<String,Translation>> propertyTranslationMap=new HashMap<String,Map<String,Translation>>();
+      List<Translation> translationList=dao.readAllTranslationEntries(entityType,ResultType.TEMPLATE_CACHE);
       if (!CollectionUtils.isEmpty(translationList)) {
         for (        Translation translation : translationList) {
           String key=translation.getFieldName() + "_" + translation.getLocaleCode();
-          propertyTranslationMap.put(key,translation);
+          if (!propertyTranslationMap.containsKey(key)) {
+            propertyTranslationMap.put(key,new HashMap<String,Translation>());
+          }
+          propertyTranslationMap.get(key).put(translation.getEntityId(),translation);
         }
       }
       getCache().put(new Element(cacheKey,propertyTranslationMap));
-      Translation translation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+      Translation translation=findBestTemplateTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap,entityId);
       if (translation != null) {
         return translation.getTranslatedValue();
       }
@@ -36,8 +39,8 @@
   }
  else {
     statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
-    Map<String,Translation> propertyTranslationMap=(Map<String,Translation>)cacheResult.getObjectValue();
-    Translation bestTranslation=findBestTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap);
+    Map<String,Map<String,Translation>> propertyTranslationMap=(Map<String,Map<String,Translation>>)cacheResult.getObjectValue();
+    Translation bestTranslation=findBestTemplateTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap,entityId);
     if (bestTranslation != null) {
       return bestTranslation.getTranslatedValue();
     }

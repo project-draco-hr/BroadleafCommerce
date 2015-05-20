@@ -1,0 +1,9 @@
+{
+  List<Translation> results=readAllTranslationEntries(entityType,stage);
+  if (extensionManager == null) {
+    throw new IllegalStateException("extensionManager cannot be null");
+  }
+  ExtensionResultHolder<List<StandardCacheItem>> response=new ExtensionResultHolder<List<StandardCacheItem>>();
+  extensionManager.getProxy().buildStatus(TranslationImpl.class,results,response);
+  return response.getResult();
+}
