@@ -5,7 +5,8 @@
     metadata.setFieldType(SupportedFieldType.EXPLICIT_ENUMERATION);
     metadata.setMutable(true);
     metadata.setInheritedFromType(SkuImpl.class.getName());
-    metadata.setAvailableToTypes(new String[]{SkuImpl.class.getName()});
+    Class<?>[] classes=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(SkuImpl.class);
+    metadata.setAvailableToTypes(convertToStrings(classes));
     metadata.setForeignKeyCollection(false);
     metadata.setMergedPropertyType(MergedPropertyType.PRIMARY);
     String[][] optionValues=new String[allowedValues.size()][2];

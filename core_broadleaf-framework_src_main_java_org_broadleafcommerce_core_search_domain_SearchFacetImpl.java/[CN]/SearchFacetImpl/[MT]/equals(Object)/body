@@ -1,8 +1,7 @@
 {
-  if (this == o)   return true;
-  if (!(o instanceof SearchFacetImpl))   return false;
-  SearchFacetImpl that=(SearchFacetImpl)o;
-  if (id != null ? !id.equals(that.id) : that.id != null)   return false;
-  if (field != null ? !field.equals(that.field) : that.field != null)   return false;
-  return true;
+  if (obj != null && getClass().isAssignableFrom(obj.getClass())) {
+    SearchFacetImpl other=(SearchFacetImpl)obj;
+    return new EqualsBuilder().append(id,other.id).append(field,other.field).build();
+  }
+  return false;
 }
