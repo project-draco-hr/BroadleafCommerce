@@ -1,7 +1,7 @@
 {
   String specificPropertyKey=property + "_" + localeCountryCode;
   String generalPropertyKey=property + "_" + localeCode;
-  String cacheKey=getCacheKey(entity,ResultType.STANDARD,entityType);
+  String cacheKey=getCacheKey(ResultType.STANDARD,entityType);
   Element cacheResult=getCache().get(cacheKey);
   String response=null;
   if (cacheResult == null) {
@@ -25,7 +25,7 @@
         response=bestTranslation.getTranslatedValue();
       }
  else {
-        response=getTemplateTranslatedValue(cacheKey,entity,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
+        response=getTemplateTranslatedValue(cacheKey,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
       }
     }
  else {
@@ -43,7 +43,7 @@
       response=bestTranslation.getTranslatedValue();
     }
  else {
-      response=getTemplateTranslatedValue(cacheKey,entity,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
+      response=getTemplateTranslatedValue(cacheKey,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
     }
   }
   if (!StringUtils.isEmpty(response)) {
