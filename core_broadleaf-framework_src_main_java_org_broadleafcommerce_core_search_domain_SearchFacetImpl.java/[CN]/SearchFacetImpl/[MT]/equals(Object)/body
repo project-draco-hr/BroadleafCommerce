@@ -1,13 +1,7 @@
 {
-  if (this == obj) {
-    return true;
+  if (obj != null && getClass().isAssignableFrom(obj.getClass())) {
+    SearchFacetImpl other=(SearchFacetImpl)obj;
+    return new EqualsBuilder().append(field,other.field).build();
   }
-  if (obj == null) {
-    return false;
-  }
-  if (!getClass().isAssignableFrom(obj.getClass())) {
-    return false;
-  }
-  SearchFacet other=(SearchFacet)obj;
-  return getField().equals(other.getField());
+  return false;
 }

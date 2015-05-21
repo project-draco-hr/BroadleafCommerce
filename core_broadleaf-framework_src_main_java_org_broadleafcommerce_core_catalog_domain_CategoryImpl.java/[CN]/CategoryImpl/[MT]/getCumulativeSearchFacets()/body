@@ -1,20 +1,26 @@
 {
-  final List<CategorySearchFacet> returnFacets=new ArrayList<CategorySearchFacet>();
-  returnFacets.addAll(getSearchFacets());
-  Collections.sort(returnFacets,facetPositionComparator);
+  List<CategorySearchFacet> returnCategoryFacets=new ArrayList<CategorySearchFacet>();
+  returnCategoryFacets.addAll(getSearchFacets());
+  Collections.sort(returnCategoryFacets,facetPositionComparator);
+  final Collection<SearchFacet> facets=CollectionUtils.collect(returnCategoryFacets,new Transformer(){
+    @Override public Object transform(    Object input){
+      return ((CategorySearchFacet)input).getSearchFacet();
+    }
+  }
+);
   List<CategorySearchFacet> parentFacets=null;
   if (defaultParentCategory != null) {
     parentFacets=defaultParentCategory.getCumulativeSearchFacets();
     CollectionUtils.filter(parentFacets,new Predicate(){
       @Override public boolean evaluate(      Object arg){
         CategorySearchFacet csf=(CategorySearchFacet)arg;
-        return !getExcludedSearchFacets().contains(csf.getSearchFacet()) && !returnFacets.contains(csf.getSearchFacet());
+        return !getExcludedSearchFacets().contains(csf.getSearchFacet()) && !facets.contains(csf.getSearchFacet());
       }
     }
 );
   }
   if (parentFacets != null) {
-    returnFacets.addAll(parentFacets);
+    returnCategoryFacets.addAll(parentFacets);
   }
-  return returnFacets;
+  return returnCategoryFacets;
 }
