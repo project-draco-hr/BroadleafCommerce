@@ -3,7 +3,8 @@
   metadata.setFieldType(SupportedFieldType.STRING);
   metadata.setMutable(false);
   metadata.setInheritedFromType(inheritedFromType.getName());
-  metadata.setAvailableToTypes(new String[]{SkuImpl.class.getName()});
+  Class<?>[] classes=dynamicEntityDao.getAllPolymorphicEntitiesFromCeiling(SkuImpl.class);
+  metadata.setAvailableToTypes(convertToStrings(classes));
   metadata.setForeignKeyCollection(false);
   metadata.setMergedPropertyType(MergedPropertyType.PRIMARY);
   metadata.setName(CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME);
