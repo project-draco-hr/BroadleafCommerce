@@ -1,8 +1,4 @@
 {
-  CustomerPayment customerPayment=customerPaymentService.create();
-  customerPayment.setCustomer(customer);
-  customerPayment.setBillingAddress(orderPayment.getBillingAddress());
-  customerPayment.setPaymentGatewayType(orderPayment.getGatewayType());
   String cardType=null;
   String expDate=null;
   String lastFour=null;
@@ -21,6 +17,16 @@
       token=paymentTransaction.getAdditionalFields().get(PaymentAdditionalFieldType.TOKEN.getType());
     }
   }
+  CustomerPayment customerPayment=customerPaymentService.readCustomerPaymentByToken(token);
+  if (customerPayment == null) {
+    customerPayment=customerPaymentService.create();
+  }
+ else {
+    return customerPayment;
+  }
+  customerPayment.setCustomer(customer);
+  customerPayment.setBillingAddress(orderPayment.getBillingAddress());
+  customerPayment.setPaymentGatewayType(orderPayment.getGatewayType());
   if (expDate != null) {
     customerPayment.setExpirationDate(expDate);
   }
@@ -37,5 +43,5 @@
     }
   }
   customerPayment.setPaymentName(paymentName);
-  return customerPayment;
+  return customerPaymentService.saveCustomerPayment(customerPayment);
 }
