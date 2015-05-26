@@ -2,14 +2,15 @@
   if (!createdBundles.containsKey(versionedBundleName)) {
     keyLockManager.executeLocked(versionedBundleName,new LockCallback(){
       @Override public void doInLock(){
-        Resource bundle=readBundle(versionedBundleName);
-        if (bundle == null || !bundle.exists()) {
-          Resource bundleResource=createBundle(versionedBundleName,filePaths,resolverChain,locations);
+        Resource bundleResource=createdBundles.get(versionedBundleName);
+        if (bundleResource == null || !bundleResource.exists()) {
+          bundleResource=createBundle(versionedBundleName,filePaths,resolverChain,locations);
           if (bundleResource != null) {
             saveBundle(bundleResource);
           }
         }
-        createdBundles.put(versionedBundleName,versionedBundleName);
+        Resource savedResource=readBundle(versionedBundleName);
+        createdBundles.put(versionedBundleName,savedResource);
       }
     }
 );

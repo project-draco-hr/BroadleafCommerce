@@ -3,7 +3,7 @@
     PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
     Map<MergedPropertyType,Map<String,FieldMetadata>> allMergedProperties=new HashMap<MergedPropertyType,Map<String,FieldMetadata>>();
     Map<String,FieldMetadata> properties=helper.getSimpleMergedProperties(SkuBundleItem.class.getName(),persistencePerspective);
-    FieldMetadata options=SkuCustomPersistenceHandler.createConsolidatedOptionField(SkuBundleItemImpl.class);
+    FieldMetadata options=skuPersistenceHandler.createConsolidatedOptionField(SkuBundleItemImpl.class);
     options.setOrder(3);
     properties.put(SkuCustomPersistenceHandler.CONSOLIDATED_PRODUCT_OPTIONS_FIELD_NAME,options);
     allMergedProperties.put(MergedPropertyType.PRIMARY,properties);
