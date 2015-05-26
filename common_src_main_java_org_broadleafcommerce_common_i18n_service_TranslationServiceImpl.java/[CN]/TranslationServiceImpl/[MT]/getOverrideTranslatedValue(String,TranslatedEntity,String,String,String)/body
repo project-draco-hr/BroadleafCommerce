@@ -3,6 +3,7 @@
   String generalPropertyKey=property + "_" + localeCode;
   String cacheKey=getCacheKey(ResultType.STANDARD,entityType);
   Element cacheResult=getCache().get(cacheKey);
+  Element result=null;
   String response=null;
   if (cacheResult == null) {
     statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),false);
@@ -19,14 +20,9 @@
           propertyTranslationMap.get(key).put(translation.getEntityId(),standardCache);
         }
       }
-      getCache().put(new Element(cacheKey,propertyTranslationMap));
-      Translation bestTranslation=findBestStandardTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap,entityId);
-      if (bestTranslation != null) {
-        response=bestTranslation.getTranslatedValue();
-      }
- else {
-        response=getTemplateTranslatedValue(cacheKey,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
-      }
+      Element newElement=new Element(cacheKey,propertyTranslationMap);
+      getCache().put(newElement);
+      result=newElement;
     }
  else {
       Translation translation=dao.readTranslation(entityType,entityId,property,localeCode,localeCountryCode,ResultType.IGNORE);
@@ -36,18 +32,43 @@
     }
   }
  else {
+    result=cacheResult;
     statisticsService.addCacheStat(CacheStatType.TRANSLATION_CACHE_HIT_RATE.toString(),true);
-    Map<String,Map<String,StandardCacheItem>> propertyTranslationMap=(Map<String,Map<String,StandardCacheItem>>)cacheResult.getObjectValue();
-    Translation bestTranslation=findBestStandardTranslation(specificPropertyKey,generalPropertyKey,propertyTranslationMap,entityId);
-    if (bestTranslation != null) {
-      response=bestTranslation.getTranslatedValue();
-    }
+  }
+  if (result != null) {
+    Map<String,Map<String,StandardCacheItem>> propertyTranslationMap=(Map<String,Map<String,StandardCacheItem>>)result.getObjectValue();
+    boolean specificTranslationDeleted=false;
+    boolean generalTranslationDeleted=false;
+    StandardCacheItem specificTranslation=lookupTranslationFromMap(specificPropertyKey,propertyTranslationMap,entityId);
+    if (specificTranslation != null) {
+      if (ItemStatus.DELETED.equals(specificTranslation.getItemStatus())) {
+        specificTranslationDeleted=true;
+      }
  else {
-      response=getTemplateTranslatedValue(cacheKey,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
+        response=((Translation)specificTranslation.getCacheItem()).getTranslatedValue();
+        return replaceEmptyWithNullResponse(response);
+      }
     }
+    StandardCacheItem generalTranslation=lookupTranslationFromMap(generalPropertyKey,propertyTranslationMap,entityId);
+    if (generalTranslation != null) {
+      if (ItemStatus.DELETED.equals(generalTranslation.getItemStatus())) {
+        generalTranslationDeleted=true;
+        if (specificTranslationDeleted) {
+          return null;
+        }
+      }
+      if (specificTranslationDeleted) {
+        response=((Translation)generalTranslation.getCacheItem()).getTranslatedValue();
+        return replaceEmptyWithNullResponse(response);
+      }
+    }
+    if (specificTranslationDeleted) {
+      specificPropertyKey=generalPropertyKey;
+    }
+ else     if (generalTranslationDeleted) {
+      generalPropertyKey=specificPropertyKey;
+    }
+    response=getTemplateTranslatedValue(cacheKey,property,entityType,entityId,localeCode,localeCountryCode,specificPropertyKey,generalPropertyKey);
   }
-  if (!StringUtils.isEmpty(response)) {
-    return response;
-  }
-  return null;
+  return replaceEmptyWithNullResponse(response);
 }
