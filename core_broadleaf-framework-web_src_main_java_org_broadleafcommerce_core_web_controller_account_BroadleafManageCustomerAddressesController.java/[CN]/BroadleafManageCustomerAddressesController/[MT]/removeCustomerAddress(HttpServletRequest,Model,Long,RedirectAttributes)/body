@@ -1,5 +1,7 @@
 {
   try {
+    CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
+    validateCustomerOwnedData(customerAddress);
     customerAddressService.deleteCustomerAddressById(customerAddressId);
     redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
   }
