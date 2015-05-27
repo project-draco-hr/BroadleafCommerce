@@ -19,35 +19,32 @@
         }
       }
       if (customer != null) {
-        ApplicationEvent lastPublishedEvent=(ApplicationEvent)BLCRequestUtils.getSessionAttributeIfOk(request,LAST_PUBLISHED_EVENT_SESSION_ATTRIBUTED_NAME);
+        String lastPublishedEventClass=(String)BLCRequestUtils.getSessionAttributeIfOk(request,LAST_PUBLISHED_EVENT_CLASS_SESSION_ATTRIBUTE_NAME);
+        String eventUsername=(String)BLCRequestUtils.getSessionAttributeIfOk(request,LAST_PUBLISHED_EVENT_USERNAME_SESSION_ATTRIBUTE_NAME);
         if (authentication instanceof RememberMeAuthenticationToken) {
           customer.setCookied(true);
           boolean publishRememberMeEvent=true;
-          if (lastPublishedEvent != null && lastPublishedEvent instanceof CustomerAuthenticatedFromCookieEvent) {
-            CustomerAuthenticatedFromCookieEvent cookieEvent=(CustomerAuthenticatedFromCookieEvent)lastPublishedEvent;
-            if (userName.equals(cookieEvent.getCustomer().getUsername())) {
+          if (CustomerAuthenticatedFromCookieEvent.class.getName().equals(lastPublishedEventClass)) {
+            if (userName.equals(eventUsername)) {
               publishRememberMeEvent=false;
             }
           }
           if (publishRememberMeEvent) {
             CustomerAuthenticatedFromCookieEvent cookieEvent=new CustomerAuthenticatedFromCookieEvent(customer,this.getClass().getName());
-            eventPublisher.publishEvent(cookieEvent);
-            BLCRequestUtils.setSessionAttributeIfOk(request,LAST_PUBLISHED_EVENT_SESSION_ATTRIBUTED_NAME,cookieEvent);
+            publishEvent(cookieEvent,request,CustomerAuthenticatedFromCookieEvent.class.getName(),userName);
           }
         }
  else         if (authentication instanceof UsernamePasswordAuthenticationToken) {
           customer.setLoggedIn(true);
           boolean publishLoggedInEvent=true;
-          if (lastPublishedEvent != null && lastPublishedEvent instanceof CustomerLoggedInEvent) {
-            CustomerLoggedInEvent loggedInEvent=(CustomerLoggedInEvent)lastPublishedEvent;
-            if (userName.equals(loggedInEvent.getCustomer().getUsername())) {
+          if (CustomerLoggedInEvent.class.getName().equals(lastPublishedEventClass)) {
+            if (userName.equals(eventUsername)) {
               publishLoggedInEvent=false;
             }
           }
           if (publishLoggedInEvent) {
             CustomerLoggedInEvent loggedInEvent=new CustomerLoggedInEvent(customer,this.getClass().getName());
-            eventPublisher.publishEvent(loggedInEvent);
-            BLCRequestUtils.setSessionAttributeIfOk(request,LAST_PUBLISHED_EVENT_SESSION_ATTRIBUTED_NAME,loggedInEvent);
+            publishEvent(loggedInEvent,request,CustomerLoggedInEvent.class.getName(),userName);
           }
         }
  else {
