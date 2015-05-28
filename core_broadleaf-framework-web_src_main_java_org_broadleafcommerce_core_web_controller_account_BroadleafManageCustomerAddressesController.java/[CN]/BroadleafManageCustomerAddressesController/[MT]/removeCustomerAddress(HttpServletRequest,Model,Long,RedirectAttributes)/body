@@ -1,8 +1,10 @@
 {
   try {
     CustomerAddress customerAddress=customerAddressService.readCustomerAddressById(customerAddressId);
-    validateCustomerOwnedData(customerAddress);
-    customerAddressService.deleteCustomerAddressById(customerAddressId);
+    if (customerAddress != null) {
+      validateCustomerOwnedData(customerAddress);
+      customerAddressService.deleteCustomerAddressById(customerAddressId);
+    }
     redirectAttributes.addFlashAttribute("successMessage",getAddressRemovedMessage());
   }
  catch (  DataIntegrityViolationException e) {
