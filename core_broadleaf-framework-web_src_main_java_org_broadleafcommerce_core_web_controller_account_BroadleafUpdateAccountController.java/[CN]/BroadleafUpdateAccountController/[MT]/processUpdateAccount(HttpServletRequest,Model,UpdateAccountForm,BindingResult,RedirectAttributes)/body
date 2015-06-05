@@ -10,7 +10,13 @@
   if (useEmailForLogin) {
     customer.setUsername(form.getEmailAddress());
   }
-  customerService.saveCustomer(customer);
+  customer=customerService.saveCustomer(customer);
   redirectAttributes.addFlashAttribute("successMessage",getAccountUpdatedMessage());
+  Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+  if (useEmailForLogin && auth != null && auth.isAuthenticated()) {
+    UserDetails principal=userDetailsService.loadUserByUsername(customer.getUsername());
+    UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(principal,principal.getPassword(),auth.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(token);
+  }
   return getAccountRedirectView();
 }
