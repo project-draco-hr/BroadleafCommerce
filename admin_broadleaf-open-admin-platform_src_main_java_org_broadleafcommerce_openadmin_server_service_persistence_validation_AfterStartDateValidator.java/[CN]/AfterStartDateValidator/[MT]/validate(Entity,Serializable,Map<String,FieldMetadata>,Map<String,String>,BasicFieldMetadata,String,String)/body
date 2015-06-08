@@ -5,25 +5,25 @@
   String message="";
   Date startDate=null;
   Date endDate=null;
-  if (value == null || value.equals("") || otherField == null || otherField.equals("")) {
+  if (StringUtils.isBlank(value) || StringUtils.isBlank(otherField)) {
     return new PropertyValidationResult(true);
   }
   try {
     startDate=(Date)fm.getFieldValue(instance,otherField);
     endDate=(Date)fm.getFieldValue(instance,propertyName);
   }
- catch (  IllegalAccessException iae) {
+ catch (  IllegalAccessException|FieldNotAvailableException e) {
     valid=false;
-    message=iae.getMessage();
-  }
-catch (  FieldNotAvailableException fnae) {
-    valid=false;
-    message=fnae.getMessage();
+    message=e.getMessage();
   }
   if (valid && endDate != null && startDate != null && endDate.before(startDate)) {
     valid=false;
     message=END_DATE_BEFORE_START;
   }
-  if (valid)   return new PropertyValidationResult(true);
- else   return new PropertyValidationResult(false,message);
+  if (valid) {
+    return new PropertyValidationResult(true);
+  }
+ else {
+    return new PropertyValidationResult(false,message);
+  }
 }
