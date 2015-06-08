@@ -5,14 +5,20 @@
   String message="";
   Date startDate=null;
   Date endDate=null;
-  if (value == null || value.equals("") || otherField == null || otherField.equals(""))   return new PropertyValidationResult(true);
+  if (value == null || value.equals("") || otherField == null || otherField.equals("")) {
+    return new PropertyValidationResult(true);
+  }
   try {
     startDate=(Date)fm.getFieldValue(instance,otherField);
     endDate=(Date)fm.getFieldValue(instance,propertyName);
   }
- catch (  Exception e) {
+ catch (  IllegalAccessException iae) {
     valid=false;
-    message=e.getMessage();
+    message=iae.getMessage();
+  }
+catch (  FieldNotAvailableException fnae) {
+    valid=false;
+    message=fnae.getMessage();
   }
   if (valid && endDate != null && startDate != null && endDate.before(startDate)) {
     valid=false;
