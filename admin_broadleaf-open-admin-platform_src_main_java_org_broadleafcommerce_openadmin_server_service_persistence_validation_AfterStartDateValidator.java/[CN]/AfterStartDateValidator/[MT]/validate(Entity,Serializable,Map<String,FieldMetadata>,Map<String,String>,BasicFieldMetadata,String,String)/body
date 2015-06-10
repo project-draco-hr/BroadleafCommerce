@@ -1,0 +1,24 @@
+{
+  String otherField=validationConfiguration.get("otherField");
+  FieldManager fm=PersistenceManagerFactory.getPersistenceManager().getDynamicEntityDao().getFieldManager();
+  boolean valid=true;
+  String message="";
+  Date startDate=null;
+  Date endDate=null;
+  if (StringUtils.isBlank(value) || StringUtils.isBlank(otherField)) {
+    return new PropertyValidationResult(true);
+  }
+  try {
+    startDate=(Date)fm.getFieldValue(instance,otherField);
+    endDate=(Date)fm.getFieldValue(instance,propertyName);
+  }
+ catch (  IllegalAccessException|FieldNotAvailableException e) {
+    valid=false;
+    message=e.getMessage();
+  }
+  if (valid && endDate != null && startDate != null && endDate.before(startDate)) {
+    valid=false;
+    message=END_DATE_BEFORE_START;
+  }
+  return new PropertyValidationResult(valid,message);
+}
