@@ -39,7 +39,7 @@
     for (    OrderPayment p : order.getPayments()) {
       if (PaymentGatewayType.TEMPORARY.equals(p.getGatewayType()) || (p.isFinalPayment() && payment.isFinalPayment()) || (p.getGatewayType() != null && p.getGatewayType().equals(gateway))) {
         paymentsToInvalidate.add(p);
-        if (PaymentType.CREDIT_CARD.equals(p.getType()) && PaymentGatewayType.TEMPORARY.equals(p.getGatewayType())) {
+        if (PaymentGatewayType.TEMPORARY.equals(p.getGatewayType())) {
           tempBillingAddress=p.getBillingAddress();
         }
       }
@@ -57,7 +57,7 @@
   for (  Entry<String,String> entry : responseDTO.getResponseMap().entrySet()) {
     transaction.getAdditionalFields().put(entry.getKey(),entry.getValue());
   }
-  if (PaymentType.CREDIT_CARD.equals(responseDTO.getPaymentType()) && responseDTO.getCreditCard() != null && responseDTO.getCreditCard().creditCardPopulated()) {
+  if (responseDTO.getCreditCard() != null && responseDTO.getCreditCard().creditCardPopulated()) {
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.NAME_ON_CARD.getType(),responseDTO.getCreditCard().getCreditCardHolderName());
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.CARD_TYPE.getType(),responseDTO.getCreditCard().getCreditCardType());
     transaction.getAdditionalFields().put(PaymentAdditionalFieldType.EXP_DATE.getType(),responseDTO.getCreditCard().getCreditCardExpDate());
