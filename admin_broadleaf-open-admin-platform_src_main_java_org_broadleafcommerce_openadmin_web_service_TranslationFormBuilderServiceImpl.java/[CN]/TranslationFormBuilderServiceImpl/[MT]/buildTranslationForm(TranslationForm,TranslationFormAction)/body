@@ -3,8 +3,13 @@
   EntityFormAction saveAction=DefaultEntityFormActions.SAVE.clone();
   saveAction.setButtonClass("translation-submit-button");
   ef.addAction(saveAction);
-  ef.addField(getLocaleField(formProperties.getLocaleCode()));
-  ef.addField(new Field().withName("translatedValue").withFieldType(formProperties.getIsRte() ? "html" : "string").withFriendlyName("Translation_translatedValue").withValue(formProperties.getTranslatedValue()).withOrder(10));
+  ComboField comboField=getLocaleField(formProperties.getLocaleCode());
+  ef.addField(comboField);
+  Field translatedValueValueField=new Field().withName("translatedValue").withFieldType(formProperties.getIsRte() ? "html" : "string").withFriendlyName("Translation_translatedValue").withValue(formProperties.getTranslatedValue()).withOrder(10);
+  ef.addField(translatedValueValueField);
+  if (action.equals(TranslationFormAction.UPDATE)) {
+    comboField.setReadOnly(true);
+  }
   ef.addHiddenField(new Field().withName("ceilingEntity").withValue(formProperties.getCeilingEntity()));
   ef.addHiddenField(new Field().withName("entityId").withValue(formProperties.getEntityId()));
   ef.addHiddenField(new Field().withName("propertyName").withValue(formProperties.getPropertyName()));

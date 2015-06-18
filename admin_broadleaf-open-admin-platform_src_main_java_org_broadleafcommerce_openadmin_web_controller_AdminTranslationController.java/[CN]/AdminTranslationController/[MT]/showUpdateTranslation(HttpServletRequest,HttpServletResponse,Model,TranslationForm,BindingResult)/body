@@ -2,7 +2,7 @@
   adminRemoteSecurityService.securityCheck(form.getCeilingEntity(),EntityOperationType.FETCH);
   Translation t=translationService.findTranslationById(form.getTranslationId());
   form.setTranslatedValue(t.getTranslatedValue());
-  EntityForm entityForm=formService.buildTranslationForm(form);
+  EntityForm entityForm=formService.buildTranslationForm(form,TranslationFormAction.UPDATE);
   entityForm.setId(String.valueOf(form.getTranslationId()));
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("viewType","modal/translationAdd");
