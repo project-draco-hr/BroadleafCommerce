@@ -13,6 +13,11 @@
     return mav;
   }
  else {
+    if (ex.getClass().equals(EntityNotFoundException.class)) {
+      String servletPath=request.getServletPath();
+      servletPath=servletPath.substring(0,servletPath.lastIndexOf('/'));
+      return new ModelAndView("redirect:" + servletPath);
+    }
     return super.resolveException(request,response,handler,ex);
   }
 }
