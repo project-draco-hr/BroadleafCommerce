@@ -18,7 +18,7 @@
     }
     response=fetch(ppr);
     Entity[] entities=response.getDynamicResultSet().getRecords();
-    Assert.isTrue(entities != null && entities.length == 1,"Entity not found");
+    if (entities == null || entities.length != 1)     throw new EntityNotFoundException();
   }
  else   if (md instanceof MapMetadata) {
     MapMetadata mmd=(MapMetadata)md;

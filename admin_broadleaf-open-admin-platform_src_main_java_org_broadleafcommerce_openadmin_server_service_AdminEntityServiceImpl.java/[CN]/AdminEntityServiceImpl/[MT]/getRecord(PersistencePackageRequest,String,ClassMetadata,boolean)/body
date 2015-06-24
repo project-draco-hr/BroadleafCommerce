@@ -5,6 +5,6 @@
   request.addFilterAndSortCriteria(fasc);
   PersistenceResponse response=fetch(request);
   Entity[] entities=response.getDynamicResultSet().getRecords();
-  Assert.isTrue(entities != null && entities.length == 1,"Entity not found");
+  if (entities == null || entities.length != 1)   throw new EntityNotFoundException();
   return response;
 }
