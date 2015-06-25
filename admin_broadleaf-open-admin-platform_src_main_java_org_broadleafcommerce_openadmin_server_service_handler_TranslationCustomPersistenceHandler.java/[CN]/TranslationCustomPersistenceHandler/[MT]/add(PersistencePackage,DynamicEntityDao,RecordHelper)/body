@@ -1,0 +1,23 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Translation adminInstance=(Translation)Class.forName(entity.getType()[0]).newInstance();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(Translation.class.getName(),persistencePerspective);
+    adminInstance=(Translation)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    Translation res=translationService.getTranslation(adminInstance.getEntityType(),adminInstance.getEntityId(),adminInstance.getFieldName(),adminInstance.getLocaleCode());
+    if (res == null) {
+      adminInstance=dynamicEntityDao.merge(adminInstance);
+      Entity adminEntity=helper.getRecord(adminProperties,adminInstance,null,null);
+      return adminEntity;
+    }
+ else {
+      Entity errorEntity=new Entity();
+      errorEntity.addValidationError("localeCode","translation.record.exists.for.locale");
+      return errorEntity;
+    }
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to perform add for entity: " + Translation.class.getName(),e);
+  }
+}
