@@ -9,6 +9,7 @@
   StopWatch s=new StopWatch();
   boolean cacheOperationManaged=false;
   try {
+    extensionManager.getProxy().endProductBatch(products);
     Collection<SolrInputDocument> documents=new ArrayList<SolrInputDocument>();
     List<Locale> locales=getAllLocales();
     CatalogStructure cache=SolrIndexCachedOperation.getCache();
@@ -58,6 +59,7 @@ catch (  RuntimeException e) {
     if (!cacheOperationManaged) {
       SolrIndexCachedOperation.clearCache();
     }
+    extensionManager.getProxy().closeContexts();
   }
   if (LOG.isDebugEnabled()) {
     LOG.debug(String.format("Built incremental product index - pageSize: [%s] in [%s]",products.size(),s.toLapString()));
