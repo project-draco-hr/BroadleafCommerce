@@ -22,13 +22,9 @@
   entityForm.getFields().put("entityType",entityType);
   entityForm.getFields().put("fieldName",fieldName);
   Entity entity=service.addEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
-  for (  Map.Entry<String,Field> entry : entityForm.getFields().entrySet()) {
-    String key=entry.getKey();
-    Field value=entry.getValue();
-    System.out.println("key=" + key + " value="+ value);
-  }
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
+    entityForm.setPreventSubmit();
     model.addAttribute("entity",entity);
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/translationAdd");

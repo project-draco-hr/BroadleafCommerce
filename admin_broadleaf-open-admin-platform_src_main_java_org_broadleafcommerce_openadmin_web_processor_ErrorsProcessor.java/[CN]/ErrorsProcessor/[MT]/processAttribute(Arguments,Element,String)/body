@@ -16,7 +16,7 @@
         result.put(tabName,tabErrors);
       }
       if (err.getField().contains(DynamicEntityFormInfo.FIELD_SEPARATOR)) {
-        String fieldName=err.getField().substring(err.getField().indexOf('[') + 1,err.getField().lastIndexOf(']'));
+        String fieldName=extractFieldName(err);
         String[] fieldInfo=fieldName.split("\\" + DynamicEntityFormInfo.FIELD_SEPARATOR);
         Field formField=form.getDynamicForm(fieldInfo[0]).getFields().get(fieldName);
         if (formField != null) {
@@ -28,13 +28,21 @@
         }
       }
  else {
-        Field formField=form.findField(err.getField());
-        if (formField != null) {
-          addFieldError(formField.getFriendlyName(),err.getCode(),tabErrors);
+        if (form.getTabs().size() > 0) {
+          Field formField=form.findField(err.getField());
+          if (formField != null) {
+            addFieldError(formField.getFriendlyName(),err.getCode(),tabErrors);
+          }
+ else {
+            LOG.warn("Could not find field " + err.getField() + " within the main form");
+            addFieldError(err.getField(),err.getCode(),tabErrors);
+          }
         }
  else {
-          LOG.warn("Could not field field " + err.getField() + " within the main form");
-          addFieldError(err.getField(),err.getCode(),tabErrors);
+          String fieldName=extractFieldName(err);
+          Map<String,Object> localVariables=new HashMap<String,Object>();
+          localVariables.put("tabErrors",tabErrors);
+          return ProcessorResult.setLocalVariables(localVariables);
         }
       }
     }
