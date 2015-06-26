@@ -5,8 +5,10 @@
     if (objectError instanceof FieldError) {
       FieldError ferr=(FieldError)objectError;
       sb.append("{");
-      sb.append("\"").append(ferr.getField()).append("\":");
-      sb.append("\"").append(ferr.getDefaultMessage()).append("\"");
+      String fieldOnly=StringUtil.extractFieldNameFromExpression(ferr.getField());
+      sb.append("\"").append(fieldOnly).append("\":");
+      String localizedMessage=BLCMessageUtils.getMessage(ferr.getDefaultMessage());
+      sb.append("\"").append(localizedMessage).append("\"");
       sb.append("},");
     }
   }
