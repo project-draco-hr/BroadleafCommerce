@@ -25,6 +25,8 @@
   entityFormValidator.validate(entityForm,entity,result);
   if (result.hasErrors()) {
     entityForm.setPreventSubmit();
+    String jsErrorMap=resultToJS(result);
+    entityForm.setJsErrorMap(jsErrorMap);
     model.addAttribute("entity",entity);
     model.addAttribute("entityForm",entityForm);
     model.addAttribute("viewType","modal/translationAdd");
