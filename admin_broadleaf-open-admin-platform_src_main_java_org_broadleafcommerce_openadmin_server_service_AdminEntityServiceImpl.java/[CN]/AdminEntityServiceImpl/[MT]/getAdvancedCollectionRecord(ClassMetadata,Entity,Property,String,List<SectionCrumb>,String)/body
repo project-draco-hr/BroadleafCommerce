@@ -18,7 +18,9 @@
     }
     response=fetch(ppr);
     Entity[] entities=response.getDynamicResultSet().getRecords();
-    if (entities == null || entities.length != 1)     throw new EntityNotFoundException();
+    if (ArrayUtils.isEmpty(entities)) {
+      throw new EntityNotFoundException();
+    }
   }
  else   if (md instanceof MapMetadata) {
     MapMetadata mmd=(MapMetadata)md;
@@ -41,9 +43,6 @@
   }
  else {
     throw new IllegalArgumentException(String.format("The specified field [%s] for class [%s] was not an " + "advanced collection field.",collectionProperty.getName(),containingClassMetadata.getCeilingType()));
-  }
-  if (response == null) {
-    throw new NoResultException(String.format("Could not find record for class [%s], field [%s], main entity id " + "[%s], collection entity id [%s]",containingClassMetadata.getCeilingType(),collectionProperty.getName(),containingEntityId,collectionItemId));
   }
   return response;
 }
