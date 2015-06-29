@@ -5,7 +5,7 @@
     populateJsonValidationErrors(entityForm,result,json);
   }
   List<String> dirtyList=buildDirtyList(pathVars,request,id);
-  if (!dirtyList.isEmpty()) {
+  if (CollectionUtils.isNotEmpty(dirtyList)) {
     json.with("dirty",dirtyList);
   }
   return json.done();

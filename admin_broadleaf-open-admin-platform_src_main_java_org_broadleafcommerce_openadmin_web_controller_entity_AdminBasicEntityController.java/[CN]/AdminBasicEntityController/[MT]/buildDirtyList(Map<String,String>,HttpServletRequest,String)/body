@@ -6,13 +6,8 @@
   PersistencePackageRequest ppr=getSectionPersistencePackageRequest(sectionClassName,sectionCrumbs,pathVars);
   ClassMetadata cmd=null;
   Entity entity=null;
-  try {
-    cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
-    entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
-  }
- catch (  ServiceException e) {
-    return null;
-  }
+  cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  entity=service.getRecord(ppr,id,cmd,false).getDynamicResultSet().getRecords()[0];
   for (  Property p : entity.getProperties()) {
     if (p.getIsDirty()) {
       dirtyList.add(p.getName());
