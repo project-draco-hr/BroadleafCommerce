@@ -4,8 +4,10 @@
   populateCustomerInfo(order,requestDTO);
   populateShipTo(order,requestDTO);
   populateBillTo(order,requestDTO);
-  populateTotals(order,requestDTO);
-  populateDefaultLineItemsAndSubtotal(order,requestDTO);
+  if (PaymentTransactionType.UNCONFIRMED.equals(paymentTransaction.getType())) {
+    populateTotals(order,requestDTO);
+    populateDefaultLineItemsAndSubtotal(order,requestDTO);
+  }
   Map<String,String> additionalFields=paymentTransaction.getAdditionalFields();
   for (  String key : additionalFields.keySet()) {
     requestDTO.additionalField(key,additionalFields.get(key));
