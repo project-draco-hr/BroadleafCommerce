@@ -3,40 +3,7 @@
   if (responseDTO.getBillTo() != null && isUseBillingAddressFromGateway()) {
     billingAddress=addressService.create();
     AddressDTO<PaymentResponseDTO> billToDTO=responseDTO.getBillTo();
-    billingAddress.setFirstName(billToDTO.getAddressFirstName());
-    billingAddress.setLastName(billToDTO.getAddressLastName());
-    billingAddress.setAddressLine1(billToDTO.getAddressLine1());
-    billingAddress.setAddressLine2(billToDTO.getAddressLine2());
-    billingAddress.setCity(billToDTO.getAddressCityLocality());
-    State state=null;
-    if (billToDTO.getAddressStateRegion() != null) {
-      state=stateService.findStateByAbbreviation(billToDTO.getAddressStateRegion());
-    }
-    if (state == null) {
-      LOG.warn("The given state from the response: " + billToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
-    }
-    billingAddress.setState(state);
-    billingAddress.setStateProvinceRegion(billToDTO.getAddressStateRegion());
-    billingAddress.setPostalCode(billToDTO.getAddressPostalCode());
-    Country country=null;
-    ISOCountry isoCountry=null;
-    if (billToDTO.getAddressCountryCode() != null) {
-      country=countryService.findCountryByAbbreviation(billToDTO.getAddressCountryCode());
-      isoCountry=isoService.findISOCountryByAlpha2Code(billToDTO.getAddressCountryCode());
-    }
-    if (country == null) {
-      LOG.warn("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
-    }
- else     if (isoCountry == null) {
-      LOG.error("The given country from the response: " + billToDTO.getAddressCountryCode() + " could not be found"+ " as a country alpha-2 code in BLC_ISO_COUNTRY");
-    }
-    billingAddress.setCountry(country);
-    billingAddress.setIsoCountryAlpha2(isoCountry);
-    if (billToDTO.getAddressPhone() != null) {
-      Phone billingPhone=phoneService.create();
-      billingPhone.setPhoneNumber(billToDTO.getAddressPhone());
-      billingAddress.setPhonePrimary(billingPhone);
-    }
+    populateAddressInfo(billingAddress,billToDTO);
   }
   payment.setBillingAddress(billingAddress);
 }
