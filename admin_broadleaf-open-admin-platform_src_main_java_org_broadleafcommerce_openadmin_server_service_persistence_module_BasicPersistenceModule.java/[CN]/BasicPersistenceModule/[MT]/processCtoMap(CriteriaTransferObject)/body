@@ -1,0 +1,12 @@
+{
+  BiMap<String,FilterAndSortCriteria> bidiMap=HashBiMap.create(cto.getCriteriaMap());
+  List<FilterAndSortCriteria> sortedFsc=new ArrayList<FilterAndSortCriteria>(bidiMap.values());
+  Collections.sort(sortedFsc,new FilterAndSortCriteria.ComparatorByOrder());
+  Map<String,FilterAndSortCriteria> sortedMap=new LinkedHashMap<String,FilterAndSortCriteria>();
+  BiMap<FilterAndSortCriteria,String> inverse=bidiMap.inverse();
+  for (  FilterAndSortCriteria filterAndSortCriteria : sortedFsc) {
+    String key=inverse.get(filterAndSortCriteria);
+    sortedMap.put(key,filterAndSortCriteria);
+  }
+  cto.setCriteriaMap(sortedMap);
+}
