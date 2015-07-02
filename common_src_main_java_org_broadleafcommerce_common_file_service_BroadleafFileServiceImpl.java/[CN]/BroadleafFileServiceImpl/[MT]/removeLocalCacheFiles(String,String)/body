@@ -1,0 +1,25 @@
+{
+  String systemResourcePath=FilenameUtils.separatorsToSystem(resourceName);
+  String filePath=FilenameUtils.normalize(baseDirectory + File.separator + systemResourcePath);
+  if (filePath.contains(".")) {
+    filePath=filePath.substring(0,filePath.lastIndexOf("."));
+  }
+  filePath+="---";
+  final String checkPath=filePath;
+  File dir=new File(baseDirectory);
+  File[] children=dir.listFiles(new FileFilter(){
+    @Override public boolean accept(    File pathname){
+      String name=pathname.getAbsolutePath();
+      return name.startsWith(checkPath);
+    }
+  }
+);
+  for (  File cache : children) {
+    try {
+      cache.delete();
+    }
+ catch (    Exception e) {
+      LOG.warn(String.format("Unable to delete an asset cache file from the local filesystem (%s)",cache.getAbsolutePath()),e);
+    }
+  }
+}
