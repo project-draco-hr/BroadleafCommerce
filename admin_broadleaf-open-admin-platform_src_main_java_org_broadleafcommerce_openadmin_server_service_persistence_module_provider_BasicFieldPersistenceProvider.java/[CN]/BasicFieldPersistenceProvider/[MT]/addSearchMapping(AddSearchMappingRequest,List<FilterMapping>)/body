@@ -16,7 +16,7 @@
   }
   BasicFieldMetadata metadata=(BasicFieldMetadata)addSearchMappingRequest.getMergedProperties().get(addSearchMappingRequest.getPropertyName());
   FilterAndSortCriteria fasc=addSearchMappingRequest.getRequestedCto().get(addSearchMappingRequest.getPropertyName());
-  FilterMapping filterMapping=new FilterMapping().withInheritedFromClass(clazz).withFullPropertyName(addSearchMappingRequest.getPropertyName()).withFilterValues(fasc.getFilterValues()).withSortDirection(fasc.getSortDirection());
+  FilterMapping filterMapping=new FilterMapping().withInheritedFromClass(clazz).withFullPropertyName(addSearchMappingRequest.getPropertyName()).withFilterValues(fasc.getFilterValues()).withSortDirection(fasc.getSortDirection()).withOrder(fasc.getOrder());
   filterMappings.add(filterMapping);
   if (fasc.hasSpecialFilterValue()) {
     filterMapping.setDirectFilterValues(new EmptyFilterValues());
