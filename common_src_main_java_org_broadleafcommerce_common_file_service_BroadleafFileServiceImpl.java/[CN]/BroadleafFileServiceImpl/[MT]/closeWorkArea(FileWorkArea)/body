@@ -1,17 +1,12 @@
 {
   File tempDirectory=new File(fwArea.getFilePathLocation());
-  try {
-    if (tempDirectory.exists()) {
-      FileUtils.deleteDirectory(tempDirectory);
-    }
-    for (int i=1; i < maxGeneratedDirectoryDepth; i++) {
-      tempDirectory=tempDirectory.getParentFile();
-      if (tempDirectory.list().length == 0 && tempDirectory.exists()) {
-        FileUtils.deleteDirectory(tempDirectory);
-      }
-    }
+  if (tempDirectory.exists()) {
+    FileUtils.deleteQuietly(tempDirectory);
   }
- catch (  IOException ioe) {
-    throw new FileServiceException("Unable to delete temporary working directory for " + tempDirectory,ioe);
+  for (int i=0; i < maxGeneratedDirectoryDepth; i++) {
+    tempDirectory=tempDirectory.getParentFile();
+    if (!tempDirectory.delete()) {
+      break;
+    }
   }
 }

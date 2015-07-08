@@ -4,40 +4,7 @@
   if (responseDTO.getShipTo() != null && shippableFulfillmentGroup != null) {
     shippingAddress=addressService.create();
     AddressDTO<PaymentResponseDTO> shipToDTO=responseDTO.getShipTo();
-    shippingAddress.setFirstName(shipToDTO.getAddressFirstName());
-    shippingAddress.setLastName(shipToDTO.getAddressLastName());
-    shippingAddress.setAddressLine1(shipToDTO.getAddressLine1());
-    shippingAddress.setAddressLine2(shipToDTO.getAddressLine2());
-    shippingAddress.setCity(shipToDTO.getAddressCityLocality());
-    State state=null;
-    if (shipToDTO.getAddressStateRegion() != null) {
-      state=stateService.findStateByAbbreviation(shipToDTO.getAddressStateRegion());
-    }
-    if (state == null) {
-      LOG.warn("The given state from the response: " + shipToDTO.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
-    }
-    shippingAddress.setState(state);
-    shippingAddress.setStateProvinceRegion(shipToDTO.getAddressStateRegion());
-    shippingAddress.setPostalCode(shipToDTO.getAddressPostalCode());
-    Country country=null;
-    ISOCountry isoCountry=null;
-    if (shipToDTO.getAddressCountryCode() != null) {
-      country=countryService.findCountryByAbbreviation(shipToDTO.getAddressCountryCode());
-      isoCountry=isoService.findISOCountryByAlpha2Code(shipToDTO.getAddressCountryCode());
-    }
-    if (country == null) {
-      LOG.warn("The given country from the response: " + shipToDTO.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
-    }
- else     if (isoCountry == null) {
-      LOG.error("The given country from the response: " + shipToDTO.getAddressCountryCode() + " could not be found"+ " as a country alpha-2 code in BLC_ISO_COUNTRY");
-    }
-    shippingAddress.setCountry(country);
-    shippingAddress.setIsoCountryAlpha2(isoCountry);
-    if (shipToDTO.getAddressPhone() != null) {
-      Phone shippingPhone=phoneService.create();
-      shippingPhone.setPhoneNumber(shipToDTO.getAddressPhone());
-      shippingAddress.setPhonePrimary(shippingPhone);
-    }
+    populateAddressInfo(shippingAddress,shipToDTO);
     shippableFulfillmentGroup=fulfillmentGroupService.findFulfillmentGroupById(shippableFulfillmentGroup.getId());
     if (shippableFulfillmentGroup != null) {
       shippableFulfillmentGroup.setAddress(shippingAddress);

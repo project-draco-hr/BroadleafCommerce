@@ -1,3 +1,8 @@
 {
-  return selectFileServiceProvider().removeResource(resourceName);
+  boolean response=selectFileServiceProvider().removeResource(resourceName);
+  String baseDirectory=getBaseDirectory(true);
+  removeLocalCacheFiles(resourceName,baseDirectory);
+  baseDirectory=getBaseDirectory(false);
+  removeLocalCacheFiles(resourceName,baseDirectory);
+  return response;
 }
