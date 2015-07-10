@@ -10,18 +10,7 @@
   }
   Node[] filtered={};
   filtered=filterList.toArray(filtered);
-  Comparator<Node> idCompare=new Comparator<Node>(){
-    public int compare(    Node arg0,    Node arg1){
-      Node id1=arg0.getAttributes().getNamedItem(attribute);
-      Node id2=arg1.getAttributes().getNamedItem(attribute);
-      String idVal1=id1.getNodeValue();
-      String idVal2=id2.getNodeValue();
-      return idVal1.compareTo(idVal2);
-    }
-  }
-;
-  Arrays.sort(filtered,idCompare);
-  int pos=Arrays.binarySearch(filtered,testNode,idCompare);
+  int pos=NodeUtil.findNode(filtered,testNode,attribute,true);
   if (pos >= 0) {
     Node newNode=filtered[pos].getOwnerDocument().importNode(testNode.cloneNode(true),true);
     filtered[pos].getParentNode().replaceChild(newNode,filtered[pos]);

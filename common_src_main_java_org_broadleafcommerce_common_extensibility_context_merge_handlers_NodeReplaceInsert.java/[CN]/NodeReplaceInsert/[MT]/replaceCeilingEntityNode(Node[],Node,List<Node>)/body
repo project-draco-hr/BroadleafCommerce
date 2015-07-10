@@ -1,0 +1,24 @@
+{
+  if (testNode.getAttributes().getNamedItem(CEILING_ENTITY) == null) {
+    return false;
+  }
+  ArrayList<Node> filterList=new ArrayList<Node>();
+  for (int j=0; j < primaryNodes.length; j++) {
+    if (primaryNodes[j].getAttributes().getNamedItem(CEILING_ENTITY) != null) {
+      filterList.add(primaryNodes[j]);
+    }
+  }
+  Node[] filtered={};
+  filtered=filterList.toArray(filtered);
+  int pos=NodeUtil.findNode(filtered,testNode,CEILING_ENTITY,true);
+  if (pos >= 0) {
+    Node foundNode=filtered[pos];
+    Node targetNode=foundNode.getOwnerDocument().importNode(foundNode.cloneNode(false),false);
+    Node newTestNode=foundNode.getOwnerDocument().importNode(testNode.cloneNode(true),true);
+    NodeUtil.mergeNodeLists(targetNode,foundNode.getChildNodes(),newTestNode.getChildNodes(),"name");
+    foundNode.getParentNode().replaceChild(targetNode,foundNode);
+    usedNodes.add(testNode);
+    return true;
+  }
+  return false;
+}
