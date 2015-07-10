@@ -2,14 +2,7 @@
   if (testNode.getAttributes().getNamedItem(CEILING_ENTITY) == null) {
     return false;
   }
-  ArrayList<Node> filterList=new ArrayList<Node>();
-  for (int j=0; j < primaryNodes.length; j++) {
-    if (primaryNodes[j].getAttributes().getNamedItem(CEILING_ENTITY) != null) {
-      filterList.add(primaryNodes[j]);
-    }
-  }
-  Node[] filtered={};
-  filtered=filterList.toArray(filtered);
+  Node[] filtered=NodeUtil.filterByAttribute(primaryNodes,CEILING_ENTITY);
   int pos=NodeUtil.findNode(filtered,testNode,CEILING_ENTITY,true);
   if (pos >= 0) {
     Node foundNode=filtered[pos];
