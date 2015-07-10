@@ -67,7 +67,7 @@ format.setParseBigDecimal(true);
  else if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
 Double val=populateValueRequest.getDataFormatProvider().getDecimalFormatter().parse(populateValueRequest.getRequestedValue()).doubleValue();
 dirty=checkDirtyState(populateValueRequest,instance,val);
-LOG.warn("The requested Money field is of type double and could result in a loss of precision." + " Broadleaf recommends that the type of all Money fields are 'BigDecimal' in order to avoid" + " this loss of precision that could occur.");
+LOG.warn("The requested Money field is of type double and could result in a loss of precision." + " Broadleaf recommends that the type of all Money fields be 'BigDecimal' in order to avoid" + " this loss of precision that could occur.");
 populateValueRequest.getFieldManager().setFieldValue(instance,populateValueRequest.getProperty().getName(),val);
 }
  else {
