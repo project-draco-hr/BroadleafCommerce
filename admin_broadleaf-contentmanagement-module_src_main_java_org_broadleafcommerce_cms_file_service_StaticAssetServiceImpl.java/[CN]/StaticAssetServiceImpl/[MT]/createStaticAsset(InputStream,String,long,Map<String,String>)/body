@@ -3,21 +3,27 @@
     properties=new HashMap<String,String>();
   }
   String fullUrl=buildAssetURL(properties,fileName);
+  StringBuilder urlBuilder=new StringBuilder();
+  urlBuilder.append(fullUrl);
+  ExtensionResultStatusType resultStatusType=staticAssetExtensionManager.getProxy().modifyDuplicateAssetURL(urlBuilder);
+  fullUrl=urlBuilder.toString();
   StaticAsset newAsset=staticAssetDao.readStaticAssetByFullUrl(fullUrl);
-  int count=0;
-  while (newAsset != null) {
-    count++;
-    if (fullUrl.contains("-1")) {
-      fullUrl=fullUrl.replace("-1","");
+  if (resultStatusType != ExtensionResultStatusType.HANDLED) {
+    int count=0;
+    while (newAsset != null) {
       count++;
+      if (fullUrl.contains("-1")) {
+        fullUrl=fullUrl.replace("-1","");
+        count++;
+      }
+      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false));
+      if (newAsset == null) {
+        newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true));
+      }
     }
-    newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false));
-    if (newAsset == null) {
-      newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true));
+    if (count > 0) {
+      fullUrl=getCountUrl(fullUrl,count,false);
     }
-  }
-  if (count > 0) {
-    fullUrl=getCountUrl(fullUrl,count,false);
   }
   try {
     ImageMetadata metadata=imageArtifactProcessor.getImageMetadata(inputStream);
