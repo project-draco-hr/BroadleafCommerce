@@ -6,7 +6,7 @@
   Map<String,String[]> params=new HashMap<String,String[]>(request.getParameterMap());
   Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
   SearchFacetDTO facet=(SearchFacetDTO)expression.execute(arguments.getConfiguration(),arguments);
-  String key=facet.getFacet().getField().getAbbreviation();
+  String key=searchFacetDTOService.getUrlKey(facet);
   params.remove(key);
   params.remove(SearchCriteria.PAGE_NUMBER);
   String url=ProcessorUtils.getUrl(baseUrl,params);
