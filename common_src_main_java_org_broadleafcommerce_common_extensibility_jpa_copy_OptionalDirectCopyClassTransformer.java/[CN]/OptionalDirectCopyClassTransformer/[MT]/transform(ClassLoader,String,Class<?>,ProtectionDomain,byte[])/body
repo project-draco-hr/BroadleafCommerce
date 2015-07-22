@@ -1,0 +1,14 @@
+{
+  Boolean shouldProceed;
+  try {
+    String value=beanFactory.resolveEmbeddedValue("${" + propertyName + ":false}");
+    shouldProceed=Boolean.parseBoolean(value);
+  }
+ catch (  Exception e) {
+    shouldProceed=false;
+  }
+  if (!shouldProceed) {
+    return null;
+  }
+  return super.transform(loader,className,classBeingRedefined,protectionDomain,classfileBuffer);
+}
