@@ -1,21 +1,12 @@
 {
-  if (!alreadyRun) {
-    alreadyRun=true;
-    LOGGER.support("Converting hibernate.hbm2ddl.import_files sql statements for compatibility with SQL Server");
-  }
-  String[] statements=super.extractCommands(reader);
   for (int j=0; j < statements.length; j++) {
     statements[j]=statements[j].replaceAll(BOOLEANTRUEMATCH + "\\s*[,]",TRUE + ",");
     statements[j]=statements[j].replaceAll(BOOLEANFALSEMATCH + "\\s*[,]",FALSE + ",");
-    statements[j]=statements[j].replaceAll(TIMESTAMPMATCH + "\\s*[,]",CURRENT_TIMESTAMP + ",");
     statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANTRUEMATCH + "\\s*[,]","," + TRUE + ",");
     statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANFALSEMATCH + "\\s*[,]","," + FALSE + ",");
-    statements[j]=statements[j].replaceAll("[,]\\s*" + TIMESTAMPMATCH + "\\s*[,]","," + CURRENT_TIMESTAMP + ",");
     statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANTRUEMATCH,"," + TRUE);
     statements[j]=statements[j].replaceAll("[,]\\s*" + BOOLEANFALSEMATCH,"," + FALSE);
-    statements[j]=statements[j].replaceAll("[,]\\s*" + TIMESTAMPMATCH,"," + CURRENT_TIMESTAMP);
     statements[j]=statements[j].replaceAll("[=]\\s*" + BOOLEANTRUEMATCH,"=" + TRUE);
     statements[j]=statements[j].replaceAll("[=]\\s*" + BOOLEANFALSEMATCH,"=" + FALSE);
   }
-  return statements;
 }
