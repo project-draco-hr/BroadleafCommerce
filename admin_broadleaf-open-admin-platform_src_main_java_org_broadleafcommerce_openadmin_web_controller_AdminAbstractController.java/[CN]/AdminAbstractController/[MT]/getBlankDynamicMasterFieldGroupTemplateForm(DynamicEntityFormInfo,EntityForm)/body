@@ -1,0 +1,17 @@
+{
+  EntityForm dynamicForm=getEntityForm(info,dynamicFormOverride);
+  dynamicForm.clearFieldsMap();
+  for (  Tab tab : dynamicForm.getTabs()) {
+    for (    FieldGroup group : tab.getFieldGroups()) {
+      for (      Field field : group.getFields()) {
+        if (field.isMasterField()) {
+          field.setName(info.getPropertyName() + DynamicEntityFormInfo.FIELD_SEPARATOR + field.getName());
+        }
+ else {
+          group.removeField(field);
+        }
+      }
+    }
+  }
+  return dynamicForm;
+}

@@ -1,0 +1,16 @@
+{
+  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(info.getCeilingClassName()).withSecurityCeilingEntityClassname(info.getSecurityCeilingClassName()).withCustomCriteria(new String[]{info.getCriteriaName(),null,info.getPropertyName(),info.getPropertyValue()});
+  ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
+  EntityForm dynamicForm=formService.createEntityForm(cmd,null);
+  dynamicForm.clearFieldsMap();
+  if (dynamicFormOverride != null) {
+    dynamicFormOverride.clearFieldsMap();
+    Map<String,Field> fieldOverrides=dynamicFormOverride.getFields();
+    for (    Entry<String,Field> override : fieldOverrides.entrySet()) {
+      if (dynamicForm.getFields().containsKey(override.getKey())) {
+        dynamicForm.getFields().get(override.getKey()).setValue(override.getValue().getValue());
+      }
+    }
+  }
+  return dynamicForm;
+}

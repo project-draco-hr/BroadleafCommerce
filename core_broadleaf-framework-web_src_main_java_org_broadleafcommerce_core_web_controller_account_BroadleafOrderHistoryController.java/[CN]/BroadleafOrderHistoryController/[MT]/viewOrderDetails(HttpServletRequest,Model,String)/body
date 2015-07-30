@@ -3,6 +3,7 @@
   if (order == null) {
     throw new IllegalArgumentException("The orderNumber provided is not valid");
   }
+  validateCustomerOwnedData(order);
   model.addAttribute("order",order);
   return isAjaxRequest(request) ? getOrderDetailsView() : getOrderDetailsRedirectView();
 }

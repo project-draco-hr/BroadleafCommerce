@@ -1,7 +1,29 @@
 {
   for (  OrderPayment payment : order.getPayments()) {
-    if (payment.isActive() && PaymentType.CREDIT_CARD.equals(payment.getType())) {
-      populateBillTo(requestDTO,payment);
+    if (payment.isActive()) {
+      Address billAddress=payment.getBillingAddress();
+      if (billAddress != null) {
+        String stateAbbr=null;
+        String countryAbbr=null;
+        String phone=null;
+        if (StringUtils.isNotBlank(billAddress.getStateProvinceRegion())) {
+          stateAbbr=billAddress.getStateProvinceRegion();
+        }
+ else         if (billAddress.getState() != null) {
+          stateAbbr=billAddress.getState().getAbbreviation();
+        }
+        if (billAddress.getIsoCountryAlpha2() != null) {
+          countryAbbr=billAddress.getIsoCountryAlpha2().getAlpha2();
+        }
+ else         if (billAddress.getCountry() != null) {
+          countryAbbr=billAddress.getCountry().getAbbreviation();
+        }
+        if (billAddress.getPhonePrimary() != null) {
+          phone=billAddress.getPhonePrimary().getPhoneNumber();
+        }
+        NameResponse name=getName(billAddress);
+        requestDTO.billTo().addressFirstName(name.firstName).addressLastName(name.lastName).addressCompanyName(billAddress.getCompanyName()).addressLine1(billAddress.getAddressLine1()).addressLine2(billAddress.getAddressLine2()).addressCityLocality(billAddress.getCity()).addressStateRegion(stateAbbr).addressPostalCode(billAddress.getPostalCode()).addressCountryCode(countryAbbr).addressPhone(phone).addressEmail(billAddress.getEmailAddress());
+      }
     }
   }
 }

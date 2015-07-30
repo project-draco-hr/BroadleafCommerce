@@ -19,21 +19,21 @@
           }
           PaymentGatewayConfigurationService cfg=paymentConfigurationServiceProvider.getGatewayConfigurationService(tx.getOrderPayment().getGatewayType());
           PaymentResponseDTO responseDTO=null;
+          PaymentRequestDTO confirmationRequest=orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx);
+          populateBillingAddressOnRequest(confirmationRequest,payment);
+          populateCustomerOnRequest(confirmationRequest,payment);
+          populateShippingAddressOnRequest(confirmationRequest,payment);
           if (PaymentType.CREDIT_CARD.equals(payment.getType())) {
-            PaymentRequestDTO s2sRequest=orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx);
-            populateCreditCardOnRequest(s2sRequest,payment);
-            populateBillingAddressOnRequest(s2sRequest,payment);
-            populateCustomerOnRequest(s2sRequest,payment);
-            populateShippingAddressOnRequest(s2sRequest,payment);
+            populateCreditCardOnRequest(confirmationRequest,payment);
             if (cfg.getConfiguration().isPerformAuthorizeAndCapture()) {
-              responseDTO=cfg.getTransactionService().authorizeAndCapture(s2sRequest);
+              responseDTO=cfg.getTransactionService().authorizeAndCapture(confirmationRequest);
             }
  else {
-              responseDTO=cfg.getTransactionService().authorize(s2sRequest);
+              responseDTO=cfg.getTransactionService().authorize(confirmationRequest);
             }
           }
  else {
-            responseDTO=cfg.getTransactionConfirmationService().confirmTransaction(orderToPaymentRequestService.translatePaymentTransaction(payment.getAmount(),tx));
+            responseDTO=cfg.getTransactionConfirmationService().confirmTransaction(confirmationRequest);
           }
           if (responseDTO == null) {
             String msg="Unable to Confirm/Authorize the UNCONFIRMED Transaction with id: " + tx.getId() + ". "+ "The ResponseDTO returned from the Gateway was null. Please check your implementation";

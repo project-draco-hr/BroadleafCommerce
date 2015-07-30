@@ -1,5 +1,11 @@
 {
-  boolean dirty=!checkEquality(newMedia.getAltText(),media.getAltText());
+  boolean dirty=(newMedia == null && media != null) || (newMedia != null && media == null);
+  if (newMedia == null && media == null) {
+    return false;
+  }
+  if (!dirty) {
+    dirty=!checkEquality(newMedia.getAltText(),media.getAltText());
+  }
   if (!dirty) {
     dirty=!checkEquality(newMedia.getTags(),media.getTags());
   }

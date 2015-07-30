@@ -21,6 +21,20 @@
   fieldName.setValue(form.getPropertyName());
   entityForm.getFields().put("entityType",entityType);
   entityForm.getFields().put("fieldName",fieldName);
-  service.addEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
-  return viewTranslation(request,response,model,form,result);
+  Entity entity=service.addEntity(entityForm,getSectionCustomCriteria(),sectionCrumbs).getEntity();
+  entityFormValidator.validate(entityForm,entity,result);
+  if (result.hasErrors()) {
+    entityForm.setPreventSubmit();
+    String jsErrorMap=resultToJS(result);
+    entityForm.setJsErrorMap(jsErrorMap);
+    model.addAttribute("entity",entity);
+    model.addAttribute("entityForm",entityForm);
+    model.addAttribute("viewType","modal/translationAdd");
+    model.addAttribute("currentUrl",request.getRequestURL().toString());
+    model.addAttribute("modalHeaderType","addTranslation");
+    return "modules/modalContainer";
+  }
+ else {
+    return viewTranslation(request,response,model,form,result);
+  }
 }

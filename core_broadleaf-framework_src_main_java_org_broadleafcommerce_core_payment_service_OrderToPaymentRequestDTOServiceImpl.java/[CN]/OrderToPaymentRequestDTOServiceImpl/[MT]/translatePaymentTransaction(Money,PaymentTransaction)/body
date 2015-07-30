@@ -1,6 +1,13 @@
 {
   PaymentRequestDTO requestDTO=new PaymentRequestDTO().transactionTotal(transactionAmount.getAmount().toPlainString()).orderSubtotal(transactionAmount.getAmount().toPlainString()).shippingTotal(ZERO_TOTAL).taxTotal(ZERO_TOTAL).orderCurrencyCode(paymentTransaction.getOrderPayment().getCurrency().getCurrencyCode()).orderId(paymentTransaction.getOrderPayment().getOrder().getId().toString());
-  populateBillTo(requestDTO,paymentTransaction.getOrderPayment());
+  Order order=paymentTransaction.getOrderPayment().getOrder();
+  populateCustomerInfo(order,requestDTO);
+  populateShipTo(order,requestDTO);
+  populateBillTo(order,requestDTO);
+  if (PaymentTransactionType.UNCONFIRMED.equals(paymentTransaction.getType())) {
+    populateTotals(order,requestDTO);
+    populateDefaultLineItemsAndSubtotal(order,requestDTO);
+  }
   Map<String,String> additionalFields=paymentTransaction.getAdditionalFields();
   CustomerPayment customerPayment=paymentTransaction.getOrderPayment().getCustomerPayment();
   if (customerPayment != null && customerPayment.getPaymentToken() != null) {

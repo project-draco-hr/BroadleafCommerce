@@ -1,0 +1,37 @@
+{
+  address.setFirstName(dto.getAddressFirstName());
+  address.setLastName(dto.getAddressLastName());
+  address.setFullName(dto.getAddressFirstName() + " " + dto.getAddressLastName());
+  address.setAddressLine1(dto.getAddressLine1());
+  address.setAddressLine2(dto.getAddressLine2());
+  address.setCity(dto.getAddressCityLocality());
+  State state=null;
+  if (dto.getAddressStateRegion() != null) {
+    state=stateService.findStateByAbbreviation(dto.getAddressStateRegion());
+  }
+  if (state == null) {
+    LOG.warn("The given state from the response: " + dto.getAddressStateRegion() + " could not be found"+ " as a state abbreviation in BLC_STATE");
+  }
+  address.setState(state);
+  address.setStateProvinceRegion(dto.getAddressStateRegion());
+  address.setPostalCode(dto.getAddressPostalCode());
+  Country country=null;
+  ISOCountry isoCountry=null;
+  if (dto.getAddressCountryCode() != null) {
+    country=countryService.findCountryByAbbreviation(dto.getAddressCountryCode());
+    isoCountry=isoService.findISOCountryByAlpha2Code(dto.getAddressCountryCode());
+  }
+  if (country == null) {
+    LOG.warn("The given country from the response: " + dto.getAddressCountryCode() + " could not be found"+ " as a country abbreviation in BLC_COUNTRY");
+  }
+ else   if (isoCountry == null) {
+    LOG.error("The given country from the response: " + dto.getAddressCountryCode() + " could not be found"+ " as a country alpha-2 code in BLC_ISO_COUNTRY");
+  }
+  address.setCountry(country);
+  address.setIsoCountryAlpha2(isoCountry);
+  if (dto.getAddressPhone() != null) {
+    Phone billingPhone=phoneService.create();
+    billingPhone.setPhoneNumber(dto.getAddressPhone());
+    address.setPhonePrimary(billingPhone);
+  }
+}

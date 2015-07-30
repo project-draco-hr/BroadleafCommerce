@@ -1,0 +1,20 @@
+{
+  StringBuffer sb=new StringBuffer("[");
+  List<ObjectError> errors=result.getAllErrors();
+  for (  ObjectError objectError : errors) {
+    if (objectError instanceof FieldError) {
+      FieldError ferr=(FieldError)objectError;
+      sb.append("{");
+      String fieldOnly=StringUtil.extractFieldNameFromExpression(ferr.getField());
+      sb.append("\"").append(fieldOnly).append("\":");
+      String localizedMessage=BLCMessageUtils.getMessage(ferr.getDefaultMessage());
+      sb.append("\"").append(localizedMessage).append("\"");
+      sb.append("},");
+    }
+  }
+  if (sb.length() > 1) {
+    sb.deleteCharAt(sb.length() - 1);
+  }
+  sb.append("]");
+  return sb.toString();
+}
