@@ -1,4 +1,19 @@
 {
+  boolean legacy=parentCategoryLegacyModeService.isLegacyMode();
+  if (!legacy) {
+    FilterAndSortCriteria fsc=cto.getCriteriaMap().get("defaultCategory");
+    if (fsc != null) {
+      List<String> filterValues=fsc.getFilterValues();
+      cto.getCriteriaMap().remove("defaultCategory");
+      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("allParentCategoryXrefs.category.id")).withDirectFilterValues(filterValues).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+        @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path explicitPath,        List directValues){
+          return explicitPath.as(Long.class).in(directValues);
+        }
+      }
+));
+      cto.getAdditionalFilterMappings().add(filterMapping);
+    }
+  }
   cto.getNonCountAdditionalFilterMappings().add(new FilterMapping().withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
     public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path explicitPath,    List directValues){
       root.fetch("defaultSku",JoinType.LEFT);
