@@ -13,6 +13,7 @@
           List<Predicate> subRestrictions=new ArrayList<Predicate>();
           subRestrictions.add(builder.equal(subRoot.get("defaultReference"),Boolean.TRUE));
           subRestrictions.add(subRoot.get("category").get("id").in(directValues));
+          QueryUtils.notArchived(builder,subRestrictions,subRoot.get("category"),"archiveStatus");
           sub.where(subRestrictions.toArray(new Predicate[subRestrictions.size()]));
           return explicitPath.in(sub);
         }
