@@ -4,21 +4,29 @@
     LOG.warn("No customer was found on the current request, no cart will be added to the current request. Ensure that the" + " blCustomerStateFilter occurs prior to the blCartStateFilter");
     return;
   }
-  Order cart=getOverrideCart(request);
-  if (cart == null && mergeCartNeeded(customer,request)) {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("Merge cart required, calling mergeCart " + customer.getId());
-    }
-    cart=mergeCart(customer,request);
-  }
- else   if (cart == null) {
-    cart=orderService.findCartForCustomer(customer);
-  }
-  if (cart == null) {
-    cart=orderService.getNullOrder();
+  ExtensionResultHolder<Order> erh=new ExtensionResultHolder<Order>();
+  extensionManager.getProxy().lookupOrCreateCart(erh);
+  Order cart;
+  if (erh.getResult() != null) {
+    cart=erh.getResult();
   }
  else {
-    updateCartService.updateAndValidateCart(cart);
+    cart=getOverrideCart(request);
+    if (cart == null && mergeCartNeeded(customer,request)) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Merge cart required, calling mergeCart " + customer.getId());
+      }
+      cart=mergeCart(customer,request);
+    }
+ else     if (cart == null) {
+      cart=orderService.findCartForCustomer(customer);
+    }
+    if (cart == null) {
+      cart=orderService.getNullOrder();
+    }
+ else {
+      updateCartService.updateAndValidateCart(cart);
+    }
   }
   request.setAttribute(cartRequestAttributeName,cart,WebRequest.SCOPE_REQUEST);
   @SuppressWarnings("unchecked") Map<String,Object> ruleMap=(Map<String,Object>)request.getAttribute(BLC_RULE_MAP_PARAM,WebRequest.SCOPE_REQUEST);
