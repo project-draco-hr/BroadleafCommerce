@@ -1,0 +1,11 @@
+{
+  Long categoryId=ServletRequestUtils.getLongParameter(context.getRequest(),"categoryId");
+  if (categoryId != null) {
+    Category category=catalogService.findCategoryById(categoryId);
+    if (category != null && LOG.isDebugEnabled()) {
+      LOG.debug("Obtained the category using ID=" + categoryId);
+    }
+    return category;
+  }
+  return null;
+}
