@@ -1,0 +1,9 @@
+{
+  Date now=new Date();
+  Path<Date> activeStartDate=datesPath.<Date>get(startDateFieldName);
+  Path<Date> activeEndDate=datesPath.<Date>get(endDateFieldName);
+  restrictions.add(builder.isNotNull(activeStartDate));
+  restrictions.add(builder.lessThanOrEqualTo(activeStartDate,now));
+  Predicate notExpired=builder.or(builder.isNull(activeEndDate),builder.greaterThan(activeEndDate,now));
+  restrictions.add(notExpired);
+}
