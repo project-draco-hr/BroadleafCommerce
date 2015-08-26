@@ -1,8 +1,13 @@
 {
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getRequestURIWithoutContext() != null) {
-    String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
-    Category category=catalogService.findCategoryByURI(requestUri);
+  if (context != null) {
+    Category category=null;
+    if (allowCategoryResolutionUsingIdParam()) {
+      category=findCategoryUsingIdParam(context);
+    }
+    if (category == null) {
+      category=findCategoryUsingUrl(context);
+    }
     if (category != null) {
       context.getRequest().setAttribute(CURRENT_CATEGORY_ATTRIBUTE_NAME,category);
       return controllerName;

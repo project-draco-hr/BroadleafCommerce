@@ -1,0 +1,8 @@
+{
+  String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
+  Category category=catalogService.findCategoryByURI(requestUri);
+  if (category != null && LOG.isDebugEnabled()) {
+    LOG.debug("Obtained the category using URI=" + requestUri);
+  }
+  return category;
+}
