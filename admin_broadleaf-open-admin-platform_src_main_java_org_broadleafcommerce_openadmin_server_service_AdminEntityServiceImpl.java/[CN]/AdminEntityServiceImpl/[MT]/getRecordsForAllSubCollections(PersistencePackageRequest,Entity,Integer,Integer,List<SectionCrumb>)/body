@@ -1,0 +1,12 @@
+{
+  Map<String,DynamicResultSet> map=new HashMap<String,DynamicResultSet>();
+  PersistenceResponse response=getClassMetadata(ppr);
+  ClassMetadata cmd=response.getDynamicResultSet().getClassMetaData();
+  for (  Property p : cmd.getProperties()) {
+    if (ArrayUtils.contains(p.getMetadata().getAvailableToTypes(),containingEntity.getType()[0]) && p.getMetadata() instanceof CollectionMetadata) {
+      PersistenceResponse response2=getRecordsForCollection(cmd,containingEntity,p,null,startIndex,maxIndex,sectionCrumb);
+      map.put(p.getName(),response2.getDynamicResultSet());
+    }
+  }
+  return map;
+}
