@@ -1,0 +1,14 @@
+{
+  Object result=expression.execute(arguments.getConfiguration(),arguments);
+  String currentUrl=request.getRequestURI();
+  if (request.getQueryString() != null) {
+    currentUrl=currentUrl + "?" + request.getQueryString();
+  }
+  if (result instanceof Product) {
+    return catalogURLService.buildRelativeProductURL(currentUrl,(Product)result);
+  }
+ else   if (result instanceof Category) {
+    return catalogURLService.buildRelativeCategoryURL(currentUrl,(Category)result);
+  }
+  return "";
+}
