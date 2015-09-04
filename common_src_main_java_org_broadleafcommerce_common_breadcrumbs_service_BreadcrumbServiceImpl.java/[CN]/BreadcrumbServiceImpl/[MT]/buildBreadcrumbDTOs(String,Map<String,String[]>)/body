@@ -1,0 +1,10 @@
+{
+  List<BreadcrumbDTO> dtos=new ArrayList<BreadcrumbDTO>();
+  if (extensionManager != null) {
+    ExtensionResultHolder<List<BreadcrumbDTO>> holder=new ExtensionResultHolder<List<BreadcrumbDTO>>();
+    holder.setResult(dtos);
+    extensionManager.getProxy().modifyBreadcrumbList(baseUrl,params,holder);
+    dtos=holder.getResult();
+  }
+  return dtos;
+}

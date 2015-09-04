@@ -1,0 +1,12 @@
+{
+  Map<String,Object> contextMap=holder.getContextMap();
+  if (params != null && params.containsKey(getProductIdParam())) {
+    params.remove(getProductIdParam());
+    contextMap.put(BreadcrumbServiceExtensionManager.CONTEXT_PARAM_STRIPPED_PARAMS,params);
+  }
+  int pos=origUrl.lastIndexOf("/");
+  if (pos > 0) {
+    String newUrl=origUrl.substring(0,pos);
+    contextMap.put(BreadcrumbServiceExtensionManager.CONTEXT_PARAM_STRIPPED_URL,newUrl);
+  }
+}

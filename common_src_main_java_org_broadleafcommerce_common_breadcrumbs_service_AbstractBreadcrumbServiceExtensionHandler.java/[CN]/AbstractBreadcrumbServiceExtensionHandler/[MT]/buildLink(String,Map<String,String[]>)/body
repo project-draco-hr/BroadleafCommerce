@@ -1,0 +1,19 @@
+{
+  URIBuilder builder;
+  try {
+    builder=new URIBuilder(url);
+    if (params != null) {
+      for (      String key : params.keySet()) {
+        String[] paramValues=params.get(key);
+        for (        String value : paramValues) {
+          builder.addParameter(key,value);
+        }
+      }
+    }
+    return builder.build().toString();
+  }
+ catch (  URISyntaxException e) {
+    LOG.error("Error creating link for breadcrumb ",e);
+    return url;
+  }
+}

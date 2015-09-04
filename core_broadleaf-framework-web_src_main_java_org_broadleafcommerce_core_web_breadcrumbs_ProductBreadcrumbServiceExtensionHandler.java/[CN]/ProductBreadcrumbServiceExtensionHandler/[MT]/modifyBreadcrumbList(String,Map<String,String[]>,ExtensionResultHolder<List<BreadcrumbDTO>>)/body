@@ -1,0 +1,12 @@
+{
+  Product product=determineProduct(url,params,holder);
+  if (product != null) {
+    BreadcrumbDTO productDto=new BreadcrumbDTO();
+    productDto.setText(getNameForProductLink(product));
+    productDto.setLink(buildLink(url,params));
+    productDto.setType(BreadcrumbDTOType.PRODUCT);
+    holder.getResult().add(0,productDto);
+  }
+  updateContextMap(url,params,holder);
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}

@@ -1,0 +1,23 @@
+{
+  String testUrl=(String)holder.getContextMap().get(BreadcrumbServiceExtensionManager.CONTEXT_PARAM_STRIPPED_URL);
+  if (StringUtils.isEmpty(testUrl)) {
+    testUrl=url;
+  }
+  Category category=determineFirstCategory(testUrl,params,holder);
+  if (category != null) {
+    BreadcrumbDTO categoryCrumb=buildCrumbForCategory(category,url,params);
+    BreadcrumbDTO categorySearchCrumb=buildCategorySearchCrumb(category,url,params);
+    List<BreadcrumbDTO> parentCrumbs=new ArrayList<BreadcrumbDTO>();
+    addParentCrumbs(parentCrumbs,category,url,params);
+    if (categorySearchCrumb != null) {
+      holder.getResult().add(0,categorySearchCrumb);
+    }
+    if (categoryCrumb != null) {
+      holder.getResult().add(0,categoryCrumb);
+    }
+    if (!parentCrumbs.isEmpty()) {
+      holder.getResult().addAll(0,parentCrumbs);
+    }
+  }
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}

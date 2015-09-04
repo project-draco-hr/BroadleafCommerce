@@ -1,0 +1,8 @@
+{
+  Category parentCategory=category.getParentCategory();
+  if (parentCategory != null && !parentCrumbs.contains(parentCategory)) {
+    BreadcrumbDTO dto=buildCrumbForCategory(parentCategory,url,params);
+    parentCrumbs.add(0,dto);
+    addParentCrumbs(parentCrumbs,parentCategory,url,params);
+  }
+}
