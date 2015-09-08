@@ -1,0 +1,12 @@
+{
+  String baseUrl=getBaseUrl(arguments,element);
+  Map<String,String[]> params=getParams(arguments,element);
+  List<BreadcrumbDTO> dtos=breadcrumbService.buildBreadcrumbDTOs(baseUrl,params);
+  String resultVar=element.getAttributeValue("resultVar");
+  if (resultVar == null) {
+    resultVar="breadcrumbs";
+  }
+  if (!CollectionUtils.isEmpty(dtos)) {
+    addToModel(arguments,resultVar,dtos);
+  }
+}

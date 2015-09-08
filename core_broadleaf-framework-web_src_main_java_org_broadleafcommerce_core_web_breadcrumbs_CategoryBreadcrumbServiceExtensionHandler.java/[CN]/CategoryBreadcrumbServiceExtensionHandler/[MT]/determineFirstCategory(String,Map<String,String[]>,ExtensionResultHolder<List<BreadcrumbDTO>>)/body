@@ -1,0 +1,16 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  Category returnCategory=null;
+  if (brc != null && brc.getRequest() != null) {
+    if (returnCategory == null) {
+      returnCategory=getMatchingCategoryFromProduct(brc,testUrl,params);
+    }
+    if (returnCategory == null) {
+      returnCategory=getCategoryFromCategoryAttribute(brc,testUrl,params);
+    }
+    if (returnCategory == null) {
+      returnCategory=getCategoryFromUrl(brc,testUrl,params);
+    }
+  }
+  return returnCategory;
+}
