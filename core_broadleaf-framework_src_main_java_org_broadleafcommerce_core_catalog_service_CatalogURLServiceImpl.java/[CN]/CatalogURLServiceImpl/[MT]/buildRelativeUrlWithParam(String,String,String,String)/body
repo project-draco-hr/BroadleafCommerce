@@ -1,0 +1,13 @@
+{
+  try {
+    URIBuilder builder=new URIBuilder(currentUrl);
+    builder.setPath(builder.getPath() + "/" + fragment);
+    if (appendIdToRelativeURI) {
+      builder.setParameter(idParam,String.valueOf(idValue));
+    }
+    return builder.build().toString();
+  }
+ catch (  URISyntaxException e) {
+    return currentUrl;
+  }
+}
