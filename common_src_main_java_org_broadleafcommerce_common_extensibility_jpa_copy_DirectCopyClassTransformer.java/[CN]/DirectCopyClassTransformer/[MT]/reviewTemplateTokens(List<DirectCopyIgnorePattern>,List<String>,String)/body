@@ -1,0 +1,15 @@
+{
+  if (val != null && templateTokens.containsKey(val)) {
+    templateCheck: {
+      for (      DirectCopyIgnorePattern matchedPattern : matchedPatterns) {
+        for (        String ignoreToken : matchedPattern.getTemplateTokenPatterns()) {
+          if (val.matches(ignoreToken)) {
+            break templateCheck;
+          }
+        }
+      }
+      String[] templateVals=templateTokens.get(val).split(",");
+      templates.addAll(Arrays.asList(templateVals));
+    }
+  }
+}
