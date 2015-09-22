@@ -1,0 +1,14 @@
+{
+  String keyword=getSearchKeyword(url,params);
+  url=getBreadcrumbUrl(url,holder);
+  params=getBreadcrumbParams(params,holder);
+  if (!StringUtils.isEmpty(keyword)) {
+    BreadcrumbDTO searchDto=new BreadcrumbDTO();
+    searchDto.setText(keyword);
+    searchDto.setLink(buildLink(url,params));
+    searchDto.setType(BreadcrumbDTOType.SEARCH);
+    holder.getResult().add(0,searchDto);
+    updateContextMap(params,holder);
+  }
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}

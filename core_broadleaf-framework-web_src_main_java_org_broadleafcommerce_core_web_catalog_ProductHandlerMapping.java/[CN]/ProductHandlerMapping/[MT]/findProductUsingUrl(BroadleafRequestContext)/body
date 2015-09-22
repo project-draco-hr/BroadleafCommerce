@@ -1,0 +1,8 @@
+{
+  String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
+  Product product=catalogService.findProductByURI(requestUri);
+  if (product != null && LOG.isDebugEnabled()) {
+    LOG.debug("Obtained the product using URI=" + requestUri);
+  }
+  return product;
+}

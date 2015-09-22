@@ -1,0 +1,8 @@
+{
+  Expression expression=(Expression)StandardExpressions.getExpressionParser(arguments.getConfiguration()).parseExpression(arguments.getConfiguration(),arguments,element.getAttributeValue(attributeName));
+  HttpServletRequest request=BroadleafRequestContext.getBroadleafRequestContext().getRequest();
+  String relativeHref=buildRelativeHref(expression,arguments,request);
+  Map<String,String> attrs=new HashMap<String,String>();
+  attrs.put(HREF,relativeHref);
+  return attrs;
+}

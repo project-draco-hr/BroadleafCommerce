@@ -1,0 +1,11 @@
+{
+  BroadleafRequestContext brc=BroadleafRequestContext.getBroadleafRequestContext();
+  String currentUrl="";
+  if (brc != null && brc.getRequest() != null) {
+    currentUrl=brc.getRequest().getRequestURI();
+    if (!StringUtils.isEmpty(brc.getRequest().getQueryString())) {
+      currentUrl=currentUrl + "?" + brc.getRequest().getQueryString();
+    }
+  }
+  return currentUrl;
+}
