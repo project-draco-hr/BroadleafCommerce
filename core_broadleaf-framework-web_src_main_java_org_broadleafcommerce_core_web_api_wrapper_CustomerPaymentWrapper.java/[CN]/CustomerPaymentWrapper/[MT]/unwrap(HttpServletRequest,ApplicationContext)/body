@@ -8,12 +8,7 @@
   Customer cust=customerService.readCustomerById(this.customer.getId());
   custPay.setCustomer(cust);
   custPay.setIsDefault(this.isDefault);
-  custPay.setPaymentName(this.getCardName());
-  custPay.setCardType(this.getCardType());
-  custPay.setExpirationDate(this.getExpirationDate());
-  custPay.setPaymentGatewayType(PaymentGatewayType.getInstance(this.getPaymentGatewayType()));
-  custPay.setLastFour(this.getLastFour());
   custPay.setPaymentToken(this.getPaymentToken());
-  super.transferAdditionalFieldsFromWrapper(custPay,this);
+  super.transferAdditionalFieldsFromWrapper(this,custPay);
   return custPay;
 }

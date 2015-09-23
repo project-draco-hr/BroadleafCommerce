@@ -9,10 +9,6 @@
     populateDefaultLineItemsAndSubtotal(order,requestDTO);
   }
   Map<String,String> additionalFields=paymentTransaction.getAdditionalFields();
-  CustomerPayment customerPayment=paymentTransaction.getOrderPayment().getCustomerPayment();
-  if (customerPayment != null && customerPayment.getPaymentToken() != null) {
-    requestDTO.additionalField("TOKEN",customerPayment.getPaymentToken());
-  }
   for (  String key : additionalFields.keySet()) {
     requestDTO.additionalField(key,additionalFields.get(key));
   }

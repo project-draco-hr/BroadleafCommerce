@@ -34,8 +34,6 @@
   payment.setAmount(responseDTO.getAmount());
   List<OrderPayment> paymentsToInvalidate=new ArrayList<OrderPayment>();
   Address tempBillingAddress=null;
-  Boolean savePayment=false;
-  String paymentName=null;
   if (!config.handlesMultiplePayments()) {
     PaymentGatewayType gateway=config.getGatewayType();
     for (    OrderPayment p : order.getPayments()) {
@@ -43,8 +41,6 @@
         paymentsToInvalidate.add(p);
         if (PaymentGatewayType.TEMPORARY.equals(p.getGatewayType())) {
           tempBillingAddress=p.getBillingAddress();
-          savePayment=p.isSavePayment();
-          paymentName=p.getPaymentName();
         }
       }
     }
@@ -70,15 +66,6 @@
   payment.setOrder(order);
   transaction.setOrderPayment(payment);
   payment.addTransaction(transaction);
-  try {
-    if (savePayment) {
-      payment.setPaymentName(paymentName);
-      payment.setCustomerPayment(orderPaymentService.createCustomerPaymentFromOrderPayment(order.getCustomer(),payment));
-    }
-  }
- catch (  PaymentException e) {
-    e.printStackTrace();
-  }
   payment=orderPaymentService.save(payment);
   if (transaction.getSuccess()) {
     orderService.addPaymentToOrder(order,payment,null);

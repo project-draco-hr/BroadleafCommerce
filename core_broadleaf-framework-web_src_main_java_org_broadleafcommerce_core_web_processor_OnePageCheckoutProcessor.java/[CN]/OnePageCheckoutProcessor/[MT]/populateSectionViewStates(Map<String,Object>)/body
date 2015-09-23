@@ -8,7 +8,6 @@
   boolean showBillingInfoSection=true;
   boolean showShippingInfoSection=true;
   boolean showAllPaymentMethods=true;
-  boolean showPaymentMethodSection=true;
   int numShippableFulfillmentGroups=calculateNumShippableFulfillmentGroups();
   if (numShippableFulfillmentGroups == 0) {
     showShippingInfoSection=false;
@@ -25,7 +24,6 @@
         orderContainsUnconfirmedCreditCard=true;
         unconfirmedCC=payment;
       }
-      showPaymentMethodSection=payment.getCustomerPayment() == null;
     }
   }
   Money orderTotalAfterAppliedPayments=CartState.getCart().getTotalAfterAppliedPayments();
@@ -38,7 +36,6 @@
   }
   localVars.put("showBillingInfoSection",showBillingInfoSection);
   localVars.put("showAllPaymentMethods",showAllPaymentMethods);
-  localVars.put("showPaymentMethodSection",showPaymentMethodSection);
   localVars.put("orderContainsThirdPartyPayment",orderContainsThirdPartyPayment);
   localVars.put("orderContainsUnconfirmedCreditCard",orderContainsUnconfirmedCreditCard);
   localVars.put("unconfirmedCC",unconfirmedCC);
