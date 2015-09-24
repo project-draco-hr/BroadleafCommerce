@@ -33,7 +33,7 @@
       requestUri=requestUri.substring(request.getContextPath().length() + 1,requestUri.length());
     }
     model.addAttribute("currentUri",requestUri);
-    model.addAttribute("modalHeaderType","addEntity");
+    model.addAttribute("modalHeaderType",ModalHeaderType.ADD_ENTITY.getType());
     setModelAttributes(model,SECTION_KEY);
     return "modules/modalContainer";
   }
@@ -49,7 +49,7 @@
   model.addAttribute("entityForm",entityForm);
   model.addAttribute("viewType","modal/simpleAddEntity");
   model.addAttribute("currentUrl",request.getRequestURL().toString());
-  model.addAttribute("modalHeaderType","addCollectionItem");
+  model.addAttribute("modalHeaderType",ModalHeaderType.ADD_COLLECTION_ITEM.getType());
   model.addAttribute("collectionProperty",collectionProperty);
   setModelAttributes(model,SECTION_KEY);
   return "modules/modalContainer";
