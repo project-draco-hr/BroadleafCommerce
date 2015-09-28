@@ -1,3 +1,6 @@
 {
-  return sandBoxDao.createUserSandBox(authorId,approvalSandBox);
+  if (checkForExistingSandboxWithTypeAndName(SandBoxType.USER,approvalSandBox.getName())) {
+    return sandBoxDao.createUserSandBox(authorId,approvalSandBox);
+  }
+  return sandBoxDao.retrieveNamedSandBox(SandBoxType.USER,approvalSandBox.getName());
 }
