@@ -10,9 +10,8 @@
   if (parent != null) {
     context.setParent(parent);
     context.setPatchLocation(StringUtils.removeEnd(((MergeXmlWebApplicationContext)parent).getPatchLocation(),"classpath:/bl-applicationContext-test.xml"));
-    System.out.println(context.getPatchLocation());
   }
-  context.setPatchLocation(context.getPatchLocation() + StringUtils.join(mergedConfig.getLocations(),";") + ";classpath:/bl-applicationContext-test.xml");
+  context.setPatchLocation(context.getPatchLocation() + StringUtils.join(mergedConfig.getLocations(),";"));
   context.setStandardLocationTypes(StandardConfigLocations.TESTCONTEXTTYPE);
   configureWebResources(context,webMergedConfig);
   prepareContext(context,webMergedConfig);
