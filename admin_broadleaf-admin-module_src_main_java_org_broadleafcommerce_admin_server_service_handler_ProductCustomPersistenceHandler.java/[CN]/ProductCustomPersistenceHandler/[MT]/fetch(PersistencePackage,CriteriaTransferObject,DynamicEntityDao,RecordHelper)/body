@@ -25,6 +25,7 @@
   cto.getNonCountAdditionalFilterMappings().add(new FilterMapping().withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
     public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path explicitPath,    List directValues){
       root.fetch("defaultSku",JoinType.LEFT);
+      root.fetch("defaultCategory",JoinType.LEFT);
       return null;
     }
   }
