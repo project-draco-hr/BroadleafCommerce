@@ -1,0 +1,74 @@
+{
+  if (className == null) {
+    return null;
+  }
+  String convertedClassName=className.replace('/','.');
+  ConditionalFieldAnnotationCopyTransformMemberDTO dto=manager.getTransformMember(convertedClassName);
+  if (dto == null || dto.getTemplateNames() == null || dto.getTemplateNames().length < 1) {
+    return null;
+  }
+  CtClass clazz=null;
+  try {
+    String[] xformVals=dto.getTemplateNames();
+    ClassPool classPool=ClassPool.getDefault();
+    clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
+    clazz.defrost();
+    for (    String xformVal : xformVals) {
+      String trimmed=xformVal.trim();
+      classPool.appendClassPath(new LoaderClassPath(Class.forName(trimmed).getClassLoader()));
+      CtClass template=classPool.get(trimmed);
+      CtField[] fieldsToCopy=template.getDeclaredFields();
+      for (      CtField field : fieldsToCopy) {
+        ConstPool constPool=clazz.getClassFile().getConstPool();
+        CtField fieldFromMainClass=clazz.getField(field.getName());
+        AnnotationsAttribute copied=null;
+        for (        Object o : field.getFieldInfo().getAttributes()) {
+          if (o instanceof AnnotationsAttribute) {
+            AnnotationsAttribute templateAnnotations=(AnnotationsAttribute)o;
+            copied=(AnnotationsAttribute)templateAnnotations.copy(constPool,null);
+            break;
+          }
+        }
+        for (        Object attribute : fieldFromMainClass.getFieldInfo().getAttributes()) {
+          if (attribute instanceof AnnotationsAttribute) {
+            Annotation[] annotations=null;
+            if (copied != null) {
+              ArrayList<Annotation> annotationsList=new ArrayList<Annotation>();
+              for (              Annotation annotation : copied.getAnnotations()) {
+                annotationsList.add(annotation);
+              }
+              annotations=new Annotation[annotationsList.size()];
+              int count=0;
+              for (              Annotation annotation : annotationsList) {
+                annotations[count]=annotation;
+                count++;
+              }
+              ((AnnotationsAttribute)attribute).setAnnotations(annotations);
+            }
+ else {
+              ((AnnotationsAttribute)attribute).setAnnotations(new Annotation[]{});
+            }
+            break;
+          }
+        }
+      }
+    }
+    return clazz.toBytecode();
+  }
+ catch (  ClassCircularityError error) {
+    error.printStackTrace();
+    throw error;
+  }
+catch (  Exception e) {
+    throw new RuntimeException("Unable to transform class",e);
+  }
+ finally {
+    if (clazz != null) {
+      try {
+        clazz.detach();
+      }
+ catch (      Exception e) {
+      }
+    }
+  }
+}
