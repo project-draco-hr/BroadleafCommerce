@@ -5,21 +5,36 @@
     if (fsc != null) {
       List<String> filterValues=fsc.getFilterValues();
       cto.getCriteriaMap().remove("defaultCategory");
-      FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("allParentCategoryXrefs.id")).withDirectFilterValues(filterValues).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
-        @Override public Predicate buildPredicate(        CriteriaBuilder builder,        FieldPathBuilder fieldPathBuilder,        From root,        String ceilingEntity,        String fullPropertyName,        Path explicitPath,        List directValues){
-          Subquery<Long> sub=fieldPathBuilder.getCriteria().subquery(Long.class);
-          Root<CategoryProductXrefImpl> subRoot=sub.from(CategoryProductXrefImpl.class);
-          sub.select(subRoot.get("id").as(Long.class));
-          List<Predicate> subRestrictions=new ArrayList<Predicate>();
-          subRestrictions.add(builder.equal(subRoot.get("defaultReference"),Boolean.TRUE));
-          subRestrictions.add(subRoot.get("category").get("id").in(directValues));
-          QueryUtils.notArchived(builder,subRestrictions,subRoot,"archiveStatus");
-          sub.where(subRestrictions.toArray(new Predicate[subRestrictions.size()]));
-          return explicitPath.in(sub);
+      List<Long> transformedValues=BLCCollectionUtils.collectList(filterValues,new TypedTransformer<Long>(){
+        @Override public Long transform(        Object input){
+          return Long.parseLong(((String)input));
         }
       }
+);
+      CriteriaBuilder builder=dynamicEntityDao.getStandardEntityManager().getCriteriaBuilder();
+      CriteriaQuery<Long> criteria=builder.createQuery(Long.class);
+      Root<CategoryProductXrefImpl> root=criteria.from(CategoryProductXrefImpl.class);
+      criteria.select(root.get("product").get("id").as(Long.class));
+      List<Predicate> restrictions=new ArrayList<Predicate>();
+      restrictions.add(builder.equal(root.get("defaultReference"),Boolean.TRUE));
+      restrictions.add(root.get("category").get("id").in(transformedValues));
+      QueryUtils.notArchived(builder,restrictions,root,"archiveStatus");
+      criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+      TypedQuery<Long> query=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
+      final List<Long> productIds=query.getResultList();
+      if (productIds.size() <= 800) {
+        FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("id")).withDirectFilterValues(filterValues).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
+          @Override public Predicate buildPredicate(          CriteriaBuilder builder,          FieldPathBuilder fieldPathBuilder,          From root,          String ceilingEntity,          String fullPropertyName,          Path explicitPath,          List directValues){
+            return explicitPath.in(sandBoxHelper.mergeCloneIds(ProductImpl.class,productIds.toArray(new Long[productIds.size()])));
+          }
+        }
 ));
-      cto.getAdditionalFilterMappings().add(filterMapping);
+        cto.getAdditionalFilterMappings().add(filterMapping);
+      }
+ else {
+        String joined=StringUtils.join(transformedValues,',');
+        LOG.warn(String.format("Skipping default category filtering for product fetch query since there are " + "more than 800 products found to belong to the selected default categories(%s). This is a " + "filter query limitation.",joined));
+      }
     }
   }
   cto.getNonCountAdditionalFilterMappings().add(new FilterMapping().withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
