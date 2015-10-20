@@ -45,9 +45,8 @@
         classPool=ClassPool.getDefault();
         clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
         XFormParams params=reviewDirectCopyTransformAnnotations(clazz,mySkipOverlaps,myRenameMethodOverlaps,matchedPatterns);
-        if (params.isEmpty()) {
-          params=reviewConditionalDirectCopyTransforms(convertedClassName,matchedPatterns);
-        }
+        XFormParams conditionalParams=reviewConditionalDirectCopyTransforms(convertedClassName,matchedPatterns);
+        params=combineXFormParams(params,conditionalParams);
         xformVals=params.getXformVals();
         xformSkipOverlaps=params.getXformSkipOverlaps();
         xformRenameMethodOverlaps=params.getXformRenameMethodOverlaps();
