@@ -23,7 +23,7 @@
       TypedQuery<Long> query=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
       List<Long> productIds=query.getResultList();
       productIds=sandBoxHelper.mergeCloneIds(ProductImpl.class,productIds.toArray(new Long[productIds.size()]));
-      if (productIds.size() <= 500) {
+      if (productIds.size() <= queryLimit) {
         FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("id")).withDirectFilterValues(productIds).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
           @Override public Predicate buildPredicate(          CriteriaBuilder builder,          FieldPathBuilder fieldPathBuilder,          From root,          String ceilingEntity,          String fullPropertyName,          Path explicitPath,          List directValues){
             return explicitPath.in(directValues);
@@ -34,7 +34,7 @@
       }
  else {
         String joined=StringUtils.join(transformedValues,',');
-        LOG.warn(String.format("Skipping default category filtering for product fetch query since there are " + "more than 800 products found to belong to the selected default categories(%s). This is a " + "filter query limitation.",joined));
+        LOG.warn(String.format("Skipping default category filtering for product fetch query since there are " + "more than " + queryLimit + " products found to belong to the selected default categories(%s). This is a "+ "filter query limitation.",joined));
       }
     }
   }
