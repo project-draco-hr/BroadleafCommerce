@@ -1,0 +1,13 @@
+{
+  final V cachedValue=this.cachedValueReference.get();
+  if (cachedValue == null) {
+    if (traceExecution) {
+      logger.trace("[THYMELEAF][{}][*][{}][CACHE_DELETED_REFERENCES] Some entries at cache \"{}\" " + "seem to have been sacrificed by the Garbage Collector (soft references).",new Object[]{TemplateEngine.threadIndex(),cacheMapName,cacheMapName});
+    }
+    return null;
+  }
+  if (checker == null || (cachedValue instanceof String && cachedValue.equals("NOT_FOUND")) || checker.checkIsValueStillValid(key,cachedValue,this.creationTimeInMillis)) {
+    return cachedValue;
+  }
+  return null;
+}

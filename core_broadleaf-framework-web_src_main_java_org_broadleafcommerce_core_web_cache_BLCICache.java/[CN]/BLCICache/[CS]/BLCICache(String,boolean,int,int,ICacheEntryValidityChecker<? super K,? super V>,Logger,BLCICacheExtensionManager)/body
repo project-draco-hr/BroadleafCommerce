@@ -1,0 +1,26 @@
+{
+  super();
+  Validate.notEmpty(name,"Name cannot be null or empty");
+  Validate.isTrue(initialCapacity > 0,"Initial capacity must be > 0");
+  Validate.isTrue(maxSize != 0,"Cache max size must be either -1 (no limit) or > 0");
+  this.name=name;
+  this.useSoftReferences=useSoftReferences;
+  this.maxSize=maxSize;
+  this.entryValidityChecker=entryValidityChecker;
+  this.logger=logger;
+  this.traceExecution=(logger != null && logger.isTraceEnabled());
+  this.dataContainer=new BLCICacheDataContainer<K,V>(this.name,initialCapacity,maxSize,this.traceExecution,this.logger);
+  this.getCount=new AtomicLong(0);
+  this.putCount=new AtomicLong(0);
+  this.hitCount=new AtomicLong(0);
+  this.missCount=new AtomicLong(0);
+  this.extensionManager=extensionManager;
+  if (this.logger != null) {
+    if (this.maxSize < 0) {
+      this.logger.debug("[THYMELEAF][CACHE_INITIALIZE] Initializing cache {}. Soft references {}.",this.name,(this.useSoftReferences ? "are used" : "not used"));
+    }
+ else {
+      this.logger.debug("[THYMELEAF][CACHE_INITIALIZE] Initializing cache {}. Max size: {}. Soft references {}.",new Object[]{this.name,Integer.valueOf(this.maxSize),(this.useSoftReferences ? "are used" : "not used")});
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  final BLCICache.CacheEntry<V> removed=this.container.remove(key);
+  if (removed == null) {
+    return -1;
+  }
+  if (this.sizeLimit && key != null) {
+    for (int i=0; i < this.maxSize; i++) {
+      if (key.equals(this.fifo[i])) {
+        this.fifo[i]=null;
+        break;
+      }
+    }
+  }
+  return this.container.size();
+}
