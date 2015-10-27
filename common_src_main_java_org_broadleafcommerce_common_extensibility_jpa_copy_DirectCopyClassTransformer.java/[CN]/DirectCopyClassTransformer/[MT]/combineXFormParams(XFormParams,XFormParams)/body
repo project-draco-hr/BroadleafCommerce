@@ -5,26 +5,22 @@
   List<Boolean> skips=new ArrayList<Boolean>();
   List<Boolean> renames=new ArrayList<Boolean>();
   if (!defaultParams.isEmpty()) {
-    for (    String defaultParam : defaultParams.getXformVals()) {
+    for (int iter=0; iter < defaultParams.getXformVals().length; iter++) {
+      String defaultParam=defaultParams.getXformVals()[iter];
       if (!templateSkipMap.containsKey(defaultParam)) {
         templateSkipMap.put(defaultParam,true);
+        templates.add(defaultParam);
+        skips.add(defaultParams.getXformSkipOverlaps()[iter]);
+        renames.add(defaultParams.getXformRenameMethodOverlaps()[iter]);
       }
-      templates.add(defaultParam);
     }
-    skips.addAll(Arrays.asList(defaultParams.getXformSkipOverlaps()));
-    renames.addAll(Arrays.asList(defaultParams.getXformRenameMethodOverlaps()));
   }
-  if (!conditionalParams.isEmpty()) {
-    boolean isNewAddition=false;
-    for (    String conditionalValue : conditionalParams.getXformVals()) {
-      if (!templateSkipMap.containsKey(conditionalValue)) {
-        templates.add(conditionalValue);
-        isNewAddition=true;
-      }
-    }
-    if (isNewAddition) {
-      skips.addAll(Arrays.asList(conditionalParams.getXformSkipOverlaps()));
-      renames.addAll(Arrays.asList(conditionalParams.getXformRenameMethodOverlaps()));
+  for (int iter=0; iter < conditionalParams.getXformVals().length; iter++) {
+    String conditionalValue=conditionalParams.getXformVals()[iter];
+    if (!templateSkipMap.containsKey(conditionalValue)) {
+      templates.add(conditionalValue);
+      skips.add(conditionalParams.getXformSkipOverlaps()[iter]);
+      renames.add(conditionalParams.getXformRenameMethodOverlaps()[iter]);
     }
   }
   response.setXformVals(templates.toArray(new String[templates.size()]));
