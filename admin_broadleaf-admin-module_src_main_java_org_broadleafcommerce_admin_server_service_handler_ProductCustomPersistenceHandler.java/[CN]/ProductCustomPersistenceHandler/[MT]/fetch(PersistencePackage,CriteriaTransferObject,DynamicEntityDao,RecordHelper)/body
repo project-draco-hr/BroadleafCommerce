@@ -23,6 +23,9 @@
       TypedQuery<Long> query=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
       List<Long> productIds=query.getResultList();
       productIds=sandBoxHelper.mergeCloneIds(ProductImpl.class,productIds.toArray(new Long[productIds.size()]));
+      if (productIds.size() == 0) {
+        return new DynamicResultSet(null,new Entity[0],0);
+      }
       if (productIds.size() <= queryLimit) {
         FilterMapping filterMapping=new FilterMapping().withFieldPath(new FieldPath().withTargetProperty("id")).withDirectFilterValues(productIds).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
           @Override public Predicate buildPredicate(          CriteriaBuilder builder,          FieldPathBuilder fieldPathBuilder,          From root,          String ceilingEntity,          String fullPropertyName,          Path explicitPath,          List directValues){
