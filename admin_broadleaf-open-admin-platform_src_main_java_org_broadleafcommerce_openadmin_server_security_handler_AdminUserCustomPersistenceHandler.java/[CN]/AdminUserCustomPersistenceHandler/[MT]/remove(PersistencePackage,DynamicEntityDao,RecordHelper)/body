@@ -1,10 +1,20 @@
 {
   Entity entity=persistencePackage.getEntity();
+  String idValue=entity.findProperty("id").getValue();
   String userLoginToRemove=entity.findProperty("login").getValue();
   AdminUser persistentAdminUser=adminRemoteSecurityService.getPersistentAdminUser();
   if (persistentAdminUser != null && persistentAdminUser.getLogin() != null) {
     if (persistentAdminUser.getLogin().equals(userLoginToRemove)) {
       throw new ValidationException(entity,"admin.cantDeleteCurrentUserError");
+    }
+  }
+  if (idValue != null) {
+    Long id=Long.parseLong(idValue);
+    AdminUser adminInstance=adminSecurityService.readAdminUserById(id);
+    if (Status.class.isAssignableFrom(adminInstance.getClass())) {
+      ((Status)adminInstance).setArchived('Y');
+      adminSecurityService.saveAdminUser(adminInstance);
+      return;
     }
   }
   OperationType removeType=persistencePackage.getPersistencePerspective().getOperationTypes().getRemoveType();
