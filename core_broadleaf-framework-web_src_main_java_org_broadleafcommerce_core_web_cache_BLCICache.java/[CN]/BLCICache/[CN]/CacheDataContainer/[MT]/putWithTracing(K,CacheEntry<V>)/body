@@ -1,10 +1,10 @@
 {
-  final BLCICache.CacheEntry<V> existing=this.container.putIfAbsent(key,value);
+  final CacheEntry<V> existing=this.container.putIfAbsent(key,value);
   if (existing == null) {
     if (this.sizeLimit) {
       final Object removedKey=this.fifo[this.fifoPointer];
       if (removedKey != null) {
-        final BLCICache.CacheEntry<V> removed=this.container.remove(removedKey);
+        final CacheEntry<V> removed=this.container.remove(removedKey);
         if (removed != null) {
           final Integer newSize=Integer.valueOf(this.container.size());
           this.logger.trace("[THYMELEAF][{}][{}][CACHE_REMOVE][{}] Max size exceeded for cache \"{}\". Removing entry for key \"{}\". New size is {}.",new Object[]{TemplateEngine.threadIndex(),this.name,newSize,this.name,removedKey,newSize});
