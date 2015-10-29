@@ -1,7 +1,7 @@
 {
-  final int maxSize=getTemplateCacheMaxSize();
+  final int maxSize=standardCacheManager.getTemplateCacheMaxSize();
   if (maxSize == 0) {
     return null;
   }
-  return new BLCICache<String,Template>(getTemplateCacheName(),getTemplateCacheUseSoftReferences(),getTemplateCacheInitialSize(),maxSize,getTemplateCacheValidityChecker(),getTemplateCacheLogger(),extensionManager);
+  return new BLCICache<String,Template>(standardCacheManager.getTemplateCacheName(),standardCacheManager.getTemplateCacheUseSoftReferences(),standardCacheManager.getTemplateCacheInitialSize(),maxSize,standardCacheManager.getTemplateCacheValidityChecker(),standardCacheManager.getTemplateCacheLogger(),extensionManager);
 }
