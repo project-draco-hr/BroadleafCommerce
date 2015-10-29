@@ -8,7 +8,7 @@
     Node foundNode=filtered[pos];
     Node targetNode=foundNode.getOwnerDocument().importNode(foundNode.cloneNode(false),false);
     Node newTestNode=foundNode.getOwnerDocument().importNode(testNode.cloneNode(true),true);
-    NodeUtil.mergeNodeLists(targetNode,foundNode.getChildNodes(),newTestNode.getChildNodes(),"name");
+    NodeUtil.mergeNodeLists(targetNode,newTestNode.getChildNodes(),foundNode.getChildNodes(),"name");
     foundNode.getParentNode().replaceChild(targetNode,foundNode);
     usedNodes.add(testNode);
     return true;
