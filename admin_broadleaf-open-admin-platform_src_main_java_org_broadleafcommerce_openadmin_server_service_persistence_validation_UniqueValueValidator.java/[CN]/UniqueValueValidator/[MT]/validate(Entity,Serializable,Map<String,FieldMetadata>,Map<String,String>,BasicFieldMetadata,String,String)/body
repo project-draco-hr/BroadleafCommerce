@@ -1,20 +1,13 @@
 {
-  PersistencePackageRequest ppr=PersistencePackageRequest.standard().withCeilingEntityClassname(entity.getType()[0]).withFilterAndSortCriteria(new FilterAndSortCriteria[]{new FilterAndSortCriteria(propertyName,value)});
+  List<Long> responseIds=genericEntityDao.readOtherEntitiesWithPropertyValue(instance,propertyName,value);
   String message=validationConfiguration.get(ConfigurationItem.ERROR_MESSAGE);
   if (message == null) {
     message=entity.getType()[0] + " with this value for attribute " + propertyName+ " already exists. This attribute's value must be unique.";
   }
-  try {
-    PersistenceResponse response=adminEntityService.getRecords(ppr);
-    if (response.getDynamicResultSet().getTotalRecords() == 0) {
-      return new PropertyValidationResult(true,message);
-    }
- else {
-      return new PropertyValidationResult(false,message);
-    }
+  if (responseIds.size() == 0) {
+    return new PropertyValidationResult(true,message);
   }
- catch (  ServiceException e) {
-    LOG.error(message,e);
+ else {
     return new PropertyValidationResult(false,message);
   }
 }
