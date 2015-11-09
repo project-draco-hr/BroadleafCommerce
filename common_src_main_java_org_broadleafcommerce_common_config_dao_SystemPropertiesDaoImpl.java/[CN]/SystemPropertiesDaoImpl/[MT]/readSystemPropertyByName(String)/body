@@ -1,14 +1,36 @@
 {
   return getCachedObject(SystemProperty.class,"blSystemPropertyNullCheckCache","SYSTEM_PROPERTY_MISSING_CACHE_HIT_RATE",new PersistentRetrieval<SystemProperty>(){
     @Override public SystemProperty retrievePersistentObject(){
-      TypedQuery<SystemProperty> query=em.createNamedQuery("BC_READ_SYSTEM_PROPERTIES_BY_NAME",SystemProperty.class);
-      query.setParameter("propertyName",name);
-      query.setHint(QueryHints.HINT_CACHEABLE,true);
-      List<SystemProperty> props=query.getResultList();
-      if (props != null && !props.isEmpty()) {
-        return props.get(0);
+      CriteriaBuilder builder=em.getCriteriaBuilder();
+      CriteriaQuery<SystemProperty> criteria=builder.createQuery(SystemProperty.class);
+      Root<SystemPropertyImpl> handler=criteria.from(SystemPropertyImpl.class);
+      criteria.select(handler);
+      List<Predicate> restrictions=new ArrayList<Predicate>();
+      restrictions.add(builder.equal(handler.get("name"),name));
+      try {
+        if (queryExtensionManager != null) {
+          queryExtensionManager.getProxy().setup(SystemPropertyImpl.class,null);
+          queryExtensionManager.getProxy().refineRetrieve(SystemPropertyImpl.class,null,builder,criteria,handler,restrictions);
+        }
+        criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+        TypedQuery<SystemProperty> query=em.createQuery(criteria);
+        query.setHint(QueryHints.HINT_CACHEABLE,true);
+        List<SystemProperty> response=query.getResultList();
+        if (response.size() > 0) {
+          ExtensionResultHolder<List> resultHolder=new ExtensionResultHolder<>();
+          if (queryExtensionManager != null) {
+            queryExtensionManager.getProxy().refineResults(SystemPropertyImpl.class,null,response,resultHolder);
+            return (SystemProperty)resultHolder.getResult().get(0);
+          }
+          return response.get(0);
+        }
+        return null;
       }
-      return null;
+  finally {
+        if (queryExtensionManager != null) {
+          queryExtensionManager.getProxy().breakdown(SystemPropertyImpl.class,null);
+        }
+      }
     }
   }
 ,name,getSite());
