@@ -1,0 +1,15 @@
+{
+  V value=null;
+  if (BroadleafRequestContext.getBroadleafRequestContext().getSandBox() != null) {
+    return value;
+  }
+  ExtensionResultHolder<V> result=new ExtensionResultHolder<V>();
+  ExtensionResultStatusType erst=extensionManager.getProxy().getCache(key,(ExtensionResultHolder<Object>)result,this);
+  if (erst.equals(ExtensionResultStatusType.HANDLED)) {
+    value=result.getResult();
+  }
+ else   if (erst.equals(ExtensionResultStatusType.NOT_HANDLED)) {
+    value=defaultGet(key);
+  }
+  return value;
+}

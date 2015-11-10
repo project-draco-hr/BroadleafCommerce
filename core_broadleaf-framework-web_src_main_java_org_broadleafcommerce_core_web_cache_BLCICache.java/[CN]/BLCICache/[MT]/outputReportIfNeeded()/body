@@ -1,0 +1,13 @@
+{
+  if (this.traceExecution) {
+    final long currentTime=System.currentTimeMillis();
+    if ((currentTime - this.lastExecution) >= REPORT_INTERVAL) {
+synchronized (this) {
+        if ((currentTime - this.lastExecution) >= REPORT_INTERVAL) {
+          this.logger.trace(String.format(REPORT_FORMAT,Integer.valueOf(size()),Long.valueOf(this.putCount.get()),Long.valueOf(this.getCount.get()),Long.valueOf(this.hitCount.get()),Long.valueOf(this.missCount.get()),this.name));
+          this.lastExecution=currentTime;
+        }
+      }
+    }
+  }
+}
