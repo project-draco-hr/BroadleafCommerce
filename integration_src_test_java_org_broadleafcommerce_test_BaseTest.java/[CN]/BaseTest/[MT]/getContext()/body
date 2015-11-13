@@ -2,16 +2,17 @@
   try {
     if (mergeContext == null) {
       String[] contexts=StandardConfigLocations.retrieveAll(StandardConfigLocations.TESTCONTEXTTYPE);
-      List<String> additionalContexts=new ArrayList<String>(moduleContexts);
-      additionalContexts.add("bl-open-admin-contentClient-applicationContext.xml");
-      additionalContexts.add("bl-open-admin-contentCreator-applicationContext.xml");
-      additionalContexts.add("bl-admin-applicationContext.xml");
-      additionalContexts.add("bl-applicationContext-test.xml");
+      List<String> allContexts=new ArrayList<String>(Arrays.asList(contexts));
+      allContexts.add("bl-open-admin-contentClient-applicationContext.xml");
+      allContexts.add("bl-open-admin-contentCreator-applicationContext.xml");
+      allContexts.add("bl-admin-applicationContext.xml");
+      allContexts.addAll(moduleContexts);
+      allContexts.add("bl-applicationContext-test.xml");
       if (ManagementFactory.getRuntimeMXBean().getInputArguments().contains("-Dlegacy=true")) {
-        additionalContexts.add("bl-applicationContext-test-legacy.xml");
+        allContexts.add("bl-applicationContext-test-legacy.xml");
       }
-      String[] strArray=new String[additionalContexts.size()];
-      mergeContext=new MergeClassPathXMLApplicationContext(contexts,additionalContexts.toArray(strArray));
+      String[] strArray=new String[allContexts.size()];
+      mergeContext=new MergeClassPathXMLApplicationContext(allContexts.toArray(strArray),new String[]{});
       RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
       mergeContext.getBeanFactory().registerScope("request",new RequestScope());
     }
