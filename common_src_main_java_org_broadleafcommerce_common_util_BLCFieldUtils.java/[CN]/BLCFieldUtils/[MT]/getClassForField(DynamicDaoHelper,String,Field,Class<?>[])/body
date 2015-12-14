@@ -21,7 +21,7 @@
   Class<?> myClass=field != null ? field.getType() : entities[0];
   if (getSingleField(matchedClasses.get(0),token) != null) {
     clazz=matchedClasses.get(0);
-    Class<?>[] entities2=persistenceManager.getUpDownInheritance(clazz);
+    Class<?>[] entities2=helper.getUpDownInheritance(clazz,sessionFactory,includeUnqualifiedPolymorphicEntities,useCache,ejb3ConfigurationDao);
     if (!ArrayUtils.isEmpty(entities2) && matchedClasses.size() == 1 && clazz.isInterface()) {
       try {
         clazz=entityConfiguration.lookupEntityClass(myClass.getName());
