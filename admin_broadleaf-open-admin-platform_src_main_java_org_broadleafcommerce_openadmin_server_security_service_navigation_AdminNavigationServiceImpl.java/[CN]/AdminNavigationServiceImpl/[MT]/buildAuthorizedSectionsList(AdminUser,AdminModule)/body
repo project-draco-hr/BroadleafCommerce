@@ -1,8 +1,18 @@
 {
   List<AdminSection> authorizedSections=new ArrayList<AdminSection>();
+  BroadleafRequestContext broadleafRequestContext=BroadleafRequestContext.getBroadleafRequestContext();
+  Long siteId=broadleafRequestContext.getNonPersistentSite().getId();
   for (  AdminSection section : module.getSections()) {
     if (isUserAuthorizedToViewSection(adminUser,section)) {
-      authorizedSections.add(section);
+      if (section instanceof SiteDiscriminator) {
+        Long sectionId=((SiteDiscriminator)section).getSiteDiscriminator();
+        if (sectionId == null || siteId.equals(sectionId)) {
+          authorizedSections.add(section);
+        }
+      }
+ else {
+        authorizedSections.add(section);
+      }
     }
   }
   Collections.sort(authorizedSections,SECTION_COMPARATOR);
