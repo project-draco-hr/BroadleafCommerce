@@ -2,6 +2,7 @@
   String msg="Attempting to confirm/authorize an UNCONFIRMED transaction on the order was unsuccessful.";
   List<OrderPayment> invalidatedPayments=new ArrayList<OrderPayment>();
   List<PaymentTransaction> failedTransactionsToRollBack=new ArrayList<PaymentTransaction>();
+  List<PaymentResponseDTO> failedResponses=new ArrayList<PaymentResponseDTO>();
   for (  ResponseTransactionPair responseTransactionPair : failedTransactions) {
     PaymentTransaction tx=orderPaymentService.readTransactionById(responseTransactionPair.getTransactionId());
     if (shouldRollbackFailedTransaction(responseTransactionPair)) {
@@ -12,9 +13,11 @@
       OrderPayment payment=orderPaymentService.save(tx.getOrderPayment());
       invalidatedPayments.add(payment);
     }
+    failedResponses.add(responseTransactionPair.getResponseDTO());
   }
   Map<String,Object> rollbackState=new HashMap<String,Object>();
   rollbackState.put(ROLLBACK_TRANSACTIONS,failedTransactionsToRollBack);
+  context.getSeedData().getUserDefinedFields().put(FAILED_RESPONSES,failedResponses);
   ActivityStateManagerImpl.getStateManager().registerState(this,context,getRollbackHandler(),rollbackState);
   if (LOG.isErrorEnabled()) {
     LOG.error(msg);
