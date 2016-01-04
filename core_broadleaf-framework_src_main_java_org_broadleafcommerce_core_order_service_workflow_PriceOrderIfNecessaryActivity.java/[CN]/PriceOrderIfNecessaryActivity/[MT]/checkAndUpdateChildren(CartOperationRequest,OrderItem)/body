@@ -1,0 +1,18 @@
+{
+  boolean parentUpdated=false;
+  if (orderItem.getId().equals(request.getItemRequest().getParentOrderItemId())) {
+    orderItem.getChildOrderItems().add(request.getOrderItem());
+    parentUpdated=true;
+  }
+ else {
+    if (CollectionUtils.isNotEmpty(orderItem.getChildOrderItems())) {
+      for (      OrderItem childOrderItem : orderItem.getChildOrderItems()) {
+        parentUpdated=checkAndUpdateChildren(request,childOrderItem);
+        if (parentUpdated) {
+          break;
+        }
+      }
+    }
+  }
+  return parentUpdated;
+}
