@@ -19,8 +19,10 @@
         if (response.size() > 0) {
           ExtensionResultHolder<List> resultHolder=new ExtensionResultHolder<>();
           if (queryExtensionManager != null) {
-            queryExtensionManager.getProxy().refineResults(SystemPropertyImpl.class,null,response,resultHolder);
-            return (SystemProperty)resultHolder.getResult().get(0);
+            ExtensionResultStatusType resultStatusType=queryExtensionManager.getProxy().refineResults(SystemPropertyImpl.class,null,response,resultHolder);
+            if (!resultStatusType.equals(ExtensionResultStatusType.NOT_HANDLED)) {
+              return (SystemProperty)resultHolder.getResult().get(0);
+            }
           }
           return response.get(0);
         }
