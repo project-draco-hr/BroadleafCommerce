@@ -1,0 +1,14 @@
+{
+  String[] commands=super.extractCommands(reader);
+  String[] newCommands=new String[commands.length];
+  int i=0;
+  for (  String command : commands) {
+    String newCommand=command;
+    newCommand=newCommand.replaceAll("''","\"\"");
+    newCommand=newCommand.replaceAll("('.*?')","E$1");
+    newCommand=newCommand.replaceAll("\"\"","''");
+    newCommands[i]=newCommand;
+    i++;
+  }
+  return newCommands;
+}

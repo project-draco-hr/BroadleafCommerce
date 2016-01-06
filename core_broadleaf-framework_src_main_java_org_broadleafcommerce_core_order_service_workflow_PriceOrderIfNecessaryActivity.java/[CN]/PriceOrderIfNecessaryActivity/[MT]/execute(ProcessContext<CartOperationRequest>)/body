@@ -76,11 +76,7 @@
       request.setOrderItem(savedOrderItems.get(entry.getKey()));
     }
   }
-  for (  OrderItem oi : order.getOrderItems()) {
-    if (oi.getId().equals(request.getItemRequest().getParentOrderItemId())) {
-      oi.getChildOrderItems().add(request.getOrderItem());
-    }
-  }
+  updateChildOrderItem(request,order);
   preSaveOperation(request);
   order=orderService.save(order,request.isPriceOrder());
   request.setOrder(order);
