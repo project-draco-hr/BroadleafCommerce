@@ -1,20 +1,6 @@
 {
   if (resourceCachingEnabled) {
-    String key=computeKey(request,requestPath) + getThemePathFromBRC();
-    Resource resource=this.cache.get(key,Resource.class);
-    if (resource != null) {
-      if (logger.isTraceEnabled()) {
-        logger.trace("Found match");
-      }
-      return resource;
-    }
-    resource=chain.resolveResource(request,requestPath,locations);
-    if (resource != null) {
-      if (logger.isTraceEnabled()) {
-        logger.trace("Putting resolved resource in cache");
-      }
-      this.cache.put(key,resource);
-    }
+    Resource resource=super.resolveResourceInternal(request,requestPath,locations,chain);
     if (logger.isDebugEnabled()) {
       if (resource == null) {
         logger.debug("Cache resolver, returned a null resource " + requestPath);
