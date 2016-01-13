@@ -1,12 +1,13 @@
 {
   List<AdminSection> authorizedSections=new ArrayList<AdminSection>();
   BroadleafRequestContext broadleafRequestContext=BroadleafRequestContext.getBroadleafRequestContext();
-  Long siteId=broadleafRequestContext.getNonPersistentSite().getId();
+  Site site=broadleafRequestContext.getNonPersistentSite();
+  Long siteId=site == null ? null : site.getId();
   for (  AdminSection section : module.getSections()) {
     if (isUserAuthorizedToViewSection(adminUser,section)) {
       if (section instanceof SiteDiscriminator) {
-        Long sectionId=((SiteDiscriminator)section).getSiteDiscriminator();
-        if (sectionId == null || siteId.equals(sectionId)) {
+        Long sectionSiteId=((SiteDiscriminator)section).getSiteDiscriminator();
+        if (sectionSiteId == null || sectionSiteId.equals(siteId)) {
           authorizedSections.add(section);
         }
       }
