@@ -1,0 +1,10 @@
+{
+  DynamicResultSet response=helper.getCompatibleModule(OperationType.BASIC).fetch(persistencePackage,cto);
+  for (  Entity entity : response.getRecords()) {
+    Property prop=entity.findProperty("useInSkuGeneration");
+    if (prop != null && StringUtils.isEmpty(prop.getValue())) {
+      prop.setValue("true");
+    }
+  }
+  return response;
+}
