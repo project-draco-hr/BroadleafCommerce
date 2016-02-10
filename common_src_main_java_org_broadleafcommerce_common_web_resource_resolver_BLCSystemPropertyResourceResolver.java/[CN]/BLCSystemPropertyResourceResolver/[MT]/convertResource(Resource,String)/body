@@ -10,7 +10,7 @@
       String matchedPlaceholder=m.group(0);
       String propertyName=m.group(1);
       String propVal=BLCSystemProperty.resolveSystemProperty(propertyName);
-      if (!StringUtils.isEmpty(propVal)) {
+      if (propVal == null) {
         propVal="";
       }
       newContent=newContent.replaceAll(matchedPlaceholder,'"' + propVal + '"');
