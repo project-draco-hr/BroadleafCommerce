@@ -1,0 +1,10 @@
+{
+  try {
+    workflow.doActivities(context.getSeedData());
+  }
+ catch (  WorkflowException e) {
+    context.getSeedData().add("NestedActivityException");
+    throw e;
+  }
+  return context;
+}

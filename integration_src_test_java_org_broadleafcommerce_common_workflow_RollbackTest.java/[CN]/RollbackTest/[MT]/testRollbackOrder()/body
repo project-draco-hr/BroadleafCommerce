@@ -1,0 +1,13 @@
+{
+  List<String> results=new ArrayList<String>();
+  boolean exceptionThrown=false;
+  try {
+    testRollbackWorkflow.doActivities(results);
+  }
+ catch (  WorkflowException e) {
+    exceptionThrown=true;
+  }
+  List<String> expected=Arrays.asList("Activity1","Activity2","ActivityA","RollbackActivityA","NestedActivityException","RollbackActivity2","RollbackActivity1");
+  Assert.assertTrue(exceptionThrown);
+  Assert.assertEquals(results,expected,"Rollback occurred out of order");
+}
