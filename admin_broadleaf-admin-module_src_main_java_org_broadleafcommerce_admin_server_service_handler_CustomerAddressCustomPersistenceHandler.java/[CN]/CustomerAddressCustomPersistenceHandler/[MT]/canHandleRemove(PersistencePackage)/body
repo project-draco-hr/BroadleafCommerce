@@ -1,0 +1,16 @@
+{
+  boolean canHandle=false;
+  ArrayList<String> clazzNames=new ArrayList<>();
+  clazzNames.add(CustomerAddress.class.getName());
+  clazzNames.add(CustomerAddressImpl.class.getName());
+  String ceilingClassname=persistencePackage.getCeilingEntityFullyQualifiedClassname();
+  if (ceilingClassname != null) {
+    for (    String clazzName : clazzNames) {
+      if (ceilingClassname.equalsIgnoreCase(clazzName)) {
+        canHandle=true;
+        break;
+      }
+    }
+  }
+  return canHandle;
+}
