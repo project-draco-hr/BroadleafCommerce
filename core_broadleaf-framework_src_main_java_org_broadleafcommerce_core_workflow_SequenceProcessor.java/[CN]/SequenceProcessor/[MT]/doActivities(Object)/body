@@ -7,13 +7,10 @@
     throw new IllegalStateException("Unable to find an instance of ActivityStateManager registered under bean id blActivityStateManager");
   }
   ProcessContext<?> context=null;
-  RollbackStateLocal rollbackStateLocal=RollbackStateLocal.getRollbackStateLocal();
-  if (rollbackStateLocal == null) {
-    rollbackStateLocal=new RollbackStateLocal();
-    rollbackStateLocal.setThreadId(String.valueOf(Thread.currentThread().getId()));
-    rollbackStateLocal.setWorkflowId(getBeanName());
-    RollbackStateLocal.setRollbackStateLocal(rollbackStateLocal);
-  }
+  RollbackStateLocal rollbackStateLocal=new RollbackStateLocal();
+  rollbackStateLocal.setThreadId(String.valueOf(Thread.currentThread().getId()));
+  rollbackStateLocal.setWorkflowId(getBeanName());
+  RollbackStateLocal.setRollbackStateLocal(rollbackStateLocal);
   try {
     List<Activity<ProcessContext<?>>> activities=getActivities();
     context=createContext(seedData);
@@ -67,7 +64,6 @@ catch (          WorkflowException e) {
     rollbackStateLocal=RollbackStateLocal.getRollbackStateLocal();
     if (rollbackStateLocal != null && rollbackStateLocal.getWorkflowId().equals(getBeanName())) {
       activityStateManager.clearAllState();
-      RollbackStateLocal.setRollbackStateLocal(null);
     }
   }
   LOG.debug(getBeanName() + " processor is done.");
