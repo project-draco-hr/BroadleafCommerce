@@ -21,6 +21,9 @@
     }
     if (fgLevelQualification) {
       CandidatePromotionItems candidates=couldOfferApplyToOrderItems(offer,fulfillmentGroup.getDiscountableOrderItems());
+      if (!candidates.isMatchedQualifier() && getQualifyGroupAcrossAllOrderItems(fulfillmentGroup)) {
+        candidates=couldOfferApplyToOrderItems(offer,order.getAllOrderItems());
+      }
       if (candidates.isMatchedQualifier()) {
         PromotableCandidateFulfillmentGroupOffer candidateOffer=createCandidateFulfillmentGroupOffer(offer,qualifiedFGOffers,fulfillmentGroup);
         candidateOffer.getCandidateQualifiersMap().putAll(candidates.getCandidateQualifiersMap());
