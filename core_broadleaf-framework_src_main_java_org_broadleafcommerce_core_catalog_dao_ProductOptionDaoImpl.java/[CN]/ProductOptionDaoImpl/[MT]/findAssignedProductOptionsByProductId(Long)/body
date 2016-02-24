@@ -1,0 +1,6 @@
+{
+  Session session=em.unwrap(Session.class);
+  Criteria criteria=session.createCriteria(SkuProductOptionValueXrefImpl.class);
+  List dtoList=criteria.createAlias("sku","sku").createAlias("sku.product","product").createAlias("productOptionValue","productOptionValue").createAlias("productOptionValue.productOption","productOption").setProjection(Projections.distinct(Projections.projectionList().add(Projections.property("product.id"),"productId").add(Projections.property("productOption.attributeName"),"productOptionAttrName").add(Projections.property("productOptionValue.id"),"productOptionValueId"))).setResultTransformer(Transformers.aliasToBean(AssignedProductOptionDTO.class)).add(Restrictions.eq("product.id",productId)).addOrder(Order.asc("productOption.attributeName")).list();
+  return dtoList;
+}
