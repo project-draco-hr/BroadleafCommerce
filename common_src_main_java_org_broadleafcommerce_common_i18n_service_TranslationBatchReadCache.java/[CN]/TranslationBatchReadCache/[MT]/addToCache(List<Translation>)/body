@@ -1,0 +1,12 @@
+{
+  Map<String,Translation> translationMap=BLCMapUtils.keyedMap(translations,new TypedClosure<String,Translation>(){
+    @Override public String getKey(    Translation value){
+      return buildCacheKey(value);
+    }
+  }
+);
+  if (getCache() == null) {
+    setCache(new HashMap<String,Translation>());
+  }
+  getCache().putAll(translationMap);
+}

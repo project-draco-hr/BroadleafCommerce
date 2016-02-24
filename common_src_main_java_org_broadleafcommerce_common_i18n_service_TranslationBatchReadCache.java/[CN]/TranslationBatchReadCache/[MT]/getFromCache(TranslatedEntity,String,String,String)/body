@@ -1,0 +1,8 @@
+{
+  Translation translation=getCache().get(buildCacheKey(entityType,id,propertyName,localeCode));
+  if (translation == null && StringUtils.contains(localeCode,'_')) {
+    String languageWithoutCountryCode=localeCode.substring(localeCode.indexOf('_') + 1);
+    translation=getCache().get(buildCacheKey(entityType,id,propertyName,languageWithoutCountryCode));
+  }
+  return (translation == null) ? null : translation;
+}
