@@ -1,0 +1,9 @@
+{
+  Collection<Element> translationCacheElements=CollectionUtils.collect(translations,new Transformer<Translation,Element>(){
+    @Override public Element transform(    Translation input){
+      return new Element(buildCacheKey(input),input);
+    }
+  }
+);
+  getCache().putAll(translationCacheElements);
+}
