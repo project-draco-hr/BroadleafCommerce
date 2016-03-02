@@ -1,0 +1,8 @@
+{
+  Element cacheEntry=getCache().get(buildCacheKey(entityType,id,propertyName,localeCode));
+  if (cacheEntry == null && StringUtils.contains(localeCode,'_')) {
+    String languageWithoutCountryCode=localeCode.substring(localeCode.indexOf('_') + 1);
+    cacheEntry=getCache().get(buildCacheKey(entityType,id,propertyName,languageWithoutCountryCode));
+  }
+  return (cacheEntry == null) ? null : (Translation)cacheEntry.getObjectValue();
+}

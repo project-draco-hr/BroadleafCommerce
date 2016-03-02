@@ -1,0 +1,20 @@
+{
+  Entity entity=persistencePackage.getEntity();
+  try {
+    PersistencePerspective persistencePerspective=persistencePackage.getPersistencePerspective();
+    Map<String,FieldMetadata> adminProperties=helper.getSimpleMergedProperties(ProductOption.class.getName(),persistencePerspective);
+    Object primaryKey=helper.getPrimaryKey(entity,adminProperties);
+    ProductOption adminInstance=(ProductOption)dynamicEntityDao.retrieve(Class.forName(entity.getType()[0]),primaryKey);
+    adminInstance=(ProductOption)helper.createPopulatedInstance(adminInstance,entity,adminProperties,false);
+    if (needsAllowedValue(adminInstance)) {
+      String errorMessage="Must add at least 1 Allowed Value when Product Option is used in Sku generation";
+      entity.addValidationError("useInSkuGeneration",errorMessage);
+      return entity;
+    }
+    adminInstance=(ProductOption)dynamicEntityDao.merge(adminInstance);
+    return helper.getRecord(adminProperties,adminInstance,null,null);
+  }
+ catch (  Exception e) {
+    throw new ServiceException("Unable to update entity for " + entity.getType()[0],e);
+  }
+}

@@ -1,0 +1,30 @@
+{
+  XFormParams response=new XFormParams();
+  Map<String,Boolean> templateSkipMap=new LinkedHashMap<>();
+  List<String> templates=new ArrayList<String>();
+  List<Boolean> skips=new ArrayList<Boolean>();
+  List<Boolean> renames=new ArrayList<Boolean>();
+  if (!defaultParams.isEmpty()) {
+    for (int iter=0; iter < defaultParams.getXformVals().length; iter++) {
+      String defaultParam=defaultParams.getXformVals()[iter];
+      if (!templateSkipMap.containsKey(defaultParam)) {
+        templateSkipMap.put(defaultParam,true);
+        templates.add(defaultParam);
+        skips.add(defaultParams.getXformSkipOverlaps()[iter]);
+        renames.add(defaultParams.getXformRenameMethodOverlaps()[iter]);
+      }
+    }
+  }
+  for (int iter=0; iter < conditionalParams.getXformVals().length; iter++) {
+    String conditionalValue=conditionalParams.getXformVals()[iter];
+    if (!templateSkipMap.containsKey(conditionalValue)) {
+      templates.add(conditionalValue);
+      skips.add(conditionalParams.getXformSkipOverlaps()[iter]);
+      renames.add(conditionalParams.getXformRenameMethodOverlaps()[iter]);
+    }
+  }
+  response.setXformVals(templates.toArray(new String[templates.size()]));
+  response.setXformSkipOverlaps(skips.toArray(new Boolean[skips.size()]));
+  response.setXformRenameMethodOverlaps(renames.toArray(new Boolean[renames.size()]));
+  return response;
+}
