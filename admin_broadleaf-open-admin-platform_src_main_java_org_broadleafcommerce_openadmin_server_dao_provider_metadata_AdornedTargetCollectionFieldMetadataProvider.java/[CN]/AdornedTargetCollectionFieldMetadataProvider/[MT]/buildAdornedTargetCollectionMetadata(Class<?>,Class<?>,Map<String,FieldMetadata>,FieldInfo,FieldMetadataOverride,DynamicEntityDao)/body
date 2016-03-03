@@ -101,8 +101,10 @@
       try {
         ParameterizedType pt=(ParameterizedType)field.getGenericType();
         java.lang.reflect.Type collectionType=pt.getActualTypeArguments()[0];
-        String ceilingEntityName=((Class<?>)collectionType).getName();
-        collectionTarget=entityConfiguration.lookupEntityClass(ceilingEntityName);
+        collectionTarget=(Class<?>)collectionType;
+        if (collectionTarget.isInterface()) {
+          collectionTarget=entityConfiguration.lookupEntityClass(collectionTarget.getName());
+        }
         break checkCeiling;
       }
  catch (      NoSuchBeanDefinitionException e) {

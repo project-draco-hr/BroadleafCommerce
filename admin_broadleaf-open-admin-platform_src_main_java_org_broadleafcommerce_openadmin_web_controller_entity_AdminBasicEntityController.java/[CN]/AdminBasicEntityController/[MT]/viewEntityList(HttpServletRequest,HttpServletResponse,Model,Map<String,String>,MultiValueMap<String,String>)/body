@@ -6,6 +6,9 @@
   ClassMetadata cmd=service.getClassMetadata(ppr).getDynamicResultSet().getClassMetaData();
   DynamicResultSet drs=service.getRecords(ppr).getDynamicResultSet();
   ListGrid listGrid=formService.buildMainListGrid(drs,cmd,sectionKey,crumbs);
+  if (CollectionUtils.isEmpty(listGrid.getHeaderFields())) {
+    throw new IllegalStateException("At least 1 field must be set to prominent to display in a main grid");
+  }
   List<EntityFormAction> mainActions=new ArrayList<EntityFormAction>();
   addAddActionIfAllowed(sectionClassName,cmd,mainActions);
   extensionManager.getProxy().addAdditionalMainActions(sectionClassName,mainActions);
