@@ -17,7 +17,9 @@
       criteria.select(root.get("product").get("id").as(Long.class));
       List<Predicate> restrictions=new ArrayList<Predicate>();
       restrictions.add(builder.equal(root.get("defaultReference"),Boolean.TRUE));
-      restrictions.add(root.get("category").get("id").in(transformedValues));
+      if (CollectionUtils.isNotEmpty(transformedValues)) {
+        restrictions.add(root.get("category").get("id").in(transformedValues));
+      }
       QueryUtils.notArchived(builder,restrictions,root,"archiveStatus");
       criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
       TypedQuery<Long> query=dynamicEntityDao.getStandardEntityManager().createQuery(criteria);
@@ -42,7 +44,7 @@
     }
   }
   cto.getNonCountAdditionalFilterMappings().add(new FilterMapping().withDirectFilterValues(new EmptyFilterValues()).withRestriction(new Restriction().withPredicateProvider(new PredicateProvider(){
-    public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path explicitPath,    List directValues){
+    @Override public Predicate buildPredicate(    CriteriaBuilder builder,    FieldPathBuilder fieldPathBuilder,    From root,    String ceilingEntity,    String fullPropertyName,    Path explicitPath,    List directValues){
       root.fetch("defaultSku",JoinType.LEFT);
       root.fetch("defaultCategory",JoinType.LEFT);
       return null;
