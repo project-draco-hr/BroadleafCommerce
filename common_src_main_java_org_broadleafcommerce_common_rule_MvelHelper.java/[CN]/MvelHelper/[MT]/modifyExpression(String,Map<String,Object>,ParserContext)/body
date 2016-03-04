@@ -1,0 +1,7 @@
+{
+  String modifiedExpression=rule;
+  for (  String attributeMap : getRuleAttributeMaps()) {
+    rule.replaceAll(attributeMap + "\\(\\)\\[(.*)\\](?!\\.\\?value)",attributeMap + "()[$1].?value");
+  }
+  return modifiedExpression;
+}
