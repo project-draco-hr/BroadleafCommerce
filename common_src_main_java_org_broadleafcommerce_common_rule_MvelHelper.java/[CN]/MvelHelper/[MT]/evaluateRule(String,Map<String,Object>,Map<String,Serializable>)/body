@@ -1,34 +1,3 @@
 {
-  if (rule == null || "".equals(rule)) {
-    return true;
-  }
- else {
-    Serializable exp=(Serializable)expressionCache.get(rule);
-    if (exp == null) {
-      ParserContext context=new ParserContext();
-      context.addImport("MVEL",MVEL.class);
-      context.addImport("MvelHelper",MvelHelper.class);
-      exp=MVEL.compileExpression(rule,context);
-      expressionCache.put(rule,exp);
-    }
-    Map<String,Object> mvelParameters=new HashMap<String,Object>();
-    if (ruleParameters != null) {
-      for (      String parameter : ruleParameters.keySet()) {
-        mvelParameters.put(parameter,ruleParameters.get(parameter));
-      }
-    }
-    try {
-      Object test=MVEL.executeExpression(exp,mvelParameters);
-      if (test == null) {
-        return true;
-      }
-      return (Boolean)test;
-    }
- catch (    Exception e) {
-      if (!TEST_MODE) {
-        LOG.info("Unable to parse and/or execute the mvel expression (" + rule + "). Reporting to the logs and returning false for the match expression",e);
-      }
-      return false;
-    }
-  }
+  return evaluateRule(rule,ruleParameters,expressionCache,null);
 }
