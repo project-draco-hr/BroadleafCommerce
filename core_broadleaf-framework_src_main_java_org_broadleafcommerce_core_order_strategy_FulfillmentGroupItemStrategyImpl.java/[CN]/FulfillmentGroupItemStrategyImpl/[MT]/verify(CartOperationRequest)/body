@@ -60,10 +60,10 @@
           if (oi.getId().equals(fgItem.getOrderItem().getId())) {
             LOG.warn("Synchronizing FulfillmentGroupItem to match OrderItem [" + entry.getKey() + "] quantity of : "+ oi.getQuantity());
             fgItem.setQuantity(oi.getQuantity());
-            order=orderService.save(order,true);
-            request.setOrder(order);
           }
         }
+        order=orderService.save(order,true);
+        request.setOrder(order);
       }
  else {
         throw new IllegalStateException("Not enough fulfillment group items found for DiscreteOrderItem id: " + entry.getKey());
