@@ -53,7 +53,7 @@
   }
   for (  Entry<Long,Integer> entry : oiQuantityMap.entrySet()) {
     if (!entry.getValue().equals(0)) {
-      if (syncFGItemQty) {
+      if (useSingleFulfillmentGroupQtySync(order.getFulfillmentGroups())) {
         LOG.warn("Not enough fulfillment group items found for DiscreteOrderItem id:" + entry.getKey());
         FulfillmentGroupItem fgItem=fgItemMap.get(entry.getKey());
         for (        OrderItem oi : expandedOrderItems) {
