@@ -1,23 +1,37 @@
 {
   if (resourceCachingEnabled) {
-    String key=RESOLVED_URL_PATH_CACHE_KEY_PREFIX_NULL + resourceUrlPath;
-    Object nullResource=getCache().get(key,Object.class);
+    String response=null;
+    String notFoundKey=RESOLVED_URL_PATH_CACHE_KEY_PREFIX_NULL + resourceUrlPath + getThemePathFromBRC();
+    Object nullResource=getCache().get(notFoundKey,Object.class);
     if (nullResource != null) {
-      if (logger.isTraceEnabled()) {
-        logger.trace(String.format("Found null reference url path match for '%s'",resourceUrlPath));
-      }
+      logNullReferenceUrlPatchMatch(resourceUrlPath);
       return null;
     }
- else {
-      String response=super.resolveUrlPathInternal(resourceUrlPath,locations,chain);
-      if (response == null) {
-        if (logger.isTraceEnabled()) {
-          logger.trace(String.format("Putting resolved null reference url path in cache for '%s'",resourceUrlPath));
-        }
-        getCache().put(key,NULL_REFERENCE);
+    String foundKey=RESOLVED_URL_PATH_CACHE_KEY_PREFIX + resourceUrlPath + getThemePathFromBRC();
+    String resolvedUrlPath=this.cache.get(foundKey,String.class);
+    if (resolvedUrlPath != null) {
+      if (logger.isTraceEnabled()) {
+        logger.trace("Found match");
       }
-      return response;
+      response=resolvedUrlPath;
     }
+ else {
+      resolvedUrlPath=chain.resolveUrlPath(resourceUrlPath,locations);
+      if (resolvedUrlPath != null) {
+        if (logger.isTraceEnabled()) {
+          logger.trace("Putting resolved resource URL path in cache");
+        }
+        this.cache.put(foundKey,resolvedUrlPath);
+        response=resolvedUrlPath;
+      }
+    }
+    if (response == null) {
+      if (logger.isTraceEnabled()) {
+        logger.trace(String.format("Putting resolved null reference url " + "path in cache for '%s'",resourceUrlPath));
+      }
+      getCache().put(notFoundKey,NULL_REFERENCE);
+    }
+    return response;
   }
  else {
     return chain.resolveUrlPath(resourceUrlPath,locations);

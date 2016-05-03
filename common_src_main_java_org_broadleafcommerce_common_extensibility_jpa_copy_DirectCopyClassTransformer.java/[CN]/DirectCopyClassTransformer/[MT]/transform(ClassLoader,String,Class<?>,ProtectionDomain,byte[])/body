@@ -44,65 +44,14 @@
       if (isValidPattern) {
         classPool=ClassPool.getDefault();
         clazz=classPool.makeClass(new ByteArrayInputStream(classfileBuffer),false);
-        List<?> attributes=clazz.getClassFile().getAttributes();
-        Iterator<?> itr=attributes.iterator();
-        List<String> templates=new ArrayList<String>();
-        List<Boolean> skips=new ArrayList<Boolean>();
-        List<Boolean> renames=new ArrayList<Boolean>();
-        check: {
-          while (itr.hasNext()) {
-            Object object=itr.next();
-            if (AnnotationsAttribute.class.isAssignableFrom(object.getClass())) {
-              AnnotationsAttribute attr=(AnnotationsAttribute)object;
-              Annotation[] items=attr.getAnnotations();
-              for (              Annotation annotation : items) {
-                String typeName=annotation.getTypeName();
-                if (typeName.equals(DirectCopyTransform.class.getName())) {
-                  ArrayMemberValue arrayMember=(ArrayMemberValue)annotation.getMemberValue("value");
-                  for (                  MemberValue arrayMemberValue : arrayMember.getValue()) {
-                    AnnotationMemberValue member=(AnnotationMemberValue)arrayMemberValue;
-                    Annotation memberAnnot=member.getValue();
-                    ArrayMemberValue annot=(ArrayMemberValue)memberAnnot.getMemberValue("templateTokens");
-                    for (                    MemberValue memberValue : annot.getValue()) {
-                      String val=((StringMemberValue)memberValue).getValue();
-                      if (val != null && templateTokens.containsKey(val)) {
-                        templateCheck: {
-                          for (                          DirectCopyIgnorePattern matchedPattern : matchedPatterns) {
-                            for (                            String ignoreToken : matchedPattern.getTemplateTokenPatterns()) {
-                              if (val.matches(ignoreToken)) {
-                                break templateCheck;
-                              }
-                            }
-                          }
-                          String[] templateVals=templateTokens.get(val).split(",");
-                          templates.addAll(Arrays.asList(templateVals));
-                        }
-                      }
-                    }
-                    BooleanMemberValue skipAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("skipOverlaps");
-                    if (skipAnnot != null) {
-                      skips.add(skipAnnot.getValue());
-                    }
- else {
-                      skips.add(mySkipOverlaps);
-                    }
-                    BooleanMemberValue renameAnnot=(BooleanMemberValue)memberAnnot.getMemberValue("renameMethodOverlaps");
-                    if (renameAnnot != null) {
-                      renames.add(renameAnnot.getValue());
-                    }
- else {
-                      renames.add(myRenameMethodOverlaps);
-                    }
-                  }
-                  xformVals=templates.toArray(new String[templates.size()]);
-                  xformSkipOverlaps=skips.toArray(new Boolean[skips.size()]);
-                  xformRenameMethodOverlaps=renames.toArray(new Boolean[renames.size()]);
-                  break check;
-                }
-              }
-            }
-          }
+        XFormParams params=reviewDirectCopyTransformAnnotations(clazz,mySkipOverlaps,myRenameMethodOverlaps,matchedPatterns);
+        XFormParams conditionalParams=reviewConditionalDirectCopyTransforms(convertedClassName,matchedPatterns);
+        if (conditionalParams != null && !conditionalParams.isEmpty()) {
+          params=combineXFormParams(params,conditionalParams);
         }
+        xformVals=params.getXformVals();
+        xformSkipOverlaps=params.getXformSkipOverlaps();
+        xformRenameMethodOverlaps=params.getXformRenameMethodOverlaps();
       }
     }
     if (xformVals != null && xformVals.length > 0) {

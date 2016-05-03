@@ -1,0 +1,16 @@
+{
+  if (params != null && params.containsKey(getKeywordParam())) {
+    params.remove(getKeywordParam());
+    if (removeAllParamsExceptCategoryId) {
+      Iterator<Entry<String,String[]>> it=params.entrySet().iterator();
+      while (it.hasNext()) {
+        Entry<String,String[]> entry=it.next();
+        if (!"categoryId".equals(entry.getKey())) {
+          it.remove();
+        }
+      }
+    }
+    Map<String,Object> contextMap=holder.getContextMap();
+    contextMap.put(BreadcrumbServiceExtensionManager.CONTEXT_PARAM_STRIPPED_PARAMS,params);
+  }
+}

@@ -12,10 +12,6 @@
     int count=0;
     while (newAsset != null) {
       count++;
-      if (fullUrl.contains("-1")) {
-        fullUrl=fullUrl.replace("-1","");
-        count++;
-      }
       newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,false));
       if (newAsset == null) {
         newAsset=staticAssetDao.readStaticAssetByFullUrl(getCountUrl(fullUrl,count,true));

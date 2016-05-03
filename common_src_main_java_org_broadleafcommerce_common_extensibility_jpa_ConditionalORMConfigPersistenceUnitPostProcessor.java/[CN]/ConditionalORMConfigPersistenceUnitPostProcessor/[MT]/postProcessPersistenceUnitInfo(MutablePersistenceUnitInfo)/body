@@ -1,0 +1,13 @@
+{
+  String puName=pui.getPersistenceUnitName();
+  for (  Map.Entry<String,ConditionalORMConfigDto> entry : enabledEntities.entrySet()) {
+    if (puName.equals(entry.getValue().getPuName())) {
+      pui.getManagedClassNames().add(entry.getKey());
+    }
+  }
+  for (  Map.Entry<String,ConditionalORMConfigDto> entry : enabledOrmFiles.entrySet()) {
+    if (puName.equals(entry.getValue().getPuName())) {
+      pui.getMappingFileNames().add(entry.getKey());
+    }
+  }
+}

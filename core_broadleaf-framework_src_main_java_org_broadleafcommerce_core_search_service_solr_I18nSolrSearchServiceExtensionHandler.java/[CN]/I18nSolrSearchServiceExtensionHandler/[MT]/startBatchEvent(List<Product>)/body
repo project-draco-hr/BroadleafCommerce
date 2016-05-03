@@ -1,0 +1,13 @@
+{
+  List<String> defaultSkuIds=new ArrayList<String>(products.size());
+  List<String> productIds=new ArrayList<String>(products.size());
+  for (  Product product : products) {
+    productIds.add(product.getId().toString());
+    defaultSkuIds.add(product.getDefaultSku().getId().toString());
+  }
+  List<Translation> defaultSkuTranslations=translationDao.readAllTranslationEntries(TranslatedEntity.SKU,ResultType.STANDARD,defaultSkuIds);
+  TranslationBatchReadCache.addToCache(defaultSkuTranslations);
+  List<Translation> productTranslations=translationDao.readAllTranslationEntries(TranslatedEntity.PRODUCT,ResultType.STANDARD,productIds);
+  TranslationBatchReadCache.addToCache(productTranslations);
+  return ExtensionResultStatusType.HANDLED_CONTINUE;
+}

@@ -1,0 +1,9 @@
+{
+  incrementReportEntity(this.putCount);
+  final CacheEntry<V> entry=new CacheEntry<V>(value,this.useSoftReferences);
+  final int newSize=this.dataContainer.put(key,entry);
+  if (this.traceExecution) {
+    this.logger.trace("[THYMELEAF][{}][{}][CACHE_ADD][{}] Adding cache entry in cache \"{}\" for key \"{}\". New size is {}.",new Object[]{TemplateEngine.threadIndex(),this.name,Integer.valueOf(newSize),this.name,key,Integer.valueOf(newSize)});
+  }
+  outputReportIfNeeded();
+}

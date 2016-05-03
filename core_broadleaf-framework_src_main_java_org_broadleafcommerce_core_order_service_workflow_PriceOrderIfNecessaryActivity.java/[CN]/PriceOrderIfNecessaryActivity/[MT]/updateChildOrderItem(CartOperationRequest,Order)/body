@@ -1,0 +1,23 @@
+{
+  boolean updated=false;
+  for (  OrderItem oi : order.getOrderItems()) {
+    if (oi instanceof BundleOrderItem) {
+      BundleOrderItem boi=(BundleOrderItem)oi;
+      updated=checkAndUpdateChildren(request,boi);
+      if (!updated) {
+        for (        OrderItem discreteOrderItem : boi.getDiscreteOrderItems()) {
+          if (checkAndUpdateChildren(request,discreteOrderItem)) {
+            updated=true;
+            break;
+          }
+        }
+      }
+    }
+ else {
+      updated=checkAndUpdateChildren(request,oi);
+    }
+    if (updated) {
+      break;
+    }
+  }
+}

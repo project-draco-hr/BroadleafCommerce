@@ -1,0 +1,29 @@
+{
+  ef.setEntityType(adornedList.getAdornedTargetEntityClassname());
+  PersistencePackageRequest request=PersistencePackageRequest.adorned().withCeilingEntityClassname(adornedMd.getCollectionCeilingEntity()).withAdornedList(adornedList);
+  ClassMetadata collectionMetadata=adminEntityService.getClassMetadata(request).getDynamicResultSet().getClassMetaData();
+  List<Property> entityFormProperties=new ArrayList<Property>();
+  if (isViewCollectionItem) {
+    Collections.addAll(entityFormProperties,collectionMetadata.getProperties());
+  }
+ else {
+    for (    String targetFieldName : adornedMd.getMaintainedAdornedTargetFields()) {
+      Property p=collectionMetadata.getPMap().get(targetFieldName);
+      if (p.getMetadata() instanceof BasicFieldMetadata) {
+        ((BasicFieldMetadata)p.getMetadata()).setVisibility(VisibilityEnum.VISIBLE_ALL);
+        entityFormProperties.add(p);
+      }
+    }
+  }
+  setEntityFormFields(ef,entityFormProperties);
+  Field f=new Field().withName(adornedList.getLinkedObjectPath() + "." + adornedList.getLinkedIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withValue(parentId);
+  ef.addHiddenField(f);
+  f=new Field().withName(adornedList.getTargetObjectPath() + "." + adornedList.getTargetIdProperty()).withFieldType(SupportedFieldType.HIDDEN.toString()).withIdOverride("adornedTargetIdProperty");
+  ef.addHiddenField(f);
+  if (StringUtils.isNotBlank(adornedList.getSortField())) {
+    f=new Field().withName(adornedList.getSortField()).withFieldType(SupportedFieldType.HIDDEN.toString());
+    ef.addHiddenField(f);
+  }
+  ef.setParentId(parentId);
+  return ef;
+}

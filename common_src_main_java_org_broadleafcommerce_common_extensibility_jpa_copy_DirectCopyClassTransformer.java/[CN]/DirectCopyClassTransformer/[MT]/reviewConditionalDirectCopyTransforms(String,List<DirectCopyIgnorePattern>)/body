@@ -1,0 +1,20 @@
+{
+  XFormParams response=new XFormParams();
+  List<String> templates=new ArrayList<String>();
+  List<Boolean> skips=new ArrayList<Boolean>();
+  List<Boolean> renames=new ArrayList<Boolean>();
+  if (conditionalDirectCopyTransformersManager.isEntityEnabled(convertedClassName)) {
+    ConditionalDirectCopyTransformMemberDto dto=conditionalDirectCopyTransformersManager.getTransformMember(convertedClassName);
+    for (    String templateToken : dto.getTemplateTokens()) {
+      reviewTemplateTokens(matchedPatterns,templates,templateToken);
+    }
+    for (int i=0; i < templates.size(); i++) {
+      skips.add(dto.isSkipOverlaps());
+      renames.add(dto.isRenameMethodOverlaps());
+    }
+    response.setXformVals(templates.toArray(new String[templates.size()]));
+    response.setXformSkipOverlaps(skips.toArray(new Boolean[skips.size()]));
+    response.setXformRenameMethodOverlaps(renames.toArray(new Boolean[renames.size()]));
+  }
+  return response;
+}

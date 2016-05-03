@@ -1,7 +1,18 @@
 {
   Order cart=CartState.getCart();
+  CustomerPayment customerPayment=null;
   if (billingForm.isUseShippingAddress()) {
     copyShippingAddressToBillingAddress(cart,billingForm);
+  }
+  Boolean useCustomerPayment=billingForm.getUseCustomerPayment();
+  if (useCustomerPayment && billingForm.getCustomerPaymentId() != null) {
+    customerPayment=customerPaymentService.readCustomerPaymentById(billingForm.getCustomerPaymentId());
+    if (customerPayment != null) {
+      Address address=customerPayment.getBillingAddress();
+      if (address != null) {
+        copyAddressToBillingAddress(billingForm,address);
+      }
+    }
   }
   billingInfoFormValidator.validate(billingForm,result);
   if (result.hasErrors()) {
@@ -17,9 +28,17 @@
     billingForm.getAddress().setPhoneFax(null);
   }
   boolean found=false;
+  String paymentName=billingForm.getPaymentName();
+  Boolean saveNewPayment=billingForm.getSaveNewPayment();
   for (  OrderPayment p : cart.getPayments()) {
     if (PaymentType.CREDIT_CARD.equals(p.getType()) && p.isActive()) {
-      p.setBillingAddress(billingForm.getAddress());
+      if (p.getBillingAddress() == null) {
+        p.setBillingAddress(billingForm.getAddress());
+      }
+ else {
+        Address updatedAddress=updateAddress(billingForm.getAddress(),p.getBillingAddress());
+        p.setBillingAddress(updatedAddress);
+      }
       found=true;
     }
   }

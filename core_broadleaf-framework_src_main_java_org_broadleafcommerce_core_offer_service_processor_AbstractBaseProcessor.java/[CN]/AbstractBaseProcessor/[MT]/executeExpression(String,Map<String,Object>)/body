@@ -1,23 +1,8 @@
 {
-  try {
-    Serializable exp;
 synchronized (EXPRESSION_CACHE) {
-      exp=(Serializable)EXPRESSION_CACHE.get(expression);
-      if (exp == null) {
-        ParserContext context=new ParserContext();
-        context.addImport("OfferType",OfferType.class);
-        context.addImport("FulfillmentType",FulfillmentType.class);
-        context.addImport("MVEL",MVEL.class);
-        context.addImport("MvelHelper",MvelHelper.class);
-        exp=MVEL.compileExpression(expression,context);
-        EXPRESSION_CACHE.put(expression,exp);
-      }
-    }
-    Object test=MVEL.executeExpression(exp,vars);
-    return (Boolean)test;
-  }
- catch (  Exception e) {
-    LOG.warn("Unable to parse and/or execute an mvel expression. Reporting to the logs and returning false " + "for the match expression:" + expression,e);
-    return false;
+    Map<String,Class<?>> contextImports=new HashMap<>();
+    contextImports.put("OfferType",OfferType.class);
+    contextImports.put("FulfillmentType",FulfillmentType.class);
+    return MvelHelper.evaluateRule(expression,vars,EXPRESSION_CACHE,contextImports);
   }
 }

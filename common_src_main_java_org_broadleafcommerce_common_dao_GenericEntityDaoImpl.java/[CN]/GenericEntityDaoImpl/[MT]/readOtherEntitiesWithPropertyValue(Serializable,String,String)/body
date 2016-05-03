@@ -1,0 +1,16 @@
+{
+  Class clazz=DynamicDaoHelperImpl.getNonProxyImplementationClassIfNecessary(instance.getClass());
+  CriteriaBuilder builder=em.getCriteriaBuilder();
+  CriteriaQuery<Long> criteria=builder.createQuery(Long.class);
+  Root root=criteria.from(clazz);
+  Path idField=root.get(getIdField(clazz).getName());
+  criteria.select(idField.as(Long.class));
+  List<Predicate> restrictions=new ArrayList<Predicate>();
+  restrictions.add(builder.equal(root.get(propertyName),value));
+  restrictions.add(builder.notEqual(idField,getIdentifier(instance)));
+  if (instance instanceof Status) {
+    restrictions.add(builder.or(builder.isNull(root.get("archiveStatus").get("archived")),builder.equal(root.get("archiveStatus").get("archived"),'N')));
+  }
+  criteria.where(restrictions.toArray(new Predicate[restrictions.size()]));
+  return em.createQuery(criteria).getResultList();
+}

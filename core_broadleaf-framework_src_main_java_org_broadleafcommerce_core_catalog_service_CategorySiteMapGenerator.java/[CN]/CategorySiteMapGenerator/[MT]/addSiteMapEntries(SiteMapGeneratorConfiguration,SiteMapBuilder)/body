@@ -1,4 +1,6 @@
 {
   CategorySiteMapGeneratorConfiguration categorySMGC=(CategorySiteMapGeneratorConfiguration)smgc;
-  addCategorySiteMapEntries(categorySMGC.getRootCategory(),0,categorySMGC,siteMapBuilder);
+  Long rootCategoryId=categorySMGC.getRootCategory().getId();
+  Category rootCategory=categoryDao.readCategoryById(rootCategoryId);
+  addCategorySiteMapEntries(rootCategory,0,categorySMGC,siteMapBuilder);
 }

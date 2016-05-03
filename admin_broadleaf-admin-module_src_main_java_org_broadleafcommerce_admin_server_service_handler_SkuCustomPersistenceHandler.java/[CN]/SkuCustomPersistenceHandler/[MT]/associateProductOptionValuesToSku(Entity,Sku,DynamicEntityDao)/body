@@ -6,7 +6,10 @@
     property.setIsDirty(true);
   }
   if (adminInstance.getProductOptionValueXrefs().size() > 0) {
-    adminInstance.getProductOptionValueXrefs().clear();
+    Iterator<SkuProductOptionValueXref> iterator=adminInstance.getProductOptionValueXrefs().iterator();
+    while (iterator.hasNext()) {
+      dynamicEntityDao.remove(iterator.next());
+    }
     dynamicEntityDao.merge(adminInstance);
   }
   for (  Long id : productOptionValueIds) {

@@ -39,15 +39,20 @@ return new PropertyValidationResult(false,"Field must be a valid decimal");
 break;
 case MONEY:
 pp=new ParsePosition(0);
-if (BigDecimal.class.isAssignableFrom(populateValueRequest.getReturnType()) || Money.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+try {
+if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
+format.parse(populateValueRequest.getRequestedValue(),pp);
+}
+ else {
 format.setParseBigDecimal(true);
 format.parse(populateValueRequest.getRequestedValue(),pp);
 format.setParseBigDecimal(false);
 }
- else if (Double.class.isAssignableFrom(populateValueRequest.getReturnType())) {
-format.parse(populateValueRequest.getRequestedValue(),pp);
-}
 if (pp.getIndex() != populateValueRequest.getRequestedValue().length()) {
+return new PropertyValidationResult(false,"Field must be a valid number");
+}
+}
+ catch (NumberFormatException e) {
 return new PropertyValidationResult(false,"Field must be a valid number");
 }
 break;

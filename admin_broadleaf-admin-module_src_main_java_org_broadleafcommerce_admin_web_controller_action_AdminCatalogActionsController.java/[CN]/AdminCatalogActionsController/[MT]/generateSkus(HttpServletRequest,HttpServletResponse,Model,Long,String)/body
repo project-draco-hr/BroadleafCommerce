@@ -2,13 +2,17 @@
   HashMap<String,Object> result=new HashMap<String,Object>();
   Integer skusGenerated=adminCatalogService.generateSkusFromProduct(productId);
   if (skusGenerated == 0) {
-    result.put("message","No Skus were generated. It is likely that each product option value permutation " + "already has a Sku associated with it");
+    result.put("message",NO_SKUS_GENERATED);
   }
  else   if (skusGenerated == -1) {
-    result.put("message","This product has no Product Options configured to generate Skus from");
+    result.put("message",NO_PRODUCT_OPTIONS_GENERATED);
+  }
+ else   if (skusGenerated == -2) {
+    result.put("message",FAILED_SKU_GENERATION);
+    result.put("error","no-allowed-value-error");
   }
  else {
-    result.put("message",skusGenerated + " Skus have been generated from the configured product options");
+    result.put("message",skusGenerated + " " + NUMBER_SKUS_GENERATED);
   }
   String url=request.getRequestURL().toString();
   url=url.substring(0,url.indexOf("/generate-skus"));

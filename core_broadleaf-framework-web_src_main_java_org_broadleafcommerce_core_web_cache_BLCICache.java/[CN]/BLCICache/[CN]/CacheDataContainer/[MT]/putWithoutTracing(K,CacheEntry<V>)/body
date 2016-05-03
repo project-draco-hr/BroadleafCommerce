@@ -1,0 +1,17 @@
+{
+  final CacheEntry<V> existing=this.container.putIfAbsent(key,value);
+  if (existing != null) {
+    return -1;
+  }
+  if (this.sizeLimit) {
+synchronized (this.fifo) {
+      final Object removedKey=this.fifo[this.fifoPointer];
+      if (removedKey != null) {
+        this.container.remove(removedKey);
+      }
+      this.fifo[this.fifoPointer]=key;
+      this.fifoPointer=(this.fifoPointer + 1) % this.maxSize;
+    }
+  }
+  return -1;
+}

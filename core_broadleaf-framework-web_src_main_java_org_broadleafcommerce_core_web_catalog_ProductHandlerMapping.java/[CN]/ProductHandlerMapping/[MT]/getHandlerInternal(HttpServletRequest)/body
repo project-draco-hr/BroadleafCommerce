@@ -1,11 +1,16 @@
 {
-  if (useSku) {
-    return null;
-  }
   BroadleafRequestContext context=BroadleafRequestContext.getBroadleafRequestContext();
-  if (context != null && context.getRequestURIWithoutContext() != null) {
-    String requestUri=URLDecoder.decode(context.getRequestURIWithoutContext(),charEncoding);
-    Product product=catalogService.findProductByURI(requestUri);
+  if (context != null) {
+    if (shouldSkipExecution(context)) {
+      return null;
+    }
+    Product product=null;
+    if (allowProductResolutionUsingIdParam()) {
+      product=findProductUsingIdParam(context);
+    }
+    if (product == null) {
+      product=findProductUsingUrl(context);
+    }
     if (product != null) {
       context.getRequest().setAttribute(CURRENT_PRODUCT_ATTRIBUTE_NAME,product);
       return controllerName;

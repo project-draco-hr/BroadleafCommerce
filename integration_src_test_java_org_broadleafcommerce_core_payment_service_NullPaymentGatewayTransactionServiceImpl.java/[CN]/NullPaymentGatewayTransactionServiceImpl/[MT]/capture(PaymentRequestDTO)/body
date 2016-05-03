@@ -1,0 +1,26 @@
+{
+  PaymentResponseDTO responseDTO=new PaymentResponseDTO(PaymentType.THIRD_PARTY_ACCOUNT,NullPaymentGatewayType.NULL_GATEWAY);
+  responseDTO.paymentTransactionType(PaymentTransactionType.AUTHORIZE_AND_CAPTURE);
+  responseDTO.amount(new Money(paymentRequestDTO.getTransactionTotal()));
+  Map<String,Object> additionalFields=paymentRequestDTO.getAdditionalFields();
+  if (additionalFields != null) {
+    if (additionalFields.containsKey("desiredOutcome")) {
+      String desiredOutome=(String)additionalFields.get("desiredOutcome");
+      if (desiredOutome.equals("SOFT DECLINE")) {
+        responseDTO.successful(false);
+        responseDTO.rawResponse("confirmation - failure - soft decline");
+        responseDTO.responseMap(PaymentAdditionalFieldType.DECLINE_TYPE.getType(),PaymentDeclineType.SOFT.getType());
+      }
+ else       if (desiredOutome.equals("HARD DECLINE")) {
+        responseDTO.successful(false);
+        responseDTO.rawResponse("confirmation - failure - hard decline");
+        responseDTO.responseMap(PaymentAdditionalFieldType.DECLINE_TYPE.getType(),PaymentDeclineType.HARD.getType());
+      }
+    }
+  }
+ else {
+    responseDTO.rawResponse("confirmation - success");
+    responseDTO.successful(true);
+  }
+  return responseDTO;
+}

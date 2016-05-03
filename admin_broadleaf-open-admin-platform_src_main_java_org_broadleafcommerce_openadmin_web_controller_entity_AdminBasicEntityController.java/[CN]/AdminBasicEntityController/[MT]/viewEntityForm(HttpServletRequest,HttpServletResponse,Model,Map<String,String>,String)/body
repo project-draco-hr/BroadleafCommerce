@@ -13,16 +13,16 @@
   model.addAttribute("currentUrl",request.getRequestURL().toString());
   setModelAttributes(model,sectionKey);
   if (sandBoxHelper.isSandBoxable(entityForm.getEntityType())) {
-    Tab auditTab=new Tab();
-    auditTab.setTitle("Audit");
-    auditTab.setOrder(Integer.MAX_VALUE);
-    auditTab.setTabClass("audit-tab");
-    entityForm.getTabs().add(auditTab);
+    Tab changeHistoryTab=new Tab();
+    changeHistoryTab.setTitle("Change History");
+    changeHistoryTab.setOrder(Integer.MAX_VALUE);
+    changeHistoryTab.setTabClass("change-history-tab");
+    entityForm.getTabs().add(changeHistoryTab);
   }
   if (isAjaxRequest(request)) {
     entityForm.setReadOnly();
     model.addAttribute("viewType","modal/entityView");
-    model.addAttribute("modalHeaderType","viewEntity");
+    model.addAttribute("modalHeaderType",ModalHeaderType.VIEW_ENTITY.getType());
     return "modules/modalContainer";
   }
  else {

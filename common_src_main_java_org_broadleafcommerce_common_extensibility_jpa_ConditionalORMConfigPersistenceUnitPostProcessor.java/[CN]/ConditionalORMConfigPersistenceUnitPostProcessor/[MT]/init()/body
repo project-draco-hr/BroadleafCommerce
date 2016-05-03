@@ -1,0 +1,12 @@
+{
+  for (  Map.Entry<String,ConditionalORMConfigDto> entry : entities.entrySet()) {
+    if (isPropertyEnabled(entry.getValue().getConditionalProperty())) {
+      enabledEntities.put(entry.getKey(),entry.getValue());
+    }
+  }
+  for (  Map.Entry<String,ConditionalORMConfigDto> entry : ormFiles.entrySet()) {
+    if (isPropertyEnabled(entry.getValue().getConditionalProperty())) {
+      enabledOrmFiles.put(entry.getKey(),entry.getValue());
+    }
+  }
+}

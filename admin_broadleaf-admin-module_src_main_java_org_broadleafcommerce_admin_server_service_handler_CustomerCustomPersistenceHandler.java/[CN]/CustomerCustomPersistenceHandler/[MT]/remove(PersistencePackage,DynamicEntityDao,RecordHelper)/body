@@ -1,7 +1,18 @@
 {
   Entity entity=persistencePackage.getEntity();
   try {
-    roleDao.removeCustomerRolesByCustomerId(Long.parseLong(entity.findProperty("id").getValue()));
+    Long customerId=Long.parseLong(entity.findProperty("id").getValue());
+    Customer customer=customerService.readCustomerById(customerId);
+    if (Status.class.isAssignableFrom(customer.getClass())) {
+      ((Status)customer).setArchived('Y');
+      List<CustomerAddress> addressList=customer.getCustomerAddresses();
+      for (      CustomerAddress address : addressList) {
+        address.setArchived('Y');
+      }
+      customer=customerService.saveCustomer(customer);
+      return;
+    }
+    roleDao.removeCustomerRolesByCustomerId(customerId);
     helper.getCompatibleModule(OperationType.BASIC).remove(persistencePackage);
   }
  catch (  Exception e) {

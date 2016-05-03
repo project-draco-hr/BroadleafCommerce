@@ -1,0 +1,11 @@
+{
+  Long productId=ServletRequestUtils.getLongParameter(context.getRequest(),"productId");
+  if (productId != null) {
+    Product product=catalogService.findProductById(productId);
+    if (product != null && LOG.isDebugEnabled()) {
+      LOG.debug("Obtained the product using id=" + productId);
+    }
+    return product;
+  }
+  return null;
+}

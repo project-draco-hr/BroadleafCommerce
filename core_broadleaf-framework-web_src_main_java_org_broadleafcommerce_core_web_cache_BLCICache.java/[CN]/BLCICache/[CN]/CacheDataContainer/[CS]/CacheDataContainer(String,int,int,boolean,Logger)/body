@@ -1,0 +1,17 @@
+{
+  super();
+  this.name=name;
+  this.container=new ConcurrentHashMap<K,CacheEntry<V>>(initialCapacity);
+  this.maxSize=maxSize;
+  this.sizeLimit=(maxSize >= 0);
+  if (this.sizeLimit) {
+    this.fifo=new Object[this.maxSize];
+    Arrays.fill(this.fifo,null);
+  }
+ else {
+    this.fifo=null;
+  }
+  this.fifoPointer=0;
+  this.traceExecution=traceExecution;
+  this.logger=logger;
+}

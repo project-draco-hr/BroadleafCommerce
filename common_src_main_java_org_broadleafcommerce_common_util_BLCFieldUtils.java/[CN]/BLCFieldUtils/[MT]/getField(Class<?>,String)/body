@@ -1,0 +1,39 @@
+{
+  String[] tokens=fieldName.split("\\.");
+  Field field=null;
+  for (int j=0; j < tokens.length; j++) {
+    String propertyName=tokens[j];
+    Class<?>[] myEntities=helper.getUpDownInheritance(clazz,sessionFactory,includeUnqualifiedPolymorphicEntities,useCache,ejb3ConfigurationDao);
+    Class<?> myClass;
+    if (ArrayUtils.isEmpty(myEntities)) {
+      myClass=clazz;
+    }
+ else {
+      myClass=getClassForField(helper,propertyName,null,myEntities);
+    }
+    if (myClass == null) {
+      LOG.debug(String.format("Unable to find the field (%s) anywhere in the inheritance hierarchy for (%s)",propertyName,clazz.getName()));
+      return null;
+    }
+    field=getSingleField(myClass,propertyName);
+    if (field != null && j < tokens.length - 1) {
+      Class<?>[] fieldEntities=helper.getUpDownInheritance(field.getType(),sessionFactory,includeUnqualifiedPolymorphicEntities,useCache,ejb3ConfigurationDao);
+      if (!ArrayUtils.isEmpty(fieldEntities)) {
+        clazz=getClassForField(helper,tokens[j + 1],field,fieldEntities);
+        if (clazz == null) {
+          return null;
+        }
+      }
+ else {
+        clazz=field.getType();
+      }
+    }
+ else {
+      break;
+    }
+  }
+  if (field != null) {
+    field.setAccessible(true);
+  }
+  return field;
+}
