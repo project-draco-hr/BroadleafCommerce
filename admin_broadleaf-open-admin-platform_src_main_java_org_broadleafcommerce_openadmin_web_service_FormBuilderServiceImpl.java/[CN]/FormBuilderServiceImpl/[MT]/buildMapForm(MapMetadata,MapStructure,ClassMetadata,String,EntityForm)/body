@@ -4,7 +4,7 @@
   Field keyField;
   if (!mapMd.getForceFreeFormKeys()) {
     ComboField temp=new ComboField();
-    temp.withName("key").withFieldType("combo_field").withFriendlyName("Key");
+    temp.withName("key").withFieldType("combo_field").withFriendlyName(mapStructure.getKeyPropertyFriendlyName());
     if (mapMd.getKeys() != null) {
       temp.setOptions(mapMd.getKeys());
     }
@@ -20,7 +20,7 @@
     keyField=temp;
   }
  else {
-    keyField=new Field().withName("key").withFieldType(SupportedFieldType.STRING.toString()).withFriendlyName("Key");
+    keyField=new Field().withName("key").withFieldType(SupportedFieldType.STRING.toString()).withFriendlyName(mapStructure.getKeyPropertyFriendlyName());
   }
   keyField.setRequired(true);
   ef.addMapKeyField(keyField);
